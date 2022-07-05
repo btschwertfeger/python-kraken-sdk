@@ -24,7 +24,7 @@ class KrakenBaseRestAPI(object):
         self.secret = secret
         self.api_v = api_version
 
-    def _request(self, method, uri, timeout=10, auth=True, params={}):
+    def _request(self, method, uri, timeout=10, auth=True, params={}, do_json=False):
         uri_path = uri
         data_json = ''
         params['nonce'] = str(int(time.time()*1000)) # generate nonce
@@ -60,7 +60,10 @@ class KrakenBaseRestAPI(object):
         if method in ['GET', 'DELETE']:
             response_data = requests.request(method, url, headers=headers, timeout=timeout)
         else:
-            response_data = requests.request(method, url, headers=headers, data=params, timeout=timeout)
+            if do_json:
+                response_data = requests.request(method, url, headers=headers, json=params, timeout=timeout)
+            else:
+                response_data = requests.request(method, url, headers=headers, data=params, timeout=timeout)
         return self.check_response_data(response_data)
 
     def get_kraken_signature(self, urlpath, data):
