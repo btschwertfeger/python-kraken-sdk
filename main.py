@@ -2,9 +2,7 @@ import os, sys
 
 sys.path.append('/Users/benjamin/repositories/Trading/')
 
-from client import User
-from client import Market
-
+from client import User, Market, Trade
 from dotenv import dotenv_values
 
 def main() -> None:
@@ -15,6 +13,7 @@ def main() -> None:
     )
     market = Market()
 
+    # ____User_____
     # print(market.get_assets(assets=['XBT']))
     # print(market.get_tradable_asset_pair(pair=['BTCEUR','DOTEUR']))
     # print(market.get_ticker(pair='BTCUSD'))
@@ -23,6 +22,10 @@ def main() -> None:
     # print(market.get_recent_trades(pair='BTCUSDT'))
     # print(user.get_account_balance())
     # print(user.get_closed_orders())
+
+    # ____Trade____
+
+
 
 if __name__ == '__main__':
     main()
