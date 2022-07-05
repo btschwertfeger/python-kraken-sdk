@@ -91,3 +91,7 @@ class KrakenBaseRestAPI(object):
     @property
     def return_unique_id(self):
         return ''.join([each for each in str(uuid1()).split('-')])
+
+    def _to_str_list(self, a) -> str:
+        if type(a) == str: a = [a]
+        return ','.join(a)
