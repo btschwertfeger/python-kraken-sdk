@@ -87,7 +87,6 @@ class KrakenBaseRestAPI(object):
                     if data.get('result'): return data['result']
                     else: return data
                 else:
-                    print(data)
                     raise Exception(f'{response_data.status_code}-{response_data.text}')
         else: raise Exception(f'{response_data.status_code}-{response_data.text}')
 
