@@ -71,3 +71,9 @@ class TradeData(object):
         params = { 'orders': orders }
         return self._request('POST', '/private/CancelOrderBatch')
 
+
+    def test():
+        dsfdsfd
+sdfdsf
+        sdfsdf
+
