@@ -40,24 +40,39 @@ async def main() -> None:
     # ___Staking___
 
     # ___WS_Token__
-    print(wsClient.get_ws_token())
+    # print(wsClient.get_ws_token())
 
-    # _____Websocket_Stuff__________________
-    async def callback_method(event) -> None:
-        print(f'callback-method: {event}')
+    class Bot():
+        once=0
+        def __init__(self):
+            pass
+        async def callback_method(self,event, ws_send_message_func=None, error=None) -> None:
+            print(f'callback-method: {event}')
+            if self.once == 0:
+                once = 1
+                try:
+                    await ws_send_message_func(msg={
+                        'event': 'addOrder',
+                    }, private=True)
+                except:
+                    print('____')
 
+
+    bot = Bot()
 
     wsClient_pub = await KrakenWsClient.create(
         client=wsClient,
-        callback=callback_method,
+        callback=bot.callback_method,
         private=False
     )
-    wsClient_pub = await KrakenWsClient.create(
-        client=wsClient,
-        callback=callback_method,
-        private=False
-    )
+    #wsClient_priv = await KrakenWsClient.create(
+    #    client=wsClient,
+    #    callback=bot.callback_method,
+    #    private=True
+    #)
 
+
+    #await wsClient_pub.subscribe(pair=['BTC/EUR'], subscription={ 'name': 'ticker' })
     while True:
         try:
             # some strategy

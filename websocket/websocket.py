@@ -108,9 +108,11 @@ class ConnectWebsocket:
         logger.info(f'recover topic event {self._subscriptions} waiting')
         await event.wait()
         for sub in self._subscriptions:
+            private = False
             if 'token' in sub['subscription']:
                 sub['subscription']['token'] = self._ws_details['token']
-            await self.send_message(sub)
+                private = True
+            await self.send_message(sub, private=private)
             logger.info(f'{sub} OK')
 
         logger.info(f'recover topic event {self._subscriptions} done.')
@@ -127,19 +129,21 @@ class ConnectWebsocket:
             'event': 'ping',
             'reqid': int(time.time() * 1000),
         }
-        print(msg)
         await self._socket.send(json.dumps(msg))
         self._last_ping = time.time()
 
     async def send_message(self, msg, private: bool=False, response: bool=False, retry_count: int=0):
+        print(f'send_message ({private}-{retry_count}): {msg}')
         if not self._socket:
             if retry_count < self.MAX_RECONNECTS:
                 await asyncio.sleep(1)
-                await self.send_message(msg, retry_count + 1)
+                await self.send_message(msg, private=private, retry_count=retry_count + 1)
         else:
             msg['reqid'] = int(time.time() * 1000)
             if private and 'subscription' in msg: msg['subscription']['token'] = self._ws_details['token']
-            await self._socket.send(json.dumps(msg))
+            elif private: msg['token'] = self._ws_details['token']
+            res = await self._socket.send(json.dumps(msg))
+            if response: return res
 
 
 
@@ -183,20 +187,19 @@ class KrakenWsClient:
         return self
 
     async def _recv(self, msg):
-        #if 'data' in msg or '' in msg:
-        await self._callback(msg)
+        await self._callback(msg, self._conn.send_message)
 
-    async def subscribe(self, pair: [str]=None, subscription: dict=None, **kwargs) -> None:
+    async def subscribe(self, private: bool=False, pair: [str]=None, subscription: dict=None, **kwargs) -> None:
         '''Subscribe to a channel'''
 
         payload = { 'event': 'subscribe' }
         if pair != None: payload['pair'] = pair
-        if subscription != None: req_msg['subscription'] = subscription
-        req_msg.update(kwargs)
-        self._conn.subscriptions.append(payload)
-        await self._conn.send_message(payload)
+        if subscription != None: payload['subscription'] = subscription
+        payload.update(kwargs)
+        self._conn._subscriptions.append(payload)
+        await self._conn.send_message(payload, private=private)
 
-    async def unsubscribe(self, pair: [str]=None, subscription: dict=None, **kwargs) -> None:
+    async def unsubscribe(self, private: bool=False, pair: [str]=None, subscription: dict=None, **kwargs) -> None:
         '''Unsubscribe from a topic'''
 
         payload = { 'event': 'unsubscribe' }
@@ -204,7 +207,9 @@ class KrakenWsClient:
         if subscription != None: payload['subscription'] = subscription
         payload.update(kwargs)
         self._conn.topics.remove(payload)
-        await self._conn.send_message(payload)
+        await self._conn.send_message(payload, private=private)
 
-
-
+    @staticmethod
+    def get_available_subscription_names() -> [str]:
+        '''https://docs.kraken.com/websockets/#message-subscribe'''
+        return [ 'book', 'ohlc', 'openOrders', 'ownTrades', 'spread', 'ticker', 'trade', '*']
