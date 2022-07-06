@@ -2,16 +2,26 @@ import os, sys
 
 sys.path.append('/Users/benjamin/repositories/Trading/')
 
-from client import User, Market, Trade
+import asyncio
+
+
+from client import User, Market, Trade, Funding, Staking, WsClient
 from dotenv import dotenv_values
+from websocket.websocket import KrakenWsClient
 
-def main() -> None:
+async def main() -> None:
 
-    user = User(
-        key=dotenv_values('.env')['API_KEY'],
-        secret=dotenv_values('.env')['SECRET_KEY']
-    )
-    market = Market()
+    key, secret = dotenv_values('.env')['API_KEY'], dotenv_values('.env')['SECRET_KEY']
+
+
+    user = User(key=key, secret=secret)
+    market = Market(key=key, secret=secret)
+    trade = Trade(key=key, secret=secret)
+    funding = Funding(key=key, secret=secret)
+    staking = Staking(key=key, secret=secret)
+    wsClient = WsClient(key=key, secret=secret)
+
+
 
     # ____User_____
     # print(market.get_assets(assets=['XBT']))
@@ -25,7 +35,38 @@ def main() -> None:
 
     # ____Trade____
 
+    # ____Funding__
+
+    # ___Staking___
+
+    # ___WS_Token__
+    print(wsClient.get_ws_token())
+
+    # _____Websocket_Stuff__________________
+    async def callback_method(event) -> None:
+        print(f'callback-method: {event}')
 
 
+    wsClient_pub = await KrakenWsClient.create(
+        client=wsClient,
+        callback=callback_method,
+        private=False
+    )
+    wsClient_pub = await KrakenWsClient.create(
+        client=wsClient,
+        callback=callback_method,
+        private=False
+    )
+
+    while True:
+        try:
+            # some strategy
+            pass
+
+        except:
+            pass
+
+        await asyncio.sleep(6)
 if __name__ == '__main__':
-    main()
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(main())
