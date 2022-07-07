@@ -157,36 +157,51 @@ class KrakenWsClient(object):
     BETA_ENV_URL = 'beta-ws.kraken.com'
     AUTH_BETA_ENV_URL = 'beta-ws-auth.kraken.com'
 
-    def __init__(self):
-        self._callback = None
-        self._conn = None
-        self._loop = None
-        self._client = None
-        self._private = False
-        self._topics = set()
-
-    @classmethod
-    async def create(cls, client, callback=None, private=False, beta=False):
-        self = KrakenWsClient()
+    def __init__(self, client, callback=None, private: bool=False, beta: bool=False):
+        self._callback = callback
         self._client = client
         self._private = private
 
-        self._callback = callback
-
-        if private:
+      if private:
             if beta: self._ws_endpoint = self.AUTH_BETA_ENV_URL
             else: self._ws_endpoint = self.AUTH_PROD_ENV_URL
         else:
             if beta: self._ws_endpoint = self.BETA_ENV_URL
             else: self._ws_endpoint = self.PROD_ENV_URL
+
         print(f'########-> kwsc: {private}')
+
         self._conn = ConnectWebsocket(
             client=self._client,
             endpoint=self._ws_endpoint,
             callback=self.on_message,
             private=private, beta=beta
         )
-        return self
+
+
+
+    # @classmethod
+    # async def create(cls, client, callback=None, private=False, beta=False):
+    #     self = KrakenWsClient()
+    #     self._client = client
+    #     self._private = private
+
+    #     self._callback = callback
+
+    #     if private:
+    #         if beta: self._ws_endpoint = self.AUTH_BETA_ENV_URL
+    #         else: self._ws_endpoint = self.AUTH_PROD_ENV_URL
+    #     else:
+    #         if beta: self._ws_endpoint = self.BETA_ENV_URL
+    #         else: self._ws_endpoint = self.PROD_ENV_URL
+    #     print(f'########-> kwsc: {private}')
+    #     self._conn = ConnectWebsocket(
+    #         client=self._client,
+    #         endpoint=self._ws_endpoint,
+    #         callback=self.on_message,
+    #         private=private, beta=beta
+    #     )
+    #     return self
 
     async def on_message(self, msg):
         ''' Call callback function
