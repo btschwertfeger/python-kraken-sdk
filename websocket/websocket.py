@@ -7,14 +7,12 @@ from uuid import uuid4
 import logging
 import traceback
 
-logger = logging.getLogger(__name__)
 
 class ConnectWebsocket:
     MAX_RECONNECTS = 5
     MAX_RECONNECT_SECONDS = 60
 
-    def __init__(self, client, endpoint, callback=None, private: bool=False, beta: bool=False):
-        self._loop = asyncio.get_running_loop()
+    def __init__(self, client, endpoint: str, callback=None, private: bool=False, beta: bool=False):
         self._client = client
         self._ws_endpoint = endpoint
         self._callback = callback
@@ -22,26 +20,37 @@ class ConnectWebsocket:
         self._reconnect_num = 0
         self._ws_details = None
         self._connect_id = None
+
         self._private = private
         self._beta = beta
+
         self._last_ping = None
         self._socket = None
         self._subscriptions = []
+
         asyncio.ensure_future(self.run_forever(), loop=asyncio.get_running_loop())
 
     @property
-    def topics(self):
-        return self._topics
+    def subscriptions(self) -> list:
+        return self._subscriptions
+
+    @property
+    def private(self) -> bool:
+        return self._private
 
     async def _run(self, event: asyncio.Event):
         keep_alive = True
         self._last_ping = time.time()  # record last ping
         self._ws_details = None
-        self._ws_details = self._client.get_ws_token(self._private)
-        logger.debug(self._ws_details)
+        self._ws_details = self._client.get_ws_token(self.private)
+        logging.debug(self._ws_details)
 
         async with websockets.connect(f'wss://{self._ws_endpoint}', ping_interval=None) as socket:
-            logger.info(f'Websocket connected!')
+            logging.info(f'Websocket connected!')
+
+            if self.private: self._client.websocket_priv = self
+            else: self._client.websocket_pub = self
+
             self._socket = socket
             self._reconnect_num = 0
 
@@ -57,7 +66,7 @@ class ConnectWebsocket:
                 except asyncio.TimeoutError:
                     await self.send_ping()
                 except asyncio.CancelledError:
-                    logger.exception('CancelledError')
+                    logging.exception('CancelledError')
                     await self._socket.ping()
                 else:
                     try:
@@ -72,17 +81,17 @@ class ConnectWebsocket:
             await self._reconnect()
 
     async def _reconnect(self):
-        logger.info('Websocket start connect/reconnect')
+        logging.info('Websocket start connect/reconnect')
 
         self._reconnect_num += 1
         reconnect_wait = self._get_reconnect_wait(self._reconnect_num)
-        logger.info(f'asyncio sleep reconnect_wait={reconnect_wait} s reconnect_num={self._reconnect_num}')
+        logging.info(f'asyncio sleep reconnect_wait={reconnect_wait} s reconnect_num={self._reconnect_num}')
         await asyncio.sleep(reconnect_wait)
-        logger.info(f'asyncio sleep ok')
+        logging.info(f'asyncio sleep ok')
         event = asyncio.Event()
 
         tasks = {
-            asyncio.ensure_future(self._recover_topic_req_msg(event)): self._recover_topic_req_msg,
+            asyncio.ensure_future(self._recover_subscription_req_msg(event)): self._recover_subscription_req_msg,
             asyncio.ensure_future(self._run(event)): self._run
         }
 
@@ -94,30 +103,31 @@ class ConnectWebsocket:
                     exception_occur = True
                     message = f'{task} got an exception {task.exception()}'
                     message += f'\nTRACEBACK: {traceback.format_exc()}'
-                    logger.warning(message)
+                    logging.warning(message)
                     for pt in pending:
-                        logger.warning(f'pending {pt}')
+                        logging.warning(f'pending {pt}')
                         try: pt.cancel()
-                        except asyncio.CancelledError: logger.exception('CancelledError ')
-                        logger.warning('cancel ok.')
+                        except asyncio.CancelledError: logging.exception('CancelledError ')
+                        logging.warning('cancel ok.')
                     await self._callback({ 'ws-error': message })
             if exception_occur: break
-        logger.warning('_reconnect over.')
+        logging.warning('_reconnect over.')
 
-    async def _recover_topic_req_msg(self, event):
-        logger.info(f'recover topic event {self._subscriptions} waiting')
+    async def _recover_subscription_req_msg(self, event):
+        logging.info(f'recover subscription {self._subscriptions} waiting')
         await event.wait()
         for sub in self._subscriptions:
+            private = False
             if 'token' in sub['subscription']:
                 sub['subscription']['token'] = self._ws_details['token']
-            await self.send_message(sub)
-            logger.info(f'{sub} OK')
+                private = True
+            await self.send_message(sub, private=private)
+            logging.info(f'{sub} OK')
 
-        logger.info(f'recover topic event {self._subscriptions} done.')
+        logging.info(f'recover subscription {self._subscriptions} done.')
 
     def _get_reconnect_wait(self, attempts):
-        expo = 2 ** attempts
-        return round(random() * min(self.MAX_RECONNECT_SECONDS, expo - 1) + 1)
+        return round(random() * min(self.MAX_RECONNECT_SECONDS, (2 ** attempts) - 1) + 1)
 
     def _get_ws_pingtimeout(self):
         return 10
@@ -127,23 +137,24 @@ class ConnectWebsocket:
             'event': 'ping',
             'reqid': int(time.time() * 1000),
         }
-        print(msg)
         await self._socket.send(json.dumps(msg))
         self._last_ping = time.time()
 
-    async def send_message(self, msg, private: bool=False, response: bool=False, retry_count: int=0):
+    async def send_message(self, msg, private: bool=False, retry_count: int=0):
+        logging.info(f'send_message (private: {private}; tries: {retry_count}): {msg}')
         if not self._socket:
             if retry_count < self.MAX_RECONNECTS:
                 await asyncio.sleep(1)
-                await self.send_message(msg, retry_count + 1)
+                await self.send_message(msg, private=private, retry_count=retry_count + 1)
         else:
             msg['reqid'] = int(time.time() * 1000)
             if private and 'subscription' in msg: msg['subscription']['token'] = self._ws_details['token']
+            elif private: msg['token'] = self._ws_details['token']
             await self._socket.send(json.dumps(msg))
 
 
 
-class KrakenWsClient:
+class KrakenWsClient(object):
     '''https://docs.kraken.com/websockets/#overview'''
 
     PROD_ENV_URL = 'ws.kraken.com'
@@ -151,60 +162,63 @@ class KrakenWsClient:
     BETA_ENV_URL = 'beta-ws.kraken.com'
     AUTH_BETA_ENV_URL = 'beta-ws-auth.kraken.com'
 
-    def __init__(self):
-        self._callback = None
-        self._conn = None
-        self._loop = None
-        self._client = None
-        self._private = False
-        self._topics = set()
-
-    @classmethod
-    async def create(cls, client, callback=None, private=False, beta=False):
-        self = KrakenWsClient()
-        self._client = client
-        self._private = private
-
+    def __init__(self, client, callback=None, beta: bool=False):
         self._callback = callback
+        self._client = client
 
-        if private:
-            if beta: self._ws_endpoint = self.AUTH_BETA_ENV_URL
-            else: self._ws_endpoint = self.AUTH_PROD_ENV_URL
-        else:
-            if beta: self._ws_endpoint = self.BETA_ENV_URL
-            else: self._ws_endpoint = self.PROD_ENV_URL
 
-        self._conn = ConnectWebsocket(
+        self._pub_conn = ConnectWebsocket(
             client=self._client,
-            endpoint=self._ws_endpoint,
-            callback=self._recv,
-            private=private, beta=beta
+            endpoint=self.PROD_ENV_URL if not beta else BETA_ENV_URL,
+            callback=self.on_message,
+            private=False
         )
-        return self
 
-    async def _recv(self, msg):
-        #if 'data' in msg or '' in msg:
-        await self._callback(msg)
+        self._priv_conn = ConnectWebsocket(
+             client=self._client,
+             endpoint=self.AUTH_PROD_ENV_URL if not beta else AUTH_BETA_ENV_URL,
+             callback=self.on_message,
+             private=True
+        )
 
-    async def subscribe(self, pair: [str]=None, subscription: dict=None, **kwargs) -> None:
+    async def on_message(self, msg):
+        ''' Call callback function or overload this'''
+        if self._callback != None: await self._callback(msg)
+        else:
+            logging.warning('Received event but no callback is defined')
+            print(msg)
+
+    async def subscribe(self, private: bool=False, pair: [str]=None, subscription: dict=None, **kwargs) -> None:
         '''Subscribe to a channel'''
 
         payload = { 'event': 'subscribe' }
         if pair != None: payload['pair'] = pair
-        if subscription != None: req_msg['subscription'] = subscription
-        req_msg.update(kwargs)
-        self._conn.subscriptions.append(payload)
-        await self._conn.send_message(payload)
+        if subscription != None: payload['subscription'] = subscription
+        payload.update(kwargs)
 
-    async def unsubscribe(self, pair: [str]=None, subscription: dict=None, **kwargs) -> None:
+        if private:
+            self._priv_conn._subscriptions.append(payload)
+            await self._priv_conn.send_message(payload, private=private)
+        else:
+            self._pub_conn._subscriptions.append(payload)
+            await self._pub_conn.send_message(payload, private=private)
+
+
+    async def unsubscribe(self, private: bool=False, pair: [str]=None, subscription: dict=None, **kwargs) -> None:
         '''Unsubscribe from a topic'''
 
         payload = { 'event': 'unsubscribe' }
         if pair != None: payload['pair'] = pair
         if subscription != None: payload['subscription'] = subscription
         payload.update(kwargs)
-        self._conn.topics.remove(payload)
-        await self._conn.send_message(payload)
+        if private:
+            self._priv_conn._subscriptions.remove(payload)
+            await self._priv_conn.send_message(payload, private=private)
+        else:
+            self._pub_conn._subscriptions.remove(payload)
+            await self._pub_conn.send_message(payload, private=private)
 
-
-
+    @staticmethod
+    def get_available_subscription() -> [str]:
+        '''https://docs.kraken.com/websockets/#message-subscribe'''
+        return [ 'book', 'ohlc', 'openOrders', 'ownTrades', 'spread', 'ticker', 'trade', '*']
