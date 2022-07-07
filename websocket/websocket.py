@@ -13,7 +13,7 @@ class ConnectWebsocket:
     MAX_RECONNECTS = 5
     MAX_RECONNECT_SECONDS = 60
 
-    def __init__(self, client, endpoint, callback=None, private: bool=False, beta: bool=False):
+    def __init__(self, client, endpoint: str, callback=None, private: bool=False, beta: bool=False):
         self._loop = asyncio.get_running_loop()
         self._client = client
         self._ws_endpoint = endpoint
@@ -22,11 +22,12 @@ class ConnectWebsocket:
         self._reconnect_num = 0
         self._ws_details = None
         self._connect_id = None
-        self._private = private
+        self.private = private
         self._beta = beta
         self._last_ping = None
         self._socket = None
         self._subscriptions = []
+        print(f'########-> ws: {private}')
         asyncio.ensure_future(self.run_forever(), loop=asyncio.get_running_loop())
 
     @property
@@ -37,10 +38,11 @@ class ConnectWebsocket:
         keep_alive = True
         self._last_ping = time.time()  # record last ping
         self._ws_details = None
-        self._ws_details = self._client.get_ws_token(self._private)
+        self._ws_details = self._client.get_ws_token(self.private)
         logger.debug(self._ws_details)
 
         async with websockets.connect(f'wss://{self._ws_endpoint}', ping_interval=None) as socket:
+            self._client.websocket = self
             logger.info(f'Websocket connected!')
             self._socket = socket
             self._reconnect_num = 0
@@ -133,7 +135,7 @@ class ConnectWebsocket:
         self._last_ping = time.time()
 
     async def send_message(self, msg, private: bool=False, response: bool=False, retry_count: int=0):
-        print(f'send_message ({private}-{retry_count}): {msg}')
+        logging.info(f'send_message (private: {private}; tries: {retry_count}): {msg}')
         if not self._socket:
             if retry_count < self.MAX_RECONNECTS:
                 await asyncio.sleep(1)
@@ -147,7 +149,7 @@ class ConnectWebsocket:
 
 
 
-class KrakenWsClient:
+class KrakenWsClient(object):
     '''https://docs.kraken.com/websockets/#overview'''
 
     PROD_ENV_URL = 'ws.kraken.com'
@@ -177,17 +179,21 @@ class KrakenWsClient:
         else:
             if beta: self._ws_endpoint = self.BETA_ENV_URL
             else: self._ws_endpoint = self.PROD_ENV_URL
-
+        print(f'########-> kwsc: {private}')
         self._conn = ConnectWebsocket(
             client=self._client,
             endpoint=self._ws_endpoint,
-            callback=self._recv,
+            callback=self.on_message,
             private=private, beta=beta
         )
         return self
 
-    async def _recv(self, msg):
-        await self._callback(msg, self._conn.send_message)
+    async def on_message(self, msg):
+        ''' Call callback function
+            + adds ws_client
+        '''
+        print('###worng###')
+        if self._callback != None: await self._callback(msg, self._client)
 
     async def subscribe(self, private: bool=False, pair: [str]=None, subscription: dict=None, **kwargs) -> None:
         '''Subscribe to a channel'''
