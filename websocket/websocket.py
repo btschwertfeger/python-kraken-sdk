@@ -21,7 +21,7 @@ class ConnectWebsocket:
         self._ws_details = None
         self._connect_id = None
 
-        self.private = private
+        self._private = private
         self._beta = beta
 
         self._last_ping = None
@@ -31,8 +31,12 @@ class ConnectWebsocket:
         asyncio.ensure_future(self.run_forever(), loop=asyncio.get_running_loop())
 
     @property
-    def subscriptions(self):
+    def subscriptions(self) -> list:
         return self._subscriptions
+
+    @property
+    def private(self) -> bool:
+        return self._private
 
     async def _run(self, event: asyncio.Event):
         keep_alive = True
@@ -191,6 +195,7 @@ class KrakenWsClient(object):
         if pair != None: payload['pair'] = pair
         if subscription != None: payload['subscription'] = subscription
         payload.update(kwargs)
+
         if private:
             self._priv_conn._subscriptions.append(payload)
             await self._priv_conn.send_message(payload, private=private)

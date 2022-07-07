@@ -5,11 +5,31 @@ class WsClientData(KrakenBaseRestAPI):
 
     websocket_pub = None
     websocket_priv = None
+
     def get_ws_token(self, private: bool=True) -> dict:
         '''https://docs.kraken.com/rest/#tag/Websockets-Authentication'''
         return self._request('POST', '/private/GetWebSocketsToken')
 
-    async def create_order(self, ordertype: str, side: str, pair: str, price: str=None, price2: str=None, volume: str=None, leverage: int=None, oflags: [str]=None, starttm: str=None, expiretm: str=None, deadline: str=None, userref: str=None,validate: str=None, close_ordertype: str=None, close_price: float=None, close_price2: float=None, timeinforce: str=None) -> dict:
+    async def create_order(
+        self,
+        ordertype: str,
+        side: str,
+        pair: str,
+        price: str=None,
+        price2: str=None,
+        volume: str=None,
+        leverage: int=None,
+        oflags: [str]=None,
+        starttm: str=None,
+        expiretm: str=None,
+        deadline: str=None,
+        userref: str=None,
+        validate: str=None,
+        close_ordertype: str=None,
+        close_price: float=None,
+        close_price2: float=None,
+        timeinforce: str=None
+    ) -> dict:
         '''https://docs.kra)en.com/websockets/#message-addOrder'''
         if not self.websocket_priv:
             logging.warning('Websocket not connected!')
@@ -43,7 +63,17 @@ class WsClientData(KrakenBaseRestAPI):
 
         return await self.websocket_priv.send_message(msg=payload, private=True)
 
-    async def edit_order(self, orderid: str, reqid: int=None, pair: str=None, price: str=None, price2: str=None, volume: str=None, oflags: [str]=None, newuserref: str=None, validate: str=None) -> dict:
+    async def edit_order(
+        self, orderid: str,
+        reqid: int=None,
+        pair: str=None,
+        price: str=None,
+        price2: str=None,
+        volume: str=None,
+        oflags: [str]=None,
+        newuserref: str=None,
+        validate: str=None
+    ) -> dict:
         '''https://docs.kraken.com/websockets/#message-editOrder'''
         if not self.websocket_priv:
             logging.warning('Websocket not connected!')
@@ -98,7 +128,7 @@ class WsClientData(KrakenBaseRestAPI):
         return await self.websocket_priv.send_message(msg=payload, private=True, reponse=True)
 
     async def cancel_all_orders_after(self, timeout: int, reqid: int=None) -> dict:
-        ''''''
+        '''https://docs.kraken.com/websockets/#message-cancelAllOrdersAfter'''
         if not self.websocket_priv:
             logging.warning('Websocket not connected!')
             return

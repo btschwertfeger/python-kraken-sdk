@@ -29,31 +29,15 @@ logging.getLogger().setLevel(logging.INFO)
 # logging.getLogger().addHandler(screen_handler)
 logging.getLogger('requests').setLevel(logging.WARNING)
 logging.getLogger('urllib3').setLevel(logging.WARNING)
-# logging.getLogger('asyncio').setLevel(logging.WARNING)
-# logging.getLogger('asyncio.coroutines').setLevel(logging.WARNING)
-# logging.getLogger('websockets.server').setLevel(logging.WARNING)
-# logging.getLogger('websockets.protocol').setLevel(logging.WARNING)
-logging.info('Logger object created successfully..')
-
-
 
 async def main() -> None:
-    # logger_name = f'botLog_{datetime.now().strftime("%Y-%m-%d_%Hh%Mm%Ss")}'
-    # logger = myLogger(logger_name)
 
-    key, secret = dotenv_values('.env')['API_KEY'], dotenv_values('.env')['SECRET_KEY']
+    key = dotenv_values('.env')['API_KEY']
+    secret = dotenv_values('.env')['SECRET_KEY']
 
-
+    # ___User_________________________
     user = User(key=key, secret=secret)
-    market = Market(key=key, secret=secret)
-    trade = Trade(key=key, secret=secret)
-    funding = Funding(key=key, secret=secret)
-    staking = Staking(key=key, secret=secret)
-    wsClient = WsClient(key=key, secret=secret)
 
-
-
-    # ____User_____
     # print(market.get_assets(assets=['XBT']))
     # print(market.get_tradable_asset_pair(pair=['BTCEUR','DOTEUR']))
     # print(market.get_ticker(pair='BTCUSD'))
@@ -63,14 +47,25 @@ async def main() -> None:
     # print(user.get_account_balance())
     # print(user.get_closed_orders())
 
-    # ____Trade____
+    # ___Market___________________________
+    market = Market(key=key, secret=secret)
 
-    # ____Funding__
+    # ____Trade_________________________
+    trade = Trade(key=key, secret=secret)
 
-    # ___Staking___
+    # ____Funding___________________________
+    funding = Funding(key=key, secret=secret)
 
-    # ___WS_Token__
+    # ____Staking___________________________
+    staking = Staking(key=key, secret=secret)
+
+    # ____Websocket_Client____________________
+    wsClient = WsClient(key=key, secret=secret)
+
     # print(wsClient.get_ws_token())
+
+
+    # ___Trading_Bot_Integration______________
 
     class Bot(KrakenWsClient):
 
