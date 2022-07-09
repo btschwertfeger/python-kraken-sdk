@@ -74,7 +74,8 @@ async def main() -> None:
     # print(market.get_ohlc(pair='BTCUSD', interval=5))
     # print(market.get_order_book(pair='BTCUSDT', count=10))
     # print(market.get_recent_trades(pair='BTCUSDT'))
-
+    # print(market.get_recend_spreads(pair='XBTUSD'))
+    # print(market.get_system_status())
 
     # ____Trade_________________________
     trade = Trade(key=key, secret=secret)
