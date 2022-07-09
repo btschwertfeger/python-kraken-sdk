@@ -12,7 +12,6 @@ from client import User, Market, Trade, Funding, Staking, WsClient
 from websocket.websocket import KrakenWsClient
 
 
-# def myLogger(file_name):
 logging.basicConfig(
     #filename=f'{LOG_DIR}/{file_name}.log',
     format='%(asctime)s %(module)s,line: %(lineno)d %(levelname)8s | %(message)s',
@@ -35,8 +34,39 @@ async def main() -> None:
     key = dotenv_values('.env')['API_KEY']
     secret = dotenv_values('.env')['SECRET_KEY']
 
+    # ---- R E S T - E N D P O I N T S ----
+
     # ___User_________________________
     user = User(key=key, secret=secret)
+
+    # print(user.get_account_balance())
+    # print(user.get_trade_balance())#asset='BTC'
+    # print(user.get_open_orders())
+    # print(user.get_closed_orders())
+    # print(user.get_orders_info(txid='someid')) # or txid='id1,id2,id3' or txid=['id1','id2']
+    # print(user.get_trades_history())
+    # print(user.get_trades_info(txid='someid'))
+    # print(user.get_open_positions())#txid='someid'
+    # print(user.get_ledgers_info())#asset='BTC' or asset='BTC,EUR' or asset=['BTC','EUR']
+    # print(user.get_ledgers(id='LNBK7T-BLEFU-C6NGIS'))
+    # print(user.get_trade_volume())#pair='BTC/EUR'
+
+    #____export_report____
+    # print(user.request_export_report(report='ledgers', description='myLedgers1', format='CSV'))#report='trades'
+    # print(user.get_export_report_status(report='ledgers'))
+
+    # save report to file
+    # response_data = user.retrieve_export(id='INSG')
+    # handle = open('myexport.zip', 'wb')
+    # for chunk in response_data.iter_content(chunk_size=512):
+    #     if chunk: handle.write(chunk)
+    # handle.close()
+
+    #print(user.delete_export_report(id='INSG', type='delete'))#type=cancel
+
+
+    # ___Market___________________________
+    market = Market(key=key, secret=secret)
 
     # print(market.get_assets(assets=['XBT']))
     # print(market.get_tradable_asset_pair(pair=['BTCEUR','DOTEUR']))
@@ -44,20 +74,19 @@ async def main() -> None:
     # print(market.get_ohlc(pair='BTCUSD', interval=5))
     # print(market.get_order_book(pair='BTCUSDT', count=10))
     # print(market.get_recent_trades(pair='BTCUSDT'))
-    # print(user.get_account_balance())
-    # print(user.get_closed_orders())
 
-    # ___Market___________________________
-    market = Market(key=key, secret=secret)
 
     # ____Trade_________________________
     trade = Trade(key=key, secret=secret)
 
+
     # ____Funding___________________________
     funding = Funding(key=key, secret=secret)
 
+
     # ____Staking___________________________
     staking = Staking(key=key, secret=secret)
+
 
     # ____Websocket_Client____________________
     wsClient = WsClient(key=key, secret=secret)
@@ -65,6 +94,7 @@ async def main() -> None:
     # print(wsClient.get_ws_token())
 
 
+    # ---- W E B S O C K E T - S T U F F ----
     # ___Trading_Bot_Integration______________
 
     class Bot(KrakenWsClient):
@@ -79,17 +109,17 @@ async def main() -> None:
                 #     ordertype='limit',
                 #     side='buy',
                 #     pair='BTC/EUR',
-                #     price=2,
-                #     volume=100
+                #     price=20000,
+                #     volume=1
                 # )
 
 
 
-    bot = Bot(wsClient)
-    await bot.subscribe(pair=['BTC/EUR'], subscription={ 'name': 'ticker' }, private=False)
+    # bot = Bot(wsClient)
+    # await bot.subscribe(pair=['BTC/EUR'], subscription={ 'name': 'ticker' }, private=False)
 
-    while True:
-        await asyncio.sleep(6)
+    # while True:
+    #     await asyncio.sleep(6)
 
 if __name__ == '__main__':
     loop = asyncio.get_event_loop()

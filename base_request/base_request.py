@@ -3,6 +3,7 @@
 
 import json
 import requests
+import logging
 import hmac
 import hashlib
 import base64
@@ -24,7 +25,7 @@ class KrakenBaseRestAPI(object):
         self.secret = secret
         self.api_v = api_version
 
-    def _request(self, method, uri, timeout=10, auth=True, params={}, do_json=False):
+    def _request(self, method: str, uri: str, timeout: int=10, auth: bool=True, params: dict={}, do_json: bool=False, return_raw: bool=False):
         uri_path = uri
         data_json = ''
         params['nonce'] = str(int(time.time()*1000)) # generate nonce
@@ -55,7 +56,7 @@ class KrakenBaseRestAPI(object):
         headers['User-Agent'] = 'Kraken-Python-SDK'
         url = f'{self.url}/{self.api_v}{uri}'
 
-        print(url)
+        logging.info(url)
 
         if method in ['GET', 'DELETE']:
             response_data = requests.request(method, url, headers=headers, timeout=timeout)
@@ -64,7 +65,7 @@ class KrakenBaseRestAPI(object):
                 response_data = requests.request(method, url, headers=headers, json=params, timeout=timeout)
             else:
                 response_data = requests.request(method, url, headers=headers, data=params, timeout=timeout)
-        return self.check_response_data(response_data)
+        return self.check_response_data(response_data, return_raw)
 
     def get_kraken_signature(self, urlpath, data):
         postdata = urllib.parse.urlencode(data)
@@ -76,8 +77,9 @@ class KrakenBaseRestAPI(object):
         return sigdigest.decode()
 
     @staticmethod
-    def check_response_data(response_data):
+    def check_response_data(response_data, return_raw: bool=False):
         if response_data.status_code == 200:
+            if return_raw: return response_data
             try:
                 data = response_data.json()
             except ValueError:
