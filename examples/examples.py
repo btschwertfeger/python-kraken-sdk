@@ -2,14 +2,12 @@ import os, sys
 
 sys.path.append('/Users/benjamin/repositories/Trading/')
 
-import asyncio
 import logging
 import logging.config
 from dotenv import dotenv_values
 from datetime import datetime
 
 from kraken.client import User, Market, Trade, Funding, Staking
-from kraken.websocket.websocket import KrakenWsClient
 
 
 logging.basicConfig(
