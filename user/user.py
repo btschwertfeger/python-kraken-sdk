@@ -37,6 +37,7 @@ class UserData(KrakenBaseRestAPI):
             'txid': txid,
             'trades': trades
         }
+        if type(txid) == list: params['txid'] = self._to_str_list(txid)
         if userref != None: params['userref'] = userref
         return self._request('POST', '/private/QueryOrders', params=params)
 
@@ -73,12 +74,13 @@ class UserData(KrakenBaseRestAPI):
             'aclass': aclass,
             'type': type_
         }
+        if type(params['asset']) == list: params['asset'] = self._to_str_list(asset)
         if start != None: params['start'] = start
         if end != None: params['end'] = end
         if ofs != None: params['ofs'] = None
         return self._request('POST', '/private/Ledgers', params=params)
 
-    def get_ledgers(self, idNone, trades: bool=False) -> dict:
+    def get_ledgers(self, id=None, trades: bool=False) -> dict:
         '''https://docs.kraken.com/rest/#operation/getLedgersInfo'''
         params = { 'trades': trades }
         if id != None: params['id'] = self._to_str_list(id)
@@ -91,12 +93,16 @@ class UserData(KrakenBaseRestAPI):
         if fee_info != None: params['fee-info'] = fee_info
         return self._request('POST', '/private/TradeVolume', params=params)
 
-    def request_export_report(self, report: str, description: str, format_: str='CSV', fields: str='all', starttm: int=None, endtm: int=None) -> dict:
-        '''https://docs.kraken.com/rest/#operation/addExport'''
+    def request_export_report(self, report: str, description: str, format: str='CSV', fields: str='all', starttm: int=None, endtm: int=None) -> dict:
+        '''https://docs.kraken.com/rest/#operation/addExport
+
+        ---- RESPONSE ----
+            {'id': 'INSG'}
+        '''
         params = {
             'report': report,
             'description': description,
-            'format': format_,
+            'format': format,
             'fields': fields
         }
         if starttm != None: params['starttm'] = starttm
@@ -104,19 +110,23 @@ class UserData(KrakenBaseRestAPI):
         return self._request('POST', '/private/AddExport', params=params)
 
     def get_export_report_status(self, report:int) -> dict:
-        '''https://docs.kraken.com/rest/#operation/exportStatus'''
+        '''https://docs.kraken.com/rest/#operation/exportStatus
+
+        ---- RESPONSE ----
+        [{'id': 'INSG', 'descr': 'myLedgers1', 'format': 'CSV', 'report': 'ledgers', 'status': 'Processed', 'aclass': 'currency', 'fields': 'all', 'asset': 'all', 'subtype': 'all', 'starttm': '1656633600', 'endtm': '1657355882', 'createdtm': '1657355882', 'expiretm': '1658565482', 'completedtm': '1657355887', 'datastarttm': '1656633600', 'dataendtm': '1657355882', 'flags': '0'}]
+        '''
         params = { 'report': report }
         return self._request('POST', '/private/ExportStatus', params=params)
 
     def retrieve_export(self, id: str) -> dict:
         '''https://docs.kraken.com/rest/#operation/retrieveExport'''
         params = { 'id': id }
-        return self._request('POST', '/private/RetrieveExport', params=params)
+        return self._request('POST', '/private/RetrieveExport', params=params, return_raw=True)
 
-    def delete_export_report(self, id:str, type_: str) -> dict:
+    def delete_export_report(self, id: str, type: str) -> dict:
         '''https://docs.kraken.com/rest/#operation/removeExport'''
         params = {
             'id': id,
-            'type': type_
+            'type': type
         }
         return self._request('POST', '/private/RemoveExport', params=params)

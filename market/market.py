@@ -48,6 +48,7 @@ class MarketData(KrakenBaseRestAPI):
         return self._request('GET', '/public/Trades', params=params, auth=False)
 
     def get_recend_spreads(self, pair, since=None) -> dict:
+        '''https://docs.kraken.com/rest/#operation/getRecentSpreads'''
         params = { 'pair': pair }
         if since != None: params['since'] = since
         return self._request('GET', '/public/Spread', params=params, auth=False)

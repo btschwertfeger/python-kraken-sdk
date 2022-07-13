@@ -3,6 +3,7 @@
 
 import json
 import requests
+import logging
 import hmac
 import hashlib
 import base64
@@ -15,16 +16,22 @@ version = __version__
 
 class KrakenBaseRestAPI(object):
 
-    def __init__(self, key='', secret='', url='', api_version=0):
+    def __init__(self, key: str='', secret: str='', url: str='', futures: bool=False):
 
+        self._api_v = ''
         if url: self.url = url
-        else: self.url = 'https://api.kraken.com'
+        elif futures:
+            self.url = 'https://futures.kraken.com/derivatives'
+            self._api_v = '/api/v3'
+            raise ValueError('Futures endpoints and clients not implemented yet.')
+        else:
+            self.url = 'https://api.kraken.com'
+            self._api_v = '/0'
 
         self.key = key
         self.secret = secret
-        self.api_v = api_version
 
-    def _request(self, method, uri, timeout=10, auth=True, params={}, do_json=False):
+    def _request(self, method: str, uri: str, timeout: int=10, auth: bool=True, params: dict={}, do_json: bool=False, return_raw: bool=False):
         uri_path = uri
         data_json = ''
         params['nonce'] = str(int(time.time()*1000)) # generate nonce
@@ -37,11 +44,6 @@ class KrakenBaseRestAPI(object):
                 data_json += '&'.join(strl)
                 uri += f'?{data_json}'
                 uri_path = uri
-        else:
-            if params:
-                pass
-                #data_json = json.dumps(params)
-                #uri_path = f'{uri}{data_json}'
 
         headers = {}
         if auth:
@@ -49,22 +51,21 @@ class KrakenBaseRestAPI(object):
             headers = {
                 'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8',
                 'API-Key': self.key,
-                'API-Sign': self.get_kraken_signature(f'/{self.api_v}{uri}', params)
+                'API-Sign': self.get_kraken_signature(f'{self._api_v}{uri}', params)
             }
 
         headers['User-Agent'] = 'Kraken-Python-SDK'
-        url = f'{self.url}/{self.api_v}{uri}'
+        url = f'{self.url}{self._api_v}{uri}'
 
-        print(url)
+        logging.info(f'Request: {url}')
 
         if method in ['GET', 'DELETE']:
             response_data = requests.request(method, url, headers=headers, timeout=timeout)
         else:
             if do_json:
-                response_data = requests.request(method, url, headers=headers, json=params, timeout=timeout)
+                return self.check_response_data(requests.request(method, url, headers=headers, json=params, timeout=timeout), return_raw)
             else:
-                response_data = requests.request(method, url, headers=headers, data=params, timeout=timeout)
-        return self.check_response_data(response_data)
+                return self.check_response_data(requests.request(method, url, headers=headers, data=params, timeout=timeout), return_raw)
 
     def get_kraken_signature(self, urlpath, data):
         postdata = urllib.parse.urlencode(data)
@@ -76,8 +77,9 @@ class KrakenBaseRestAPI(object):
         return sigdigest.decode()
 
     @staticmethod
-    def check_response_data(response_data):
+    def check_response_data(response_data, return_raw: bool=False):
         if response_data.status_code == 200:
+            if return_raw: return response_data
             try:
                 data = response_data.json()
             except ValueError:
