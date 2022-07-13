@@ -8,7 +8,7 @@ class FundingData(KrakenBaseRestAPI):
         params = { 'asset': asset }
         return self._request('POST', '/private/DepositMethods', params=params)
 
-    def get_deposit_address(self, asset:str, method: str, new: bool=False) -> dict:
+    def get_deposit_address(self, asset: str, method: str, new: bool=False) -> dict:
         '''https://docs.kraken.com/rest/#operation/getDepositAddresses'''
         params = {
             'asset': asset,
@@ -27,7 +27,7 @@ class FundingData(KrakenBaseRestAPI):
         '''https://docs.kraken.com/rest/#operation/getWithdrawalInformation'''
         params = {
             'asset': asset,
-            'key': key,
+            'key': str(key),
             'amount': str(amount)
         }
         return self._request('POST', '/private/WithdrawInfo', params=params)
@@ -41,7 +41,7 @@ class FundingData(KrakenBaseRestAPI):
         }
         return self._request('POST', '/private/Withdraw', params=params)
 
-    def get_recend_withdraw_status(self, asset: str, method:str=None) -> dict:
+    def get_recend_withdraw_status(self, asset: str, method: str=None) -> dict:
         '''https://docs.kraken.com/rest/#operation/getStatusRecentWithdrawals'''
         params = { 'asset': asset }
         if method != None: params['method'] = method
@@ -61,6 +61,6 @@ class FundingData(KrakenBaseRestAPI):
             'asset': asset,
             'from': from_,
             'to': to,
-            'amount': str(amount)
+            'amount': amount
         }
         return self._request('POST', '/private/WalletTransfer', params=params)

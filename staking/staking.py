@@ -7,16 +7,16 @@ class StakingData(KrakenBaseRestAPI):
         '''https://docs.kraken.com/rest/#operation/stake'''
         params = {
             'asset': asset,
-            'amount': str(amount),
+            'amount': amount,
             'method': method
         }
         return self._request('POST', '/private/Stake', params=params)
 
-    def unstake_asset(self, asset: str, amount: str) -> dict:
+    def unstake_asset(self, asset: str, amount: str, method: str) -> dict:
         '''https://docs.kraken.com/rest/#operation/unstake'''
         params = {
             'asset': asset,
-            'amount': str(amount)
+            'amount': amount
         }
         return self._request('POST', '/private/Unstake', params=params)
 
@@ -30,5 +30,5 @@ class StakingData(KrakenBaseRestAPI):
 
     def list_staking_transactions(self) -> dict:
         '''https://docs.kraken.com/rest/#operation/getStakingTransactions'''
-        return self._request('POST', '/private/Transactions')
+        return self._request('POST', '/private/Staking/Transactions')
 

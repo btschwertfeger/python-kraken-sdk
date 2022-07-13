@@ -1,9 +1,9 @@
-from market.market import MarketData
-from trade.trade import TradeData
-from user.user import UserData
-from funding.funding import FundingData
-from staking.staking import StakingData
-from ws_client.ws_client import WsClientData
+from kraken.market.market import MarketData
+from kraken.trade.trade import TradeData
+from kraken.user.user import UserData
+from kraken.funding.funding import FundingData
+from kraken.staking.staking import StakingData
+from kraken.ws_client.ws_client import WsClientData
 
 class User(UserData):
     pass

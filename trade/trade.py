@@ -3,20 +3,24 @@ from kraken.base_request.base_request import KrakenBaseRestAPI
 
 class TradeData(KrakenBaseRestAPI):
 
-    def create_order(self, ordertype: str, side: str, volume: str, pair: str, price: str=None, price2: str=None, trigger: str='last', leverage: str=None, stp_type: str='cancel-newest', oflags: [str]=None, timeinforce: str='GTC', starttm: str='0', expiretm: str='0', close_ordertype: str=None, close_price: str=None, close_price2: str=None, deadline: str=None, validate: bool=False, userref: int=None) -> dict:
+    def create_order(self, ordertype: str, side: str, volume: str, pair: str, price: str=None, price2: str=None, trigger: str=None, leverage: str=None, stp_type: str='cancel-newest', oflags: [str]=None, timeinforce: str=None, starttm: str='0', expiretm: str='0', close_ordertype: str=None, close_price: str=None, close_price2: str=None, deadline: str=None, validate: bool=False, userref: int=None) -> dict:
         '''https://docs.kraken.com/rest/#operation/addOrder'''
         params = {
             'ordertype': str(ordertype),
             'type': str(side),
             'volume': str(volume),
             'pair': str(pair),
-            'trigger': trigger,
             'stp_type': stp_type,
-            'timeinforce': timeinforce,
             'starttm': starttm,
             'expiretm': expiretm,
             'validate': validate
         }
+        if trigger != None:
+            if ordertype in ['stop-loss', 'stop-loss-limit', 'take-profit-limit', 'take-profit-limit']:
+                if timeinforce != None: params['trigger'] = trigger
+                else: raise ValueError(f'Cannot use trigger {trigger} and timeinforce {timeinforce} together')
+            else: raise ValueError(f'Cannot use trigger on ordertype {ordertype}')
+        elif timeinforce != None: params['timeinforce'] = timeinforce
         if price != None: params['price'] = str(price)
         if price2 != None: params['price2'] = str(price2)
         if leverage != None: params['leverage'] = str(leverage)
@@ -27,7 +31,7 @@ class TradeData(KrakenBaseRestAPI):
         return self._request('POST', '/private/AddOrder', params=params)
 
 
-    def create_order_batch(self, orders: dict, pair: str, deadline: str=None, validate: bool=False) -> dict:
+    def create_order_batch(self, orders: [dict], pair: str, deadline: str=None, validate: bool=False) -> dict:
         '''https://docs.kraken.com/rest/#operation/addOrderBatch'''
         params = {
             'orders': orders,
@@ -35,7 +39,7 @@ class TradeData(KrakenBaseRestAPI):
             'validate': validate
         }
         if deadline != None: params['deadline'] = deadline
-        return self._request('POST', '/private/AddOrderbatch', params=params, do_json=True)
+        return self._request('POST', '/private/AddOrderBatch', params=params, do_json=True)
 
     def edit_order(self, txid, pair: str, volume: str=None, price: str=None, price2: str=None, oflags=None, deadline: str=None, cancel_response: bool=None, validate: str=False, userref: int=None) -> dict:
         '''https://docs.kraken.com/rest/#operation/editOrder'''
@@ -57,7 +61,7 @@ class TradeData(KrakenBaseRestAPI):
         params = { 'txid': txid }
         return self._request('POST', '/private/CancelOrder', params=params)
 
-    def cancel_all_prders(self) -> dict:
+    def cancel_all_orders(self) -> dict:
         '''https://docs.kraken.com/rest/#operation/cancelAllOrders'''
         return self._request('POST', '/private/CancelAll')
 
