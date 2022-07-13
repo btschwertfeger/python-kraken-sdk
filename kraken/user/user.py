@@ -1,4 +1,4 @@
-from kraken.base_request.base_request import KrakenBaseRestAPI
+from kraken.base_api.base_api import KrakenBaseRestAPI
 
 class UserData(KrakenBaseRestAPI):
 

@@ -1,15 +1,17 @@
 import os, sys
-
-sys.path.append('/Users/benjamin/repositories/Trading/')
-
 import asyncio
 import logging
 import logging.config
 from dotenv import dotenv_values
 from datetime import datetime
 
-from kraken.client import WsClient
-from kraken.websocket.websocket import KrakenWsClient
+try:
+    from kraken.client import WsClient
+    from kraken.websocket.websocket import KrakenWsClient
+except:
+    sys.path.append('/Users/benjamin/repositories/Trading/python-kraken-sdk')
+    from kraken.client import WsClient
+    from kraken.websocket.websocket import KrakenWsClient
 
 logging.basicConfig(
     format='%(asctime)s %(module)s,line: %(lineno)d %(levelname)8s | %(message)s',

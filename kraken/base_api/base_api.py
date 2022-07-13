@@ -11,9 +11,6 @@ import time
 from uuid import uuid1
 import urllib.parse
 
-__version__ = "v1.0.0"
-version = __version__
-
 class KrakenBaseRestAPI(object):
 
     def __init__(self, key: str='', secret: str='', url: str='', futures: bool=False):

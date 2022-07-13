@@ -1,9 +1,29 @@
-from kraken.base_request.base_request import KrakenBaseRestAPI
-
+from kraken.base_api.base_api import KrakenBaseRestAPI
 
 class TradeData(KrakenBaseRestAPI):
 
-    def create_order(self, ordertype: str, side: str, volume: str, pair: str, price: str=None, price2: str=None, trigger: str=None, leverage: str=None, stp_type: str='cancel-newest', oflags: [str]=None, timeinforce: str=None, starttm: str='0', expiretm: str='0', close_ordertype: str=None, close_price: str=None, close_price2: str=None, deadline: str=None, validate: bool=False, userref: int=None) -> dict:
+    def create_order(
+        self,
+        ordertype: str,
+        side: str,
+        volume: str,
+        pair: str,
+        price: str=None,
+        price2: str=None,
+        trigger: str=None,
+        leverage: str=None,
+        stp_type: str='cancel-newest',
+        oflags: [str]=None,
+        timeinforce: str=None,
+        starttm: str='0',
+        expiretm: str='0',
+        close_ordertype: str=None,
+        close_price: str=None,
+        close_price2: str=None,
+        deadline: str=None,
+        validate: bool=False,
+        userref: int=None
+    ) -> dict:
         '''https://docs.kraken.com/rest/#operation/addOrder'''
         params = {
             'ordertype': str(ordertype),

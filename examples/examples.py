@@ -1,13 +1,14 @@
 import os, sys
-
-sys.path.append('/Users/benjamin/repositories/Trading/')
-
 import logging
 import logging.config
 from dotenv import dotenv_values
 from datetime import datetime
 
-from kraken.client import User, Market, Trade, Funding, Staking
+try:
+    from kraken.client import User, Market, Trade, Funding, Staking
+except:
+    sys.path.append('/Users/benjamin/repositories/Trading/python-kraken-sdk')
+    from kraken.client import User, Market, Trade, Funding, Staking
 
 
 logging.basicConfig(

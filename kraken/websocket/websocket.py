@@ -40,7 +40,7 @@ class ConnectWebsocket:
 
     async def _run(self, event: asyncio.Event):
         keep_alive = True
-        self._last_ping = time.time()  # record last ping
+        self._last_ping = time.time()
         self._ws_details = None
         self._ws_details = self._client.get_ws_token(self.private)
         logging.debug(self._ws_details)
@@ -130,6 +130,7 @@ class ConnectWebsocket:
         return round(random() * min(self.MAX_RECONNECT_SECONDS, (2 ** attempts) - 1) + 1)
 
     def _get_ws_pingtimeout(self):
+        '''TODO: add some good ping timeout'''
         return 10
 
     async def send_ping(self):
@@ -151,7 +152,6 @@ class ConnectWebsocket:
             if private and 'subscription' in msg: msg['subscription']['token'] = self._ws_details['token']
             elif private: msg['token'] = self._ws_details['token']
             await self._socket.send(json.dumps(msg))
-
 
 
 class KrakenWsClient(object):
@@ -203,7 +203,6 @@ class KrakenWsClient(object):
             self._pub_conn._subscriptions.append(payload)
             await self._pub_conn.send_message(payload, private=private)
 
-
     async def unsubscribe(self, private: bool=False, pair: [str]=None, subscription: dict=None, **kwargs) -> None:
         '''Unsubscribe from a topic'''
 
@@ -219,6 +218,6 @@ class KrakenWsClient(object):
             await self._pub_conn.send_message(payload, private=private)
 
     @staticmethod
-    def get_available_subscription() -> [str]:
+    def get_available_subscriptions() -> [str]:
         '''https://docs.kraken.com/websockets/#message-subscribe'''
         return [ 'book', 'ohlc', 'openOrders', 'ownTrades', 'spread', 'ticker', 'trade', '*']
