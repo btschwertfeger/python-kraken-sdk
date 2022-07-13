@@ -1,8 +1,100 @@
 # Kraken-Python-SDK
 
+This is an unofficial Python collection of REST and websocket clients to interact with the Kraken exchange API. 
 
-https://docs.kraken.com/rest/
+There is no guarantee that this software will work flawlessly at this or later times. Everyone has to look at the underlying source code themselves and consider whether this is appropriate for their own use.
 
+Of course, no responsibility is taken for possible profits or losses. No one should be motivated or tempted to invest his assets in speculative forms of investment. 
+
+## Installation
+
+
+## Usage
+#### REST
+... can be found in `/examples/examples.py`
+```python
+from kraken.client import User, Market, Trade, Funding, Staking
+
+def main() -> None:
+    key = 'kraken pub key'
+    secret = 'kraken secret key'
+
+    user = User(key=key, secret=secret)
+    print(user.get_account_balance())
+    print(user.get_open_orders())
+
+    market = Market(key=key, secret=secret)
+    print(market.get_ticker(pair='BTCUSD'))
+    
+    trade = Trade(key=key, secret=secret)
+    print(trade.create_order(
+         ordertype='limit',
+         side='buy',
+         volume=1,
+         pair='BTC/EUR',
+         price=20000
+    ))
+    
+    funding = Funding(key=key, secret=secret)
+    print(funding.withdraw_funds(asset='DOT', key='MyPolkadotWallet', amount=200))
+    print(funding.cancel_widthdraw(asset='DOT', refid='<some id>'))
+
+    staking = Staking(key=key, secret=secret)
+    print(staking.list_stakeable_assets())
+    print(staking.stake_asset(asset='DOT', amount=20, method='polkadot-staked'))
+
+if __name__ == '__main__':
+    main()
+```
+
+#### Websockets
+... can be found in `/examples/ws_examples.py`
+```python
+import asyncio
+from kraken.client import WsClient
+from kraken.websocket.websocket import KrakenWsClient
+
+async def main() -> None:
+
+    key = 'kraken public key'
+    secret = 'kraken secret key'
+
+    class Bot(KrakenWsClient):
+
+        async def on_message(self, msg) -> None:
+            if 'event' in msg:
+                if msg['event'] in ['pong', 'heartbeat': return
+
+            print(f'--->{msg}')
+            # await self._client.create_order(
+            #     ordertype='limit',
+            #     side='buy',
+            #     pair='BTC/EUR',
+            #     price=20000,
+            #     volume=1
+            # )
+            # ... it is also possible to call regular REST endpoints
+            # but using the websocket messages is more efficient
+
+    bot = Bot(WsClient(key=key, secret=secret))
+    await bot.subscribe(pair=['BTC/EUR'], subscription={ 'name': 'ticker' }, private=False)
+    await bot.subscribe(subscription={ 'name': 'ownTrades' }, private=True)
+
+    while True: await asyncio.sleep(6)
+
+if __name__ == '__main__':
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(main())
+```
+
+## What else?
+#### Logging
+Logging messages are enabled, so you can configure your own logger to track every event. One example can be found in `/examples/examples.py`.
+
+
+## References
+- https://docs.kraken.com/websockets
+- https://docs.kraken.com/rest/
 
 ## Notes:
 - Triggers: stop-loss, stop-loss-limit, take-profit and take-profit-limit orders.
