@@ -8,7 +8,7 @@ import logging
 import traceback
 
 
-class ConnectWebsocket:
+class ConnectSpotWebsocket:
     MAX_RECONNECTS = 5
     MAX_RECONNECT_SECONDS = 60
 
@@ -154,7 +154,7 @@ class ConnectWebsocket:
             await self._socket.send(json.dumps(msg))
 
 
-class KrakenWsClient(object):
+class KrakenSpotWSClient(object):
     '''https://docs.kraken.com/websockets/#overview'''
 
     PROD_ENV_URL = 'ws.kraken.com'
@@ -166,14 +166,14 @@ class KrakenWsClient(object):
         self._callback = callback
         self._client = client
 
-        self._pub_conn = ConnectWebsocket(
+        self._pub_conn = ConnectSpotWebsocket(
             client=self._client,
             endpoint=self.PROD_ENV_URL if not beta else BETA_ENV_URL,
             callback=self.on_message,
             private=False
         )
 
-        self._priv_conn = ConnectWebsocket(
+        self._priv_conn = ConnectSpotWebsocket(
              client=self._client,
              endpoint=self.AUTH_PROD_ENV_URL if not beta else AUTH_BETA_ENV_URL,
              callback=self.on_message,

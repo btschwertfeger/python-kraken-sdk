@@ -6,12 +6,12 @@ from dotenv import dotenv_values
 from datetime import datetime
 
 try:
-    from kraken.client import WsClient
-    from kraken.websocket.websocket import KrakenWsClient
+    from kraken.spot.client import WsClient
+    from kraken.spot.websocket.websocket import KrakenSpotWSClient
 except:
     sys.path.append('/Users/benjamin/repositories/Trading/python-kraken-sdk')
-    from kraken.client import WsClient
-    from kraken.websocket.websocket import KrakenWsClient
+    from kraken.spot.client import WsClient
+    from kraken.spot.websocket.websocket import KrakenSpotWSClient
 
 logging.basicConfig(
     format='%(asctime)s %(module)s,line: %(lineno)d %(levelname)8s | %(message)s',
@@ -29,7 +29,7 @@ async def main() -> None:
     secret = dotenv_values('.env')['SECRET_KEY']
 
     # ___Custom_Trading_Bot______________
-    class Bot(KrakenWsClient):
+    class Bot(KrakenSpotWSClient):
 
         async def on_message(self, event) -> None:
             if 'event' in event:
@@ -55,5 +55,4 @@ async def main() -> None:
     while True: await asyncio.sleep(6)
 
 if __name__ == '__main__':
-    loop = asyncio.get_event_loop()
-    loop.run_until_complete(main())
+    asyncio.get_event_loop().run_until_complete(main())

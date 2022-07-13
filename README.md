@@ -20,7 +20,7 @@ python3 -m pip install python-kraken-sdk
 #### REST
 ... can be found in `/examples/examples.py`
 ```python
-from kraken.client import User, Market, Trade, Funding, Staking
+from kraken.spot.client import User, Market, Trade, Funding, Staking
 
 def main() -> None:
     key = 'kraken pub key'
@@ -58,21 +58,21 @@ if __name__ == '__main__':
 ... can be found in `/examples/ws_examples.py`
 ```python
 import asyncio
-from kraken.client import WsClient
-from kraken.websocket.websocket import KrakenWsClient
+from kraken.spot.client import WsClient
+from kraken.spot.websocket.websocket import KrakenSpotWSClient
 
 async def main() -> None:
 
     key = 'kraken public key'
     secret = 'kraken secret key'
 
-    class Bot(KrakenWsClient):
+    class Bot(KrakenSpotWSClient):
 
         async def on_message(self, msg) -> None:
             if 'event' in msg:
                 if msg['event'] in ['pong', 'heartbeat': return
 
-            print(f'--->{msg}')
+            print(msg)
             # await self._client.create_order(
             #     ordertype='limit',
             #     side='buy',
@@ -90,8 +90,7 @@ async def main() -> None:
     while True: await asyncio.sleep(6)
 
 if __name__ == '__main__':
-    loop = asyncio.get_event_loop()
-    loop.run_until_complete(main())
+    asyncio.get_event_loop().run_until_complete(main())
 ```
 
 ## What else?
@@ -102,6 +101,6 @@ Logging messages are enabled, so you can configure your own logger to track ever
 ## References
 - https://docs.kraken.com/websockets
 - https://docs.kraken.com/rest/
-
-## Notes:
-- Triggers: stop-loss, stop-loss-limit, take-profit and take-profit-limit orders.
+- https://support.kraken.com/hc/en-us/sections/360012894412-Futures-API
+<!-- ## Notes: -->
+<!-- - Triggers: stop-loss, stop-loss-limit, take-profit and take-profit-limit orders. -->

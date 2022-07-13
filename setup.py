@@ -36,7 +36,6 @@ try:
 except FileNotFoundError:
     long_description = DESCRIPTION
 
-# Load the package's __version__.py module as a dictionary.
 about = {}
 if not VERSION:
     project_slug = 'kraken'
@@ -47,14 +46,13 @@ else:
     exit()
 
 class UploadCommand(Command):
-    """Support setup.py upload."""
+    '''Support setup.py upload.'''
 
     description = 'Build and publish the package.'
     user_options = []
 
     @staticmethod
     def status(s):
-        """Prints things in bold."""
         print(f'\033[1m{s}\033[0m')
 
     def initialize_options(self):
@@ -83,14 +81,13 @@ class UploadCommand(Command):
         sys.exit()
 
 class TestUploadCommand(Command):
-    """Support setup.py test upload."""
+    '''Support setup.py test upload.'''
 
     description = 'Build and test publishing the package.'
     user_options = []
 
     @staticmethod
     def status(s):
-        """Prints things in bold."""
         print(f'\033[1m{s}\033[0m')
 
     def initialize_options(self):

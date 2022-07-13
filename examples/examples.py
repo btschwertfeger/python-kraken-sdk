@@ -5,10 +5,10 @@ from dotenv import dotenv_values
 from datetime import datetime
 
 try:
-    from kraken.client import User, Market, Trade, Funding, Staking
+    from kraken.spot.client import User, Market, Trade, Funding, Staking
 except:
     sys.path.append('/Users/benjamin/repositories/Trading/python-kraken-sdk')
-    from kraken.client import User, Market, Trade, Funding, Staking
+    from kraken.spot.client import User, Market, Trade, Funding, Staking
 
 
 logging.basicConfig(
