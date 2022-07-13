@@ -1,7 +1,7 @@
 from kraken.base_api.base_api import KrakenBaseRestAPI
 import logging
 
-class WsClientData(KrakenBaseRestAPI):
+class SpotWsClientCl(KrakenBaseRestAPI):
 
     websocket_pub = None
     websocket_priv = None

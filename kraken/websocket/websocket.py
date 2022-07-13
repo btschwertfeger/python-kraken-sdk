@@ -166,7 +166,6 @@ class KrakenWsClient(object):
         self._callback = callback
         self._client = client
 
-
         self._pub_conn = ConnectWebsocket(
             client=self._client,
             endpoint=self.PROD_ENV_URL if not beta else BETA_ENV_URL,

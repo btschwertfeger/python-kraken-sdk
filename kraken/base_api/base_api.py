@@ -13,12 +13,13 @@ import urllib.parse
 
 class KrakenBaseRestAPI(object):
 
-    def __init__(self, key: str='', secret: str='', url: str='', futures: bool=False):
+    def __init__(self, key: str='', secret: str='', url: str='', futures: bool=False, sandbox: bool=False):
 
         self._api_v = ''
         if url: self.url = url
         elif futures:
-            self.url = 'https://futures.kraken.com/derivatives'
+            if sandbox: self.url = 'https://demo-futures.kraken.com/derivatives'
+            else: self.url = 'https://futures.kraken.com/derivatives'
             self._api_v = '/api/v3'
             raise ValueError('Futures endpoints and clients not implemented yet.')
         else:
@@ -54,7 +55,7 @@ class KrakenBaseRestAPI(object):
         headers['User-Agent'] = 'Kraken-Python-SDK'
         url = f'{self.url}{self._api_v}{uri}'
 
-        logging.info(f'Request: {url}')
+        #logging.info(f'Request: {url}')
 
         if method in ['GET', 'DELETE']:
             response_data = requests.request(method, url, headers=headers, timeout=timeout)
@@ -64,7 +65,7 @@ class KrakenBaseRestAPI(object):
             else:
                 return self.check_response_data(requests.request(method, url, headers=headers, data=params, timeout=timeout), return_raw)
 
-    def get_kraken_signature(self, urlpath, data):
+    def get_kraken_signature(self, urlpath: str, data: dict):
         postdata = urllib.parse.urlencode(data)
         encoded = (str(data['nonce']) + postdata).encode()
         message = urlpath.encode() + hashlib.sha256(encoded).digest()
@@ -85,8 +86,7 @@ class KrakenBaseRestAPI(object):
                 if len(data.get('error')) == 0:
                     if data.get('result'): return data['result']
                     else: return data
-                else:
-                    raise Exception(f'{response_data.status_code}-{response_data.text}')
+                else: raise Exception(f'{response_data.status_code}-{response_data.text}')
         else: raise Exception(f'{response_data.status_code}-{response_data.text}')
 
     @property

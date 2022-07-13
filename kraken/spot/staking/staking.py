@@ -1,6 +1,6 @@
 from kraken.base_api.base_api import KrakenBaseRestAPI
 
-class StakingData(KrakenBaseRestAPI):
+class StakingClient(KrakenBaseRestAPI):
 
     def stake_asset(self, asset: str, amount: str, method: str) -> dict:
         '''https://docs.kraken.com/rest/#operation/stake'''

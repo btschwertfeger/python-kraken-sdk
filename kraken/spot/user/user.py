@@ -1,6 +1,6 @@
 from kraken.base_api.base_api import KrakenBaseRestAPI
 
-class UserData(KrakenBaseRestAPI):
+class UserClient(KrakenBaseRestAPI):
 
     def get_account_balance(self) -> dict:
         '''https://docs.kraken.com/rest/#operation/getAccountBalance'''

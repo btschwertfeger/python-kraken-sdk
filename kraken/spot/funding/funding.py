@@ -1,7 +1,7 @@
 from kraken.base_api.base_api import KrakenBaseRestAPI
 
 
-class FundingData(KrakenBaseRestAPI):
+class FundingClient(KrakenBaseRestAPI):
 
     def get_deposit_methods(self, asset: str) -> dict:
         '''https://docs.kraken.com/rest/#operation/getDepositMethods'''

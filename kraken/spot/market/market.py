@@ -1,8 +1,6 @@
 from kraken.base_api.base_api import KrakenBaseRestAPI
 
-
-api_version = 0
-class MarketData(KrakenBaseRestAPI):
+class MarketClient(KrakenBaseRestAPI):
 
     def get_assets(self, assets=None, aclass=None) -> dict:
         '''https://docs.kraken.com/rest/#operation/getAssetInfo'''

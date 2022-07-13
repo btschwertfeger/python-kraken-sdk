@@ -1,6 +1,6 @@
 from kraken.base_api.base_api import KrakenBaseRestAPI
 
-class TradeData(KrakenBaseRestAPI):
+class TradeClient(KrakenBaseRestAPI):
 
     def create_order(
         self,
