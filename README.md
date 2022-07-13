@@ -1,4 +1,9 @@
-# Kraken-Python-SDK
+# Welcome to python-kraken-sdk
+[![Generic badge](https://img.shields.io/badge/license-MIT-green.svg)](https://shields.io/)
+[![Generic badge](https://img.shields.io/badge/python-3.7+-blue.svg)](https://shields.io/)
+[![PyPI download month](https://img.shields.io/pypi/dm/python-kraken-sdk.svg)](https://pypi.python.org/pypi/python-kraken-sdk)
+[![GitHub](https://badgen.net/badge/icon/github?icon=github&label)](https://github.com/btschwertfeger/python-kraken-sdk)
+
 
 This is an unofficial Python collection of REST and websocket clients to interact with the Kraken exchange API. 
 
@@ -7,7 +12,9 @@ There is no guarantee that this software will work flawlessly at this or later t
 Of course, no responsibility is taken for possible profits or losses. No one should be motivated or tempted to invest his assets in speculative forms of investment. 
 
 ## Installation
-
+```bash
+python3 -m pip install python-kraken-sdk
+```
 
 ## Usage
 #### REST
