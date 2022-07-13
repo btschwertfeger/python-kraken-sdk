@@ -48,6 +48,7 @@ async def main() -> None:
 
     bot = Bot(WsClient(key=key, secret=secret))
     await bot.subscribe(pair=['BTC/EUR'], subscription={ 'name': 'ticker' }, private=False)
+    await bot.subscribe(subscription={ 'name': 'ownTrades' }, private=True)
 
     while True: await asyncio.sleep(6)
 
