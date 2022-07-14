@@ -102,5 +102,7 @@ Logging messages are enabled, so you can configure your own logger to track ever
 - https://docs.kraken.com/websockets
 - https://docs.kraken.com/rest/
 - https://support.kraken.com/hc/en-us/sections/360012894412-Futures-API
-<!-- ## Notes: -->
+
+## Notes:
+- Pull requests will be ignored until the owner finished the core idea
 <!-- - Triggers: stop-loss, stop-loss-limit, take-profit and take-profit-limit orders. -->
