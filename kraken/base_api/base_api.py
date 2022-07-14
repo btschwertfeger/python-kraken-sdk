@@ -20,7 +20,7 @@ class KrakenBaseRestAPI(object):
         elif futures:
             if sandbox: self.url = 'https://demo-futures.kraken.com'
             else: self.url = 'https://futures.kraken.com'
-            raise ValueError('Futures endpoints and clients not implemented yet.')
+            # raise ValueError('Futures endpoints and clients not implemented yet.')
         else:
             self.url = 'https://api.kraken.com'
             self._api_v = '/0'
