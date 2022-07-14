@@ -14,5 +14,21 @@ logging.getLogger().setLevel(logging.INFO)
 logging.getLogger('requests').setLevel(logging.WARNING)
 logging.getLogger('urllib3').setLevel(logging.WARNING)
 
-# print(Market().get_ohlc(price_type='trade', symbol='PI_XBTUSD', interval='5m'))
-print(Market().get_orderbook(symbol='fi_xbtusd_180615'))
+
+def main() -> None:
+
+    market = Market()
+
+    # print(market.get_ohlc(price_type='trade', symbol='PI_XBTUSD', interval='5m'))
+    # print(market.get_fee_schedules())
+    # print(market.get_orderbook(symbol='fi_xbtusd_180615'))
+    # print(market.get_tickers())
+    # print(market.get_instruments())
+    # print(market.get_history(symbol='pi_xbtusd'))
+    # print(market.get_historical_funding_rates(symbol='PI_XBTUSD'))
+    # print(market.get_market_history_execution(symbol='pi_xbtusd'))
+    # print(market.get_market_history_mark_price(symbol='pi_xbtusd'))
+    # print(market.get_market_history_orders(symbol='pi_xbtusd'))
+
+if __name__ == '__main__':
+    main()

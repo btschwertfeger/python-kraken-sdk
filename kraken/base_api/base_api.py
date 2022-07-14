@@ -18,10 +18,9 @@ class KrakenBaseRestAPI(object):
         self._api_v = ''
         if url: self.url = url
         elif futures:
-            if sandbox: self.url = 'https://demo-futures.kraken.com/derivatives'
-            else: self.url = 'https://futures.kraken.com/derivatives'
-            self._api_v = '/api/v3'
-            raise ValueError('Futures endpoints and clients not implemented yet.')
+            if sandbox: self.url = 'https://demo-futures.kraken.com'
+            else: self.url = 'https://futures.kraken.com'
+            # raise ValueError('Futures endpoints and clients not implemented yet.')
         else:
             self.url = 'https://api.kraken.com'
             self._api_v = '/0'
@@ -32,7 +31,6 @@ class KrakenBaseRestAPI(object):
     def _request(self, method: str, uri: str, timeout: int=10, auth: bool=True, params: dict={}, do_json: bool=False, return_raw: bool=False):
         uri_path = uri
         data_json = ''
-        params['nonce'] = str(int(time.time()*1000)) # generate nonce
 
         if method.upper() in ['GET', 'DELETE']:
             if params:
@@ -46,6 +44,7 @@ class KrakenBaseRestAPI(object):
         headers = {}
         if auth:
             if not self.key or self.key == '' or not self.secret or self.secret == '': raise ValueError('Missing credentials')
+            params['nonce'] = str(int(time.time()*1000)) # generate nonce
             headers = {
                 'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8',
                 'API-Key': self.key,
@@ -55,10 +54,10 @@ class KrakenBaseRestAPI(object):
         headers['User-Agent'] = 'Kraken-Python-SDK'
         url = f'{self.url}{self._api_v}{uri}'
 
-        #logging.info(f'Request: {url}')
+        # logging.info(f'Request: {url}')
 
         if method in ['GET', 'DELETE']:
-            response_data = requests.request(method, url, headers=headers, timeout=timeout)
+            return self.check_response_data(requests.request(method, url, headers=headers, timeout=timeout), return_raw)
         else:
             if do_json:
                 return self.check_response_data(requests.request(method, url, headers=headers, json=params, timeout=timeout), return_raw)
@@ -83,10 +82,10 @@ class KrakenBaseRestAPI(object):
             except ValueError:
                 raise Exception(response_data.content)
             else:
-                if len(data.get('error')) == 0:
-                    if data.get('result'): return data['result']
-                    else: return data
-                else: raise Exception(f'{response_data.status_code}-{response_data.text}')
+                if 'error' in data:
+                    if len(data.get('error')) == 0 and data.get('result'): return data['result']
+                    else: raise Exception(f'{response_data.status_code}-{response_data.text}')
+                else: return data
         else: raise Exception(f'{response_data.status_code}-{response_data.text}')
 
     @property

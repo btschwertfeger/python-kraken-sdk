@@ -39,7 +39,7 @@ class MarketClient(KrakenBaseRestAPI):
         '''https://support.kraken.com/hc/en-us/articles/360061979852-Historical-Funding-Rates'''
         return self._request('GET', '/derivatives/api/v4/historicalfundingrates', params={ 'symbol': symbol }, auth=False)
 
-    def get_market_history_execution(self, symbol: str, since int=None, before: int=None, sort: str=None, continuationToken: str=None) -> dict:
+    def get_market_history_execution(self, symbol: str, since: int=None, before: int=None, sort: str=None, continuationToken: str=None) -> dict:
         '''https://support.kraken.com/hc/en-us/articles/4401755685268-Market-History-Executions'''
         params = {}
         if since != None: params['since'] = since
@@ -55,13 +55,13 @@ class MarketClient(KrakenBaseRestAPI):
         if before != None: params['before'] = before
         if sort != None: params['sort'] = sort
         if continuationToken != None: params['continuationToken'] = continuationToken
-        return self._request('GET'. f'/api/history/v2/market/{symbol}/price', params=params, auth=False)
+        return self._request('GET', f'/api/history/v2/market/{symbol}/price', params=params, auth=False)
 
-     def get_market_history_orders(self, symbol: str, since: int=None, before: int=None, sort: str=None, continuationToken: str=None) -> dict:
-         '''https://support.kraken.com/hc/en-us/articles/4401755906452-Market-History-Orders'''
+    def get_market_history_orders(self, symbol: str, since: int=None, before: int=None, sort: str=None, continuationToken: str=None) -> dict:
+        '''https://support.kraken.com/hc/en-us/articles/4401755906452-Market-History-Orders'''
         params = {}
         if since != None: params['since'] = since
         if before != None: params['before'] = before
         if sort != None: params['sort'] = sort
         if continuationToken != None: params['continuationToken'] = continuationToken
-        return self._request('GET'. f'/api/history/v2/market/{symbol}/orders', params=params, auth=False)
+        return self._request('GET', f'/api/history/v2/market/{symbol}/orders', params=params, auth=False)
