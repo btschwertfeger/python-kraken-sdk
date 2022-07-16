@@ -1,6 +1,6 @@
 from kraken.base_api.base_api import KrakenBaseRestAPI
 
-class MarketClient(KrakenBaseRestAPI):
+class FuturesMarketClient(KrakenBaseRestAPI):
 
     def __init__(self, key: str='', secret: str='', url: str='', futures: bool=True, sandbox: bool=False) -> None:
         super().__init__(key=key, secret=secret, url=url, futures=futures, sandbox=sandbox)

@@ -1,9 +1,15 @@
-from kraken.futures.market.market import MarketClient
-from kraken.futures.trade.trade import TradeClient
+from kraken.futures.market.market import FuturesMarketClient
+from kraken.futures.trade.trade import FuturesTradeClient
+from kraken.futures.user.user import FuturesUserClient
 
-class Trade(TradeClient):
+
+class FuturesTrade(FuturesTradeClient):
     pass
 
-class Market(MarketClient):
+class FuturesUser(FuturesUserClient):
     pass
+
+class FuturesMarket(FuturesMarketClient):
+    pass
+
 
