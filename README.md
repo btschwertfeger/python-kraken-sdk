@@ -70,7 +70,7 @@ async def main() -> None:
 
         async def on_message(self, msg) -> None:
             if 'event' in msg:
-                if msg['event'] in ['pong', 'heartbeat': return
+                if msg['event'] in ['pong', 'heartbeat']: return
 
             print(msg)
             # await self._client.create_order(
