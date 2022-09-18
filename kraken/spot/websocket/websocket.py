@@ -9,7 +9,7 @@ import traceback
 
 
 class ConnectSpotWebsocket:
-    MAX_RECONNECTS = 5
+    MAX_SEND_MESSAGE_RETRIES = 5
     MAX_RECONNECT_SECONDS = 60
 
     def __init__(self, client, endpoint: str, callback=None, private: bool=False, beta: bool=False):
@@ -29,6 +29,8 @@ class ConnectSpotWebsocket:
         self._subscriptions = []
 
         asyncio.ensure_future(self.run_forever(), loop=asyncio.get_running_loop())
+
+        self.connected = False
 
     @property
     def subscriptions(self) -> list:
@@ -51,6 +53,7 @@ class ConnectSpotWebsocket:
             if self.private: self._client.websocket_priv = self
             else: self._client.websocket_pub = self
 
+            self.connected = True
             self._socket = socket
             self._reconnect_num = 0
 
@@ -85,9 +88,9 @@ class ConnectSpotWebsocket:
 
         self._reconnect_num += 1
         reconnect_wait = self._get_reconnect_wait(self._reconnect_num)
-        logging.info(f'asyncio sleep reconnect_wait={reconnect_wait} s reconnect_num={self._reconnect_num}')
+        logging.debug(f'asyncio sleep reconnect_wait={reconnect_wait} s reconnect_num={self._reconnect_num}')
         await asyncio.sleep(reconnect_wait)
-        logging.info(f'asyncio sleep ok')
+        logging.debug(f'asyncio sleep done')
         event = asyncio.Event()
 
         tasks = {
@@ -143,9 +146,9 @@ class ConnectSpotWebsocket:
 
     async def send_message(self, msg, private: bool=False, retry_count: int=0):
         logging.info(f'send_message (private: {private}; tries: {retry_count}): {msg}')
-        if not self._socket:
-            if retry_count < self.MAX_RECONNECTS:
-                await asyncio.sleep(1)
+        if not self._socket: # if not connected
+            if retry_count < self.MAX_SEND_MESSAGE_RETRIES:
+                await asyncio.sleep(2)
                 await self.send_message(msg, private=private, retry_count=retry_count + 1)
         else:
             msg['reqid'] = int(time.time() * 1000)
@@ -165,7 +168,7 @@ class KrakenSpotWSClient(object):
     def __init__(self, client, callback=None, beta: bool=False):
         self._callback = callback
         self._client = client
-
+        
         self._pub_conn = ConnectSpotWebsocket(
             client=self._client,
             endpoint=self.PROD_ENV_URL if not beta else BETA_ENV_URL,

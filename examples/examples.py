@@ -38,7 +38,7 @@ def main() -> None:
     # print(user.get_orders_info(txid='someid')) # or txid='id1,id2,id3' or txid=['id1','id2']
     # print(user.get_trades_history())
     # print(user.get_trades_info(txid='someid'))
-    # print(user.get_open_positions())#txid='someid'
+    print(user.get_open_positions())#txid='someid'
     # print(user.get_ledgers_info())#asset='BTC' or asset='BTC,EUR' or asset=['BTC','EUR']
     # print(user.get_ledgers(id='LNBK7T-BLEFU-C6NGIS'))
     # print(user.get_trade_volume())#pair='BTC/EUR'

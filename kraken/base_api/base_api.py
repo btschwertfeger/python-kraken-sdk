@@ -54,7 +54,7 @@ class KrakenBaseRestAPI(object):
         headers['User-Agent'] = 'Kraken-Python-SDK'
         url = f'{self.url}{self._api_v}{uri}'
 
-        # logging.info(f'Request: {url}')
+        # logging.debug(f'Request to: {url}')
 
         if method in ['GET', 'DELETE']:
             return self.check_response_data(requests.request(method, url, headers=headers, timeout=timeout), return_raw)
@@ -75,7 +75,7 @@ class KrakenBaseRestAPI(object):
 
     @staticmethod
     def check_response_data(response_data, return_raw: bool=False):
-        if response_data.status_code == 200:
+        if response_data.status_code in [ '200', 200 ]:
             if return_raw: return response_data
             try:
                 data = response_data.json()
@@ -83,7 +83,7 @@ class KrakenBaseRestAPI(object):
                 raise Exception(response_data.content)
             else:
                 if 'error' in data:
-                    if len(data.get('error')) == 0 and data.get('result'): return data['result']
+                    if len(data.get('error')) == 0 and 'result' in data: return data['result']
                     else: raise Exception(f'{response_data.status_code}-{response_data.text}')
                 else: return data
         else: raise Exception(f'{response_data.status_code}-{response_data.text}')
