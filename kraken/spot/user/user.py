@@ -6,6 +6,33 @@ class UserClient(KrakenBaseRestAPI):
         '''https://docs.kraken.com/rest/#operation/getAccountBalance'''
         return self._request('POST', '/private/Balance')
 
+    def get_balances(self, currency: str) -> dict:
+        
+        balance = float(0)   
+        symbol = None
+        for symbol, value in self.get_account_balance().items():
+            if balance != float(0): break
+            elif sym in [ currency, f'Z{currency}', f'X{currency}' ]: 
+                balance = float(value) 
+                symbol = sym
+        
+        available_balance = balance
+
+        for txid, order in self.get_open_orders()['open'].items():
+            if sym in order['descr']['pair'][0:len(symbol)]:
+                if order['descr']['type'] == 'sell': 
+                    available_balance -= float(order['vol'])
+            elif sym in order['descr']['pair'][len(symbol):0]:
+                if order['descr']['type'] == 'buy': 
+                    available_balance -= float(order['vol']) * float(order['descr']['price'])
+        
+            return {
+                'symbol': symbol,
+                'balance': quote_balance,
+                'available_balance': base_balance
+            }
+
+
     def get_trade_balance(self, asset=None) -> dict:
         '''https://docs.kraken.com/rest/#operation/getTradeBalance'''
         params = {}
@@ -31,7 +58,7 @@ class UserClient(KrakenBaseRestAPI):
 
         return self._request('POST', '/private/ClosedOrders', params=params)
 
-    def get_orders_info(self, txid: str, trades: bool=False, userref: int=None) -> dict:
+    def get_orders_info(self, txid, trades: bool=False, userref: int=None) -> dict:
         '''https://docs.kraken.com/rest/#operation/getOrdersInfo'''
         params = {
             'txid': txid,
@@ -41,10 +68,10 @@ class UserClient(KrakenBaseRestAPI):
         if userref != None: params['userref'] = userref
         return self._request('POST', '/private/QueryOrders', params=params)
 
-    def get_trades_history(self, type: str='all', trades: bool=False, start: int=None, end: int=None, ofs: int=None) -> dict:
+    def get_trades_history(self, type_: str='all', trades: bool=False, start: int=None, end: int=None, ofs: int=None) -> dict:
         '''https://docs.kraken.com/rest/#operation/getTradeHistory'''
         params = {
-            'type': type,
+            'type': type_,
             'trades': trades
         }
         if start != None: params['start'] = start
@@ -77,7 +104,7 @@ class UserClient(KrakenBaseRestAPI):
         if type(params['asset']) == list: params['asset'] = self._to_str_list(asset)
         if start != None: params['start'] = start
         if end != None: params['end'] = end
-        if ofs != None: params['ofs'] = None
+        if ofs != None: params['ofs'] = ofs
         return self._request('POST', '/private/Ledgers', params=params)
 
     def get_ledgers(self, id=None, trades: bool=False) -> dict:
@@ -93,7 +120,7 @@ class UserClient(KrakenBaseRestAPI):
         if fee_info != None: params['fee-info'] = fee_info
         return self._request('POST', '/private/TradeVolume', params=params)
 
-    def request_export_report(self, report: str, description: str, format: str='CSV', fields: str='all', starttm: int=None, endtm: int=None) -> dict:
+    def request_export_report(self, report: str, description: str, format_: str='CSV', fields: str='all', starttm: int=None, endtm: int=None) -> dict:
         '''https://docs.kraken.com/rest/#operation/addExport
 
         ---- RESPONSE ----
@@ -102,7 +129,7 @@ class UserClient(KrakenBaseRestAPI):
         params = {
             'report': report,
             'description': description,
-            'format': format,
+            'format': format_,
             'fields': fields
         }
         if starttm != None: params['starttm'] = starttm

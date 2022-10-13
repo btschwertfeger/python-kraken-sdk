@@ -35,12 +35,12 @@ def main() -> None:
     # print(user.get_trade_balance())#asset='BTC'
     # print(user.get_open_orders())
     # print(user.get_closed_orders())
-    # print(user.get_orders_info(txid='someid')) # or txid='id1,id2,id3' or txid=['id1','id2']
+    print(user.get_orders_info(txid='ONNXNP-EHGRS-JTZIOR')) # or txid='id1,id2,id3' or txid=['id1','id2']
     # print(user.get_trades_history())
     # print(user.get_trades_info(txid='someid'))
-    print(user.get_open_positions())#txid='someid'
+    # print(user.get_open_positions())#txid='someid'
     # print(user.get_ledgers_info())#asset='BTC' or asset='BTC,EUR' or asset=['BTC','EUR']
-    # print(user.get_ledgers(id='LNBK7T-BLEFU-C6NGIS'))
+    # print(user.get_ledgers(id='LIORGR-33NXH-LBUS5Z'))
     # print(user.get_trade_volume())#pair='BTC/EUR'
 
     #____export_report____
@@ -61,7 +61,7 @@ def main() -> None:
     market = Market(key=key, secret=secret)
 
     # print(market.get_assets(assets=['XBT']))
-    # print(market.get_tradable_asset_pair(pair=['BTCEUR','DOTEUR']))
+    # print(market.get_tradable_asset_pair(pair=['DOTEUR']))
     # print(market.get_ticker(pair='BTCUSD'))
     # print(market.get_ohlc(pair='BTCUSD', interval=5))
     # print(market.get_order_book(pair='BTCUSDT', count=10))
@@ -127,8 +127,9 @@ def main() -> None:
     #     timeout=60
     # ))
 
+    # __ not working 
     # print(trade.cancel_order_batch(
-    #     orders=['OG5V2Y-RYKVL-DT3V3B','OP5V2Y-RYKVL-ET3V3B']
+    #     orders=['O2JLFP-VYFIW-35ZAAE', 'O523KJ-DO4M2-KAT243', 'OCDIAL-YC66C-DOF7HS', 'OVFPZ2-DA2GV-VBFVVI']
     # ))
 
 

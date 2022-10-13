@@ -104,13 +104,12 @@ class ConnectSpotWebsocket:
             for task in finished:
                 if task.exception():
                     exception_occur = True
-                    message = f'{task} got an exception {task.exception()}'
-                    message += f'\nTRACEBACK: {traceback.format_exc()}'
+                    message = f'{task} got an exception {task.exception()}\nTRACEBACK: {traceback.format_exc()}'
                     logging.warning(message)
-                    for pt in pending:
-                        logging.warning(f'pending {pt}')
-                        try: pt.cancel()
-                        except asyncio.CancelledError: logging.exception('CancelledError ')
+                    for process in pending:
+                        logging.warning(f'pending {process}')
+                        try: process.cancel()
+                        except asyncio.CancelledError: logging.exception('CancelledError')
                         logging.warning('cancel ok.')
                     await self._callback({ 'ws-error': message })
             if exception_occur: break

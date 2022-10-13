@@ -61,7 +61,18 @@ class TradeClient(KrakenBaseRestAPI):
         if deadline != None: params['deadline'] = deadline
         return self._request('POST', '/private/AddOrderBatch', params=params, do_json=True)
 
-    def edit_order(self, txid, pair: str, volume: str=None, price: str=None, price2: str=None, oflags=None, deadline: str=None, cancel_response: bool=None, validate: str=False, userref: int=None) -> dict:
+    def edit_order(self, 
+        txid: str, 
+        pair: str, 
+        volume: str=None, 
+        price: str=None, 
+        price2: str=None, 
+        oflags=None, 
+        deadline: str=None, 
+        cancel_response: bool=None, 
+        validate: str=False, 
+        userref: int=None
+    ) -> dict:
         '''https://docs.kraken.com/rest/#operation/editOrder'''
         params = {
             'txid': txid,
@@ -88,12 +99,11 @@ class TradeClient(KrakenBaseRestAPI):
     def cancel_all_orders_after_x(self, timeout: int) -> dict:
         '''https://docs.kraken.com/rest/#operation/cancelAllOrdersAfter'''
         params = { 'timeout': timeout }
-        return self._request('POST', '/private/CancelAllOrdersAfter')
+        return self._request('POST', '/private/CancelAllOrdersAfter', params=params)
 
     def cancel_order_batch(self, orders: [str]) -> dict:
         '''https://docs.kraken.com/rest/#operation/cancelOrderBatch'''
         params = { 'orders': orders }
-        return self._request('POST', '/private/CancelOrderBatch')
-
+        return self._request('POST', '/private/CancelOrderBatch', params=params)
 
 

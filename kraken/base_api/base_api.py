@@ -51,7 +51,7 @@ class KrakenBaseRestAPI(object):
                 'API-Sign': self.get_kraken_signature(f'{self._api_v}{uri}', params)
             }
 
-        headers['User-Agent'] = 'Kraken-Python-SDK'
+        headers['User-Agent'] = 'python-kraken-sdk'
         url = f'{self.url}{self._api_v}{uri}'
 
         # logging.debug(f'Request to: {url}')
@@ -84,7 +84,7 @@ class KrakenBaseRestAPI(object):
             else:
                 if 'error' in data:
                     if len(data.get('error')) == 0 and 'result' in data: return data['result']
-                    else: raise Exception(f'{response_data.status_code}-{response_data.text}')
+                    else: raise Exception(f'{response_data.status_code} - {response_data.text}')
                 else: return data
         else: raise Exception(f'{response_data.status_code}-{response_data.text}')
 
@@ -93,5 +93,6 @@ class KrakenBaseRestAPI(object):
         return ''.join([each for each in str(uuid1()).split('-')])
 
     def _to_str_list(self, a) -> str:
-        if type(a) == str: a = [a]
-        return ','.join(a)
+        if type(a) == str: return a
+        elif type(a) == list: return ','.join([i for i in a])
+        else: raise ValueError('a must be string or list of strings')
