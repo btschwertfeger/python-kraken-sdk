@@ -35,7 +35,7 @@ def main() -> None:
     # print(user.get_trade_balance())#asset='BTC'
     # print(user.get_open_orders())
     # print(user.get_closed_orders())
-    print(user.get_orders_info(txid='ONNXNP-EHGRS-JTZIOR')) # or txid='id1,id2,id3' or txid=['id1','id2']
+    print(user.get_orders_info(txid='OBQFM7-JNVKS-H3ULEH')) # or txid='id1,id2,id3' or txid=['id1','id2']
     # print(user.get_trades_history())
     # print(user.get_trades_info(txid='someid'))
     # print(user.get_open_positions())#txid='someid'
@@ -127,7 +127,7 @@ def main() -> None:
     #     timeout=60
     # ))
 
-    # __ not working 
+    # __ not working
     # print(trade.cancel_order_batch(
     #     orders=['O2JLFP-VYFIW-35ZAAE', 'O523KJ-DO4M2-KAT243', 'OCDIAL-YC66C-DOF7HS', 'OVFPZ2-DA2GV-VBFVVI']
     # ))
@@ -153,9 +153,6 @@ def main() -> None:
     # print(staking.list_stakeable_assets())
     # print(staking.get_pending_staking_transactions())
     # print(staking.list_staking_transactions())
-
-
-
 
 if __name__ == '__main__':
     main()
