@@ -1,16 +1,17 @@
-# Welcome to python-kraken-sdk
+# Welcome to the Python Kraken SDK! 🦑
 
 <div style="text-align: center">
 
 [![GitHub](https://badgen.net/badge/icon/github?icon=github&label)](https://github.com/btschwertfeger/python-kraken-sdk)
-[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-orange.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![Generic badge](https://img.shields.io/badge/python-3.7+-blue.svg)](https://shields.io/)
 [![Downloads](https://static.pepy.tech/personalized-badge/python-kraken-sdk?period=total&units=abbreviation&left_color=grey&right_color=orange&left_text=downloads)](https://pepy.tech/project/python-kraken-sdk)
-[![PyPI download month](https://img.shields.io/pypi/dm/python-kraken-sdk.svg)](https://pypi.python.org/pypi/python-kraken-sdk)
+
+<!-- [![PyPI download month](https://img.shields.io/pypi/dm/python-kraken-sdk.svg)](https://pypi.python.org/pypi/python-kraken-sdk) -->
 
 </div>
 
-This is an unofficial Python collection of REST and websocket clients to interact with the Kraken exchange API.
+This is an unofficial collection of REST and websocket clients to interact with the Kraken exchange API in Python.
 
 There is no guarantee that this software will work flawlessly at this or later times. Everyone has to look at the underlying source code themselves and consider whether this is appropriate for their own use.
 
