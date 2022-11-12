@@ -59,7 +59,7 @@ class UserClient(KrakenBaseRestAPI):
         return self._request('POST', '/private/ClosedOrders', params=params)
 
     def get_orders_info(self, txid, trades: bool=False, userref: int=None) -> dict:
-        '''https://docs.kraken.com/rest/#operation/getOrdersInfo'''
+        '''https://docs.kraken.com/rest/#tag/User-Data/operation/getOrdersInfo'''
         params = {
             'txid': txid,
             'trades': trades
