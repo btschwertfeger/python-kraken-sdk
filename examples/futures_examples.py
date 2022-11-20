@@ -143,8 +143,7 @@ def main() -> None:
     #     unit='The currency unit to transfer'
     # ))
 
-    # idk why the following is not working; this method also accepts more arguments
-    # to try some other ... 
+    # this does only work on the live account, not in the demo version (disable sandbox parameter)
     # print(funding.initiate_withdrawal_to_spot_wallet(
     #     amount=100,
     #     currency='USDT',

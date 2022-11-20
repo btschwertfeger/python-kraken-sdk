@@ -38,6 +38,7 @@ class FundingClient(KrakenBaseFuturesAPI):
 
     def initiate_withdrawal_to_spot_wallet(self, amount: str, currency: str, sourceWallet: str=None, **kwargs) -> dict:
         '''https://docs.futures.kraken.com/#http-api-trading-v3-api-transfers-initiate-withdrawal-to-spot-wallet'''
+        if self.sandbox: raise ValueError('This function is not available in sandbox mode.')
         params = {
             'amount': str(amount),
             'currency': currency,

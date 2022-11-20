@@ -103,8 +103,9 @@ class KrakenBaseRestAPI(object):
 
 class KrakenBaseFuturesAPI(object):
     def __init__(self, key: str='', secret: str='', url: str='', sandbox: bool=False, **kwargs):
-
-        if sandbox: self.url = 'https://demo-futures.kraken.com'
+        
+        self.sandbox = sandbox
+        if self.sandbox: self.url = 'https://demo-futures.kraken.com'
         else: self.url = 'https://futures.kraken.com'
         
         self.key = key
