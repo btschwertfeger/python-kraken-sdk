@@ -79,33 +79,6 @@ class MarketClient(KrakenBaseFuturesAPI):
         '''https://support.kraken.com/hc/en-us/articles/360061979852-Historical-Funding-Rates'''
         return self._request('GET', '/derivatives/api/v4/historicalfundingrates', queryParams={ 'symbol': symbol }, auth=False)
 
-    def get_market_history_execution(self, symbol: str, since: int=None, before: int=None, sort: str=None, continuationToken: str=None) -> dict:
-        '''https://support.kraken.com/hc/en-us/articles/4401755685268-Market-History-Executions'''
-        params = {}
-        if since != None: params['since'] = since
-        if before != None: params['before'] = before
-        if sort != None: params['sort'] = sort
-        if continuationToken != None: params['continuationToken'] = continuationToken
-        return self._request('GET', f'/api/history/v2/market/{symbol}/executions', queryParams=params, auth=False)
-
-    def get_market_history_mark_price(self, symbol: str, since: int=None, before: int=None, sort: str=None, continuationToken: str=None) -> dict:
-        '''https://support.kraken.com/hc/en-us/articles/4401748276116-Market-History-Mark-Price'''
-        params = {}
-        if since != None: params['since'] = since
-        if before != None: params['before'] = before
-        if sort != None: params['sort'] = sort
-        if continuationToken != None: params['continuationToken'] = continuationToken
-        return self._request('GET', f'/api/history/v2/market/{symbol}/price', queryParams=params, auth=False)
-
-    def get_market_history_orders(self, symbol: str, since: int=None, before: int=None, sort: str=None, continuationToken: str=None) -> dict:
-        '''https://support.kraken.com/hc/en-us/articles/4401755906452-Market-History-Orders'''
-        params = {}
-        if since != None: params['since'] = since
-        if before != None: params['before'] = before
-        if sort != None: params['sort'] = sort
-        if continuationToken != None: params['continuationToken'] = continuationToken
-        return self._request('GET', f'/api/history/v2/market/{symbol}/orders', queryParams=params, auth=False)
-
     def get_leverage_preference(self) -> dict:
         '''https://docs.futures.kraken.com/#http-api-trading-v3-api-multi-collateral-get-the-leverage-setting-for-a-market'''
         return self._request('GET', f'/derivatives/api/v3/leveragepreferences', auth=True)
@@ -135,6 +108,7 @@ class MarketClient(KrakenBaseFuturesAPI):
         since: int=None,
         sort: str=None,
         tradeable: str=None,
+        auth: bool=True
         **kwargs
     ) -> dict:  
         params = {}
@@ -144,7 +118,7 @@ class MarketClient(KrakenBaseFuturesAPI):
         if sort != None: params['sort'] = sort
         if tradeable != None: params['tradeable'] = tradeable
         params.update(kwargs)
-        return self._request('GET', endpoint, postParams=params, auth=True)
+        return self._request('GET', endpoint, postParams=params, auth=auth)
 
     def get_execution_events(self,
         before: int=None,
@@ -161,7 +135,8 @@ class MarketClient(KrakenBaseFuturesAPI):
             continuation_token=continuation_token,
             since=since,
             sort=sort,
-            tradeable=tradeable
+            tradeable=tradeable,
+            auth=True
         )
 
     def get_public_execution_events(self,
@@ -171,14 +146,16 @@ class MarketClient(KrakenBaseFuturesAPI):
         since: int=None,
         sort: str=None,
     ) -> dict:
-        '''https://docs.futures.kraken.com/#http-api-history-market-history-get-public-execution-events'''
-
+        '''https://docs.futures.kraken.com/#http-api-history-market-history-get-public-execution-events
+        https://support.kraken.com/hc/en-us/articles/4401755685268-Market-History-Executions
+        '''
         return self._get_historical_events(
             endpoint=f'/api/history/v2/market/{tradeable}/executions',
             before=before,
             continuation_token=continuation_token,
             since=since,
-            sort=sort
+            sort=sort,
+            auth=False
         )
 
     def get_public_order_events(self,
@@ -188,13 +165,16 @@ class MarketClient(KrakenBaseFuturesAPI):
         since: int=None,
         sort: str=None,
     ) -> dict:
-        '''https://docs.futures.kraken.com/#http-api-history-market-history-get-public-order-events'''
+        '''https://docs.futures.kraken.com/#http-api-history-market-history-get-public-order-events
+        https://support.kraken.com/hc/en-us/articles/4401755906452-Market-History-Orders
+        '''
         return self._get_historical_events(
             endpoint=f'/api/history/v2/market/{tradeable}/orders',
             before=before,
             continuation_token=continuation_token,
             since=since,
-            sort=sort
+            sort=sort,
+            auth=False
         )
 
     def get_public_mark_price_events(self,
@@ -204,13 +184,16 @@ class MarketClient(KrakenBaseFuturesAPI):
         since: int=None,
         sort: str=None,
     ) -> dict:
-        '''https://docs.futures.kraken.com/#http-api-history-market-history-get-public-mark-price-events'''
+        '''https://docs.futures.kraken.com/#http-api-history-market-history-get-public-mark-price-events
+        https://support.kraken.com/hc/en-us/articles/4401748276116-Market-History-Mark-Price
+        '''
         return self._get_historical_events(
             endpoint=f'/api/history/v2/market/{tradeable}/price',
             before=before,
             continuation_token=continuation_token,
             since=since,
-            sort=sort
+            sort=sort,
+            auth=False
         )
 
     def get_order_events(self,
@@ -227,7 +210,8 @@ class MarketClient(KrakenBaseFuturesAPI):
             continuation_token=continuation_token,
             since=since,
             sort=sort,
-            tradeable=tradeable
+            tradeable=tradeable,
+            auth=True
         )
 
     def get_trigger_events(self,
@@ -244,5 +228,6 @@ class MarketClient(KrakenBaseFuturesAPI):
             continuation_token=continuation_token,
             since=since,
             sort=sort,
-            tradeable=tradeable
+            tradeable=tradeable,
+            auth=True
         )

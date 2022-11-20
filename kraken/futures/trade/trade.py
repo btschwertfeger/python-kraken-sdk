@@ -35,8 +35,6 @@ class TradeClient(KrakenBaseFuturesAPI):
         elif cliOrdId != '': params['cliOrdId'] = cliOrdId
         return self._request('POST', '/derivatives/api/v3/cancelorder', postParams=params, auth=True)
 
-
-
     def edit_order(self, orderId: str=None, cliOrdId: str=None, limitPrice: float=None, size: float=None, stopPrice: float=None) -> dict:
         '''https://docs.futures.kraken.com/#http-api-trading-v3-api-order-management-edit-order'''
         if orderId == '' and cliOrdId == '': raise ValueError('Either orderId or cliOrdId must be set!')

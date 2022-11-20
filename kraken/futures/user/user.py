@@ -22,7 +22,7 @@ class UserClient(KrakenBaseFuturesAPI):
         return self._request('GET', f'/derivatives/api/v3/subaccounts', auth=True)
 
     def get_unwindqueue(self) -> dict:
-        '''https://docs.futures.kraken.com/#http-api-trading-v3-api-account-information-get-subaccounts'''
+        '''https://docs.futures.kraken.com/#http-api-trading-v3-api-account-information-get-position-percentile-of-unwind-queue'''
         return self._request('GET', f'/derivatives/api/v3/unwindqueue', auth=True)
 
     def get_notificatios(self) -> dict:

@@ -39,9 +39,6 @@ def main() -> None:
     # print(market.get_instruments_status(instrument='PI_XBTUSD'))
     # print(market.get_trade_history(symbol='PI_XBTUSD'))
     # print(market.get_historical_funding_rates(symbol='PI_XBTUSD'))
-    # print(market.get_market_history_execution(symbol='PI_XBTUSD'))
-    # print(market.get_market_history_mark_price(symbol='PI_XBTUSD'))
-    # print(market.get_market_history_orders(symbol='PI_XBTUSD'))
 
     priv_market = Market(key=key,secret=secret, sandbox=True)
     # print(priv_market.get_fee_schedules_vol())
@@ -51,9 +48,9 @@ def main() -> None:
     # print(priv_market.set_pnl_preference(symbol='PF_XBTUSD', pnlPreference='BTC'))
 
     # print(priv_market.get_execution_events())
-    # print(priv_market.get_public_execution_events(tradeable='PI_XBTUSD'))
-    # print(priv_market.get_public_order_events(tradeable='PI_XBTUSD'))
-    # print(priv_market.get_public_mark_price_events(tradeable='PI_XBTUSD'))
+    # print(market.get_public_execution_events(tradeable='PI_XBTUSD'))
+    # print(market.get_public_order_events(tradeable='PI_XBTUSD'))
+    # print(market.get_public_mark_price_events(tradeable='PI_XBTUSD'))
     # print(priv_market.get_order_events())
     # print(priv_market.get_trigger_events())
 
