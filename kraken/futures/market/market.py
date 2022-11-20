@@ -108,7 +108,7 @@ class MarketClient(KrakenBaseFuturesAPI):
         since: int=None,
         sort: str=None,
         tradeable: str=None,
-        auth: bool=True
+        auth: bool=True,
         **kwargs
     ) -> dict:  
         params = {}

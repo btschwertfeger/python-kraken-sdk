@@ -35,7 +35,7 @@ def main() -> None:
     # print(user.get_trade_balance())#asset='BTC'
     # print(user.get_open_orders())
     # print(user.get_closed_orders())
-    print(user.get_orders_info(txid='OBQFM7-JNVKS-H3ULEH')) # or txid='id1,id2,id3' or txid=['id1','id2']
+    # print(user.get_orders_info(txid='OBQFM7-JNVKS-H3ULEH')) # or txid='id1,id2,id3' or txid=['id1','id2']
     # print(user.get_trades_history())
     # print(user.get_trades_info(txid='someid'))
     # print(user.get_open_positions())#txid='someid'

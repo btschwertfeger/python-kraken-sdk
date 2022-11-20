@@ -89,8 +89,7 @@ class TradeClient(KrakenBaseRestAPI):
 
     def cancel_order(self, txid) -> dict:
         '''https://docs.kraken.com/rest/#operation/cancelOrder'''
-        params = { 'txid': txid }
-        return self._request('POST', '/private/CancelOrder', params=params)
+        return self._request('POST', '/private/CancelOrder', params={ 'txid': txid })
 
     def cancel_all_orders(self) -> dict:
         '''https://docs.kraken.com/rest/#operation/cancelAllOrders'''
@@ -98,12 +97,10 @@ class TradeClient(KrakenBaseRestAPI):
 
     def cancel_all_orders_after_x(self, timeout: int) -> dict:
         '''https://docs.kraken.com/rest/#operation/cancelAllOrdersAfter'''
-        params = { 'timeout': timeout }
-        return self._request('POST', '/private/CancelAllOrdersAfter', params=params)
+        return self._request('POST', '/private/CancelAllOrdersAfter', params={ 'timeout': timeout })
 
     def cancel_order_batch(self, orders: [str]) -> dict:
         '''https://docs.kraken.com/rest/#operation/cancelOrderBatch'''
-        params = { 'orders': orders }
-        return self._request('POST', '/private/CancelOrderBatch', params=params)
+        return self._request('POST', '/private/CancelOrderBatch', params={ 'orders': orders })
 
 
