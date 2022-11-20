@@ -1,6 +1,6 @@
 # Welcome to the Python SDK for the Kraken Cryptocurrency Exchange! 🦑
 
-<div style="text-align: center">
+<div align="center">
 
 [![GitHub](https://badgen.net/badge/icon/github?icon=github&label)](https://github.com/btschwertfeger/python-kraken-sdk)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-orange.svg)](https://www.gnu.org/licenses/gpl-3.0)
