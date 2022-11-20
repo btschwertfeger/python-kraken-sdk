@@ -157,7 +157,6 @@ class KrakenBaseFuturesAPI(object):
         elif method.upper() == 'PUT':
             return self.check_response_data(requests.request(method, f'{self.url}{uri}', params=str.encode(queryString), headers=headers, timeout=timeout), return_raw)
         else:
-            print(postString)
             return self.check_response_data(requests.request(method, f'{url}?{postString}', data=str.encode(postString), headers=headers, timeout=timeout), return_raw)
 
     def get_kraken_futures_signature(self, endpoint: str, data: str, nonce: str) -> str:

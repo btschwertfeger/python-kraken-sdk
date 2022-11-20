@@ -207,6 +207,7 @@ if __name__ == '__main__':
 
 - https://docs.kraken.com/websockets
 - https://docs.kraken.com/rest/
+- https://docs.futures.kraken.com/
 - https://support.kraken.com/hc/en-us/sections/360012894412-Futures-API
 
 ---

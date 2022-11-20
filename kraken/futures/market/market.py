@@ -5,13 +5,27 @@ class MarketClient(KrakenBaseFuturesAPI):
     def __init__(self, key: str='', secret: str='', url: str='', sandbox: bool=False) -> None:
         super().__init__(key=key, secret=secret, url=url, sandbox=sandbox)
 
-    def get_ohlc(self, price_type: str, symbol: str, interval: int, from_: int=None, to: int=None) -> dict:
-        '''https://support.kraken.com/hc/en-us/articles/4403284627220-OHLC'''
+    def get_ohlc(self, tick_type: str, symbol: str, resolution: int, from_: int=None, to: int=None) -> dict:
+        '''https://docs.futures.kraken.com/#http-api-charts-ohlc-get-ohlc
+            https://support.kraken.com/hc/en-us/articles/4403284627220-OHLC
+        '''
         params = { }
         if from_ != None: params['from'] = from_
         if to != None: params['to'] = to
-        return self._request('GET', f'/api/charts/v1/{price_type}/{symbol}/{interval}', queryParams=params, auth=False)
+        return self._request('GET', f'/api/charts/v1/{tick_type}/{symbol}/{resolution}', queryParams=params, auth=False)
 
+    def get_tick_types(self) -> dict:
+        '''https://docs.futures.kraken.com/#http-api-charts-ohlc-get-tick-types'''
+        return self._request('GET', '/api/charts/v1/', auth=False)
+
+    def get_tradeable_products(self, tick_type: str) -> dict:
+        '''https://docs.futures.kraken.com/#http-api-charts-ohlc-get-tradeable-products'''
+        return self._request('GET', f'/api/charts/v1/{tick_type}', auth=False)
+
+    def get_resolutions(self, tick_type: str, tradeable: str) -> dict:
+        '''https://docs.futures.kraken.com/#http-api-charts-ohlc-get-resolutions'''
+        return self._request('GET', f'/api/charts/v1/{tick_type}/{tradeable}', auth=False)
+    
     def get_fee_schedules(self) -> dict:
         '''https://docs.futures.kraken.com/#http-api-trading-v3-api-fee-schedules-get-fee-schedules
             https://support.kraken.com/hc/en-us/articles/360049269572-Fee-Schedules
@@ -114,3 +128,121 @@ class MarketClient(KrakenBaseFuturesAPI):
             'pnlPreference': pnlPreference
         }, auth=True)
 
+    def _get_historical_events(self,
+        endpoint: str,
+        before: int=None,
+        continuation_token: str=None,
+        since: int=None,
+        sort: str=None,
+        tradeable: str=None,
+        **kwargs
+    ) -> dict:  
+        params = {}
+        if before != None: params['before'] = before
+        if continuation_token != None: params['continuation_token'] = continuation_token
+        if since != None: params['since'] = since
+        if sort != None: params['sort'] = sort
+        if tradeable != None: params['tradeable'] = tradeable
+        params.update(kwargs)
+        return self._request('GET', endpoint, postParams=params, auth=True)
+
+    def get_execution_events(self,
+        before: int=None,
+        continuation_token: str=None,
+        since: int=None,
+        sort: str=None,
+        tradeable: str=None
+    ) -> dict:
+        '''https://docs.futures.kraken.com/#http-api-history-market-history-get-execution-events'''
+
+        return self._get_historical_events(
+            endpoint='/api/history/v2/executions',
+            before=before,
+            continuation_token=continuation_token,
+            since=since,
+            sort=sort,
+            tradeable=tradeable
+        )
+
+    def get_public_execution_events(self,
+        tradeable: str,
+        before: int=None,
+        continuation_token: str=None,
+        since: int=None,
+        sort: str=None,
+    ) -> dict:
+        '''https://docs.futures.kraken.com/#http-api-history-market-history-get-public-execution-events'''
+
+        return self._get_historical_events(
+            endpoint=f'/api/history/v2/market/{tradeable}/executions',
+            before=before,
+            continuation_token=continuation_token,
+            since=since,
+            sort=sort
+        )
+
+    def get_public_order_events(self,
+        tradeable: str,
+        before: int=None,
+        continuation_token: str=None,
+        since: int=None,
+        sort: str=None,
+    ) -> dict:
+        '''https://docs.futures.kraken.com/#http-api-history-market-history-get-public-order-events'''
+        return self._get_historical_events(
+            endpoint=f'/api/history/v2/market/{tradeable}/orders',
+            before=before,
+            continuation_token=continuation_token,
+            since=since,
+            sort=sort
+        )
+
+    def get_public_mark_price_events(self,
+        tradeable: str,
+        before: int=None,
+        continuation_token: str=None,
+        since: int=None,
+        sort: str=None,
+    ) -> dict:
+        '''https://docs.futures.kraken.com/#http-api-history-market-history-get-public-mark-price-events'''
+        return self._get_historical_events(
+            endpoint=f'/api/history/v2/market/{tradeable}/price',
+            before=before,
+            continuation_token=continuation_token,
+            since=since,
+            sort=sort
+        )
+
+    def get_order_events(self,
+        before: int=None,
+        continuation_token: str=None,
+        since: int=None,
+        sort: str=None,
+        tradeable: str=None
+    ) -> dict:
+        '''https://docs.futures.kraken.com/#http-api-history-market-history-get-order-events'''
+        return self._get_historical_events(
+            endpoint='/api/history/v2/orders',
+            before=before,
+            continuation_token=continuation_token,
+            since=since,
+            sort=sort,
+            tradeable=tradeable
+        )
+
+    def get_trigger_events(self,
+        before: int=None,
+        continuation_token: str=None,
+        since: int=None,
+        sort: str=None,
+        tradeable: str=None
+    ) -> dict:
+        '''https://docs.futures.kraken.com/#http-api-history-market-history-get-trigger-events'''
+        return self._get_historical_events(
+            endpoint='/api/history/v2/triggers',
+            before=before,
+            continuation_token=continuation_token,
+            since=since,
+            sort=sort,
+            tradeable=tradeable
+        )

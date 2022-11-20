@@ -27,7 +27,10 @@ def main() -> None:
     secret = dotenv_values('.env')['Futures_SANDBOX_SECRET']
 
     market = Market()
-    # print(market.get_ohlc(price_type='trade', symbol='PI_XBTUSD', interval='5m'))
+    # print(market.get_tick_types())
+    # print(market.get_tradeable_products(tick_type='trade'))
+    # print(market.get_resolutions('trade', 'PI_XBTUSD'))
+    # print(market.get_ohlc(tick_type='trade', symbol='PI_XBTUSD', resolution='5m'))
     # print(market.get_fee_schedules())
     # print(market.get_orderbook(symbol='fi_xbtusd_180615'))
     # print(market.get_tickers())
@@ -47,6 +50,13 @@ def main() -> None:
     # print(priv_market.set_leverage_preference(symbol='PF_SOLUSD')) # reset max leverage
     # print(priv_market.set_pnl_preference(symbol='PF_XBTUSD', pnlPreference='BTC'))
 
+    # print(priv_market.get_execution_events())
+    # print(priv_market.get_public_execution_events(tradeable='PI_XBTUSD'))
+    # print(priv_market.get_public_order_events(tradeable='PI_XBTUSD'))
+    # print(priv_market.get_public_mark_price_events(tradeable='PI_XBTUSD'))
+    # print(priv_market.get_order_events())
+    # print(priv_market.get_trigger_events())
+
     user = User(key=key,secret=secret, sandbox=True)
     # print(user.get_wallets())
     # print(user.get_open_orders())
@@ -54,7 +64,10 @@ def main() -> None:
     # print(user.get_subaccounts())
     # print(user.get_unwindqueue())
     # print(user.get_notificatios())
-    
+    # print(user.get_account_log(before='1604937694000'))
+    # print(user.get_account_log(info='futures liquidation'))
+    # print(user.get_account_log_csv())
+
     trade = Trade(key=key, secret=secret, sandbox=True)
     # print(trade.get_fills())
     # print(trade.get_fills(lastFillTime='2020-07-21T12:41:52.790Z'))
@@ -90,10 +103,52 @@ def main() -> None:
     #         },
     #     ],
     # ))
+    # print(trade.cancel_all_orders())
+    # print(trade.cancel_all_orders(symbol='pi_xbtusd'))
+    # print(trade.dead_mans_switch(timeout=60))
+    # print(trade.dead_mans_switch(timeout=0)) # to deactivate
+    # print(trade.cancel_order(order_id='some order id'))
+    # print(trade.edit_order(orderId='some order id', size=300, limitPrice=401, stopPrice=350))
+    # print(trade.get_orders_status(orderIds=['orderid1', 'orderid2']))
+    # print(trade.create_order( # limit order to buy bch ... 
+    #     orderType='lmt', 
+    #     side='buy',
+    #     size=1, 
+    #     limitPrice=4,
+    #     symbol='pf_bchusd',
+    # ))
+    # print(trade.create_order( # take_profit order 
+    #     orderType='take_profit', 
+    #     side='buy',
+    #     size=1, 
+    #     symbol='pf_bchusd',
+    #     stopPrice=100,
+    #     triggerSignal='mark'
+    # ))
 
     funding = Funding(key=key, secret=secret, sandbox=True)
     # print(funding.get_historical_funding_rates(symbol='PF_SOLUSD'))
+    # print(funding.initiate_wallet_transfer(
+    #     amount='100', 
+    #     fromAccount='some cash or margin account', 
+    #     toAccount='another cash or margin account',
+    #     unit='The currency unit to transfer'
+    # ))
+    # print(funding.initiate_subccount_transfer(
+    #     amount='The amount to transfer', 
+    #     fromAccount='The wallet (cash or margin account) from which funds should be debited', 
+    #     fromUser='The user account (this or a sub account) from which funds should be debited', 
+    #     toAccount='The wallet (cash or margin account) to which funds should be credited', 
+    #     toUser='The user account (this or a sub account) to which funds should be credited', 
+    #     unit='The currency unit to transfer'
+    # ))
 
-
+    # idk why the following is not working; this method also accepts more arguments
+    # to try some other ... 
+    # print(funding.initiate_withdrawal_to_spot_wallet(
+    #     amount=100,
+    #     currency='USDT',
+    #     # sourceWallet='cash'
+    # ))
 if __name__ == '__main__':
     main()
