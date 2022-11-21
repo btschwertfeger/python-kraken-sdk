@@ -68,12 +68,13 @@ class KrakenBaseRestAPI(object):
                 return self.check_response_data(requests.request(method, url, headers=headers, data=params, timeout=timeout), return_raw)
 
     def get_kraken_signature(self, urlpath: str, data: dict) -> str:
-        postdata = urllib.parse.urlencode(data)
-        encoded = (str(data['nonce']) + postdata).encode()
-        message = urlpath.encode() + hashlib.sha256(encoded).digest()
-
-        mac = hmac.new(base64.b64decode(self.secret), message, hashlib.sha512)
-        return  base64.b64encode(mac.digest()).decode()
+        return base64.b64encode(
+            hmac.new(
+                base64.b64decode(self.secret), 
+                urlpath.encode() + hashlib.sha256((str(data['nonce']) + urllib.parse.urlencode(data)).encode()).digest(),
+                hashlib.sha512
+            ).digest()
+        ).decode()
 
     @staticmethod
     def check_response_data(response_data, return_raw: bool=False) -> dict:
@@ -98,7 +99,6 @@ class KrakenBaseRestAPI(object):
         if type(a) == str: return a
         elif type(a) == list: return ','.join([i for i in a])
         else: raise ValueError('a must be string or list of strings')
-
 
 
 class KrakenBaseFuturesAPI(object):

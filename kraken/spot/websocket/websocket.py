@@ -6,7 +6,7 @@ from random import random
 from uuid import uuid4
 import logging
 import traceback
-
+import copy
 
 class ConnectSpotWebsocket:
     MAX_SEND_MESSAGE_RETRIES = 5
@@ -28,9 +28,9 @@ class ConnectSpotWebsocket:
         self._socket = None
         self._subscriptions = []
 
-        asyncio.ensure_future(self.run_forever(), loop=asyncio.get_running_loop())
+        self._private = private
 
-        self.connected = False
+        asyncio.ensure_future(self.run_forever(), loop=asyncio.get_running_loop())
 
     @property
     def subscriptions(self) -> list:
@@ -41,10 +41,9 @@ class ConnectSpotWebsocket:
         return self._private
 
     async def _run(self, event: asyncio.Event):
-        keep_alive = True
         self._last_ping = time.time()
-        self._ws_details = None
-        self._ws_details = self._client.get_ws_token(self.private)
+        self._ws_details = None if not self._private else self._client.get_ws_token(self._private)
+        
         logging.debug(self._ws_details)
 
         async with websockets.connect(f'wss://{self._ws_endpoint}', ping_interval=None) as socket:
@@ -55,13 +54,12 @@ class ConnectSpotWebsocket:
 
             self.connected = True
             self._socket = socket
-            self._reconnect_num = 0
 
             if not event.is_set():
                 await self.send_ping()
                 event.set()
 
-            while keep_alive:
+            while True:
                 if time.time() - self._last_ping > self._get_ws_pingtimeout():
                     await self.send_ping()
                 try:
@@ -76,12 +74,32 @@ class ConnectSpotWebsocket:
                         msg = json.loads(_msg)
                     except ValueError:
                         logger.warning(_msg)
-                    else:
+                    else: 
+                        if 'event' in msg:
+                            if msg['event'] == 'subscriptionStatus' and 'status' in msg:
+                                try:
+                                    if msg['status'] == 'subscribed':
+                                        sub = { 'subscription': msg['subscription'] }
+                                        if 'pair' in msg: # public endpoint
+                                            sub['pair'] = msg['pair'] 
+                                        else: # private endpoint
+                                            sub['subscription'] = { 'name': msg['subscription']['name']}
+                                        self._subscriptions.append(sub)
+
+                                    elif msg['status'] == 'unsubscribed': 
+                                        sub = { 'subscription': msg['subscription'] }
+                                        if 'pair' in msg: # public endpoint
+                                            sub['pair'] = msg['pair']
+                                        elif msg['subscription']['name']: # private endpoint
+                                            sub['subscription'] = { 'name': msg['subscription']['name']}
+                                        self._subscriptions.remove(sub)       
+
+                                    elif msg['status'] == 'error': logging.warn(msg)
+                                except AttributeError: pass
                         await self._callback(msg)
 
     async def run_forever(self):
-        while True:
-            await self._reconnect()
+        while True: await self._reconnect()
 
     async def _reconnect(self):
         logging.info('Websocket start connect/reconnect')
@@ -110,10 +128,10 @@ class ConnectSpotWebsocket:
                         logging.warning(f'pending {process}')
                         try: process.cancel()
                         except asyncio.CancelledError: logging.exception('CancelledError')
-                        logging.warning('cancel ok.')
+                        logging.warning('cancel ok')
                     await self._callback({ 'ws-error': message })
             if exception_occur: break
-        logging.warning('_reconnect over.')
+        logging.warning('reconnect over')
 
     async def _recover_subscription_req_msg(self, event):
         logging.info(f'recover subscription {self._subscriptions} waiting')
@@ -144,11 +162,10 @@ class ConnectSpotWebsocket:
         self._last_ping = time.time()
 
     async def send_message(self, msg, private: bool=False, retry_count: int=0):
-        logging.info(f'send_message (private: {private}; tries: {retry_count}): {msg}')
-        if not self._socket: # if not connected
-            if retry_count < self.MAX_SEND_MESSAGE_RETRIES:
-                await asyncio.sleep(2)
-                await self.send_message(msg, private=private, retry_count=retry_count + 1)
+        while not self._socket: await asyncio.sleep(.4)
+
+        if private and not self._private:
+            raise ValueError('Cannot send private message with public websocket.')
         else:
             msg['reqid'] = int(time.time() * 1000)
             if private and 'subscription' in msg: msg['subscription']['token'] = self._ws_details['token']
@@ -167,6 +184,8 @@ class KrakenSpotWSClient(object):
     def __init__(self, client, callback=None, beta: bool=False):
         self._callback = callback
         self._client = client
+
+        self._isAuth = self._client.key and self._client.secret
         
         self._pub_conn = ConnectSpotWebsocket(
             client=self._client,
@@ -180,7 +199,7 @@ class KrakenSpotWSClient(object):
              endpoint=self.AUTH_PROD_ENV_URL if not beta else AUTH_BETA_ENV_URL,
              callback=self.on_message,
              private=True
-        )
+        ) if self._isAuth else None
 
     async def on_message(self, msg):
         ''' Call callback function or overload this'''
@@ -189,36 +208,72 @@ class KrakenSpotWSClient(object):
             logging.warning('Received event but no callback is defined')
             print(msg)
 
-    async def subscribe(self, private: bool=False, pair: [str]=None, subscription: dict=None, **kwargs) -> None:
+    async def subscribe(self, subscription: dict, pair: [str]=None) -> None:
         '''Subscribe to a channel'''
 
-        payload = { 'event': 'subscribe' }
+        if 'name' not in subscription: raise AttributeError('Subscription requires a "name" key."')
+        private = True if subscription['name'] in self.private_sub_names else False
+
+        payload = { 
+            'event': 'subscribe',
+            'subscription': subscription
+        }
+        if pair != None: payload['pair'] = pair        
+        if private: # private == without pair
+            if not self._isAuth: raise ValueError('Cannot subscribe to private feeds without valid credentials!')
+            elif pair != None: raise ValueError('Cannot subscribe to private endpoint with specific pair!')
+            else: await self._priv_conn.send_message(payload, private=True)
+
+        elif pair != None: # public with pair
+            for p in pair:
+                sub = copy.deepcopy(payload)
+                sub['pair'] = [p]
+                await self._pub_conn.send_message(sub, private=False)
+
+        else: await self._pub_conn.send_message(payload, private=False)
+
+    async def unsubscribe(self, subscription: dict, pair: [str]=None) -> None:
+        '''Unsubscribe from a topic
+            https://docs.kraken.com/websockets/#message-unsubscribe
+        '''
+        if 'name' not in subscription: raise AttributeError('Subscription requires a "name" key."')
+        private = True if subscription['name'] in self.private_sub_names else False
+
+        payload = { 
+            'event': 'unsubscribe',
+            'subscription': subscription
+        }
         if pair != None: payload['pair'] = pair
-        if subscription != None: payload['subscription'] = subscription
-        payload.update(kwargs)
+        
+        if private: # private == without pair
+            if not self._isAuth: raise ValueError('Cannot unsubscribe from private feeds without valid credentials!')
+            elif pair != None: raise ValueError('Cannot unsubscribe from private endpoint with specific pair!')
+            else:
+                sub = copy.deepcopy(payload)
+                sub['event'] = 'subscribe'
+                await self._priv_conn.send_message(payload, private=True)
+                
+        elif pair != None: # public with pair
+            for p in pair:
+                sub = copy.deepcopy(payload)
+                sub['pair'] = [p]
+                await self._pub_conn.send_message(sub, private=False)
+                                
+        else: await self._pub_conn.send_message(payload, private=False)
 
-        if private:
-            self._priv_conn._subscriptions.append(payload)
-            await self._priv_conn.send_message(payload, private=private)
-        else:
-            self._pub_conn._subscriptions.append(payload)
-            await self._pub_conn.send_message(payload, private=private)
+    @property
+    def private_sub_names(self) -> [str]:
+        return  ['ownTrades', 'openOrders']
 
-    async def unsubscribe(self, private: bool=False, pair: [str]=None, subscription: dict=None, **kwargs) -> None:
-        '''Unsubscribe from a topic'''
+    @property
+    def public_sub_names(self) -> [str]:
+        return ['ticker', 'spread', 'book', 'ohlc', 'trade', '*']
 
-        payload = { 'event': 'unsubscribe' }
-        if pair != None: payload['pair'] = pair
-        if subscription != None: payload['subscription'] = subscription
-        payload.update(kwargs)
-        if private:
-            self._priv_conn._subscriptions.remove(payload)
-            await self._priv_conn.send_message(payload, private=private)
-        else:
-            self._pub_conn._subscriptions.remove(payload)
-            await self._pub_conn.send_message(payload, private=private)
+    @property
+    def active_public_subscriptions(self) -> [dict]:
+        return self._pub_conn._subscriptions
 
-    @staticmethod
-    def get_available_subscriptions() -> [str]:
-        '''https://docs.kraken.com/websockets/#message-subscribe'''
-        return [ 'book', 'ohlc', 'openOrders', 'ownTrades', 'spread', 'ticker', 'trade', '*']
+    @property
+    def active_private_subscriptions(self) -> [str]:
+        return self._priv_conn._subscriptions
+
