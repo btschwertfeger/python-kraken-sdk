@@ -68,7 +68,6 @@ async def main() -> None:
     # unsubscribe from a private/authenticaed websocket feed
     # await bot.unsubscribe(feed='fills')
     # ....
-    
 
     while True: await asyncio.sleep(6)
 

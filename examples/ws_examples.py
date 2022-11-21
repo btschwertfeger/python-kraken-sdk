@@ -76,7 +76,7 @@ async def main() -> None:
     
     time.sleep(2)
     await auth_bot.unsubscribe(subscription={ 'name': 'ownTrades' })
-    await auth_bot.unsubscribe(subscription={ 'name': 'openOrders' },)   
+    await auth_bot.unsubscribe(subscription={ 'name': 'openOrders' })   
 
 
     while True: 
