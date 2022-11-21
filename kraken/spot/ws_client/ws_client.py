@@ -35,7 +35,7 @@ class SpotWsClientCl(KrakenBaseRestAPI):
             logging.warning('Websocket not connected!')
             return
         elif not self.websocket_priv.private:
-            raise ValueError('Cannot create order on public Websocket Client!')
+            raise ValueError('Cannot create_order on public Websocket Client!')
 
         payload = {
             'event': 'addOrder',
@@ -50,7 +50,6 @@ class SpotWsClientCl(KrakenBaseRestAPI):
             if type(oflags) == str: payload['oflags'] = oflags
             elif type(oflags) == list: payload['oflags'] = self._to_str_list(oflags)
             else: raise ValueError('oflags must be type [str] or comma delimited list of order flags. Available flags: viqc,fcib, fciq, nompp, post')
-
         if starttm != None: payload['starttm'] = starttm
         if expiretm != None: payload['expiretm'] = expiretm
         if deadline != None: payload['deadline'] = deadline
@@ -79,7 +78,7 @@ class SpotWsClientCl(KrakenBaseRestAPI):
             logging.warning('Websocket not connected!')
             return
         elif not self.websocket_priv.private:
-            raise ValueError('Cannot edit order on public Websocke Client!')
+            raise ValueError('Cannot edit_order on public Websocke Client!')
 
         payload = {
             'event': 'editOrder',
@@ -105,7 +104,7 @@ class SpotWsClientCl(KrakenBaseRestAPI):
             logging.warning('Websocket not connected!')
             return
         elif not self.websocket_priv.private:
-            raise ValueError('Cannot edit order on public Websocke Client!')
+            raise ValueError('Cannot cancel_order on public Websocke Client!')
 
         payload = { 'event': 'cancelOrder' }
         if type(txid) == str: payload['txid'] = [txid]
@@ -120,7 +119,7 @@ class SpotWsClientCl(KrakenBaseRestAPI):
             logging.warning('Websocket not connected!')
             return
         elif not self.websocket_priv.private:
-            raise ValueError('Cannot edit order on public Websocke Client!')
+            raise ValueError('Cannot use cancel_all_orders on public Websocke Client!')
 
         payload = { 'event': 'cancelAll' }
         if reqid != None: payload['reqid'] = reqid
@@ -133,7 +132,7 @@ class SpotWsClientCl(KrakenBaseRestAPI):
             logging.warning('Websocket not connected!')
             return
         elif not self.websocket_priv.private:
-            raise ValueError('Cannot use Dead Man\'s Switch on public Websocke Client!')
+            raise ValueError('Cannot use cancel_all_orders_after on public Websocke Client!')
 
         payload = {
             'event': 'cancelAllOrdersAfter',
