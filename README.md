@@ -1,4 +1,4 @@
-# Welcome to the Python SDK for the Kraken Cryptocurrency Exchange! 🦑
+<h1 align="center">Futures and Spot Websocket and REST API Python SDK for the Kraken Cryptocurrency Exchange 🦑</h1>
 
 <div align="center">
 
@@ -11,11 +11,14 @@
 
 </div>
 
-This is an unofficial collection of REST and websocket clients to interact with the Kraken exchange API in Python.
+<h3>
+This is an unofficial collection of REST and websocket clients to interact with the Kraken exchange API using Python.
 
-There is no guarantee that this software will work flawlessly at this or later times. Everyone has to look at the underlying source code themselves and consider whether this is appropriate for their own use.
+There is no guarantee that this software will work flawlessly at this or later times. Everyone has to check the underlying source code themselves and consider whether this is appropriate for their own use.
 
 Of course, no responsibility is taken for possible profits or losses. No one should be motivated or tempted to invest assets in speculative forms of investment.
+
+</h3>
 
 ---
 
@@ -40,6 +43,7 @@ Of course, no responsibility is taken for possible profits or losses. No one sho
   - [ Trade ](#futurestrade)
   - [ Market ](#futuresmarket)
   - [ Funding ](#futuresfunding)
+  - [ WsClient ](#futureswsclient)
 - [ Notes ](#notes)
 - [ References ](#references)
 
@@ -69,8 +73,8 @@ python3 -m pip install python-kraken-sdk
 from kraken.spot.client import User, Market, Trade, Funding, Staking
 
 def main() -> None:
-    key = 'Kraken pub key'
-    secret = 'Kraken secret key'
+    key = 'Kraken-public-key'
+    secret = 'Kraken-secret-key'
 
     # ____USER________
     user = User(key=key, secret=secret)
@@ -118,8 +122,8 @@ from kraken.spot.websocket.websocket import KrakenSpotWSClient
 
 async def main() -> None:
 
-    key = 'kraken public key'
-    secret = 'kraken secret key'
+    key = 'Kraken-public-key'
+    secret = 'Kraken-secret-key'
 
     class Bot(KrakenSpotWSClient):
         async def on_message(self, msg) -> None:
@@ -134,12 +138,37 @@ async def main() -> None:
             #     price=20000,
             #     volume=1
             # )
-            # ... it is also possible to call regular REST endpoints
+            # ... it is also possible to call regular Spot REST endpoints
             # but using the websocket messages is more efficient
 
-    bot = Bot(WsClient(key=key, secret=secret))
-    await bot.subscribe(pair=['BTC/EUR'], subscription={ 'name': 'ticker' }, private=False)
-    await bot.subscribe(subscription={ 'name': 'ownTrades' }, private=True)
+    # ___Public_Websocket_Feed_____
+    bot = Bot(WsClient()) # only use this one if you dont need private feeds
+    print(bot.public_sub_names) # list public subscription names
+
+    await bot.subscribe(subscription={ 'name': 'ticker' }, pair=['XBT/EUR', 'DOT/EUR'])
+    await bot.subscribe(subscription={ 'name': 'spread' }, pair=['XBT/EUR', 'DOT/EUR'])
+    # await bot.subscribe(subscription={ 'name': 'book' }, pair=['BTC/EUR'])
+    # await bot.subscribe(subscription={ 'name': 'book', 'depth': 25}, pair=['BTC/EUR'])
+    # await bot.subscribe(subscription={ 'name': 'ohlc' }, pair=['BTC/EUR'])
+    # await bot.subscribe(subscription={ 'name': 'ohlc', 'interval': 15}, pair=['XBT/EUR', 'DOT/EUR'])
+    # await bot.subscribe(subscription={ 'name': 'trade' }, pair=['BTC/EUR'])
+    # await bot.subscribe(subscription={ 'name': '*' } , pair=['BTC/EUR'])
+
+    time.sleep(2) # wait because unsubscribing is faster than subscribing ...
+    await bot.unsubscribe(subscription={ 'name': 'ticker' }, pair=['XBT/EUR','DOT/EUR'])
+    await bot.unsubscribe(subscription={ 'name': 'spread' }, pair=['XBT/EUR'])
+    await bot.unsubscribe(subscription={ 'name': 'spread' }, pair=['DOT/EUR'])
+    # ....
+
+    auth_bot = Bot(WsClient(key=key, secret=secret))
+    print(auth_bot.private_sub_names) # list private subscription names
+    # when using the authenticated bot, you can also subscribe to public feeds
+    await auth_bot.subscribe(subscription={ 'name': 'ownTrades' })
+    await auth_bot.subscribe(subscription={ 'name': 'openOrders' })
+
+    time.sleep(2)
+    await auth_bot.unsubscribe(subscription={ 'name': 'ownTrades' })
+    await auth_bot.unsubscribe(subscription={ 'name': 'openOrders' })
 
     while True: await asyncio.sleep(6)
 
@@ -164,9 +193,9 @@ from kraken.futures.client import Market, User, Trade, Funding
 
 def main() -> None:
 
-    demo: bool = False
-    key = 'Kraken futures public key'
-    secret = 'Kraken futures secret key'
+    demo: bool = False # default
+    key = 'futures-api-key'
+    secret = 'futures-secret-key'
 
     # ____USER__________
     user = User(key=key,secret=secret, sandbox=demo)
@@ -233,9 +262,57 @@ if __name__ == '__main__':
 
 ### Websockets
 
-... not implemented so far
+... can be found in `/examples/futures_ws_examples.py`
 
 ```python
+import asyncio
+from kraken.futures.client import WsClient
+from kraken.futures.websocket.websocket import KrakenFuturesWSClient
+
+async def main() -> None:
+
+    key = 'futures-api-key'
+    secret = 'futures-secret-key'
+
+    # ___Custom_Trading_Bot______________
+    class Bot(KrakenFuturesWSClient):
+
+        async def on_message(self, event) -> None:
+            print(event)
+            # >> apply your trading strategy here <<
+            # you can also combine this with the Futures REST clients
+
+    # _____Public_Websocket_Feeds___________________
+    bot = Bot(WsClient())
+    # print(bot.get_available_public_subscription_feeds())
+
+    products = ['PI_XBTUSD']
+
+    # subscribe to a public websocket feed
+    await bot.subscribe(feed='ticker', products=products)
+    # await bot.subscribe(feed='book', products=products)
+    # ...
+
+    # unsubscribe from a websocket feed
+    await bot.unsubscribe(feed='ticker', products=products)
+
+    # _____Private_Websocket_Feeds_________________
+    auth_bot = Bot(WsClient(key=key, secret=secret))
+    # print(auth_bot.get_available_private_subscription_feeds())
+
+    # subscribe to a private/authenticated websocket feed
+    await auth_bot.subscribe(feed='fills')
+    await auth_bot.subscribe(feed='open_positions')
+    await auth_bot.subscribe(feed='open_orders')
+    # ...
+
+    # unsubscribe from a private/authenticaed websocket feed
+    await bot.unsubscribe(feed='fills')
+
+    while True: await asyncio.sleep(6)
+
+if __name__ == '__main__':
+    asyncio.get_event_loop().run_until_complete(main())
 
 ```
 
@@ -249,24 +326,24 @@ if __name__ == '__main__':
 
 ### User
 
-| Method                     | Documentation                                             |
-| -------------------------- | --------------------------------------------------------- |
-| `get_account_balance`      | https://docs.kraken.com/rest/#operation/getAccountBalance |
-| `get_balances`             |
-| `get_trade_balance`        | https://docs.kraken.com/rest/#operation/getTradeBalance   |
-| `get_open_orders`          | https://docs.kraken.com/rest/#operation/getOpenOrders     |
-| `get_closed_orders`        | https://docs.kraken.com/rest/#operation/getClosedOrders   |
-| `get_orders_info`          | https://docs.kraken.com/rest/#operation/getOrdersInfo     |
-| `get_trades_history`       | https://docs.kraken.com/rest/#operation/getTradeHistory   |
-| `get_trades_info`          | https://docs.kraken.com/rest/#operation/getTradesInfo     |
-| `get_open_positions`       | https://docs.kraken.com/rest/#operation/getOpenPositions  |
-| `get_ledgers_info`         | https://docs.kraken.com/rest/#operation/getLedgers        |
-| `get_ledgers`              | https://docs.kraken.com/rest/#operation/getLedgersInfo    |
-| `get_trade_volume`         | https://docs.kraken.com/rest/#operation/getTradeVolume    |
-| `request_export_report`    | https://docs.kraken.com/rest/#operation/addExport         |
-| `get_export_report_status` | https://docs.kraken.com/rest/#operation/exportStatus      |
-| `retrieve_export`          | https://docs.kraken.com/rest/#operation/retrieveExport    |
-| `delete_export_report`     | https://docs.kraken.com/rest/#operation/removeExport      |
+| Method                     | Documentation                                                 |
+| -------------------------- | ------------------------------------------------------------- |
+| `get_account_balance`      | https://docs.kraken.com/rest/#operation/getAccountBalance     |
+| `get_balances`             | returns the overall and available balance of a given currency |
+| `get_trade_balance`        | https://docs.kraken.com/rest/#operation/getTradeBalance       |
+| `get_open_orders`          | https://docs.kraken.com/rest/#operation/getOpenOrders         |
+| `get_closed_orders`        | https://docs.kraken.com/rest/#operation/getClosedOrders       |
+| `get_orders_info`          | https://docs.kraken.com/rest/#operation/getOrdersInfo         |
+| `get_trades_history`       | https://docs.kraken.com/rest/#operation/getTradeHistory       |
+| `get_trades_info`          | https://docs.kraken.com/rest/#operation/getTradesInfo         |
+| `get_open_positions`       | https://docs.kraken.com/rest/#operation/getOpenPositions      |
+| `get_ledgers_info`         | https://docs.kraken.com/rest/#operation/getLedgers            |
+| `get_ledgers`              | https://docs.kraken.com/rest/#operation/getLedgersInfo        |
+| `get_trade_volume`         | https://docs.kraken.com/rest/#operation/getTradeVolume        |
+| `request_export_report`    | https://docs.kraken.com/rest/#operation/addExport             |
+| `get_export_report_status` | https://docs.kraken.com/rest/#operation/exportStatus          |
+| `retrieve_export`          | https://docs.kraken.com/rest/#operation/retrieveExport        |
+| `delete_export_report`     | https://docs.kraken.com/rest/#operation/removeExport          |
 
 <a name="spottrade"></a>
 
@@ -295,7 +372,7 @@ if __name__ == '__main__':
 | `get_order_book`          | https://docs.kraken.com/rest/#operation/getOrderBook          |
 | `get_recent_trades`       | https://docs.kraken.com/rest/#operation/getRecentTrades       |
 | `get_recend_spreads`      | https://docs.kraken.com/rest/#operation/getRecentSpreads      |
-| `get_system_status`       |                                                               |
+| `get_system_status`       | checks if Kraken is online                                    |
 
 <a name="spotfunding"></a>
 
@@ -328,17 +405,21 @@ if __name__ == '__main__':
 
 ### WsClient
 
-| Method                        | Documentation                                                    |
-| ----------------------------- | ---------------------------------------------------------------- |
-| `get_ws_token`                | https://docs.kraken.com/rest/#tag/Websockets-Authentication      |
-| `create_order`                | https://docs.kraken.com/websockets/#message-addOrder             |
-| `edit_order`                  | https://docs.kraken.com/websockets/#message-editOrder            |
-| `cancel_order`                | https://docs.kraken.com/websockets/#message-cancelOrder          |
-| `cancel_all_orders`           | https://docs.kraken.com/websockets/#message-cancelAll            |
-| `cancel_all_orders_after`     | https://docs.kraken.com/websockets/#message-cancelAllOrdersAfter |
-| `subscribe`                   |                                                                  |
-| `unsubscribe`                 |                                                                  |
-| `get_available_subscriptions` |                                                                  |
+| Method                         | Documentation                                                    |
+| ------------------------------ | ---------------------------------------------------------------- |
+| `get_ws_token`                 | https://docs.kraken.com/rest/#tag/Websockets-Authentication      |
+| `create_order`                 | https://docs.kraken.com/websockets/#message-addOrder             |
+| `edit_order`                   | https://docs.kraken.com/websockets/#message-editOrder            |
+| `cancel_order`                 | https://docs.kraken.com/websockets/#message-cancelOrder          |
+| `cancel_all_orders`            | https://docs.kraken.com/websockets/#message-cancelAll            |
+| `cancel_all_orders_after`      | https://docs.kraken.com/websockets/#message-cancelAllOrdersAfter |
+| `subscribe`                    | https://docs.kraken.com/websockets/#message-subscribe            |
+| `unsubscribe`                  | https://docs.kraken.com/websockets/#message-unsubscribe          |
+| `private_sub_names`            | get private subscription names                                   |
+| `public_sub_names`             | get public subscription names                                    |
+| `active_private_subscriptions` | get active private subscriptions                                 |
+| `active_public_subscriptions`  | get active public subscriptions                                  |
+| `on_message`                   | callback function which should be overloaded                     |
 
 ---
 
@@ -416,6 +497,18 @@ if __name__ == '__main__':
 | `initiate_subccount_transfer`        | https://docs.futures.kraken.com/#http-api-trading-v3-api-transfers-initiate-sub-account-transfer         |
 | `initiate_withdrawal_to_spot_wallet` | https://docs.futures.kraken.com/#http-api-trading-v3-api-transfers-initiate-withdrawal-to-spot-wallet    |
 
+<a name="futureswsclient"></a>
+
+### WsClient
+
+| Method                                     | Documentation                                |
+| ------------------------------------------ | -------------------------------------------- |
+| `subscribe`                                | subscribe to a feed                          |
+| `unsubscribe`                              | unsubscribe from a feed                      |
+| `get_available_public_subscription_feeds`  | returns all available public feeds           |
+| `get_available_private_subscription_feeds` | returns all available private feeds          |
+| `on_message`                               | callback function which should be overloaded |
+
 ---
 
 <a name="notes"></a>
@@ -431,8 +524,8 @@ if __name__ == '__main__':
 
 ## References
 
-- https://docs.kraken.com/websockets
 - https://docs.kraken.com/rest/
+- https://docs.kraken.com/websockets
 - https://docs.futures.kraken.com/
 - https://support.kraken.com/hc/en-us/sections/360012894412-Futures-API
 
