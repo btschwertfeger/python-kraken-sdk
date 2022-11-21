@@ -55,7 +55,7 @@ class KrakenBaseRestAPI(object):
                 'API-Sign': self.get_kraken_signature(f'{self._api_v}{uri}', params)
             }
 
-        headers['User-Agent'] = 'kraken-python-sdk'
+        headers['User-Agent'] = 'python-kraken-sdk'
         url = f'{self.url}{self._api_v}{uri}'
 
 
@@ -148,7 +148,7 @@ class KrakenBaseFuturesAPI(object):
                 'Authent': self.get_kraken_futures_signature(uri, queryString + postString, nonce)
             }
 
-        headers['User-Agent'] = 'kraken-python-sdk'
+        headers['User-Agent'] = 'python-kraken-sdk'
 
         url = f'{self.url}{uri}'
         if queryString != '': url = f'{url}?{queryString}'
