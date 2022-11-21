@@ -3,16 +3,14 @@ import json
 import time
 import websockets
 from random import random
-from uuid import uuid4
 import logging
 import traceback
-
 
 class ConnectFuturesWebsocket:
     MAX_SEND_MESSAGE_RETRIES = 5
     MAX_RECONNECT_SECONDS = 60
 
-    def __init__(self, client, endpoint: str, callback=None, private: bool=False, sandbox: bool=False):
+    def __init__(self, client, endpoint: str, callback=None):
         self._client = client
         self._ws_endpoint = endpoint
         self._callback = callback
@@ -23,46 +21,28 @@ class ConnectFuturesWebsocket:
         self._new_challenge = None
         self._challenge_ready = False
 
-        self._connect_id = None
-
-        self._private = private
-        self._demo = sandbox
-
         self._socket = None
         self._subscriptions = []
 
         asyncio.ensure_future(self.run_forever(), loop=asyncio.get_running_loop())
 
-        self.connected = False
-
     @property
     def subscriptions(self) -> list:
         return self._subscriptions
 
-    @property
-    def private(self) -> bool:
-        return self._private
-
     async def _run(self, event: asyncio.Event):
-        keep_alive = True
         self._new_challenge = None
         self._last_challenge = None
 
         async with websockets.connect(f'wss://{self._ws_endpoint}', ping_interval=30) as socket:
             logging.info(f'Websocket connected!')
-
-            if self.private: self._client.websocket_priv = self
-            else: self._client.websocket_pub = self
-
-            self.connected = True
+            self._client.websocket = self
             self._socket = socket
-            self._reconnect_num = 0
 
-            while keep_alive:
+            while True:
                 try:
                     _msg = await asyncio.wait_for(self._socket.recv(), timeout=15)
                 except asyncio.TimeoutError:
-                    # logging.exception('TimeoutError')
                     pass
                 except asyncio.CancelledError:
                     logging.exception('CancelledError')
@@ -70,14 +50,14 @@ class ConnectFuturesWebsocket:
                 else:
                     try:
                         msg = json.loads(_msg)
+                    except ValueError:
+                        logger.warning(_msg)
+                    else:
                         if msg.get('event', '') == 'challenge':
                             self._last_challenge = msg['message']
                             self._new_challenge = self._client._get_sign_challenge(self._last_challenge)
                             self._challenge_ready = True
-                    except ValueError:
-                        logger.warning(_msg)
-                    else:
-                        await self._callback(msg)
+                        else: await self._callback(msg)
 
     async def run_forever(self):
         while True: await self._reconnect()
@@ -109,123 +89,103 @@ class ConnectFuturesWebsocket:
                         logging.warning(f'pending {process}')
                         try: process.cancel()
                         except asyncio.CancelledError: logging.exception('CancelledError')
-                        logging.warning('cancel ok.')
+                        logging.warning('cancel ok')
                     await self._callback({ 'ws-error': message })
             if exception_occur: break
-        logging.warning('_reconnect over.')
+        logging.warning('reconnect over')
 
-    async def _recover_subscription_req_msg(self, event):
-        logging.info(f'recover subscription {self._subscriptions} waiting')
-        # await event.wait()
-        # for sub in self._subscriptions:
-        #     private = False
-        #     if 'token' in sub['subscription']:
-        #         sub['subscription']['token'] = self._ws_details['token']
-        #         private = True
-        #     await self.send_message(sub, private=private)
-        #     logging.info(f'{sub} OK')
+    async def _recover_subscription_req_msg(self, event) -> None:
+        logging.info(f'Recover subscription {self._subscriptions} waiting.')
+        await event.wait()
 
-        # logging.info(f'recover subscription {self._subscriptions} done.')
+        for sub in self._subscriptions:
+            if sub['feed'] in self._client.get_available_private_subscription_feeds():
+                await self.send_message(message, private=True)
+            elif sub['feed'] in self._client.get_available_public_subscription_feeds():
+                await self.send_message(message, private=False)
+            else: pass
+            logging.info(f'{sub}: OK')
 
-    def _get_reconnect_wait(self, attempts):
+        logging.info(f'Recover subscription {self._subscriptions} done.')
+
+    def _get_reconnect_wait(self, attempts: str) -> float:
         return round(random() * min(self.MAX_RECONNECT_SECONDS, (2 ** attempts) - 1) + 1)
 
-    async def send_message(self, msg, private: bool=False, retry_count: int=0):
-        logging.info(f'send_message (private: {private}; tries: {retry_count}): {msg}')
-        if not self._socket: # if not connected
-            if retry_count < self.MAX_SEND_MESSAGE_RETRIES:
-                await asyncio.sleep(2)
-                await self.send_message(msg, private=private, retry_count=retry_count + 1)
-        else:
-            if private:
-                if not self._challenge_ready:
-                   await self._check_challenge_ready()
-
-                msg['api_key'] = self._client.key
-                msg['original_challenge']: self._last_challenge
-                msg['signed_challenge']: self._new_challenge
-                await self._socket.send(json.dumps(msg))
-
-            else: await self._socket.send(json.dumps(msg))
-
-        pass
-    
-    async def _check_challenge_ready(self) -> None:
-        await self._send_challenge_request()
+    async def send_message(self, msg, private: bool=False, retry_count: int=0) -> None:
+        while not self._socket: await asyncio.sleep(.4)
         
-        logging.info('Awaiting challenge...')
-        while not self._challenge_ready: time.sleep(1)
+        if private:
+            if not self._client.secret or not self._client.key:
+                raise ValueError('Cannot access private endpoints with unauthenticated client!')
+            elif not self._challenge_ready: await self._check_challenge_ready()
 
-    async def _send_challenge_request(self):
+            msg['api_key'] = self._client.key
+            msg['original_challenge'] = self._last_challenge
+            msg['signed_challenge'] = self._new_challenge
+            
+        await self._socket.send(json.dumps(msg))
+
+    async def _check_challenge_ready(self) -> None:
         await self._socket.send(json.dumps({
             'event': 'challenge',
             'api_key': self._client.key
         }))
 
+        logging.debug('Awaiting challenge...')
+        while not self._challenge_ready: await asyncio.sleep(.1)
 
 class KrakenFuturesWSClient(object):
 
     PROD_ENV_URL = 'futures.kraken.com/ws/v1'
-    # DEMO_ENV_URL = 'demo.futuers.kraken.com'
 
-    def __init__(self, client, callback=None, sandbox: bool=False):
+    def __init__(self, client, callback=None, url: str=''):
         self._callback = callback
         self._client = client
         
-        self._pub_conn = ConnectFuturesWebsocket(
+        self._conn = ConnectFuturesWebsocket(
             client=self._client,
-            endpoint=self.PROD_ENV_URL, #if not sandbox else BETA_ENV_URL,
-            callback=self.on_message,
-            private=False
+            endpoint=self.PROD_ENV_URL if url == '' else url, 
+            callback=self.on_message
         )
 
-        # self._priv_conn = ConnectFuturesWebsocket(
-        #      client=self._client,
-        #      endpoint=self.PROD_ENV_URL, #if not sandbox else AUTH_BETA_ENV_URL,
-        #      callback=self.on_message,
-        #      private=True
-        # )
-
-    async def on_message(self, msg):
+    async def on_message(self, msg) -> None:
         ''' Call callback function or overload this'''
         if self._callback != None: await self._callback(msg)
         else:
             logging.warning('Received event but no callback is defined')
-            print(msg)
+            loggin.info(msg)
 
-    async def subscribe(self, 
-        feed: str,
-        products: [str]=None,
-        private: bool=False, 
-        **kwargs
-    ) -> None:
-        '''Subscribe to a channel'''
+    async def subscribe(self, feed: str, products: [str]=None) -> None:
+        '''Subscribe to a channel/feed'''
 
         message = { 'event': 'subscribe', 'feed': feed }
         if products: message['product_ids'] = products
             
-        if private:
+        if feed in self.get_available_private_subscription_feeds():
             logging.info(f'Subscribe private to {feed}')
-            self._priv_conn._subscriptions.append(message)
-            await self._priv_conn.send_message(message, private=private)
-        else:
+            await self._conn.send_message(message, private=True)
+        elif feed in self.get_available_public_subscription_feeds():
             logging.info(f'Subscribe public to {feed}')
-            self._pub_conn._subscriptions.append(message)
-            await self._pub_conn.send_message(message, private=private)
+            await self._conn.send_message(message, private=False)
+        else: raise ValueError(f'Feed: {feed} not found. Not subscribing to it.')
+        self._conn._subscriptions.append(message)
 
-    async def unsubscribe(self, private: bool=False, pair: [str]=None, subscription: dict=None, **kwargs) -> None:
-        '''Unsubscribe from a topic'''
+    async def unsubscribe(self, feed: str, products: [str]=None) -> None:
+        '''Unsubscribe from a topic/feed'''
+        self._conn._subscriptions = [
+            sub for sub in self._conn._subscriptions if sub['feed'] != feed
+        ]
 
-        payload = { 'event': 'unsubscribe' }
-        if pair != None: payload['pair'] = pair
-        if subscription != None: payload['subscription'] = subscription
-        payload.update(kwargs)
-        if private:
-            self._priv_conn._subscriptions.remove(payload)
-            await self._priv_conn.send_message(payload, private=private)
-        else:
-            self._pub_conn._subscriptions.remove(payload)
-            await self._pub_conn.send_message(payload, private=private)
+        message = { 'event': 'unsubscribe', 'feed': feed }
+        if products: message['product_ids'] = products
+
+        if feed in self.get_available_private_subscription_feeds():
+            logging.info(f'Unsubscribe private from {feed}')
+            await self._conn.send_message(message, private=True)
+        elif feed in self.get_available_public_subscription_feeds():
+            logging.info(f'Unsubscribe public from {feed}')
+            await self._conn.send_message(message, private=False)
+        else: raise ValueError(f'Feed: {feed} not found. Not unsubscribing it.')
 
     @staticmethod
     def get_available_public_subscription_feeds() -> [str]:
@@ -233,4 +193,8 @@ class KrakenFuturesWSClient(object):
 
     @staticmethod
     def get_available_private_subscription_feeds() -> [str]:
-        return [ 'fills', 'open_positions', 'open_orders', 'deposits_withdrawals', 'account_balances_and_margins', 'account_log', 'notifications_auth']
+        return [ 
+            'fills', 'open_positions', 'open_orders', 
+            'deposits_withdrawals', 'account_balances_and_margins', 
+            'account_log', 'notifications_auth'
+        ]

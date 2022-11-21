@@ -3,9 +3,11 @@ import logging
 import hashlib, hmac, base64
 
 class FuturesWsClientCl(KrakenBaseFuturesAPI):
-    
-    websocket_pub = None
-    websocket_priv = None
+    '''This class will be used in future if Kraken implements for example
+        sending orders via websocket feed for Futures
+    '''
+
+    websocket = None
 
     def _get_sign_challenge(self, challenge: str) -> str:
         sha256_hash = hashlib.sha256()
