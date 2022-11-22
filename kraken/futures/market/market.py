@@ -9,6 +9,13 @@ class MarketClient(KrakenBaseFuturesAPI):
         '''https://docs.futures.kraken.com/#http-api-charts-ohlc-get-ohlc
             https://support.kraken.com/hc/en-us/articles/4403284627220-OHLC
         '''
+        ttypes = ['spot', 'mark', 'trade']
+        resoulutions = ['1m', '5m', '15m', '30m', '1h', '4h', '12h', '1d', '1w']
+        if tick_type and tick_type not in ttypes:
+            raise ValueError(f'tick_type must be in {ttypes}')
+        elif resolution != None and resolution not in resoulutions:
+            raise ValueError(f'resolution must be in {resolutions}')
+
         params = { }
         if from_ != None: params['from'] = from_
         if to != None: params['to'] = to
@@ -41,7 +48,7 @@ class MarketClient(KrakenBaseFuturesAPI):
             https://support.kraken.com/hc/en-us/articles/360022839551-Order-Book
         '''
         params = {}
-        if symbol: params['symbol'] = symbol
+        if symbol != None: params['symbol'] = symbol
         return self._request('GET', '/derivatives/api/v3/orderbook', queryParams=params, auth=False)
 
     def get_tickers(self) -> dict:
@@ -65,14 +72,15 @@ class MarketClient(KrakenBaseFuturesAPI):
         else:
             return self._request('GET', '/derivatives/api/v3/instruments/status', auth=False)
 
-    def get_trade_history(self, symbol: str=None, lastTime: str=None) -> dict:
+    def get_trade_history(self, symbol: str=None, lastTime: str=None, **kwargs) -> dict:
         '''https://docs.futures.kraken.com/#http-api-trading-v3-api-market-data-get-trade-history
             https://support.kraken.com/hc/en-us/articles/360022839511-History
         '''
         params = {}
-        if symbol != None:  params['symbol'] = symbol 
+        if symbol != None: params['symbol'] = symbol 
         if lastTime != None: params['lastTime'] = lastTime
-        if params == {}: raise ValueError('Either symbol or lastTime must be specified!')
+        params.update(kwargs)
+        # if params == {}: raise ValueError('Either symbol or lastTime must be specified!')
         return self._request('GET', '/derivatives/api/v3/history', queryParams=params, auth=False)
 
     def get_historical_funding_rates(self, symbol: str) -> dict:
@@ -85,7 +93,7 @@ class MarketClient(KrakenBaseFuturesAPI):
 
     def set_leverage_preference(self, symbol: str, maxLeverage: float=None) -> dict:
         '''https://docs.futures.kraken.com/#http-api-trading-v3-api-multi-collateral-set-the-leverage-setting-for-a-market'''
-        params = {'symbol': symbol}
+        params = { 'symbol': symbol }
         if maxLeverage != None: params['maxLeverage'] = maxLeverage
         return self._request('PUT', '/derivatives/api/v3/leveragepreferences', queryParams=params, auth=True)
 

@@ -29,7 +29,7 @@ class SpotWsClientCl(KrakenBaseRestAPI):
         close_price: float=None,
         close_price2: float=None,
         timeinforce: str=None
-    ) -> dict:
+    ) -> None:
         '''https://docs.kra)en.com/websockets/#message-addOrder'''
         if not self.websocket_priv:
             logging.warning('Websocket not connected!')
@@ -60,7 +60,7 @@ class SpotWsClientCl(KrakenBaseRestAPI):
         if close_price2 != None: payload['close[price2]'] = close_price2
         if timeinforce != None: payload['timeinforce'] = timeinforce
 
-        return await self.websocket_priv.send_message(msg=payload, private=True)
+        await self.websocket_priv.send_message(msg=payload, private=True)
 
     async def edit_order(
         self, orderid: str,
@@ -72,7 +72,7 @@ class SpotWsClientCl(KrakenBaseRestAPI):
         oflags: [str]=None,
         newuserref: str=None,
         validate: str=None
-    ) -> dict:
+    ) -> None:
         '''https://docs.kraken.com/websockets/#message-editOrder'''
         if not self.websocket_priv:
             logging.warning('Websocket not connected!')
@@ -89,55 +89,41 @@ class SpotWsClientCl(KrakenBaseRestAPI):
         if price != None: payload['price'] = str(price)
         if price2 != None: payload['price2'] = str(price2)
         if volume != None: payload['volume'] = str(volume)
-        if oflags != None:
-            if type(oflags) == str: payload['oflags'] = oflags
-            elif type(oflags) == list: payload['oflags'] = self._to_str_list(oflags)
-            else: raise ValueError('Oflags must be type [str] or comma delimited list of order flags. Available flags: viqc,fcib, fciq, nompp, post')
+        if oflags != None: payload['oflags'] = self._to_str_list(oflags)
         if newuserref != None: payload['newuserref'] = str(newuserref)
         if validate != None: payload['validate'] = str(validate)
 
-        return await self.websocket_priv.send_message(msg=payload, private=True)
+        await self.websocket_priv.send_message(msg=payload, private=True)
 
-    async def cancel_order(self, txid, reqid: int=None) -> dict:
+    async def cancel_order(self, txid) -> None:
         '''https://docs.kraken.com/websockets/#message-cancelOrder'''
         if not self.websocket_priv:
             logging.warning('Websocket not connected!')
             return
         elif not self.websocket_priv.private:
             raise ValueError('Cannot cancel_order on public Websocke Client!')
+        await self.websocket_priv.send_message(msg={ 
+            'event': 'cancelOrder', 
+            'txid': self._to_str_list(txid)
+        }, private=True)
 
-        payload = { 'event': 'cancelOrder' }
-        if type(txid) == str: payload['txid'] = [txid]
-        elif type(txid) == list: payload['txid'] = txid
-        else: raise ValueError('txid must be string or list of strings!')
-
-        return await self.websocket_priv.send_message(msg=payload, private=True)
-
-    async def cancel_all_orders(self, reqid: int=None) -> dict:
+    async def cancel_all_orders(self) -> None:
         '''https://docs.kraken.com/websockets/#message-cancelAll'''
         if not self.websocket_priv:
             logging.warning('Websocket not connected!')
             return
         elif not self.websocket_priv.private:
             raise ValueError('Cannot use cancel_all_orders on public Websocke Client!')
+        await self.websocket_priv.send_message(msg={ 'event': 'cancelAll' }, private=True, reponse=True)
 
-        payload = { 'event': 'cancelAll' }
-        if reqid != None: payload['reqid'] = reqid
-
-        return await self.websocket_priv.send_message(msg=payload, private=True, reponse=True)
-
-    async def cancel_all_orders_after(self, timeout: int, reqid: int=None) -> dict:
+    async def cancel_all_orders_after(self, timeout: int) -> None:
         '''https://docs.kraken.com/websockets/#message-cancelAllOrdersAfter'''
         if not self.websocket_priv:
             logging.warning('Websocket not connected!')
             return
         elif not self.websocket_priv.private:
             raise ValueError('Cannot use cancel_all_orders_after on public Websocke Client!')
-
-        payload = {
+        await self.websocket_priv.send_message(msg={
             'event': 'cancelAllOrdersAfter',
             'timeout': timeout
-        }
-        if reqid != None: payload['reqid'] = reqid
-
-        return await self.websocket_priv.send_message(msg=payload, private=True)
+        }, private=True)

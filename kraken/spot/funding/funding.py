@@ -5,17 +5,15 @@ class FundingClient(KrakenBaseRestAPI):
 
     def get_deposit_methods(self, asset: str) -> dict:
         '''https://docs.kraken.com/rest/#operation/getDepositMethods'''
-        params = { 'asset': asset }
-        return self._request('POST', '/private/DepositMethods', params=params)
+        return self._request('POST', '/private/DepositMethods', params={ 'asset': asset })
 
     def get_deposit_address(self, asset: str, method: str, new: bool=False) -> dict:
         '''https://docs.kraken.com/rest/#operation/getDepositAddresses'''
-        params = {
+        return self._request('POST', '/private/DepositAddresses', params={
             'asset': asset,
             'method': str(method),
             'new': new
-        }
-        return self._request('POST', '/private/DepositAddresses', params=params)
+        })
 
     def get_recend_deposits_status(self, asset: str, method: str=None) -> dict:
         '''https://docs.kraken.com/rest/#operation/getStatusRecentDeposits'''
@@ -23,23 +21,21 @@ class FundingClient(KrakenBaseRestAPI):
         if method != None: params['method'] = method
         return self._request('POST', '/private/DepositStatus', params=params)
 
-    def get_withdrawal_info(self, asset: str, key: str, amount: str) -> dict:
-        '''https://docs.kraken.com/rest/#operation/getWithdrawalInformation'''
-        params = {
-            'asset': asset,
-            'key': str(key),
-            'amount': str(amount)
-        }
-        return self._request('POST', '/private/WithdrawInfo', params=params)
-
     def withdraw_funds(self, asset: str, key: str, amount: str) -> dict:
         '''https://docs.kraken.com/rest/#operation/withdrawFund'''
-        params = {
+        return self._request('POST', '/private/Withdraw', params={
             'asset': asset,
             'key': str(key),
             'amount': str(amount)
-        }
-        return self._request('POST', '/private/Withdraw', params=params)
+        })
+
+    def get_withdrawal_info(self, asset: str, key: str, amount: str) -> dict:
+        '''https://docs.kraken.com/rest/#operation/getWithdrawalInformation'''
+        return self._request('POST', '/private/WithdrawInfo', params={
+            'asset': asset,
+            'key': str(key),
+            'amount': str(amount)
+        })
 
     def get_recend_withdraw_status(self, asset: str, method: str=None) -> dict:
         '''https://docs.kraken.com/rest/#operation/getStatusRecentWithdrawals'''
@@ -49,18 +45,16 @@ class FundingClient(KrakenBaseRestAPI):
 
     def cancel_withdraw(self, asset: str, refid: str) -> dict:
         '''https://docs.kraken.com/rest/#operation/cancelWithdrawal'''
-        params = {
+        return self._request('POST', '/private/WithdrawCancel', params={
             'asset': asset,
             'refid': str(refid)
-        }
-        return self._request('POST', '/private/WithdrawCancel', params=params)
+        })
 
-    def wallet_transfer(self, asset: str, from_: str, to: str, amount: str) -> dict:
+    def wallet_transfer(self, asset: str, from_: str, to_: str, amount: str) -> dict:
         '''https://docs.kraken.com/rest/#operation/walletTransfer'''
-        params = {
+        return self._request('POST', '/private/WalletTransfer', params={
             'asset': asset,
             'from': from_,
-            'to': to,
+            'to': to_,
             'amount': amount
-        }
-        return self._request('POST', '/private/WalletTransfer', params=params)
+        })

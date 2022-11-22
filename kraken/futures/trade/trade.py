@@ -26,12 +26,12 @@ class TradeClient(KrakenBaseFuturesAPI):
         '''https://docs.futures.kraken.com/#http-api-trading-v3-api-order-management-dead-man-39-s-switch'''
         return self._request('POST', '/derivatives/api/v3/cancelallordersafter', postParams={'timeout': timeout})
 
-    def cancel_order(self, orderId: str='', cliOrdId: str='') -> dict:
+    def cancel_order(self, order_id: str='', cliOrdId: str='') -> dict:
         '''https://docs.futures.kraken.com/#http-api-trading-v3-api-order-management-cancel-order'''
-        if orderId == '' and cliOrdId == '': raise ValueError('Either orderId or cliOrdId must be set!')
+        if order_id == '' and cliOrdId == '': raise ValueError('Either order_id or cliOrdId must be set!')
 
         params = {}
-        if orderId != '': params['orderId'] = orderId
+        if order_id != '': params['order_id'] = order_id
         elif cliOrdId != '': params['cliOrdId'] = cliOrdId
         return self._request('POST', '/derivatives/api/v3/cancelorder', postParams=params, auth=True)
 
@@ -46,7 +46,6 @@ class TradeClient(KrakenBaseFuturesAPI):
         if size != None: params['size'] = size
         if stopPrice != None: params['stopPrice'] = stopPrice
         return self._request('POST', '/derivatives/api/v3/editorder', postParams=params, auth=True)
-
 
     def get_orders_status(self, orderIds: [str]=None, cliOrdIds: [str]=None) -> dict:
         '''https://docs.futures.kraken.com/#http-api-trading-v3-api-order-management-get-the-current-status-for-specific-orders'''

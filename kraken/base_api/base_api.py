@@ -11,7 +11,6 @@ import time
 from uuid import uuid1
 import urllib.parse
 
-
 class KrakenBaseRestAPI(object):
 
     def __init__(self, key: str='', secret: str='', url: str='', sandbox: bool=False, **kwargs):
@@ -33,19 +32,16 @@ class KrakenBaseRestAPI(object):
         do_json: bool=False, 
         return_raw: bool=False
     ) -> dict:
-        uri_path = uri
+        method = method.upper()
         data_json = ''
-
-        if method.upper() in ['GET', 'DELETE']:
+        if method in ['GET', 'DELETE']:
             if params:
                 strl = []
-                for key in sorted(params):
-                    strl.append(f'{key}={params[key]}')
+                for key in sorted(params): strl.append(f'{key}={params[key]}')
                 data_json += '&'.join(strl)
-                uri += f'?{data_json}'
-                uri_path = uri
+                uri += f'?{data_json}'.replace(' ', '%20')
 
-        headers = {}
+        headers = { 'User-Agent': 'python-kraken-sdk' }
         if auth:
             if not self.key or self.key == '' or not self.secret or self.secret == '': raise ValueError('Missing credentials')
             params['nonce'] = str(int(time.time() * 1000)) # generate nonce
@@ -55,17 +51,14 @@ class KrakenBaseRestAPI(object):
                 'API-Sign': self.get_kraken_signature(f'{self._api_v}{uri}', params)
             }
 
-        headers['User-Agent'] = 'python-kraken-sdk'
         url = f'{self.url}{self._api_v}{uri}'
-
-
+        # print(url)
         if method in ['GET', 'DELETE']:
-            return self.check_response_data(requests.request(method, url, headers=headers, timeout=timeout), return_raw)
+            return self.check_response_data(requests.request(method=method, url=url, headers=headers, timeout=timeout), return_raw)
+        elif do_json:
+            return self.check_response_data(requests.request(method=method, url=url, headers=headers, json=params, timeout=timeout), return_raw)
         else:
-            if do_json:
-                return self.check_response_data(requests.request(method, url, headers=headers, json=params, timeout=timeout), return_raw)
-            else:
-                return self.check_response_data(requests.request(method, url, headers=headers, data=params, timeout=timeout), return_raw)
+            return self.check_response_data(requests.request(method=method, url=url, headers=headers, data=params, timeout=timeout), return_raw)
 
     def get_kraken_signature(self, urlpath: str, data: dict) -> str:
         return base64.b64encode(
@@ -105,7 +98,8 @@ class KrakenBaseFuturesAPI(object):
     def __init__(self, key: str='', secret: str='', url: str='', sandbox: bool=False, **kwargs):
         
         self.sandbox = sandbox
-        if self.sandbox: self.url = 'https://demo-futures.kraken.com'
+        if url: self.url = url
+        elif self.sandbox: self.url = 'https://demo-futures.kraken.com'
         else: self.url = 'https://futures.kraken.com'
         
         self.key = key
@@ -121,22 +115,21 @@ class KrakenBaseFuturesAPI(object):
         queryParams: dict={}, 
         return_raw: bool=False
     ) -> dict:
+        method = method.upper()
 
         postString: str = ''
         if postParams:
             strl: [str] = []
-            for key in sorted(postParams):
-                strl.append(f'{key}={postParams[key]}')
-            postString += '&'.join(strl)
+            for key in sorted(postParams): strl.append(f'{key}={postParams[key]}')
+            postString = '&'.join(strl)
 
         queryString: str = ''
         if queryParams:
             strl: [str] = []
-            for key in sorted(queryParams):
-                strl.append(f'{key}={queryParams[key]}')
-            queryString += '&'.join(strl)
+            for key in sorted(queryParams): strl.append(f'{key}={queryParams[key]}')
+            queryString = '&'.join(strl).replace(' ', '%20')
 
-        headers = {}
+        headers = { 'User-Agent': 'python-kraken-sdk' }
         if auth:
             if not self.key or self.key == '' or not self.secret or self.secret == '': raise ValueError('Missing credentials')
             self.nonce = (self.nonce + 1) % 1
@@ -148,24 +141,50 @@ class KrakenBaseFuturesAPI(object):
                 'Authent': self.get_kraken_futures_signature(uri, queryString + postString, nonce)
             }
 
-        headers['User-Agent'] = 'python-kraken-sdk'
-
-        url = f'{self.url}{uri}'
-        if queryString != '': url = f'{url}?{queryString}'
-
-        if method.upper() in ['GET', 'DELETE']:
-            return self.check_response_data(requests.request(method, url, headers=headers, timeout=timeout), return_raw)
-        elif method.upper() == 'PUT':
-            return self.check_response_data(requests.request(method, f'{self.url}{uri}', params=str.encode(queryString), headers=headers, timeout=timeout), return_raw)
+        if method in ['GET', 'DELETE']:
+            return self.check_response_data(
+                requests.request(
+                    method=method,
+                    url=f'{self.url}{uri}' if queryString == '' else f'{self.url}{uri}?{queryString}', 
+                    headers=headers, 
+                    timeout=timeout
+                ), 
+                return_raw
+            )
+        elif method == 'PUT':
+            return self.check_response_data(
+                requests.request(
+                method=method, 
+                url=f'{self.url}{uri}', 
+                params=str.encode(queryString), 
+                headers=headers, 
+                timeout=timeout
+                ), 
+                return_raw
+            )
         else:
-            return self.check_response_data(requests.request(method, f'{url}?{postString}', data=str.encode(postString), headers=headers, timeout=timeout), return_raw)
+            return self.check_response_data(
+                requests.request(
+                    method=method, 
+                    url=f'{self.url}{uri}?{postString}', 
+                    data=str.encode(postString), 
+                    headers=headers, 
+                    timeout=timeout
+                ), return_raw
+            )
 
     def get_kraken_futures_signature(self, endpoint: str, data: str, nonce: str) -> str:
         # https://github.com/CryptoFacilities/REST-v3-Python/blob/ee89b9b324335d5246e2f3da6b52485eb8391d50/cfRestApiV3.py#L295-L296
         if endpoint.startswith('/derivatives'): endpoint = endpoint[len('/derivatives'):] 
         sha256_hash = hashlib.sha256()
         sha256_hash.update((data + nonce + endpoint).encode('utf8'))
-        return base64.b64encode(hmac.new(base64.b64decode(self.secret), sha256_hash.digest(), hashlib.sha512).digest())
+        return base64.b64encode(
+            hmac.new(
+                base64.b64decode(self.secret), 
+                sha256_hash.digest(), 
+                hashlib.sha512
+            ).digest()
+        )
 
     @staticmethod
     def check_response_data(response_data, return_raw: bool=False) -> dict:
@@ -181,8 +200,3 @@ class KrakenBaseFuturesAPI(object):
                     else: raise Exception(f'{response_data.status_code} - {response_data.text}')
                 else: return data
         else: raise Exception(f'{response_data.status_code}-{response_data.text}')
-
-    @property
-    def return_unique_id(self) -> str:
-        return ''.join([each for each in str(uuid1()).split('-')])
-

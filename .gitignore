@@ -2,9 +2,9 @@
 __pycache__/
 *.py[cod]
 *$py.class
-
 # C extensions
 *.so
+*.zip
 
 # Distribution / packaging
 .Python
@@ -124,7 +124,13 @@ venv.bak/
 .mypy_cache/
 .dmypy.json
 dmypy.json
+del*.py
 
 # Pyre type checker
 .pyre/
+
+# misc
 .DS_Store
+*.csv
+*.log
+*.zip
