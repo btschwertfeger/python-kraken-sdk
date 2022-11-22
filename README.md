@@ -67,7 +67,7 @@ python3 -m pip install python-kraken-sdk
 
 ### REST API
 
-... can be found in `/examples/examples.py`
+... can be found in `/examples/spot_examples.py`
 
 ```python
 from kraken.spot.client import User, Market, Trade, Funding, Staking
@@ -113,7 +113,7 @@ if __name__ == '__main__':
 
 ### Websockets
 
-... can be found in `/examples/ws_examples.py`
+... can be found in `/examples/spot_ws_examples.py`
 
 ```python
 import asyncio
@@ -160,9 +160,10 @@ async def main() -> None:
     await bot.unsubscribe(subscription={ 'name': 'spread' }, pair=['DOT/EUR'])
     # ....
 
+    # ___Private_Websocket_Feed_____
+    # when using the authenticated bot, you can also subscribe to public feeds
     auth_bot = Bot(WsClient(key=key, secret=secret))
     print(auth_bot.private_sub_names) # list private subscription names
-    # when using the authenticated bot, you can also subscribe to public feeds
     await auth_bot.subscribe(subscription={ 'name': 'ownTrades' })
     await auth_bot.subscribe(subscription={ 'name': 'openOrders' })
 
@@ -254,8 +255,7 @@ def main() -> None:
     funding = Funding(key=key, secret=secret, sandbox=demo)
     # ....
 
-if __name__ == '__main__':
-    main()
+if __name__ == '__main__': main()
 ```
 
 <a name="futuresws"></a>

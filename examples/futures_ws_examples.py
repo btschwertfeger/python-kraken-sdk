@@ -49,7 +49,8 @@ async def main() -> None:
     # await bot.subscribe(feed='heartbeat')
 
     # unsubscribe from a websocket feed
-    # await bot.unsubscribe(feed='ticker', products=products)
+    time.sleep(2) # in case subscribe is not done yet
+    await bot.unsubscribe(feed='ticker', products=products)
     # ....
     
     # _____Private_Websocket_Feeds_________________

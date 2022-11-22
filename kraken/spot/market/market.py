@@ -9,7 +9,7 @@ class MarketClient(KrakenBaseRestAPI):
         if aclass != None: params['aclass'] = aclass
         return self._request('GET', '/public/Assets', params=params, auth=False)
 
-    def get_tradable_asset_pair(self, pair, info=None) -> dict:
+    def get_tradable_asset_pair(self, pair: str, info=None) -> dict:
         '''https://docs.kraken.com/rest/#operation/getTradableAssetPairs'''
         params = {}
         # if type(pair) == str: pair = [pair]
@@ -18,13 +18,13 @@ class MarketClient(KrakenBaseRestAPI):
 
         return self._request('GET', '/public/AssetPairs', params=params, auth=False)
 
-    def get_ticker(self, pair=None) -> dict:
+    def get_ticker(self, pair: str=None) -> dict:
         '''https://docs.kraken.com/rest/#operation/getTickerInformation'''
         params = { }
         if pair != None: params['pair'] = self._to_str_list(pair)
         return self._request('GET', '/public/Ticker', params=params, auth=False)
 
-    def get_ohlc(self, pair, interval: int=None, since: int=None) -> dict:
+    def get_ohlc(self, pair: str, interval: int=None, since: int=None) -> dict:
         '''https://docs.kraken.com/rest/#operation/getOHLCData
         interval in minutes
         '''
@@ -33,19 +33,19 @@ class MarketClient(KrakenBaseRestAPI):
         if since != None: params['since'] = since
         return self._request('GET', '/public/OHLC', params=params, auth=False)
 
-    def get_order_book(self, pair, count=None) -> dict:
+    def get_order_book(self, pair: str, count=None) -> dict:
         '''https://docs.kraken.com/rest/#operation/getOrderBook'''
         params = { 'pair': pair }
         if count != None: params['count'] = count
         return self._request('GET', '/public/Depth', params=params, auth=False)
 
-    def get_recent_trades(self, pair, since=None) -> dict:
+    def get_recent_trades(self, pair: str, since=None) -> dict:
         '''https://docs.kraken.com/rest/#operation/getRecentTrades'''
         params = { 'pair': pair }
         if since != None: params['since'] = None
         return self._request('GET', '/public/Trades', params=params, auth=False)
 
-    def get_recend_spreads(self, pair, since=None) -> dict:
+    def get_recend_spreads(self, pair: str, since=None) -> dict:
         '''https://docs.kraken.com/rest/#operation/getRecentSpreads'''
         params = { 'pair': pair }
         if since != None: params['since'] = since

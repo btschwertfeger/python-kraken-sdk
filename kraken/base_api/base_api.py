@@ -33,15 +33,13 @@ class KrakenBaseRestAPI(object):
         return_raw: bool=False
     ) -> dict:
         method = method.upper()
-
-        uri_path, data_json = uri, ''
+        data_json = ''
         if method in ['GET', 'DELETE']:
             if params:
                 strl = []
                 for key in sorted(params): strl.append(f'{key}={params[key]}')
                 data_json += '&'.join(strl)
-                uri += f'?{data_json}'
-                uri_path = uri
+                uri += f'?{data_json}'.replace(' ', '%20')
 
         headers = { 'User-Agent': 'python-kraken-sdk' }
         if auth:
@@ -54,7 +52,7 @@ class KrakenBaseRestAPI(object):
             }
 
         url = f'{self.url}{self._api_v}{uri}'
-
+        # print(url)
         if method in ['GET', 'DELETE']:
             return self.check_response_data(requests.request(method=method, url=url, headers=headers, timeout=timeout), return_raw)
         elif do_json:
@@ -123,13 +121,13 @@ class KrakenBaseFuturesAPI(object):
         if postParams:
             strl: [str] = []
             for key in sorted(postParams): strl.append(f'{key}={postParams[key]}')
-            postString += '&'.join(strl)
+            postString = '&'.join(strl)
 
         queryString: str = ''
         if queryParams:
             strl: [str] = []
             for key in sorted(queryParams): strl.append(f'{key}={queryParams[key]}')
-            queryString += '&'.join(strl)
+            queryString = '&'.join(strl).replace(' ', '%20')
 
         headers = { 'User-Agent': 'python-kraken-sdk' }
         if auth:
@@ -144,11 +142,10 @@ class KrakenBaseFuturesAPI(object):
             }
 
         if method in ['GET', 'DELETE']:
-            url = f'{self.url}{uri}' if queryString == '' else f'{self.url}{url}?{queryString}'
             return self.check_response_data(
                 requests.request(
                     method=method,
-                    url=f'{self.url}{uri}' if queryString == '' else f'{self.url}{url}?{queryString}', 
+                    url=f'{self.url}{uri}' if queryString == '' else f'{self.url}{uri}?{queryString}', 
                     headers=headers, 
                     timeout=timeout
                 ), 

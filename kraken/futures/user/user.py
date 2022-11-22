@@ -49,9 +49,8 @@ class UserClient(KrakenBaseFuturesAPI):
         if to != None: params['to'] = to
         return self._request('GET', '/api/history/v2/account-log', queryParams=params, auth=True)
 
-
     def get_account_log_csv(self) -> dict:
         '''https://docs.futures.kraken.com/#http-api-history-account-log-get-recent-account-log-csv'''
-        return self._request('GET', '/api/history/v2/accountlogcsv', auth=True)
+        return self._request('GET', '/api/history/v2/accountlogcsv', auth=True, return_raw=True)
 
 

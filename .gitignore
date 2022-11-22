@@ -128,4 +128,9 @@ del*.py
 
 # Pyre type checker
 .pyre/
+
+# misc
 .DS_Store
+*.csv
+*.log
+*.zip
