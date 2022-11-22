@@ -21,6 +21,15 @@ logging.getLogger().setLevel(logging.INFO)
 logging.getLogger('requests').setLevel(logging.WARNING)
 logging.getLogger('urllib3').setLevel(logging.WARNING)
 
+
+#  _   _  ___ _____ _____   
+# | \ | |/ _ \_   _| ____|_ 
+# |  \| | | | || | |  _| (_)
+# | |\  | |_| || | | |___ _ 
+# |_| \_|\___/ |_| |_____(_)
+# ----> More examples can be found in kraken/tests
+# examples may not be updated regularily
+
 def main() -> None:
 
     key = dotenv_values('.env')['API_KEY']
@@ -55,7 +64,6 @@ def main() -> None:
     # handle.close()
 
     #print(user.delete_export_report(id_='INSG', type='delete'))#type=cancel
-
 
     # ___Market___________________________
     market = Market(key=key, secret=secret)
@@ -117,20 +125,12 @@ def main() -> None:
     #     price=17000
     # ))
 
-    # print(trade.cancel_order(
-    #     txid='sometxid'
-    # ))
-
+    # print(trade.cancel_order(txid='sometxid'))
     # print(trade.cancel_all_orders())
-
-    # print(trade.cancel_all_orders_after_x(
-    #     timeout=60
-    # ))
+    # print(trade.cancel_all_orders_after_x(timeout=6))
 
     # __ not working
-    # print(trade.cancel_order_batch(
-    #     orders=['O2JLFP-VYFIW-35ZAAE', 'O523KJ-DO4M2-KAT243', 'OCDIAL-YC66C-DOF7HS', 'OVFPZ2-DA2GV-VBFVVI']
-    # ))
+    # print(trade.cancel_order_batch(orders=['O2JLFP-VYFIW-35ZAAE', 'O523KJ-DO4M2-KAT243', 'OCDIAL-YC66C-DOF7HS', 'OVFPZ2-DA2GV-VBFVVI']))
 
 
     # ____Funding___________________________

@@ -2,27 +2,27 @@ from kraken.base_api.base_api import KrakenBaseRestAPI
 
 class MarketClient(KrakenBaseRestAPI):
 
-    def get_assets(self, assets=None, aclass=None) -> dict:
+    def get_assets(self, assets=None, aclass: str=None) -> dict:
         '''https://docs.kraken.com/rest/#operation/getAssetInfo'''
         params = {}
-        if assets != None:
-            if type(assets) == str: assets = [assets]
-            params['asset'] = ','.join(assets)
+        if assets != None: params['asset'] = self._to_str_list(assets)
         if aclass != None: params['aclass'] = aclass
         return self._request('GET', '/public/Assets', params=params, auth=False)
 
     def get_tradable_asset_pair(self, pair, info=None) -> dict:
         '''https://docs.kraken.com/rest/#operation/getTradableAssetPairs'''
         params = {}
-        if type(pair) == str: pair = [pair]
-        params['pair'] = ','.join(pair)
+        # if type(pair) == str: pair = [pair]
+        params['pair'] = self._to_str_list(pair)#','.join(pair)
         if info != None: params['info'] = info
 
         return self._request('GET', '/public/AssetPairs', params=params, auth=False)
 
-    def get_ticker(self, pair) -> dict:
+    def get_ticker(self, pair=None) -> dict:
         '''https://docs.kraken.com/rest/#operation/getTickerInformation'''
-        return self._request('GET', '/public/Ticker', params={'pair': pair}, auth=False)
+        params = { }
+        if pair != None: params['pair'] = self._to_str_list(pair)
+        return self._request('GET', '/public/Ticker', params=params, auth=False)
 
     def get_ohlc(self, pair, interval: int=None, since: int=None) -> dict:
         '''https://docs.kraken.com/rest/#operation/getOHLCData

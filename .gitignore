@@ -2,9 +2,9 @@
 __pycache__/
 *.py[cod]
 *$py.class
-del*.py
 # C extensions
 *.so
+*.zip
 
 # Distribution / packaging
 .Python
@@ -124,6 +124,7 @@ venv.bak/
 .mypy_cache/
 .dmypy.json
 dmypy.json
+del*.py
 
 # Pyre type checker
 .pyre/
