@@ -116,7 +116,7 @@ if __name__ == '__main__':
 ... can be found in `/examples/spot_ws_examples.py`
 
 ```python
-import asyncio
+import asyncio, time
 from kraken.spot.client import WsClient
 from kraken.spot.websocket.websocket import KrakenSpotWSClient
 

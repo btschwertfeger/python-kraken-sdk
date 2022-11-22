@@ -7,6 +7,7 @@ from datetime import datetime
 try:
     from kraken.spot.client import User, Market, Trade, Funding, Staking
 except:
+    print('USING LOCAL MODULE')
     sys.path.append('/Users/benjamin/repositories/Trading/python-kraken-sdk')
     from kraken.spot.client import User, Market, Trade, Funding, Staking
 
@@ -24,10 +25,10 @@ logging.getLogger('urllib3').setLevel(logging.WARNING)
 key = dotenv_values('.env')['API_KEY']
 secret = dotenv_values('.env')['SECRET_KEY']
 
-#  _   _  ___ _____ _____   
-# | \ | |/ _ \_   _| ____|_ 
+#  _   _  ___ _____ _____
+# | \ | |/ _ \_   _| ____|_
 # |  \| | | | || | |  _| (_)
-# | |\  | |_| || | | |___ _ 
+# | |\  | |_| || | | |___ _
 # |_| \_|\___/ |_| |_____(_)
 # ----> More examples can be found in kraken/tests
 # examples may not be updated regularily
@@ -158,7 +159,7 @@ def main() -> None:
     market_examples()
     trade_examples()
     funding_examples()
-    staking_examples()    
+    staking_examples()
 
 if __name__ == '__main__':
     main()

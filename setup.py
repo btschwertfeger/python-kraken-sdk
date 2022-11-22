@@ -75,7 +75,7 @@ class UploadCommand(Command):
         os.system('twine upload dist/*')
 
         # self.status('Pushing git tags…')
-        # os.system(f'git tag v{about["__version__"]}')
+        # os.system(f'git tag v{about['__version__']}')
         # os.system('git push --tags')
 
         sys.exit()
@@ -121,7 +121,7 @@ setup(
     author_email=EMAIL,
     python_requires=REQUIRES_PYTHON,
     url=URL,
-    packages=find_packages(exclude=["tests", "*.tests", "*.tests.*", "tests.*"]),
+    packages=find_packages(exclude=['tests', '*.tests', '*.tests.*', 'tests.*', '*.env*']),
     # If your package is a single module, use this instead of 'packages':
     # py_modules=['mypackage'],
 

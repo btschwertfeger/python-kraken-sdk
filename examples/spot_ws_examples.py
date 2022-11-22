@@ -10,6 +10,7 @@ try:
     from kraken.spot.client import WsClient
     from kraken.spot.websocket.websocket import KrakenSpotWSClient
 except:
+    print('Using local module')
     sys.path.append('/Users/benjamin/repositories/Trading/python-kraken-sdk')
     from kraken.spot.client import WsClient
     from kraken.spot.websocket.websocket import KrakenSpotWSClient
@@ -52,7 +53,7 @@ async def main() -> None:
     # ___Public_Websocket_Feed_____
     bot = Bot(WsClient()) # only use this one if you dont need private feeds
     # print(bot.public_sub_names) # list public subscription names
-    
+
     await bot.subscribe(subscription={ 'name': 'ticker' }, pair=['XBT/EUR', 'DOT/EUR'])
     await bot.subscribe(subscription={ 'name': 'spread' }, pair=['XBT/EUR', 'DOT/EUR'])
     # await bot.subscribe(subscription={ 'name': 'book' }, pair=['BTC/EUR'])
@@ -61,8 +62,8 @@ async def main() -> None:
     # await bot.subscribe(subscription={ 'name': 'ohlc', 'interval': 15}, pair=['XBT/EUR', 'DOT/EUR'])
     # await bot.subscribe(subscription={ 'name': 'trade' }, pair=['BTC/EUR'])
     # await bot.subscribe(subscription={ 'name': '*' } , pair=['BTC/EUR'])
-    
-    time.sleep(2) # wait because unsubscribing is faster than subscribing ... 
+
+    time.sleep(2) # wait because unsubscribing is faster than subscribing ...
     await bot.unsubscribe(subscription={ 'name': 'ticker' }, pair=['XBT/EUR','DOT/EUR'])
     await bot.unsubscribe(subscription={ 'name': 'spread' }, pair=['XBT/EUR'])
     await bot.unsubscribe(subscription={ 'name': 'spread' }, pair=['DOT/EUR'])
@@ -73,13 +74,13 @@ async def main() -> None:
     # when using the authenticated bot, you can also subscribe to public feeds
     await auth_bot.subscribe(subscription={ 'name': 'ownTrades' })
     await auth_bot.subscribe(subscription={ 'name': 'openOrders' })
-    
+
     time.sleep(2)
     await auth_bot.unsubscribe(subscription={ 'name': 'ownTrades' })
-    await auth_bot.unsubscribe(subscription={ 'name': 'openOrders' })   
+    await auth_bot.unsubscribe(subscription={ 'name': 'openOrders' })
 
 
-    while True: 
+    while True:
         await asyncio.sleep(6)
         # display the active subscriptions ...
         # print(bot.active_public_subscriptions)

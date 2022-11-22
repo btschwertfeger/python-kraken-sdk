@@ -3,6 +3,7 @@ import sys, os, time
 try:
     from kraken.futures.client import Market, User, Trade, Funding
 except:
+    print('USING LOCAL MODULE')
     sys.path.append('/Users/benjamin/repositories/Trading/python-kraken-sdk')
     from kraken.futures.client import Market, User, Trade, Funding
 
@@ -70,7 +71,7 @@ def user_examples() -> None:
         handle = open('account_log.csv', 'wb')
         for chunk in response.iter_content(chunk_size=512):
             if chunk: handle.write(chunk)
-        handle.close() 
+        handle.close()
     except: pass
 
 def trade_examples() -> None:
@@ -117,17 +118,17 @@ def trade_examples() -> None:
     print(trade.cancel_order(order_id='some order id'))
     print(trade.edit_order(orderId='some order id', size=300, limitPrice=401, stopPrice=350))
     print(trade.get_orders_status(orderIds=['orderid1', 'orderid2']))
-    print(trade.create_order( # limit order to buy bch ... 
-        orderType='lmt', 
+    print(trade.create_order( # limit order to buy bch ...
+        orderType='lmt',
         side='buy',
-        size=1, 
+        size=1,
         limitPrice=4,
         symbol='pf_bchusd',
     ))
-    print(trade.create_order( # take_profit order 
-        orderType='take_profit', 
+    print(trade.create_order( # take_profit order
+        orderType='take_profit',
         side='buy',
-        size=1, 
+        size=1,
         symbol='pf_bchusd',
         stopPrice=100,
         triggerSignal='mark'
@@ -138,17 +139,17 @@ def funding_examples() -> None:
     funding = Funding(key=key, secret=secret, sandbox=True)
     print(funding.get_historical_funding_rates(symbol='PF_SOLUSD'))
     # print(funding.initiate_wallet_transfer(
-    #     amount='100', 
-    #     fromAccount='some cash or margin account', 
+    #     amount='100',
+    #     fromAccount='some cash or margin account',
     #     toAccount='another cash or margin account',
     #     unit='The currency unit to transfer'
     # ))
     # print(funding.initiate_subccount_transfer(
-    #     amount='The amount to transfer', 
-    #     fromAccount='The wallet (cash or margin account) from which funds should be debited', 
-    #     fromUser='The user account (this or a sub account) from which funds should be debited', 
-    #     toAccount='The wallet (cash or margin account) to which funds should be credited', 
-    #     toUser='The user account (this or a sub account) to which funds should be credited', 
+    #     amount='The amount to transfer',
+    #     fromAccount='The wallet (cash or margin account) from which funds should be debited',
+    #     fromUser='The user account (this or a sub account) from which funds should be debited',
+    #     toAccount='The wallet (cash or margin account) to which funds should be credited',
+    #     toUser='The user account (this or a sub account) to which funds should be credited',
     #     unit='The currency unit to transfer'
     # ))
 
@@ -163,7 +164,7 @@ def main() -> None:
     user_examples()
     market_examples()
     trade_examples()
-    funding_examples()  
+    funding_examples()
 
 if __name__ == '__main__':
     main()

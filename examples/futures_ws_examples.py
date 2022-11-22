@@ -1,4 +1,4 @@
-import os, sys
+import os, sys, time
 import asyncio
 import logging
 import logging.config
@@ -9,6 +9,7 @@ try:
     from kraken.futures.client import WsClient
     from kraken.futures.websocket.websocket import KrakenFuturesWSClient
 except:
+    print('USING LOCAL MODULE')
     sys.path.append('/Users/benjamin/repositories/Trading/python-kraken-sdk')
     from kraken.futures.client import WsClient
     from kraken.futures.websocket.websocket import KrakenFuturesWSClient
@@ -31,8 +32,8 @@ async def main() -> None:
     # ___Custom_Trading_Bot______________
     class Bot(KrakenFuturesWSClient):
 
-        async def on_message(self, event) -> None:            
-            logging.info(event) 
+        async def on_message(self, event) -> None:
+            logging.info(event)
             # ... apply your trading strategy here
             # you can also combine this with the Futures REST clients
 
@@ -52,7 +53,7 @@ async def main() -> None:
     time.sleep(2) # in case subscribe is not done yet
     await bot.unsubscribe(feed='ticker', products=products)
     # ....
-    
+
     # _____Private_Websocket_Feeds_________________
     auth_bot = Bot(WsClient(key=key, secret=secret))
     # print(auth_bot.get_available_private_subscription_feeds())
