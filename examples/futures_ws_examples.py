@@ -3,13 +3,18 @@ import asyncio
 import logging, logging.config
 from dotenv import dotenv_values
 from datetime import datetime
+import traceback
+
 
 try:
     from kraken.futures.client import KrakenFuturesWSClient
+    from kraken.exceptions.exceptions import KrakenExceptions
 except:
     print('USING LOCAL MODULE')
     sys.path.append('/Users/benjamin/repositories/Trading/python-kraken-sdk')
     from kraken.futures.client import KrakenFuturesWSClient
+    from kraken.exceptions.exceptions import KrakenExceptions
+
 
 logging.basicConfig(
     format='%(asctime)s %(module)s,line: %(lineno)d %(levelname)8s | %(message)s',
@@ -78,17 +83,18 @@ async def main() -> None:
     await auth_bot.unsubscribe(feed='open_positions')
     # ....
 
-    while True: await asyncio.sleep(6)
+    while not bot.exception_occur: await asyncio.sleep(6)
+    return
 
 if __name__ == '__main__':
+
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
     try:
         asyncio.run(main())
-    except KeyboardInterrupt:
-        loop.close()
-        # the websocket client will send {'event': 'ws-cancelled-error'} via on_message
+    except KeyboardInterrupt: 
+        # the websocket client will send {'event': 'asyncio.CancelledError'} via on_message
         # so you can handle the behavior/next actions individually within you bot
-
-    # old way will be deprecated in python 3.11:
-    # asyncio.get_event_loop().run_until_complete(main())
+        pass
+    finally: loop.close()
+    

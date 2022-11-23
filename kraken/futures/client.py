@@ -3,7 +3,7 @@ from kraken.futures.trade.trade import TradeClient
 from kraken.futures.user.user import UserClient
 from kraken.futures.funding.funding import FundingClient
 from kraken.futures.websocket.websocket import KrakenFuturesWSClientCl
-
+from kraken.exceptions.exceptions import KrakenExceptions 
 class User(UserClient):
     pass
 

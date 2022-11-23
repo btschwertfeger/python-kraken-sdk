@@ -10,12 +10,14 @@ import copy
 
 try:
     from kraken.futures.ws_client.ws_client import FuturesWsClientCl
+    from kraken.exceptions.exceptions import KrakenExceptions 
 except:
     print('USING LOCAL MODULE')
     sys.path.append('/Users/benjamin/repositories/Trading/python-kraken-sdk')
     from kraken.futures.ws_client.ws_client import FuturesWsClientCl
+    from kraken.exceptions.exceptions import KrakenExceptions 
 
-class ConnectFuturesWebsocket:
+class ConnectFuturesWebsocket(object):
     '''
         This class is only called by the KrakenFuturesWSClientCl class
         to establish and handle a websocket connection.
@@ -28,6 +30,8 @@ class ConnectFuturesWebsocket:
         callback: function [optional], default=None
             callback function to call when a message is received
     '''
+
+    MAX_RECONNECT_NUM = 10
 
     def __init__(self, client, endpoint: str, callback):
         self.__client = client
@@ -42,9 +46,14 @@ class ConnectFuturesWebsocket:
 
         self.__socket = None
         self.__subscriptions = []
-
-        asyncio.ensure_future(self.__run_forever(), loop=asyncio.get_running_loop())
-
+        
+        
+        loop = asyncio.get_running_loop()      
+        self.__task = asyncio.ensure_future(
+            self.__run_forever(), 
+            loop=loop
+        )
+    
     @property
     def subscriptions(self) -> list:
         return self.__subscriptions
@@ -58,6 +67,8 @@ class ConnectFuturesWebsocket:
             logging.info(f'Websocket connected!')            
             self.__socket = socket
 
+            if not event.is_set(): event.set()
+
             while keep_alive:
                 try:
                     _msg = await asyncio.wait_for(self.__socket.recv(), timeout=15)
@@ -66,7 +77,7 @@ class ConnectFuturesWebsocket:
                 except asyncio.CancelledError:
                     logging.exception('asyncio.CancelledError')
                     keep_alive = False    
-                    await self.__callback({'event': 'ws-cancelled-error'}) 
+                    await self.__callback({'event': 'asyncio.CancelledError'}) 
                 else:
                     try:
                         msg = json.loads(_msg)
@@ -81,24 +92,33 @@ class ConnectFuturesWebsocket:
                                 self.__last_challenge = msg['message']
                                 self.__new_challenge = self.__client._get_sign_challenge(self.__last_challenge)
                                 self.__challenge_ready = True
-                            elif e == 'subscribed':
-                                sub = copy.deepcopy(msg)
-                                del sub['event']
-                                self.__append_subscription(sub)
-                            elif e == 'unsubscribed':
-                                sub = copy.deepcopy(msg)
-                                del sub['event']
-                                self.__remove_subscription(sub)
+                            elif e == 'subscribed': self.__append_subscription(msg)
+                            elif e == 'unsubscribed': self.__remove_subscription(msg)
                         if forward: await self.__callback(msg)
 
     async def __run_forever(self) -> None:
-        while True: await self.__reconnect()
-
+        try:
+            while True: await self.__reconnect()
+        except KrakenExceptions.MaxReconnectError: 
+            await self.__callback({'event': 'KrakenExceptions.MaxReconnectError'})
+        except Exception as e:
+            logging.error(traceback.format_exc())
+        finally: self.__client.exception_occur = True
+            # try: 
+            #     for task in asyncio.all_tasks(): task.cancel()
+            # except asyncio.CancelledError: pass
+            # finally: 
+            #     # asyncio.get_event_loop().stop()
+            #     raise KrakenExceptions.MaxReconnectError()
+    
     async def __reconnect(self):
         logging.info('Websocket start connect/reconnect')
 
         self.__reconnect_num += 1
-        reconnect_wait = round(random() * min(60, (2 ** self.__reconnect_num) - 1) + 1)
+        if self.__reconnect_num >= self.MAX_RECONNECT_NUM:
+            raise KrakenExceptions.MaxReconnectError()
+
+        reconnect_wait = self.__get_reconnect_wait(self.__reconnect_num)
         logging.debug(f'asyncio sleep reconnect_wait={reconnect_wait} s reconnect_num={self.__reconnect_num}')
         await asyncio.sleep(reconnect_wait)
         logging.debug(f'asyncio sleep done')
@@ -122,23 +142,24 @@ class ConnectFuturesWebsocket:
                         try: process.cancel()
                         except asyncio.CancelledError: logging.exception('CancelledError')
                         logging.warning('cancel ok')
-                    await self._callback({ 'ws-error': message })
+                    await self.__callback({ 'ws-error': message })
             if exception_occur: break
+            
         logging.warning('reconnect over')
 
     async def __recover_subscription_req_msg(self, event) -> None:
-        logging.info(f'Recover subscription {self.__subscriptions} waiting.')
+        logging.info(f'Recover subscriptions {self.__subscriptions} waiting.')
         await event.wait()
         
-        for sub in self.__subscriptions:
-            if sub['feed'] in self._client.get_available_private_subscription_feeds():
-                await self.send_message(message, private=True)
-            elif sub['feed'] in self._client.get_available_public_subscription_feeds():
-                await self.send_message(message, private=False)
+        for sub in self.__subscriptions:            
+            if sub['feed'] in self.__client.get_available_private_subscription_feeds():
+                await self.send_message(copy.deepcopy(sub), private=True)
+            elif sub['feed'] in self.__client.get_available_public_subscription_feeds():
+                await self.send_message(copy.deepcopy(sub), private=False)
             else: pass
             logging.info(f'{sub}: OK')
 
-        logging.info(f'Recover subscription {self.__subscriptions} done.')
+        logging.info(f'Recover subscriptions {self.__subscriptions} done.')
 
     async def send_message(self, msg: dict, private: bool=False) -> None:
         while not self.__socket: await asyncio.sleep(.4)
@@ -163,11 +184,35 @@ class ConnectFuturesWebsocket:
         logging.debug('Awaiting challenge...')
         while not self.__challenge_ready: await asyncio.sleep(.1)
 
-    def __append_subscription(self, subscription: dict) -> None:
-        self.__subscriptions.append(subscription)
+    def __get_reconnect_wait(self, attempts: int) -> float:
+        return round(random() * min(60*3, (2 ** attempts) - 1) + 1)
 
-    def __remove_subscription(self, subscription: dict) -> None:
-        self.__subscriptions.remove(subscription)
+    def __append_subscription(self, msg: dict) -> None:
+        self.__remove_subscription(msg=msg) # remove from list, to avoid duplicates
+        sub = self.__build_subscription(msg)
+        self.__subscriptions.append(sub)
+
+    def __remove_subscription(self, msg: dict) -> None:
+        sub = self.__build_subscription(msg)
+        self.__subscriptions = [x for x in self.__subscriptions if x != sub]
+
+    def __build_subscription(self, subscription: dict) -> dict:
+        sub = { 'event': 'subscribe' }
+
+        if 'event' not in subscription                                        \
+            or subscription['event'] not in ['subscribed', 'unsubscribed']    \
+            or 'feed' not in subscription: 
+            raise ValueError('Cannot append/remove subscription with missing attributes.')
+        
+        elif subscription['feed'] in self.__client.get_available_public_subscription_feeds(): # public subscribe
+            if 'product_ids' in subscription:
+                sub['product_ids'] = subscription['product_ids'] if type(subscription['product_ids']) == list else [subscription['product_ids']]
+            sub['feed'] = subscription['feed']
+        
+        elif subscription['feed'] in self.__client.get_available_private_subscription_feeds(): # private subscription
+            sub['feed'] = subscription['feed']
+        else: logging.warn('Feed not implemented. Please contact the python-kraken-sdk package author.')
+        return sub
 
     def get_active_subscriptions(self) -> [dict]:
         return self.__subscriptions
@@ -203,8 +248,8 @@ class KrakenFuturesWSClientCl(FuturesWsClientCl):
                 async def on_message(self, event) -> None:
                     print(event)
 
-            bot = Bot()
-            auth_bot = Bot(key=key, secret=secret)
+            bot = Bot() # unauthenticated 
+            auth_bot = Bot(key=key, secret=secret) # authenticated
 
             # ... now call for example subscribe and so on
 
@@ -229,6 +274,7 @@ class KrakenFuturesWSClientCl(FuturesWsClientCl):
             endpoint= url if url != '' else self.DEMO_ENV_URL if sandbox else self.PROD_ENV_URL,
             callback=self.on_message 
         )
+        self.exception_occur = False
 
     async def on_message(self, msg) -> None:
         ''' Calls the defined callback function (if defined) 

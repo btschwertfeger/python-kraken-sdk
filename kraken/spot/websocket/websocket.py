@@ -184,19 +184,8 @@ class ConnectSpotWebsocket:
             msg: dict
                 must be like: { 'subscription': { 'name': '<placeholder>', 'placeholder': 'placeholder', ... }} 
         '''
-        sub = { 'event': 'subscribe' }
-
-        if not 'subscription' in msg or 'name' not in msg['subscription']: 
-            raise ValueError(f'Cannot append subscription with missing attributes.')
-        elif msg['subscription']['name'] in self.__client.public_sub_names: # public endpoint
-            if 'pair' in msg: 
-                sub['pair'] = msg['pair'] if type(msg['pair']) == list else [msg['pair']]
-            sub['subscription'] = msg['subscription']
-        elif msg['subscription']['name'] in self.__client.private_sub_names: # private endpoint
-            sub['subscription'] = { 'name': msg['subscription']['name'] }
-
-        self.__remove_subscription(sub) # remove from list, to avoid duplicates
-        self.__subscriptions.append(sub)
+        self.__remove_subscription(msg)# remove from list, to avoid duplicates
+        self.__subscriptions.append(self.__build_subscription(msg))
 
     def __remove_subscription(self, msg: dict) -> None:
         ''' Remove a dictionary containing subscription information from list.
@@ -206,24 +195,28 @@ class ConnectSpotWebsocket:
                 'event' in msg                           \
                 and msg['event'] == 'subscriptionStatus' \
                 and 'status' in msg                      \
-                and msg['status'] == 'nusubscribed'
+                and msg['status'] == 'unsubscribed'
 
             ====== P A R A M E T E R S ======
             msg: dict
                 must be like: { 'subscription': { 'name': '<placeholder>', 'placeholder': 'placeholder', ... }} 
         '''
+        sub = self.__build_subscription(msg)
+        self.__subscriptions = [x for x in self.__subscriptions if x != sub]
+
+    def __build_subscription(self, msg: dict) -> dict:
         sub = { 'event': 'subscribe' }
 
         if not 'subscription' in msg or 'name' not in msg['subscription']: 
-            raise ValueError(f'Cannot append subscription with missing attributes.')
+            raise ValueError('Cannot remove subscription with missing attributes.')
         elif msg['subscription']['name'] in self.__client.public_sub_names: # public endpoint
             if 'pair' in msg: 
                 sub['pair'] = msg['pair'] if type(msg['pair']) == list else [msg['pair']]
             sub['subscription'] = msg['subscription']
         elif msg['subscription']['name'] in self.__client.private_sub_names: # private endpoint
             sub['subscription'] = { 'name': msg['subscription']['name'] }
-
-        self.__subscriptions = [x for x in self.__subscriptions if x != sub]
+        else: logging.warn('Feed not implemented. Please contact the python-kraken-sdk package author.')
+        return sub
 
 class KrakenSpotWSClientCl(SpotWsClientCl):
     '''https://docs.kraken.com/websockets/#overview
