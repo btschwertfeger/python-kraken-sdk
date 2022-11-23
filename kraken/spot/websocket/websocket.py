@@ -135,17 +135,20 @@ class ConnectSpotWebsocket:
         logging.warning('reconnect over')
 
     async def __recover_subscriptions(self, event):
-        logging.info(f'Recover subscriptions {self.__subscriptions} waiting.')
+        logging.info(f'Recover {"auth" if self.__isAuth else "public"} subscriptions {self.__subscriptions} waiting.')
         await event.wait()
         for sub in self.__subscriptions:
+            cpy = copy.deepcopy(sub)
             private = False
-            if 'token' in sub['subscription']:
-                sub['subscription']['token'] = self.__ws_conn_details['token']
-                private = True
-            await self.send_message(sub, private=private)
+            if 'subscription' in sub \
+                and 'name' in sub['subscription'] \
+                and sub['subscription']['name'] in self.__client.private_sub_names:
+                cpy['subscription']['token'] = self.__ws_conn_details['token']
+                private = True            
+            await self.send_message(cpy, private=private)
             logging.info(f'{sub} OK')
 
-        logging.info(f'Recovering subscriptions {self.__subscriptions} done.')
+        logging.info(f'Recovering {"auth" if self.__isAuth else "public"} subscriptions {self.__subscriptions} done.')
 
     async def send_ping(self):
         msg = {
@@ -167,20 +170,60 @@ class ConnectSpotWebsocket:
             await self.__socket.send(json.dumps(msg))
 
     def __append_subscription(self, msg: dict) -> None:
-        sub = { 'subscription': msg['subscription'] }
-        if 'pair' in msg: # public endpoint
-            sub['pair'] = msg['pair'] 
-        else: # private endpoint
-            sub['subscription'] = { 'name': msg['subscription']['name']}
+        ''' Add a dictionary containing subscription information to list
+            This is used to recover when the connection gets interrupted.       
+
+            This function should only be called in 
+            when self.__run receives a msg and the following conditions met:
+                'event' in msg                           \
+                and msg['event'] == 'subscriptionStatus' \
+                and 'status' in msg                      \
+                and msg['status'] == 'subscribed'
+
+            ====== P A R A M E T E R S ======
+            msg: dict
+                must be like: { 'subscription': { 'name': '<placeholder>', 'placeholder': 'placeholder', ... }} 
+        '''
+        sub = { 'event': 'subscribe' }
+
+        if not 'subscription' in msg or 'name' not in msg['subscription']: 
+            raise ValueError(f'Cannot append subscription with missing attributes.')
+        elif msg['subscription']['name'] in self.__client.public_sub_names: # public endpoint
+            if 'pair' in msg: 
+                sub['pair'] = msg['pair'] if type(msg['pair']) == list else [msg['pair']]
+            sub['subscription'] = msg['subscription']
+        elif msg['subscription']['name'] in self.__client.private_sub_names: # private endpoint
+            sub['subscription'] = { 'name': msg['subscription']['name'] }
+
+        self.__remove_subscription(sub) # remove from list, to avoid duplicates
         self.__subscriptions.append(sub)
 
     def __remove_subscription(self, msg: dict) -> None:
-        sub = { 'subscription': msg['subscription'] }
-        if 'pair' in msg: # public endpoint
-            sub['pair'] = msg['pair']
-        elif msg['subscription']['name']: # private endpoint
-            sub['subscription'] = { 'name': msg['subscription']['name']}
-        self.__subscriptions.remove(sub)    
+        ''' Remove a dictionary containing subscription information from list.
+
+            This function should only be called in 
+            when self.__run receives a msg and the following conditions met:
+                'event' in msg                           \
+                and msg['event'] == 'subscriptionStatus' \
+                and 'status' in msg                      \
+                and msg['status'] == 'nusubscribed'
+
+            ====== P A R A M E T E R S ======
+            msg: dict
+                must be like: { 'subscription': { 'name': '<placeholder>', 'placeholder': 'placeholder', ... }} 
+        '''
+        sub = { 'event': 'subscribe' }
+
+        if not 'subscription' in msg or 'name' not in msg['subscription']: 
+            raise ValueError(f'Cannot append subscription with missing attributes.')
+        elif msg['subscription']['name'] in self.__client.public_sub_names: # public endpoint
+            if 'pair' in msg: 
+                sub['pair'] = msg['pair'] if type(msg['pair']) == list else [msg['pair']]
+            sub['subscription'] = msg['subscription']
+        elif msg['subscription']['name'] in self.__client.private_sub_names: # private endpoint
+            sub['subscription'] = { 'name': msg['subscription']['name'] }
+
+        self.__subscriptions = [x for x in self.__subscriptions if x != sub]
 
 class KrakenSpotWSClientCl(SpotWsClientCl):
     '''https://docs.kraken.com/websockets/#overview
@@ -223,8 +266,8 @@ class KrakenSpotWSClientCl(SpotWsClientCl):
                 async def on_message(self, event) -> None:
                     print(event)
             
-            bot = Bot() # unauthenticated client
-            auth_bot = Bot(key='kraken-api-key', secret='kraken-secret-key')
+            bot = Bot() # unauthenticated
+            auth_bot = Bot(key='kraken-api-key', secret='kraken-secret-key') # authenticated
             
             # ... now call for example subscribe and so on
 
@@ -242,7 +285,7 @@ class KrakenSpotWSClientCl(SpotWsClientCl):
     BETA_ENV_URL = 'beta-ws.kraken.com'
     AUTH_BETA_ENV_URL = 'beta-ws-auth.kraken.com'
 
-    def __init__(self, key: str='', secret: str='', url: str='', callback=None, beta: bool=False) -> None:
+    def __init__(self, key: str='', secret: str='', url: str='', callback=None, beta: bool=False):
         super().__init__(key=key, secret=secret, sandbox=beta)
         self.__callback = callback
         self.__isAuth = key and secret        

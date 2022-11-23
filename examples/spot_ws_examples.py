@@ -23,7 +23,7 @@ logging.getLogger().setLevel(logging.INFO)
 logging.getLogger('requests').setLevel(logging.WARNING)
 logging.getLogger('urllib3').setLevel(logging.WARNING)
 
-async def main2() -> None:
+async def main() -> None:
 
     key = dotenv_values('.env')['API_KEY']
     secret = dotenv_values('.env')['SECRET_KEY']
@@ -80,14 +80,13 @@ async def main2() -> None:
     await auth_bot.unsubscribe(subscription={ 'name': 'ownTrades' })
     await auth_bot.unsubscribe(subscription={ 'name': 'openOrders' })
 
-
     while True: await asyncio.sleep(6)
 
 if __name__ == '__main__':
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
     try:
-        asyncio.run(main2())
+        asyncio.run(main())
     except KeyboardInterrupt:
         loop.close()
         # the websocket client will send {'event': 'ws-cancelled-error'} via on_message
