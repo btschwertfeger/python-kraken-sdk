@@ -17,7 +17,7 @@ except:
 
 class ConnectSpotWebsocket:
     '''
-        This class is only called by the KrakenSpotWSClient class
+        This class is only called by the KrakenSpotWSClientCl class
         to establish and handle a websocket connection.
 
         ====== P A R A M E T E R S ======
@@ -31,7 +31,6 @@ class ConnectSpotWebsocket:
             if client is authenticated to send signed messages
             and get private feeds
 
-        ====== E X A M P L E ======
     '''
 
     def __init__(self, client, endpoint: str, callback, isAuth: bool=False):
@@ -48,7 +47,7 @@ class ConnectSpotWebsocket:
         self.__socket = None
         self.__subscriptions = []
 
-        asyncio.ensure_future(self.run_forever(), loop=asyncio.get_running_loop())
+        asyncio.ensure_future(self.__run_forever(), loop=asyncio.get_running_loop())
 
     @property
     def subscriptions(self) -> list:
@@ -58,15 +57,14 @@ class ConnectSpotWebsocket:
     def isAuth(self) -> bool:
         return self.__isAuth
 
-    async def _run(self, event: asyncio.Event):
+    async def __run(self, event: asyncio.Event):
+        keep_alive = True
         self.__last_ping = time.time()
         self.__ws_conn_details = None if not self.__isAuth else self.__client.get_ws_token()
-        keep_alive = True
         logging.debug(f'Websocket token: {self.__ws_conn_details}')
 
         async with websockets.connect(f'wss://{self.__ws_endpoint}', ping_interval=None) as socket:
             logging.info(f'Websocket connected!')
-
             self.__socket = socket
 
             if not event.is_set():
@@ -113,10 +111,10 @@ class ConnectSpotWebsocket:
                                 except AttributeError: pass
                         await self.__callback(msg)
 
-    async def run_forever(self):
-        while True: await self._reconnect()
+    async def __run_forever(self) -> None:
+        while True: await self.__reconnect()
 
-    async def _reconnect(self):
+    async def __reconnect(self):
         logging.info('Websocket start connect/reconnect')
 
         self.__reconnect_num += 1
@@ -127,8 +125,8 @@ class ConnectSpotWebsocket:
         event = asyncio.Event()
 
         tasks = {
-            asyncio.ensure_future(self._recover_subscriptions(event)): self._recover_subscriptions,
-            asyncio.ensure_future(self._run(event)): self._run
+            asyncio.ensure_future(self.__recover_subscriptions(event)): self.__recover_subscriptions,
+            asyncio.ensure_future(self.__run(event)): self.__run
         }
 
         while set(tasks.keys()):
@@ -148,7 +146,7 @@ class ConnectSpotWebsocket:
             if exception_occur: break
         logging.warning('reconnect over')
 
-    async def _recover_subscriptions(self, event):
+    async def __recover_subscriptions(self, event):
         logging.info(f'Recover subscriptions {self.__subscriptions} waiting.')
         await event.wait()
         for sub in self.__subscriptions:
@@ -180,12 +178,14 @@ class ConnectSpotWebsocket:
             elif private: msg['token'] = self.__ws_conn_details['token']
             await self.__socket.send(json.dumps(msg))
 
-
 class KrakenSpotWSClientCl(SpotWsClientCl):
     '''https://docs.kraken.com/websockets/#overview
     
         Class to access public and (optional) 
         private/authenticated websocket connection.
+
+        This class holds up to two websocket connections, one private
+        and one public. 
 
         ====== P A R A M E T E R S ======
         key: str, [optional], default: ''
@@ -285,7 +285,7 @@ class KrakenSpotWSClientCl(SpotWsClientCl):
 
             ====== E X A M P L E ======
             # ... initialize bot as documented on top of this class.
-            bot.subscribe(subscription={"name": ticker}, pair=["XBTUSD", "DOT/EUR"])
+            await bot.subscribe(subscription={"name": ticker}, pair=["XBTUSD", "DOT/EUR"])
 
             ====== N O T E S ====== 
             Success or failures are sent over the websocket connection and can be  

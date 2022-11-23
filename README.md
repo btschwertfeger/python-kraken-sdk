@@ -10,15 +10,16 @@
 </div>
 
 <h3>
-This is an unofficial collection of REST and websocket clients to interact with the Kraken exchange API using Python.
-
-<br>
-
-There is no guarantee that this software will work flawlessly at this or later times. Everyone has to check the underlying source code themselves and consider whether this is appropriate for their own use.
-
-Of course, no responsibility is taken for possible profits or losses. No one should be motivated or tempted to invest assets in speculative forms of investment.
-
+This is an unofficial collection of REST and websocket clients for Spot and Futures trading on the Kraken cryptocurrency exchange using Python.
 </h3>
+
+---
+
+## Disclaimer
+
+There is no guarantee that this software will work flawlessly at this or later times. Of course, no responsibility is taken for possible profits or losses. This software probably has some errors in it, so use it at your own risk. Also no one should be motivated or tempted to invest assets in speculative forms of investment.
+
+---
 
 ## Update
 
@@ -31,13 +32,13 @@ Of course, no responsibility is taken for possible profits or losses. No one sho
 - Futures REST Clients
 - Futures Websocket Client
 - access both public and private endpoints
-- responsive error handling
+- responsive error handling and logging
 
 ---
 
 ## Table of Contents
 
-- [ Installation ](#installation)
+- [ Installation and setup ](#installation)
 - [ Spot Clients Example Usage ](#spotusage)
   - [REST API](#spotrest)
   - [Websockets](#spotws)
@@ -56,7 +57,7 @@ Of course, no responsibility is taken for possible profits or losses. No one sho
   - [ Trade ](#futurestrade)
   - [ Market ](#futuresmarket)
   - [ Funding ](#futuresfunding)
-  - [ WsClient ](#futureswsclient)
+  - [ KrakenFuturesWSClient ](#futureswsclient)
 - [ Notes ](#notes)
 - [ References ](#references)
 
@@ -64,11 +65,25 @@ Of course, no responsibility is taken for possible profits or losses. No one sho
 
 <a name="installation"></a>
 
-## Installation
+## Installation and setup
+
+### 1. Install the Python module:
 
 ```bash
 python3 -m pip install python-kraken-sdk
 ```
+
+### 2. Register at Kraken and generate API Keys:
+
+- Spot Trading: https://www.kraken.com/u/security/api
+- Futures Trading: https://futures.kraken.com/trade/settings/api
+- Futures Sandbox: https://demo-futures.kraken.com/settings/api
+
+### 3. Start using the provided example scripts
+
+### 4. Error handling
+
+If any unexpected behavior occurs, please check <i style="color: yellow">your API permissions</i>, <i style="color: yellow">rate limits</i>, and if the error persits please open an issue.
 
 ---
 
@@ -283,8 +298,7 @@ if __name__ == '__main__': main()
 
 ```python
 import asyncio
-from kraken.futures.client import WsClient
-from kraken.futures.websocket.websocket import KrakenFuturesWSClient
+from kraken.futures.client import KrakenFuturesWSClient
 
 async def main() -> None:
 
@@ -300,7 +314,7 @@ async def main() -> None:
             # you can also combine this with the Futures REST clients
 
     # _____Public_Websocket_Feeds___________________
-    bot = Bot(WsClient())
+    bot = Bot()
     # print(bot.get_available_public_subscription_feeds())
 
     products = ['PI_XBTUSD', 'PF_ETHUSD']
@@ -314,7 +328,7 @@ async def main() -> None:
     # await bot.unsubscribe(feed='ticker', products=products)
 
     # _____Authenticated_Websocket__________________
-    auth_bot = Bot(WsClient(key=key, secret=secret))
+    auth_bot = Bot(key=key, secret=secret)
     # print(auth_bot.get_available_private_subscription_feeds())
 
     # subscribe to a private/authenticated websocket feed
@@ -521,7 +535,7 @@ Note: Authenticated Futures websocket clients can also un/subscribe from/to publ
 
 <a name="futureswsclient"></a>
 
-### WsClient
+### KrakenFuturesWSClient
 
 | Method                                     | Documentation                                |
 | ------------------------------------------ | -------------------------------------------- |
