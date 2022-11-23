@@ -15,13 +15,12 @@ class KrakenBaseRestAPI(object):
 
     def __init__(self, key: str='', secret: str='', url: str='', sandbox: bool=False, **kwargs):
 
-        self._api_v = ''
-        if url: self.url = url
-        self.url = 'https://api.kraken.com'
-        self._api_v = '/0'
+        if url != '': self.url = url
+        else: self.url = 'https://api.kraken.com'
+        self.api_v = '/0'
 
-        self.key = key
-        self.secret = secret
+        self.__key = key
+        self.__secret = secret
 
     def _request(self, 
         method: str, 
@@ -43,16 +42,15 @@ class KrakenBaseRestAPI(object):
 
         headers = { 'User-Agent': 'python-kraken-sdk' }
         if auth:
-            if not self.key or self.key == '' or not self.secret or self.secret == '': raise ValueError('Missing credentials')
-            params['nonce'] = str(int(time.time() * 1000)) # generate nonce
+            if not self.__key or self.__key == '' or not self.__secret or self.__secret == '': raise ValueError('Missing credentials')
+            params['nonce'] = str(int(time.time() * 1000))
             headers = {
                 'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8',
-                'API-Key': self.key,
-                'API-Sign': self.get_kraken_signature(f'{self._api_v}{uri}', params)
+                'API-Key': self.__key,
+                'API-Sign': self.get_kraken_signature(f'{self.api_v}{uri}', params)
             }
 
-        url = f'{self.url}{self._api_v}{uri}'
-        # print(url)
+        url = f'{self.url}{self.api_v}{uri}'
         if method in ['GET', 'DELETE']:
             return self.check_response_data(requests.request(method=method, url=url, headers=headers, timeout=timeout), return_raw)
         elif do_json:
@@ -63,7 +61,7 @@ class KrakenBaseRestAPI(object):
     def get_kraken_signature(self, urlpath: str, data: dict) -> str:
         return base64.b64encode(
             hmac.new(
-                base64.b64decode(self.secret), 
+                base64.b64decode(self.__secret), 
                 urlpath.encode() + hashlib.sha256((str(data['nonce']) + urllib.parse.urlencode(data)).encode()).digest(),
                 hashlib.sha512
             ).digest()
@@ -93,7 +91,6 @@ class KrakenBaseRestAPI(object):
         elif type(a) == list: return ','.join([i for i in a])
         else: raise ValueError('a must be string or list of strings')
 
-
 class KrakenBaseFuturesAPI(object):
     def __init__(self, key: str='', secret: str='', url: str='', sandbox: bool=False, **kwargs):
         
@@ -102,8 +99,8 @@ class KrakenBaseFuturesAPI(object):
         elif self.sandbox: self.url = 'https://demo-futures.kraken.com'
         else: self.url = 'https://futures.kraken.com'
         
-        self.key = key
-        self.secret = secret
+        self.__key = key
+        self.__secret = secret
         self.nonce = 0
 
     def _request(self, 
@@ -131,13 +128,13 @@ class KrakenBaseFuturesAPI(object):
 
         headers = { 'User-Agent': 'python-kraken-sdk' }
         if auth:
-            if not self.key or self.key == '' or not self.secret or self.secret == '': raise ValueError('Missing credentials')
+            if not self.__key or self.__key == '' or not self.__secret or self.__secret == '': raise ValueError('Missing credentials')
             self.nonce = (self.nonce + 1) % 1
             nonce = str(int(time.time() * 1000)) + str(self.nonce).zfill(4)
             headers = {
                 'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8',
                 'Nonce': nonce,
-                'APIKey': self.key,
+                'APIKey': self.__key,
                 'Authent': self.get_kraken_futures_signature(uri, queryString + postString, nonce)
             }
 
@@ -180,7 +177,7 @@ class KrakenBaseFuturesAPI(object):
         sha256_hash.update((data + nonce + endpoint).encode('utf8'))
         return base64.b64encode(
             hmac.new(
-                base64.b64decode(self.secret), 
+                base64.b64decode(self.__secret), 
                 sha256_hash.digest(), 
                 hashlib.sha512
             ).digest()

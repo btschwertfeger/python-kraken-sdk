@@ -3,10 +3,13 @@ import logging
 
 class SpotWsClientCl(KrakenBaseRestAPI):
 
-    websocket_pub = None
-    websocket_priv = None
+    def __init__(self, key: str='', secret: str='', sandbox: bool=False):
+        super().__init__(key=key, secret=secret, sandbox=sandbox)
 
-    def get_ws_token(self, private: bool=True) -> dict:
+        self._pub_conn = None
+        self._priv_conn = None
+     
+    def get_ws_token(self) -> dict:
         '''https://docs.kraken.com/rest/#tag/Websockets-Authentication'''
         return self._request('POST', '/private/GetWebSocketsToken')
 
@@ -31,10 +34,10 @@ class SpotWsClientCl(KrakenBaseRestAPI):
         timeinforce: str=None
     ) -> None:
         '''https://docs.kra)en.com/websockets/#message-addOrder'''
-        if not self.websocket_priv:
+        if not self._priv_conn:
             logging.warning('Websocket not connected!')
             return
-        elif not self.websocket_priv.private:
+        elif not self._priv_conn.isAuth:
             raise ValueError('Cannot create_order on public Websocket Client!')
 
         payload = {
@@ -60,7 +63,7 @@ class SpotWsClientCl(KrakenBaseRestAPI):
         if close_price2 != None: payload['close[price2]'] = close_price2
         if timeinforce != None: payload['timeinforce'] = timeinforce
 
-        await self.websocket_priv.send_message(msg=payload, private=True)
+        await self._priv_conn.send_message(msg=payload, private=True)
 
     async def edit_order(
         self, orderid: str,
@@ -74,10 +77,10 @@ class SpotWsClientCl(KrakenBaseRestAPI):
         validate: str=None
     ) -> None:
         '''https://docs.kraken.com/websockets/#message-editOrder'''
-        if not self.websocket_priv:
+        if not self._priv_conn:
             logging.warning('Websocket not connected!')
             return
-        elif not self.websocket_priv.private:
+        elif not self._priv_conn.isAuth:
             raise ValueError('Cannot edit_order on public Websocke Client!')
 
         payload = {
@@ -93,37 +96,37 @@ class SpotWsClientCl(KrakenBaseRestAPI):
         if newuserref != None: payload['newuserref'] = str(newuserref)
         if validate != None: payload['validate'] = str(validate)
 
-        await self.websocket_priv.send_message(msg=payload, private=True)
+        await self._priv_conn.send_message(msg=payload, private=True)
 
     async def cancel_order(self, txid) -> None:
         '''https://docs.kraken.com/websockets/#message-cancelOrder'''
-        if not self.websocket_priv:
+        if not self._priv_conn:
             logging.warning('Websocket not connected!')
             return
-        elif not self.websocket_priv.private:
+        elif not self._priv_conn.isAuth:
             raise ValueError('Cannot cancel_order on public Websocke Client!')
-        await self.websocket_priv.send_message(msg={ 
+        else: await self._priv_conn.send_message(msg={ 
             'event': 'cancelOrder', 
             'txid': self._to_str_list(txid)
         }, private=True)
 
     async def cancel_all_orders(self) -> None:
         '''https://docs.kraken.com/websockets/#message-cancelAll'''
-        if not self.websocket_priv:
+        if not self._priv_conn:
             logging.warning('Websocket not connected!')
             return
-        elif not self.websocket_priv.private:
+        elif not self._priv_conn.isAuth:
             raise ValueError('Cannot use cancel_all_orders on public Websocke Client!')
-        await self.websocket_priv.send_message(msg={ 'event': 'cancelAll' }, private=True, reponse=True)
+        else: await self._priv_conn.send_message(msg={ 'event': 'cancelAll' }, private=True, reponse=True)
 
     async def cancel_all_orders_after(self, timeout: int) -> None:
         '''https://docs.kraken.com/websockets/#message-cancelAllOrdersAfter'''
-        if not self.websocket_priv:
+        if not self._priv_conn:
             logging.warning('Websocket not connected!')
             return
-        elif not self.websocket_priv.private:
+        elif not self._priv_conn.isAuth:
             raise ValueError('Cannot use cancel_all_orders_after on public Websocke Client!')
-        await self.websocket_priv.send_message(msg={
+        else: await self._priv_conn.send_message(msg={
             'event': 'cancelAllOrdersAfter',
             'timeout': timeout
         }, private=True)

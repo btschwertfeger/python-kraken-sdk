@@ -5,8 +5,12 @@ import time
 import logging, logging.config
 from tqdm import tqdm
 
-sys.path.append('/Users/benjamin/repositories/Trading/python-kraken-sdk')
-from kraken.spot.client import User, Market, Trade, Funding, Staking
+try:
+    from kraken.spot.client import User, Market, Trade, Funding, Staking
+except:
+    print('USING LOCAL MODULE')
+    sys.path.append('/Users/benjamin/repositories/Trading/python-kraken-sdk')
+    from kraken.spot.client import User, Market, Trade, Funding, Staking
 
 logging.basicConfig(
     format='%(asctime)s %(module)s,line: %(lineno)d %(levelname)8s | %(message)s',
@@ -22,17 +26,12 @@ key = dotenv_values('.env')['API_KEY']
 secret = dotenv_values('.env')['SECRET_KEY']
 
 def test_user_endpoints() -> None:
-
-    # _____________________________________________________________
-    #  _   _               
-    # | | | |___  ___ _ __ 
-    # | | | / __|/ _ \ '__|
-    # | |_| \__ \  __/ |   
-    #  \___/|___/\___|_|   
     k = 'USER'
     logging.info(f'{k}: Creating user clients')
+
     user = User()
     auth_user = User(key=key, secret=secret)
+    
     logging.info(f'{k}: Checking balance endpoints')
     assert type(auth_user.get_account_balance()) == dict
     assert type(auth_user.get_balances(currency='USD')) == dict
@@ -40,7 +39,7 @@ def test_user_endpoints() -> None:
     assert type(auth_user.get_trade_balance(asset='EUR')) == dict
     time.sleep(5)
 
-    logging.info(f'{k}: Checking open orders and trades endpoints')
+    logging.info(f'{k}: Checking open orders and open trades endpoints')
     assert type(auth_user.get_open_orders(trades=True)) == dict
     assert type(auth_user.get_open_orders(trades=False)) == dict
     assert type(auth_user.get_closed_orders()) == dict
@@ -145,7 +144,7 @@ def test_market_endpoints() -> None:
     k = 'MARKET'
     logging.info(f'{k}: Creating clients')
     market = Market()
-    market = Market(key=key, secret=secret)
+    # auth_market = Market(key=key, secret=secret)
 
     assert type(market.get_system_status()) == dict
 
