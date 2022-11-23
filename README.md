@@ -7,18 +7,31 @@
 [![Generic badge](https://img.shields.io/badge/python-3.7+-blue.svg)](https://shields.io/)
 [![Downloads](https://static.pepy.tech/personalized-badge/python-kraken-sdk?period=total&units=abbreviation&left_color=grey&right_color=orange&left_text=downloads)](https://pepy.tech/project/python-kraken-sdk)
 
-<!-- [![PyPI download month](https://img.shields.io/pypi/dm/python-kraken-sdk.svg)](https://pypi.python.org/pypi/python-kraken-sdk) -->
-
 </div>
 
 <h3>
 This is an unofficial collection of REST and websocket clients to interact with the Kraken exchange API using Python.
+
+<br>
 
 There is no guarantee that this software will work flawlessly at this or later times. Everyone has to check the underlying source code themselves and consider whether this is appropriate for their own use.
 
 Of course, no responsibility is taken for possible profits or losses. No one should be motivated or tempted to invest assets in speculative forms of investment.
 
 </h3>
+
+## Update
+
+- November 23, 2022
+
+## Features
+
+- Spot REST Clients
+- Spot Websocket Client
+- Futures REST Clients
+- Futures Websocket Client
+- access both public and private endpoints
+- responsive error handling
 
 ---
 
@@ -37,7 +50,7 @@ Of course, no responsibility is taken for possible profits or losses. No one sho
   - [ Market ](#spotmarket)
   - [ Funding ](#spotfunding)
   - [ Staking ](#spotstaking)
-  - [ WsClient ](#spotwsclient)
+  - [ KrakenSpotWSClient ](#spotwsclient)
 - [ Futures Clients Documentation ](#futuresdocu)
   - [ User ](#futuresuser)
   - [ Trade ](#futurestrade)
@@ -82,7 +95,7 @@ def main() -> None:
     print(user.get_open_orders())
 
     # ____MARKET_______
-    market = Market(key=key, secret=secret)
+    market = Market()
     print(market.get_ticker(pair='BTCUSD'))
 
     # ____TRADE________
@@ -105,8 +118,7 @@ def main() -> None:
     print(staking.list_stakeable_assets())
     print(staking.stake_asset(asset='DOT', amount=20, method='polkadot-staked'))
 
-if __name__ == '__main__':
-    main()
+if __name__ == '__main__': main()
 ```
 
 <a name="spotws"></a>
@@ -117,8 +129,7 @@ if __name__ == '__main__':
 
 ```python
 import asyncio, time
-from kraken.spot.client import WsClient
-from kraken.spot.websocket.websocket import KrakenSpotWSClient
+from kraken.spot.client import KrakenSpotWSClient
 
 async def main() -> None:
 
@@ -131,18 +142,20 @@ async def main() -> None:
                 if msg['event'] in ['pong', 'heartbeat']: return
 
             print(msg)
-            # await self._client.create_order(
-            #     ordertype='limit',
-            #     side='buy',
-            #     pair='BTC/EUR',
-            #     price=20000,
-            #     volume=1
-            # )
+            # if condition:
+            #     await self.create_order(
+            #         ordertype='limit',
+            #         side='buy',
+            #         pair='BTC/EUR',
+            #         price=20000,
+            #         volume=1
+            #     )
             # ... it is also possible to call regular Spot REST endpoints
-            # but using the websocket messages is more efficient
+            # but using the WsClient's functions is more efficient
+            # because the requests will be sent via the ws connection
 
-    # ___Public_Websocket_Feed_____
-    bot = Bot(WsClient()) # only use this one if you dont need private feeds
+    # ___Public_Websocket_Feeds_______
+    bot = Bot() # only use this one if you dont need private feeds
     print(bot.public_sub_names) # list public subscription names
 
     await bot.subscribe(subscription={ 'name': 'ticker' }, pair=['XBT/EUR', 'DOT/EUR'])
@@ -160,9 +173,9 @@ async def main() -> None:
     await bot.unsubscribe(subscription={ 'name': 'spread' }, pair=['DOT/EUR'])
     # ....
 
-    # ___Private_Websocket_Feed_____
+    # ___Authenticated_Websocket_____
     # when using the authenticated bot, you can also subscribe to public feeds
-    auth_bot = Bot(WsClient(key=key, secret=secret))
+    auth_bot = Bot(key=key, secret=secret)
     print(auth_bot.private_sub_names) # list private subscription names
     await auth_bot.subscribe(subscription={ 'name': 'ownTrades' })
     await auth_bot.subscribe(subscription={ 'name': 'openOrders' })
@@ -174,14 +187,21 @@ async def main() -> None:
     while True: await asyncio.sleep(6)
 
 if __name__ == '__main__':
-    asyncio.get_event_loop().run_until_complete(main())
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    try: asyncio.run(main())
+    except KeyboardInterrupt: loop.close()
 ```
+
+Note: Authenticated Spot websocket clients can also un/subscribe from/to public feeds.
 
 ---
 
 <a name="futuresusage"></a>
 
 ## Futures Clients Example Usage
+
+Kraken provides a sandbox environment at https://demo-futures.kraken.com for paper trading. When using this API keys you have to set the `sandbox` parameter to `True` when instantiating the respecitve client.
 
 <a name="futuresrest"></a>
 
@@ -194,12 +214,11 @@ from kraken.futures.client import Market, User, Trade, Funding
 
 def main() -> None:
 
-    demo: bool = False # default
     key = 'futures-api-key'
     secret = 'futures-secret-key'
 
     # ____USER__________
-    user = User(key=key,secret=secret, sandbox=demo)
+    user = User(key=key, secret=secret) # optional: sandbox=True
     print(user.get_wallets())
     print(user.get_open_orders())
     print(user.get_open_positions())
@@ -210,49 +229,47 @@ def main() -> None:
     market = Market()
     print(market.get_ohlc(tick_type='trade', symbol='PI_XBTUSD', resolution='5m'))
 
-    priv_market = Market(key=key,secret=secret, sandbox=demo)
+    priv_market = Market(key=key, secret=secret)
     print(priv_market.get_fee_schedules_vol())
     print(priv_market.get_execution_events())
     # ....
 
     # ____TRADE_________
-    trade = Trade(key=key, secret=secret, sandbox=demo)
+    trade = Trade(key=key, secret=secret)
     print(trade.get_fills())
     print(trade.create_batch_order(
         batchorder_list = [{
-            "order": "send",
-            "order_tag": "1",
-            "orderType": "lmt",
-            "symbol": "PI_XBTUSD",
-            "side": "buy",
-            "size": 1,
-            "limitPrice": 12000,
-            "cliOrdId": "another-client-id"
+            'order': 'send',
+            'order_tag': '1',
+            'orderType': 'lmt',
+            'symbol': 'PI_XBTUSD',
+            'side': 'buy',
+            'size': 1,
+            'limitPrice': 12000,
+            'cliOrdId': 'some-client-id'
         }, {
-            "order": "send",
-            "order_tag": "2",
-            "orderType": "stp",
-            "symbol": "PI_XBTUSD",
-            "side": "buy",
-            "size": 1,
-            "limitPrice": 10000,
-            "stopPrice": 110000,
+            'order': 'send',
+            'order_tag': '2',
+            'orderType': 'stp',
+            'symbol': 'PI_XBTUSD',
+            'side': 'buy',
+            'size': 1,
+            'limitPrice': 10000,
+            'stopPrice': 11000,
         }, {
-            "order": "cancel",
-            "order_id": "e35dsdfsdfsddd-8a30-4d5f-a574-b5593esdf0",
+            'order': 'cancel',
+            'order_id': 'e35dsdfsdfsddd-8a30-4d5f-a574-b5593esdf0',
         }, {
-            "order": "cancel",
-            "cliOrdId": "some-client-id",
+            'order': 'cancel',
+            'cliOrdId': 'another-client-id',
         }],
     ))
     print(trade.cancel_all_orders())
-    print(trade.create_order(
-        orderType='lmt', side='buy', size=1, limitPrice=4, symbol='pf_bchusd'
-    ))
+    print(trade.create_order(orderType='lmt', side='buy', size=1, limitPrice=4, symbol='pf_bchusd'))
     # ....
 
     # ____FUNDING_______
-    funding = Funding(key=key, secret=secret, sandbox=demo)
+    funding = Funding(key=key, secret=secret)
     # ....
 
 if __name__ == '__main__': main()
@@ -274,7 +291,7 @@ async def main() -> None:
     key = 'futures-api-key'
     secret = 'futures-secret-key'
 
-    # ___Custom_Trading_Bot______________
+    # ___Custom_Trading_Bot__________
     class Bot(KrakenFuturesWSClient):
 
         async def on_message(self, event) -> None:
@@ -286,17 +303,17 @@ async def main() -> None:
     bot = Bot(WsClient())
     # print(bot.get_available_public_subscription_feeds())
 
-    products = ['PI_XBTUSD']
+    products = ['PI_XBTUSD', 'PF_ETHUSD']
 
     # subscribe to a public websocket feed
     await bot.subscribe(feed='ticker', products=products)
     # await bot.subscribe(feed='book', products=products)
     # ...
 
-    # unsubscribe from a websocket feed
-    await bot.unsubscribe(feed='ticker', products=products)
+    # unsubscribe from a public websocket feed
+    # await bot.unsubscribe(feed='ticker', products=products)
 
-    # _____Private_Websocket_Feeds_________________
+    # _____Authenticated_Websocket__________________
     auth_bot = Bot(WsClient(key=key, secret=secret))
     # print(auth_bot.get_available_private_subscription_feeds())
 
@@ -307,14 +324,19 @@ async def main() -> None:
     # ...
 
     # unsubscribe from a private/authenticaed websocket feed
-    await bot.unsubscribe(feed='fills')
+    await auth_bot.unsubscribe(feed='fills')
 
     while True: await asyncio.sleep(6)
 
 if __name__ == '__main__':
-    asyncio.get_event_loop().run_until_complete(main())
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    try: asyncio.run(main())
+    except KeyboardInterrupt: loop.close()
 
 ```
+
+Note: Authenticated Futures websocket clients can also un/subscribe from/to public feeds.
 
 ---
 
@@ -403,23 +425,23 @@ if __name__ == '__main__':
 
 <a name="spotwsclient"></a>
 
-### WsClient
+### KrakenSpotWSClient
 
-| Method                         | Documentation                                                    |
-| ------------------------------ | ---------------------------------------------------------------- |
-| `get_ws_token`                 | https://docs.kraken.com/rest/#tag/Websockets-Authentication      |
-| `create_order`                 | https://docs.kraken.com/websockets/#message-addOrder             |
-| `edit_order`                   | https://docs.kraken.com/websockets/#message-editOrder            |
-| `cancel_order`                 | https://docs.kraken.com/websockets/#message-cancelOrder          |
-| `cancel_all_orders`            | https://docs.kraken.com/websockets/#message-cancelAll            |
-| `cancel_all_orders_after`      | https://docs.kraken.com/websockets/#message-cancelAllOrdersAfter |
-| `subscribe`                    | https://docs.kraken.com/websockets/#message-subscribe            |
-| `unsubscribe`                  | https://docs.kraken.com/websockets/#message-unsubscribe          |
-| `private_sub_names`            | get private subscription names                                   |
-| `public_sub_names`             | get public subscription names                                    |
-| `active_private_subscriptions` | get active private subscriptions                                 |
-| `active_public_subscriptions`  | get active public subscriptions                                  |
-| `on_message`                   | callback function which should be overloaded                     |
+| Method                         | Documentation                                                             |
+| ------------------------------ | ------------------------------------------------------------------------- |
+| `get_ws_token`                 | https://docs.kraken.com/rest/#tag/Websockets-Authentication               |
+| `create_order`                 | https://docs.kraken.com/websockets/#message-addOrder                      |
+| `edit_order`                   | https://docs.kraken.com/websockets/#message-editOrder                     |
+| `cancel_order`                 | https://docs.kraken.com/websockets/#message-cancelOrder                   |
+| `cancel_all_orders`            | https://docs.kraken.com/websockets/#message-cancelAll                     |
+| `cancel_all_orders_after`      | https://docs.kraken.com/websockets/#message-cancelAllOrdersAfter          |
+| `subscribe`                    | https://docs.kraken.com/websockets/#message-subscribe                     |
+| `unsubscribe`                  | https://docs.kraken.com/websockets/#message-unsubscribe                   |
+| `private_sub_names`            | get private subscription names                                            |
+| `public_sub_names`             | get public subscription names                                             |
+| `active_private_subscriptions` | get active private subscriptions                                          |
+| `active_public_subscriptions`  | get active public subscriptions                                           |
+| `on_message`                   | function which should be overloaded or will execute the callback function |
 
 ---
 

@@ -3,7 +3,7 @@ from kraken.spot.trade.trade import TradeClient
 from kraken.spot.user.user import UserClient
 from kraken.spot.funding.funding import FundingClient
 from kraken.spot.staking.staking import StakingClient
-from kraken.spot.ws_client.ws_client import SpotWsClientCl
+from kraken.spot.websocket.websocket import KrakenSpotWSClientCl
 
 class User(UserClient):
     pass
@@ -20,5 +20,5 @@ class Funding(FundingClient):
 class Staking(StakingClient):
     pass
 
-class WsClient(SpotWsClientCl):
+class KrakenSpotWSClient(KrakenSpotWSClientCl):
     pass

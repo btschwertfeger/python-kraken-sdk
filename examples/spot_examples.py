@@ -63,7 +63,7 @@ def user_examples() -> None:
     print(user.delete_export_report(id_=r['id'], type_='delete'))#type=cancel
 
 def market_examples() -> None:
-    market = Market(key=key, secret=secret)
+    market = Market()
 
     print(market.get_assets(assets=['XBT']))
     print(market.get_tradable_asset_pair(pair=['DOTEUR']))
