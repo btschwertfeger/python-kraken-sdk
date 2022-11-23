@@ -5,15 +5,11 @@ from dotenv import dotenv_values
 from datetime import datetime
 
 try:
-    # from kraken.futures.client import WsClient
     from kraken.futures.client import KrakenFuturesWSClient
-    # from kraken.futures.websocket.websocket import KrakenFuturesWSClient
 except:
     print('USING LOCAL MODULE')
     sys.path.append('/Users/benjamin/repositories/Trading/python-kraken-sdk')
-    # from kraken.futures.client import WsClient
     from kraken.futures.client import KrakenFuturesWSClient
-    # from kraken.futures.websocket.websocket import KrakenFuturesWSClient
 
 logging.basicConfig(
     format='%(asctime)s %(module)s,line: %(lineno)d %(levelname)8s | %(message)s',

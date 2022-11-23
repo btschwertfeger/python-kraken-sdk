@@ -38,7 +38,7 @@ async def main2() -> None:
                 elif topic == 'pong': return
 
             print(event)
-            # if condition
+            # if condition:
             #     await self.create_order(
             #         ordertype='limit',
             #         side='buy',
@@ -65,7 +65,7 @@ async def main2() -> None:
     time.sleep(2) # wait because unsubscribing is faster than subscribing ...
     # print(bot.active_public_subscriptions)
     await bot.unsubscribe(subscription={ 'name': 'ticker' }, pair=['XBT/EUR','DOT/EUR'])
-    # await bot.unsubscribe(subscription={ 'name': 'spread' }, pair=['XBT/EUR'])
+    await bot.unsubscribe(subscription={ 'name': 'spread' }, pair=['XBT/EUR'])
     await bot.unsubscribe(subscription={ 'name': 'spread' }, pair=['DOT/EUR'])
     # ....
 
@@ -78,17 +78,10 @@ async def main2() -> None:
 
     time.sleep(2)
     await auth_bot.unsubscribe(subscription={ 'name': 'ownTrades' })
-    # await auth_bot.unsubscribe(subscription={ 'name': 'openOrders' })
+    await auth_bot.unsubscribe(subscription={ 'name': 'openOrders' })
 
 
-    while True:
-        await asyncio.sleep(6)
-        # display the active subscriptions ...
-        # print(bot.active_public_subscriptions)
-
-        # print(auth_bot.active_public_subscriptions)
-        # print(auth_bot.active_private_subscriptions)
-
+    while True: await asyncio.sleep(6)
 
 if __name__ == '__main__':
     loop = asyncio.new_event_loop()

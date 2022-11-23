@@ -92,21 +92,9 @@ class ConnectSpotWebsocket:
                                 # remove/assign un/subscriptions
                                 try:
                                     if msg['status'] == 'subscribed':
-                                        sub = { 'subscription': msg['subscription'] }
-                                        if 'pair' in msg: # public endpoint
-                                            sub['pair'] = msg['pair'] 
-                                        else: # private endpoint
-                                            sub['subscription'] = { 'name': msg['subscription']['name']}
-                                        self.__subscriptions.append(sub)
-
+                                        self.__append_subscription(msg)    
                                     elif msg['status'] == 'unsubscribed': 
-                                        sub = { 'subscription': msg['subscription'] }
-                                        if 'pair' in msg: # public endpoint
-                                            sub['pair'] = msg['pair']
-                                        elif msg['subscription']['name']: # private endpoint
-                                            sub['subscription'] = { 'name': msg['subscription']['name']}
-                                        self.__subscriptions.remove(sub)       
-
+                                        self.__remove_subscription(msg)  
                                     elif msg['status'] == 'error': logging.warn(msg)
                                 except AttributeError: pass
                         await self.__callback(msg)
@@ -177,6 +165,22 @@ class ConnectSpotWebsocket:
             if private and 'subscription' in msg: msg['subscription']['token'] = self.__ws_conn_details['token']
             elif private: msg['token'] = self.__ws_conn_details['token']
             await self.__socket.send(json.dumps(msg))
+
+    def __append_subscription(self, msg: dict) -> None:
+        sub = { 'subscription': msg['subscription'] }
+        if 'pair' in msg: # public endpoint
+            sub['pair'] = msg['pair'] 
+        else: # private endpoint
+            sub['subscription'] = { 'name': msg['subscription']['name']}
+        self.__subscriptions.append(sub)
+
+    def __remove_subscription(self, msg: dict) -> None:
+        sub = { 'subscription': msg['subscription'] }
+        if 'pair' in msg: # public endpoint
+            sub['pair'] = msg['pair']
+        elif msg['subscription']['name']: # private endpoint
+            sub['subscription'] = { 'name': msg['subscription']['name']}
+        self.__subscriptions.remove(sub)    
 
 class KrakenSpotWSClientCl(SpotWsClientCl):
     '''https://docs.kraken.com/websockets/#overview
@@ -348,10 +352,7 @@ class KrakenSpotWSClientCl(SpotWsClientCl):
         if private: # private == without pair
             if not self.__isAuth: raise ValueError('Cannot unsubscribe from private feeds without valid credentials!')
             elif pair != None: raise ValueError('Cannot unsubscribe from private endpoint with specific pair!')
-            else:
-                sub = copy.deepcopy(payload)
-                sub['event'] = 'subscribe'
-                await self._priv_conn.send_message(payload, private=True)
+            else: await self._priv_conn.send_message(payload, private=True)
                 
         elif pair != None: # public with pair
             for p in pair:
@@ -373,12 +374,12 @@ class KrakenSpotWSClientCl(SpotWsClientCl):
     def active_public_subscriptions(self) -> [dict]:
         if self._pub_conn != None:
             return self._pub_conn.subscriptions 
-        else: return []
+        else: raise ConnectionError('Public connection does not exist!')
 
     @property
     def active_private_subscriptions(self) -> [str]:
         if self._priv_conn != None:
             return self._priv_conn.subscriptions
-        else: return []
+        else: raise ConnectionError('Private connection does not exist!')
 
 
