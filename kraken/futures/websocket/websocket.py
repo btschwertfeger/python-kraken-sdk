@@ -6,6 +6,7 @@ import logging
 import traceback
 import json
 import sys
+import copy
 
 try:
     from kraken.futures.ws_client.ws_client import FuturesWsClientCl
@@ -72,11 +73,23 @@ class ConnectFuturesWebsocket:
                     except ValueError:
                         logger.warning(_msg)
                     else:
-                        if msg.get('event', '') == 'challenge':
-                            self.__last_challenge = msg['message']
-                            self.__new_challenge = self.__client._get_sign_challenge(self.__last_challenge)
-                            self.__challenge_ready = True
-                        else: await self.__callback(msg)
+                        forward = True
+                        if 'event' in msg:
+                            e = msg['event']
+                            if e == 'challenge':
+                                forward = False
+                                self.__last_challenge = msg['message']
+                                self.__new_challenge = self.__client._get_sign_challenge(self.__last_challenge)
+                                self.__challenge_ready = True
+                            elif e == 'subscribed':
+                                sub = copy.deepcopy(msg)
+                                del sub['event']
+                                self.__append_subscription(sub)
+                            elif e == 'unsubscribed':
+                                sub = copy.deepcopy(msg)
+                                del sub['event']
+                                self.__remove_subscription(sub)
+                        if forward: await self.__callback(msg)
 
     async def __run_forever(self) -> None:
         while True: await self.__reconnect()
@@ -150,13 +163,14 @@ class ConnectFuturesWebsocket:
         logging.debug('Awaiting challenge...')
         while not self.__challenge_ready: await asyncio.sleep(.1)
 
-    def append_subscription(self, subscription) -> None:
+    def __append_subscription(self, subscription: dict) -> None:
         self.__subscriptions.append(subscription)
 
-    def remove_subscription(self, feed) -> None:
-        self.__subscriptions = [
-            sub for sub in self.__subscriptions if sub['feed'] != feed
-        ]
+    def __remove_subscription(self, subscription: dict) -> None:
+        self.__subscriptions.remove(subscription)
+
+    def get_active_subscriptions(self) -> [dict]:
+        return self.__subscriptions
 
 
 class KrakenFuturesWSClientCl(FuturesWsClientCl):
@@ -252,16 +266,22 @@ class KrakenFuturesWSClientCl(FuturesWsClientCl):
         '''
 
         message = { 'event': 'subscribe', 'feed': feed }
-        if products: message['product_ids'] = products
+
+        if products != None: 
+            if type(products) != list: raise ValueError('Parameter products must be type of [str] (e.g. pair=["PI_XBTUSD"])')
+            else: message['product_ids'] = products     
             
         if feed in self.get_available_private_subscription_feeds():
-            logging.debug(f'Subscribe private to {feed}')
-            await self._conn.send_message(message, private=True)
+            if products != None: raise ValueError('There is no private feed that accepts products!')
+            else: await self._conn.send_message(message, private=True)
         elif feed in self.get_available_public_subscription_feeds():
-            logging.debug(f'Subscribe public to {feed}')
-            await self._conn.send_message(message, private=False)
+            if products != None:
+                for product in products:
+                    sub = copy.deepcopy(message)
+                    sub['product_ids'] = [product]
+                    await self._conn.send_message(sub, private=False)
+            else: await self._conn.send_message(message, private=False)
         else: raise ValueError(f'Feed: {feed} not found. Not subscribing to it.')
-        self._conn.append_subscription(message)
 
     async def unsubscribe(self, feed: str, products: [str]=None) -> None:
         '''Unsubscribe from a topic/feed
@@ -282,17 +302,22 @@ class KrakenFuturesWSClientCl(FuturesWsClientCl):
             received via the on_message callback function.
         '''
 
-        self._conn.remove_subscription(feed)
-
         message = { 'event': 'unsubscribe', 'feed': feed }
-        if products: message['product_ids'] = products
+
+        if products != None: 
+            if type(products) != list: raise ValueError('Parameter products must be type of [str] (e.g. pair=["PI_XBTUSD"])')
+            else: message['product_ids'] = products     
 
         if feed in self.get_available_private_subscription_feeds():
-            logging.debug(f'Unsubscribe private from {feed}')
-            await self._conn.send_message(message, private=True)
+            if products != None: raise ValueError('There is no private feed that accepts products!')
+            else: await self._conn.send_message(message, private=True)
         elif feed in self.get_available_public_subscription_feeds():
-            logging.debug(f'Unsubscribe public from {feed}')
-            await self._conn.send_message(message, private=False)
+            if products != None:
+                for product in products:
+                    sub = copy.deepcopy(message)
+                    sub['product_ids'] = [product]
+                    await self._conn.send_message(sub, private=False)                    
+            else: await self._conn.send_message(message, private=False)
         else: raise ValueError(f'Feed: {feed} not found. Not unsubscribing it.')
 
     @staticmethod
@@ -312,3 +337,6 @@ class KrakenFuturesWSClientCl(FuturesWsClientCl):
     @property
     def isAuth(self) -> bool:
         return self._key and self._secret
+
+    def get_active_subscriptions(self) -> [dict]:
+        return self._conn.get_active_subscriptions()

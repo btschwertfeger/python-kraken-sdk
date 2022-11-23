@@ -42,17 +42,20 @@ async def main() -> None:
     bot = Bot()
     # print(bot.get_available_public_subscription_feeds())
 
-    products = ['PI_XBTUSD']
+    products = ['PI_XBTUSD', 'PF_SOLUSD']
     # subscribe to a public websocket feed
     await bot.subscribe(feed='ticker', products=products)
-    # await bot.subscribe(feed='book', products=products)
+    await bot.subscribe(feed='book', products=products)
     # await bot.subscribe(feed='trade', products=products)
     # await bot.subscribe(feed='ticker_lite', products=products)
     # await bot.subscribe(feed='heartbeat')
+    # time.sleep(2)
 
     # unsubscribe from a websocket feed
     time.sleep(2) # in case subscribe is not done yet
-    await bot.unsubscribe(feed='ticker', products=products)
+    await bot.unsubscribe(feed='ticker', products=['PI_XBTUSD'])
+    await bot.unsubscribe(feed='ticker', products=['PF_SOLUSD'])
+    await bot.unsubscribe(feed='book', products=products)
     # ....
 
     # _____Private_Websocket_Feeds_________________
@@ -61,7 +64,7 @@ async def main() -> None:
 
     # subscribe to a private/authenticated websocket feed
     await auth_bot.subscribe(feed='fills')
-    # await auth_bot.subscribe(feed='open_positions')
+    await auth_bot.subscribe(feed='open_positions')
     # await auth_bot.subscribe(feed='open_orders')
     # await auth_bot.subscribe(feed='open_orders_verbose')
     # await auth_bot.subscribe(feed='deposits_withdrawals')
@@ -73,9 +76,10 @@ async def main() -> None:
     # authenticaed clients can also subscribe to public feeds
     # await auth_bot.subscribe(feed='ticker', products=['PI_XBTUSD', 'PF_ETHUSD'])
 
-    time.sleep(1)
+    # time.sleep(1)
     # unsubscribe from a private/authenticaed websocket feed
     await auth_bot.unsubscribe(feed='fills')
+    await auth_bot.unsubscribe(feed='open_positions')
     # ....
 
     while True: await asyncio.sleep(6)
