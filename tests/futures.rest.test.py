@@ -5,8 +5,12 @@ import time
 import logging, logging.config
 from tqdm import tqdm
 
-sys.path.append('/Users/benjamin/repositories/Trading/python-kraken-sdk')
-from kraken.futures.client import User, Market, Trade, Funding
+try:
+    from kraken.futures.client import User, Market, Trade, Funding
+except:
+    print('USING LOCAL MODULE')
+    sys.path.append('/Users/benjamin/repositories/Trading/python-kraken-sdk')
+    from kraken.futures.client import User, Market, Trade, Funding
 
 logging.basicConfig(
     format='%(asctime)s %(module)s,line: %(lineno)d %(levelname)8s | %(message)s',
@@ -23,14 +27,7 @@ secret = dotenv_values('.env')['Futures_SECRET_KEY']
 
 isSuccess = lambda r: type(r) == dict and 'result' in r and r['result'] == 'success'
 
-def test_user_endpoints() -> None:
-
-    # _____________________________________________________________
-    #  _   _               
-    # | | | |___  ___ _ __ 
-    # | | | / __|/ _ \ '__|
-    # | |_| \__ \  __/ |   
-    #  \___/|___/\___|_|   
+def test_user_endpoints() -> None: 
     k = 'USER'
     logging.info(f'{k}: Creating user clients')
     user = User()

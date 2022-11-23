@@ -5,8 +5,12 @@ import time
 import logging, logging.config
 from tqdm import tqdm
 
-sys.path.append('/Users/benjamin/repositories/Trading/python-kraken-sdk')
-from kraken.spot.client import User, Market, Trade, Funding, Staking
+try:
+    from kraken.spot.client import User, Market, Trade, Funding, Staking
+except:
+    print('USING LOCAL MODULE')
+    sys.path.append('/Users/benjamin/repositories/Trading/python-kraken-sdk')
+    from kraken.spot.client import User, Market, Trade, Funding, Staking
 
 logging.basicConfig(
     format='%(asctime)s %(module)s,line: %(lineno)d %(levelname)8s | %(message)s',
