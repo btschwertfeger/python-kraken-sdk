@@ -14,3 +14,7 @@ class KrakenExceptions(object):
         '''Raised when credentials are valid but permissions are restricted'''
         def __init__(self, message=''):
             super(Exception, self).__init__(message)
+    class KrakenServiceUnavailableError(Exception):
+        '''Raised when service is unavailable'''
+        def __init__(self, message=''):
+            super(Exception, self).__init__(message)

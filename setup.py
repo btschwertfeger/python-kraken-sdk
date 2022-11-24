@@ -142,7 +142,6 @@ setup(
         'Natural Language :: English',
         'Operating System :: MacOS',
         'Operating System :: Unix'
-        'Operating System :: Microsoft',
     ],
     cmdclass={
         'upload': UploadCommand,

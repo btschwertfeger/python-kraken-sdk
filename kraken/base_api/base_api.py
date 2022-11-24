@@ -106,6 +106,8 @@ class KrakenBaseRestAPI(object):
                         raise KrakenExceptions.KrakenAuthenticationError(data)
                     elif data['error'] == 'EGeneral:Permission denied' or 'EGeneral:Permission denied' in data['error']:
                         raise KrakenExceptions.KrakenPermissionDeniedError(data)
+                    elif data['error'] == 'EService:Unavailable' or 'EService:Unavailable' in data['error']:
+                        raise KrakenExceptions.KrakenServiceUnavailableError(data)
                     else: raise Exception(f'{response_data.status_code} - {data}')
                 else: return data
         else: raise Exception(f'{response_data.status_code}-{response_data.text}')
@@ -247,6 +249,8 @@ class KrakenBaseFuturesAPI(object):
                         raise KrakenExceptions.KrakenAuthenticationError(data)
                     elif data['error'] == 'EGeneral:Permission denied' or 'EGeneral:Permission denied' in data['error']:
                         raise KrakenExceptions.KrakenPermissionDeniedError(data)
+                    elif data['error'] == 'EService:Unavailable' or 'EService:Unavailable' in data['error']:
+                        raise KrakenExceptions.KrakenServiceUnavailableError(data)
                     else: raise Exception(f'{response_data.status_code} - {data}')
                 else: return data
         else: raise Exception(f'{response_data.status_code}-{response_data.text}')
