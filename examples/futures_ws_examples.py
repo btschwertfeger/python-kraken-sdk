@@ -14,11 +14,9 @@ except:
     from kraken.futures.client import KrakenFuturesWSClient
     from kraken.exceptions.exceptions import KrakenExceptions
 
-
 logging.basicConfig(
     format='%(asctime)s %(module)s,line: %(lineno)d %(levelname)8s | %(message)s',
     datefmt='%Y/%m/%d %H:%M:%S',
-    filemode='w',
     level=logging.INFO
 )
 logging.getLogger().setLevel(logging.INFO)

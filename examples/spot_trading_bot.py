@@ -8,12 +8,12 @@ import requests
 
 try:
     from kraken.exceptions.exceptions import KrakenExceptions
-    from kraken.futures.client import User, Market, Trade, Funding, KrakenFuturesWSClient
+    from kraken.spot.client import User, Market, Trade, Funding, Staking, KrakenSpotWSClient
 except:
     print('USING LOCAL MODULE')
     sys.path.append('/Users/benjamin/repositories/Trading/python-kraken-sdk')
     from kraken.exceptions.exceptions import KrakenExceptions
-    from kraken.futures.client import User, Market, Trade, Funding, KrakenFuturesWSClient
+    from kraken.spot.client import User, Market, Trade, Funding, Staking, KrakenSpotWSClient
 
 logging.basicConfig(
     format='%(asctime)s %(module)s,line: %(lineno)d %(levelname)8s | %(message)s',
@@ -24,7 +24,7 @@ logging.getLogger().setLevel(logging.INFO)
 logging.getLogger('requests').setLevel(logging.WARNING)
 logging.getLogger('urllib3').setLevel(logging.WARNING)
 
-class TradingBot(KrakenFuturesWSClient):
+class TradingBot(KrakenSpotWSClient):
     '''
         Class that implements the trading strategy
 
@@ -50,23 +50,39 @@ class TradingBot(KrakenFuturesWSClient):
         self.__trade = Trade(key=config['key'], secret=config['secret'])
         self.__market = Market(key=config['key'], secret=config['secret'])
         self.__funding = Funding(key=config['key'], secret=config['secret'])
+        self.__staking = Staking(key=config['key'], secret=config['secret'])
 
-    async def on_message(self, event) -> None:
+    async def on_message(self, event: dict) -> None:
         '''receives all events that came form the websocket connection'''
+        if 'event' in event:
+            if event['event'] == 'heartbeat': return
+            if event['event'] == 'pong': return
         logging.info(event)
-        # ... apply your trading strategy here
+        
+        # ... begin implementing your trading strategy here
         # call functions of self.__trade and other clients if conditions met... 
 
+        # The spot websocket client also allow sending orders via websockets
+        # this is way faster than using REST endpoints
+        # example:
+        # await self.create_order(
+        #     ordertype='limit',
+        #     side='buy',
+        #     pair='BTC/EUR',
+        #     price=20000,
+        #     volume=200
+        # )
+        # more functions can be found in the documentation at: 
+        # https://github.com/btschwertfeger/Python-Kraken-SDK
+
     # add more functions to customize the bot/strategy
-    # ... 
     # ... 
 
     def save_exit(self, reason: str='') -> None:
         '''controlled shutdown of the bot'''
-        logging.warn(f'Save exit triggered, reason: {reason}')
+        logging.warning(f'Save exit triggered, reason: {reason}')
         # save data ... 
-        # maybe close trades ...
-        # enable dead man switch
+        # maybe close trades  ...
         exit(1)
 
 
@@ -98,8 +114,8 @@ class ManagedBot(object):
         except KeyboardInterrupt: pass
         finally: 
             loop.close()
-            if self.__tradingStrategy != None:
-                self.__tradingStrategy.save_exit(reason='Asyncio loop left')
+            if self.__tratingStrategy != None:
+                self.__tratingStrategy.save_exit(reason='Asyncio loop left')
 
     async def __main(self) -> None:
         '''
@@ -113,13 +129,17 @@ class ManagedBot(object):
         '''
         self.__tratingStrategy = TradingBot(config=self.__config)
 
-        await self.__tratingStrategy.subscribe(feed='ticker', products=self.__config['products'])
-        await self.__tratingStrategy.subscribe(feed='book', products=self.__config['products'])
+        await self.__tratingStrategy.subscribe(
+            subscription={ 'name': 'ticker' }, 
+            pair=self.__config['pairs']
+        )
+        await self.__tratingStrategy.subscribe(
+            subscription={ 'name': 'ohlc', 'interval': 15 }, 
+            pair=self.__config['pairs']
+        )
 
-        await self.__tratingStrategy.subscribe(feed='fills')
-        await self.__tratingStrategy.subscribe(feed='open_positions')
-        await self.__tratingStrategy.subscribe(feed='open_orders')
-        await self.__tratingStrategy.subscribe(feed='balances')       
+        await self.__tratingStrategy.subscribe(subscription={ 'name': 'ownTrades' })  
+        await self.__tratingStrategy.subscribe(subscription={ 'name': 'openOrders' })  
 
         while not self.__tratingStrategy.exception_occur: 
             try:
@@ -140,7 +160,7 @@ class ManagedBot(object):
     def __check_credentials(self) -> bool:
         '''Checks the user credentials and the connection to Kraken'''
         try:
-            User(self.__config['key'], self.__config['secret']).get_wallets()
+            User(self.__config['key'], self.__config['secret']).get_account_balance()
             logging.info('Client credentials are valid')
             return True
         except urllib3.exceptions.MaxRetryError:
@@ -154,13 +174,13 @@ class ManagedBot(object):
             return False
 
     def save_exit(self, reason: str='') -> None:
-        self.__tratingStrategy.save_exit()
+        self.__tratingStrategy.save_exit(reason=reason)
 
 def main() -> None:
     bot_config = {
-        'key': dotenv_values('.env')['Futures_API_KEY'],
-        'secret': dotenv_values('.env')['Futures_SECRET_KEY'],
-        'products': ['PI_XBTUSD', 'PF_SOLUSD']
+        'key': dotenv_values('.env')['API_KEY'],
+        'secret': dotenv_values('.env')['SECRET_KEY'],
+        'pairs': ['DOT/EUR', 'XBT/USD']
     }
     managedBot = ManagedBot(config=bot_config)
     try:    
@@ -168,5 +188,4 @@ def main() -> None:
     except Exception:
         managedBot.save_exit(reason=f'manageBot.run() has ended: {traceback.format_exc()}')
 
-if __name__ == '__main__': 
-    main()
+if __name__ == '__main__': main()
