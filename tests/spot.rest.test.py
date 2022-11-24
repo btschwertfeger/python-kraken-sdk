@@ -7,10 +7,12 @@ from tqdm import tqdm
 
 try:
     from kraken.spot.client import User, Market, Trade, Funding, Staking
+    # import kraken.exceptions.exceptions.KrakenExceptions 
 except:
     print('USING LOCAL MODULE')
     sys.path.append('/Users/benjamin/repositories/Trading/python-kraken-sdk')
     from kraken.spot.client import User, Market, Trade, Funding, Staking
+    # from kraken.exceptions.exceptions import KrakenExceptions 
 
 logging.basicConfig(
     format='%(asctime)s %(module)s,line: %(lineno)d %(levelname)8s | %(message)s',
@@ -262,5 +264,6 @@ def main() -> None:
     test_trade_endpoints()
     test_staking_endpoints()
     test_funding_endpoints()
+
 
 if __name__ == '__main__': main()

@@ -11,13 +11,38 @@ import time
 from uuid import uuid1
 import urllib.parse
 
+try:
+    from kraken.exceptions.exceptions import KrakenExceptions
+except:
+    print('USING LOCAL MODULE')
+    sys.path.append('/Users/benjamin/repositories/Trading/python-kraken-sdk')
+    from kraken.exceptions.exceptions import KrakenExceptions
+
+
 class KrakenBaseRestAPI(object):
+    ''' Base class for all Spot clients
+
+        Handles un/signed requests and returns exception handled results
+
+
+        ====== P A R A M E T E R S ======
+        key: str, defualt: ''
+            Spot API public key
+        secret: str, default: ''
+            Spot API secret key
+        url: str, default: 'https://api.kraken.com'
+            optional url
+        sandbox: bool, default: False
+            not used so far
+    '''
+
+    URL = 'https://api.kraken.com'
+    API_V = '/0'
 
     def __init__(self, key: str='', secret: str='', url: str='', sandbox: bool=False, **kwargs):
-
+        if sandbox: raise ValueError('Sandbox not availabel for Kraken Spot trading.')
         if url != '': self.url = url
-        else: self.url = 'https://api.kraken.com'
-        self.api_v = '/0'
+        else: self.url = self.URL
 
         self.__key = key
         self.__secret = secret
@@ -47,16 +72,16 @@ class KrakenBaseRestAPI(object):
             headers = {
                 'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8',
                 'API-Key': self.__key,
-                'API-Sign': self.get_kraken_signature(f'{self.api_v}{uri}', params)
+                'API-Sign': self.get_kraken_signature(f'{self.API_V}{uri}', params)
             }
 
-        url = f'{self.url}{self.api_v}{uri}'
+        url = f'{self.url}{self.API_V}{uri}'
         if method in ['GET', 'DELETE']:
-            return self.check_response_data(requests.request(method=method, url=url, headers=headers, timeout=timeout), return_raw)
+            return self.__check_response_data(requests.request(method=method, url=url, headers=headers, timeout=timeout), return_raw)
         elif do_json:
-            return self.check_response_data(requests.request(method=method, url=url, headers=headers, json=params, timeout=timeout), return_raw)
+            return self.__check_response_data(requests.request(method=method, url=url, headers=headers, json=params, timeout=timeout), return_raw)
         else:
-            return self.check_response_data(requests.request(method=method, url=url, headers=headers, data=params, timeout=timeout), return_raw)
+            return self.__check_response_data(requests.request(method=method, url=url, headers=headers, data=params, timeout=timeout), return_raw)
 
     def get_kraken_signature(self, urlpath: str, data: dict) -> str:
         return base64.b64encode(
@@ -67,8 +92,7 @@ class KrakenBaseRestAPI(object):
             ).digest()
         ).decode()
 
-    @staticmethod
-    def check_response_data(response_data, return_raw: bool=False) -> dict:
+    def __check_response_data(self, response_data, return_raw: bool=False) -> dict:
         if response_data.status_code in [ '200', 200 ]:
             if return_raw: return response_data
             try:
@@ -78,7 +102,11 @@ class KrakenBaseRestAPI(object):
             else:
                 if 'error' in data:
                     if len(data.get('error')) == 0 and 'result' in data: return data['result']
-                    else: raise Exception(f'{response_data.status_code} - {response_data.text}')
+                    elif data['error'] == 'authenticationError' or 'authenticationError' in data['error']:
+                        raise KrakenExceptions.KrakenAuthenticationError(data)
+                    elif data['error'] == 'EGeneral:Permission denied' or 'EGeneral:Permission denied' in data['error']:
+                        raise KrakenExceptions.KrakenPermissionDeniedError(data)
+                    else: raise Exception(f'{response_data.status_code} - {data}')
                 else: return data
         else: raise Exception(f'{response_data.status_code}-{response_data.text}')
 
@@ -92,12 +120,34 @@ class KrakenBaseRestAPI(object):
         else: raise ValueError('a must be string or list of strings')
 
 class KrakenBaseFuturesAPI(object):
+    ''' Base class for all Futures clients
+
+        Handles un/signed requests and returns exception handled results
+
+        ====== P A R A M E T E R S ======
+        key: str, defualt: ''
+            Futures API public key
+        secret: str, default: ''
+            Futures API secret key
+        url: str, default: 'https://futures.kraken.com'
+            optional url
+        sandbox: bool, default: False
+            if set to true the url will be 'https://demo-futures.kraken.com'
+        
+        ====== N O T E S ======
+        If the sandbox environment is chosen, the keys must be generated here:
+            https://demo-futures.kraken.com/settings/api
+    '''
+
+    URL = 'https://futures.kraken.com'
+    SANDBOX_URL = 'https://demo-futures.kraken.com'
+
     def __init__(self, key: str='', secret: str='', url: str='', sandbox: bool=False, **kwargs):
         
         self.sandbox = sandbox
         if url: self.url = url
-        elif self.sandbox: self.url = 'https://demo-futures.kraken.com'
-        else: self.url = 'https://futures.kraken.com'
+        elif self.sandbox: self.url = self.SANDBOX_URL
+        else: self.url = self.URL
         
         self.__key = key
         self.__secret = secret
@@ -139,7 +189,7 @@ class KrakenBaseFuturesAPI(object):
             }
 
         if method in ['GET', 'DELETE']:
-            return self.check_response_data(
+            return self.__check_response_data(
                 requests.request(
                     method=method,
                     url=f'{self.url}{uri}' if queryString == '' else f'{self.url}{uri}?{queryString}', 
@@ -149,7 +199,7 @@ class KrakenBaseFuturesAPI(object):
                 return_raw
             )
         elif method == 'PUT':
-            return self.check_response_data(
+            return self.__check_response_data(
                 requests.request(
                 method=method, 
                 url=f'{self.url}{uri}', 
@@ -160,7 +210,7 @@ class KrakenBaseFuturesAPI(object):
                 return_raw
             )
         else:
-            return self.check_response_data(
+            return self.__check_response_data(
                 requests.request(
                     method=method, 
                     url=f'{self.url}{uri}?{postString}', 
@@ -182,9 +232,8 @@ class KrakenBaseFuturesAPI(object):
                 hashlib.sha512
             ).digest()
         )
-
-    @staticmethod
-    def check_response_data(response_data, return_raw: bool=False) -> dict:
+   
+    def __check_response_data(self, response_data, return_raw: bool=False) -> dict:
         if response_data.status_code in [ '200', 200 ]:
             if return_raw: return response_data
             try:
@@ -194,6 +243,10 @@ class KrakenBaseFuturesAPI(object):
             else:
                 if 'error' in data:
                     if len(data.get('error')) == 0 and 'result' in data: return data['result']
-                    else: raise Exception(f'{response_data.status_code} - {response_data.text}')
+                    elif data['error'] == 'authenticationError':
+                        raise KrakenExceptions.KrakenAuthenticationError(data)
+                    elif data['error'] == 'EGeneral:Permission denied' or 'EGeneral:Permission denied' in data['error']:
+                        raise KrakenExceptions.KrakenPermissionDeniedError(data)
+                    else: raise Exception(f'{response_data.status_code} - {data}')
                 else: return data
         else: raise Exception(f'{response_data.status_code}-{response_data.text}')

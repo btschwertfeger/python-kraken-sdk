@@ -31,7 +31,7 @@ class ConnectFuturesWebsocket(object):
             callback function to call when a message is received
     '''
 
-    MAX_RECONNECT_NUM = 10
+    MAX_RECONNECT_NUM = 2
 
     def __init__(self, client, endpoint: str, callback):
         self.__client = client
@@ -45,13 +45,11 @@ class ConnectFuturesWebsocket(object):
         self.__challenge_ready = False
 
         self.__socket = None
-        self.__subscriptions = []
+        self.__subscriptions = []        
         
-        
-        loop = asyncio.get_running_loop()      
         self.__task = asyncio.ensure_future(
             self.__run_forever(), 
-            loop=loop
+            loop=asyncio.get_running_loop()      
         )
     
     @property
@@ -68,6 +66,7 @@ class ConnectFuturesWebsocket(object):
             self.__socket = socket
 
             if not event.is_set(): event.set()
+            self.__reconnect_num = 0
 
             while keep_alive:
                 try:
@@ -87,11 +86,9 @@ class ConnectFuturesWebsocket(object):
                         forward = True
                         if 'event' in msg:
                             e = msg['event']
-                            if e == 'challenge':
+                            if e == 'challenge' and 'message' in msg:
                                 forward = False
-                                self.__last_challenge = msg['message']
-                                self.__new_challenge = self.__client._get_sign_challenge(self.__last_challenge)
-                                self.__challenge_ready = True
+                                self.__handle_new_challenge(msg)                                
                             elif e == 'subscribed': self.__append_subscription(msg)
                             elif e == 'unsubscribed': self.__remove_subscription(msg)
                         if forward: await self.__callback(msg)
@@ -102,15 +99,11 @@ class ConnectFuturesWebsocket(object):
         except KrakenExceptions.MaxReconnectError: 
             await self.__callback({'event': 'KrakenExceptions.MaxReconnectError'})
         except Exception as e:
+            # for task in asyncio.all_tasks(): task.cancel()
             logging.error(traceback.format_exc())
+        # except asyncio.CancelledError: pass
         finally: self.__client.exception_occur = True
-            # try: 
-            #     for task in asyncio.all_tasks(): task.cancel()
-            # except asyncio.CancelledError: pass
-            # finally: 
-            #     # asyncio.get_event_loop().stop()
-            #     raise KrakenExceptions.MaxReconnectError()
-    
+
     async def __reconnect(self):
         logging.info('Websocket start connect/reconnect')
 
@@ -143,8 +136,7 @@ class ConnectFuturesWebsocket(object):
                         except asyncio.CancelledError: logging.exception('CancelledError')
                         logging.warning('cancel ok')
                     await self.__callback({ 'ws-error': message })
-            if exception_occur: break
-            
+            if exception_occur: break            
         logging.warning('reconnect over')
 
     async def __recover_subscription_req_msg(self, event) -> None:
@@ -174,6 +166,11 @@ class ConnectFuturesWebsocket(object):
             msg['signed_challenge'] = self.__new_challenge
             
         await self.__socket.send(json.dumps(msg))
+
+    def __handle_new_challenge(self, msg: dict) -> None:
+        self.__last_challenge = msg['message']
+        self.__new_challenge = self.__client._get_sign_challenge(self.__last_challenge)
+        self.__challenge_ready = True
 
     async def __check_challenge_ready(self) -> None:
         await self.__socket.send(json.dumps({
@@ -268,13 +265,13 @@ class KrakenFuturesWSClientCl(FuturesWsClientCl):
     def __init__(self, key: str='', secret: str='', url: str='', callback=None, sandbox: bool=False): 
         super().__init__(key=key, secret=secret, url=url, sandbox=sandbox)
 
+        self.exception_occur = False
         self.__callback = callback        
         self._conn = ConnectFuturesWebsocket(
             client=self,
             endpoint= url if url != '' else self.DEMO_ENV_URL if sandbox else self.PROD_ENV_URL,
             callback=self.on_message 
         )
-        self.exception_occur = False
 
     async def on_message(self, msg) -> None:
         ''' Calls the defined callback function (if defined) 

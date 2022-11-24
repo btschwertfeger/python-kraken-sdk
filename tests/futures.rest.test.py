@@ -115,7 +115,7 @@ def test_trade_endpoints() -> None:
     assert isSuccess(trade.get_fills())
     assert isSuccess(trade.get_fills(lastFillTime='2020-07-21T12:41:52.790Z'))
     assert isSuccess(trade.dead_mans_switch(timeout=60))
-    assert isSuccess(trade.dead_mans_switch(timeout=0)) # reset
+    assert isSuccess(trade.dead_mans_switch(timeout=0)) # reset dead mans switch
     assert isSuccess(trade.get_orders_status(orderIds='378etweirzgu'))
     
         

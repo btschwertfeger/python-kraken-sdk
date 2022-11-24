@@ -7,6 +7,7 @@ class UserClient(KrakenBaseRestAPI):
         return self._request('POST', '/private/Balance')
 
     def get_balances(self, currency: str) -> dict:
+        '''Returns the balance and available balance of a given currency'''
         
         balance = float(0)   
         currency_found = False
@@ -31,7 +32,6 @@ class UserClient(KrakenBaseRestAPI):
             'balance': balance,
             'available_balance': available_balance
         }
-
 
     def get_trade_balance(self, asset: str=None) -> dict:
         '''https://docs.kraken.com/rest/#operation/getTradeBalance'''

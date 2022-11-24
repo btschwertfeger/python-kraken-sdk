@@ -10,10 +10,12 @@ import copy
 
 try:
     from kraken.spot.ws_client.ws_client import SpotWsClientCl
+    from kraken.exceptions.exceptions import KrakenExceptions 
 except:
     print('USING LOCAL MODULE')
     sys.path.append('/Users/benjamin/repositories/Trading/python-kraken-sdk')
     from kraken.spot.client.ws_client import SpotWsClientCl
+    from kraken.exceptions.exceptions import KrakenExceptions 
 
 class ConnectSpotWebsocket:
     '''
@@ -33,6 +35,8 @@ class ConnectSpotWebsocket:
 
     '''
 
+    MAX_RECONNECT_NUM = 10
+
     def __init__(self, client, endpoint: str, callback, isAuth: bool=False):
         self.__client = client
         self.__ws_endpoint = endpoint
@@ -47,7 +51,10 @@ class ConnectSpotWebsocket:
         self.__socket = None
         self.__subscriptions = []
 
-        asyncio.ensure_future(self.__run_forever(), loop=asyncio.get_running_loop())
+        self.__task = asyncio.ensure_future(
+            self.__run_forever(),
+            loop=asyncio.get_running_loop()
+        )
 
     @property
     def subscriptions(self) -> list:
@@ -70,6 +77,7 @@ class ConnectSpotWebsocket:
             if not event.is_set():
                 await self.send_ping()
                 event.set()
+            self.__reconnect_num = 0
 
             while keep_alive:
                 if time.time() - self.__last_ping > 10: await self.send_ping()
@@ -80,7 +88,7 @@ class ConnectSpotWebsocket:
                 except asyncio.CancelledError:
                     logging.exception('asyncio.CancelledError')
                     keep_alive = False
-                    await self.__callback({'event': 'ws-cancelled-error'})
+                    await self.__callback({'event': 'asyncio.CancelledError'})
                 else:
                     try:
                         msg = json.loads(_msg)
@@ -100,13 +108,22 @@ class ConnectSpotWebsocket:
                         await self.__callback(msg)
 
     async def __run_forever(self) -> None:
-        while True: await self.__reconnect()
+        try:
+            while True: await self.__reconnect()
+        except KrakenExceptions.MaxReconnectError: 
+            await self.__callback({'event': 'KrakenExceptions.MaxReconnectError'})
+        except Exception as e:
+            logging.error(traceback.format_exc())
+        finally: self.__client.exception_occur = True
 
     async def __reconnect(self):
         logging.info('Websocket start connect/reconnect')
 
         self.__reconnect_num += 1
-        reconnect_wait = round(random() * min(60, (2 ** self.__reconnect_num) - 1) + 1) 
+        if self.__reconnect_num >= self.MAX_RECONNECT_NUM:
+            raise KrakenExceptions.MaxReconnectError()
+
+        reconnect_wait = self.__get_reconnect_wait(self.__reconnect_num)
         logging.debug(f'asyncio sleep reconnect_wait={reconnect_wait} s reconnect_num={self.__reconnect_num}')
         await asyncio.sleep(reconnect_wait)
         logging.debug(f'asyncio sleep done')
@@ -137,11 +154,12 @@ class ConnectSpotWebsocket:
     async def __recover_subscriptions(self, event):
         logging.info(f'Recover {"auth" if self.__isAuth else "public"} subscriptions {self.__subscriptions} waiting.')
         await event.wait()
+
         for sub in self.__subscriptions:
             cpy = copy.deepcopy(sub)
             private = False
-            if 'subscription' in sub \
-                and 'name' in sub['subscription'] \
+            if 'subscription' in sub                \
+                and 'name' in sub['subscription']   \
                 and sub['subscription']['name'] in self.__client.private_sub_names:
                 cpy['subscription']['token'] = self.__ws_conn_details['token']
                 private = True            
@@ -218,6 +236,9 @@ class ConnectSpotWebsocket:
         else: logging.warn('Feed not implemented. Please contact the python-kraken-sdk package author.')
         return sub
 
+    def __get_reconnect_wait(self, attempts: int) -> float:
+        return round(random() * min(60*3, (2 ** attempts) - 1) + 1)
+
 class KrakenSpotWSClientCl(SpotWsClientCl):
     '''https://docs.kraken.com/websockets/#overview
     
@@ -282,7 +303,8 @@ class KrakenSpotWSClientCl(SpotWsClientCl):
         super().__init__(key=key, secret=secret, sandbox=beta)
         self.__callback = callback
         self.__isAuth = key and secret        
-       
+        
+        self.exception_occur = False
         self._pub_conn = ConnectSpotWebsocket(
             client=self,
             endpoint=self.PROD_ENV_URL if not beta else BETA_ENV_URL,
