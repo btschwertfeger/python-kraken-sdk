@@ -9,7 +9,7 @@ from setuptools import find_packages, setup, Command
 
 # Package meta-data.
 NAME = 'python-kraken-sdk'
-DESCRIPTION = 'Collection of clients and methods to interact with the cryptocurrency exchange Kraken.'
+DESCRIPTION = 'Collection of clients and methods to interact with the Kraken cryptocurrency exchange.'
 URL = 'https://github.com/btschwertfeger/Python-Kraken-SDK'
 EMAIL = 'development@b-schwertfeger.de'
 AUTHOR = 'Benjamin Thomas Schwertfeger'
@@ -23,7 +23,7 @@ REQUIRED = [
 
 # What packages are optional?
 EXTRAS = {
-    # 'fancy feature': ['django'],
+    # 'fancy feature': ['tqdm'],
 }
 
 here = os.path.abspath(os.path.dirname(__file__))
@@ -133,11 +133,16 @@ setup(
     include_package_data=True,
     license='GPLv3',
     classifiers=[
-        # Trove classifiers
         # Full list: https://pypi.python.org/pypi?%3Aaction=list_classifiers
         'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
         'Programming Language :: Python',
         'Programming Language :: Python :: 3.7',
+        'Development Status :: 4 - Beta',
+        'Framework :: AsyncIO',
+        'Natural Language :: English',
+        'Operating System :: MacOS',
+        'Operating System :: Unix'
+        'Operating System :: Microsoft',
     ],
     cmdclass={
         'upload': UploadCommand,

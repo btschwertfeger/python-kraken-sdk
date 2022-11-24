@@ -5,7 +5,6 @@ from dotenv import dotenv_values
 from datetime import datetime
 import traceback
 
-
 try:
     from kraken.futures.client import KrakenFuturesWSClient
     from kraken.exceptions.exceptions import KrakenExceptions
@@ -83,7 +82,8 @@ async def main() -> None:
     await auth_bot.unsubscribe(feed='open_positions')
     # ....
 
-    while not bot.exception_occur: await asyncio.sleep(6)
+    while not bot.exception_occur and not auth_bot.exception_occur: 
+        await asyncio.sleep(6)
     return
 
 if __name__ == '__main__':

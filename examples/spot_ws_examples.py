@@ -80,7 +80,9 @@ async def main() -> None:
     await auth_bot.unsubscribe(subscription={ 'name': 'ownTrades' })
     await auth_bot.unsubscribe(subscription={ 'name': 'openOrders' })
 
-    while True: await asyncio.sleep(6)
+    while not bot.exception_occur and not auth_bot.exception_occur: 
+        await asyncio.sleep(6)
+    return 
 
 if __name__ == '__main__':
     loop = asyncio.new_event_loop()
@@ -88,9 +90,7 @@ if __name__ == '__main__':
     try:
         asyncio.run(main())
     except KeyboardInterrupt:
-        loop.close()
-        # the websocket client will send {'event': 'ws-cancelled-error'} via on_message
+        pass
+        # the websocket client will send {'event': 'asyncio.CancelledError'} via on_message
         # so you can handle the behavior/next actions individually within you bot
-        
-    # deprecated in python 3.11:
-    # asyncio.get_event_loop().run_until_complete(main())
+    finally: loop.close()
