@@ -72,7 +72,7 @@ class UploadCommand(Command):
         os.system(f'{sys.executable} setup.py sdist bdist_wheel --universal')
 
         self.status('Testing the build using flake8')
-        if os.system('flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics') != 0: 
+        if os.system('flake8 . --select=E9,F63,F7,F82 --show-source --statistics') != 0: 
             self.status('Testing failed, build has some errors in it!')            
             exit(1)
             
@@ -112,7 +112,7 @@ class TestUploadCommand(Command):
         os.system(f'{sys.executable} setup.py sdist bdist_wheel --universal')
         
         self.status('Testing the build using flake8')
-        if os.system('flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics') != 0: 
+        if os.system('flake8 . --select=E9,F63,F7,F82 --show-source --statistics') != 0: 
             self.status('Testing failed, build has some errors in it!')            
             exit(1)
 
