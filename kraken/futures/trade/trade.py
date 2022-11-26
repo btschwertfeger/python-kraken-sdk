@@ -9,22 +9,22 @@ class TradeClient(KrakenBaseFuturesAPI):
         '''https://docs.futures.kraken.com/#http-api-trading-v3-api-historical-data-get-your-fills'''
         queryParams = {}
         if lastFillTime: queryParams['lastFillTime'] = lastFillTime
-        return self._request('GET', f'/derivatives/api/v3/fills', queryParams=queryParams, auth=True)
+        return self._request(method='GET', uri='/derivatives/api/v3/fills', queryParams=queryParams, auth=True)
 
     def create_batch_order(self, batchorder_list: [dict]) -> dict:
         '''https://docs.futures.kraken.com/#http-api-trading-v3-api-order-management-batch-order-management'''
         batchorder = { 'batchOrder': batchorder_list }
-        return self._request('POST', '/derivatives/api/v3/batchorder', postParams={ 'json': f'{batchorder}' }, auth=True)
+        return self._request(method='POST', uri='/derivatives/api/v3/batchorder', postParams={ 'json': f'{batchorder}' }, auth=True)
 
     def cancel_all_orders(self, symbol: str=None) -> dict:
         '''https://docs.futures.kraken.com/#http-api-trading-v3-api-order-management-cancel-all-orders'''
         params = {}
         if symbol != None: params['symbol'] = symbol
-        return self._request('POST', '/derivatives/api/v3/cancelallorders', postParams=params, auth=True)
+        return self._request(method='POST', uri='/derivatives/api/v3/cancelallorders', postParams=params, auth=True)
 
     def dead_mans_switch(self, timeout: int=60) -> dict:
         '''https://docs.futures.kraken.com/#http-api-trading-v3-api-order-management-dead-man-39-s-switch'''
-        return self._request('POST', '/derivatives/api/v3/cancelallordersafter', postParams={'timeout': timeout})
+        return self._request(method='POST', uri='/derivatives/api/v3/cancelallordersafter', postParams={'timeout': timeout})
 
     def cancel_order(self, order_id: str='', cliOrdId: str='') -> dict:
         '''https://docs.futures.kraken.com/#http-api-trading-v3-api-order-management-cancel-order'''
@@ -33,7 +33,7 @@ class TradeClient(KrakenBaseFuturesAPI):
         params = {}
         if order_id != '': params['order_id'] = order_id
         elif cliOrdId != '': params['cliOrdId'] = cliOrdId
-        return self._request('POST', '/derivatives/api/v3/cancelorder', postParams=params, auth=True)
+        return self._request(method='POST', uri='/derivatives/api/v3/cancelorder', postParams=params, auth=True)
 
     def edit_order(self, orderId: str=None, cliOrdId: str=None, limitPrice: float=None, size: float=None, stopPrice: float=None) -> dict:
         '''https://docs.futures.kraken.com/#http-api-trading-v3-api-order-management-edit-order'''
@@ -45,7 +45,7 @@ class TradeClient(KrakenBaseFuturesAPI):
         if limitPrice != None: params['limitPrice'] = limitPrice
         if size != None: params['size'] = size
         if stopPrice != None: params['stopPrice'] = stopPrice
-        return self._request('POST', '/derivatives/api/v3/editorder', postParams=params, auth=True)
+        return self._request(method='POST', uri='/derivatives/api/v3/editorder', postParams=params, auth=True)
 
     def get_orders_status(self, orderIds: [str]=None, cliOrdIds: [str]=None) -> dict:
         '''https://docs.futures.kraken.com/#http-api-trading-v3-api-order-management-get-the-current-status-for-specific-orders'''
@@ -54,7 +54,7 @@ class TradeClient(KrakenBaseFuturesAPI):
         params = {}
         if orderIds != None: params['orderIds'] = orderIds
         elif cliOrdIds != None: params['cliOrdIds'] = cliOrdIds
-        return self._request('POST', '/derivatives/api/v3/orders/status', postParams=params, auth=True)
+        return self._request(method='POST', uri='/derivatives/api/v3/orders/status', postParams=params, auth=True)
 
     def create_order(self, 
         orderType: str,
@@ -98,6 +98,6 @@ class TradeClient(KrakenBaseFuturesAPI):
                 raise ValueError(f'Trigger signal must be in [{triggerSignals}]!')
             else: params['triggerSignal'] = triggerSignal
 
-        return self._request('POST', '/derivatives/api/v3/sendorder', postParams=params, auth=True)
+        return self._request(method='POST', uri='/derivatives/api/v3/sendorder', postParams=params, auth=True)
 
 

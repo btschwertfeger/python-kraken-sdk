@@ -1,4 +1,3 @@
-import time
 import asyncio
 import websockets
 from random import random
@@ -11,14 +10,15 @@ import copy
 try:
     from kraken.futures.ws_client.ws_client import FuturesWsClientCl
     from kraken.exceptions.exceptions import KrakenExceptions 
-except:
+except ModuleNotFoundError:
     print('USING LOCAL MODULE')
     sys.path.append('/Users/benjamin/repositories/Trading/python-kraken-sdk')
     from kraken.futures.ws_client.ws_client import FuturesWsClientCl
     from kraken.exceptions.exceptions import KrakenExceptions 
 
+
 class ConnectFuturesWebsocket(object):
-    '''
+    '''    
         This class is only called by the KrakenFuturesWSClientCl class
         to establish and handle a websocket connection.
 
@@ -69,19 +69,16 @@ class ConnectFuturesWebsocket(object):
             self.__reconnect_num = 0
 
             while keep_alive:
-                try:
-                    _msg = await asyncio.wait_for(self.__socket.recv(), timeout=15)
-                except asyncio.TimeoutError:
-                    pass
-                except asyncio.CancelledError:
+                try: _msg = await asyncio.wait_for(self.__socket.recv(), timeout=15)
+                except asyncio.CancelledError: 
                     logging.exception('asyncio.CancelledError')
                     keep_alive = False    
-                    await self.__callback({'event': 'asyncio.CancelledError'}) 
+                    await self.__callback({'error': 'asyncio.CancelledError'}) 
                 else:
                     try:
                         msg = json.loads(_msg)
                     except ValueError:
-                        logger.warning(_msg)
+                        logging.warning(_msg)
                     else:
                         forward = True
                         if 'event' in msg:
@@ -97,7 +94,7 @@ class ConnectFuturesWebsocket(object):
         try:
             while True: await self.__reconnect()
         except KrakenExceptions.MaxReconnectError: 
-            await self.__callback({'event': 'KrakenExceptions.MaxReconnectError'})
+            await self.__callback({'error': 'kraken.exceptions.exceptions.KrakenExceptions.MaxReconnectError'})
         except Exception as e:
             # for task in asyncio.all_tasks(): task.cancel()
             logging.error(traceback.format_exc())
@@ -135,7 +132,7 @@ class ConnectFuturesWebsocket(object):
                         try: process.cancel()
                         except asyncio.CancelledError: logging.exception('CancelledError')
                         logging.warning('cancel ok')
-                    await self.__callback({ 'ws-error': message })
+                    await self.__callback({ 'error': message })
             if exception_occur: break            
         logging.warning('reconnect over')
 
@@ -287,7 +284,7 @@ class KrakenFuturesWSClientCl(FuturesWsClientCl):
         if self.__callback != None: await self.__callback(msg)
         else:
             logging.warning('Received event but no callback is defined')
-            loggin.info(msg)
+            logging.info(msg)
 
     async def subscribe(self, feed: str, products: [str]=None) -> None:
         '''Subscribe to a channel/feed

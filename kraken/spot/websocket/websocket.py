@@ -7,11 +7,12 @@ from uuid import uuid4
 import logging
 import traceback
 import copy
+import sys 
 
 try:
     from kraken.spot.ws_client.ws_client import SpotWsClientCl
     from kraken.exceptions.exceptions import KrakenExceptions 
-except:
+except ModuleNotFoundError:
     print('USING LOCAL MODULE')
     sys.path.append('/Users/benjamin/repositories/Trading/python-kraken-sdk')
     from kraken.spot.client.ws_client import SpotWsClientCl
@@ -88,12 +89,10 @@ class ConnectSpotWebsocket:
                 except asyncio.CancelledError:
                     logging.exception('asyncio.CancelledError')
                     keep_alive = False
-                    await self.__callback({'event': 'asyncio.CancelledError'})
+                    await self.__callback({'error': 'asyncio.CancelledError'})
                 else:
-                    try:
-                        msg = json.loads(_msg)
-                    except ValueError:
-                        logger.warning(_msg)
+                    try: msg = json.loads(_msg)
+                    except ValueError: logging.warning(_msg)
                     else: 
                         if 'event' in msg:
                             if msg['event'] == 'subscriptionStatus' and 'status' in msg:
@@ -111,9 +110,9 @@ class ConnectSpotWebsocket:
         try:
             while True: await self.__reconnect()
         except KrakenExceptions.MaxReconnectError: 
-            await self.__callback({'event': 'KrakenExceptions.MaxReconnectError'})
+            await self.__callback({'error': 'kraken.exceptions.exceptions.KrakenExceptions.MaxReconnectError'})
         except Exception as e:
-            logging.error(traceback.format_exc())
+            logging.error(f'{e}: {traceback.format_exc()}')
         finally: self.__client.exception_occur = True
 
     async def __reconnect(self):
@@ -147,7 +146,7 @@ class ConnectSpotWebsocket:
                         try: process.cancel()
                         except asyncio.CancelledError: logging.exception('asyncio.CancelledError')
                         logging.warning('Cancel OK')
-                    await self.__callback({ 'ws-error': message })
+                    await self.__callback({ 'error': message })
             if exception_occur: break
         logging.warning('reconnect over')
 
@@ -307,14 +306,14 @@ class KrakenSpotWSClientCl(SpotWsClientCl):
         self.exception_occur = False
         self._pub_conn = ConnectSpotWebsocket(
             client=self,
-            endpoint=self.PROD_ENV_URL if not beta else BETA_ENV_URL,
+            endpoint=self.PROD_ENV_URL if not beta else self.BETA_ENV_URL,
             isAuth=False,
             callback=self.on_message
         )
 
         self._priv_conn = ConnectSpotWebsocket(
              client=self,
-             endpoint=self.AUTH_PROD_ENV_URL if not beta else AUTH_BETA_ENV_URL,
+             endpoint=self.AUTH_PROD_ENV_URL if not beta else self.AUTH_BETA_ENV_URL,
              isAuth=True,
              callback=self.on_message
         ) if self.__isAuth else None

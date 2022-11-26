@@ -7,27 +7,27 @@ class UserClient(KrakenBaseFuturesAPI):
 
     def get_wallets(self) -> dict:
         '''https://docs.futures.kraken.com/#http-api-trading-v3-api-account-information-get-wallets'''
-        return self._request('GET', f'/derivatives/api/v3/accounts', auth=True)
+        return self._request(method='GET', uri='/derivatives/api/v3/accounts', auth=True)
 
     def get_open_orders(self) -> dict:
         '''https://docs.futures.kraken.com/#http-api-trading-v3-api-account-information-get-open-orders'''
-        return self._request('GET', f'/derivatives/api/v3/openorders', auth=True)
+        return self._request(method='GET', uri='/derivatives/api/v3/openorders', auth=True)
     
     def get_open_positions(self) -> dict:
         '''https://docs.futures.kraken.com/#http-api-trading-v3-api-account-information-get-open-positions'''
-        return self._request('GET', f'/derivatives/api/v3/openpositions', auth=True)
+        return self._request(method='GET', uri='/derivatives/api/v3/openpositions', auth=True)
 
     def get_subaccounts(self) -> dict:
         '''https://docs.futures.kraken.com/#http-api-trading-v3-api-account-information-get-subaccounts'''
-        return self._request('GET', f'/derivatives/api/v3/subaccounts', auth=True)
+        return self._request(method='GET', uri='/derivatives/api/v3/subaccounts', auth=True)
 
     def get_unwindqueue(self) -> dict:
         '''https://docs.futures.kraken.com/#http-api-trading-v3-api-account-information-get-position-percentile-of-unwind-queue'''
-        return self._request('GET', f'/derivatives/api/v3/unwindqueue', auth=True)
+        return self._request(method='GET', uri='/derivatives/api/v3/unwindqueue', auth=True)
 
     def get_notificatios(self) -> dict:
         '''https://docs.futures.kraken.com/#http-api-trading-v3-api-general-get-notifications'''
-        return self._request('GET', '/derivatives/api/v3/notifications', auth=True)
+        return self._request(method='GET', uri='/derivatives/api/v3/notifications', auth=True)
 
     def get_account_log(self,
         before: int=None,
@@ -47,10 +47,10 @@ class UserClient(KrakenBaseFuturesAPI):
         if since != None: params['since'] = since
         if sort != None: params['sort'] = sort
         if to != None: params['to'] = to
-        return self._request('GET', '/api/history/v2/account-log', queryParams=params, auth=True)
+        return self._request(method='GET', uri='/api/history/v2/account-log', queryParams=params, auth=True)
 
     def get_account_log_csv(self) -> dict:
         '''https://docs.futures.kraken.com/#http-api-history-account-log-get-recent-account-log-csv'''
-        return self._request('GET', '/api/history/v2/accountlogcsv', auth=True, return_raw=True)
+        return self._request(method='GET', uri='/api/history/v2/accountlogcsv', auth=True, return_raw=True)
 
 

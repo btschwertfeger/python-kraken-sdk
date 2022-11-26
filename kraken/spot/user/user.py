@@ -4,7 +4,7 @@ class UserClient(KrakenBaseRestAPI):
 
     def get_account_balance(self) -> dict:
         '''https://docs.kraken.com/rest/#operation/getAccountBalance'''
-        return self._request('POST', '/private/Balance')
+        return self._request(method='POST', uri='/private/Balance')
 
     def get_balances(self, currency: str) -> dict:
         '''Returns the balance and available balance of a given currency'''
@@ -37,13 +37,13 @@ class UserClient(KrakenBaseRestAPI):
         '''https://docs.kraken.com/rest/#operation/getTradeBalance'''
         params = {}
         if asset != None: params['asset'] = asset
-        return self._request('POST', '/private/TradeBalance', params=params)
+        return self._request(method='POST', uri='/private/TradeBalance', params=params)
 
     def get_open_orders(self, trades: bool=False, userref: int=None) -> dict:
         '''https://docs.kraken.com/rest/#operation/getOpenOrders'''
         params = { 'trades': trades }
         if userref != None: params['userref'] = userref
-        return self._request('POST', '/private/OpenOrders', params=params)
+        return self._request(method='POST', uri='/private/OpenOrders', params=params)
 
     def get_closed_orders(self, 
         trades: bool=False, 
@@ -63,7 +63,7 @@ class UserClient(KrakenBaseRestAPI):
         if end != None: params['end'] = end
         if ofs != None: params['ofs'] = ofs
 
-        return self._request('POST', '/private/ClosedOrders', params=params)
+        return self._request(method='POST', uri='/private/ClosedOrders', params=params)
 
     def get_orders_info(self, txid, trades: bool=False, userref: int=None) -> dict:
         '''https://docs.kraken.com/rest/#tag/User-Data/operation/getOrdersInfo'''
@@ -73,7 +73,7 @@ class UserClient(KrakenBaseRestAPI):
         }
         if type(txid) == list: params['txid'] = self._to_str_list(txid)
         if userref != None: params['userref'] = userref
-        return self._request('POST', '/private/QueryOrders', params=params)
+        return self._request(method='POST', uri='/private/QueryOrders', params=params)
 
     def get_trades_history(self, 
         type_: str='all', 
@@ -90,11 +90,11 @@ class UserClient(KrakenBaseRestAPI):
         if start != None: params['start'] = start
         if end != None: params['end'] = end
         if ofs != None: params['ofs'] = ofs
-        return self._request('POST', '/private/TradesHistory', params=params)
+        return self._request(method='POST', uri='/private/TradesHistory', params=params)
 
     def get_trades_info(self, txid: str, trades: bool=False) -> dict:
         '''https://docs.kraken.com/rest/#operation/getTradesInfo'''
-        return self._request('POST', '/private/QueryTrades', params={ 
+        return self._request(method='POST', uri='/private/QueryTrades', params={ 
             'trades': trades,
             'txid': self._to_str_list(txid)
         })
@@ -106,7 +106,7 @@ class UserClient(KrakenBaseRestAPI):
             'consolidation': consolidation
         }
         if txid != None: params['txid'] = self._to_str_list(txid)
-        return self._request('POST', '/private/OpenPositions', params=params)
+        return self._request(method='POST', uri='/private/OpenPositions', params=params)
 
     def get_ledgers_info(self, 
         asset: str='all', 
@@ -126,11 +126,11 @@ class UserClient(KrakenBaseRestAPI):
         if start != None: params['start'] = start
         if end != None: params['end'] = end
         if ofs != None: params['ofs'] = ofs
-        return self._request('POST', '/private/Ledgers', params=params)
+        return self._request(method='POST', uri='/private/Ledgers', params=params)
 
     def get_ledgers(self, id, trades: bool=False) -> dict:
         '''https://docs.kraken.com/rest/#operation/getLedgersInfo'''
-        return self._request('POST', '/private/QueryLedgers', params={ 
+        return self._request(method='POST', uri='/private/QueryLedgers', params={ 
             'trades': trades,
             'id': self._to_str_list(id)
         })
@@ -139,7 +139,7 @@ class UserClient(KrakenBaseRestAPI):
         '''https://docs.kraken.com/rest/#operation/getTradeVolume'''
         params = { 'fee-info': fee_info}
         if pair != None: params['pair'] = self._to_str_list(pair)
-        return self._request('POST', '/private/TradeVolume', params=params)
+        return self._request(method='POST', uri='/private/TradeVolume', params=params)
 
     def request_export_report(self, 
         report: str, 
@@ -166,7 +166,7 @@ class UserClient(KrakenBaseRestAPI):
         params.update(kwargs)
         if starttm != None: params['starttm'] = starttm
         if endtm != None: params['endtm'] = endtm
-        return self._request('POST', '/private/AddExport', params=params)
+        return self._request(method='POST', uri='/private/AddExport', params=params)
 
     def get_export_report_status(self, report: str) -> dict:
         '''https://docs.kraken.com/rest/#operation/exportStatus
@@ -176,15 +176,15 @@ class UserClient(KrakenBaseRestAPI):
         '''
         if report not in ['trades', 'ledgers']: 
             raise ValueError('report must be one of "trades", "ledgers"')
-        return self._request('POST', '/private/ExportStatus', params={ 'report': report })
+        return self._request(method='POST', uri='/private/ExportStatus', params={ 'report': report })
 
     def retrieve_export(self, id_: str) -> dict:
         '''https://docs.kraken.com/rest/#operation/retrieveExport'''
-        return self._request('POST', '/private/RetrieveExport', params={ 'id': id_ }, return_raw=True)
+        return self._request(method='POST', uri='/private/RetrieveExport', params={ 'id': id_ }, return_raw=True)
 
     def delete_export_report(self, id_: str, type_: str) -> dict:
         '''https://docs.kraken.com/rest/#operation/removeExport'''
-        return self._request('POST', '/private/RemoveExport', params={
+        return self._request(method='POST', uri='/private/RemoveExport', params={
             'id': id_,
             'type': type_
         })
