@@ -1,5 +1,5 @@
 import functools
-
+from typing import List
 
 class KrakenExceptions(object):
 
@@ -57,7 +57,7 @@ class KrakenExceptions(object):
             'orderForEditNotFound': self.KrakenOrderForEditNotFoundError,
         }   
 
-    def get_exception(self, data: [str]):
+    def get_exception(self, data: List[str]):
         for name, exception in self.EXCEPTION_ASSIGNMENT.items():
             if data == name: return exception
             elif type(data) == list:

@@ -23,7 +23,7 @@ REQUIRED = [
 
 # What packages are optional?
 EXTRAS = {
-    # 'fancy feature': ['tqdm'],
+    'testing': ['pytest', 'tqdm']
 }
 
 here = os.path.abspath(os.path.dirname(__file__))
@@ -146,7 +146,7 @@ class TestCommand(Command):
         os.system(f'{sys.executable} setup.py sdist bdist_wheel --universal')
 
         self.status('Testing the build')
-        if os.system('flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics') != 0: exit(1)
+        if os.system('flake8 . --select=E9,F63,F7,F82 --show-source --statistics') != 0: exit(1)
         print('Success')
         sys.exit()
 

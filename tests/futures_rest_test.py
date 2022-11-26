@@ -3,6 +3,7 @@ from dotenv import dotenv_values
 import random
 import time
 import logging, logging.config
+import pytest
 
 try:
     from kraken.futures.client import User, Market, Trade, Funding
@@ -47,7 +48,7 @@ def test_user_endpoints() -> None:
     assert isSuccess(auth_user.get_subaccounts())
     assert isSuccess(auth_user.get_unwindqueue())
     assert isSuccess(auth_user.get_notificatios())
-    time.sleep(2)
+    time.sleep(3)
 
     assert type(auth_user.get_account_log()) == dict
     assert type(auth_user.get_account_log(info='futures liquidation')) == dict
@@ -58,6 +59,7 @@ def test_user_endpoints() -> None:
     for chunk in response.iter_content(chunk_size=512):
         if chunk: handle.write(chunk)
     handle.close()        
+    time.sleep(3)
 
     logging.info(f'{k}: ALL (tested) ENDPOINTS AVAILABLE!')
 
@@ -142,50 +144,50 @@ def test_trade_endpoints() -> None:
     
     if False:
         raise ValueError('Execute this lines only if you know what it does!')
-        time.sleep(2)
+        # time.sleep(2)
         
-        assert isSuccess(trade.create_order(
-            orderType='lmt',
-            size=10,
-            symbol='PI_XBTUSD',
-            side='buy',
-            limitPrice=1,
-            stopPrice=10
-        ))
-        assert isSuccess(trade.create_batch_order(
-            batchorder_list = [{
-                'order': 'send',
-                'order_tag': '1',
-                'orderType': 'lmt',
-                'symbol': 'PI_XBTUSD',
-                'side': 'buy',
-                'size': 5,
-                'limitPrice': 1.00,
-                'cliOrdId': 'my_another_client_id'
-            }, {
-                'order': 'send',
-                'order_tag': '2',
-                'orderType': 'stp',
-                'symbol': 'PI_XBTUSD',
-                'side': 'buy',
-                'size': 1,
-                'limitPrice': 2.00,
-                'stopPrice': 3.00,
-            }, {
-                'order': 'cancel',
-                'order_id': 'e35d61dd-8a30-4d5f-a574-b5593ef0c050',
-            }, {
-                'order': 'cancel',
-                'cliOrdId': 'my_client_id',
-            }],
-        ))
-        time.sleep(2)
-        assert isSuccess(trade.edit_order(orderId='my_another_client_id', limitPrice=3))
-        time.sleep(.1)
-        assert isSuccess(trade.cancel_order(cliOrdId='my_another_client_id'))
-        assert isSuccess(trade.cancel_all_orders(symbol='pi_xbtusd'))
-        assert isSuccess(trade.cancel_all_orders())
-        assert isSuccess(trade.cancel_order(order_id='1234'))
+        # assert isSuccess(trade.create_order(
+        #     orderType='lmt',
+        #     size=10,
+        #     symbol='PI_XBTUSD',
+        #     side='buy',
+        #     limitPrice=1,
+        #     stopPrice=10
+        # ))
+        # assert isSuccess(trade.create_batch_order(
+        #     batchorder_list = [{
+        #         'order': 'send',
+        #         'order_tag': '1',
+        #         'orderType': 'lmt',
+        #         'symbol': 'PI_XBTUSD',
+        #         'side': 'buy',
+        #         'size': 5,
+        #         'limitPrice': 1.00,
+        #         'cliOrdId': 'my_another_client_id'
+        #     }, {
+        #         'order': 'send',
+        #         'order_tag': '2',
+        #         'orderType': 'stp',
+        #         'symbol': 'PI_XBTUSD',
+        #         'side': 'buy',
+        #         'size': 1,
+        #         'limitPrice': 2.00,
+        #         'stopPrice': 3.00,
+        #     }, {
+        #         'order': 'cancel',
+        #         'order_id': 'e35d61dd-8a30-4d5f-a574-b5593ef0c050',
+        #     }, {
+        #         'order': 'cancel',
+        #         'cliOrdId': 'my_client_id',
+        #     }],
+        # ))
+        # time.sleep(2)
+        # assert isSuccess(trade.edit_order(orderId='my_another_client_id', limitPrice=3))
+        # time.sleep(.1)
+        # assert isSuccess(trade.cancel_order(cliOrdId='my_another_client_id'))
+        # assert isSuccess(trade.cancel_all_orders(symbol='pi_xbtusd'))
+        # assert isSuccess(trade.cancel_all_orders())
+        # assert isSuccess(trade.cancel_order(order_id='1234'))
 
     logging.info(f'{k}: ALL (tested) ENDPOINTS AVAILABLE!')
 

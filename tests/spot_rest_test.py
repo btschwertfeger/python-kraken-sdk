@@ -4,6 +4,7 @@ import random
 import time
 import logging, logging.config
 from tqdm import tqdm
+import pytest
 
 try:
     from kraken.spot.client import User, Market, Trade, Funding, Staking
@@ -38,7 +39,7 @@ def test_user_endpoints() -> None:
     k = 'USER'
     logging.info(f'{k}: Creating user clients')
 
-    user = User()
+    # user = User()
     auth_user = User(key=key, secret=secret)
     logging.info(f'{k}: Checking balance endpoints')
     
@@ -281,8 +282,8 @@ def test_funding_endpoints() -> None:
 
     logging.info(f'{k}: Checking ...')
     
-    assert type(funding.get_deposit_methods(asset='XBT')) == list
-    assert isNotError(funding.get_deposit_address(asset='XBT', method='Bitcoin'))
+    # assert type(funding.get_deposit_methods(asset='XBT')) == list
+    # assert isNotError(funding.get_deposit_address(asset='XBT', method='Bitcoin'))
 
     assert type(funding.get_recend_deposits_status(asset='XLM')) == list
     assert type(funding.get_recend_deposits_status(asset='XLM', method='Stellar XLM')) == list

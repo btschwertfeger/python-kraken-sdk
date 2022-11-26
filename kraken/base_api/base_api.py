@@ -1,9 +1,7 @@
 #!/usr/bin/python
 # -*- coding:utf-8 -*-
 
-import json
 import requests
-import logging
 import hmac
 import hashlib
 import base64
@@ -11,6 +9,7 @@ import time
 from uuid import uuid1
 import urllib.parse
 import sys
+from typing import List
 
 try:
     from kraken.exceptions.exceptions import KrakenExceptions
@@ -44,7 +43,7 @@ class KrakenErrorHandler(object):
             else: return data
         else: return data
 
-    def check_batchStatus(self, data: [dict]) -> dict:
+    def check_batchStatus(self, data: List[dict]) -> dict:
         if 'batchStatus' in data:
             batchStatus = data['batchStatus']
             for status in batchStatus:
@@ -200,13 +199,13 @@ class KrakenBaseFuturesAPI(object):
 
         postString: str = ''
         if postParams:
-            strl: [str] = []
+            strl: List[str] = []
             for key in sorted(postParams): strl.append(f'{key}={postParams[key]}')
             postString = '&'.join(strl)
 
         queryString: str = ''
         if queryParams:
-            strl: [str] = []
+            strl: List[str] = []
             for key in sorted(queryParams): strl.append(f'{key}={queryParams[key]}')
             queryString = '&'.join(strl).replace(' ', '%20')
 
