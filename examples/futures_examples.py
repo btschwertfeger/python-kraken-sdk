@@ -1,4 +1,4 @@
-import sys, os, time
+import sys, time
 
 try:
     from kraken.futures.client import Market, User, Trade, Funding

@@ -1,8 +1,7 @@
-import os, sys, time
+import sys, time
 import logging
 import logging.config
 from dotenv import dotenv_values
-from datetime import datetime
 
 try:
     from kraken.spot.client import User, Market, Trade, Funding, Staking

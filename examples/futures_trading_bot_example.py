@@ -1,4 +1,4 @@
-import sys, time
+import sys
 import asyncio
 import logging, logging.config
 from dotenv import dotenv_values
@@ -98,7 +98,7 @@ class ManagedBot(object):
 
     def __init__(self, config: dict):
         self.__config = config
-        self.__tratingStrategy = None
+        self.__tradingStrategy = None
         
     def run(self) -> None:
         if not self.__check_credentials(): exit(1)
@@ -123,17 +123,17 @@ class ManagedBot(object):
             can be set individually but is also beeing set to True if the websocket connection 
             has some fatal error. This is used to exit the asyncio loop. 
         '''
-        self.__tratingStrategy = TradingBot(config=self.__config)
+        self.__tradingStrategy = TradingBot(config=self.__config)
 
-        await self.__tratingStrategy.subscribe(feed='ticker', products=self.__config['products'])
-        await self.__tratingStrategy.subscribe(feed='book', products=self.__config['products'])
+        await self.__tradingStrategy.subscribe(feed='ticker', products=self.__config['products'])
+        await self.__tradingStrategy.subscribe(feed='book', products=self.__config['products'])
 
-        await self.__tratingStrategy.subscribe(feed='fills')
-        await self.__tratingStrategy.subscribe(feed='open_positions')
-        await self.__tratingStrategy.subscribe(feed='open_orders')
-        await self.__tratingStrategy.subscribe(feed='balances')       
+        await self.__tradingStrategy.subscribe(feed='fills')
+        await self.__tradingStrategy.subscribe(feed='open_positions')
+        await self.__tradingStrategy.subscribe(feed='open_orders')
+        await self.__tradingStrategy.subscribe(feed='balances')       
 
-        while not self.__tratingStrategy.exception_occur: 
+        while not self.__tradingStrategy.exception_occur: 
             try:
                 # check if bot feels good
                 # maybe send a status update every day
@@ -143,10 +143,10 @@ class ManagedBot(object):
             except Exception as e:
                 message = f'Exception in main: {e} {traceback.format_exc()}'
                 logging.error(message)
-                self.__tratingStrategy.save_exit(reason=message)
+                self.__tradingStrategy.save_exit(reason=message)
             
             await asyncio.sleep(6)
-        self.__tratingStrategy.save_exit(reason='Left main loop because of exception in bot.')
+        self.__tradingStrategy.save_exit(reason='Left main loop because of exception in bot.')
         return
 
     def __check_credentials(self) -> bool:
@@ -166,7 +166,7 @@ class ManagedBot(object):
             return False
 
     def save_exit(self, reason: str='') -> None:
-        self.__tratingStrategy.save_exit()
+        self.__tradingStrategy.save_exit(reason=reason)
 
 def main() -> None:
     bot_config = {

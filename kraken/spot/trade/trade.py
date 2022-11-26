@@ -1,4 +1,6 @@
 from kraken.base_api.base_api import KrakenBaseRestAPI
+from typing import List
+
 
 class TradeClient(KrakenBaseRestAPI):
 
@@ -12,7 +14,7 @@ class TradeClient(KrakenBaseRestAPI):
         trigger: str=None,
         leverage: str=None,
         stp_type: str='cancel-newest',
-        oflags: [str]=None,
+        oflags: List[str]=None,
         timeinforce: str=None,
         starttm: str='0',
         expiretm: str='0',
@@ -50,7 +52,7 @@ class TradeClient(KrakenBaseRestAPI):
         return self._request(method='POST', uri='/private/AddOrder', params=params)
 
 
-    def create_order_batch(self, orders: [dict], pair: str, deadline: str=None, validate: bool=False) -> dict:
+    def create_order_batch(self, orders: List[dict], pair: str, deadline: str=None, validate: bool=False) -> dict:
         '''https://docs.kraken.com/rest/#operation/addOrderBatch'''
         params = {
             'orders': orders,
@@ -84,6 +86,7 @@ class TradeClient(KrakenBaseRestAPI):
         if price2 != None: params['price2'] = price2
         if oflags != None: params['oflags'] = self._to_str_list(oflags)
         if cancel_response != None: params['cancel_response'] = cancel_response
+        if deadline != None: params['deadline'] = deadline
         return self._response('POST', uri='/private/EditOrder', params=params)
 
     def cancel_order(self, txid) -> dict:
@@ -98,7 +101,7 @@ class TradeClient(KrakenBaseRestAPI):
         '''https://docs.kraken.com/rest/#operation/cancelAllOrdersAfter'''
         return self._request(method='POST', uri='/private/CancelAllOrdersAfter', params={ 'timeout': timeout })
 
-    def cancel_order_batch(self, orders: [str]) -> dict:
+    def cancel_order_batch(self, orders: List[str]) -> dict:
         '''https://docs.kraken.com/rest/#operation/cancelOrderBatch'''
         return self._request(method='POST', uri='/private/CancelOrderBatch', params={ 'orders': orders })
 

@@ -1,9 +1,8 @@
-import os, sys
+import sys
 import asyncio
 import logging
 import logging.config
 from dotenv import dotenv_values
-from datetime import datetime
 import time
 
 try:

@@ -1,5 +1,5 @@
 from kraken.base_api.base_api import KrakenBaseFuturesAPI
-import json
+from typing import List
 class TradeClient(KrakenBaseFuturesAPI):
 
     def __init__(self, key: str='', secret: str='', url: str='', sandbox: bool=False) -> None:
@@ -11,7 +11,7 @@ class TradeClient(KrakenBaseFuturesAPI):
         if lastFillTime: queryParams['lastFillTime'] = lastFillTime
         return self._request(method='GET', uri='/derivatives/api/v3/fills', queryParams=queryParams, auth=True)
 
-    def create_batch_order(self, batchorder_list: [dict]) -> dict:
+    def create_batch_order(self, batchorder_list: List[dict]) -> dict:
         '''https://docs.futures.kraken.com/#http-api-trading-v3-api-order-management-batch-order-management'''
         batchorder = { 'batchOrder': batchorder_list }
         return self._request(method='POST', uri='/derivatives/api/v3/batchorder', postParams={ 'json': f'{batchorder}' }, auth=True)
@@ -47,7 +47,7 @@ class TradeClient(KrakenBaseFuturesAPI):
         if stopPrice != None: params['stopPrice'] = stopPrice
         return self._request(method='POST', uri='/derivatives/api/v3/editorder', postParams=params, auth=True)
 
-    def get_orders_status(self, orderIds: [str]=None, cliOrdIds: [str]=None) -> dict:
+    def get_orders_status(self, orderIds: List[str]=None, cliOrdIds: List[str]=None) -> dict:
         '''https://docs.futures.kraken.com/#http-api-trading-v3-api-order-management-get-the-current-status-for-specific-orders'''
         if orderIds == None and cliOrdIds == None: raise ValueError('Either orderIds or cliOrdIds must be specified!')
 

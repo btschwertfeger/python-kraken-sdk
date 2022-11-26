@@ -6,7 +6,7 @@ import traceback
 import json
 import sys
 import copy
-
+from typing import List
 try:
     from kraken.futures.ws_client.ws_client import FuturesWsClientCl
     from kraken.exceptions.exceptions import KrakenExceptions 
@@ -208,7 +208,7 @@ class ConnectFuturesWebsocket(object):
         else: logging.warn('Feed not implemented. Please contact the python-kraken-sdk package author.')
         return sub
 
-    def get_active_subscriptions(self) -> [dict]:
+    def get_active_subscriptions(self) -> List[dict]:
         return self.__subscriptions
 
 
@@ -286,14 +286,14 @@ class KrakenFuturesWSClientCl(FuturesWsClientCl):
             logging.warning('Received event but no callback is defined')
             logging.info(msg)
 
-    async def subscribe(self, feed: str, products: [str]=None) -> None:
+    async def subscribe(self, feed: str, products: List[str]=None) -> None:
         '''Subscribe to a channel/feed
             https://docs.futures.kraken.com/#websocket-api-websocket-api-introduction-subscriptions
 
             ====== P A R A M E T E R S ======
             subscription: dict
                 the subscription to subscribe to
-            products: [str]
+            products: List[str]
                 list of assets or list of a single product
 
             ====== E X A M P L E ======
@@ -308,7 +308,7 @@ class KrakenFuturesWSClientCl(FuturesWsClientCl):
         message = { 'event': 'subscribe', 'feed': feed }
 
         if products != None: 
-            if type(products) != list: raise ValueError('Parameter products must be type of [str] (e.g. pair=["PI_XBTUSD"])')
+            if type(products) != list: raise ValueError('Parameter products must be type of List[str] (e.g. pair=["PI_XBTUSD"])')
             else: message['product_ids'] = products     
             
         if feed in self.get_available_private_subscription_feeds():
@@ -323,14 +323,14 @@ class KrakenFuturesWSClientCl(FuturesWsClientCl):
             else: await self._conn.send_message(message, private=False)
         else: raise ValueError(f'Feed: {feed} not found. Not subscribing to it.')
 
-    async def unsubscribe(self, feed: str, products: [str]=None) -> None:
+    async def unsubscribe(self, feed: str, products: List[str]=None) -> None:
         '''Unsubscribe from a topic/feed
             https://docs.futures.kraken.com/#websocket-api-websocket-api-introduction-subscriptions
         
             ====== P A R A M E T E R S ======
             subscription: dict
                 the subscription to unsubscribe from
-            products: [str]
+            products: List[str]
                 list of assets or list of a single product
 
             ====== E X A M P L E ======
@@ -345,7 +345,7 @@ class KrakenFuturesWSClientCl(FuturesWsClientCl):
         message = { 'event': 'unsubscribe', 'feed': feed }
 
         if products != None: 
-            if type(products) != list: raise ValueError('Parameter products must be type of [str] (e.g. pair=["PI_XBTUSD"])')
+            if type(products) != list: raise ValueError('Parameter products must be type of List[str] (e.g. pair=["PI_XBTUSD"])')
             else: message['product_ids'] = products     
 
         if feed in self.get_available_private_subscription_feeds():
@@ -361,11 +361,11 @@ class KrakenFuturesWSClientCl(FuturesWsClientCl):
         else: raise ValueError(f'Feed: {feed} not found. Not unsubscribing it.')
 
     @staticmethod
-    def get_available_public_subscription_feeds() -> [str]:
+    def get_available_public_subscription_feeds() -> List[str]:
         return [ 'trade', 'book', 'ticker', 'ticker_lite', 'heartbeat']
 
     @staticmethod
-    def get_available_private_subscription_feeds() -> [str]:
+    def get_available_private_subscription_feeds() -> List[str]:
         return [ 
             'fills', 
             'open_positions', 'open_orders', 'open_orders_verbose',
@@ -378,5 +378,5 @@ class KrakenFuturesWSClientCl(FuturesWsClientCl):
     def isAuth(self) -> bool:
         return self._key and self._secret
 
-    def get_active_subscriptions(self) -> [dict]:
+    def get_active_subscriptions(self) -> List[dict]:
         return self._conn.get_active_subscriptions()

@@ -1,9 +1,7 @@
-import os, sys, time
+import sys, time
 import asyncio
 import logging, logging.config
 from dotenv import dotenv_values
-from datetime import datetime
-import traceback
 
 try:
     from kraken.futures.client import KrakenFuturesWSClient

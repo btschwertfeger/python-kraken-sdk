@@ -1,4 +1,4 @@
-import os, sys
+import sys
 from dotenv import dotenv_values
 import random
 import time

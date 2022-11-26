@@ -1,9 +1,8 @@
-import os, sys
+import sys
 from dotenv import dotenv_values
 import random
 import time
 import logging, logging.config
-from tqdm import tqdm
 
 try:
     from kraken.futures.client import User, Market, Trade, Funding
