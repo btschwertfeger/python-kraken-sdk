@@ -9,7 +9,7 @@ import requests
 try:
     from kraken.exceptions.exceptions import KrakenExceptions
     from kraken.spot.client import User, Market, Trade, Funding, Staking, KrakenSpotWSClient
-except:
+except ModuleNotFoundError:
     print('USING LOCAL MODULE')
     sys.path.append('/Users/benjamin/repositories/Trading/python-kraken-sdk')
     from kraken.exceptions.exceptions import KrakenExceptions
@@ -41,7 +41,6 @@ class TradingBot(KrakenSpotWSClient):
                 'products': ['PI_XBTUSD]'
             }
     '''
-
     def __init__(self, config: dict): 
         super().__init__(key=config['key'], secret=config['secret']) # initialize the KakenFuturesWSClient
         self.__config = config
@@ -57,10 +56,25 @@ class TradingBot(KrakenSpotWSClient):
         if 'event' in event:
             if event['event'] == 'heartbeat': return
             if event['event'] == 'pong': return
+        elif 'error' in event:
+            # handle exceptions/errors sent by websocket connection ...
+            pass 
+
         logging.info(event)
         
         # ... begin implementing your trading strategy here
         # call functions of self.__trade and other clients if conditions met... 
+        # try:
+        #     print(self.__trade.create_order(
+        #         ordertype='limit', 
+        #         side='buy', 
+        #         volume=2, 
+        #         pair='XBTUSD', 
+        #         price=12000
+        #     ))
+        # except KrakenExceptions.KrakenPermissionDeniedError:
+        #    # ... handle exceptions
+        #    pass
 
         # The spot websocket client also allow sending orders via websockets
         # this is way faster than using REST endpoints

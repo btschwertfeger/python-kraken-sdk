@@ -9,7 +9,7 @@ import requests
 try:
     from kraken.exceptions.exceptions import KrakenExceptions
     from kraken.futures.client import User, Market, Trade, Funding, KrakenFuturesWSClient
-except:
+except ModuleNotFoundError:
     print('USING LOCAL MODULE')
     sys.path.append('/Users/benjamin/repositories/Trading/python-kraken-sdk')
     from kraken.exceptions.exceptions import KrakenExceptions
@@ -50,12 +50,24 @@ class TradingBot(KrakenFuturesWSClient):
         self.__trade = Trade(key=config['key'], secret=config['secret'])
         self.__market = Market(key=config['key'], secret=config['secret'])
         self.__funding = Funding(key=config['key'], secret=config['secret'])
+        self.once = False
 
     async def on_message(self, event) -> None:
         '''receives all events that came form the websocket connection'''
         logging.info(event)
         # ... apply your trading strategy here
         # call functions of self.__trade and other clients if conditions met... 
+        # response = self.__trade.create_order(
+        #     orderType='lmt', 
+        #     size=2, 
+        #     symbol='PI_XBTUSD', 
+        #     side='buy', 
+        #     limitPrice=10000
+        # )
+        # ... 
+        # 
+        # you can also un/subscribe here using self.subscribe/self-unsubscribe
+
 
     # add more functions to customize the bot/strategy
     # ... 
@@ -63,7 +75,7 @@ class TradingBot(KrakenFuturesWSClient):
 
     def save_exit(self, reason: str='') -> None:
         '''controlled shutdown of the bot'''
-        logging.warn(f'Save exit triggered, reason: {reason}')
+        logging.warning(f'Save exit triggered, reason: {reason}')
         # save data ... 
         # maybe close trades ...
         # enable dead man switch
