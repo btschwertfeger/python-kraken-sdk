@@ -71,6 +71,11 @@ class UploadCommand(Command):
         self.status('Building Source and Wheel (universal) distribution…')
         os.system(f'{sys.executable} setup.py sdist bdist_wheel --universal')
 
+        self.status('Testing the build using flake8')
+        if os.system('flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics') != 0: 
+            self.status('Testing failed, build has some errors in it!')            
+            exit(1)
+            
         self.status('Uploading the package to PyPI via Twine…')
         os.system('twine upload dist/*')
 
@@ -105,10 +110,44 @@ class TestUploadCommand(Command):
 
         self.status('Building Source and Wheel (universal) distribution…')
         os.system(f'{sys.executable} setup.py sdist bdist_wheel --universal')
+        
+        self.status('Testing the build using flake8')
+        if os.system('flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics') != 0: 
+            self.status('Testing failed, build has some errors in it!')            
+            exit(1)
 
-        self.status('Uploading the package to PyPI via Twine…')
+        self.status('Uploading the package to test PyPI via Twine…')
         os.system('twine upload -r testpypi dist/*')#--repository-url https://test.pypi.org/legacy/ dist/*')
 
+        sys.exit()
+class TestCommand(Command):
+
+    description = 'Build and test the package.'
+    user_options = []
+
+    @staticmethod
+    def status(s):
+        print(f'\033[1m{s}\033[0m')
+
+    def initialize_options(self):
+        pass
+
+    def finalize_options(self):
+        pass
+
+    def run(self):
+        try:
+            self.status('Removing previous builds…')
+            rmtree(os.path.join(here, 'dist'))
+        except OSError:
+            pass
+
+        self.status('Building Source and Wheel (universal) distribution…')
+        os.system(f'{sys.executable} setup.py sdist bdist_wheel --universal')
+
+        self.status('Testing the build')
+        if os.system('flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics') != 0: exit(1)
+        print('Success')
         sys.exit()
 
 setup(
@@ -145,6 +184,7 @@ setup(
     ],
     cmdclass={
         'upload': UploadCommand,
-        'test': TestUploadCommand,
+        'test': TestCommand,
+        'testupload': TestUploadCommand,
     },
 )
