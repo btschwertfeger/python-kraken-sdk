@@ -7,11 +7,11 @@ class FundingClient(KrakenBaseFuturesAPI):
 
     def get_historical_funding_rates(self, symbol: str) -> dict:
         '''https://docs.futures.kraken.com/#http-api-trading-v3-api-historical-funding-rates-historicalfundingrates'''
-        return self._request('GET', f'/derivatives/api/v4/historicalfundingrates', queryParams={'symbol': symbol}, auth=False)
+        return self._request(method='GET', uri='/derivatives/api/v4/historicalfundingrates', queryParams={'symbol': symbol}, auth=False)
 
     def initiate_wallet_transfer(self, amount: str, fromAccount: str, toAccount: str, unit: str) -> dict:
         '''https://docs.futures.kraken.com/#http-api-trading-v3-api-transfers-initiate-wallet-transfer'''
-        return self._request('POST', '/derivatives/api/v3/transfer', postParams={
+        return self._request(method='POST', uri='/derivatives/api/v3/transfer', postParams={
             'amount': amount,
             'fromAccount': fromAccount,
             'toAccount': toAccount,
@@ -27,7 +27,7 @@ class FundingClient(KrakenBaseFuturesAPI):
         unit: str
     ) -> dict:
         '''https://docs.futures.kraken.com/#http-api-trading-v3-api-transfers-initiate-sub-account-transfer'''
-        return self._request('POST', '/derivatives/api/v3/transfer/subaccount', postParams={
+        return self._request(method='POST', uri='/derivatives/api/v3/transfer/subaccount', postParams={
             'amount': amount,
             'fromAccount': fromAccount,
             'fromUser': fromUser,
@@ -42,7 +42,7 @@ class FundingClient(KrakenBaseFuturesAPI):
         params = {
             'amount': str(amount),
             'currency': currency,
-            'sourceWallet': sourceWallet
         }
+        if sourceWallet != None: params['sourceWallet'] = sourceWallet
         params.update(kwargs)
-        return self._request('POST', '/derivatives/api/v3/withdrawal', postParams=params, auth=True)
+        return self._request(method='POST', uri='/derivatives/api/v3/withdrawal', postParams=params, auth=True)

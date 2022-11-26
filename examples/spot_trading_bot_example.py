@@ -1,4 +1,4 @@
-import sys, time
+import sys
 import asyncio
 import logging, logging.config
 from dotenv import dotenv_values
@@ -9,7 +9,7 @@ import requests
 try:
     from kraken.exceptions.exceptions import KrakenExceptions
     from kraken.spot.client import User, Market, Trade, Funding, Staking, KrakenSpotWSClient
-except:
+except ModuleNotFoundError:
     print('USING LOCAL MODULE')
     sys.path.append('/Users/benjamin/repositories/Trading/python-kraken-sdk')
     from kraken.exceptions.exceptions import KrakenExceptions
@@ -41,7 +41,6 @@ class TradingBot(KrakenSpotWSClient):
                 'products': ['PI_XBTUSD]'
             }
     '''
-
     def __init__(self, config: dict): 
         super().__init__(key=config['key'], secret=config['secret']) # initialize the KakenFuturesWSClient
         self.__config = config
@@ -57,10 +56,25 @@ class TradingBot(KrakenSpotWSClient):
         if 'event' in event:
             if event['event'] == 'heartbeat': return
             if event['event'] == 'pong': return
+        elif 'error' in event:
+            # handle exceptions/errors sent by websocket connection ...
+            pass 
+
         logging.info(event)
         
         # ... begin implementing your trading strategy here
         # call functions of self.__trade and other clients if conditions met... 
+        # try:
+        #     print(self.__trade.create_order(
+        #         ordertype='limit', 
+        #         side='buy', 
+        #         volume=2, 
+        #         pair='XBTUSD', 
+        #         price=12000
+        #     ))
+        # except KrakenExceptions.KrakenPermissionDeniedError:
+        #    # ... handle exceptions
+        #    pass
 
         # The spot websocket client also allow sending orders via websockets
         # this is way faster than using REST endpoints
@@ -102,7 +116,7 @@ class ManagedBot(object):
 
     def __init__(self, config: dict):
         self.__config = config
-        self.__tratingStrategy = None
+        self.__tradingStrategy = None
         
     def run(self) -> None:
         if not self.__check_credentials(): exit(1)
@@ -114,8 +128,8 @@ class ManagedBot(object):
         except KeyboardInterrupt: pass
         finally: 
             loop.close()
-            if self.__tratingStrategy != None:
-                self.__tratingStrategy.save_exit(reason='Asyncio loop left')
+            if self.__tradingStrategy != None:
+                self.__tradingStrategy.save_exit(reason='Asyncio loop left')
 
     async def __main(self) -> None:
         '''
@@ -127,21 +141,21 @@ class ManagedBot(object):
             can be set individually but is also beeing set to True if the websocket connection 
             has some fatal error. This is used to exit the asyncio loop. 
         '''
-        self.__tratingStrategy = TradingBot(config=self.__config)
+        self.__tradingStrategy = TradingBot(config=self.__config)
 
-        await self.__tratingStrategy.subscribe(
+        await self.__tradingStrategy.subscribe(
             subscription={ 'name': 'ticker' }, 
             pair=self.__config['pairs']
         )
-        await self.__tratingStrategy.subscribe(
+        await self.__tradingStrategy.subscribe(
             subscription={ 'name': 'ohlc', 'interval': 15 }, 
             pair=self.__config['pairs']
         )
 
-        await self.__tratingStrategy.subscribe(subscription={ 'name': 'ownTrades' })  
-        await self.__tratingStrategy.subscribe(subscription={ 'name': 'openOrders' })  
+        await self.__tradingStrategy.subscribe(subscription={ 'name': 'ownTrades' })  
+        await self.__tradingStrategy.subscribe(subscription={ 'name': 'openOrders' })  
 
-        while not self.__tratingStrategy.exception_occur: 
+        while not self.__tradingStrategy.exception_occur: 
             try:
                 # check if bot feels good
                 # maybe send a status update every day
@@ -151,10 +165,10 @@ class ManagedBot(object):
             except Exception as e:
                 message = f'Exception in main: {e} {traceback.format_exc()}'
                 logging.error(message)
-                self.__tratingStrategy.save_exit(reason=message)
+                self.__tradingStrategy.save_exit(reason=message)
             
             await asyncio.sleep(6)
-        self.__tratingStrategy.save_exit(reason='Left main loop because of exception in bot.')
+        self.__tradingStrategy.save_exit(reason='Left main loop because of exception in bot.')
         return
 
     def __check_credentials(self) -> bool:
@@ -174,7 +188,7 @@ class ManagedBot(object):
             return False
 
     def save_exit(self, reason: str='') -> None:
-        self.__tratingStrategy.save_exit(reason=reason)
+        self.__tradingStrategy.save_exit(reason=reason)
 
 def main() -> None:
     bot_config = {

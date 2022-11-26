@@ -1,14 +1,13 @@
-import os, sys
+import sys
 import asyncio
 import logging
 import logging.config
 from dotenv import dotenv_values
-from datetime import datetime
 import time
 
 try:
     from kraken.spot.client import KrakenSpotWSClient
-except:
+except ModuleNotFoundError:
     print('USING LOCAL MODULE')
     sys.path.append('/Users/benjamin/repositories/Trading/python-kraken-sdk')
     from kraken.spot.client import KrakenSpotWSClient
@@ -47,6 +46,7 @@ async def main() -> None:
             #     )
             # ... it is also possible to call regular REST endpoints
             # but using the websocket messages is more efficient
+            # you can also un/subscribe here using self.subscribe/self-unsubscribe
 
     # ___Public_Websocket_Feed_____
     bot = Bot() # only use this one if you dont need private feeds

@@ -1,21 +1,21 @@
-import os, sys
+import sys
 from dotenv import dotenv_values
 import random
 import time
 import logging, logging.config
-from tqdm import tqdm
 
 try:
     from kraken.futures.client import User, Market, Trade, Funding
-except:
+    from kraken.exceptions.exceptions import KrakenExceptions 
+except ModuleNotFoundError:
     print('USING LOCAL MODULE')
     sys.path.append('/Users/benjamin/repositories/Trading/python-kraken-sdk')
     from kraken.futures.client import User, Market, Trade, Funding
+    from kraken.exceptions.exceptions import KrakenExceptions 
 
 logging.basicConfig(
     format='%(asctime)s %(module)s,line: %(lineno)d %(levelname)8s | %(message)s',
     datefmt='%Y/%m/%d %H:%M:%S',
-    filemode='w',
     level=logging.INFO
 )
 logging.getLogger().setLevel(logging.INFO)
@@ -26,8 +26,15 @@ key = dotenv_values('.env')['Futures_API_KEY']
 secret = dotenv_values('.env')['Futures_SECRET_KEY']
 
 isSuccess = lambda r: type(r) == dict and 'result' in r and r['result'] == 'success'
+isNotError = lambda r: type(r) == dict and 'error' not in r.keys()
 
 def test_user_endpoints() -> None: 
+    #  _   _               
+    # | | | |___  ___ _ __ 
+    # | | | / __|/ _ \ '__|
+    # | |_| \__ \  __/ |   
+    #  \___/|___/\___|_|   
+
     k = 'USER'
     logging.info(f'{k}: Creating user clients')
     user = User()
@@ -47,7 +54,7 @@ def test_user_endpoints() -> None:
     
     response = auth_user.get_account_log_csv()
     assert response.status_code in [200, '200']
-    handle = open('account_log.csv', 'wb')
+    handle = open(f'account_log-{random.randint(0, 10000)}.csv', 'wb')
     for chunk in response.iter_content(chunk_size=512):
         if chunk: handle.write(chunk)
     handle.close()        
@@ -55,31 +62,38 @@ def test_user_endpoints() -> None:
     logging.info(f'{k}: ALL (tested) ENDPOINTS AVAILABLE!')
 
 def test_market_endpoints() -> None:
+
+    #  __  __            _        _   
+    # |  \/  | __ _ _ __| | _____| |_ 
+    # | |\/| |/ _` | '__| |/ / _ \ __|
+    # | |  | | (_| | |  |   <  __/ |_ 
+    # |_|  |_|\__,_|_|  |_|\_\___|\__|
+                                    
     k = 'MARKET'
     logging.info(f'{k}: Creating clients')
     market = Market()
     auth_market = Market(key=key, secret=secret)
 
-    assert type (market.get_ohlc(
+    assert type(market.get_ohlc(
         tick_type='trade', 
         symbol='PI_XBTUSD', 
         resolution='1m',
-        from_='1668989233'
+        from_='1668989233',
+        to='1668999233'
     )) == dict
     assert type(market.get_tick_types()) == list
 
     assert type(market.get_tradeable_products(tick_type='mark')) == list
     assert type(market.get_resolutions(tick_type='trade', tradeable='PI_XBTUSD')) == list
-    assert type(market.get_fee_schedules()) == dict
+    
+    assert isSuccess(market.get_fee_schedules())
     time.sleep(2)
+    
+    # assert type(market.get_orderbook()) == dict # raises 500-INTERNAL_SERVER_ERROR on Kraken, but symbol is optinal as described in the api documentation
+    assert isSuccess(market.get_orderbook(symbol='PI_XBTUSD'))
 
-    # assert type(market.get_orderbook()) == dict # raises 500-INTERNAL_SERVER_ERROR on Kraken
-    # this endpoint is broken: https://futures.kraken.com/derivatives/api/v3/orderbook
-    # assert type(market.get_orderbook()) == dict
-    # assert type(market.get_orderbook(symbol='PI_XBTUSD')) == dict
-
-    assert type(market.get_tickers()) == dict
-    assert type(market.get_instruments()) == dict
+    assert isSuccess(market.get_tickers())
+    assert isSuccess(market.get_instruments())
     assert isSuccess(market.get_instruments_status())
     assert isSuccess(market.get_instruments_status(instrument='PI_XBTUSD'))
     time.sleep(2)
@@ -90,14 +104,14 @@ def test_market_endpoints() -> None:
     assert isSuccess(auth_market.set_leverage_preference(symbol='PF_SOLUSD', maxLeverage=2))
     assert isSuccess(auth_market.get_leverage_preference())
     assert isSuccess(auth_market.set_leverage_preference(symbol='PF_SOLUSD')) # reset setted preference
-    time.sleep(2)
+    time.sleep(3)
 
     assert isSuccess(auth_market.set_pnl_preference(symbol='PF_SOLUSD', pnlPreference='USD'))
     assert isSuccess(auth_market.get_pnl_preference())
 
-    assert type(market.get_public_execution_events(tradeable='PF_SOLUSD', since=1668989233)) == dict
-    assert type(market.get_public_order_events(tradeable='PF_SOLUSD', since=1668989233)) == dict
-    assert type(market.get_public_mark_price_events(tradeable='PF_SOLUSD', since=1668989233)) == dict
+    assert isNotError(market.get_public_execution_events(tradeable='PF_SOLUSD', since=1668989233)) 
+    assert isNotError(market.get_public_order_events(tradeable='PF_SOLUSD', since=1668989233))
+    assert isNotError(market.get_public_mark_price_events(tradeable='PF_SOLUSD', since=1668989233))
     time.sleep(3)
 
     # needs a higher auth level...
@@ -108,6 +122,14 @@ def test_market_endpoints() -> None:
     logging.info(f'{k}: ALL (tested) ENDPOINTS AVAILABLE!')
 
 def test_trade_endpoints() -> None:
+
+    #  _____              _      
+    # |_   _| __ __ _  __| | ___ 
+    #   | || '__/ _` |/ _` |/ _ \
+    #   | || | | (_| | (_| |  __/
+    #   |_||_|  \__,_|\__,_|\___|
+                           
+
     k = 'TRADE'
     logging.info(f'{k}: Creating clients')
     trade = Trade(key=key, secret=secret)
@@ -118,9 +140,8 @@ def test_trade_endpoints() -> None:
     assert isSuccess(trade.dead_mans_switch(timeout=0)) # reset dead mans switch
     assert isSuccess(trade.get_orders_status(orderIds='378etweirzgu'))
     
-        
     if False:
-        raise ValueError('Dont do this')
+        raise ValueError('Execute this lines only if you know what it does!')
         time.sleep(2)
         
         assert isSuccess(trade.create_order(
@@ -138,7 +159,7 @@ def test_trade_endpoints() -> None:
                 'orderType': 'lmt',
                 'symbol': 'PI_XBTUSD',
                 'side': 'buy',
-                'size': 1,
+                'size': 5,
                 'limitPrice': 1.00,
                 'cliOrdId': 'my_another_client_id'
             }, {
@@ -169,11 +190,19 @@ def test_trade_endpoints() -> None:
     logging.info(f'{k}: ALL (tested) ENDPOINTS AVAILABLE!')
 
 def test_funding_endpoints() -> None:
+
+    #  _____                _ _             
+    # |  ___|   _ _ __   __| (_)_ __   __ _ 
+    # | |_ | | | | '_ \ / _` | | '_ \ / _` |
+    # |  _|| |_| | | | | (_| | | | | | (_| |
+    # |_|   \__,_|_| |_|\__,_|_|_| |_|\__, |
+    #                                 |___/ 
     k = 'FUNDING'
     logging.info(f'{k}: Creating clients')
     funding = Funding(key=key, secret=secret)
     
-    assert type(funding.get_historical_funding_rates(symbol='PF_SOLUSD')) == dict
+    assert isSuccess(funding.get_historical_funding_rates(symbol='PF_SOLUSD'))
+
     if False:
         # accounts must exist.. 
         # print(funding.initiate_wallet_transfer(
@@ -192,7 +221,6 @@ def test_funding_endpoints() -> None:
         # print(funding.initiate_withdrawal_to_spot_wallet(
         #     amount=200,
         #     currency='XBT',
-        #     sourceWallet='Futures Wallet'
         # ))
         pass
 
@@ -207,6 +235,7 @@ def main() -> None:
         
         Some tests are disabled, to protect open positions, orders, trades, withdrawals, balances etc.
     ''')
+    
     test_user_endpoints()
     test_market_endpoints()
     test_trade_endpoints()

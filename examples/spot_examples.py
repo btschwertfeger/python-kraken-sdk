@@ -1,12 +1,11 @@
-import os, sys, time
+import sys, time
 import logging
 import logging.config
 from dotenv import dotenv_values
-from datetime import datetime
 
 try:
     from kraken.spot.client import User, Market, Trade, Funding, Staking
-except:
+except ModuleNotFoundError:
     print('USING LOCAL MODULE')
     sys.path.append('/Users/benjamin/repositories/Trading/python-kraken-sdk')
     from kraken.spot.client import User, Market, Trade, Funding, Staking
@@ -110,7 +109,7 @@ def trade_examples() -> None:
                 }
             ],
             pair='BTC/USD',
-            validate= false
+            validate=False
         ))
 
         print(trade.edit_order(
@@ -129,28 +128,29 @@ def trade_examples() -> None:
     print(trade.cancel_order_batch(orders=['O2JLFP-VYFIW-35ZAAE', 'O523KJ-DO4M2-KAT243', 'OCDIAL-YC66C-DOF7HS', 'OVFPZ2-DA2GV-VBFVVI']))
 
 def funding_examples() -> None:
-    raise ValueError('Attention: Please check if you really want to execute funding funtions.')
     funding = Funding(key=key, secret=secret)
+    print(funding.get_deposit_methods(asset='DOT'))
+    # print(funding.get_deposit_address(asset='DOT', method='Polkadot'))
+    # print(funding.get_recend_deposits_status(asset='DOT'))
+    print(funding.get_withdrawal_info(asset='DOT', key='MyPolkadotWallet', amount='200'))
+    
+    raise ValueError('Attention: Please check if you really want to execute funding funtions.')
     if False:
-        print(funding.get_deposit_methods(asset='DOT'))
-        print(funding.get_deposit_address(asset='DOT', method='Polkadot'))
-        print(funding.get_recend_deposits_status(asset='DOT'))
-        print(funding.get_withdrawal_info(asset='DOT', key='MyPolkadotWallet', amount='200'))
-        print(funding.withdraw_funds(asset='DOT', key='MyPolkadotWallet', amount=200))
         time.sleep(2)
+        print(funding.withdraw_funds(asset='DOT', key='MyPolkadotWallet', amount=200))
         print(funding.get_recend_withdraw_status(asset='DOT' ))
         print(funding.cancel_widthdraw(asset='DOT', refid='12345'))
         print(funding.wallet_transfer(asset='ETH', amount=0.100, from_='Spot Wallet', to='Futures Wallet'))
 
 def staking_examples() -> None:
-    raise ValueError('Attention: Please check if you really want to execute staking funtions.')
     staking = Staking(key=key, secret=secret)
+    print(staking.list_stakeable_assets())
+    print(staking.list_staking_transactions())
+    print(staking.get_pending_staking_transactions())
+    raise ValueError('Attention: Please check if you really want to execute staking funtions.')
     if False:
-        print(staking.list_stakeable_assets())
-        print(staking.list_staking_transactions())
         print(staking.stake_asset(asset='DOT', amount=2000, method='polkadot-staked'))
         print(staking.unstake_asset(asset='DOT', amount=200, method='polkadot-staked'))
-        print(staking.get_pending_staking_transactions())
         time.sleep(2)
 
 def main() -> None:
@@ -160,5 +160,4 @@ def main() -> None:
     funding_examples()
     staking_examples()
 
-if __name__ == '__main__':
-    main()
+if __name__ == '__main__': main()

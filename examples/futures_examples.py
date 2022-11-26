@@ -1,8 +1,8 @@
-import sys, os, time
+import sys, time
 
 try:
     from kraken.futures.client import Market, User, Trade, Funding
-except:
+except ModuleNotFoundError:
     print('USING LOCAL MODULE')
     sys.path.append('/Users/benjamin/repositories/Trading/python-kraken-sdk')
     from kraken.futures.client import Market, User, Trade, Funding
@@ -65,7 +65,7 @@ def user_examples() -> None:
         print(user.get_account_log(before='1604937694000'))
         print(user.get_account_log(info='futures liquidation'))
         time.sleep(2)
-        response = auth_user.get_account_log_csv()
+        response = user.get_account_log_csv()
         assert response.status_code in [200, '200']
         handle = open('account_log.csv', 'wb')
         for chunk in response.iter_content(chunk_size=512):

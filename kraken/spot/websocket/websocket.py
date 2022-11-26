@@ -7,11 +7,13 @@ from uuid import uuid4
 import logging
 import traceback
 import copy
+import sys 
+from typing import List
 
 try:
     from kraken.spot.ws_client.ws_client import SpotWsClientCl
     from kraken.exceptions.exceptions import KrakenExceptions 
-except:
+except ModuleNotFoundError:
     print('USING LOCAL MODULE')
     sys.path.append('/Users/benjamin/repositories/Trading/python-kraken-sdk')
     from kraken.spot.client.ws_client import SpotWsClientCl
@@ -88,12 +90,10 @@ class ConnectSpotWebsocket:
                 except asyncio.CancelledError:
                     logging.exception('asyncio.CancelledError')
                     keep_alive = False
-                    await self.__callback({'event': 'asyncio.CancelledError'})
+                    await self.__callback({'error': 'asyncio.CancelledError'})
                 else:
-                    try:
-                        msg = json.loads(_msg)
-                    except ValueError:
-                        logger.warning(_msg)
+                    try: msg = json.loads(_msg)
+                    except ValueError: logging.warning(_msg)
                     else: 
                         if 'event' in msg:
                             if msg['event'] == 'subscriptionStatus' and 'status' in msg:
@@ -111,9 +111,9 @@ class ConnectSpotWebsocket:
         try:
             while True: await self.__reconnect()
         except KrakenExceptions.MaxReconnectError: 
-            await self.__callback({'event': 'KrakenExceptions.MaxReconnectError'})
+            await self.__callback({'error': 'kraken.exceptions.exceptions.KrakenExceptions.MaxReconnectError'})
         except Exception as e:
-            logging.error(traceback.format_exc())
+            logging.error(f'{e}: {traceback.format_exc()}')
         finally: self.__client.exception_occur = True
 
     async def __reconnect(self):
@@ -147,7 +147,7 @@ class ConnectSpotWebsocket:
                         try: process.cancel()
                         except asyncio.CancelledError: logging.exception('asyncio.CancelledError')
                         logging.warning('Cancel OK')
-                    await self.__callback({ 'ws-error': message })
+                    await self.__callback({ 'error': message })
             if exception_occur: break
         logging.warning('reconnect over')
 
@@ -261,9 +261,9 @@ class KrakenSpotWSClientCl(SpotWsClientCl):
             use the Kraken beta url
 
         ====== P R O P E R T I E S ======
-        public_sub_names: [str]
+        public_sub_names: List[str]
             list of available public subscription names
-        private_sub_names: [str]
+        private_sub_names: List[str]
             list of available private subscription names
         active_public_subscriptions: [dict]
             list of active public subscriptions
@@ -300,21 +300,21 @@ class KrakenSpotWSClientCl(SpotWsClientCl):
     AUTH_BETA_ENV_URL = 'beta-ws-auth.kraken.com'
 
     def __init__(self, key: str='', secret: str='', url: str='', callback=None, beta: bool=False):
-        super().__init__(key=key, secret=secret, sandbox=beta)
+        super().__init__(key=key, secret=secret, url=url, sandbox=beta)
         self.__callback = callback
         self.__isAuth = key and secret        
         
         self.exception_occur = False
         self._pub_conn = ConnectSpotWebsocket(
             client=self,
-            endpoint=self.PROD_ENV_URL if not beta else BETA_ENV_URL,
+            endpoint=self.PROD_ENV_URL if not beta else self.BETA_ENV_URL,
             isAuth=False,
             callback=self.on_message
         )
 
         self._priv_conn = ConnectSpotWebsocket(
              client=self,
-             endpoint=self.AUTH_PROD_ENV_URL if not beta else AUTH_BETA_ENV_URL,
+             endpoint=self.AUTH_PROD_ENV_URL if not beta else self.AUTH_BETA_ENV_URL,
              isAuth=True,
              callback=self.on_message
         ) if self.__isAuth else None
@@ -335,14 +335,14 @@ class KrakenSpotWSClientCl(SpotWsClientCl):
             logging.warning('Received event but no callback is defined')
             print(msg)
 
-    async def subscribe(self, subscription: dict, pair: [str]=None) -> None:
+    async def subscribe(self, subscription: dict, pair: List[str]=None) -> None:
         '''Subscribe to a channel
             https://docs.kraken.com/websockets-beta/#message-subscribe
             
             ====== P A R A M E T E R S ======
             subscription: dict
                 the subscription to subscribe to
-            pair: [str]
+            pair: List[str]
                 list of asset pairs or list of a single pair
 
             ====== E X A M P L E ======
@@ -362,7 +362,7 @@ class KrakenSpotWSClientCl(SpotWsClientCl):
             'subscription': subscription
         }
         if pair != None: 
-            if type(pair) != list: raise ValueError('Parameter pair must be type of [str] (e.g. pair=["XBTUSD"])')
+            if type(pair) != list: raise ValueError('Parameter pair must be type of List[str] (e.g. pair=["XBTUSD"])')
             else: payload['pair'] = pair        
 
         if private: # private == without pair
@@ -378,14 +378,14 @@ class KrakenSpotWSClientCl(SpotWsClientCl):
 
         else: await self._pub_conn.send_message(payload, private=False)
 
-    async def unsubscribe(self, subscription: dict, pair: [str]=None) -> None:
+    async def unsubscribe(self, subscription: dict, pair: List[str]=None) -> None:
         '''Unsubscribe from a topic
             https://docs.kraken.com/websockets/#message-unsubscribe
 
             ====== P A R A M E T E R S ======
             subscription: dict
                 the subscription to unsubscribe from
-            pair: [str]
+            pair: List[str]
                 list of asset pairs or list of a single pair
 
             ====== E X A M P L E ======
@@ -404,7 +404,7 @@ class KrakenSpotWSClientCl(SpotWsClientCl):
             'subscription': subscription
         }
         if pair != None: 
-            if type(pair) != list: raise ValueError('Parameter pair must be type of [str] (e.g. pair=["XBTUSD"])')
+            if type(pair) != list: raise ValueError('Parameter pair must be type of List[str] (e.g. pair=["XBTUSD"])')
             else: payload['pair'] = pair
         
         if private: # private == without pair
@@ -421,21 +421,21 @@ class KrakenSpotWSClientCl(SpotWsClientCl):
         else: await self._pub_conn.send_message(payload, private=False)
 
     @property
-    def private_sub_names(self) -> [str]:
+    def private_sub_names(self) -> List[str]:
         return  ['ownTrades', 'openOrders']
 
     @property
-    def public_sub_names(self) -> [str]:
+    def public_sub_names(self) -> List[str]:
         return ['ticker', 'spread', 'book', 'ohlc', 'trade', '*']
 
     @property
-    def active_public_subscriptions(self) -> [dict]:
+    def active_public_subscriptions(self) -> List[str]:
         if self._pub_conn != None:
             return self._pub_conn.subscriptions 
         else: raise ConnectionError('Public connection does not exist!')
 
     @property
-    def active_private_subscriptions(self) -> [str]:
+    def active_private_subscriptions(self) -> List[str]:
         if self._priv_conn != None:
             return self._priv_conn.subscriptions
         else: raise ConnectionError('Private connection does not exist!')

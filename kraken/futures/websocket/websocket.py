@@ -1,4 +1,3 @@
-import time
 import asyncio
 import websockets
 from random import random
@@ -7,18 +6,19 @@ import traceback
 import json
 import sys
 import copy
-
+from typing import List
 try:
     from kraken.futures.ws_client.ws_client import FuturesWsClientCl
     from kraken.exceptions.exceptions import KrakenExceptions 
-except:
+except ModuleNotFoundError:
     print('USING LOCAL MODULE')
     sys.path.append('/Users/benjamin/repositories/Trading/python-kraken-sdk')
     from kraken.futures.ws_client.ws_client import FuturesWsClientCl
     from kraken.exceptions.exceptions import KrakenExceptions 
 
+
 class ConnectFuturesWebsocket(object):
-    '''
+    '''    
         This class is only called by the KrakenFuturesWSClientCl class
         to establish and handle a websocket connection.
 
@@ -69,19 +69,16 @@ class ConnectFuturesWebsocket(object):
             self.__reconnect_num = 0
 
             while keep_alive:
-                try:
-                    _msg = await asyncio.wait_for(self.__socket.recv(), timeout=15)
-                except asyncio.TimeoutError:
-                    pass
-                except asyncio.CancelledError:
+                try: _msg = await asyncio.wait_for(self.__socket.recv(), timeout=15)
+                except asyncio.CancelledError: 
                     logging.exception('asyncio.CancelledError')
                     keep_alive = False    
-                    await self.__callback({'event': 'asyncio.CancelledError'}) 
+                    await self.__callback({'error': 'asyncio.CancelledError'}) 
                 else:
                     try:
                         msg = json.loads(_msg)
                     except ValueError:
-                        logger.warning(_msg)
+                        logging.warning(_msg)
                     else:
                         forward = True
                         if 'event' in msg:
@@ -97,7 +94,7 @@ class ConnectFuturesWebsocket(object):
         try:
             while True: await self.__reconnect()
         except KrakenExceptions.MaxReconnectError: 
-            await self.__callback({'event': 'KrakenExceptions.MaxReconnectError'})
+            await self.__callback({'error': 'kraken.exceptions.exceptions.KrakenExceptions.MaxReconnectError'})
         except Exception as e:
             # for task in asyncio.all_tasks(): task.cancel()
             logging.error(traceback.format_exc())
@@ -135,7 +132,7 @@ class ConnectFuturesWebsocket(object):
                         try: process.cancel()
                         except asyncio.CancelledError: logging.exception('CancelledError')
                         logging.warning('cancel ok')
-                    await self.__callback({ 'ws-error': message })
+                    await self.__callback({ 'error': message })
             if exception_occur: break            
         logging.warning('reconnect over')
 
@@ -211,7 +208,7 @@ class ConnectFuturesWebsocket(object):
         else: logging.warn('Feed not implemented. Please contact the python-kraken-sdk package author.')
         return sub
 
-    def get_active_subscriptions(self) -> [dict]:
+    def get_active_subscriptions(self) -> List[dict]:
         return self.__subscriptions
 
 
@@ -287,16 +284,16 @@ class KrakenFuturesWSClientCl(FuturesWsClientCl):
         if self.__callback != None: await self.__callback(msg)
         else:
             logging.warning('Received event but no callback is defined')
-            loggin.info(msg)
+            logging.info(msg)
 
-    async def subscribe(self, feed: str, products: [str]=None) -> None:
+    async def subscribe(self, feed: str, products: List[str]=None) -> None:
         '''Subscribe to a channel/feed
             https://docs.futures.kraken.com/#websocket-api-websocket-api-introduction-subscriptions
 
             ====== P A R A M E T E R S ======
             subscription: dict
                 the subscription to subscribe to
-            products: [str]
+            products: List[str]
                 list of assets or list of a single product
 
             ====== E X A M P L E ======
@@ -311,7 +308,7 @@ class KrakenFuturesWSClientCl(FuturesWsClientCl):
         message = { 'event': 'subscribe', 'feed': feed }
 
         if products != None: 
-            if type(products) != list: raise ValueError('Parameter products must be type of [str] (e.g. pair=["PI_XBTUSD"])')
+            if type(products) != list: raise ValueError('Parameter products must be type of List[str] (e.g. pair=["PI_XBTUSD"])')
             else: message['product_ids'] = products     
             
         if feed in self.get_available_private_subscription_feeds():
@@ -326,14 +323,14 @@ class KrakenFuturesWSClientCl(FuturesWsClientCl):
             else: await self._conn.send_message(message, private=False)
         else: raise ValueError(f'Feed: {feed} not found. Not subscribing to it.')
 
-    async def unsubscribe(self, feed: str, products: [str]=None) -> None:
+    async def unsubscribe(self, feed: str, products: List[str]=None) -> None:
         '''Unsubscribe from a topic/feed
             https://docs.futures.kraken.com/#websocket-api-websocket-api-introduction-subscriptions
         
             ====== P A R A M E T E R S ======
             subscription: dict
                 the subscription to unsubscribe from
-            products: [str]
+            products: List[str]
                 list of assets or list of a single product
 
             ====== E X A M P L E ======
@@ -348,7 +345,7 @@ class KrakenFuturesWSClientCl(FuturesWsClientCl):
         message = { 'event': 'unsubscribe', 'feed': feed }
 
         if products != None: 
-            if type(products) != list: raise ValueError('Parameter products must be type of [str] (e.g. pair=["PI_XBTUSD"])')
+            if type(products) != list: raise ValueError('Parameter products must be type of List[str] (e.g. pair=["PI_XBTUSD"])')
             else: message['product_ids'] = products     
 
         if feed in self.get_available_private_subscription_feeds():
@@ -364,11 +361,11 @@ class KrakenFuturesWSClientCl(FuturesWsClientCl):
         else: raise ValueError(f'Feed: {feed} not found. Not unsubscribing it.')
 
     @staticmethod
-    def get_available_public_subscription_feeds() -> [str]:
+    def get_available_public_subscription_feeds() -> List[str]:
         return [ 'trade', 'book', 'ticker', 'ticker_lite', 'heartbeat']
 
     @staticmethod
-    def get_available_private_subscription_feeds() -> [str]:
+    def get_available_private_subscription_feeds() -> List[str]:
         return [ 
             'fills', 
             'open_positions', 'open_orders', 'open_orders_verbose',
@@ -381,5 +378,5 @@ class KrakenFuturesWSClientCl(FuturesWsClientCl):
     def isAuth(self) -> bool:
         return self._key and self._secret
 
-    def get_active_subscriptions(self) -> [dict]:
+    def get_active_subscriptions(self) -> List[dict]:
         return self._conn.get_active_subscriptions()

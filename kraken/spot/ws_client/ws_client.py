@@ -1,10 +1,11 @@
 from kraken.base_api.base_api import KrakenBaseRestAPI
 import logging
+from typing import List
 
 class SpotWsClientCl(KrakenBaseRestAPI):
 
-    def __init__(self, key: str='', secret: str='', sandbox: bool=False):
-        super().__init__(key=key, secret=secret, sandbox=sandbox)
+    def __init__(self, key: str='', secret: str='', url: str='', sandbox: bool=False):
+        super().__init__(key=key, secret=secret, url=url, sandbox=sandbox)
 
         self._pub_conn = None
         self._priv_conn = None
@@ -22,7 +23,7 @@ class SpotWsClientCl(KrakenBaseRestAPI):
         price2: str=None,
         volume: str=None,
         leverage: int=None,
-        oflags: [str]=None,
+        oflags: List[str]=None,
         starttm: str=None,
         expiretm: str=None,
         deadline: str=None,
@@ -52,12 +53,13 @@ class SpotWsClientCl(KrakenBaseRestAPI):
         if oflags != None:
             if type(oflags) == str: payload['oflags'] = oflags
             elif type(oflags) == list: payload['oflags'] = self._to_str_list(oflags)
-            else: raise ValueError('oflags must be type [str] or comma delimited list of order flags. Available flags: viqc,fcib, fciq, nompp, post')
+            else: raise ValueError('oflags must be type List[str] or comma delimited list of order flags as str. Available flags: viqc, fcib, fciq, nompp, post')
         if starttm != None: payload['starttm'] = starttm
         if expiretm != None: payload['expiretm'] = expiretm
         if deadline != None: payload['deadline'] = deadline
         if userref != None: payload['userref'] = userref
         if validate != None: payload['validate'] = validate
+        if leverage != None: payload['leverage'] = leverage
         if close_ordertype != None: payload['close[ordertype]'] = close_ordertype
         if close_price != None: payload['close[price]'] = close_price
         if close_price2 != None: payload['close[price2]'] = close_price2
@@ -65,14 +67,14 @@ class SpotWsClientCl(KrakenBaseRestAPI):
 
         await self._priv_conn.send_message(msg=payload, private=True)
 
-    async def edit_order(
-        self, orderid: str,
+    async def edit_order(self, 
+        orderid: str,
         reqid: int=None,
         pair: str=None,
         price: str=None,
         price2: str=None,
         volume: str=None,
-        oflags: [str]=None,
+        oflags: List[str]=None,
         newuserref: str=None,
         validate: str=None
     ) -> None:
