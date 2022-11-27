@@ -1,9 +1,9 @@
+'''Module that provides custom exceptions for the python-kraken-sdk'''
 import functools
 from typing import List
-
-class KrakenExceptions(object):
-
+class KrakenExceptions():
     '''https://docs.kraken.com/rest/#section/General-Usage/Requests-Responses-and-Errors'''
+
     def __init__(self, msg=None, *args, **kwargs):
         self.EXCEPTION_ASSIGNMENT = {
 
@@ -12,21 +12,21 @@ class KrakenExceptions(object):
             'EGeneral:Invalid arguments:Index unavailable': self.KrakenInvalidArgumentsIndexUnavailableError,
             'EGeneral:Permission denied': self.KrakenPermissionDeniedError,
 
-            'EService:Unavailable': self.KrakenServiceUnavailableError, 
+            'EService:Unavailable': self.KrakenServiceUnavailableError,
             'EService:Market in cancel_only mode': self.KrakenMarketInOnlyCancelModeError,
-            'EService:Market in post_only mode': self.KrakenMarketInOnlyPostModeError, 
+            'EService:Market in post_only mode': self.KrakenMarketInOnlyPostModeError,
             'EService:Deadline elapsed': self.KrakenDeadlineElapsedError,
 
-            'EAPI:Invalid key': self.KrakenInvalidAPIKeyError, 
+            'EAPI:Invalid key': self.KrakenInvalidAPIKeyError,
             'EAPI:Invalid signature': self.KrakenInvalidSignatureError,
-            'EAPI:Invalid nonce': self.KrakenInvalidNonceError, 
+            'EAPI:Invalid nonce': self.KrakenInvalidNonceError,
 
             'EOrder:Invalid order': self.KrakenInvalidOrderError,
-            'EOrder:Cannot open position': self.KrakenCannotOpenPositionError, 
+            'EOrder:Cannot open position': self.KrakenCannotOpenPositionError,
             'EOrder:Margin allowance exceeded': self.KrakenMarginAllowedExceededError,
-            'EOrder:Margin level too low': self.KrakenMarginLevelToLowError, 
+            'EOrder:Margin level too low': self.KrakenMarginLevelToLowError,
             'EOrder:Margin position size exceeded': self.KrakenMarginPositionSizeExceededError,
-            'EOrder:Insufficient margin': self.KrakenInsufficientMarginError, 
+            'EOrder:Insufficient margin': self.KrakenInsufficientMarginError,
             'EOrder:Insufficient funds': self.KrakenInsufficientFundsError,
             'EOrder:Order minimum not met': self.KrakenOrderMinimumNotMetError,
             'EOrder:Cost minimum not met': self.KrakenCostMinimumNotMetError,
@@ -42,7 +42,7 @@ class KrakenExceptions(object):
             'EFunding:Invalid staking method': self.KrakenInvalidStakingMethodError,
             'EFunding:Too many addresses': self.KrakenToManyAdressesError,
             'EFunding:Unknown asset': self.KrakenUnknownAssetError,
-            
+
             'EQuery:Unknown asset': self.KrakenUnknownAssetError,
             'EQuery:Unknown asset pair': self.KrakenUnknownAssetPairError,
 
@@ -55,34 +55,34 @@ class KrakenExceptions(object):
             'invalidAccount': self.KrakenInvalidAccountError,
             'notFound': self.KrakenNotFoundError,
             'orderForEditNotFound': self.KrakenOrderForEditNotFoundError,
-        }   
+        }
 
     def get_exception(self, data: List[str]):
+        '''Returns the exception given by name if available'''
         for name, exception in self.EXCEPTION_ASSIGNMENT.items():
             if data == name: return exception
-            elif type(data) == list:
+            if isinstance(data, list):
                 if name in data: return exception
-                else:
-                    for err in data:
-                        if name in err: return exception 
+                for err in data:
+                    if name in err: return exception
         return None
 
     def docstring_message(cls):
         '''Decorates an exception to make its docstring its default message.
             https://stackoverflow.com/a/66491013/13618168
         '''
-        cls_init = cls.__init__ 
+        cls_init = cls.__init__
         @functools.wraps(cls.__init__)
         def wrapped_init(self, msg=None, *args, **kwargs):
             err_message = self.__doc__ if not msg else f'{self.__doc__}\ndetails: {msg}'
             cls_init(self, err_message, *args, **kwargs)
         cls.__init__ = wrapped_init
         return cls
-    
+
     @docstring_message
     class KrakenInvalidArgumentsError(Exception):
         '''The request payload is malformed, incorrect or ambiguous.'''
-    
+
     @docstring_message
     class KrakenInvalidArgumentsIndexUnavailableError(Exception):
         '''Index pricing is unavailable for stop/profit orders on this pair.'''
@@ -122,7 +122,7 @@ class KrakenExceptions(object):
     @docstring_message
     class KrakenInvalidOrderError(Exception):
         '''Order is invalid.'''
-        
+
     @docstring_message
     class KrakenAuthenticationError(Exception):
         '''Credentials are invalid.'''
@@ -146,7 +146,7 @@ class KrakenExceptions(object):
     @docstring_message
     class KrakenInsufficientMarginError(Exception):
         '''Exchange does not have available funds for this margin trade.'''
-    
+
     @docstring_message
     class KrakenInsufficientFundsError(Exception):
         '''Client does not have the necessary funds.'''
@@ -158,7 +158,7 @@ class KrakenExceptions(object):
     @docstring_message
     class KrakenOrderMinimumNotMetError(Exception):
         '''Order size does not meet ordermin.'''
-    
+
     @docstring_message
     class KrakenCostMinimumNotMetError(Exception):
         '''Cost (price * volume) does not meet costmin.'''
@@ -167,14 +167,14 @@ class KrakenExceptions(object):
     class KrakenTickSizeInvalidCheckError(Exception):
         '''Price submitted is not a valid multiple of the pair's tick_size.'''
 
-    @docstring_message        
+    @docstring_message
     class KrakenOrderLimitsExceededError(Exception):
         '''Order limits exceeded. Please check your open orders limit.'''
 
     @docstring_message
     class KrakenRateLimitExceededError(Exception):
         '''API rate limit exceeded. Please check your rate limits.'''
-        
+
     @docstring_message
     class KrakenApiLimitExceededError(Exception):
         '''API rate limit exceeded. Please check your rate limits.'''
@@ -209,7 +209,7 @@ class KrakenExceptions(object):
 
     @docstring_message
     class KrakenUnknownWithdrawKeyError(Exception):
-         '''The requested withdrawal key is unknown.'''
+        '''The requested withdrawal key is unknown.'''
 
     @docstring_message
     class KrakenInvalidAmountError(Exception):
@@ -221,7 +221,7 @@ class KrakenExceptions(object):
 
     @docstring_message
     class KrakenInvalidAccountError(Exception):
-        '''The account is invalid.'''   
+        '''The account is invalid.'''
 
     @docstring_message
     class KrakenNotFoundError(Exception):
@@ -230,7 +230,7 @@ class KrakenExceptions(object):
     @docstring_message
     class KrakenOrderForEditNotFoundError(Exception):
         '''The order for edit could not be found.'''
-        
+
     @docstring_message
     class KrakenToManyAdressesError(Exception):
         '''To many adresses specified.'''

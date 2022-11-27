@@ -1,6 +1,8 @@
+'''Module that implements the Kraken Futures user client'''
 from kraken.base_api.base_api import KrakenBaseFuturesAPI
 
 class UserClient(KrakenBaseFuturesAPI):
+    '''Class that implements the Kraken Futures user client'''
 
     def __init__(self, key: str='', secret: str='', url: str='', sandbox: bool=False) -> None:
         super().__init__(key=key, secret=secret, url=url, sandbox=sandbox)
@@ -12,7 +14,7 @@ class UserClient(KrakenBaseFuturesAPI):
     def get_open_orders(self) -> dict:
         '''https://docs.futures.kraken.com/#http-api-trading-v3-api-account-information-get-open-orders'''
         return self._request(method='GET', uri='/derivatives/api/v3/openorders', auth=True)
-    
+
     def get_open_positions(self) -> dict:
         '''https://docs.futures.kraken.com/#http-api-trading-v3-api-account-information-get-open-positions'''
         return self._request(method='GET', uri='/derivatives/api/v3/openpositions', auth=True)
@@ -40,17 +42,15 @@ class UserClient(KrakenBaseFuturesAPI):
     ) -> dict:
         '''https://docs.futures.kraken.com/#http-api-history-account-log'''
         params = {}
-        if before != None: params['before'] = before
-        if count != None: params['count'] = count
-        if from_ != None: params['from'] = from_
-        if info != None: params['info'] = info
-        if since != None: params['since'] = since
-        if sort != None: params['sort'] = sort
-        if to != None: params['to'] = to
-        return self._request(method='GET', uri='/api/history/v2/account-log', queryParams=params, auth=True)
+        if before is not None: params['before'] = before
+        if count is not None: params['count'] = count
+        if from_ is not None: params['from'] = from_
+        if info is not None: params['info'] = info
+        if since is not None: params['since'] = since
+        if sort is not None: params['sort'] = sort
+        if to is not None: params['to'] = to
+        return self._request(method='GET', uri='/api/history/v2/account-log', query_params=params, auth=True)
 
     def get_account_log_csv(self) -> dict:
         '''https://docs.futures.kraken.com/#http-api-history-account-log-get-recent-account-log-csv'''
         return self._request(method='GET', uri='/api/history/v2/accountlogcsv', auth=True, return_raw=True)
-
-

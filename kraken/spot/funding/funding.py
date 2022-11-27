@@ -1,7 +1,8 @@
+'''Module that implements the Spot Funding client'''
 from kraken.base_api.base_api import KrakenBaseRestAPI
 
-
 class FundingClient(KrakenBaseRestAPI):
+    '''Class that implements the Spot Funding client'''
 
     def get_deposit_methods(self, asset: str) -> dict:
         '''https://docs.kraken.com/rest/#operation/getDepositMethods'''
@@ -18,7 +19,7 @@ class FundingClient(KrakenBaseRestAPI):
     def get_recend_deposits_status(self, asset: str, method: str=None) -> dict:
         '''https://docs.kraken.com/rest/#operation/getStatusRecentDeposits'''
         params = { 'asset': asset }
-        if method != None: params['method'] = method
+        if method is not None: params['method'] = method
         return self._request(method='POST', uri='/private/DepositStatus', params=params)
 
     def withdraw_funds(self, asset: str, key: str, amount: str) -> dict:
@@ -40,7 +41,7 @@ class FundingClient(KrakenBaseRestAPI):
     def get_recend_withdraw_status(self, asset: str, method: str=None) -> dict:
         '''https://docs.kraken.com/rest/#operation/getStatusRecentWithdrawals'''
         params = { 'asset': asset }
-        if method != None: params['method'] = method
+        if method is not None: params['method'] = method
         return self._request(method='POST', uri='/private/WithdrawStatus', params=params)
 
     def cancel_withdraw(self, asset: str, refid: str) -> dict:

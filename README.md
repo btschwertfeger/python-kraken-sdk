@@ -7,6 +7,9 @@
 [![Generic badge](https://img.shields.io/badge/python-3.7+-blue.svg)](https://shields.io/)
 [![Downloads](https://static.pepy.tech/personalized-badge/python-kraken-sdk?period=total&units=abbreviation&left_color=grey&right_color=orange&left_text=downloads)](https://pepy.tech/project/python-kraken-sdk)
 
+![ql-workflow](https://github.com/btschwertfeger/kraken-python-sdk/actions/workflows/codeql.yml/badge.svg)
+![python-package](https://github.com/btschwertfeger/kraken-python-sdk/actions/workflows/python-package.yml/badge.svg)
+
 </div>
 
 <h3>
@@ -23,7 +26,7 @@ There is no guarantee that this software will work flawlessly at this or later t
 
 ## Update
 
-- November 24, 2022
+- November 27, 2022
 
 ## Features
 
@@ -585,6 +588,8 @@ Note: Authenticated Futures websocket clients can also un/subscribe from/to publ
 
 - Pull requests will be ignored until the owner finished the core idea
 <!-- - Triggers: stop-loss, stop-loss-limit, take-profit and take-profit-limit orders. -->
+
+- Coding standards are not always followed to make arguments and function names as similar as possible to those in the Kraken API documentations.
 
 <a name="references"></a>
 

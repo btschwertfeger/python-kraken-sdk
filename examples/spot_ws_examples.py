@@ -1,9 +1,10 @@
+'''Module that provides an excample usage for the Kraken Spot websocket client'''
 import sys
 import asyncio
 import logging
 import logging.config
-from dotenv import dotenv_values
 import time
+from dotenv import dotenv_values
 
 try:
     from kraken.spot.client import KrakenSpotWSClient
@@ -22,18 +23,20 @@ logging.getLogger('requests').setLevel(logging.WARNING)
 logging.getLogger('urllib3').setLevel(logging.WARNING)
 
 async def main() -> None:
+    '''Create bot and subscribe to topics/feeds'''
 
     key = dotenv_values('.env')['API_KEY']
     secret = dotenv_values('.env')['SECRET_KEY']
 
     # ___Custom_Trading_Bot______________
     class Bot(KrakenSpotWSClient):
-        
+        '''Can be used to create a custom trading strategy/bot'''
         async def on_message(self, event) -> None:
+            '''receives the websocket events'''
             if 'event' in event:
                 topic = event['event']
                 if topic == 'heartbeat': return
-                elif topic == 'pong': return
+                if topic == 'pong': return
 
             print(event)
             # if condition:
@@ -79,9 +82,9 @@ async def main() -> None:
     await auth_bot.unsubscribe(subscription={ 'name': 'ownTrades' })
     await auth_bot.unsubscribe(subscription={ 'name': 'openOrders' })
 
-    while not bot.exception_occur and not auth_bot.exception_occur: 
+    while not bot.exception_occur and not auth_bot.exception_occur:
         await asyncio.sleep(6)
-    return 
+    return
 
 if __name__ == '__main__':
     loop = asyncio.new_event_loop()

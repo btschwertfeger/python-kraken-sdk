@@ -1,10 +1,12 @@
+'''Module that provides an example Futures trading bot data structure'''
 import sys
 import asyncio
-import logging, logging.config
-from dotenv import dotenv_values
+import logging
+import logging.config
 import traceback
 import urllib3
-import requests 
+import requests
+from dotenv import dotenv_values
 
 try:
     from kraken.exceptions.exceptions import KrakenExceptions
@@ -36,12 +38,12 @@ class TradingBot(KrakenSpotWSClient):
         ====== P A R A M E T E R S ======
         config: dict
             bot configuration like: {
-                'key' 'kraken-futures-key', 
+                'key' 'kraken-futures-key',
                 'secret': 'kraken-secret-key',
                 'products': ['PI_XBTUSD]'
             }
     '''
-    def __init__(self, config: dict): 
+    def __init__(self, config: dict):
         super().__init__(key=config['key'], secret=config['secret']) # initialize the KakenFuturesWSClient
         self.__config = config
 
@@ -58,18 +60,18 @@ class TradingBot(KrakenSpotWSClient):
             if event['event'] == 'pong': return
         elif 'error' in event:
             # handle exceptions/errors sent by websocket connection ...
-            pass 
+            pass
 
         logging.info(event)
-        
+
         # ... begin implementing your trading strategy here
-        # call functions of self.__trade and other clients if conditions met... 
+        # call functions of self.__trade and other clients if conditions met...
         # try:
         #     print(self.__trade.create_order(
-        #         ordertype='limit', 
-        #         side='buy', 
-        #         volume=2, 
-        #         pair='XBTUSD', 
+        #         ordertype='limit',
+        #         side='buy',
+        #         volume=2,
+        #         pair='XBTUSD',
         #         price=12000
         #     ))
         # except KrakenExceptions.KrakenPermissionDeniedError:
@@ -86,21 +88,21 @@ class TradingBot(KrakenSpotWSClient):
         #     price=20000,
         #     volume=200
         # )
-        # more functions can be found in the documentation at: 
+        # more functions can be found in the documentation at:
         # https://github.com/btschwertfeger/Python-Kraken-SDK
 
     # add more functions to customize the bot/strategy
-    # ... 
+    # ...
 
     def save_exit(self, reason: str='') -> None:
         '''controlled shutdown of the bot'''
         logging.warning(f'Save exit triggered, reason: {reason}')
-        # save data ... 
+        # save data ...
         # maybe close trades  ...
-        exit(1)
+        sys.exit(1)
 
 
-class ManagedBot(object):
+class ManagedBot():
     '''Class to manage the trading strategy/strategies
 
     subscribes to desired feeds, instantiates the strategy and runs until condition met
@@ -108,7 +110,7 @@ class ManagedBot(object):
     ====== P A R A M E T E R S ======
     config: dict
         bot configuration like: {
-            'key' 'kraken-futures-key', 
+            'key' 'kraken-futures-key',
             'secret': 'kraken-secret-key',
             'products': ['PI_XBTUSD]'
         }
@@ -116,59 +118,60 @@ class ManagedBot(object):
 
     def __init__(self, config: dict):
         self.__config = config
-        self.__tradingStrategy = None
-        
+        self.__trading_strategy = None
+
     def run(self) -> None:
-        if not self.__check_credentials(): exit(1)
+        '''Starts the event loop and bot'''
+        if not self.__check_credentials(): sys.exit(1)
 
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
         try:
             asyncio.run(self.__main())
         except KeyboardInterrupt: pass
-        finally: 
+        finally:
             loop.close()
-            if self.__tradingStrategy != None:
-                self.__tradingStrategy.save_exit(reason='Asyncio loop left')
+            if self.__trading_strategy is not None:
+                self.__trading_strategy.save_exit(reason='Asyncio loop left')
 
     async def __main(self) -> None:
         '''
-            Instantiates the trading strategy (bot) and subscribes to the 
-            desired websocket feeds. While no exception within the strategy occur 
+            Instantiates the trading strategy (bot) and subscribes to the
+            desired websocket feeds. While no exception within the strategy occur
             run the loop.
 
             This variable exception_occur which is an attribute of the KrakenFuturesWSClient
-            can be set individually but is also beeing set to True if the websocket connection 
-            has some fatal error. This is used to exit the asyncio loop. 
+            can be set individually but is also beeing set to True if the websocket connection
+            has some fatal error. This is used to exit the asyncio loop.
         '''
-        self.__tradingStrategy = TradingBot(config=self.__config)
+        self.__trading_strategy = TradingBot(config=self.__config)
 
-        await self.__tradingStrategy.subscribe(
-            subscription={ 'name': 'ticker' }, 
+        await self.__trading_strategy.subscribe(
+            subscription={ 'name': 'ticker' },
             pair=self.__config['pairs']
         )
-        await self.__tradingStrategy.subscribe(
-            subscription={ 'name': 'ohlc', 'interval': 15 }, 
+        await self.__trading_strategy.subscribe(
+            subscription={ 'name': 'ohlc', 'interval': 15 },
             pair=self.__config['pairs']
         )
 
-        await self.__tradingStrategy.subscribe(subscription={ 'name': 'ownTrades' })  
-        await self.__tradingStrategy.subscribe(subscription={ 'name': 'openOrders' })  
+        await self.__trading_strategy.subscribe(subscription={ 'name': 'ownTrades' })
+        await self.__trading_strategy.subscribe(subscription={ 'name': 'openOrders' })
 
-        while not self.__tradingStrategy.exception_occur: 
+        while not self.__trading_strategy.exception_occur:
             try:
                 # check if bot feels good
                 # maybe send a status update every day
                 # ...
                 pass
 
-            except Exception as e:
-                message = f'Exception in main: {e} {traceback.format_exc()}'
+            except Exception as exc:
+                message = f'Exception in main: {exc} {traceback.format_exc()}'
                 logging.error(message)
-                self.__tradingStrategy.save_exit(reason=message)
-            
+                self.__trading_strategy.save_exit(reason=message)
+
             await asyncio.sleep(6)
-        self.__tradingStrategy.save_exit(reason='Left main loop because of exception in bot.')
+        self.__trading_strategy.save_exit(reason='Left main loop because of exception in bot.')
         return
 
     def __check_credentials(self) -> bool:
@@ -188,18 +191,20 @@ class ManagedBot(object):
             return False
 
     def save_exit(self, reason: str='') -> None:
-        self.__tradingStrategy.save_exit(reason=reason)
+        '''Invoces the save exit funtion of the trading strategy'''
+        self.__trading_strategy.save_exit(reason=reason)
 
 def main() -> None:
+    '''Main'''
     bot_config = {
         'key': dotenv_values('.env')['API_KEY'],
         'secret': dotenv_values('.env')['SECRET_KEY'],
         'pairs': ['DOT/EUR', 'XBT/USD']
     }
-    managedBot = ManagedBot(config=bot_config)
-    try:    
-        managedBot.run()
+    managed_bot = ManagedBot(config=bot_config)
+    try:
+        managed_bot.run()
     except Exception:
-        managedBot.save_exit(reason=f'manageBot.run() has ended: {traceback.format_exc()}')
+        managed_bot.save_exit(reason=f'manageBot.run() has ended: {traceback.format_exc()}')
 
 if __name__ == '__main__': main()

@@ -72,10 +72,10 @@ class UploadCommand(Command):
         os.system(f'{sys.executable} setup.py sdist bdist_wheel --universal')
 
         self.status('Testing the build using flake8')
-        if os.system('flake8 . --select=E9,F63,F7,F82 --show-source --statistics') != 0: 
-            self.status('Testing failed, build has some errors in it!')            
+        if os.system('flake8 . --select=E9,F63,F7,F82 --show-source --statistics') != 0:
+            self.status('Testing failed, build has some errors in it!')
             exit(1)
-            
+
         self.status('Uploading the package to PyPI via Twine…')
         os.system('twine upload dist/*')
 
@@ -110,10 +110,10 @@ class TestUploadCommand(Command):
 
         self.status('Building Source and Wheel (universal) distribution…')
         os.system(f'{sys.executable} setup.py sdist bdist_wheel --universal')
-        
+
         self.status('Testing the build using flake8')
-        if os.system('flake8 . --select=E9,F63,F7,F82 --show-source --statistics') != 0: 
-            self.status('Testing failed, build has some errors in it!')            
+        if os.system('flake8 . --select=E9,F63,F7,F82 --show-source --statistics') != 0:
+            self.status('Testing failed, build has some errors in it!')
             exit(1)
 
         self.status('Uploading the package to test PyPI via Twine…')

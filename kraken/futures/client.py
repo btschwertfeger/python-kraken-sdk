@@ -1,20 +1,33 @@
+'''This module provides the Kraken Futures clients'''
+
 from kraken.futures.market.market import MarketClient
 from kraken.futures.trade.trade import TradeClient
 from kraken.futures.user.user import UserClient
 from kraken.futures.funding.funding import FundingClient
 from kraken.futures.websocket.websocket import KrakenFuturesWSClientCl
-from kraken.exceptions.exceptions import KrakenExceptions 
+
+
 class User(UserClient):
-    pass
+    ''' Class that is used as a client to access the user-related
+        Kraken Futures endpoints.
+    '''
 
 class Trade(TradeClient):
-    pass
+    ''' Class that is used as a client to access the trade-related
+        Kraken Futures endpoints.
+    '''
 
 class Market(MarketClient):
-    pass
+    ''' Class that is used as a client to access the market-related
+        Kraken Futures endpoints.
+    '''
 
 class Funding(FundingClient):
-    pass
+    ''' Class that is used as a client to access the funding-related
+        Kraken Futures endpoints.
+    '''
 
 class KrakenFuturesWSClient(KrakenFuturesWSClientCl):
-    pass
+    ''' Class that is used as a client to create a websocket connection
+        and handle un/subscribing, reconnecting, ...
+    '''

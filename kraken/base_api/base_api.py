@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding:utf-8 -*-
 
-import requests
+'''Module that implements the base classes for all clients'''
 import hmac
 import hashlib
 import base64
@@ -10,6 +10,7 @@ from uuid import uuid1
 import urllib.parse
 import sys
 from typing import List
+import requests
 
 try:
     from kraken.exceptions.exceptions import KrakenExceptions
@@ -18,41 +19,44 @@ except ModuleNotFoundError:
     sys.path.append('/Users/benjamin/repositories/Trading/python-kraken-sdk')
     from kraken.exceptions.exceptions import KrakenExceptions
 
-class KrakenErrorHandler(object):
+class KrakenErrorHandler():
+    '''Class used to raise an Error or return the response'''
 
-    def __init__(self): 
+    def __init__(self):
         self.__kexceptions = KrakenExceptions()
 
     def __get_exception(self, msg):
         return self.__kexceptions.get_exception(msg)
 
     def check(self, data: dict) -> dict:
-        '''Check if the error message is a known Kraken error response 
-            than raise a custom exception or return the data containing the 'error' 
+        '''Check if the error message is a known Kraken error response
+            than raise a custom exception or return the data containing the 'error'
         '''
         if len(data.get('error', [])) == 0 and 'result' in data: return data['result']
-        else:
-            exception = self.__get_exception(data['error'])
-            if exception: raise exception(data)
-            else: return data
 
-    def check_sendStatus(self, data: dict) -> dict:
+        exception = self.__get_exception(data['error'])
+        if exception: raise exception(data)
+        return data
+
+    def check_send_status(self, data: dict) -> dict:
+        '''Used for futures REST responses'''
         if 'sendStatus' in data and 'status' in data['sendStatus']:
             exception = self.__get_exception(data['sendStatus']['status'])
             if exception: raise exception(data)
-            else: return data
-        else: return data
+            return data
+        return data
 
-    def check_batchStatus(self, data: List[dict]) -> dict:
+    def check_batch_status(self, data: List[dict]) -> dict:
+        '''Used for futures REST batch order responses'''
         if 'batchStatus' in data:
-            batchStatus = data['batchStatus']
-            for status in batchStatus:
+            batch_status = data['batchStatus']
+            for status in batch_status:
                 if 'status' in status:
                     exception = self.__get_exception(status['status'])
                     if exception: raise exception(data)
         return data
 
-class KrakenBaseRestAPI(object):
+class KrakenBaseRestAPI():
     ''' Base class for all Spot clients
 
         Handles un/signed requests and returns exception handled results
@@ -71,7 +75,7 @@ class KrakenBaseRestAPI(object):
     URL = 'https://api.kraken.com'
     API_V = '/0'
 
-    def __init__(self, key: str='', secret: str='', url: str='', sandbox: bool=False, **kwargs):
+    def __init__(self, key: str='', secret: str='', url: str='', sandbox: bool=False):
         if sandbox: raise ValueError('Sandbox not availabel for Kraken Spot trading.')
         if url != '': self.url = url
         else: self.url = self.URL
@@ -82,15 +86,16 @@ class KrakenBaseRestAPI(object):
         self.__session = requests.Session()
         self.__session.headers.update({'User-Agent': 'python-kraken-sdk'})
 
-    def _request(self, 
-        method: str, 
-        uri: str, 
-        timeout: int=10, 
+    def _request(self,
+        method: str,
+        uri: str,
+        timeout: int=10,
         auth: bool=True,
-        params: dict={}, 
-        do_json: bool=False, 
+        params: dict=None,
+        do_json: bool=False,
         return_raw: bool=False
     ) -> dict:
+        if params is None: params = {}
         method = method.upper()
         data_json = ''
         if method in ['GET', 'DELETE']:
@@ -100,7 +105,7 @@ class KrakenBaseRestAPI(object):
                 data_json += '&'.join(strl)
                 uri += f'?{data_json}'.replace(' ', '%20')
 
-        headers = { } 
+        headers = { }
         if auth:
             if not self.__key or self.__key == '' or not self.__secret or self.__secret == '': raise ValueError('Missing credentials')
             params['nonce'] = str(int(time.time() * 1000))
@@ -112,43 +117,53 @@ class KrakenBaseRestAPI(object):
 
         url = f'{self.url}{self.API_V}{uri}'
         if method in ['GET', 'DELETE']:
-            return self.__check_response_data(self.__session.request(method=method, url=url, headers=headers, timeout=timeout), return_raw)
-        elif do_json:
-            return self.__check_response_data(self.__session.request(method=method, url=url, headers=headers, json=params, timeout=timeout), return_raw)
-        else:
-            return self.__check_response_data(self.__session.request(method=method, url=url, headers=headers, data=params, timeout=timeout), return_raw)
+            return self.__check_response_data(
+                self.__session.request(method=method, url=url, headers=headers, timeout=timeout),
+                return_raw
+            )
+        if do_json:
+            return self.__check_response_data(
+                self.__session.request(method=method, url=url, headers=headers, json=params, timeout=timeout),
+                return_raw
+            )
+        return self.__check_response_data(
+            self.__session.request(method=method, url=url, headers=headers, data=params, timeout=timeout),
+            return_raw
+        )
 
     def get_kraken_signature(self, urlpath: str, data: dict) -> str:
+        '''Returns the signed data'''
         return base64.b64encode(
             hmac.new(
-                base64.b64decode(self.__secret), 
+                base64.b64decode(self.__secret),
                 urlpath.encode() + hashlib.sha256((str(data['nonce']) + urllib.parse.urlencode(data)).encode()).digest(),
                 hashlib.sha512
             ).digest()
         ).decode()
 
     def __check_response_data(self, response_data, return_raw: bool=False) -> dict:
+        '''checkes the response, handles the error and returns the data '''
         if response_data.status_code in [ '200', 200 ]:
             if return_raw: return response_data
-            try:
-                data = response_data.json()
-            except ValueError:
-                raise Exception(response_data.content)
+            try: data = response_data.json()
+            except ValueError as exc: raise ValueError(response_data.content) from exc
             else:
                 if 'error' in data: return self.__err_handler.check(data)
-                else: return data
-        else: raise Exception(f'{response_data.status_code} - {response_data.text}')
+                return data
+        raise Exception(f'{response_data.status_code} - {response_data.text}')
 
     @property
     def return_unique_id(self) -> str:
-        return ''.join([each for each in str(uuid1()).split('-')])
+        '''Returns a unique id str'''
+        return ''.join(str(uuid1()).split('-'))
 
-    def _to_str_list(self, a) -> str:
-        if type(a) == str: return a
-        elif type(a) == list: return ','.join([i for i in a])
-        else: raise ValueError('a must be string or list of strings')
+    def _to_str_list(self, value) -> str:
+        '''Converts a list to a comme separated str'''
+        if isinstance(value, str): return value
+        if isinstance(value, list): return ','.join(value)
+        raise ValueError('a must be type of str or list of strings')
 
-class KrakenBaseFuturesAPI(object):
+class KrakenBaseFuturesAPI():
     ''' Base class for all Futures clients
 
         Handles un/signed requests and returns exception handled results
@@ -162,7 +177,7 @@ class KrakenBaseFuturesAPI(object):
             optional url
         sandbox: bool, default: False
             if set to true the url will be 'https://demo-futures.kraken.com'
-        
+
         ====== N O T E S ======
         If the sandbox environment is chosen, the keys must be generated here:
             https://demo-futures.kraken.com/settings/api
@@ -171,13 +186,13 @@ class KrakenBaseFuturesAPI(object):
     URL = 'https://futures.kraken.com'
     SANDBOX_URL = 'https://demo-futures.kraken.com'
 
-    def __init__(self, key: str='', secret: str='', url: str='', sandbox: bool=False, **kwargs):
-        
+    def __init__(self, key: str='', secret: str='', url: str='', sandbox: bool=False):
+
         self.sandbox = sandbox
         if url: self.url = url
         elif self.sandbox: self.url = self.SANDBOX_URL
         else: self.url = self.URL
-        
+
         self.__key = key
         self.__secret = secret
         self.__nonce = 0
@@ -186,30 +201,32 @@ class KrakenBaseFuturesAPI(object):
         self.__session = requests.Session()
         self.__session.headers.update({'User-Agent': 'python-kraken-sdk'})
 
-    def _request(self, 
-        method: str, 
-        uri: str, 
-        timeout: int=10, 
-        auth: bool=True, 
-        postParams: dict={},
-        queryParams: dict={}, 
+    def _request(self,
+        method: str,
+        uri: str,
+        timeout: int=10,
+        auth: bool=True,
+        post_params: dict=None,
+        query_params: dict=None,
         return_raw: bool=False
     ) -> dict:
         method = method.upper()
 
-        postString: str = ''
-        if postParams:
+        post_string: str = ''
+        if post_params is not None:
             strl: List[str] = []
-            for key in sorted(postParams): strl.append(f'{key}={postParams[key]}')
-            postString = '&'.join(strl)
+            for key in sorted(post_params): strl.append(f'{key}={post_params[key]}')
+            post_string = '&'.join(strl)
+        else: post_params = {}
 
-        queryString: str = ''
-        if queryParams:
+        query_string: str = ''
+        if query_params is not None:
             strl: List[str] = []
-            for key in sorted(queryParams): strl.append(f'{key}={queryParams[key]}')
-            queryString = '&'.join(strl).replace(' ', '%20')
+            for key in sorted(query_params): strl.append(f'{key}={query_params[key]}')
+            query_string = '&'.join(strl).replace(' ', '%20')
+        else: query_params = {}
 
-        headers = { } 
+        headers = { }
         if auth:
             if not self.__key or self.__key == '' or not self.__secret or self.__secret == '': raise ValueError('Missing credentials')
             self.__nonce = (self.__nonce + 1) % 1
@@ -218,64 +235,65 @@ class KrakenBaseFuturesAPI(object):
                 'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8',
                 'Nonce': nonce,
                 'APIKey': self.__key,
-                'Authent': self.get_kraken_futures_signature(uri, queryString + postString, nonce)
+                'Authent': self.get_kraken_futures_signature(uri, query_string + post_string, nonce)
             })
 
         if method in ['GET', 'DELETE']:
             return self.__check_response_data(
                 self.__session.request(
                     method=method,
-                    url=f'{self.url}{uri}' if queryString == '' else f'{self.url}{uri}?{queryString}', 
-                    headers=headers, 
+                    url=f'{self.url}{uri}' if query_string == '' else f'{self.url}{uri}?{query_string}',
+                    headers=headers,
                     timeout=timeout
-                ), 
+                ),
                 return_raw
             )
-        elif method == 'PUT':
+        if method == 'PUT':
             return self.__check_response_data(
                 self.__session.request(
-                method=method, 
-                url=f'{self.url}{uri}', 
-                params=str.encode(queryString), 
-                headers=headers, 
+                method=method,
+                url=f'{self.url}{uri}',
+                params=str.encode(query_string),
+                headers=headers,
                 timeout=timeout
-                ), 
+                ),
                 return_raw
-            )
-        else:
-            return self.__check_response_data(
-                self.__session.request(
-                    method=method, 
-                    url=f'{self.url}{uri}?{postString}', 
-                    data=str.encode(postString), 
-                    headers=headers, 
-                    timeout=timeout
-                ), return_raw
             )
 
+        return self.__check_response_data(
+            self.__session.request(
+                method=method,
+                url=f'{self.url}{uri}?{post_string}',
+                data=str.encode(post_string),
+                headers=headers,
+                timeout=timeout
+            ), return_raw
+        )
+
     def get_kraken_futures_signature(self, endpoint: str, data: str, nonce: str) -> str:
-        # reference: https://github.com/CryptoFacilities/REST-v3-Python/blob/ee89b9b324335d5246e2f3da6b52485eb8391d50/cfRestApiV3.py#L295-L296
-        if endpoint.startswith('/derivatives'): endpoint = endpoint[len('/derivatives'):] 
+        '''
+            Returns the signed data/message
+            reference: https://github.com/CryptoFacilities/REST-v3-Python/blob/ee89b9b324335d5246e2f3da6b52485eb8391d50/cfRestApiV3.py#L295-L296
+        '''
+        if endpoint.startswith('/derivatives'): endpoint = endpoint[len('/derivatives'):]
         sha256_hash = hashlib.sha256()
         sha256_hash.update((data + nonce + endpoint).encode('utf8'))
         return base64.b64encode(
             hmac.new(
-                base64.b64decode(self.__secret), 
-                sha256_hash.digest(), 
+                base64.b64decode(self.__secret),
+                sha256_hash.digest(),
                 hashlib.sha512
             ).digest()
         )
-   
+
     def __check_response_data(self, response_data, return_raw: bool=False) -> dict:
         if response_data.status_code in [ '200', 200 ]:
             if return_raw: return response_data
-            try:
-                data = response_data.json()
-            except ValueError:
-                raise Exception(response_data.content)
+            try: data = response_data.json()
+            except ValueError as exc: raise ValueError(response_data.content) from exc
             else:
                 if 'error' in data: return self.__err_handler.check(data)
-                elif 'sendStatus' in data: return self.__err_handler.check_sendStatus(data)
-                elif 'batchStatus' in data: return self.__err_handler.check_batchStatus(data)
-                else: return data
+                if 'sendStatus' in data: return self.__err_handler.check_send_status(data)
+                if 'batchStatus' in data: return self.__err_handler.check_batch_status(data)
+                return data
         else: raise Exception(f'{response_data.status_code} - {response_data.text}')

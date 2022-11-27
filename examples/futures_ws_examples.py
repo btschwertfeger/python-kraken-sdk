@@ -1,6 +1,9 @@
-import sys, time
+'''Module that provides an excample usage for the Kraken Futures websocket client'''
+import sys
+import time
 import asyncio
-import logging, logging.config
+import logging
+import logging.config
 from dotenv import dotenv_values
 
 try:
@@ -22,14 +25,17 @@ logging.getLogger('requests').setLevel(logging.WARNING)
 logging.getLogger('urllib3').setLevel(logging.WARNING)
 
 async def main() -> None:
+    '''Create bot and subscribe to topics/feeds'''
 
     key = dotenv_values('.env')['Futures_API_KEY']
     secret = dotenv_values('.env')['Futures_SECRET_KEY']
 
     # ___Custom_Trading_Bot__________
     class Bot(KrakenFuturesWSClient):
+        '''Can be used to create a custom trading strategy/bot'''
 
         async def on_message(self, event) -> None:
+            '''receives the websocket events'''
             logging.info(event)
             # ... apply your trading strategy here
             # you can also combine this with the Futures REST clients
@@ -49,7 +55,7 @@ async def main() -> None:
 
     # unsubscribe from a websocket feed
     time.sleep(2) # in case subscribe is not done yet
-    await bot.unsubscribe(feed='ticker', products=['PI_XBTUSD'])
+    # await bot.unsubscribe(feed='ticker', products=['PI_XBTUSD'])
     await bot.unsubscribe(feed='ticker', products=['PF_SOLUSD'])
     await bot.unsubscribe(feed='book', products=products)
     # ....
@@ -78,7 +84,7 @@ async def main() -> None:
     await auth_bot.unsubscribe(feed='open_positions')
     # ....
 
-    while not bot.exception_occur and not auth_bot.exception_occur: 
+    while not bot.exception_occur and not auth_bot.exception_occur:
         await asyncio.sleep(6)
     return
 
@@ -88,9 +94,8 @@ if __name__ == '__main__':
     asyncio.set_event_loop(loop)
     try:
         asyncio.run(main())
-    except KeyboardInterrupt: 
+    except KeyboardInterrupt:
         # the websocket client will send {'event': 'asyncio.CancelledError'} via on_message
         # so you can handle the behavior/next actions individually within you bot
         pass
     finally: loop.close()
-    

@@ -1,4 +1,6 @@
-import sys, time
+'''Module that implements some example usage for the Kraken Futures REST clients'''
+import sys
+import time
 import logging
 import logging.config
 from dotenv import dotenv_values
@@ -32,6 +34,7 @@ secret = dotenv_values('.env')['SECRET_KEY']
 # examples may not be updated regularily
 
 def user_examples() -> None:
+    '''Example usage of the User client'''
     user = User(key=key, secret=secret)
 
     print(user.get_account_balance())
@@ -44,23 +47,23 @@ def user_examples() -> None:
     print(user.get_trades_info(txid='TCNTTR-QBEVO-E5H5UK'))
     print(user.get_open_positions())#txid='someid'
     print(user.get_ledgers_info())#asset='BTC' or asset='BTC,EUR' or asset=['BTC','EUR']
-    print(user.get_ledgers(id='LIORGR-33NXH-LBUS5Z'))
+    print(user.get_ledgers(id_='LIORGR-33NXH-LBUS5Z'))
     print(user.get_trade_volume())#pair='BTC/EUR'
 
     # ____export_report____
-    r = user.request_export_report(report='ledgers', description='myLedgers1', format='CSV') #report='trades'
+    response = user.request_export_report(report='ledgers', description='myLedgers1', format='CSV') #report='trades'
     print(user.get_export_report_status(report='ledgers'))
 
     # save report to file
-    response_data = user.retrieve_export(id_=r['id'])
-    handle = open('myexport.zip', 'wb')
-    for chunk in response_data.iter_content(chunk_size=512):
-        if chunk: handle.write(chunk)
-    handle.close()
+    response_data = user.retrieve_export(id_=response['id'])
+    with open('myexport.zip', 'wb') as file:
+        for chunk in response_data.iter_content(chunk_size=512):
+            if chunk: file.write(chunk)
 
-    print(user.delete_export_report(id_=r['id'], type_='delete'))#type=cancel
+    print(user.delete_export_report(id_=response['id'], type_='delete'))#type=cancel
 
 def market_examples() -> None:
+    '''Example usage of the Market client'''
     market = Market()
 
     print(market.get_assets(assets=['XBT']))
@@ -74,6 +77,7 @@ def market_examples() -> None:
     time.sleep(2)
 
 def trade_examples() -> None:
+    '''Example usage of the Trade client'''
     raise ValueError('Attention: Please check if you really want to execute trade functions.')
     trade = Trade(key=key, secret=secret)
 
@@ -128,12 +132,13 @@ def trade_examples() -> None:
     print(trade.cancel_order_batch(orders=['O2JLFP-VYFIW-35ZAAE', 'O523KJ-DO4M2-KAT243', 'OCDIAL-YC66C-DOF7HS', 'OVFPZ2-DA2GV-VBFVVI']))
 
 def funding_examples() -> None:
+    '''Example usage of the Funding client'''
     funding = Funding(key=key, secret=secret)
     print(funding.get_deposit_methods(asset='DOT'))
     # print(funding.get_deposit_address(asset='DOT', method='Polkadot'))
     # print(funding.get_recend_deposits_status(asset='DOT'))
     print(funding.get_withdrawal_info(asset='DOT', key='MyPolkadotWallet', amount='200'))
-    
+
     raise ValueError('Attention: Please check if you really want to execute funding funtions.')
     if False:
         time.sleep(2)
@@ -143,6 +148,7 @@ def funding_examples() -> None:
         print(funding.wallet_transfer(asset='ETH', amount=0.100, from_='Spot Wallet', to='Futures Wallet'))
 
 def staking_examples() -> None:
+    '''Example usage of the Staking client'''
     staking = Staking(key=key, secret=secret)
     print(staking.list_stakeable_assets())
     print(staking.list_staking_transactions())
@@ -154,6 +160,7 @@ def staking_examples() -> None:
         time.sleep(2)
 
 def main() -> None:
+    '''Main'''
     user_examples()
     market_examples()
     trade_examples()

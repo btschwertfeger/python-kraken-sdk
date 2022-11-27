@@ -1,4 +1,6 @@
-import sys, time
+'''Module that implements some example usage for the Kraken Futures REST clients'''
+import sys
+import time
 
 try:
     from kraken.futures.client import Market, User, Trade, Funding
@@ -23,6 +25,7 @@ key = dotenv_values('.env')['Futures_SANDBOX_KEY']
 secret = dotenv_values('.env')['Futures_SANDBOX_SECRET']
 
 def market_examples() -> None:
+    '''Example market client usage'''
     market = Market()
     print(market.get_tick_types())
     print(market.get_tradeable_products(tick_type='trade'))
@@ -54,6 +57,7 @@ def market_examples() -> None:
     print(priv_market.get_trigger_events())
 
 def user_examples() -> None:
+    '''Example User client usage'''
     user = User(key=key,secret=secret, sandbox=True)
     print(user.get_wallets())
     print(user.get_open_orders())
@@ -61,19 +65,20 @@ def user_examples() -> None:
     print(user.get_subaccounts())
     print(user.get_unwindqueue())
     print(user.get_notificatios())
-    try:
-        print(user.get_account_log(before='1604937694000'))
-        print(user.get_account_log(info='futures liquidation'))
-        time.sleep(2)
-        response = user.get_account_log_csv()
-        assert response.status_code in [200, '200']
-        handle = open('account_log.csv', 'wb')
+
+    # try:
+    print(user.get_account_log(before='1604937694000'))
+    print(user.get_account_log(info='futures liquidation'))
+    time.sleep(2)
+    response = user.get_account_log_csv()
+    assert response.status_code in [200, '200']
+    with open('account_log.csv', 'wb') as file:
         for chunk in response.iter_content(chunk_size=512):
-            if chunk: handle.write(chunk)
-        handle.close()
-    except: pass
+            if chunk: file.write(chunk)
+    # except Exception: pass
 
 def trade_examples() -> None:
+    '''Example Trade client usage'''
     raise ValueError('Attention: Please check if you really want to test the trade endpoints!')
     trade = Trade(key=key, secret=secret, sandbox=True)
     print(trade.get_fills())
@@ -134,7 +139,7 @@ def trade_examples() -> None:
     ))
 
 def funding_examples() -> None:
-
+    '''Example Funding client usage'''
     funding = Funding(key=key, secret=secret, sandbox=True)
     print(funding.get_historical_funding_rates(symbol='PF_SOLUSD'))
     # print(funding.initiate_wallet_transfer(
@@ -160,6 +165,7 @@ def funding_examples() -> None:
     # ))
 
 def main() -> None:
+    '''Main'''
     user_examples()
     market_examples()
     trade_examples()
