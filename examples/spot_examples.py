@@ -1,5 +1,4 @@
 '''Module that implements some example usage for the Kraken Futures REST clients'''
-import sys
 import time
 import logging
 import logging.config
@@ -9,6 +8,7 @@ try:
     from kraken.spot.client import User, Market, Trade, Funding, Staking
 except ModuleNotFoundError:
     print('USING LOCAL MODULE')
+    import sys
     sys.path.append('/Users/benjamin/repositories/Trading/python-kraken-sdk')
     from kraken.spot.client import User, Market, Trade, Funding, Staking
 
