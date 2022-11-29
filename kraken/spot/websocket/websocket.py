@@ -144,7 +144,8 @@ class ConnectSpotWebsocket:
             for task in finished:
                 if task.exception():
                     exception_occur = True
-                    message = f'{task} got an exception {task.exception()}\nTRACEBACK: {traceback.format_exc()}'
+                    traceback.print_stack()
+                    message = f'{task} got an exception {task.exception()}\n {task.get_stack()}'
                     logging.warning(message)
                     for process in pending:
                         logging.warning(f'pending {process}')

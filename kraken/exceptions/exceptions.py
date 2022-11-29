@@ -22,6 +22,7 @@ class KrakenExceptions():
             'EAPI:Invalid nonce': self.KrakenInvalidNonceError,
 
             'EOrder:Invalid order': self.KrakenInvalidOrderError,
+            'EOrder:Invalid price': self.KrakenInvalidPriceError,
             'EOrder:Cannot open position': self.KrakenCannotOpenPositionError,
             'EOrder:Margin allowance exceeded': self.KrakenMarginAllowedExceededError,
             'EOrder:Margin level too low': self.KrakenMarginLevelToLowError,
@@ -122,6 +123,9 @@ class KrakenExceptions():
     @docstring_message
     class KrakenInvalidOrderError(Exception):
         '''Order is invalid.'''
+    @docstring_message
+    class KrakenInvalidPriceError(Exception):
+        '''Price is invalid.'''
 
     @docstring_message
     class KrakenAuthenticationError(Exception):
