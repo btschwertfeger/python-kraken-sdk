@@ -1,9 +1,9 @@
 '''Module that implements the Spot Kraken Websocket client'''
 import logging
 from typing import List
-from kraken.base_api.base_api import KrakenBaseRestAPI
+from kraken.base_api.base_api import KrakenBaseSpotAPI
 
-class SpotWsClientCl(KrakenBaseRestAPI):
+class SpotWsClientCl(KrakenBaseSpotAPI):
     '''Class that implements the Spot Kraken Websocket client'''
 
     def __init__(self, key: str='', secret: str='', url: str='', sandbox: bool=False):

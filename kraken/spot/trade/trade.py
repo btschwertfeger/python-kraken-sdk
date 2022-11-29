@@ -1,8 +1,8 @@
 '''Module that implements the Kraken Trade Spot client'''
 from typing import List
-from kraken.base_api.base_api import KrakenBaseRestAPI
+from kraken.base_api.base_api import KrakenBaseSpotAPI
 
-class TradeClient(KrakenBaseRestAPI):
+class TradeClient(KrakenBaseSpotAPI):
     '''Class that implements the Kraken Trade Spot client'''
 
     def create_order(self,

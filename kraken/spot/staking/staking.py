@@ -1,6 +1,6 @@
 '''Module that implements the Kraken Spot Stakung client'''
-from kraken.base_api.base_api import KrakenBaseRestAPI
-class StakingClient(KrakenBaseRestAPI):
+from kraken.base_api.base_api import KrakenBaseSpotAPI
+class StakingClient(KrakenBaseSpotAPI):
     '''Class that implements the Kraken Spot Stakung client'''
 
     def stake_asset(self, asset: str, amount: str, method: str) -> dict:

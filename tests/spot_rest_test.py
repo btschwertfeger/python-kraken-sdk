@@ -1,9 +1,7 @@
 '''Module that tests the Kraken Spot REST endpoints'''
-import sys
 import random
 import time
 import logging
-# import logging.config
 from tqdm import tqdm
 from dotenv import dotenv_values
 
@@ -11,17 +9,17 @@ try:
     from kraken.spot.client import User, Market, Trade, Funding, Staking
     from kraken.exceptions.exceptions import KrakenExceptions
 except ModuleNotFoundError:
-    print('USING LOCAL MODULE')
+    import sys
     sys.path.append('/Users/benjamin/repositories/Trading/python-kraken-sdk')
     from kraken.spot.client import User, Market, Trade, Funding, Staking
     from kraken.exceptions.exceptions import KrakenExceptions
+    print('USING LOCAL MODULE')
 
 logging.basicConfig(
     format='%(asctime)s %(module)s,line: %(lineno)d %(levelname)8s | %(message)s',
     datefmt='%Y/%m/%d %H:%M:{kind}',
     level=logging.INFO
 )
-logging.getLogger().setLevel(logging.INFO)
 logging.getLogger('requests').setLevel(logging.WARNING)
 logging.getLogger('urllib3').setLevel(logging.WARNING)
 
@@ -41,12 +39,10 @@ def test_user_endpoints() -> None:
     #  \___/|___/\___|_|
     '''
 
-    kind = 'USER'
-    logging.info(f'{kind}: Creating user clients')
+    logging.info('USER: Creating user clients')
 
-    # user = User()
     auth_user = User(key=key, secret=secret)
-    logging.info(f'{kind}: Checking balance endpoints')
+    logging.info('USER: Checking balance endpoints')
 
     assert is_not_error(auth_user.get_account_balance())
     assert is_not_error(auth_user.get_balances(currency='USD'))
@@ -54,7 +50,7 @@ def test_user_endpoints() -> None:
     assert is_not_error(auth_user.get_trade_balance(asset='EUR'))
     time.sleep(3)
 
-    logging.info(f'{kind}: Checking open orders and open trades endpoints')
+    logging.info('USER: Checking open orders and open trades endpoints')
     assert is_not_error(auth_user.get_open_orders(trades=True))
     assert is_not_error(auth_user.get_open_orders(trades=False))
     assert is_not_error(auth_user.get_closed_orders())
@@ -98,7 +94,7 @@ def test_user_endpoints() -> None:
     assert isinstance(auth_user.get_open_positions(txid='OQQYNL-FXCFA-FBFVD7', docalcs=True), list)
     time.sleep(4)
 
-    logging.info(f'{kind}: Checking ledeger endpoints')
+    logging.info('USER: Checking ledeger endpoints')
     assert is_not_error(auth_user.get_ledgers_info())
     for type_ in tqdm([
         'all', 'deposit', 'withdrawal',
@@ -124,7 +120,7 @@ def test_user_endpoints() -> None:
     assert is_not_error(auth_user.get_trade_volume(pair='DOT/EUR', fee_info=False))
     time.sleep(5)
 
-    logging.info(f'{kind}: Checking export report endpoints')
+    logging.info('USER: Checking export report endpoints')
     #report_formats = ['CSV', 'TSV']
     for report in ['trades', 'ledgers']:
         if report == 'trades':
@@ -173,7 +169,7 @@ def test_user_endpoints() -> None:
                 pass
             time.sleep(2)
 
-    logging.info(f'{kind}: ALL ENDPOINTS AVAILABLE!')
+    logging.info('USER: ALL ENDPOINTS AVAILABLE!')
 
 def test_market_endpoints() -> None:
     '''
@@ -184,13 +180,12 @@ def test_market_endpoints() -> None:
     # |_|  |_|\__,_|_|  |_|\_\___|\__|
     '''
 
-    kind = 'MARKET'
-    logging.info(f'{kind}: Creating clients')
+    logging.info('MARKET: Creating clients')
     market = Market()
 
     assert is_not_error(market.get_system_status())
 
-    logging.info(f'{kind}: Checking assets')
+    logging.info('MARKET: Checking assets')
     for params in [
         { },
         { 'assets': 'USD' },
@@ -207,13 +202,13 @@ def test_market_endpoints() -> None:
         assert is_not_error(market.get_tradable_asset_pair(pair='DOT/EUR', info=i))
         time.sleep(3)
 
-    logging.info(f'{kind}: Checking ticker')
+    logging.info('MARKET{kind}: Checking ticker')
     assert is_not_error(market.get_ticker())
     assert is_not_error(market.get_ticker(pair='XBTUSD'))
     assert is_not_error(market.get_ticker(pair=['DOTUSD', 'XBTUSD']))
     time.sleep(2)
 
-    logging.info(f'{kind}: Checking ohlc, orderbook, trades and spreads')
+    logging.info('MARKET: Checking ohlc, orderbook, trades and spreads')
     assert is_not_error(market.get_ohlc(pair='XBTUSD'))
     assert is_not_error(market.get_ohlc(pair='XBTUSD', interval=240)) # interval in [1 5 15 30 60 240 1440 10080 21600]
 
@@ -228,7 +223,7 @@ def test_market_endpoints() -> None:
     assert is_not_error(market.get_recend_spreads(pair='XBTUSD', since='1616663618'))
     time.sleep(2)
 
-    logging.info(f'{kind}: ALL ENDPOINTS AVAILABLE!')
+    logging.info('MARKET: ALL ENDPOINTS AVAILABLE!')
 
 def test_trade_endpoints() -> None:
     '''
@@ -240,8 +235,7 @@ def test_trade_endpoints() -> None:
     '''
 
     return
-    kind = 'TRADE'
-    logging.info(f'{kind}: Creating clients')
+    logging.info('TRADE: Creating clients')
     trade = Trade(key=key, secret=secret)
 
     raise ValueError('DONT TEST THIS, YOUR BOTS WILL DIE; WAIT FOR RELEASING DEMO SPOT ENVIRONMENT')
@@ -255,7 +249,7 @@ def test_trade_endpoints() -> None:
     # trade.cancel_order_batch...
 
 
-    logging.info(f'{kind}: ALL ENDPOINTS AVAILABLE!')
+    logging.info('TRADE: ALL ENDPOINTS AVAILABLE!')
 
 def test_staking_endpoints() -> None:
     '''
@@ -266,11 +260,11 @@ def test_staking_endpoints() -> None:
     # |____/ \__\__,_|_|\_\_|_| |_|\__, |
     #                               |___/
     '''
-    kind = 'STAKING'
-    logging.info(f'{kind}: Creating clients')
+    
+    logging.info('STAKING: Creating clients')
     staking = Staking(key=key, secret=secret)
 
-    logging.info(f'{kind}: Checking endpoints')
+    logging.info('STAKING: Checking endpoints')
     assert isinstance(staking.list_stakeable_assets(), list)
 
     try:
@@ -281,7 +275,7 @@ def test_staking_endpoints() -> None:
     assert isinstance(staking.get_pending_staking_transactions(), list)
     assert isinstance(staking.list_staking_transactions(), list)
     time.sleep(2)
-    logging.info(f'{kind}: ALL ENDPOINTS AVAILABLE!')
+    logging.info('STAKING: ALL ENDPOINTS AVAILABLE!')
 
 def test_funding_endpoints() -> None:
     '''
@@ -293,12 +287,11 @@ def test_funding_endpoints() -> None:
     #                                 |___/
     '''
 
-    kind = 'FUNDING'
-    logging.info(f'{kind}: Creating clients')
+    logging.info('FUNDING: Creating clients')
 
     funding = Funding(key=key, secret=secret)
 
-    logging.info(f'{kind}: Checking ...')
+    logging.info('FUNDING: Checking ...')
 
     # assert isinstance(funding.get_deposit_methods(asset='XBT'), list)
     # assert isNotError(funding.get_deposit_address(asset='XBT', method='Bitcoin'))
@@ -344,7 +337,7 @@ def test_funding_endpoints() -> None:
     except KrakenExceptions.KrakenUnknownWithdrawKeyError:
         pass
 
-    logging.info(f'{kind}: ALL ENDPOINTS AVAILABLE!')
+    logging.info('FUNDING: ALL ENDPOINTS AVAILABLE!')
 
 def main() -> None:
     '''Main'''

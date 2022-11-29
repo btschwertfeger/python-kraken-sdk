@@ -1,7 +1,7 @@
 '''Module that implements the Kraken Spot User client'''
-from kraken.base_api.base_api import KrakenBaseRestAPI
+from kraken.base_api.base_api import KrakenBaseSpotAPI
 
-class UserClient(KrakenBaseRestAPI):
+class UserClient(KrakenBaseSpotAPI):
     '''Class that implements the Kraken Spot User client'''
 
     def get_account_balance(self) -> dict:

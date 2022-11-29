@@ -56,7 +56,7 @@ class KrakenErrorHandler():
                     if exception: raise exception(data)
         return data
 
-class KrakenBaseRestAPI():
+class KrakenBaseSpotAPI():
     ''' Base class for all Spot clients
 
         Handles un/signed requests and returns exception handled results
@@ -79,7 +79,7 @@ class KrakenBaseRestAPI():
         if sandbox: raise ValueError('Sandbox not availabel for Kraken Spot trading.')
         if url != '': self.url = url
         else: self.url = self.URL
-
+        
         self.__key = key
         self.__secret = secret
         self.__err_handler = KrakenErrorHandler()
@@ -107,7 +107,7 @@ class KrakenBaseRestAPI():
 
         headers = { }
         if auth:
-            if not self.__key or self.__key == '' or not self.__secret or self.__secret == '': raise ValueError('Missing credentials')
+            if not self.__key or self.__key == '' or not self.__secret or self.__secret == '': raise ValueError('Missing credentials.')
             params['nonce'] = str(int(time.time() * 1000))
             headers.update({
                 'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8',
@@ -142,7 +142,7 @@ class KrakenBaseRestAPI():
         ).decode()
 
     def __check_response_data(self, response_data, return_raw: bool=False) -> dict:
-        '''checkes the response, handles the error and returns the data '''
+        '''checkes the response, handles the error and returns the data'''
         if response_data.status_code in [ '200', 200 ]:
             if return_raw: return response_data
             try: data = response_data.json()

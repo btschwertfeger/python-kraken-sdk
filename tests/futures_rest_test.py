@@ -1,27 +1,25 @@
 '''Module to test the Kraken Futures Rest endpoints'''
 
-import sys
 import random
 import time
 import logging
-import logging.config
 from dotenv import dotenv_values
 
 try:
     from kraken.futures.client import User, Market, Trade, Funding
     from kraken.exceptions.exceptions import KrakenExceptions
 except ModuleNotFoundError:
-    print('USING LOCAL MODULE')
+    import sys
     sys.path.append('/Users/benjamin/repositories/Trading/python-kraken-sdk')
     from kraken.futures.client import User, Market, Trade, Funding
     from kraken.exceptions.exceptions import KrakenExceptions
+    print('USING LOCAL MODULE')
 
 logging.basicConfig(
     format='%(asctime)s %(module)s,line: %(lineno)d %(levelname)8s | %(message)s',
     datefmt='%Y/%m/%d %H:%M:%S',
     level=logging.INFO
 )
-logging.getLogger().setLevel(logging.INFO)
 logging.getLogger('requests').setLevel(logging.WARNING)
 logging.getLogger('urllib3').setLevel(logging.WARNING)
 
@@ -44,11 +42,11 @@ def test_user_endpoints() -> None:
     # | |_| \__ \  __/ |
     #  \___/|___/\___|_|
     '''
-    kind = 'USER'
-    logging.info(f'{kind}: Creating user clients')
+    
+    logging.info('USER: Creating user clients')
     user = User()
     auth_user = User(key=key, secret=secret)
-    logging.info(f'{kind}: Checking endpoints')
+    logging.info('USER: Checking endpoints')
 
     assert is_success(auth_user.get_wallets())
     assert is_success(auth_user.get_open_orders())
@@ -68,7 +66,7 @@ def test_user_endpoints() -> None:
             if chunk: file.write(chunk)
     time.sleep(3)
 
-    logging.info(f'{kind}: ALL (tested) ENDPOINTS AVAILABLE!')
+    logging.info('USER: ALL (tested) ENDPOINTS AVAILABLE!')
 
 def test_market_endpoints() -> None:
     '''
@@ -78,8 +76,8 @@ def test_market_endpoints() -> None:
     # | |  | | (_| | |  |   <  __/ |_
     # |_|  |_|\__,_|_|  |_|\_\___|\__|
     '''
-    kind = 'MARKET'
-    logging.info(f'{kind}: Creating clients')
+    
+    logging.info('MARKET: Creating clients')
     market = Market()
     auth_market = Market(key=key, secret=secret)
 
@@ -128,7 +126,7 @@ def test_market_endpoints() -> None:
     # assert type(auth_market.get_order_events(tradeable='PF_SOLUSD', since=1668989233)) == dict
     # assert type(auth_market.get_trigger_events(tradeable='PF_SOLUSD', since=1668989233)) == dict
 
-    logging.info(f'{kind}: ALL (tested) ENDPOINTS AVAILABLE!')
+    logging.info('MARKET: ALL (tested) ENDPOINTS AVAILABLE!')
 
 def test_trade_endpoints() -> None:
     '''
@@ -139,8 +137,7 @@ def test_trade_endpoints() -> None:
     #   |_||_|  \__,_|\__,_|\___|
     '''
 
-    kind = 'TRADE'
-    logging.info(f'{kind}: Creating clients')
+    logging.info('TRADE: Creating clients')
     trade = Trade(key=key, secret=secret)
 
     assert is_success(trade.get_fills())
@@ -196,7 +193,7 @@ def test_trade_endpoints() -> None:
         # assert isSuccess(trade.cancel_all_orders())
         # assert isSuccess(trade.cancel_order(order_id='1234'))
 
-    logging.info(f'{kind}: ALL (tested) ENDPOINTS AVAILABLE!')
+    logging.info('TRADE: ALL (tested) ENDPOINTS AVAILABLE!')
 
 def test_funding_endpoints() -> None:
     '''
@@ -207,8 +204,8 @@ def test_funding_endpoints() -> None:
     # |_|   \__,_|_| |_|\__,_|_|_| |_|\__, |
     #                                 |___/
     '''
-    kind = 'FUNDING'
-    logging.info(f'{kind}: Creating clients')
+    
+    logging.info('FUNDING: Creating clients')
     funding = Funding(key=key, secret=secret)
 
     assert is_success(funding.get_historical_funding_rates(symbol='PF_SOLUSD'))
@@ -234,7 +231,7 @@ def test_funding_endpoints() -> None:
         # ))
         pass
 
-    logging.info(f'{kind}: ALL (tested) ENDPOINTS AVAILABLE!')
+    logging.info('FUNDING: ALL (tested) ENDPOINTS AVAILABLE!')
 
 def main() -> None:
     '''Main'''

@@ -1,0 +1,4 @@
+requests
+websockets
+asyncio>=3.4
+python-kraken-sdk

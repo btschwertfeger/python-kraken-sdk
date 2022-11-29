@@ -37,7 +37,7 @@ async def main() -> None:
                 topic = event['event']
                 if topic == 'heartbeat': return
                 if topic == 'pong': return
-
+                
             print(event)
             # if condition:
             #     await self.create_order(
@@ -57,7 +57,7 @@ async def main() -> None:
 
     await bot.subscribe(subscription={ 'name': 'ticker' }, pair=['XBT/EUR', 'DOT/EUR'])
     await bot.subscribe(subscription={ 'name': 'spread' }, pair=['XBT/EUR', 'DOT/EUR'])
-    # await bot.subscribe(subscription={ 'name': 'book' }, pair=['BTC/EUR'])
+    await bot.subscribe(subscription={ 'name': 'book' }, pair=['BTC/EUR'])
     # await bot.subscribe(subscription={ 'name': 'book', 'depth': 25}, pair=['BTC/EUR'])
     # await bot.subscribe(subscription={ 'name': 'ohlc' }, pair=['BTC/EUR'])
     # await bot.subscribe(subscription={ 'name': 'ohlc', 'interval': 15}, pair=['XBT/EUR', 'DOT/EUR'])

@@ -18,15 +18,15 @@ This is an unofficial collection of REST and websocket clients for Spot and Futu
 
 ---
 
-## Disclaimer
+## 📌 Disclaimer
 
 There is no guarantee that this software will work flawlessly at this or later times. Of course, no responsibility is taken for possible profits or losses. This software probably has some errors in it, so use it at your own risk. Also no one should be motivated or tempted to invest assets in speculative forms of investment. By using this software you release the author(s) from any liability regarding the use of this software.
 
 ---
 
-## Update
+## Package Update
 
-- November 27, 2022
+- November 28, 2022
 
 ## Features
 
@@ -74,7 +74,7 @@ General:
 
 <a name="installation"></a>
 
-## Installation and setup
+# 🛠 Installation and setup
 
 ### 1. Install the Python module:
 
@@ -92,15 +92,15 @@ python3 -m pip install python-kraken-sdk
 
 ### 4. Error handling
 
-If any unexpected behavior occurs, please check <b style="color: yellow">your API permissions</b>, <b style="color: yellow">rate limits</b>, and if the error persits please open an issue.
+If any unexpected behavior occurs, please check <b style="color: yellow">your API permissions</b>, <b style="color: yellow">rate limits</b>, update the python-kraken-sdk, and if the error persits please open an issue.
 
 ---
 
 <a name="spotusage"></a>
 
-# Spot Client Example Usage
+# 📍 Spot Client Example Usage
 
-A template Spot trading bot using both websocket and REST clients can be found in `/examples/spot_trading_bot_example.py`.
+A template Spot trading bot using both websocket and REST clients can be found in `/examples/spot_trading_bot_template.py`.
 
 <a name="spotrest"></a>
 
@@ -225,11 +225,11 @@ Note: Authenticated Spot websocket clients can also un/subscribe from/to public 
 
 <a name="futuresusage"></a>
 
-# Futures Client Example Usage
+# 📍 Futures Client Example Usage
 
 Kraken provides a sandbox environment at https://demo-futures.kraken.com for paper trading. When using this API keys you have to set the `sandbox` parameter to `True` when instantiating the respecitve client.
 
-A template Futures trading bot using both websocket and REST clients can be found in `/examples/futures_trading_bot_example.py`.
+A template Futures trading bot using both websocket and REST clients can be found in `/examples/futures_trading_bot_template.py`.
 
 <a name="futuresrest"></a>
 
@@ -369,7 +369,7 @@ Note: Authenticated Futures websocket clients can also un/subscribe from/to publ
 
 <a name="spotdocu"></a>
 
-# Sport Client Documentation
+# 📖 Spot Client Documentation
 
 <a name="spotuser"></a>
 
@@ -486,7 +486,7 @@ Note: Authenticated Futures websocket clients can also un/subscribe from/to publ
 
 <a name="futuresdocu"></a>
 
-# Futures Client Documentation
+# 📖 Futures Client Documentation
 
 <a name="futuresuser"></a>
 
@@ -584,7 +584,7 @@ Note: Authenticated Futures websocket clients can also un/subscribe from/to publ
 
 <a name="notes"></a>
 
-# Notes:
+# 📝 Notes:
 
 - Pull requests will be ignored until the owner finished the core idea
 <!-- - Triggers: stop-loss, stop-loss-limit, take-profit and take-profit-limit orders. -->
@@ -593,7 +593,7 @@ Note: Authenticated Futures websocket clients can also un/subscribe from/to publ
 
 <a name="references"></a>
 
-# References
+# 🔭 References
 
 - https://docs.kraken.com/rest/
 - https://docs.kraken.com/websockets

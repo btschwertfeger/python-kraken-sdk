@@ -1,7 +1,7 @@
 '''Module that implements the Spot Funding client'''
-from kraken.base_api.base_api import KrakenBaseRestAPI
+from kraken.base_api.base_api import KrakenBaseSpotAPI
 
-class FundingClient(KrakenBaseRestAPI):
+class FundingClient(KrakenBaseSpotAPI):
     '''Class that implements the Spot Funding client'''
 
     def get_deposit_methods(self, asset: str) -> dict:

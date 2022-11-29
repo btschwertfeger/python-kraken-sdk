@@ -1,7 +1,7 @@
 '''Module that implements the Kraken Spot market client'''
-from kraken.base_api.base_api import KrakenBaseRestAPI
+from kraken.base_api.base_api import KrakenBaseSpotAPI
 
-class MarketClient(KrakenBaseRestAPI):
+class MarketClient(KrakenBaseSpotAPI):
     '''Class that implements the Kraken Spot market client'''
 
     def get_assets(self, assets=None, aclass: str=None) -> dict:

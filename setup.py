@@ -114,7 +114,7 @@ class TestUploadCommand(Command):
         self.status('Testing the build using flake8')
         if os.system('flake8 . --select=E9,F63,F7,F82 --show-source --statistics') != 0:
             self.status('Testing failed, build has some errors in it!')
-            exit(1)
+            sys.exit(1)
 
         self.status('Uploading the package to test PyPI via Twine…')
         os.system('twine upload -r testpypi dist/*')#--repository-url https://test.pypi.org/legacy/ dist/*')
