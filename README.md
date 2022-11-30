@@ -595,9 +595,9 @@ Note: Authenticated Futures websocket clients can also un/subscribe from/to publ
 
 # 🔭 References
 
-- https://docs.kraken.com/rest/
+- https://docs.kraken.com/rest
 - https://docs.kraken.com/websockets
-- https://docs.futures.kraken.com/
+- https://docs.futures.kraken.com
 - https://support.kraken.com/hc/en-us/sections/360012894412-Futures-API
 
 ---

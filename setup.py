@@ -120,6 +120,7 @@ class TestUploadCommand(Command):
         os.system('twine upload -r testpypi dist/*')#--repository-url https://test.pypi.org/legacy/ dist/*')
 
         sys.exit()
+
 class TestCommand(Command):
 
     description = 'Build and test the package.'
