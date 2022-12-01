@@ -74,7 +74,7 @@ class ConnectSpotWebsocket:
         self.__ws_conn_details = None if not self.__is_auth else self.__client.get_ws_token()
         logging.debug(f'Websocket token: {self.__ws_conn_details}')
 
-        async with websockets.connect(f'wss://{self.__ws_endpoint}', ping_interval=None) as socket:
+        async with websockets.connect(f'wss://{self.__ws_endpoint}', ping_interval=30) as socket:
             logging.info('Websocket connected!')
             self.__socket = socket
 

@@ -75,11 +75,13 @@ class KrakenBaseSpotAPI():
     URL = 'https://api.kraken.com'
     API_V = '/0'
 
+
     def __init__(self, key: str='', secret: str='', url: str='', sandbox: bool=False):
         if sandbox: raise ValueError('Sandbox not availabel for Kraken Spot trading.')
         if url != '': self.url = url
         else: self.url = self.URL
         
+        self.__nonce = 0
         self.__key = key
         self.__secret = secret
         self.__err_handler = KrakenErrorHandler()
@@ -108,7 +110,8 @@ class KrakenBaseSpotAPI():
         headers = { }
         if auth:
             if not self.__key or self.__key == '' or not self.__secret or self.__secret == '': raise ValueError('Missing credentials.')
-            params['nonce'] = str(int(time.time() * 1000))
+            self.__nonce = (self.__nonce + 1) % 1
+            params['nonce'] = str(int(time.time() * 1000)) + str(self.__nonce).zfill(4)
             headers.update({
                 'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8',
                 'API-Key': self.__key,
