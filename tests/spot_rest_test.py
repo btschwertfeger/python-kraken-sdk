@@ -234,20 +234,64 @@ def test_trade_endpoints() -> None:
     #   |_||_|  \__,_|\__,_|\___|
     '''
 
-    return
+    # return
     logging.info('TRADE: Creating clients')
     trade = Trade(key=key, secret=secret)
 
     raise ValueError('DONT TEST THIS, YOUR BOTS WILL DIE; WAIT FOR RELEASING DEMO SPOT ENVIRONMENT')
 
-    # trade.create_order...
-    # trade.create_order_batch...
-    # trade.edit_order...
-    # trade.cancel_order...
-    # trade.cancel_all_orders...
-    # trade.cancel_all_orders_after_x...
-    # trade.cancel_order_batch...
+    if False: 
+        # print(trade.create_order(
+        #     ordertype='limit',
+        #     side='buy',
+        #     volume=1,
+        #     pair='BTC/EUR',
+        #     price=0.01,
+        #     validate=True # important to just test this endpoint without risking money
+        # ))
+        # print(trade.create_order_batch(
+        #     orders=[{
+        #     'close': {
+        #             'ordertype': 'stop-loss-limit',
+        #             'price': 120,
+        #             'price2': 110
+        #         },
+        #             'ordertype': 'limit',
+        #             'price': 140,
+        #             'price2': 130,
+        #             'timeinforce': 'GTC',
+        #             'type': 'buy',
+        #             'userref': '345dsdfddfgdsgdfgsfdsfsdf',
+        #             'volume': 1000
+        #         },{
+        #             'ordertype': 'limit',
+        #             'price': 150,
+        #             'timeinforce': 'GTC',
+        #             'type': 'sell',
+        #             'userref': '1dfgesggwe5t3',
+        #             'volume': 123
+        #         }
+        #     ],
+        #     pair='BTC/USD',
+        #     validate=True
+        # ))
 
+        # print(trade.edit_order(
+        #     txid='sometxid',
+        #     pair='BTC/EUR',
+        #     volume=4.2,
+        #     price=17000,
+        #     validate=True
+        # ))
+        # time.sleep(2)
+
+        # print(trade.cancel_order(txid='O2JLFP-VYFIW-35ZAAE'))
+        # print(trade.cancel_all_orders())
+        # print(trade.cancel_all_orders_after_x(timeout=6))
+
+        # # __ not working, idk why
+        # print(trade.cancel_order_batch(orders=['O2JLFP-VYFIW-35ZAAE', 'O523KJ-DO4M2-KAT243', 'OCDIAL-YC66C-DOF7HS', 'OVFPZ2-DA2GV-VBFVVI']))
+        pass
 
     logging.info('TRADE: ALL ENDPOINTS AVAILABLE!')
 

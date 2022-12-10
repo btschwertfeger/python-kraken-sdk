@@ -67,6 +67,7 @@ General:
   - [ Market ](#futuresmarket)
   - [ Funding ](#futuresfunding)
   - [ KrakenFuturesWSClient ](#futureswsclient)
+- [ Troubleshooting ](#trouble)
 - [ Notes ](#notes)
 - [ References ](#references)
 
@@ -92,7 +93,7 @@ python3 -m pip install python-kraken-sdk
 
 ### 4. Error handling
 
-If any unexpected behavior occurs, please check <b style="color: yellow">your API permissions</b>, <b style="color: yellow">rate limits</b>, update the python-kraken-sdk, and if the error persits please open an issue.
+If any unexpected behavior occurs, please check <b style="color: yellow">your API permissions</b>, <b style="color: yellow">rate limits</b>, update the python-kraken-sdk, see the [Troubleshooting](#trouble) section, and if the error persits please open an issue.
 
 ---
 
@@ -579,6 +580,17 @@ Note: Authenticated Futures websocket clients can also un/subscribe from/to publ
 | `get_available_public_subscription_feeds`  | returns all available public feeds           |
 | `get_available_private_subscription_feeds` | returns all available private feeds          |
 | `on_message`                               | callback function which should be overloaded |
+
+---
+
+<a name="trouble"></a>
+
+# 🚨 Troubleshooting
+
+- Check if your version of <b>python-kraken-sdk version</b> is the newest.
+- Check the <b>permissions of your API keys</b> and the required permissions on the respective endpoints.
+- If you get some cloudflare or <b>rate limit errors</b>, please check your Kraken Tier level and maybe apply for a higher rank if required.
+- <b>Use different API keys for different algorithms</b>, because the nonce calculation is based on timestamps and a sent nonce must always be the highest nonce ever sent of that API key. Having multiple algorithms using the same keys will result in invalid nonce errors.
 
 ---
 
