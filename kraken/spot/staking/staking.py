@@ -16,16 +16,18 @@ class StakingClient(KrakenBaseSpotAPI):
             auth=True
         )
 
-    def unstake_asset(self, asset: str, amount: str, method: str) -> dict:
+    def unstake_asset(self, asset: str, amount: str, method=None) -> dict:
         '''https://docs.kraken.com/rest/#operation/unstake'''
+        params = {
+                'asset': asset,
+                'amount': amount
+            }
+        if method is not None: params['method'] = method
+
         return self._request(
             method='POST',
             uri='/private/Unstake',
-            params={
-                'asset': asset,
-                'amount': amount,
-                'method': method
-            }, auth=True
+            params=params, auth=True
         )
 
     def list_stakeable_assets(self) -> dict:

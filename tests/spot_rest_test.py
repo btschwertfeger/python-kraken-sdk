@@ -289,7 +289,6 @@ def test_trade_endpoints() -> None:
         # print(trade.cancel_all_orders())
         # print(trade.cancel_all_orders_after_x(timeout=6))
 
-        # # __ not working, idk why
         # print(trade.cancel_order_batch(orders=['O2JLFP-VYFIW-35ZAAE', 'O523KJ-DO4M2-KAT243', 'OCDIAL-YC66C-DOF7HS', 'OVFPZ2-DA2GV-VBFVVI']))
         pass
 
@@ -313,6 +312,10 @@ def test_staking_endpoints() -> None:
 
     try:
         assert is_not_error(staking.stake_asset(asset='DOT', amount='4500000', method='polkadot-staked'))
+    except KrakenExceptions.KrakenInvalidAmountError:
+        pass
+    try:
+        assert is_not_error(staking.unstake_asset(asset='DOT', amount='4500000'))
     except KrakenExceptions.KrakenInvalidAmountError:
         pass
 

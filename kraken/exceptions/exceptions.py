@@ -94,7 +94,7 @@ class KrakenExceptions():
 
     @docstring_message
     class KrakenServiceUnavailableError(Exception):
-        '''The matching engine or API is offline'''
+        '''The matching engine or API is offline.'''
 
     @docstring_message
     class KrakenMarketInOnlyCancelModeError(Exception):
@@ -106,7 +106,7 @@ class KrakenExceptions():
 
     @docstring_message
     class KrakenDeadlineElapsedError(Exception):
-        '''The request timed out according to the default or specified deadline'''
+        '''The request timed out according to the default or specified deadline.'''
 
     @docstring_message
     class KrakenInvalidAPIKeyError(Exception):
@@ -118,11 +118,12 @@ class KrakenExceptions():
 
     @docstring_message
     class KrakenInvalidNonceError(Exception):
-        '''An invalid nonce was supplied'''
+        '''An invalid nonce was supplied.'''
 
     @docstring_message
     class KrakenInvalidOrderError(Exception):
         '''Order is invalid.'''
+        
     @docstring_message
     class KrakenInvalidPriceError(Exception):
         '''Price is invalid.'''
@@ -197,7 +198,7 @@ class KrakenExceptions():
 
     @docstring_message
     class KrakenUnknownAssetError(Exception):
-        '''The asset is unknown'''
+        '''The asset is unknown.'''
 
     @docstring_message
     class KrakenInvalidUnitError(Exception):
@@ -238,6 +239,7 @@ class KrakenExceptions():
     @docstring_message
     class KrakenToManyAdressesError(Exception):
         '''To many adresses specified.'''
+        
     # ? ____CUSTOM_EXCEPTIONS_________
     @docstring_message
     class MaxReconnectError(Exception):

@@ -26,7 +26,7 @@ There is no guarantee that this software will work flawlessly at this or later t
 
 ## Package Update
 
-- December 1, 2022
+- December 29, 2022
 
 ## Features
 

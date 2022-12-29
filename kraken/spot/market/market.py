@@ -26,9 +26,7 @@ class MarketClient(KrakenBaseSpotAPI):
         return self._request(method='GET', uri='/public/Ticker', params=params, auth=False)
 
     def get_ohlc(self, pair: str, interval: int=None, since: int=None) -> dict:
-        '''https://docs.kraken.com/rest/#operation/getOHLCData
-        interval in minutes
-        '''
+        '''https://docs.kraken.com/rest/#operation/getOHLCData'''
         params = { 'pair': pair }
         if interval is not None: params['interval'] = interval
         if since is not None: params['since'] = since

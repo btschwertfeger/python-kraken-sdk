@@ -105,6 +105,6 @@ class TradeClient(KrakenBaseSpotAPI):
 
     def cancel_order_batch(self, orders: List[str]) -> dict:
         '''https://docs.kraken.com/rest/#operation/cancelOrderBatch'''
-        return self._request(method='POST', uri='/private/CancelOrderBatch', params={ 'orders': orders })
+        return self._request(method='POST', uri='/private/CancelOrderBatch', params={ 'orders': orders }, do_json=True)
 
 
