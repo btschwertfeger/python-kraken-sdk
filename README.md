@@ -9,6 +9,7 @@
 
 ![ql-workflow](https://github.com/btschwertfeger/kraken-python-sdk/actions/workflows/codeql.yml/badge.svg)
 ![python-package](https://github.com/btschwertfeger/kraken-python-sdk/actions/workflows/python-package.yml/badge.svg)
+[![DOI](https://zenodo.org/badge/510751854.svg)](https://zenodo.org/badge/latestdoi/510751854)
 
 </div>
 
@@ -26,7 +27,7 @@ There is no guarantee that this software will work flawlessly at this or later t
 
 ## Package Update
 
-- December 29, 2022
+- February 18, 2023
 
 ## Features
 
