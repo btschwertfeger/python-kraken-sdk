@@ -14,8 +14,6 @@ except ModuleNotFoundError:
     from kraken.exceptions.exceptions import KrakenExceptions
     print('USING LOCAL MODULE')
 
-
-
 def is_success(value) -> bool:
     '''Returns true if result is success'''
     return isinstance(value, dict) and 'result' in value and value['result'] == 'success'

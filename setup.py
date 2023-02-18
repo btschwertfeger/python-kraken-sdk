@@ -23,7 +23,7 @@ REQUIRED = [
 
 # What packages are optional?
 EXTRAS = {
-    'testing': ['pytest', 'tqdm']
+    'testing': ['pytest']
 }
 
 here = os.path.abspath(os.path.dirname(__file__))
@@ -161,7 +161,7 @@ setup(
     author_email=EMAIL,
     python_requires=REQUIRES_PYTHON,
     url=URL,
-    packages=find_packages(exclude=['tests', '*.tests', '*.tests.*', 'tests.*', '*.env*']),
+    packages=find_packages(exclude=['tests', '*.tests', '*.tests.*', 'tests.*', '*.env*', 'test_*']),
     # If your package is a single module, use this instead of 'packages':
     # py_modules=['mypackage'],
 
