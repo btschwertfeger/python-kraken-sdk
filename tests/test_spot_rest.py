@@ -1,10 +1,9 @@
 '''Module that tests the Kraken Spot REST endpoints'''
 import random
 import time
-import logging
-from tqdm import tqdm
 import unittest
 import os
+
 try:
     from kraken.spot.client import User, Market, Trade, Funding, Staking
     from kraken.exceptions.exceptions import KrakenExceptions
@@ -127,8 +126,6 @@ class UserTests(unittest.TestCase):
             with open(f'{export_descr}.zip', 'wb') as file:
                 for chunk in result.iter_content(chunk_size=512):
                     if chunk: file.write(chunk)
-
-            logging.info(f'Export {export_descr} done!')
 
             status = self.__auth_user.get_export_report_status(report=report)
             assert isinstance(status, list)
