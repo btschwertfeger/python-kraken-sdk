@@ -14,7 +14,7 @@ class MarketClient(KrakenBaseSpotAPI):
     def get_tradable_asset_pair(self, pair: str, info=None) -> dict:
         '''https://docs.kraken.com/rest/#operation/getTradableAssetPairs'''
         params = {}
-        params['pair'] = self._to_str_list(pair)#','.join(pair)
+        params['pair'] = self._to_str_list(pair)
         if info is not None: params['info'] = info
 
         return self._request(method='GET', uri='/public/AssetPairs', params=params, auth=False)

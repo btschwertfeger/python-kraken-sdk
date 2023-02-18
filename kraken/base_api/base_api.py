@@ -16,7 +16,7 @@ try:
     from kraken.exceptions.exceptions import KrakenExceptions
 except ModuleNotFoundError:
     print('USING LOCAL MODULE')
-    sys.path.append('/Users/benjamin/repositories/Trading/python-kraken-sdk')
+    sys.path.append('/Users/benjamin/repositories/Finance/Kraken/python-kraken-sdk')
     from kraken.exceptions.exceptions import KrakenExceptions
 
 class KrakenErrorHandler():
@@ -253,11 +253,11 @@ class KrakenBaseFuturesAPI():
         if method == 'PUT':
             return self.__check_response_data(
                 self.__session.request(
-                method=method,
-                url=f'{self.url}{uri}',
-                params=str.encode(query_string),
-                headers=headers,
-                timeout=timeout
+                    method=method,
+                    url=f'{self.url}{uri}',
+                    params=str.encode(query_string),
+                    headers=headers,
+                    timeout=timeout
                 ),
                 return_raw
             )
