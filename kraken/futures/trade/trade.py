@@ -30,11 +30,12 @@ class TradeClient(KrakenBaseFuturesAPI):
 
     def cancel_order(self, order_id: str='', cliOrdId: str='') -> dict:
         '''https://docs.futures.kraken.com/#http-api-trading-v3-api-order-management-cancel-order'''
-        if order_id == '' and cliOrdId == '': raise ValueError('Either order_id or cliOrdId must be set!')
 
         params = {}
         if order_id != '': params['order_id'] = order_id
         elif cliOrdId != '': params['cliOrdId'] = cliOrdId
+        else: raise ValueError('Either order_id or cliOrdId must be set!')
+
         return self._request(method='POST', uri='/derivatives/api/v3/cancelorder', post_params=params, auth=True)
 
     def edit_order(self, orderId: str=None, cliOrdId: str=None, limitPrice: float=None, size: float=None, stopPrice: float=None) -> dict:
@@ -83,12 +84,12 @@ class TradeClient(KrakenBaseFuturesAPI):
             'symbol': symbol
         }
         if cliOrdId is not None: params['cliOrdId'] = cliOrdId
+        if reduceOnly is not None: params['reduceOnly'] = reduceOnly
         if orderType in ['post', 'lmt']:
             if limitPrice is None:
                 raise ValueError(f'No limitPrice specified for order of type {orderType}!')
             params['limitPrice'] = limitPrice
-        if reduceOnly is not None: params['reduceOnly'] = reduceOnly
-        if orderType in ['stp', 'take_profit']:
+        elif orderType in ['stp', 'take_profit']:
             if stopPrice is None:
                 raise ValueError(f'Parammeter stopPrice must be set if orderType {orderType}!')
             if triggerSignal is None:

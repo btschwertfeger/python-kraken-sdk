@@ -13,7 +13,7 @@ class MarketClient(KrakenBaseFuturesAPI):
         '''
         ttypes = ['spot', 'mark', 'trade']
         resolutions = ['1m', '5m', '15m', '30m', '1h', '4h', '12h', '1d', '1w']
-        if tick_type and tick_type not in ttypes:
+        if tick_type not in ttypes:
             raise ValueError(f'tick_type must be in {ttypes}')
         if resolution is not None and resolution not in resolutions:
             raise ValueError(f'resolution must be in {resolutions}')

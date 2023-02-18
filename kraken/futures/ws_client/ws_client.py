@@ -20,7 +20,7 @@ class FuturesWsClientCl(KrakenBaseFuturesAPI):
 
     def _get_sign_challenge(self, challenge: str) -> str:
         sha256_hash = hashlib.sha256()
-        sha256_hash.update(challenge.encode('utf8'))
+        sha256_hash.update(challenge.encode('utf-8'))
         return base64.b64encode(
             hmac.new(
                 base64.b64decode(self._secret),

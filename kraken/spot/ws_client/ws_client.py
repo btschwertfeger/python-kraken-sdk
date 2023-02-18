@@ -21,9 +21,9 @@ class SpotWsClientCl(KrakenBaseSpotAPI):
         ordertype: str,
         side: str,
         pair: str,
+        volume: str,
         price: str=None,
         price2: str=None,
-        volume: str=None,
         leverage: int=None,
         oflags: List[str]=None,
         starttm: str=None,
@@ -48,10 +48,10 @@ class SpotWsClientCl(KrakenBaseSpotAPI):
             'ordertype': str(ordertype),
             'type': str(side),
             'pair': str(pair),
-            'price': str(price)
+            'price': str(price),
+            'volume': str(volume)
         }
         if price2 is not None: payload['price2'] = str(price2)
-        if volume is not None: payload['volume'] = str(volume)
         if oflags is not None:
             if isinstance(oflags, str): payload['oflags'] = oflags
             elif isinstance(oflags, list): payload['oflags'] = self._to_str_list(oflags)
@@ -123,8 +123,7 @@ class SpotWsClientCl(KrakenBaseSpotAPI):
             raise ValueError('Cannot use cancel_all_orders on public Websocke Client!')
         await self._priv_conn.send_message(
             msg={ 'event': 'cancelAll' },
-            private=True,
-            reponse=True
+            private=True
         )
 
     async def cancel_all_orders_after(self, timeout: int) -> None:

@@ -35,9 +35,11 @@ class KrakenExceptions():
             'EOrder:Orders limit exceeded': self.KrakenOrderLimitsExceededError,
             'EOrder:Rate limit exceeded': self.KrakenRateLimitExceededError,
             'EOrder:Positions limit exceeded': self.KrakenPositionLimitExceeded,
+            'EOrder:Unknown order': self.KrakenUnknownOrderError,
             'EOrder:Unknown position': self.KrakenUnknownPositionError,
 
             'EFunding:Invalid reference id': self.KrakenInvalidReferenceIdError,
+            'EFunding:Unknown reference id': self.KrakenUnknownReferenceIdError,
             'EFunding:Unknown withdraw key': self.KrakenUnknownWithdrawKeyError,
             'EFunding:Invalid amount': self.KrakenInvalidAmountError,
             'EFunding:Invalid staking method': self.KrakenInvalidStakingMethodError,
@@ -189,6 +191,10 @@ class KrakenExceptions():
         '''Position limit exceeded. Please check your limits.'''
 
     @docstring_message
+    class KrakenUnknownOrderError(Exception):
+        '''Order is unknown.'''
+
+    @docstring_message
     class KrakenUnknownPositionError(Exception):
         '''Position is unknown.'''
 
@@ -211,6 +217,9 @@ class KrakenExceptions():
     @docstring_message
     class KrakenInvalidReferenceIdError(Exception):
         '''The requested referece id is invalid.'''
+    @docstring_message
+    class KrakenUnknownReferenceIdError(Exception):
+        '''The requested referece id is unknown.'''
 
     @docstring_message
     class KrakenUnknownWithdrawKeyError(Exception):

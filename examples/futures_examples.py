@@ -6,7 +6,7 @@ try:
     from kraken.futures.client import Market, User, Trade, Funding
 except ModuleNotFoundError:
     print('USING LOCAL MODULE')
-    sys.path.append('/Users/benjamin/repositories/Trading/python-kraken-sdk')
+    sys.path.append('/Users/benjamin/repositories/Finance/kraken/python-kraken-sdk')
     from kraken.futures.client import Market, User, Trade, Funding
 
 import logging
@@ -26,35 +26,35 @@ secret = dotenv_values('.env')['Futures_SANDBOX_SECRET']
 
 def market_examples() -> None:
     '''Example market client usage'''
-    market = Market()
-    print(market.get_tick_types())
-    print(market.get_tradeable_products(tick_type='trade'))
-    print(market.get_resolutions(tick_type='trade', tradeable='PI_XBTUSD'))
-    print(market.get_ohlc(tick_type='trade', symbol='PI_XBTUSD', resolution='5m', from_='1668989233'))
-    print(market.get_fee_schedules())
-    # print(market.get_orderbook(symbol='fi_xbtusd_180615')) # this endpoint is broken
-    print(market.get_tickers())
-    print(market.get_instruments())
-    print(market.get_instruments_status())
-    print(market.get_instruments_status(instrument='PI_XBTUSD'))
-    print(market.get_trade_history(symbol='PI_XBTUSD'))
-    print(market.get_historical_funding_rates(symbol='PI_XBTUSD'))
-    time.sleep(2)
+    # market = Market()
+    # print(market.get_tick_types())
+    # print(market.get_tradeable_products(tick_type='trade'))
+    # print(market.get_resolutions(tick_type='trade', tradeable='PI_XBTUSD'))
+    # print(market.get_ohlc(tick_type='trade', symbol='PI_XBTUSD', resolution='5m', from_='1668989233'))
+    # print(market.get_fee_schedules())
+    # # print(market.get_orderbook(symbol='fi_xbtusd_180615')) # this endpoint is broken
+    # print(market.get_tickers())
+    # print(market.get_instruments())
+    # print(market.get_instruments_status())
+    # print(market.get_instruments_status(instrument='PI_XBTUSD'))
+    # print(market.get_trade_history(symbol='PI_XBTUSD'))
+    # print(market.get_historical_funding_rates(symbol='PI_XBTUSD'))
+    # time.sleep(2)
 
     priv_market = Market(key=key,secret=secret, sandbox=True)
-    print(priv_market.get_fee_schedules_vol())
+    # print(priv_market.get_fee_schedules_vol())
     print(priv_market.get_leverage_preference())
-    print(priv_market.set_leverage_preference(symbol='PF_SOLUSD', maxLeverage=5)) # set max leverage
-    print(priv_market.set_leverage_preference(symbol='PF_SOLUSD')) # reset max leverage
-    print(priv_market.set_pnl_preference(symbol='PF_XBTUSD', pnlPreference='BTC'))
+    # print(priv_market.set_leverage_preference(symbol='PF_SOLUSD', maxLeverage=5)) # set max leverage
+    # print(priv_market.set_leverage_preference(symbol='PF_SOLUSD')) # reset max leverage
+    # print(priv_market.set_pnl_preference(symbol='PF_XBTUSD', pnlPreference='BTC'))
 
-    time.sleep(2)
-    print(priv_market.get_execution_events())
-    print(market.get_public_execution_events(tradeable='PI_XBTUSD'))
-    print(market.get_public_order_events(tradeable='PI_XBTUSD'))
-    print(market.get_public_mark_price_events(tradeable='PI_XBTUSD'))
-    print(priv_market.get_order_events())
-    print(priv_market.get_trigger_events())
+    # time.sleep(2)
+    # print(priv_market.get_execution_events())
+    # print(market.get_public_execution_events(tradeable='PI_XBTUSD'))
+    # print(market.get_public_order_events(tradeable='PI_XBTUSD'))
+    # print(market.get_public_mark_price_events(tradeable='PI_XBTUSD'))
+    # print(priv_market.get_order_events())
+    # print(priv_market.get_trigger_events())
 
 def user_examples() -> None:
     '''Example User client usage'''
@@ -144,17 +144,17 @@ def funding_examples() -> None:
     print(funding.get_historical_funding_rates(symbol='PF_SOLUSD'))
     # print(funding.initiate_wallet_transfer(
     #     amount='100',
-    #     fromAccount='some cash or margin account',
-    #     toAccount='another cash or margin account',
-    #     unit='The currency unit to transfer'
+    #     fromAccount='some-cash-or-margin-account',
+    #     toAccount='another-cash-or-margin-account',
+    #     unit='The-currency-unit-to-transfer'
     # ))
     # print(funding.initiate_subccount_transfer(
-    #     amount='The amount to transfer',
-    #     fromAccount='The wallet (cash or margin account) from which funds should be debited',
-    #     fromUser='The user account (this or a sub account) from which funds should be debited',
-    #     toAccount='The wallet (cash or margin account) to which funds should be credited',
-    #     toUser='The user account (this or a sub account) to which funds should be credited',
-    #     unit='The currency unit to transfer'
+    #     amount='The-amount-to-transfer',
+    #     fromAccount='The-wallet-cash-or-margin-account-from-which-funds-should-be-debited',
+    #     fromUser='The-user-account-this-or-a-sub-account-from-which-funds-should-be-debited',
+    #     toAccount='The-wallet-cash-or-margin-account-to-which-funds-should-be-credited',
+    #     toUser='The-user-account-this-or-a-sub-account-to-which-funds-should-be-credited',
+    #     unit='The-currency-unit-to-transfer'
     # ))
 
     # this does only work on the live account, not in the demo version (disable sandbox parameter)
@@ -166,10 +166,10 @@ def funding_examples() -> None:
 
 def main() -> None:
     '''Main'''
-    user_examples()
+    # user_examples()
     market_examples()
-    trade_examples()
-    funding_examples()
+    # trade_examples()
+    # funding_examples()
 
 if __name__ == '__main__':
     main()

@@ -75,7 +75,6 @@ class KrakenBaseSpotAPI():
     URL = 'https://api.kraken.com'
     API_V = '/0'
 
-
     def __init__(self, key: str='', secret: str='', url: str='', sandbox: bool=False):
         if sandbox: raise ValueError('Sandbox not availabel for Kraken Spot trading.')
         if url != '': self.url = url
