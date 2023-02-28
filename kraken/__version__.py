@@ -1,3 +1,3 @@
-'''This is the Kraken main module version'''
+"""This is the Kraken main module version"""
 VERSION = (0, 8)
-__version__ = '.'.join(map(str, VERSION))
+__version__ = ".".join(map(str, VERSION))
