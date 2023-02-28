@@ -24,6 +24,14 @@ logging.getLogger('urllib3').setLevel(logging.WARNING)
 key = dotenv_values('.env')['Futures_SANDBOX_KEY']
 secret = dotenv_values('.env')['Futures_SANDBOX_SECRET']
 
+#  _   _  ___ _____ _____
+# | \ | |/ _ \_   _| ____|_
+# |  \| | | | || | |  _| (_)
+# | |\  | |_| || | | |___ _
+# |_| \_|\___/ |_| |_____(_)
+# ----> More examples can be found in kraken/tests/*.py
+# examples may not be updated regularily
+
 def market_examples() -> None:
     '''Example market client usage'''
     # market = Market()
@@ -44,8 +52,8 @@ def market_examples() -> None:
     priv_market = Market(key=key,secret=secret, sandbox=True)
     # print(priv_market.get_fee_schedules_vol())
     print(priv_market.get_leverage_preference())
-    # print(priv_market.set_leverage_preference(symbol='PF_SOLUSD', maxLeverage=5)) # set max leverage
-    # print(priv_market.set_leverage_preference(symbol='PF_SOLUSD')) # reset max leverage
+    # print(priv_market.set_leverage_preference(symbol='PF_XBTUSD', maxLeverage=2)) # set max leverage
+    # print(priv_market.set_leverage_preference(symbol='PF_XBTUSD')) # reset max leverage
     # print(priv_market.set_pnl_preference(symbol='PF_XBTUSD', pnlPreference='BTC'))
 
     # time.sleep(2)

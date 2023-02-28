@@ -30,7 +30,7 @@ secret = dotenv_values('.env')['SECRET_KEY']
 # |  \| | | | || | |  _| (_)
 # | |\  | |_| || | | |___ _
 # |_| \_|\___/ |_| |_____(_)
-# ----> More examples can be found in kraken/tests
+# ----> More examples can be found in kraken/tests/*.py
 # examples may not be updated regularily
 
 def user_examples() -> None:
