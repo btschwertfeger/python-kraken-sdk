@@ -112,19 +112,40 @@ class MarketTests(unittest.TestCase):
     def test_get_historical_funding_rates(self):
         assert is_success(self.__market.get_historical_funding_rates(symbol='PI_XBTUSD'))
 
-    @unittest.skip('Skipping Futures set_leverage_preference endpoint')
+    @unittest.skip('Skipping Futures set_leverage_preference endpoint, because this needs full access')
     def test_set_leverage_preference(self):
-        # todo
-        assert is_success(self.__auth_market.set_leverage_preference(symbol='PF_SOLUSD', maxLeverage=2))
-        assert is_success(self.__auth_market.get_leverage_preference())
-        assert is_success(self.__auth_market.set_leverage_preference(symbol='PF_SOLUSD')) # reset setted preference
+        
+        old_leverage_preferences = self.__auth_market.get_leverage_preference()
+        assert 'result' in old_leverage_preferences.keys() and old_leverage_preferences['result'] == 'success'
+        assert is_success(self.__auth_market.set_leverage_preference(symbol='PF_XBTUSD',maxLeverage=2))
 
-    @unittest.skip('Skipping Futures set_pnl_preference endpoint')
+        new_leverage_preferences = self.__auth_market.get_leverage_preference()
+        assert 'result' in new_leverage_preferences.keys() and new_leverage_preferences['result'] == 'success'
+        assert 'leveragePreferences' in new_leverage_preferences.keys() and dict(symbol='PF_XBTUSD', maxLeverage=float(2.0)) in new_leverage_preferences['leveragePreferences']
+        
+        if 'leveragePreferences' in old_leverage_preferences.keys():
+            for setting in old_leverage_preferences['leveragePreferences']:
+                if 'symbol' in setting.keys() and setting['symbol'] == 'PF_XBTUSD':
+                    assert is_success(self.__auth_market.set_leverage_preference(symbol='PF_XBTUSD')) 
+                    break
+
+    @unittest.skip('Skipping Futures set_pnl_preference endpoint, because this needs full access')
     def test_set_pnl_preference(self):
-        # todo
-        assert is_success(self.__auth_market.set_pnl_preference(symbol='PF_SOLUSD', pnlPreference='USD'))
-        assert is_success(self.__auth_market.get_pnl_preference())
-
+        
+        old_pnl_preference = self.__auth_market.get_pnl_preference()
+        assert 'result' in old_pnl_preference.keys() and old_pnl_preference['result'] == 'success'
+        assert is_success(self.__auth_market.set_pnl_preference(symbol='PF_XBTUSD', pnlPreference='BTC'))
+        
+        new_pnl_preference = self.__auth_market.get_pnl_preference()
+        assert 'result' in new_pnl_preference.keys() and new_pnl_preference['result'] == 'success'
+        assert 'preferences' in new_pnl_preference.keys() and dict(symbol='PF_XBTUSD', pnlCurrency='BTC') in new_pnl_preference['preferences'] 
+        
+        if 'preferences' in old_pnl_preference.keys():
+            for setting in old_pnl_preference['preferences']:
+                if 'symbol' in setting.keys() and setting['symbol'] == 'PF_XBTUSD':
+                    assert is_success(self.__auth_market.set_pnl_preference(symbol='PF_XBTUSD', pnlPreference=setting['pnlCurrency']))
+                    break
+     
     def test_get_public_execution_events(self):
         assert is_not_error(self.__market.get_public_execution_events(tradeable='PF_SOLUSD', since=1668989233))
 
