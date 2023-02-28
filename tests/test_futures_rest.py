@@ -145,7 +145,7 @@ class MarketTests(unittest.TestCase):
                 if 'symbol' in setting.keys() and setting['symbol'] == 'PF_XBTUSD':
                     assert is_success(self.__auth_market.set_pnl_preference(symbol='PF_XBTUSD', pnlPreference=setting['pnlCurrency']))
                     break
-        
+     
     def test_get_public_execution_events(self):
         assert is_not_error(self.__market.get_public_execution_events(tradeable='PF_SOLUSD', since=1668989233))
 

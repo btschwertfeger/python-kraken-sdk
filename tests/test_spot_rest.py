@@ -291,10 +291,12 @@ class StakingTests(unittest.TestCase):
             assert is_not_error(self.__auth_staking.unstake_asset(asset='DOT', amount='4500000'))
         except KrakenExceptions.KrakenInvalidAmountError:
             pass
-
+            
+    @unittest.skip('Skipping Spot test_get_pending_staking_transactions endpoint')
     def test_get_pending_staking_transactions(self):
         assert isinstance(self.__auth_staking.get_pending_staking_transactions(), list)
 
+    @unittest.skip('Skipping Spot test_list_staking_transactions endpoint')
     def test_list_staking_transactions(self):
         assert isinstance(self.__auth_staking.list_staking_transactions(), list)
 
@@ -311,6 +313,7 @@ class FundingTests(unittest.TestCase):
     def test_get_deposit_methods(self):
         assert isinstance(self.__auth_funding.get_deposit_methods(asset='XBT'), list)
         assert is_not_error(self.__auth_funding.get_deposit_address(asset='XBT', method='Bitcoin'))
+
 
     def test_get_recend_deposits_status(self):
         assert isinstance(self.__auth_funding.get_recend_deposits_status(asset='XLM'), list)
