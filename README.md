@@ -8,7 +8,7 @@
 [![Downloads](https://static.pepy.tech/personalized-badge/python-kraken-sdk?period=total&units=abbreviation&left_color=grey&right_color=orange&left_text=downloads)](https://pepy.tech/project/python-kraken-sdk)
 
 ![ql-workflow](https://github.com/btschwertfeger/kraken-python-sdk/actions/workflows/codeql.yml/badge.svg)
-![python-package](https://github.com/btschwertfeger/kraken-python-sdk/actions/workflows/python-package.yml/badge.svg)
+![CI/CD](https://github.com/btschwertfeger/kraken-python-sdk/actions/workflows/cicd.yml/badge.svg)
 ![codecov](https://codecov.io/gh/btschwertfeger/Python-Kraken-SDK/branch/master/badge.svg)
 
 [![DOI](https://zenodo.org/badge/510751854.svg)](https://zenodo.org/badge/latestdoi/510751854)
