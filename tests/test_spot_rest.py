@@ -411,7 +411,7 @@ class FundingTests(unittest.TestCase):
         try:
             assert is_not_error(
                 self.__auth_funding.withdraw_funds(
-                    asset="XLM", key="enter-withdraw-key", amount=100000
+                    asset="XLM", key="enter-withdraw-key", amount=10000000
                 )
             )
         except KrakenExceptions.KrakenUnknownWithdrawKeyError:
@@ -422,7 +422,7 @@ class FundingTests(unittest.TestCase):
         try:
             assert is_not_error(
                 self.__auth_funding.get_withdrawal_info(
-                    asset="XLM", amount=100000, key="enter-withdraw-key"
+                    asset="XLM", amount=10000000, key="enter-withdraw-key"
                 )
             )  # idk what `key` is
         except KrakenExceptions.KrakenUnknownWithdrawKeyError:

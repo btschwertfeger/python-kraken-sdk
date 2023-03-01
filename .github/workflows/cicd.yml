@@ -131,15 +131,18 @@ jobs:
             FUTURES_SECRET_KEY: ${{ secrets.FUTURES_SECRET_KEY }}
         run: |
           pip install pytest pytest-cov
-          pytest --cov=kraken --cov-report=xml
+          pytest --cov --cov-report=xml
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          directory: ./coverage/reports/
+          # directory: ./coverage/reports/
+          files: coverage.xml
           env_vars: OS,PYTHON
           fail_ci_if_error: true
           flags: unittests
           name: codecov-umbrella
           verbose: true
+
+# todo: create new tag, release and upload to pypi when master
