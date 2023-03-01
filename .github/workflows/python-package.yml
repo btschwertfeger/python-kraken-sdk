@@ -12,26 +12,33 @@ on:
       - "**"
 
 jobs:
+
   build:
-    runs-on: ubuntu-latest
+    name: build
+    runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       max-parallel: 1 # to avoid failing tests because of API Rate limits
       matrix:
+        os: [ubuntu-latest] #, macos-latest, windows-latest]
         python-version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
+    env:
+      OS: ${{ matrix.os }}
+      PYTHON: ${{ matrix.python-version }}
 
     steps:
-      - uses: actions/checkout@v3
-      - name: Set up Python ${{ matrix.python-version }}
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python PYTHON
         uses: actions/setup-python@v4
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: PYTHON
 
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          python -m pip install flake8 pytest
-          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          python -m pip install flake8
 
       - name: Lint with flake8
         run: |
@@ -42,6 +49,33 @@ jobs:
 
       - name: Install package
         run: python setup.py install
+
+  test:
+    name: test
+    needs: [build]
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      max-parallel: 1 # to avoid failing tests because of API Rate limits
+      matrix:
+        OS: [ubuntu-latest] #, macos-latest, windows-latest]
+        PYTHON: ["3.7", "3.8", "3.9", "3.10", "3.11"]
+
+    steps:
+
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python PYTHON
+        uses: actions/setup-python@v4
+        with:
+          python-version: PYTHON
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install pytest
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
       - name: Testing Spot endpoints with pytest
         env:
@@ -56,3 +90,51 @@ jobs:
           FUTURES_SECRET_KEY: ${{ secrets.FUTURES_SECRET_KEY }}
         run: |
           pytest tests/test_futures_rest.py
+
+  codecov:
+    name: coverage
+    needs: [test]
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      max-parallel: 1 # to avoid failing tests because of API Rate limits
+      matrix:
+        OS: [ubuntu-latest] #, macos-latest, windows-latest]
+        PYTHON: ["3.7", "3.8", "3.9", "3.10", "3.11"]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python PYTHON
+        uses: actions/setup-python@v4
+        with:
+          python-version: PYTHON
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install pytest pytest-cov
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+      - name: Generate coverage report
+        env:
+            SPOT_API_KEY: ${{ secrets.SPOT_API_KEY }}
+            SPOT_SECRET_KEY: ${{ secrets.SPOT_SECRET_KEY }}
+            FUTURES_API_KEY: ${{ secrets.FUTURES_API_KEY }}
+            FUTURES_SECRET_KEY: ${{ secrets.FUTURES_SECRET_KEY }}
+        run: |
+          pip install pytest
+          pip install pytest-cov
+          pytest --cov=./ --cov-report=xml
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          directory: ./coverage/reports/
+          env_vars: OS,PYTHON
+          fail_ci_if_error: true
+          files: ./coverage1.xml,./coverage2.xml,!./cache
+          flags: unittests
+          name: codecov-umbrella
+          verbose: true
