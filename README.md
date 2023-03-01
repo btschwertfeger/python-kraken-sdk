@@ -9,7 +9,7 @@
 
 ![ql-workflow](https://github.com/btschwertfeger/kraken-python-sdk/actions/workflows/codeql.yml/badge.svg)
 ![python-package](https://github.com/btschwertfeger/kraken-python-sdk/actions/workflows/python-package.yml/badge.svg)
-![codecov.io](https://codecov.io/github/btschwertfeger/python-kraken-sdk/coverage.svg?branch=add-codecov)
+![codecov](https://codecov.io/gh/btschwertfeger/Python-Kraken-SDK/branch/master/badge.svg)
 
 [![DOI](https://zenodo.org/badge/510751854.svg)](https://zenodo.org/badge/latestdoi/510751854)
 
