@@ -32,6 +32,11 @@ jobs:
       run: python setup.py install
 
     - name: Generate coverage report
+      env:
+          SPOT_API_KEY: ${{ secrets.SPOT_API_KEY }}
+          SPOT_SECRET_KEY: ${{ secrets.SPOT_SECRET_KEY }}
+          FUTURES_API_KEY: ${{ secrets.FUTURES_API_KEY }}
+          FUTURES_SECRET_KEY: ${{ secrets.FUTURES_SECRET_KEY }}
       run: |
         pip install pytest
         pip install pytest-cov
