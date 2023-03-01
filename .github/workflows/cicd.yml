@@ -1,7 +1,7 @@
 # This workflow will install Python dependencies, run tests and lint with a variety of Python versions
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python
 
-name: Python package
+name: CI/CD
 
 on:
   push:
@@ -14,13 +14,12 @@ on:
 jobs:
 
   build:
-    name: build
+    name: Build
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
-      max-parallel: 1 # to avoid failing tests because of API Rate limits
       matrix:
-        os: [ubuntu-latest] #, macos-latest, windows-latest]
+        os: [ubuntu-latest, macos-latest, windows-latest]
         python-version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
 
     steps:
@@ -48,7 +47,7 @@ jobs:
         run: python setup.py install
 
   test:
-    name: test
+    name: Test
     needs: [build]
     runs-on: ${{ matrix.os }}
     strategy:
@@ -89,7 +88,7 @@ jobs:
           pytest tests/test_futures_rest.py
 
   codecov:
-    name: coverage
+    name: Coverage
     needs: [test]
     runs-on: ${{ matrix.os }}
     strategy:
@@ -109,6 +108,9 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
+
+      - name: Install package
+        run: python setup.py install
 
       - name: Install dependencies
         run: |
