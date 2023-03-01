@@ -16,7 +16,7 @@ URL = "https://github.com/btschwertfeger/Python-Kraken-SDK"
 EMAIL = "development@b-schwertfeger.de"
 AUTHOR = "Benjamin Thomas Schwertfeger"
 REQUIRES_PYTHON = ">=3.7.0"
-VERSION = None
+VERSION = "0.8"
 
 # What packages are required for this module to be executed?
 REQUIRED = [
@@ -37,15 +37,6 @@ try:
         long_description = f"\n{f.read()}"
 except FileNotFoundError:
     long_description = DESCRIPTION
-
-about = {}
-if not VERSION:
-    project_slug = "kraken"
-    with open(os.path.join(here, project_slug, "__version__.py")) as f:
-        exec(f.read(), about)
-else:
-    raise ValueError("Version not found!")
-    exit()
 
 
 class UploadCommand(Command):
@@ -83,7 +74,7 @@ class UploadCommand(Command):
         os.system("twine upload dist/*")
 
         # self.status('Pushing git tags…')
-        # os.system(f'git tag v{about['__version__']}')
+        # os.system(f'git tag v{VERSION}')
         # os.system('git push --tags')
 
         sys.exit()
@@ -162,7 +153,7 @@ class TestCommand(Command):
 
 setup(
     name=NAME,
-    version=about["__version__"],
+    version=VERSION,
     description=DESCRIPTION,
     long_description=long_description,
     long_description_content_type="text/markdown",
