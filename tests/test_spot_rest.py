@@ -1,20 +1,17 @@
+#!/usr/bin/env python
+# -*- coding:utf-8 -*-
+# Copyright (C) 2023 Benjamin Thomas Schwertfegerr
+# Github: https://github.com/btschwertfeger
+#
+
 """Module that tests the Kraken Spot REST endpoints"""
 import os
 import random
 import time
 import unittest
 
-try:
-    from kraken.exceptions.exceptions import KrakenExceptions
-    from kraken.spot.client import Funding, Market, Staking, Trade, User
-except ModuleNotFoundError:
-    import sys
-
-    sys.path.append("/Users/benjamin/repositories/Finance/Kraken/python-kraken-sdk")
-    from kraken.exceptions.exceptions import KrakenExceptions
-    from kraken.spot.client import Funding, Market, Staking, Trade, User
-
-    print("USING LOCAL MODULE")
+from kraken.exceptions.exceptions import KrakenExceptions
+from kraken.spot.client import Funding, Market, Staking, Trade, User
 
 
 def is_not_error(value) -> bool:
@@ -28,21 +25,21 @@ class UserTests(unittest.TestCase):
             key=os.getenv("SPOT_API_KEY"), secret=os.getenv("SPOT_SECRET_KEY")
         )
 
-    def test_get_account_balance(self):
+    def test_get_account_balance(self) -> None:
         assert is_not_error(self.__auth_user.get_account_balance())
 
     def test_get_balances(self):
         assert is_not_error(self.__auth_user.get_balances(currency="USD"))
 
-    def test_get_trade_balance(self):
+    def test_get_trade_balance(self) -> None:
         assert is_not_error(self.__auth_user.get_trade_balance())
         assert is_not_error(self.__auth_user.get_trade_balance(asset="EUR"))
 
-    def test_get_open_orders(self):
+    def test_get_open_orders(self) -> None:
         assert is_not_error(self.__auth_user.get_open_orders(trades=True))
         assert is_not_error(self.__auth_user.get_open_orders(trades=False))
 
-    def test_get_closed_orders(self):
+    def test_get_closed_orders(self) -> None:
         assert is_not_error(self.__auth_user.get_closed_orders())
         assert is_not_error(self.__auth_user.get_closed_orders(trades=True))
         assert is_not_error(
@@ -53,8 +50,6 @@ class UserTests(unittest.TestCase):
                 trades=True, start="1668431675.4778206", end="1668455555.4778206", ofs=2
             )
         )
-
-    def test_get_closed_orders(self):
         assert is_not_error(
             self.__auth_user.get_closed_orders(
                 trades=True,
@@ -65,7 +60,7 @@ class UserTests(unittest.TestCase):
             )
         )
 
-    def test_get_orders_info(self):
+    def test_get_orders_info(self) -> None:
         for params, method in zip(
             [
                 {"txid": "OXBBSK-EUGDR-TDNIEQ"},
@@ -87,12 +82,12 @@ class UserTests(unittest.TestCase):
             finally:
                 time.sleep(1.5)
 
-    def test_get_trades_history(self):
+    def test_get_trades_history(self) -> None:
         assert is_not_error(
             self.__auth_user.get_trades_history(type_="all", trades=True)
         )
 
-    def test_get_open_positions(self):
+    def test_get_open_positions(self) -> None:
         assert isinstance(self.__auth_user.get_open_positions(), list)
         assert isinstance(
             self.__auth_user.get_open_positions(txid="OQQYNL-FXCFA-FBFVD7"), list
@@ -104,7 +99,7 @@ class UserTests(unittest.TestCase):
             list,
         )
 
-    def test_get_ledgers_info(self):
+    def test_get_ledgers_info(self) -> None:
         assert is_not_error(self.__auth_user.get_ledgers_info())
         assert is_not_error(self.__auth_user.get_ledgers_info(type_="deposit"))
         assert is_not_error(
@@ -113,7 +108,7 @@ class UserTests(unittest.TestCase):
             )
         )
 
-    def test_get_ledgers(self):
+    def test_get_ledgers(self) -> None:
         assert is_not_error(self.__auth_user.get_ledgers(id_="LNYQGU-SUR5U-UXTOWM"))
         assert is_not_error(
             self.__auth_user.get_ledgers(
@@ -121,14 +116,14 @@ class UserTests(unittest.TestCase):
             )
         )
 
-    def test_get_trade_volume(self):
+    def test_get_trade_volume(self) -> None:
         assert is_not_error(self.__auth_user.get_trade_volume())
         assert is_not_error(
             self.__auth_user.get_trade_volume(pair="DOT/EUR", fee_info=False)
         )
 
-    def test_request_save_export_report(self):
-        for report in ["trades", "ledgers"]:
+    def test_request_save_export_report(self) -> None:
+        for report in ("trades", "ledgers"):
             if report == "trades":
                 fields = [
                     "ordertxid",
@@ -186,19 +181,21 @@ class UserTests(unittest.TestCase):
                         ),
                         dict,
                     )
-                except Exception:  # '200 - {"error":["WDatabase:No change"],"result":{"delete":true}}'
+                except (
+                    Exception
+                ):  # '200 - {"error":["WDatabase:No change"],"result":{"delete":true}}'
                     pass
                 time.sleep(2)
 
 
 class MarketTests(unittest.TestCase):
-    def setUp(self):
+    def setUp(self) -> None:
         self.__market = Market()
 
-    def test_get_system_status(self):
+    def test_get_system_status(self) -> None:
         assert is_not_error(self.__market.get_system_status())
 
-    def test_get_assets(self):
+    def test_get_assets(self) -> None:
         for params in [
             {},
             {"assets": "USD"},
@@ -209,41 +206,41 @@ class MarketTests(unittest.TestCase):
             assert is_not_error(self.__market.get_assets(**params))
             time.sleep(1.5)
 
-    def test_get_tradable_asset_pair(self):
+    def test_get_tradable_asset_pair(self) -> None:
         assert is_not_error(self.__market.get_tradable_asset_pair(pair="BTCUSD"))
         assert is_not_error(
             self.__market.get_tradable_asset_pair(pair=["DOTEUR", "BTCUSD"])
         )
-        for i in ["info", "leverage", "fees", "margin"]:
+        for i in ("info", "leverage", "fees", "margin"):
             assert is_not_error(
                 self.__market.get_tradable_asset_pair(pair="DOTEUR", info=i)
             )
             break
 
-    def test_get_ticker(self):
+    def test_get_ticker(self) -> None:
         assert is_not_error(self.__market.get_ticker())
         assert is_not_error(self.__market.get_ticker(pair="XBTUSD"))
         assert is_not_error(self.__market.get_ticker(pair=["DOTUSD", "XBTUSD"]))
 
-    def test_get_ohlc(self):
+    def test_get_ohlc(self) -> None:
         assert is_not_error(self.__market.get_ohlc(pair="XBTUSD"))
         assert is_not_error(
             self.__market.get_ohlc(pair="XBTUSD", interval=240)
         )  # interval in [1 5 15 30 60 240 1440 10080 21600]
 
-    def test_get_order_book(self):
+    def test_get_order_book(self) -> None:
         assert is_not_error(self.__market.get_order_book(pair="XBTUSD"))
         assert is_not_error(
             self.__market.get_order_book(pair="XBTUSD", count=2)
         )  # count in [1...500]
 
-    def test_get_recent_trades(self):
+    def test_get_recent_trades(self) -> None:
         assert is_not_error(self.__market.get_recent_trades(pair="XBTUSD"))
         assert is_not_error(
             self.__market.get_recent_trades(pair="XBTUSD", since="1616663618")
         )
 
-    def test_get_recend_spreads(self):
+    def test_get_recend_spreads(self) -> None:
         assert is_not_error(self.__market.get_recend_spreads(pair="XBTUSD"))
         assert is_not_error(
             self.__market.get_recend_spreads(pair="XBTUSD", since="1616663618")
@@ -252,13 +249,13 @@ class MarketTests(unittest.TestCase):
 
 @unittest.skip("Skipping Spot Trade tests")
 class TradeTests(unittest.TestCase):
-    def setUp(self):
+    def setUp(self) -> None:
         self.__auth_trade = Trade(
             key=os.getenv("SPOT_API_KEY"), secret=os.getenv("SPOT_SECRET_KEY")
         )
 
     # @unittest.skip('Skipping Spot test_create_order endpoint')
-    def test_create_order(self):
+    def test_create_order(self) -> None:
         assert isinstance(
             self.__auth_trade.create_order(
                 ordertype="limit",
@@ -271,8 +268,7 @@ class TradeTests(unittest.TestCase):
             dict,
         )
 
-    # @unittest.skip('Skipping Spot test_create_order_batch endpoint')
-    def test_create_order_batch(self):
+    def test_create_order_batch(self) -> None:
         assert isinstance(
             self.__auth_trade.create_order_batch(
                 orders=[
@@ -300,13 +296,12 @@ class TradeTests(unittest.TestCase):
                     },
                 ],
                 pair="BTC/USD",
-                validate=True,
+                validate=True,  # important
             ),
             dict,
         )
 
-    # @unittest.skip('Skipping Spot test_edit_order endpoint')
-    def test_edit_order(self):
+    def test_edit_order(self) -> None:
         assert isinstance(
             self.__auth_trade.edit_order(
                 txid="sometxid", pair="BTC/EUR", volume=4.2, price=17000, validate=True
@@ -315,21 +310,21 @@ class TradeTests(unittest.TestCase):
         )
 
     @unittest.skip("Skipping Spot test_cancel_order endpoint")
-    def test_cancel_order(self):
+    def test_cancel_order(self) -> None:
         assert isinstance(
             self.__auth_trade.cancel_order(txid="O2JLFP-VYFIW-35ZAAE"), dict
         )
 
     @unittest.skip("Skipping Spot test_cancel_all_orders endpoint")
-    def test_cancel_all_orders(self):
+    def test_cancel_all_orders(self) -> None:
         assert isinstance(self.__auth_trade.cancel_all_orders(), dict)
 
     @unittest.skip("Skipping Spot test_cancel_all_orders_after_x endpoint")
-    def test_cancel_all_orders_after_x(self):
+    def test_cancel_all_orders_after_x(self) -> None:
         assert isinstance(self.__auth_trade.cancel_all_orders_after_x(timeout=6), dict)
 
     @unittest.skip("Skipping Spot test_cancel_order_batch endpoint")
-    def test_cancel_order_batch(self):
+    def test_cancel_order_batch(self) -> None:
         assert isinstance(
             self.__auth_trade.cancel_order_batch(
                 orders=[
@@ -345,16 +340,16 @@ class TradeTests(unittest.TestCase):
 
 @unittest.skip("Skipping Spot Staking tests")
 class StakingTests(unittest.TestCase):
-    def setUp(self):
+    def setUp(self) -> None:
         self.__auth_staking = Staking(
             key=os.getenv("SPOT_API_KEY"), secret=os.getenv("SPOT_SECRET_KEY")
         )
 
-    def test_list_stakeable_assets(self):
+    def test_list_stakeable_assets(self) -> None:
         assert isinstance(self.__auth_staking.list_stakeable_assets(), list)
 
     @unittest.skip("Skipping Spot test_stake_asset endpoint")
-    def test_stake_asset(self):
+    def test_stake_asset(self) -> None:
         try:
             assert is_not_error(
                 self.__auth_staking.stake_asset(
@@ -365,7 +360,7 @@ class StakingTests(unittest.TestCase):
             pass
 
     @unittest.skip("Skipping Spot test_unstake_asset endpoint")
-    def test_unstake_asset(self):
+    def test_unstake_asset(self) -> None:
         try:
             assert is_not_error(
                 self.__auth_staking.unstake_asset(asset="DOT", amount="4500000")
@@ -374,28 +369,28 @@ class StakingTests(unittest.TestCase):
             pass
 
     @unittest.skip("Skipping Spot test_get_pending_staking_transactions endpoint")
-    def test_get_pending_staking_transactions(self):
+    def test_get_pending_staking_transactions(self) -> None:
         assert isinstance(self.__auth_staking.get_pending_staking_transactions(), list)
 
     @unittest.skip("Skipping Spot test_list_staking_transactions endpoint")
-    def test_list_staking_transactions(self):
+    def test_list_staking_transactions(self) -> None:
         assert isinstance(self.__auth_staking.list_staking_transactions(), list)
 
 
 @unittest.skip("Skipping Spot Funding tests")
 class FundingTests(unittest.TestCase):
-    def setUp(self):
+    def setUp(self) -> None:
         self.__auth_funding = Funding(
             key=os.getenv("SPOT_API_KEY"), secret=os.getenv("SPOT_SECRET_KEY")
         )
 
-    def test_get_deposit_methods(self):
+    def test_get_deposit_methods(self) -> None:
         assert isinstance(self.__auth_funding.get_deposit_methods(asset="XBT"), list)
         assert is_not_error(
             self.__auth_funding.get_deposit_address(asset="XBT", method="Bitcoin")
         )
 
-    def test_get_recend_deposits_status(self):
+    def test_get_recend_deposits_status(self) -> None:
         assert isinstance(
             self.__auth_funding.get_recend_deposits_status(asset="XLM"), list
         )
@@ -407,7 +402,7 @@ class FundingTests(unittest.TestCase):
         )
 
     @unittest.skip("Skipping Spot test_withdraw_funds endpoint")
-    def test_withdraw_funds(self):
+    def test_withdraw_funds(self) -> None:
         try:
             assert is_not_error(
                 self.__auth_funding.withdraw_funds(
@@ -418,7 +413,7 @@ class FundingTests(unittest.TestCase):
             pass
 
     @unittest.skip("Skipping Spot test_get_withdrawal_info endpoint")
-    def test_get_withdrawal_info(self):
+    def test_get_withdrawal_info(self) -> None:
         try:
             assert is_not_error(
                 self.__auth_funding.get_withdrawal_info(
@@ -429,7 +424,7 @@ class FundingTests(unittest.TestCase):
             pass
 
     @unittest.skip("Skipping Spot test_get_recend_withdraw_status endpoint")
-    def test_get_recend_withdraw_status(self):
+    def test_get_recend_withdraw_status(self) -> None:
         assert isinstance(
             self.__auth_funding.get_recend_withdraw_status(asset="XLM"), list
         )
@@ -443,7 +438,7 @@ class FundingTests(unittest.TestCase):
             pass
 
     @unittest.skip("Skipping Spot test_wallet_transfer endpoint")
-    def test_wallet_transfer(self):
+    def test_wallet_transfer(self) -> None:
         try:
             # only works if futures wallet exists
             assert is_not_error(
