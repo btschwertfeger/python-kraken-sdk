@@ -623,7 +623,7 @@ copy of the Program in return for a fee.
     The python-kraken-sdk serves as a collection of REST and websocket
     clients to interact with the Kraken cryptocurrency exchange to
     access the Spot and Futures API.
-    Copyright (C) 2022  Benjamin Thomas Schwertfeger
+    Copyright (C) 2023 Benjamin Thomas Schwertfeger
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
