@@ -1,3 +1,9 @@
+#!/usr/bin/env python
+# -*- coding:utf-8 -*-
+# Copyright (C) 2023 Benjamin Thomas Schwertfegerr
+# Github: https://github.com/btschwertfeger
+#
+
 """Module that implements the Kraken Futures trade client"""
 from typing import List
 
@@ -135,10 +141,10 @@ class TradeClient(KrakenBaseFuturesAPI):
     ) -> dict:
         """https://docs.futures.kraken.com/#http-api-trading-v3-api-order-management-send-order"""
 
-        order_types = ["lmt", "post", "ioc", "mkt", "stp", "take_profit"]
+        order_types = ("lmt", "post", "ioc", "mkt", "stp", "take_profit")
         if orderType not in order_types:
             raise ValueError(f"Invalid orderType. One of [{order_types}] is required!")
-        sides = ["buy", "sell"]
+        sides = ("buy", "sell")
         if side not in sides:
             raise ValueError(f"Invalid side. One of [{sides}] is required!")
 
@@ -165,7 +171,7 @@ class TradeClient(KrakenBaseFuturesAPI):
         if stopPrice is not None:
             params["stopPrice"] = stopPrice
         if triggerSignal is not None:
-            trigger_signals = ["mark", "spot", "last"]
+            trigger_signals = ("mark", "spot", "last")
             if triggerSignal not in trigger_signals:
                 raise ValueError(f"Trigger signal must be in [{trigger_signals}]!")
             params["triggerSignal"] = triggerSignal

@@ -1,3 +1,9 @@
+#!/usr/bin/env python
+# -*- coding:utf-8 -*-
+# Copyright (C) 2023 Benjamin Thomas Schwertfegerr
+# Github: https://github.com/btschwertfeger
+#
+
 """Module that implements the Kraken Futures user client"""
 from kraken.base_api.base_api import KrakenBaseFuturesAPI
 

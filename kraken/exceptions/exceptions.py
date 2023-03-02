@@ -1,3 +1,9 @@
+#!/usr/bin/env python
+# -*- coding:utf-8 -*-
+# Copyright (C) 2023 Benjamin Thomas Schwertfegerr
+# Github: https://github.com/btschwertfeger
+#
+
 """Module that provides custom exceptions for the python-kraken-sdk"""
 import functools
 from typing import List
@@ -46,7 +52,7 @@ class KrakenExceptions:
             "EQuery:Unknown asset pair": self.KrakenUnknownAssetPairError,
             # futures_trading_errors__________________________
             "authenticationError": self.KrakenAuthenticationError,
-            "insufficientAvailableFunds": self.KrakenInsufficientAvailavleFundsError,
+            "insufficientAvailableFunds": self.KrakenInsufficientAvailableFundsError,
             "apiLimitExceeded": self.KrakenApiLimitExceededError,
             "invalidUnit": self.KrakenInvalidUnitError,
             "Unavailable": self.KrakenUnavailableError,
@@ -57,15 +63,16 @@ class KrakenExceptions:
 
     def get_exception(self, data: List[str]):
         """Returns the exception given by name if available"""
+        is_list = isinstance(data, list)
         for name, exception in self.EXCEPTION_ASSIGNMENT.items():
-            if data == name:
-                return exception
-            if isinstance(data, list):
+            if is_list:
                 if name in data:
                     return exception
                 for err in data:
                     if name in err:
                         return exception
+            elif data == name:
+                return exception
         return None
 
     def docstring_message(cls):
@@ -159,7 +166,7 @@ class KrakenExceptions:
         """Client does not have the necessary funds."""
 
     @docstring_message
-    class KrakenInsufficientAvailavleFundsError(Exception):
+    class KrakenInsufficientAvailableFundsError(Exception):
         """Client does not have the necessary funds."""
 
     @docstring_message

@@ -1,3 +1,9 @@
+#!/usr/bin/env python
+# -*- coding:utf-8 -*-
+# Copyright (C) 2023 Benjamin Thomas Schwertfegerr
+# Github: https://github.com/btschwertfeger
+#
+
 """Module that implements the Kraken Spot User client"""
 from kraken.base_api.base_api import KrakenBaseSpotAPI
 
@@ -13,18 +19,16 @@ class UserClient(KrakenBaseSpotAPI):
         """Returns the balance and available balance of a given currency"""
 
         balance = float(0)
-        currency_found = False
+        curr_opts = (currency, f"Z{currency}", f"X{currency}")
         for symbol, value in self.get_account_balance().items():
-            if balance != float(0):
-                break
-            if symbol in [currency, f"Z{currency}", f"X{currency}"]:
+            if symbol in curr_opts:
                 balance = float(value)
-                currency_found = True
-        if not currency_found:
+                break
+        if balance == float(0):
             raise ValueError("Currency not found!")
 
         available_balance = balance
-        for _, order in self.get_open_orders()["open"].items():
+        for order in self.get_open_orders()["open"].values():
             if currency in order["descr"]["pair"][0 : len(currency)]:
                 if order["descr"]["type"] == "sell":
                     available_balance -= float(order["vol"])
