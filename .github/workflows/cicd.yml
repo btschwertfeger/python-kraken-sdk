@@ -90,6 +90,8 @@ jobs:
         env:
           FUTURES_API_KEY: ${{ secrets.FUTURES_API_KEY }}
           FUTURES_SECRET_KEY: ${{ secrets.FUTURES_SECRET_KEY }}
+          FUTURES_SANDBOX_KEY: ${{ secrets.FUTURES_SANDBOX_KEY }}
+          FUTURES_SANDBOX_SECRET: ${{ secrets.FUTURES_SANDBOX_SECRET }}
         run: |
           pytest tests/test_futures_rest.py
 
@@ -132,6 +134,8 @@ jobs:
             SPOT_SECRET_KEY: ${{ secrets.SPOT_SECRET_KEY }}
             FUTURES_API_KEY: ${{ secrets.FUTURES_API_KEY }}
             FUTURES_SECRET_KEY: ${{ secrets.FUTURES_SECRET_KEY }}
+            FUTURES_SANDBOX_KEY: ${{ secrets.FUTURES_SANDBOX_KEY }}
+            FUTURES_SANDBOX_SECRET: ${{ secrets.FUTURES_SANDBOX_SECRET }}
         run: |
           pip install pytest pytest-cov
           pytest --cov --cov-report=xml
