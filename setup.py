@@ -1,5 +1,8 @@
-#!/usr/bin/python3
+#!/usr/bin/env python
 # -*- coding:utf-8 -*-
+# Copyright (C) 2023 Benjamin Thomas Schwertfegerr
+# Github: https://github.com/btschwertfeger
+#
 # run via  python3 setup.py upload
 
 import io
@@ -120,7 +123,6 @@ class TestUploadCommand(Command):
 
 
 class TestCommand(Command):
-
     description = "Build and test the package."
     user_options = []
 
@@ -178,7 +180,10 @@ setup(
         "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
         "Programming Language :: Python",
         "Programming Language :: Python :: 3.7",
-        "Development Status :: 4 - Beta",
+        "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.11",
         "Framework :: AsyncIO",
         "Natural Language :: English",
         "Operating System :: MacOS",
