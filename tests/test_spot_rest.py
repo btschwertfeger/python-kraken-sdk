@@ -9,6 +9,7 @@ import os
 import random
 import time
 import unittest
+from datetime import datetime, timezone
 
 from kraken.exceptions.exceptions import KrakenExceptions
 from kraken.spot.client import Funding, Market, Staking, Trade, User
@@ -20,7 +21,7 @@ def is_not_error(value) -> bool:
 
 
 class UserTests(unittest.TestCase):
-    def setUp(self):
+    def setUp(self) -> None:
         self.__auth_user = User(
             key=os.getenv("SPOT_API_KEY"), secret=os.getenv("SPOT_SECRET_KEY")
         )
@@ -37,11 +38,15 @@ class UserTests(unittest.TestCase):
 
     def test_get_open_orders(self) -> None:
         assert is_not_error(self.__auth_user.get_open_orders(trades=True))
-        assert is_not_error(self.__auth_user.get_open_orders(trades=False))
+        assert is_not_error(
+            self.__auth_user.get_open_orders(trades=False, userref="1234567")
+        )
 
     def test_get_closed_orders(self) -> None:
         assert is_not_error(self.__auth_user.get_closed_orders())
-        assert is_not_error(self.__auth_user.get_closed_orders(trades=True))
+        assert is_not_error(
+            self.__auth_user.get_closed_orders(trades=True, userref="1234")
+        )
         assert is_not_error(
             self.__auth_user.get_closed_orders(trades=True, start="1668431675.4778206")
         )
@@ -86,6 +91,14 @@ class UserTests(unittest.TestCase):
         assert is_not_error(
             self.__auth_user.get_trades_history(type_="all", trades=True)
         )
+        assert is_not_error(
+            self.__auth_user.get_trades_history(
+                type_="closed position",
+                start="1677717104",
+                end="1677817104",
+                ofs="1",
+            )
+        )
 
     def test_get_open_positions(self) -> None:
         assert isinstance(self.__auth_user.get_open_positions(), list)
@@ -107,6 +120,16 @@ class UserTests(unittest.TestCase):
                 asset="EUR", start="1668431675.4778206", end="1668455555.4778206", ofs=2
             )
         )
+        assert is_not_error(
+            self.__auth_user.get_ledgers_info(
+                asset=["EUR", "USD"],
+            )
+        )
+        assert is_not_error(
+            self.__auth_user.get_ledgers_info(
+                asset="EUR,USD",
+            )
+        )
 
     def test_get_ledgers(self) -> None:
         assert is_not_error(self.__auth_user.get_ledgers(id_="LNYQGU-SUR5U-UXTOWM"))
@@ -123,6 +146,14 @@ class UserTests(unittest.TestCase):
         )
 
     def test_request_save_export_report(self) -> None:
+        try:
+            self.__auth_user.request_export_report(
+                report="invalid", description="this is an invalid report type"
+            )
+        except ValueError:
+            # invalid report type
+            pass
+
         for report in ("trades", "ledgers"):
             if report == "trades":
                 fields = [
@@ -156,6 +187,7 @@ class UserTests(unittest.TestCase):
                 fields=fields,
                 format_="CSV",
                 starttm="1662100592",
+                endtm=int(1000 * time.time()),
             )
             assert is_not_error(response) and "id" in response
             time.sleep(2)
@@ -186,6 +218,16 @@ class UserTests(unittest.TestCase):
                 ):  # '200 - {"error":["WDatabase:No change"],"result":{"delete":true}}'
                     pass
                 time.sleep(2)
+
+    def test_export_report_status(self) -> None:
+        # just demonstrating invalid report; real test is in `test_request_save_export_report` function
+        try:
+            self.__auth_user.get_export_report_status(report="invalid")
+        except ValueError:
+            pass
+
+    def tearDown(self) -> None:
+        return super().tearDown()
 
 
 class MarketTests(unittest.TestCase):
@@ -225,7 +267,7 @@ class MarketTests(unittest.TestCase):
     def test_get_ohlc(self) -> None:
         assert is_not_error(self.__market.get_ohlc(pair="XBTUSD"))
         assert is_not_error(
-            self.__market.get_ohlc(pair="XBTUSD", interval=240)
+            self.__market.get_ohlc(pair="XBTUSD", interval=240, since="1616663618")
         )  # interval in [1 5 15 30 60 240 1440 10080 21600]
 
     def test_get_order_book(self) -> None:
@@ -246,8 +288,10 @@ class MarketTests(unittest.TestCase):
             self.__market.get_recend_spreads(pair="XBTUSD", since="1616663618")
         )
 
+    def tearDown(self) -> None:
+        return super().tearDown()
 
-@unittest.skip("Skipping Spot Trade tests")
+
 class TradeTests(unittest.TestCase):
     def setUp(self) -> None:
         self.__auth_trade = Trade(
@@ -256,17 +300,78 @@ class TradeTests(unittest.TestCase):
 
     # @unittest.skip('Skipping Spot test_create_order endpoint')
     def test_create_order(self) -> None:
-        assert isinstance(
+        try:
+            assert isinstance(
+                self.__auth_trade.create_order(
+                    ordertype="limit",
+                    side="buy",
+                    volume=1,
+                    oflags=["post"],
+                    pair="BTC/EUR",
+                    price=0.01,
+                    timeinforce="GTC",
+                    validate=True,  # important to just test this endpoint without risking money
+                ),
+                dict,
+            )
+        except KrakenExceptions.KrakenPermissionDeniedError:
+            pass
+
+        try:
+            assert isinstance(
+                self.__auth_trade.create_order(
+                    ordertype="limit",
+                    side="buy",
+                    volume=10000000,
+                    oflags=["post"],
+                    pair="BTC/EUR",
+                    price=0.01,
+                    expiretm="0",
+                    displayvol=1000,
+                    validate=True,  # important to just test this endpoint without risking money
+                ),
+                dict,
+            )
+        except KrakenExceptions.KrakenPermissionDeniedError:
+            pass
+
+        try:
+            assert isinstance(
+                self.__auth_trade.create_order(
+                    ordertype="stop-loss",
+                    side="buy",
+                    volume="1000",
+                    trigger="last",
+                    pair="XBTUSD",
+                    price="100",
+                    price2="120",
+                    leverage="2",
+                    userref="12345",
+                    close_ordertype="limit",
+                    close_price="123",
+                    close_price2="92",
+                    validate=True,
+                ),
+                dict,
+            )
+        except KrakenExceptions.KrakenPermissionDeniedError:
+            pass
+
+        try:
             self.__auth_trade.create_order(
-                ordertype="limit",
+                ordertype="stop-loss-limit",
                 side="buy",
-                volume=1,
-                pair="BTC/EUR",
-                price=0.01,
-                validate=True,  # important to just test this endpoint without risking money
-            ),
-            dict,
-        )
+                volume="1000",
+                trigger="index",
+                pair="XBTUSD",
+                price="100",
+                price2="80",
+                timeinforce="GTC",
+                validate=True,
+            )
+        except ValueError:
+            # cannot use trigger and timeinforce together
+            pass
 
     def test_create_order_batch(self) -> None:
         assert isinstance(
@@ -302,28 +407,49 @@ class TradeTests(unittest.TestCase):
         )
 
     def test_edit_order(self) -> None:
-        assert isinstance(
-            self.__auth_trade.edit_order(
-                txid="sometxid", pair="BTC/EUR", volume=4.2, price=17000, validate=True
-            ),
-            dict,
-        )
+        print(str(datetime.now(timezone.utc).isoformat()))
+        try:
+            assert isinstance(
+                self.__auth_trade.edit_order(
+                    txid="OHYO67-6LP66-HMQ437",
+                    userref="12345678",
+                    volume=1.25,
+                    pair="XBTUSD",
+                    price=27500,
+                    price2=26500,
+                    cancel_response=False,
+                    oflags=["post"],
+                    validate=True,
+                ),
+                dict,
+            )
+        except KrakenExceptions.KrakenPermissionDeniedError:
+            pass
 
-    @unittest.skip("Skipping Spot test_cancel_order endpoint")
     def test_cancel_order(self) -> None:
-        assert isinstance(
-            self.__auth_trade.cancel_order(txid="O2JLFP-VYFIW-35ZAAE"), dict
-        )
+        try:
+            assert isinstance(
+                self.__auth_trade.cancel_order(txid="O2JLFP-VYFIW-35ZAAE"), dict
+            )
+        except KrakenExceptions.KrakenPermissionDeniedError:
+            pass
 
     @unittest.skip("Skipping Spot test_cancel_all_orders endpoint")
     def test_cancel_all_orders(self) -> None:
-        assert isinstance(self.__auth_trade.cancel_all_orders(), dict)
+        try:
+            assert isinstance(self.__auth_trade.cancel_all_orders(), dict)
+        except KrakenExceptions.KrakenPermissionDeniedError:
+            pass
 
     @unittest.skip("Skipping Spot test_cancel_all_orders_after_x endpoint")
     def test_cancel_all_orders_after_x(self) -> None:
-        assert isinstance(self.__auth_trade.cancel_all_orders_after_x(timeout=6), dict)
+        try:
+            assert isinstance(
+                self.__auth_trade.cancel_all_orders_after_x(timeout=6), dict
+            )
+        except KrakenExceptions.KrakenPermissionDeniedError:
+            pass
 
-    @unittest.skip("Skipping Spot test_cancel_order_batch endpoint")
     def test_cancel_order_batch(self) -> None:
         assert isinstance(
             self.__auth_trade.cancel_order_batch(
@@ -337,8 +463,10 @@ class TradeTests(unittest.TestCase):
             dict,
         )
 
+    def tearDown(self) -> None:
+        return super().tearDown()
 
-@unittest.skip("Skipping Spot Staking tests")
+
 class StakingTests(unittest.TestCase):
     def setUp(self) -> None:
         self.__auth_staking = Staking(
@@ -346,7 +474,10 @@ class StakingTests(unittest.TestCase):
         )
 
     def test_list_stakeable_assets(self) -> None:
-        assert isinstance(self.__auth_staking.list_stakeable_assets(), list)
+        try:
+            assert isinstance(self.__auth_staking.list_stakeable_assets(), list)
+        except KrakenExceptions.KrakenPermissionDeniedError:
+            pass
 
     @unittest.skip("Skipping Spot test_stake_asset endpoint")
     def test_stake_asset(self) -> None:
@@ -376,8 +507,10 @@ class StakingTests(unittest.TestCase):
     def test_list_staking_transactions(self) -> None:
         assert isinstance(self.__auth_staking.list_staking_transactions(), list)
 
+    def tearDown(self) -> None:
+        return super().tearDown()
 
-@unittest.skip("Skipping Spot Funding tests")
+
 class FundingTests(unittest.TestCase):
     def setUp(self) -> None:
         self.__auth_funding = Funding(
@@ -386,8 +519,13 @@ class FundingTests(unittest.TestCase):
 
     def test_get_deposit_methods(self) -> None:
         assert isinstance(self.__auth_funding.get_deposit_methods(asset="XBT"), list)
-        assert is_not_error(
-            self.__auth_funding.get_deposit_address(asset="XBT", method="Bitcoin")
+
+    def test_get_deposit_address(self) -> None:
+        assert isinstance(
+            self.__auth_funding.get_deposit_address(
+                asset="XBT", method="Bitcoin", new=False
+            ),
+            list,
         )
 
     def test_get_recend_deposits_status(self) -> None:
@@ -448,6 +586,9 @@ class FundingTests(unittest.TestCase):
             )
         except KrakenExceptions.KrakenUnknownWithdrawKeyError:
             pass
+
+    def tearDown(self) -> None:
+        return super().tearDown()
 
 
 if __name__ == "__main__":

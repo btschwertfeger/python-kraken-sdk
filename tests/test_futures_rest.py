@@ -29,7 +29,7 @@ def is_not_error(value) -> bool:
 
 
 class UserTests(unittest.TestCase):
-    def setUp(self):
+    def setUp(self) -> None:
         self.__auth_user = User(
             key=os.getenv("FUTURES_API_KEY"), secret=os.getenv("FUTURES_SECRET_KEY")
         )
@@ -66,9 +66,12 @@ class UserTests(unittest.TestCase):
                 if chunk:
                     file.write(chunk)
 
+    def tearDown(self) -> None:
+        return super().tearDown()
+
 
 class MarketTests(unittest.TestCase):
-    def setUp(self):
+    def setUp(self) -> None:
         self.__market = Market()
         self.__auth_market = Market(
             key=os.getenv("FUTURES_API_KEY"), secret=os.getenv("FUTURES_SECRET_KEY")
@@ -214,6 +217,9 @@ class MarketTests(unittest.TestCase):
             )
         )
 
+    def tearDown(self) -> None:
+        return super().tearDown()
+
 
 class TradeTests(unittest.TestCase):
     def setUp(self) -> None:
@@ -313,6 +319,9 @@ class TradeTests(unittest.TestCase):
         assert is_success(self.__auth_trade.cancel_all_orders(symbol="pi_xbtusd"))
         assert is_success(self.__auth_trade.cancel_all_orders())
 
+    def tearDown(self) -> None:
+        return super().tearDown()
+
 
 class FundingTests(unittest.TestCase):
     def setUp(self):
@@ -354,6 +363,9 @@ class FundingTests(unittest.TestCase):
         #     currency='XBT',
         # ))
         pass
+
+    def tearDown(self) -> None:
+        return super().tearDown()
 
 
 if __name__ == "__main__":
