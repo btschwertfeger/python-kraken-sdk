@@ -100,6 +100,6 @@ if __name__ == "__main__":
     except KeyboardInterrupt:
         pass
         # the websocket client will send {'event': 'asyncio.CancelledError'} via on_message
-        # so you can handle the behavior/next actions individually within you bot
+        # so you can handle the behaviour/next actions individually within you bot
     finally:
         loop.close()

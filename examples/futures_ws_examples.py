@@ -14,9 +14,6 @@ from dotenv import dotenv_values
 
 from kraken.futures.client import KrakenFuturesWSClient
 
-# from kraken.exceptions.exceptions import KrakenExceptions
-
-
 logging.basicConfig(
     format="%(asctime)s %(module)s,line: %(lineno)d %(levelname)8s | %(message)s",
     datefmt="%Y/%m/%d %H:%M:%S",
@@ -99,7 +96,7 @@ if __name__ == "__main__":
         asyncio.run(main())
     except KeyboardInterrupt:
         # the websocket client will send {'event': 'asyncio.CancelledError'} via on_message
-        # so you can handle the behavior/next actions individually within you bot
+        # so you can handle the behaviour/next actions individually within you bot
         pass
     finally:
         loop.close()
