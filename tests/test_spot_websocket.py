@@ -85,14 +85,19 @@ class WebsocketTests(unittest.TestCase):
     def test_create_public_bot(self) -> None:
         async def create_bot():
             bot = Bot()
-            await self.__wait(seconds=1.5)
+            await self.__wait(seconds=2.5)
 
         self.__create_loop(coro=create_bot)
 
     def test_create_private_bot(self) -> None:
         async def create_bot():
-            Bot(key=self.__key, secret=self.__secret)
-            await self.__wait(seconds=1.5)
+            if self.__full_ws_access:
+                Bot(key=self.__key, secret=self.__secret)
+                await self.__wait(seconds=2.5)
+            else:
+                with pytest.raises(asyncio.CancelledError):
+                    Bot(key=self.__key, secret=self.__secret)
+                    await self.__wait(seconds=2.5)
 
         self.__create_loop(coro=create_bot)
 
@@ -110,6 +115,7 @@ class WebsocketTests(unittest.TestCase):
                 "*",
             ]
             assert bot.active_public_subscriptions == []
+            await self.__wait(seconds=1)
             with pytest.raises(ConnectionError):
                 # cannot access private subscriptions on unauthenticated client
                 bot.active_private_subscriptions
@@ -120,14 +126,15 @@ class WebsocketTests(unittest.TestCase):
 
     def test_access_private_bot_attributes(self) -> None:
         async def checkit() -> None:
-            auth_bot = Bot(key=self.__key, secret=self.__secret)
-
-            assert auth_bot.active_private_subscriptions == []
-            # if self.__full_ws_access:
-            # else:
-            #     with pytest.raises(asyncio.CancelledError):
-            #         assert auth_bot.active_private_subscriptions == []
-            await self.__wait(seconds=1.5)
+            if self.__full_ws_access:
+                auth_bot = Bot(key=self.__key, secret=self.__secret)
+                assert auth_bot.active_private_subscriptions == []
+                await self.__wait(seconds=2.5)
+            else:
+                with pytest.raises(asyncio.CancelledError):
+                    auth_bot = Bot(key=self.__key, secret=self.__secret)
+                    assert auth_bot.active_private_subscriptions == []
+                    await self.__wait(seconds=2.5)
 
         self.__create_loop(coro=checkit)
 
@@ -160,13 +167,15 @@ class WebsocketTests(unittest.TestCase):
             auth_bot = Bot(key=self.__key, secret=self.__secret)
             with pytest.raises(ValueError):  # private conns does not accept pairs
                 await auth_bot.subscribe(subscription=subscription, pair=["XBT/EUR"])
+                await self.__wait(seconds=1)
 
             if self.__full_ws_access:
                 await auth_bot.subscribe(subscription=subscription)
+                await self.__wait(seconds=2)
             else:
                 with pytest.raises(asyncio.CancelledError):
                     await auth_bot.subscribe(subscription=subscription)
-            await self.__wait(seconds=2)
+                    await self.__wait(seconds=2)
 
         self.__create_loop(coro=checkit)
 
@@ -205,10 +214,11 @@ class WebsocketTests(unittest.TestCase):
 
             if self.__full_ws_access:
                 await auth_bot.unsubscribe(subscription={"name": "ownTrades"})
+                await self.__wait(seconds=2)
             else:
                 with pytest.raises(asyncio.CancelledError):
                     await auth_bot.unsubscribe(subscription={"name": "ownTrades"})
-            await self.__wait(seconds=2)
+                await self.__wait(seconds=2)
 
         self.__create_loop(coro=checkit)
 
@@ -235,11 +245,11 @@ class WebsocketTests(unittest.TestCase):
             )
             if self.__full_ws_access:
                 await auth_bot.create_order(**params)
+                await self.__wait(seconds=2)
             else:
                 with pytest.raises(asyncio.CancelledError):
                     await auth_bot.create_order(**params)
-
-            await self.__wait(seconds=2)
+                    await self.__wait(seconds=2)
 
         self.__create_loop(coro=checkit)
 
@@ -260,11 +270,11 @@ class WebsocketTests(unittest.TestCase):
 
             if self.__full_ws_access:
                 await auth_bot.edit_order(**params)
+                await self.__wait(seconds=2)
             else:
                 with pytest.raises(asyncio.CancelledError):
                     await auth_bot.edit_order(**params)
-
-            await self.__wait(seconds=2)
+                    await self.__wait(seconds=2)
 
         self.__create_loop(coro=checkit)
 
@@ -273,10 +283,11 @@ class WebsocketTests(unittest.TestCase):
             auth_bot = Bot(key=self.__key, secret=self.__secret)
             if self.__full_ws_access:
                 await auth_bot.camcel_order(txid="AOUEHF-ASLBD-A6B4A")
+                await self.__wait(seconds=2)
             else:
                 with pytest.raises(asyncio.CancelledError):
                     await auth_bot.cancel_order(txid="AOUEHF-ASLBD-A6B4A")
-            await self.__wait(seconds=2)
+                    await self.__wait(seconds=2)
 
         self.__create_loop(coro=checkit)
 
@@ -285,10 +296,11 @@ class WebsocketTests(unittest.TestCase):
             auth_bot = Bot(key=self.__key, secret=self.__secret)
             if self.__full_ws_access:
                 await auth_bot.cancel_all_orders()
+                await self.__wait(seconds=2)
             else:
                 with pytest.raises(asyncio.CancelledError):
                     await auth_bot.cancel_all_orders()
-            await self.__wait(seconds=2)
+                    await self.__wait(seconds=2)
 
         self.__create_loop(coro=checkit)
 
@@ -297,10 +309,11 @@ class WebsocketTests(unittest.TestCase):
             auth_bot = Bot(key=self.__key, secret=self.__secret)
             if self.__full_ws_access:
                 await auth_bot.cancel_all_orders_after(0)
+                await self.__wait(seconds=2)
             else:
                 with pytest.raises(asyncio.CancelledError):
                     await auth_bot.cancel_all_orders_after(0)
-            await self.__wait(seconds=2)
+                    await self.__wait(seconds=2)
 
         self.__create_loop(coro=checkit)
 
