@@ -8,7 +8,6 @@
 import asyncio
 import json
 import logging
-import sys
 import traceback
 from copy import deepcopy
 from random import random
@@ -17,14 +16,8 @@ from typing import List
 
 import websockets
 
-try:
-    from kraken.exceptions.exceptions import KrakenExceptions
-    from kraken.spot.ws_client.ws_client import SpotWsClientCl
-except ModuleNotFoundError:
-    print("USING LOCAL MODULE")
-    sys.path.append("/Users/benjamin/repositories/Trading/python-kraken-sdk")
-    from kraken.exceptions.exceptions import KrakenExceptions
-    from kraken.spot.client.ws_client import SpotWsClientCl
+from kraken.exceptions.exceptions import KrakenExceptions
+from kraken.spot.ws_client.ws_client import SpotWsClientCl
 
 
 class ConnectSpotWebsocket:
@@ -217,11 +210,11 @@ class ConnectSpotWebsocket:
 
     async def send_message(self, msg, private: bool = False):
         """Sends a message via websocket"""
-        while not self.__socket:
-            await asyncio.sleep(0.4)
-
         if private and not self.__is_auth:
             raise ValueError("Cannot send private message with public websocket.")
+
+        while not self.__socket:
+            await asyncio.sleep(0.4)
 
         msg["reqid"] = int(time() * 1000)
         if private and "subscription" in msg:
@@ -363,7 +356,6 @@ class KrakenSpotWSClientCl(SpotWsClientCl):
         super().__init__(key=key, secret=secret, url=url, sandbox=beta)
         self.__callback = callback
         self.__is_auth = key and secret
-
         self.exception_occur = False
         self._pub_conn = ConnectSpotWebsocket(
             client=self,

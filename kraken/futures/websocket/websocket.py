@@ -8,7 +8,6 @@
 import asyncio
 import json
 import logging
-import sys
 import traceback
 from copy import deepcopy
 from random import random
@@ -16,14 +15,8 @@ from typing import List
 
 import websockets
 
-try:
-    from kraken.exceptions.exceptions import KrakenExceptions
-    from kraken.futures.ws_client.ws_client import FuturesWsClientCl
-except ModuleNotFoundError:
-    print("USING LOCAL MODULE")
-    sys.path.append("/Users/benjamin/repositories/Trading/python-kraken-sdk")
-    from kraken.exceptions.exceptions import KrakenExceptions
-    from kraken.futures.ws_client.ws_client import FuturesWsClientCl
+from kraken.exceptions.exceptions import KrakenExceptions
+from kraken.futures.ws_client.ws_client import FuturesWsClientCl
 
 
 class ConnectFuturesWebsocket:

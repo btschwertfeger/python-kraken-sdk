@@ -96,9 +96,14 @@ class UserClient(KrakenBaseSpotAPI):
         start: int = None,
         end: int = None,
         ofs: int = None,
+        consolidate_taker: bool = True,
     ) -> dict:
         """https://docs.kraken.com/rest/#operation/getTradeHistory"""
-        params = {"type": type_, "trades": trades}
+        params = {
+            "type": type_,
+            "trades": trades,
+            "consolidate_taker": consolidate_taker,
+        }
         if start is not None:
             params["start"] = start
         if end is not None:
@@ -177,6 +182,7 @@ class UserClient(KrakenBaseSpotAPI):
         """
         if report not in ["trades", "ledgers"]:
             raise ValueError('report must be one of "trades", "ledgers"')
+
         params = {
             "report": report,
             "description": description,

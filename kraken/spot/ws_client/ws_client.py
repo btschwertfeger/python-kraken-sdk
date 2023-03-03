@@ -46,11 +46,11 @@ class SpotWsClientCl(KrakenBaseSpotAPI):
         close_price2: float = None,
         timeinforce: str = None,
     ) -> None:
-        """https://docs.kra)en.com/websockets/#message-addOrder"""
+        """https://docs.kraken.com/websockets/#message-addOrder"""
         if not self._priv_conn:
             logging.warning("Websocket not connected!")
             return
-        if not self._priv_conn.isAuth:
+        if not self._priv_conn.is_auth:
             raise ValueError("Cannot create_order on public Websocket Client!")
 
         payload = {
@@ -111,7 +111,7 @@ class SpotWsClientCl(KrakenBaseSpotAPI):
         if not self._priv_conn:
             logging.warning("Websocket not connected!")
             return
-        if not self._priv_conn.isAuth:
+        if not self._priv_conn.is_auth:
             raise ValueError("Cannot edit_order on public Websocke Client!")
 
         payload = {"event": "editOrder", "orderid": orderid}
@@ -139,7 +139,7 @@ class SpotWsClientCl(KrakenBaseSpotAPI):
         if not self._priv_conn:
             logging.warning("Websocket not connected!")
             return
-        if not self._priv_conn.isAuth:
+        if not self._priv_conn.is_auth:
             raise ValueError("Cannot cancel_order on public Websocke Client!")
         await self._priv_conn.send_message(
             msg={"event": "cancelOrder", "txid": self._to_str_list(txid)}, private=True
@@ -150,7 +150,7 @@ class SpotWsClientCl(KrakenBaseSpotAPI):
         if not self._priv_conn:
             logging.warning("Websocket not connected!")
             return
-        if not self._priv_conn.isAuth:
+        if not self._priv_conn.is_auth:
             raise ValueError("Cannot use cancel_all_orders on public Websocke Client!")
         await self._priv_conn.send_message(msg={"event": "cancelAll"}, private=True)
 
@@ -159,7 +159,7 @@ class SpotWsClientCl(KrakenBaseSpotAPI):
         if not self._priv_conn:
             logging.warning("Websocket not connected!")
             return
-        if not self._priv_conn.isAuth:
+        if not self._priv_conn.is_auth:
             raise ValueError(
                 "Cannot use cancel_all_orders_after on public Websocke Client!"
             )

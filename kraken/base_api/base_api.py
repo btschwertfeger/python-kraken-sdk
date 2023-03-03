@@ -8,7 +8,6 @@
 import base64
 import hashlib
 import hmac
-import sys
 import time
 import urllib.parse
 from typing import List
@@ -16,12 +15,7 @@ from uuid import uuid1
 
 import requests
 
-try:
-    from kraken.exceptions.exceptions import KrakenExceptions
-except ModuleNotFoundError:
-    print("USING LOCAL MODULE")
-    sys.path.append("/Users/benjamin/repositories/Finance/Kraken/python-kraken-sdk")
-    from kraken.exceptions.exceptions import KrakenExceptions
+from kraken.exceptions.exceptions import KrakenExceptions
 
 
 class KrakenErrorHandler:
@@ -89,7 +83,7 @@ class KrakenBaseSpotAPI:
         self, key: str = "", secret: str = "", url: str = "", sandbox: bool = False
     ):
         if sandbox:
-            raise ValueError("Sandbox not availabel for Kraken Spot trading.")
+            raise ValueError("Sandbox not available for Kraken Spot trading.")
         if url != "":
             self.url = url
         else:

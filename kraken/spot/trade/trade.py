@@ -26,8 +26,9 @@ class TradeClient(KrakenBaseSpotAPI):
         stp_type: str = "cancel-newest",
         oflags: List[str] = None,
         timeinforce: str = None,
+        displayvol: str = None,
         starttm: str = "0",
-        expiretm: str = "0",
+        expiretm: str = None,
         close_ordertype: str = None,
         close_price: str = None,
         close_price2: str = None,
@@ -43,7 +44,6 @@ class TradeClient(KrakenBaseSpotAPI):
             "pair": str(pair),
             "stp_type": stp_type,
             "starttm": starttm,
-            "expiretm": expiretm,
             "validate": validate,
         }
         if trigger is not None:
@@ -53,7 +53,7 @@ class TradeClient(KrakenBaseSpotAPI):
                 "take-profit-limit",
                 "take-profit-limit",
             ]:
-                if timeinforce is not None:
+                if timeinforce is None:
                     params["trigger"] = trigger
                 else:
                     raise ValueError(
@@ -63,6 +63,9 @@ class TradeClient(KrakenBaseSpotAPI):
                 raise ValueError(f"Cannot use trigger on ordertype {ordertype}")
         elif timeinforce is not None:
             params["timeinforce"] = timeinforce
+
+        if expiretm is not None:
+            params["expiretm"] = str(expiretm)
         if price is not None:
             params["price"] = str(price)
         if price2 is not None:
@@ -81,6 +84,8 @@ class TradeClient(KrakenBaseSpotAPI):
             params["deadline"] = deadline
         if userref is not None:
             params["userref"] = userref
+        if displayvol is not None:
+            params["displayvol"] = displayvol
         return self._request(method="POST", uri="/private/AddOrder", params=params)
 
     def create_order_batch(
@@ -105,7 +110,7 @@ class TradeClient(KrakenBaseSpotAPI):
         volume: str = None,
         price: str = None,
         price2: str = None,
-        oflags=None,
+        oflags: str = None,
         deadline: str = None,
         cancel_response: bool = None,
         validate: str = False,
