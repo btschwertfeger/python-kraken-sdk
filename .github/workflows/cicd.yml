@@ -1,6 +1,3 @@
-# This workflow will install Python dependencies, run tests and lint with a variety of Python versions
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python
-
 name: CI/CD
 
 on:
@@ -12,7 +9,7 @@ on:
       - "**"
 
 concurrency:
-  group: ${{ github.ref }}
+  group: CICD-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -79,19 +76,37 @@ jobs:
       - name: Install package
         run: python setup.py install
 
-      - name: Testing Spot endpoints with pytest
+      - name: Testing Spot REST endpoints
         env:
           SPOT_API_KEY: ${{ secrets.SPOT_API_KEY }}
           SPOT_SECRET_KEY: ${{ secrets.SPOT_SECRET_KEY }}
         run: |
           pytest tests/test_spot_rest.py
 
-      - name: Testing Futures endpoints with pytest
+      - name: Testing Spot websocket client
+        env:
+          SPOT_API_KEY: ${{ secrets.SPOT_API_KEY }}
+          SPOT_SECRET_KEY: ${{ secrets.SPOT_SECRET_KEY }}
+        run: |
+          pytest tests/test_spot_websocket.py
+
+      - name: Testing Futures REST endpoints
         env:
           FUTURES_API_KEY: ${{ secrets.FUTURES_API_KEY }}
           FUTURES_SECRET_KEY: ${{ secrets.FUTURES_SECRET_KEY }}
+          FUTURES_SANDBOX_KEY: ${{ secrets.FUTURES_SANDBOX_KEY }}
+          FUTURES_SANDBOX_SECRET: ${{ secrets.FUTURES_SANDBOX_SECRET }}
         run: |
           pytest tests/test_futures_rest.py
+
+      - name: Testing Futures websocket client
+        env:
+          FUTURES_API_KEY: ${{ secrets.FUTURES_API_KEY }}
+          FUTURES_SECRET_KEY: ${{ secrets.FUTURES_SECRET_KEY }}
+          FUTURES_SANDBOX_KEY: ${{ secrets.FUTURES_SANDBOX_KEY }}
+          FUTURES_SANDBOX_SECRET: ${{ secrets.FUTURES_SANDBOX_SECRET }}
+        run: |
+          pytest tests/test_futures_websocket.py
 
   codecov:
     name: Coverage
@@ -132,6 +147,8 @@ jobs:
             SPOT_SECRET_KEY: ${{ secrets.SPOT_SECRET_KEY }}
             FUTURES_API_KEY: ${{ secrets.FUTURES_API_KEY }}
             FUTURES_SECRET_KEY: ${{ secrets.FUTURES_SECRET_KEY }}
+            FUTURES_SANDBOX_KEY: ${{ secrets.FUTURES_SANDBOX_KEY }}
+            FUTURES_SANDBOX_SECRET: ${{ secrets.FUTURES_SANDBOX_SECRET }}
         run: |
           pip install pytest pytest-cov
           pytest --cov --cov-report=xml

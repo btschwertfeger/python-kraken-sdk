@@ -1,24 +1,23 @@
+#!/usr/bin/env python
+# -*- coding:utf-8 -*-
+# Copyright (C) 2023 Benjamin Thomas Schwertfegerr
+# Github: https://github.com/btschwertfeger
+#
+
 """Module that implements the kraken Spot websocket clients"""
 import asyncio
-import copy
 import json
 import logging
-import sys
-import time
 import traceback
+from copy import deepcopy
 from random import random
+from time import time
 from typing import List
 
 import websockets
 
-try:
-    from kraken.exceptions.exceptions import KrakenExceptions
-    from kraken.spot.ws_client.ws_client import SpotWsClientCl
-except ModuleNotFoundError:
-    print("USING LOCAL MODULE")
-    sys.path.append("/Users/benjamin/repositories/Trading/python-kraken-sdk")
-    from kraken.exceptions.exceptions import KrakenExceptions
-    from kraken.spot.client.ws_client import SpotWsClientCl
+from kraken.exceptions.exceptions import KrakenExceptions
+from kraken.spot.ws_client.ws_client import SpotWsClientCl
 
 
 class ConnectSpotWebsocket:
@@ -69,7 +68,7 @@ class ConnectSpotWebsocket:
 
     async def __run(self, event: asyncio.Event):
         keep_alive = True
-        self.__last_ping = time.time()
+        self.__last_ping = time()
         self.__ws_conn_details = (
             None if not self.__is_auth else self.__client.get_ws_token()
         )
@@ -87,7 +86,7 @@ class ConnectSpotWebsocket:
             self.__reconnect_num = 0
 
             while keep_alive:
-                if time.time() - self.__last_ping > 10:
+                if time() - self.__last_ping > 10:
                     await self.send_ping()
                 try:
                     _msg = await asyncio.wait_for(self.__socket.recv(), timeout=15)
@@ -127,8 +126,8 @@ class ConnectSpotWebsocket:
                     "error": "kraken.exceptions.exceptions.KrakenExceptions.MaxReconnectError"
                 }
             )
-        except Exception as execption:
-            logging.error(f"{execption}: {traceback.format_exc()}")
+        except Exception as exc:
+            logging.error(f"{exc}: {traceback.format_exc()}")
         finally:
             self.__client.exception_occur = True
 
@@ -184,7 +183,7 @@ class ConnectSpotWebsocket:
         await event.wait()
 
         for sub in self.__subscriptions:
-            cpy = copy.deepcopy(sub)
+            cpy = deepcopy(sub)
             private = False
             if (
                 "subscription" in sub
@@ -204,20 +203,20 @@ class ConnectSpotWebsocket:
         """Sends ping to Keaken"""
         msg = {
             "event": "ping",
-            "reqid": int(time.time() * 1000),
+            "reqid": int(time() * 1000),
         }
         await self.__socket.send(json.dumps(msg))
-        self.__last_ping = time.time()
+        self.__last_ping = time()
 
     async def send_message(self, msg, private: bool = False):
         """Sends a message via websocket"""
-        while not self.__socket:
-            await asyncio.sleep(0.4)
-
         if private and not self.__is_auth:
             raise ValueError("Cannot send private message with public websocket.")
 
-        msg["reqid"] = int(time.time() * 1000)
+        while not self.__socket:
+            await asyncio.sleep(0.4)
+
+        msg["reqid"] = int(time() * 1000)
         if private and "subscription" in msg:
             msg["subscription"]["token"] = self.__ws_conn_details["token"]
         elif private:
@@ -357,7 +356,6 @@ class KrakenSpotWSClientCl(SpotWsClientCl):
         super().__init__(key=key, secret=secret, url=url, sandbox=beta)
         self.__callback = callback
         self.__is_auth = key and secret
-
         self.exception_occur = False
         self._pub_conn = ConnectSpotWebsocket(
             client=self,
@@ -438,7 +436,7 @@ class KrakenSpotWSClientCl(SpotWsClientCl):
 
         elif pair is not None:  # public with pair
             for symbol in pair:
-                sub = copy.deepcopy(payload)
+                sub = deepcopy(payload)
                 sub["pair"] = [symbol]
                 await self._pub_conn.send_message(sub, private=False)
 
@@ -488,7 +486,7 @@ class KrakenSpotWSClientCl(SpotWsClientCl):
 
         elif pair is not None:  # public with pair
             for symbol in pair:
-                sub = copy.deepcopy(payload)
+                sub = deepcopy(payload)
                 sub["pair"] = [symbol]
                 await self._pub_conn.send_message(sub, private=False)
 

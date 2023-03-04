@@ -13,15 +13,15 @@ name: "CodeQL"
 
 on:
   push:
-    branches: [ "master" ]
+    branches: [ "master", "development" ]
   pull_request:
     # The branches below must be a subset of the branches above
-    branches: [ "master" ]
+    branches: [ "master", "development" ]
   schedule:
     - cron: '0 0 * * 0'
 
 concurrency:
-  group: ${{ github.ref }}
+  group: CodeQL-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:

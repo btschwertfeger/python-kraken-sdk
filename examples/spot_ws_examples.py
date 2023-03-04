@@ -1,18 +1,18 @@
 """Module that provides an excample usage for the Kraken Spot websocket client"""
+#!/usr/bin/env python
+# -*- coding:utf-8 -*-
+# Copyright (C) 2023 Benjamin Thomas Schwertfegerr
+# Github: https://github.com/btschwertfeger
+#
+
 import asyncio
 import logging
 import logging.config
-import sys
 import time
 
 from dotenv import dotenv_values
 
-try:
-    from kraken.spot.client import KrakenSpotWSClient
-except ModuleNotFoundError:
-    print("USING LOCAL MODULE")
-    sys.path.append("/Users/benjamin/repositories/Trading/python-kraken-sdk")
-    from kraken.spot.client import KrakenSpotWSClient
+from kraken.spot.client import KrakenSpotWSClient
 
 logging.basicConfig(
     format="%(asctime)s %(module)s,line: %(lineno)d %(levelname)8s | %(message)s",
@@ -100,6 +100,6 @@ if __name__ == "__main__":
     except KeyboardInterrupt:
         pass
         # the websocket client will send {'event': 'asyncio.CancelledError'} via on_message
-        # so you can handle the behavior/next actions individually within you bot
+        # so you can handle the behaviour/next actions individually within you bot
     finally:
         loop.close()

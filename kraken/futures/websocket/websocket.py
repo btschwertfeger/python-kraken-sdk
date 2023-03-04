@@ -1,23 +1,22 @@
+#!/usr/bin/env python
+# -*- coding:utf-8 -*-
+# Copyright (C) 2023 Benjamin Thomas Schwertfegerr
+# Github: https://github.com/btschwertfeger
+#
+
 """Module that implements the Kraken Futures websocket client"""
 import asyncio
-import copy
 import json
 import logging
-import sys
 import traceback
+from copy import deepcopy
 from random import random
 from typing import List
 
 import websockets
 
-try:
-    from kraken.exceptions.exceptions import KrakenExceptions
-    from kraken.futures.ws_client.ws_client import FuturesWsClientCl
-except ModuleNotFoundError:
-    print("USING LOCAL MODULE")
-    sys.path.append("/Users/benjamin/repositories/Trading/python-kraken-sdk")
-    from kraken.exceptions.exceptions import KrakenExceptions
-    from kraken.futures.ws_client.ws_client import FuturesWsClientCl
+from kraken.exceptions.exceptions import KrakenExceptions
+from kraken.futures.ws_client.ws_client import FuturesWsClientCl
 
 
 class ConnectFuturesWebsocket:
@@ -168,9 +167,9 @@ class ConnectFuturesWebsocket:
 
         for sub in self.__subscriptions:
             if sub["feed"] in self.__client.get_available_private_subscription_feeds():
-                await self.send_message(copy.deepcopy(sub), private=True)
+                await self.send_message(deepcopy(sub), private=True)
             elif sub["feed"] in self.__client.get_available_public_subscription_feeds():
-                await self.send_message(copy.deepcopy(sub), private=False)
+                await self.send_message(deepcopy(sub), private=False)
             logging.info(f"{sub}: OK")
 
         logging.info(f"Recover subscriptions {self.__subscriptions} done.")
@@ -382,7 +381,7 @@ class KrakenFuturesWSClientCl(FuturesWsClientCl):
         elif feed in self.get_available_public_subscription_feeds():
             if products is not None:
                 for product in products:
-                    sub = copy.deepcopy(message)
+                    sub = deepcopy(message)
                     sub["product_ids"] = [product]
                     await self._conn.send_message(sub, private=False)
             else:
@@ -426,7 +425,7 @@ class KrakenFuturesWSClientCl(FuturesWsClientCl):
         elif feed in self.get_available_public_subscription_feeds():
             if products is not None:
                 for product in products:
-                    sub = copy.deepcopy(message)
+                    sub = deepcopy(message)
                     sub["product_ids"] = [product]
                     await self._conn.send_message(sub, private=False)
             else:
@@ -457,7 +456,12 @@ class KrakenFuturesWSClientCl(FuturesWsClientCl):
     @property
     def is_auth(self) -> bool:
         """Checks if key and secret are set."""
-        return self._key and self._secret
+        return (
+            self._key is not None
+            and self._key != ""
+            and self._secret is not None
+            and self._secret != ""
+        )
 
     def get_active_subscriptions(self) -> List[dict]:
         """Returns the acitve subscriptions."""

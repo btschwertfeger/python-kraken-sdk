@@ -1,11 +1,13 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 # -*- coding:utf-8 -*-
+# Copyright (C) 2023 Benjamin Thomas Schwertfegerr
+# Github: https://github.com/btschwertfeger
+#
 
 """Module that implements the base classes for all clients"""
 import base64
 import hashlib
 import hmac
-import sys
 import time
 import urllib.parse
 from typing import List
@@ -13,12 +15,7 @@ from uuid import uuid1
 
 import requests
 
-try:
-    from kraken.exceptions.exceptions import KrakenExceptions
-except ModuleNotFoundError:
-    print("USING LOCAL MODULE")
-    sys.path.append("/Users/benjamin/repositories/Finance/Kraken/python-kraken-sdk")
-    from kraken.exceptions.exceptions import KrakenExceptions
+from kraken.exceptions.exceptions import KrakenExceptions
 
 
 class KrakenErrorHandler:
@@ -86,7 +83,7 @@ class KrakenBaseSpotAPI:
         self, key: str = "", secret: str = "", url: str = "", sandbox: bool = False
     ):
         if sandbox:
-            raise ValueError("Sandbox not availabel for Kraken Spot trading.")
+            raise ValueError("Sandbox not available for Kraken Spot trading.")
         if url != "":
             self.url = url
         else:
@@ -113,12 +110,10 @@ class KrakenBaseSpotAPI:
             params = {}
         method = method.upper()
         data_json = ""
-        if method in ["GET", "DELETE"]:
+        if method in ("GET", "DELETE"):
             if params:
-                strl = []
-                for key in sorted(params):
-                    strl.append(f"{key}={params[key]}")
-                data_json += "&".join(strl)
+                strl = [f"{key}={params[key]}" for key in sorted(params)]
+                data_json = "&".join(strl)
                 uri += f"?{data_json}".replace(" ", "%20")
 
         headers = {}
@@ -188,10 +183,11 @@ class KrakenBaseSpotAPI:
                 data = response_data.json()
             except ValueError as exc:
                 raise ValueError(response_data.content) from exc
-            else:
-                if "error" in data:
-                    return self.__err_handler.check(data)
-                return data
+
+            if "error" in data:
+                return self.__err_handler.check(data)
+            return data
+
         raise Exception(f"{response_data.status_code} - {response_data.text}")
 
     @property
@@ -234,7 +230,6 @@ class KrakenBaseFuturesAPI:
     def __init__(
         self, key: str = "", secret: str = "", url: str = "", sandbox: bool = False
     ):
-
         self.sandbox = sandbox
         if url:
             self.url = url
@@ -265,18 +260,18 @@ class KrakenBaseFuturesAPI:
 
         post_string: str = ""
         if post_params is not None:
-            strl: List[str] = []
-            for key in sorted(post_params):
-                strl.append(f"{key}={post_params[key]}")
+            strl: List[str] = [
+                f"{key}={post_params[key]}" for key in sorted(post_params)
+            ]
             post_string = "&".join(strl)
         else:
             post_params = {}
 
         query_string: str = ""
         if query_params is not None:
-            strl: List[str] = []
-            for key in sorted(query_params):
-                strl.append(f"{key}={query_params[key]}")
+            strl: List[str] = [
+                f"{key}={query_params[key]}" for key in sorted(query_params)
+            ]
             query_string = "&".join(strl).replace(" ", "%20")
         else:
             query_params = {}
@@ -361,13 +356,13 @@ class KrakenBaseFuturesAPI:
                 data = response_data.json()
             except ValueError as exc:
                 raise ValueError(response_data.content) from exc
-            else:
-                if "error" in data:
-                    return self.__err_handler.check(data)
-                if "sendStatus" in data:
-                    return self.__err_handler.check_send_status(data)
-                if "batchStatus" in data:
-                    return self.__err_handler.check_batch_status(data)
-                return data
-        else:
-            raise Exception(f"{response_data.status_code} - {response_data.text}")
+
+            if "error" in data:
+                return self.__err_handler.check(data)
+            if "sendStatus" in data:
+                return self.__err_handler.check_send_status(data)
+            if "batchStatus" in data:
+                return self.__err_handler.check_batch_status(data)
+            return data
+
+        raise Exception(f"{response_data.status_code} - {response_data.text}")

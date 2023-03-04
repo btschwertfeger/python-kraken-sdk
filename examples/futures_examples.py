@@ -1,17 +1,16 @@
+#!/usr/bin/env python
+# -*- coding:utf-8 -*-
+# Copyright (C) 2023 Benjamin Thomas Schwertfegerr
+# Github: https://github.com/btschwertfeger
+#
+
 """Module that implements some example usage for the Kraken Futures REST clients"""
-import sys
+import logging
 import time
 
-try:
-    from kraken.futures.client import Funding, Market, Trade, User
-except ModuleNotFoundError:
-    print("USING LOCAL MODULE")
-    sys.path.append("/Users/benjamin/repositories/Finance/kraken/python-kraken-sdk")
-    from kraken.futures.client import Market, User, Trade, Funding
-
-import logging
-
 from dotenv import dotenv_values
+
+from kraken.futures.client import Funding, Market, Trade, User
 
 logging.basicConfig(
     format="%(asctime)s %(module)s,line: %(lineno)d %(levelname)8s | %(message)s",

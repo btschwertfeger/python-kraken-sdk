@@ -1,3 +1,9 @@
+#!/usr/bin/env python
+# -*- coding:utf-8 -*-
+# Copyright (C) 2023 Benjamin Thomas Schwertfegerr
+# Github: https://github.com/btschwertfeger
+#
+
 """Module that implements the Kraken Futures market client"""
 from kraken.base_api.base_api import KrakenBaseFuturesAPI
 
@@ -21,8 +27,8 @@ class MarketClient(KrakenBaseFuturesAPI):
         """https://docs.futures.kraken.com/#http-api-charts-ohlc-get-ohlc
         https://support.kraken.com/hc/en-us/articles/4403284627220-OHLC
         """
-        ttypes = ["spot", "mark", "trade"]
-        resolutions = ["1m", "5m", "15m", "30m", "1h", "4h", "12h", "1d", "1w"]
+        ttypes = ("spot", "mark", "trade")
+        resolutions = ("1m", "5m", "15m", "30m", "1h", "4h", "12h", "1d", "1w")
         if tick_type not in ttypes:
             raise ValueError(f"tick_type must be in {ttypes}")
         if resolution is not None and resolution not in resolutions:
