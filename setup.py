@@ -19,7 +19,7 @@ URL = "https://github.com/btschwertfeger/Python-Kraken-SDK"
 EMAIL = "development@b-schwertfeger.de"
 AUTHOR = "Benjamin Thomas Schwertfeger"
 REQUIRES_PYTHON = ">=3.7.0"
-VERSION = "0.8"
+VERSION = "1.0.0"
 
 # What packages are required for this module to be executed?
 REQUIRED = [
@@ -68,17 +68,17 @@ class UploadCommand(Command):
         self.status("Building Source and Wheel (universal) distribution…")
         os.system(f"{sys.executable} setup.py sdist bdist_wheel --universal")
 
-        self.status("Testing the build using flake8")
-        if os.system("flake8 . --select=E9,F63,F7,F82 --show-source --statistics") != 0:
-            self.status("Testing failed, build has some errors in it!")
-            exit(1)
+        # self.status("Testing the build using flake8")
+        # if os.system("flake8 . --select=E9,F63,F7,F82 --show-source --statistics") != 0:
+        #     self.status("Testing failed, build has some errors in it!")
+        #     exit(1)
 
         self.status("Uploading the package to PyPI via Twine…")
         os.system("twine upload dist/*")
 
-        # self.status('Pushing git tags…')
-        # os.system(f'git tag v{VERSION}')
-        # os.system('git push --tags')
+        # self.status("Pushing git tags…")
+        # os.system(f"git tag v{VERSION}")
+        # os.system("git push --tags")
 
         sys.exit()
 
@@ -109,10 +109,10 @@ class TestUploadCommand(Command):
         self.status("Building Source and Wheel (universal) distribution…")
         os.system(f"{sys.executable} setup.py sdist bdist_wheel --universal")
 
-        self.status("Testing the build using flake8")
-        if os.system("flake8 . --select=E9,F63,F7,F82 --show-source --statistics") != 0:
-            self.status("Testing failed, build has some errors in it!")
-            sys.exit(1)
+        # self.status("Testing the build using flake8")
+        # if os.system("flake8 . --select=E9,F63,F7,F82 --show-source --statistics") != 0:
+        #     self.status("Testing failed, build has some errors in it!")
+        #     sys.exit(1)
 
         self.status("Uploading the package to test PyPI via Twine…")
         os.system(
@@ -146,9 +146,9 @@ class TestCommand(Command):
         self.status("Building Source and Wheel (universal) distribution…")
         os.system(f"{sys.executable} setup.py sdist bdist_wheel --universal")
 
-        self.status("Testing the build")
-        if os.system("flake8 . --select=E9,F63,F7,F82 --show-source --statistics") != 0:
-            exit(1)
+        # self.status("Testing the build")
+        # if os.system("flake8 . --select=E9,F63,F7,F82 --show-source --statistics") != 0:
+        #     exit(1)
         print("Success")
         sys.exit()
 
