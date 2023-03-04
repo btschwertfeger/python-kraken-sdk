@@ -10,6 +10,8 @@ import random
 import unittest
 from time import sleep
 
+import pytest
+
 from kraken.exceptions.exceptions import KrakenExceptions
 from kraken.futures.client import Funding, Market, Trade, User
 
@@ -89,6 +91,14 @@ class MarketTests(unittest.TestCase):
             dict,
         )
 
+        with pytest.raises(ValueError):  # wrong tick type
+            self.__market.get_ohlc(symbol="XBTUSDT", resolution="240", tick_type="fail")
+
+        with pytest.raises(ValueError):  # wrong resolution
+            self.__market.get_ohlc(
+                symbol="XBTUSDT", resolution="1234", tick_type="trade"
+            )
+
     def test_get_tick_types(self) -> None:
         assert isinstance(self.__market.get_tick_types(), list)
 
@@ -103,6 +113,9 @@ class MarketTests(unittest.TestCase):
 
     def test_get_fee_schedules(self) -> None:
         assert is_success(self.__market.get_fee_schedules())
+
+    def test_get_fee_schedules_vol(self) -> None:
+        assert is_success(self.__auth_market.get_fee_schedules_vol())
 
     def test_get_orderbook(self) -> None:
         # assert type(market.get_orderbook()) == dict # raises 500-INTERNAL_SERVER_ERROR on Kraken, but symbol is optional as described in the API documentation (Dec, 2022)
@@ -125,6 +138,9 @@ class MarketTests(unittest.TestCase):
         assert is_success(
             self.__market.get_historical_funding_rates(symbol="PI_XBTUSD")
         )
+
+    def test_get_leverage_preference(self) -> None:
+        assert is_not_error(self.__auth_market.get_leverage_preference())
 
     @unittest.skip(
         "Skipping Futures set_leverage_preference endpoint, because this needs full access without sandbox environment"
@@ -159,6 +175,9 @@ class MarketTests(unittest.TestCase):
                         self.__auth_market.set_leverage_preference(symbol="PF_XBTUSD")
                     )
                     break
+
+    def test_get_pnl_preference(self) -> None:
+        assert is_not_error(self.__auth_market.get_pnl_preference())
 
     @unittest.skip(
         "Skipping Futures set_pnl_preference endpoint, because this needs full access without sandbox environment"
@@ -199,14 +218,14 @@ class MarketTests(unittest.TestCase):
     def test_get_public_execution_events(self) -> None:
         assert is_not_error(
             self.__market.get_public_execution_events(
-                tradeable="PF_SOLUSD", since=1668989233
+                tradeable="PF_SOLUSD", since=1668989233, before=1668999999
             )
         )
 
     def get_public_order_events(self) -> None:
         assert is_not_error(
             self.__market.get_public_order_events(
-                tradeable="PF_SOLUSD", since=1668989233
+                tradeable="PF_SOLUSD", since=1668989233, sort="asc"
             )
         )
 
@@ -318,9 +337,6 @@ class TradeTests(unittest.TestCase):
     def test_cancel_all_orders(self) -> None:
         assert is_success(self.__auth_trade.cancel_all_orders(symbol="pi_xbtusd"))
         assert is_success(self.__auth_trade.cancel_all_orders())
-
-    def tearDown(self) -> None:
-        return super().tearDown()
 
 
 class FundingTests(unittest.TestCase):

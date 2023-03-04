@@ -11,6 +11,8 @@ import time
 import unittest
 from datetime import datetime, timezone
 
+import pytest
+
 from kraken.exceptions.exceptions import KrakenExceptions
 from kraken.spot.client import Funding, Market, Staking, Trade, User
 
