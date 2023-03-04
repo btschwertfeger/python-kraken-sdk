@@ -456,7 +456,12 @@ class KrakenFuturesWSClientCl(FuturesWsClientCl):
     @property
     def is_auth(self) -> bool:
         """Checks if key and secret are set."""
-        return self._key and self._secret
+        return (
+            self._key is not None
+            and self._key != ""
+            and self._secret is not None
+            and self._secret != ""
+        )
 
     def get_active_subscriptions(self) -> List[dict]:
         """Returns the acitve subscriptions."""
