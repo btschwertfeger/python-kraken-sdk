@@ -4,7 +4,7 @@
 
 [![GitHub](https://badgen.net/badge/icon/github?icon=github&label)](https://github.com/btschwertfeger/python-kraken-sdk)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-orange.svg)](https://www.gnu.org/licenses/gpl-3.0)
-[![Generic badge](https://img.shields.io/badge/python-3.7|3.8|3.9|3.10|3.11-blue.svg)](https://shields.io/)
+[![Generic badge](https://img.shields.io/badge/python-3.7_|_3.8_|_3.9_|_3.10_|_3.11-blue.svg)](https://shields.io/)
 [![Downloads](https://static.pepy.tech/personalized-badge/python-kraken-sdk?period=total&units=abbreviation&left_color=grey&right_color=orange&left_text=downloads)](https://pepy.tech/project/python-kraken-sdk)
 
 ![ql-workflow](https://github.com/btschwertfeger/kraken-python-sdk/actions/workflows/codeql.yml/badge.svg)

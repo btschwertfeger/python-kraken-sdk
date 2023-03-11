@@ -1,9 +1,9 @@
-"""Module that provides an excample usage for the Kraken Spot websocket client"""
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-# Copyright (C) 2023 Benjamin Thomas Schwertfegerr
+# Copyright (C) 2023 Benjamin Thomas Schwertfeger
 # Github: https://github.com/btschwertfeger
 #
+"""Module that provides an excample usage for the Kraken Spot websocket client"""
 
 import asyncio
 import logging
