@@ -8,9 +8,8 @@
 import asyncio
 import logging
 import logging.config
+import os
 import time
-
-from dotenv import dotenv_values
 
 from kraken.futures.client import KrakenFuturesWSClient
 
@@ -27,8 +26,8 @@ logging.getLogger("urllib3").setLevel(logging.WARNING)
 async def main() -> None:
     """Create bot and subscribe to topics/feeds"""
 
-    key = dotenv_values(".env")["Futures_API_KEY"]
-    secret = dotenv_values(".env")["Futures_SECRET_KEY"]
+    key = os.getenv("Futures_API_KEY")
+    secret = os.getenv("Futures_SECRET_KEY")
 
     # ___Custom_Trading_Bot__________
     class Bot(KrakenFuturesWSClient):
