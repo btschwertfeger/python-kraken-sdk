@@ -8,12 +8,12 @@
 import asyncio
 import logging
 import logging.config
+import os
 import sys
 import traceback
 
 import requests
 import urllib3
-from dotenv import dotenv_values
 
 from kraken.exceptions.exceptions import KrakenExceptions
 from kraken.futures.client import Funding, KrakenFuturesWSClient, Market, Trade, User
@@ -185,8 +185,8 @@ class ManagedBot:
 def main() -> None:
     """Main"""
     bot_config = {
-        "key": dotenv_values(".env")["Futures_API_KEY"],
-        "secret": dotenv_values(".env")["Futures_SECRET_KEY"],
+        "key": os.getenv("Futures_API_KEY"),
+        "secret": os.getenv("Futures_SECRET_KEY"),
         "products": ["PI_XBTUSD", "PF_SOLUSD"],
     }
     managed_bot = ManagedBot(config=bot_config)
