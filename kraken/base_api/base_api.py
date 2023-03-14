@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# -*- coding:utf-8 -*-
+# -*- coding: utf-8 -*-
 # Copyright (C) 2023 Benjamin Thomas Schwertfeger
 # Github: https://github.com/btschwertfeger
 #
@@ -188,7 +188,9 @@ class KrakenBaseSpotAPI:
                 return self.__err_handler.check(data)
             return data
 
-        raise Exception(f"{response_data.status_code} - {response_data.text}")
+        raise Exception(
+            f"{response_data.status_code} - {response_data.text}"
+        )  # pylint: disable=W0719
 
     @property
     def return_unique_id(self) -> str:
@@ -365,4 +367,6 @@ class KrakenBaseFuturesAPI:
                 return self.__err_handler.check_batch_status(data)
             return data
 
-        raise Exception(f"{response_data.status_code} - {response_data.text}")
+        raise Exception(
+            f"{response_data.status_code} - {response_data.text}"
+        )  # pylint: disable=W0719
