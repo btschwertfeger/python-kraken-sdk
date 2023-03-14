@@ -1,24 +1,45 @@
 repos:
--   repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v2.3.0
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.4.0
     hooks:
-    -   id: check-yaml
-    -   id: end-of-file-fixer
-    -   id: trailing-whitespace
-    -   id: check-added-large-files
--   repo: https://github.com/psf/black
-    rev: 22.10.0
+      # all available hooks can be found here: https://github.com/pre-commit/pre-commit-hooks/blob/main/.pre-commit-hooks.yaml
+      - id: check-yaml
+      - id: check-ast
+      - id: check-docstring-first
+      - id: check-case-conflict
+      - id: check-merge-conflict
+      - id: check-added-large-files
+        args: ["--maxkb=500"]
+      - id: trailing-whitespace
+      - id: fix-byte-order-marker
+      - id: fix-encoding-pragma
+      - id: requirements-txt-fixer
+      - id: end-of-file-fixer
+      - id: check-executables-have-shebangs
+      - id: detect-private-key
+  - repo: https://github.com/psf/black
+    rev: 23.1.0
     hooks:
-    -   id: black
-- repo: https://github.com/PyCQA/isort
-  rev: 5.12.0
-  hooks:
-  - id: isort
-    args: ["--profile", "black"] # solves conflicts between black and isort
--   repo: https://github.com/pycqa/flake8
-    rev: '6.0.0'
+      - id: black
+  - repo: https://github.com/PyCQA/isort
+    rev: 5.12.0
     hooks:
-    -   id: flake8
-        # exclude: ^examples/
-        # additional_dependencies: [flake8-docstrings]
+      - id: isort
+        args: ["--profile", "black"] # solves conflicts between black and isort
+  - repo: https://github.com/pycqa/flake8
+    rev: 6.0.0
+    hooks:
+      - id: flake8
         args: ["--select=E9,F63,F7,F82", "--show-source", "--statistics"]
+  - repo: https://github.com/pycqa/pylint
+    rev: v2.17.0
+    hooks:
+      - id: pylint
+        name: pylint
+        types: [python]
+        exclude: ^examples/|^tests/|^setup.py$
+        args: ["--rcfile=.pylintrc", "-d", "R0801"] # ignore duplicate code
+  - repo: https://github.com/pre-commit/mirrors-prettier
+    rev: v2.7.1
+    hooks:
+      - id: prettier
