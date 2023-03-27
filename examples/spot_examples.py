@@ -7,9 +7,8 @@
 """Module that implements some example usage for the Kraken Futures REST clients"""
 import logging
 import logging.config
+import os
 import time
-
-from dotenv import dotenv_values
 
 from kraken.spot.client import Funding, Market, Staking, Trade, User
 
@@ -23,8 +22,8 @@ logging.getLogger("requests").setLevel(logging.WARNING)
 logging.getLogger("urllib3").setLevel(logging.WARNING)
 
 
-key = dotenv_values(".env")["API_KEY"]
-secret = dotenv_values(".env")["SECRET_KEY"]
+key = os.getenv("API_KEY")
+secret = os.getenv("SECRET_KEY")
 
 #  _   _  ___ _____ _____
 # | \ | |/ _ \_   _| ____|_
@@ -173,7 +172,7 @@ def funding_examples() -> None:
         print(funding.cancel_widthdraw(asset="DOT", refid="12345"))
         print(
             funding.wallet_transfer(
-                asset="ETH", amount=0.100, from_="Spot Wallet", to="Futures Wallet"
+                asset="ETH", amount=0.100, from_="Spot Wallet", to_="Futures Wallet"
             )
         )
 

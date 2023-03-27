@@ -6,9 +6,8 @@
 
 """Module that implements some example usage for the Kraken Futures REST clients"""
 import logging
+import os
 import time
-
-from dotenv import dotenv_values
 
 from kraken.futures.client import Funding, Market, Trade, User
 
@@ -21,8 +20,8 @@ logging.getLogger().setLevel(logging.INFO)
 logging.getLogger("requests").setLevel(logging.WARNING)
 logging.getLogger("urllib3").setLevel(logging.WARNING)
 
-key = dotenv_values(".env")["Futures_SANDBOX_KEY"]
-secret = dotenv_values(".env")["Futures_SANDBOX_SECRET"]
+key = os.getenv("Futures_SANDBOX_KEY")
+secret = os.getenv("Futures_SANDBOX_SECRET")
 
 #  _   _  ___ _____ _____
 # | \ | |/ _ \_   _| ____|_

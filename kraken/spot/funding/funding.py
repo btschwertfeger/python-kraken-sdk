@@ -25,9 +25,11 @@ class FundingClient(KrakenBaseSpotAPI):
             params={"asset": asset, "method": method, "new": new},
         )
 
-    def get_recend_deposits_status(self, asset: str, method: str = None) -> dict:
+    def get_recend_deposits_status(self, asset: str = None, method: str = None) -> dict:
         """https://docs.kraken.com/rest/#operation/getStatusRecentDeposits"""
-        params = {"asset": asset}
+        params = {}
+        if asset is not None:
+            params["asset"] = asset
         if method is not None:
             params["method"] = method
         return self._request(method="POST", uri="/private/DepositStatus", params=params)
@@ -48,9 +50,11 @@ class FundingClient(KrakenBaseSpotAPI):
             params={"asset": asset, "key": str(key), "amount": str(amount)},
         )
 
-    def get_recend_withdraw_status(self, asset: str, method: str = None) -> dict:
+    def get_recend_withdraw_status(self, asset: str = None, method: str = None) -> dict:
         """https://docs.kraken.com/rest/#operation/getStatusRecentWithdrawals"""
-        params = {"asset": asset}
+        params = {}
+        if asset is not None:
+            params["asset"] = asset
         if method is not None:
             params["method"] = method
         return self._request(

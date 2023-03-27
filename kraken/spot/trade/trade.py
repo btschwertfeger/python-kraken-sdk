@@ -23,6 +23,7 @@ class TradeClient(KrakenBaseSpotAPI):
         price2: str = None,
         trigger: str = None,
         leverage: str = None,
+        reduce_only: bool = False,
         stp_type: str = "cancel-newest",
         oflags: List[str] = None,
         timeinforce: str = None,
@@ -45,6 +46,7 @@ class TradeClient(KrakenBaseSpotAPI):
             "stp_type": stp_type,
             "starttm": starttm,
             "validate": validate,
+            "reduce_only": reduce_only,
         }
         if trigger is not None:
             if ordertype in [
