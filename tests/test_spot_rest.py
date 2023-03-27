@@ -312,7 +312,6 @@ class TradeTests(unittest.TestCase):
                     pair="BTC/EUR",
                     price=0.01,
                     timeinforce="GTC",
-                    reduce_only=True,
                     validate=True,  # important to just test this endpoint without risking money
                 ),
                 dict,
@@ -349,6 +348,7 @@ class TradeTests(unittest.TestCase):
                     price="100",
                     price2="120",
                     leverage="2",
+                    reduce_only=True,
                     userref="12345",
                     close_ordertype="limit",
                     close_price="123",
