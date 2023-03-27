@@ -237,3 +237,11 @@ class UserClient(KrakenBaseSpotAPI):
             uri="/private/RemoveExport",
             params={"id": id_, "type": type_},
         )
+
+    def create_subaccount(self, username: str, email: str) -> dict:
+        """https://docs.kraken.com/rest/#tag/User-Subaccounts"""
+        return self._request(
+            method="POST",
+            uri="/private/CreateSubaccount",
+            params={"username": username, "email": email},
+        )
