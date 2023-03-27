@@ -67,6 +67,28 @@ class UserTests(unittest.TestCase):
             )
         )
 
+    def test_get_trades_info(self) -> None:
+        for params, method in zip(
+            [
+                {"txid": "OXBBSK-EUGDR-TDNIEQ"},
+                {"txid": "OXBBSK-EUGDR-TDNIEQ", "trades": True},
+                {"txid": "OQQYNL-FXCFA-FBFVD7"},
+                {"txid": ["OE3B4A-NSIEQ-5L6HW3", "O23GOI-WZDVD-XWGC3R"]},
+            ],
+            [
+                self.__auth_user.get_trades_info,
+                self.__auth_user.get_trades_info,
+                self.__auth_user.get_trades_info,
+                self.__auth_user.get_trades_info,
+            ],
+        ):
+            try:
+                assert is_not_error(method(**params))
+            except KrakenExceptions.KrakenInvalidOrderError:
+                pass
+            finally:
+                time.sleep(2)
+
     def test_get_orders_info(self) -> None:
         for params, method in zip(
             [
@@ -78,8 +100,8 @@ class UserTests(unittest.TestCase):
             [
                 self.__auth_user.get_orders_info,
                 self.__auth_user.get_orders_info,
-                self.__auth_user.get_trades_info,
-                self.__auth_user.get_trades_info,
+                self.__auth_user.get_orders_info,
+                self.__auth_user.get_orders_info,
             ],
         ):
             try:
@@ -87,9 +109,11 @@ class UserTests(unittest.TestCase):
             except KrakenExceptions.KrakenInvalidOrderError:
                 pass
             finally:
-                time.sleep(1.5)
+                time.sleep(2)
 
     def test_get_trades_history(self) -> None:
+        time.sleep(3)
+
         assert is_not_error(
             self.__auth_user.get_trades_history(type_="all", trades=True)
         )
@@ -228,6 +252,13 @@ class UserTests(unittest.TestCase):
         except ValueError:
             pass
 
+    def test_create_subaccount(self) -> None:
+        # creating subaccounts is only availablle for institutional clients
+        with pytest.raises(KrakenExceptions.KrakenPermissionDeniedError):
+            self.__auth_user.create_subaccount(
+                email="abc@welt.de", username="tomtucker"
+            )
+
     def tearDown(self) -> None:
         return super().tearDown()
 
@@ -341,7 +372,7 @@ class TradeTests(unittest.TestCase):
             assert isinstance(
                 self.__auth_trade.create_order(
                     ordertype="stop-loss",
-                    side="buy",
+                    side="sell",
                     volume="1000",
                     trigger="last",
                     pair="XBTUSD",
@@ -430,12 +461,9 @@ class TradeTests(unittest.TestCase):
             pass
 
     def test_cancel_order(self) -> None:
-        try:
-            assert isinstance(
-                self.__auth_trade.cancel_order(txid="O2JLFP-VYFIW-35ZAAE"), dict
-            )
-        except KrakenExceptions.KrakenPermissionDeniedError:
-            pass
+        # because testing keys are not allowd to trade
+        with pytest.raises(KrakenExceptions.KrakenPermissionDeniedError):
+            self.__auth_trade.cancel_order(txid="OB6JJR-7NZ5P-N5SKCB")
 
     @unittest.skip("Skipping Spot test_cancel_all_orders endpoint")
     def test_cancel_all_orders(self) -> None:
