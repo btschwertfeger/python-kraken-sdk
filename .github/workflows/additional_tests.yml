@@ -6,8 +6,6 @@ name: Additional Test Jobs - Manual Trigger
 
 on:
   workflow_dispatch:
-    branches:
-      - "**"
 
 concurrency:
   group: ADDITIONAL_TESTS-${{ github.ref }}
