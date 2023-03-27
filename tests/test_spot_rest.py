@@ -541,53 +541,50 @@ class FundingTests(unittest.TestCase):
             list,
         )
 
-    @unittest.skip("Skipping Spot test_withdraw_funds endpoint")
+    # @unittest.skip("Skipping Spot test_withdraw_funds endpoint")
     def test_withdraw_funds(self) -> None:
-        try:
+        # CI API Keys are not allowd to withdraw, trade and cancel
+        with pytest.raises(KrakenExceptions.KrakenPermissionDeniedError):
             assert is_not_error(
                 self.__auth_funding.withdraw_funds(
                     asset="XLM", key="enter-withdraw-key", amount=10000000
                 )
             )
-        except KrakenExceptions.KrakenUnknownWithdrawKeyError:
-            pass
 
-    @unittest.skip("Skipping Spot test_get_withdrawal_info endpoint")
+    # @unittest.skip("Skipping Spot test_get_withdrawal_info endpoint")
     def test_get_withdrawal_info(self) -> None:
-        try:
+        # CI API Keys are not allowd to withdraw, trade and cancel
+        with pytest.raises(KrakenExceptions.KrakenPermissionDeniedError):
             assert is_not_error(
                 self.__auth_funding.get_withdrawal_info(
                     asset="XLM", amount=10000000, key="enter-withdraw-key"
                 )
-            )  # idk what `key` is
-        except KrakenExceptions.KrakenUnknownWithdrawKeyError:
-            pass
+            )
 
-    @unittest.skip("Skipping Spot test_get_recend_withdraw_status endpoint")
+    # @unittest.skip("Skipping Spot test_get_recend_withdraw_status endpoint")
     def test_get_recend_withdraw_status(self) -> None:
         assert isinstance(
             self.__auth_funding.get_recend_withdraw_status(asset="XLM"), list
         )
-        try:
+        # CI API Keys are not allowd to withdraw, trade and cancel
+        with pytest.raises(KrakenExceptions.KrakenPermissionDeniedError):
             assert is_not_error(
                 self.__auth_funding.cancel_withdraw(
                     asset="XLM", refid="AUBZC2T-6WMDG2-HYWFC7"
                 )
             )  # only works with real refid
-        except KrakenExceptions.KrakenInvalidReferenceIdError:
-            pass
 
-    @unittest.skip("Skipping Spot test_wallet_transfer endpoint")
+    # @unittest.skip("Skipping Spot test_wallet_transfer endpoint")
     def test_wallet_transfer(self) -> None:
-        try:
+        # CI API Keys are not allowd to withdraw, trade and cancel
+        # this endpoint is broken, even the provided example on the kraken doc does not work
+        with pytest.raises(KrakenExceptions.KrakenInvalidArgumentsError):
             # only works if futures wallet exists
             assert is_not_error(
                 self.__auth_funding.wallet_transfer(
-                    asset="XLM", from_="Spot Wallet", to_="Futures Wallet", amount=10000
+                    asset="XLM", from_="Futures Wallet", to_="Spot Wallet", amount=10000
                 )
             )
-        except KrakenExceptions.KrakenUnknownWithdrawKeyError:
-            pass
 
     def tearDown(self) -> None:
         return super().tearDown()
