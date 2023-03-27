@@ -381,24 +381,25 @@ Note: Authenticated Futures websocket clients can also un/subscribe from/to publ
 
 `kraken.spot.client.User`
 
-| Method                     | Documentation                                                 |
-| -------------------------- | ------------------------------------------------------------- |
-| `get_account_balance`      | https://docs.kraken.com/rest/#operation/getAccountBalance     |
-| `get_balances`             | returns the overall and available balance of a given currency |
-| `get_trade_balance`        | https://docs.kraken.com/rest/#operation/getTradeBalance       |
-| `get_open_orders`          | https://docs.kraken.com/rest/#operation/getOpenOrders         |
-| `get_closed_orders`        | https://docs.kraken.com/rest/#operation/getClosedOrders       |
-| `get_orders_info`          | https://docs.kraken.com/rest/#operation/getOrdersInfo         |
-| `get_trades_history`       | https://docs.kraken.com/rest/#operation/getTradeHistory       |
-| `get_trades_info`          | https://docs.kraken.com/rest/#operation/getTradesInfo         |
-| `get_open_positions`       | https://docs.kraken.com/rest/#operation/getOpenPositions      |
-| `get_ledgers_info`         | https://docs.kraken.com/rest/#operation/getLedgers            |
-| `get_ledgers`              | https://docs.kraken.com/rest/#operation/getLedgersInfo        |
-| `get_trade_volume`         | https://docs.kraken.com/rest/#operation/getTradeVolume        |
-| `request_export_report`    | https://docs.kraken.com/rest/#operation/addExport             |
-| `get_export_report_status` | https://docs.kraken.com/rest/#operation/exportStatus          |
-| `retrieve_export`          | https://docs.kraken.com/rest/#operation/retrieveExport        |
-| `delete_export_report`     | https://docs.kraken.com/rest/#operation/removeExport          |
+| Method                     | Documentation                                                                 |
+| -------------------------- | ----------------------------------------------------------------------------- |
+| `get_account_balance`      | https://docs.kraken.com/rest/#operation/getAccountBalance                     |
+| `get_balances`             | returns the overall and available balance of a given currency                 |
+| `get_trade_balance`        | https://docs.kraken.com/rest/#operation/getTradeBalance                       |
+| `get_open_orders`          | https://docs.kraken.com/rest/#operation/getOpenOrders                         |
+| `get_closed_orders`        | https://docs.kraken.com/rest/#operation/getClosedOrders                       |
+| `get_orders_info`          | https://docs.kraken.com/rest/#operation/getOrdersInfo                         |
+| `get_trades_history`       | https://docs.kraken.com/rest/#operation/getTradeHistory                       |
+| `get_trades_info`          | https://docs.kraken.com/rest/#operation/getTradesInfo                         |
+| `get_open_positions`       | https://docs.kraken.com/rest/#operation/getOpenPositions                      |
+| `get_ledgers_info`         | https://docs.kraken.com/rest/#operation/getLedgers                            |
+| `get_ledgers`              | https://docs.kraken.com/rest/#operation/getLedgersInfo                        |
+| `get_trade_volume`         | https://docs.kraken.com/rest/#operation/getTradeVolume                        |
+| `request_export_report`    | https://docs.kraken.com/rest/#operation/addExport                             |
+| `get_export_report_status` | https://docs.kraken.com/rest/#operation/exportStatus                          |
+| `retrieve_export`          | https://docs.kraken.com/rest/#operation/retrieveExport                        |
+| `delete_export_report`     | https://docs.kraken.com/rest/#operation/removeExport                          |
+| `create_subaccount`        | https://docs.kraken.com/rest/#tag/User-Subaccounts/operation/createSubaccount |
 
 <a name="spottrade"></a>
 

@@ -14,12 +14,12 @@ from setuptools import Command, find_packages, setup
 
 # Package meta-data.
 NAME = "python-kraken-sdk"
-DESCRIPTION = "Collection of clients and methods to interact with the Kraken cryptocurrency exchange."
+DESCRIPTION = "Collection of REST and websocket clients to interact with the Kraken cryptocurrency exchange."
 URL = "https://github.com/btschwertfeger/Python-Kraken-SDK"
 EMAIL = "development@b-schwertfeger.de"
 AUTHOR = "Benjamin Thomas Schwertfeger"
 REQUIRES_PYTHON = ">=3.7.0"
-VERSION = "1.0.0"
+VERSION = "1.0.1"
 
 # What packages are required for this module to be executed?
 REQUIRED = [
