@@ -1,3 +1,9 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+# Copyright (C) 2023 Benjamin Thomas Schwertfeger
+# Github: https://github.com/btschwertfeger
+#
+
 """This module provides the Kraken Futures clients"""
 
 from kraken.futures.funding.funding import FundingClient
