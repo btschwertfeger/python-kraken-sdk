@@ -80,9 +80,19 @@ class UserClient(KrakenBaseSpotAPI):
 
         return self._request(method="POST", uri="/private/ClosedOrders", params=params)
 
-    def get_orders_info(self, txid, trades: bool = False, userref: int = None) -> dict:
+    def get_orders_info(
+        self,
+        txid,
+        trades: bool = False,
+        userref: int = None,
+        consolidate_taker: bool = True,
+    ) -> dict:
         """https://docs.kraken.com/rest/#tag/User-Data/operation/getOrdersInfo"""
-        params = {"txid": txid, "trades": trades}
+        params = {
+            "txid": txid,
+            "trades": trades,
+            "consolidate_taker": consolidate_taker,
+        }
         if isinstance(txid, list):
             params["txid"] = self._to_str_list(txid)
         if userref is not None:
@@ -117,7 +127,10 @@ class UserClient(KrakenBaseSpotAPI):
         return self._request(
             method="POST",
             uri="/private/QueryTrades",
-            params={"trades": trades, "txid": self._to_str_list(txid)},
+            params={
+                "trades": trades,
+                "txid": self._to_str_list(txid),
+            },
         )
 
     def get_open_positions(
