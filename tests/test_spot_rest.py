@@ -72,7 +72,7 @@ class UserTests(unittest.TestCase):
             [
                 {"txid": "OXBBSK-EUGDR-TDNIEQ"},
                 {"txid": "OXBBSK-EUGDR-TDNIEQ", "trades": True},
-                {"txid": "OQQYNL-FXCFA-FBFVD7"},
+                {"txid": "OQQYNL-FXCFA-FBFVD7", "consolidate_taker": True},
                 {"txid": ["OE3B4A-NSIEQ-5L6HW3", "O23GOI-WZDVD-XWGC3R"]},
             ],
             [
@@ -312,6 +312,7 @@ class TradeTests(unittest.TestCase):
                     pair="BTC/EUR",
                     price=0.01,
                     timeinforce="GTC",
+                    reduce_only=True,
                     validate=True,  # important to just test this endpoint without risking money
                 ),
                 dict,
@@ -531,8 +532,12 @@ class FundingTests(unittest.TestCase):
         )
 
     def test_get_recend_deposits_status(self) -> None:
+        assert isinstance(self.__auth_funding.get_recend_deposits_status(), list)
         assert isinstance(
             self.__auth_funding.get_recend_deposits_status(asset="XLM"), list
+        )
+        assert isinstance(
+            self.__auth_funding.get_recend_deposits_status(method="Stellar XLM"), list
         )
         assert isinstance(
             self.__auth_funding.get_recend_deposits_status(
@@ -565,8 +570,12 @@ class FundingTests(unittest.TestCase):
 
     @unittest.skip("Skipping Spot test_get_recend_withdraw_status endpoint")
     def test_get_recend_withdraw_status(self) -> None:
+        assert isinstance(self.__auth_funding.get_recend_withdraw_status(), list)
         assert isinstance(
             self.__auth_funding.get_recend_withdraw_status(asset="XLM"), list
+        )
+        assert isinstance(
+            self.__auth_funding.get_recend_withdraw_status(method="Stellar XLM"), list
         )
         try:
             assert is_not_error(
