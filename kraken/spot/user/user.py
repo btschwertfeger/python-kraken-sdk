@@ -24,8 +24,6 @@ class UserClient(KrakenBaseSpotAPI):
             if symbol in curr_opts:
                 balance = float(value)
                 break
-        if balance == float(0):
-            raise ValueError("Currency not found!")
 
         available_balance = balance
         for order in self.get_open_orders()["open"].values():
