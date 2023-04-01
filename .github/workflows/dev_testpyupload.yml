@@ -7,7 +7,7 @@ on:
 
 jobs:
   UploadTestPyPI:
-    # if: success() && github.ref == 'refs/heads/master'
+    if: success() && github.ref == 'refs/heads/master'
     name: Upload current development version to Test PyPI
     uses: ./.github/workflows/_pypi_publish.yml
     with:
