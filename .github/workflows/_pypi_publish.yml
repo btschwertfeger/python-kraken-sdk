@@ -12,10 +12,11 @@ name: PyPI Publish
 on:
   workflow_call:
     inputs:
-      API_TOKEN:
+      REPOSITORY_URL:
         type: string
         required: true
-      REPOSITORY_URL:
+    secrets:
+      API_TOKEN:
         type: string
         required: true
 
@@ -46,5 +47,5 @@ jobs:
       - name: Publish package distributions to Test PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
-          API_TOKEN: ${{ inputs.API_TOKEN }}
+          API_TOKEN: ${{ secrets.API_TOKEN }}
           REPOSITORY_URL: ${{ inputs.repository-url }}
