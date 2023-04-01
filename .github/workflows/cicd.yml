@@ -17,161 +17,38 @@ concurrency:
 
 jobs:
   pre-commit:
-    name: Pre-Commit
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - uses: pre-commit/action@v3.0.0
+    uses: ./.github/workflows/templates/pre_commit.yml
 
   build:
-    name: Build
     needs: [pre-commit]
-    runs-on: ${{ matrix.os }}
+    uses: ./.github/workflows/templates/build.yml
     strategy:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
         python-version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v4
-        with:
-          python-version: ${{ matrix.python-version }}
-
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          python -m pip install -r requirements.txt
-          python -m pip install flake8 build
-
-      - name: Lint with flake8
-        run: |
-          # stop the build if there are Python syntax errors or undefined names
-          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-          # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
-          flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
-
-      - name: Build the package
-        run: python -m build .
+    with:
+      os: ${{ matrix.os }}
+      python-version: ${{ matrix.python-version }}
 
   test:
-    name: Test
     needs: [build]
-    runs-on: ${{ matrix.os }}
+    uses: ./.github/workflows/templates/test.yml
     strategy:
-      fail-fast: false
       max-parallel: 1 # to avoid failing tests because of API Rate limits
+      fail-fast: false
       matrix:
-        os: [ubuntu-latest] #, macos-latest, windows-latest]
+        os: [ubuntu-latest]
         python-version: ["3.11"]
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v4
-        with:
-          python-version: ${{ matrix.python-version }}
-
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          python -m pip install -r requirements.txt
-          python -m pip install pytest
-
-      - name: Install package
-        run: python -m pip install .
-
-      - name: Testing Spot REST endpoints
-        env:
-          SPOT_API_KEY: ${{ secrets.SPOT_API_KEY }}
-          SPOT_SECRET_KEY: ${{ secrets.SPOT_SECRET_KEY }}
-        run: |
-          pytest tests/test_spot_rest.py
-
-      - name: Testing Spot websocket client
-        env:
-          SPOT_API_KEY: ${{ secrets.SPOT_API_KEY }}
-          SPOT_SECRET_KEY: ${{ secrets.SPOT_SECRET_KEY }}
-        run: |
-          pytest tests/test_spot_websocket.py
-
-      - name: Testing Futures REST endpoints
-        env:
-          FUTURES_API_KEY: ${{ secrets.FUTURES_API_KEY }}
-          FUTURES_SECRET_KEY: ${{ secrets.FUTURES_SECRET_KEY }}
-          FUTURES_SANDBOX_KEY: ${{ secrets.FUTURES_SANDBOX_KEY }}
-          FUTURES_SANDBOX_SECRET: ${{ secrets.FUTURES_SANDBOX_SECRET }}
-        run: |
-          pytest tests/test_futures_rest.py
-
-      - name: Testing Futures websocket client
-        env:
-          FUTURES_API_KEY: ${{ secrets.FUTURES_API_KEY }}
-          FUTURES_SECRET_KEY: ${{ secrets.FUTURES_SECRET_KEY }}
-          FUTURES_SANDBOX_KEY: ${{ secrets.FUTURES_SANDBOX_KEY }}
-          FUTURES_SANDBOX_SECRET: ${{ secrets.FUTURES_SANDBOX_SECRET }}
-        run: |
-          pytest tests/test_futures_websocket.py
+    with:
+      os: ${{ matrix.os }}
+      python-version: ${{ matrix.python-version }}
+    secrets: inherit
 
   codecov:
-    name: Coverage
     needs: [test]
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      max-parallel: 1 # to avoid failing tests because of API Rate limits
-      matrix:
-        os: [ubuntu-latest] #, macos-latest, windows-latest]
-        python-version: ["3.11"]
-
-    env:
-      OS: ${{ matrix.os }}
-      PYTHON: ${{ matrix.python-version }}
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v4
-        with:
-          python-version: ${{ matrix.python-version }}
-
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          python -m pip install -r requirements.txt
-          python -m pip install pytest
-
-      - name: Install package
-        run: python -m pip install .
-
-      - name: Generate coverage report
-        env:
-          SPOT_API_KEY: ${{ secrets.SPOT_API_KEY }}
-          SPOT_SECRET_KEY: ${{ secrets.SPOT_SECRET_KEY }}
-          FUTURES_API_KEY: ${{ secrets.FUTURES_API_KEY }}
-          FUTURES_SECRET_KEY: ${{ secrets.FUTURES_SECRET_KEY }}
-          FUTURES_SANDBOX_KEY: ${{ secrets.FUTURES_SANDBOX_KEY }}
-          FUTURES_SANDBOX_SECRET: ${{ secrets.FUTURES_SANDBOX_SECRET }}
-        run: |
-          pip install pytest pytest-cov
-          pytest --cov --cov-report=xml
-
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v3
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          files: coverage.xml
-          env_vars: OS,PYTHON
-          fail_ci_if_error: false
-          flags: unittests
-          name: codecov-umbrella
-          verbose: true
+    uses: ./.github/workflows/templates/codecov.yml
+    with:
+      os: "ubuntu-latest"
+      python-version: "3.11"
+    secrets: inherit

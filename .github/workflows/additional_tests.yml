@@ -6,6 +6,16 @@ name: Additional Test Jobs
 
 on:
   workflow_dispatch:
+    # inputs:
+    #   os:
+    #     type: choice
+    #     description: OS image to test with
+    #     options: ["macos-latest", "ubuntu-latest", "windows-latest"]
+    #     required: true
+    #   python-version:
+    #     type: choice
+    #     description: Python version to run the tests
+    #     options: ["3.7", "3.8", "3.9", "3.10", "3.11"]
 
 concurrency:
   group: ADDITIONAL_TESTS-${{ github.ref }}
@@ -13,61 +23,14 @@ concurrency:
 
 jobs:
   test:
-    name: Test
-    runs-on: ${{ matrix.os }}
+    uses: ./.github/workflows/templates/test.yml
     strategy:
       fail-fast: false
       max-parallel: 1 # to avoid failing tests because of API Rate limits
       matrix:
-        os: [ubuntu-latest] #, macos-latest, windows-latest]
-        python-version: ["3.7", "3.8", "3.9", "3.10"]
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v4
-        with:
-          python-version: ${{ matrix.python-version }}
-
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          python -m pip install pytest
-          python -m pip install -r requirements.txt
-
-      - name: Install package
-        run: python setup.py install
-
-      - name: Testing Spot REST endpoints
-        env:
-          SPOT_API_KEY: ${{ secrets.SPOT_API_KEY }}
-          SPOT_SECRET_KEY: ${{ secrets.SPOT_SECRET_KEY }}
-        run: |
-          pytest tests/test_spot_rest.py
-
-      - name: Testing Spot websocket client
-        env:
-          SPOT_API_KEY: ${{ secrets.SPOT_API_KEY }}
-          SPOT_SECRET_KEY: ${{ secrets.SPOT_SECRET_KEY }}
-        run: |
-          pytest tests/test_spot_websocket.py
-
-      - name: Testing Futures REST endpoints
-        env:
-          FUTURES_API_KEY: ${{ secrets.FUTURES_API_KEY }}
-          FUTURES_SECRET_KEY: ${{ secrets.FUTURES_SECRET_KEY }}
-          FUTURES_SANDBOX_KEY: ${{ secrets.FUTURES_SANDBOX_KEY }}
-          FUTURES_SANDBOX_SECRET: ${{ secrets.FUTURES_SANDBOX_SECRET }}
-        run: |
-          pytest tests/test_futures_rest.py
-
-      - name: Testing Futures websocket client
-        env:
-          FUTURES_API_KEY: ${{ secrets.FUTURES_API_KEY }}
-          FUTURES_SECRET_KEY: ${{ secrets.FUTURES_SECRET_KEY }}
-          FUTURES_SANDBOX_KEY: ${{ secrets.FUTURES_SANDBOX_KEY }}
-          FUTURES_SANDBOX_SECRET: ${{ secrets.FUTURES_SANDBOX_SECRET }}
-        run: |
-          pytest tests/test_futures_websocket.py
+        os: ["macos-latest", "ubuntu-latest", "windows-latest"]
+        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
+    with:
+      os: ${{ matrix.os }}
+      python-version: ${{ matrix.python-version }}
+    secrets: inherit

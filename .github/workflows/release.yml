@@ -5,6 +5,9 @@ on:
     types: [published]
 
 jobs:
+  pre-commit:
+    uses: ./.github/workflows/templates/pre_commit.yml
+
   # create-tag:
   #   runs-on: ubuntu-latest
   #   steps:
@@ -18,8 +21,24 @@ jobs:
   #     - run: |
   #         echo "Tag already present: ${{ env.TAG_EXISTS }}"
 
+  test:
+    name: Test the package
+    needs: [pre-commit]
+    uses: ./.github/workflows/templates/test.yml
+    strategy:
+      max-parallel: 1 # to avoid failing tests because of API Rate limits
+      fail-fast: false
+      matrix:
+        os: ["macos-latest", "ubuntu-latest", "windows-latest"]
+        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
+    with:
+      os: ${{ matrix.os }}
+      python-version: ${{ matrix.python-version }}
+    secrets: inherit
+
   pypi-publish:
     name: Upload release to PyPI
+    needs: [test]
     runs-on: ubuntu-latest
     permissions:
       id-token: write # IMPORTANT: this permission is mandatory for OIDC publishing
