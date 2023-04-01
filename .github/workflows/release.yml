@@ -6,7 +6,7 @@ on:
 
 jobs:
   pre-commit:
-    uses: ./.github/workflows/templates/pre_commit.yml
+    uses: ./.github/workflows/pre_commit.yml
 
   # create-tag:
   #   runs-on: ubuntu-latest
@@ -24,7 +24,7 @@ jobs:
   test:
     name: Test the package
     needs: [pre-commit]
-    uses: ./.github/workflows/templates/test.yml
+    uses: ./.github/workflows/test.yml
     strategy:
       max-parallel: 1 # to avoid failing tests because of API Rate limits
       fail-fast: false

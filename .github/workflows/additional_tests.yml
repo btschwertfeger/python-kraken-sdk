@@ -23,7 +23,7 @@ concurrency:
 
 jobs:
   test:
-    uses: ./.github/workflows/templates/test.yml
+    uses: ./.github/workflows/test.yml
     strategy:
       fail-fast: false
       max-parallel: 1 # to avoid failing tests because of API Rate limits

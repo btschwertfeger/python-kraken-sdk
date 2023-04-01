@@ -17,11 +17,11 @@ concurrency:
 
 jobs:
   pre-commit:
-    uses: ./.github/workflows/templates/pre_commit.yml
+    uses: ./.github/workflows/pre_commit.yml
 
   build:
     needs: [pre-commit]
-    uses: ./.github/workflows/templates/build.yml
+    uses: ./.github/workflows/build.yml
     strategy:
       fail-fast: false
       matrix:
@@ -33,7 +33,7 @@ jobs:
 
   test:
     needs: [build]
-    uses: ./.github/workflows/templates/test.yml
+    uses: ./.github/workflows/test.yml
     strategy:
       max-parallel: 1 # to avoid failing tests because of API Rate limits
       fail-fast: false
@@ -47,7 +47,7 @@ jobs:
 
   codecov:
     needs: [test]
-    uses: ./.github/workflows/templates/codecov.yml
+    uses: ./.github/workflows/codecov.yml
     with:
       os: "ubuntu-latest"
       python-version: "3.11"
