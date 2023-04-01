@@ -1,0 +1,53 @@
+# -*- coding: utf-8 -*-
+# Copyright (C) 2023 Benjamin Thomas Schwertfeger
+# Github: https://github.com/btschwertfeger
+#
+# Template workflow to build the project and publish
+# the package to PyPI. It can be used to publish on the
+# test index and the "live" PyPI index.
+#
+
+name: PyPI Publish
+
+on:
+  workflow_call:
+    inputs:
+      REPOSITORY_URL:
+        type: string
+        required: true
+    secrets:
+      API_TOKEN:
+        required: true
+
+jobs:
+  PyPI-Publish:
+    name: Upload to ${{ inputs.REPOSITORY_URL }}
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write # IMPORTANT: this permission is mandatory for OIDC publishing
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0 # IMPORTANT: otherwise the current tag does not get fetched and the build version gets worse
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.11
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt
+          python -m pip install build
+
+      - name: Build the package
+        run: python -m build .
+
+      - name: Publish package distributions to Test PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          password: ${{ secrets.API_TOKEN }}
+          repository-url: ${{ inputs.REPOSITORY_URL }}

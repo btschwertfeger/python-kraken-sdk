@@ -2,64 +2,53 @@
 # Copyright (C) 2023 Benjamin Thomas Schwertfeger
 # Github: https://github.com/btschwertfeger
 #
-# Workflow to apply pre-commit, build, test and upload the package
-# to the test index of PyPI.
+# Workflow that gets triggered, when a release was created in the
+# Github UI. This enables the upload of the python-kraken-sdk
+# for the latest tag to PyPI.
+#
 
-name: CI/CD
+name: PyPI Production Release
 
 on:
-  push:
-    branches:
-      - "**"
-
-concurrency:
-  group: CICD-${{ github.ref }}
-  cancel-in-progress: true
+  release:
+    types: [created]
 
 jobs:
   Pre-Commit:
     uses: ./.github/workflows/_pre_commit.yml
 
   Build:
-    needs: [Pre-Commit]
     uses: ./.github/workflows/_build.yml
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        os: ["macos-latest", "ubuntu-latest", "windows-latest"]
         python-version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
     with:
       os: ${{ matrix.os }}
       python-version: ${{ matrix.python-version }}
 
   Test:
+    name: Test the package
     needs: [Build]
     uses: ./.github/workflows/_test.yml
     strategy:
       max-parallel: 1 # to avoid failing tests because of API Rate limits
       fail-fast: false
       matrix:
-        os: [ubuntu-latest]
-        python-version: ["3.11"]
+        os: ["macos-latest", "ubuntu-latest", "windows-latest"]
+        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
     with:
       os: ${{ matrix.os }}
       python-version: ${{ matrix.python-version }}
     secrets: inherit
 
-  UploadTestPyPI:
-    if: success() && github.ref == 'refs/heads/master'
+  UploadPyPI:
     needs: [Test]
-    name: Upload current development version to Test PyPI
+    if: success() && github.ref == 'refs/heads/master'
+    name: Upload the current release to PyPI
     uses: ./.github/workflows/_pypi_publish.yml
     with:
-      REPOSITORY_URL: https://test.pypi.org/legacy/
+      REPOSITORY_URL: https://pypi.org/simple
     secrets:
-      API_TOKEN: ${{ secrets.TEST_PYPI_API_TOKEN }}
-
-  CodeCov:
-    needs: [Test]
-    uses: ./.github/workflows/_codecov.yml
-    with:
-      os: "ubuntu-latest"
-      python-version: "3.11"
-    secrets: inherit
+      API_TOKEN: ${{ secrets.PYPI_API_TOKEN }}
