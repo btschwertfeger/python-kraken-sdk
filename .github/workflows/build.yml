@@ -11,7 +11,7 @@ on:
         required: true
 
 jobs:
-  build:
+  Build:
     runs-on: ${{ inputs.os }}
     steps:
       - name: Checkout repository

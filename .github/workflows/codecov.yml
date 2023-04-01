@@ -11,7 +11,7 @@ on:
         required: true
 
 jobs:
-  codecov:
+  CodeCov:
     name: Coverage
     runs-on: ${{ inputs.os }}
     env:

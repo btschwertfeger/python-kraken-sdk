@@ -5,23 +5,21 @@ on:
     types: [published]
 
 jobs:
-  pre-commit:
+  Pre-Commit:
     uses: ./.github/workflows/pre_commit.yml
 
-  # create-tag:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v3
-  #     - uses: rickstaa/action-create-tag@v1
-  #       id: "tag_create"
-  #       with:
-  #         tag: { { github.event.inputs.tag } }
-  #         tag_exists_error: true
-  #         message: { { github.event.inputs.tag } }
-  #     - run: |
-  #         echo "Tag already present: ${{ env.TAG_EXISTS }}"
+  Build:
+    uses: ./.github/workflows/build.yml
+    strategy:
+      fail-fast: false
+      matrix:
+        os: ["macos-latest", "ubuntu-latest", "windows-latest"]
+        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
+    with:
+      os: ${{ matrix.os }}
+      python-version: ${{ matrix.python-version }}
 
-  test:
+  Test:
     name: Test the package
     needs: [pre-commit]
     uses: ./.github/workflows/test.yml

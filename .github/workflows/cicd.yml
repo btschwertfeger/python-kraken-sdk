@@ -16,10 +16,10 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  pre-commit:
+  Pre-Commit:
     uses: ./.github/workflows/pre_commit.yml
 
-  build:
+  Build:
     needs: [pre-commit]
     uses: ./.github/workflows/build.yml
     strategy:
@@ -31,7 +31,7 @@ jobs:
       os: ${{ matrix.os }}
       python-version: ${{ matrix.python-version }}
 
-  test:
+  Test:
     needs: [build]
     uses: ./.github/workflows/test.yml
     strategy:
@@ -45,7 +45,7 @@ jobs:
       python-version: ${{ matrix.python-version }}
     secrets: inherit
 
-  codecov:
+  CodeCov:
     needs: [test]
     uses: ./.github/workflows/codecov.yml
     with:

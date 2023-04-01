@@ -11,7 +11,8 @@ on:
         required: true
 
 jobs:
-  test:
+  Test:
+    name: Test ${{ inputs.os }} ${{ inputs.python-version }}
     runs-on: ${{ inputs.os }}
     steps:
       - name: Checkout repository
