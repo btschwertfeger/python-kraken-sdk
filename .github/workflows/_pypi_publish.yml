@@ -46,5 +46,5 @@ jobs:
       - name: Publish package distributions to Test PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
-          API_TOKEN: ${{ secrets.API_TOKEN }}
-          REPOSITORY_URL: ${{ inputs.REPOSITORY_URL }}
+          password: ${{ secrets.API_TOKEN }}
+          repository-url: ${{ inputs.REPOSITORY_URL }}
