@@ -1,0 +1,67 @@
+[build-system]
+requires = ["setuptools>=45", "setuptools_scm[toml]>=6.2", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools-git-versioning]
+enabled = true
+
+[project]
+name = "python-kraken-sdk"
+dynamic = ["version"]
+authors = [
+  { name="Benjamin Thomas Schwertfeger", email="development@b-schwertfeger.de" },
+]
+description = "Collection of REST and websocket clients to interact with the Kraken cryptocurrency exchange."
+readme = "README.md"
+license = {file = "LICENSE"}
+requires-python = ">=3.7"
+dependencies = [
+    "asyncio>=3.4",
+    "requests",
+    "websockets",
+]
+keywords = ["crypto", "trading", "kraken", "exchange", "api"]
+classifiers = [
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Framework :: AsyncIO",
+    "Natural Language :: English",
+    "Operating System :: MacOS",
+    "Operating System :: Unix"
+]
+
+[project.urls]
+"Homepage" = "https://github.com/btschwertfeger/Python-Kraken-SDK"
+"Bug Tracker" = "https://github.com/btschwertfeger/Python-Kraken-SDK/issues"
+
+[tool.setuptools]
+include-package-data = false
+
+[tool.setuptools.packages.find]
+include = ["kraken*"]
+exclude = [
+  "docs*",
+  "tests*",
+  "examples*",
+  ".env",
+]
+
+[tool.setuptools_scm]
+write_to = "kraken/_version.py"
+version_scheme = "guess-next-dev"
+local_scheme = "no-local-version"
+
+[tool.pytest]
+junit_family = "xunit2"
+testpaths = ["tests"]
+
+[project.optional-dependencies]
+test = ["pytest"]
+# examples = [
+#   "matplotlib"
+# ]
