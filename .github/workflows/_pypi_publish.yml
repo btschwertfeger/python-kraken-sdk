@@ -17,7 +17,6 @@ on:
         required: true
     secrets:
       API_TOKEN:
-        type: string
         required: true
 
 jobs:
