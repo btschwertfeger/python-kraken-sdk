@@ -23,6 +23,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
       - uses: pre-commit/action@v3.0.0
+
   build:
     name: Build
     needs: [pre-commit]
@@ -45,8 +46,8 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          python -m pip install flake8
           python -m pip install -r requirements.txt
+          python -m pip install flake8 build
 
       - name: Lint with flake8
         run: |
@@ -55,8 +56,8 @@ jobs:
           # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
           flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
 
-      - name: Install package
-        run: python setup.py install
+      - name: Build the package
+        run: python -m build .
 
   test:
     name: Test
@@ -81,11 +82,11 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          python -m pip install pytest
           python -m pip install -r requirements.txt
+          python -m pip install pytest
 
       - name: Install package
-        run: python setup.py install
+        run: python -m pip install .
 
       - name: Testing Spot REST endpoints
         env:
@@ -146,11 +147,11 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          python -m pip install pytest
           python -m pip install -r requirements.txt
+          python -m pip install pytest
 
       - name: Install package
-        run: python setup.py install
+        run: python -m pip install .
 
       - name: Generate coverage report
         env:
@@ -174,4 +175,3 @@ jobs:
           flags: unittests
           name: codecov-umbrella
           verbose: true
-# todo: create new tag, release and upload to pypi when master

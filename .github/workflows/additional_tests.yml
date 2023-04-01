@@ -1,5 +1,5 @@
 #
-# * Runs unittests for pyhton3.7,python3.8,...,pyhton3.10 using manual trigger
+# * Runs unittests for pyhton3.7, python3.8, ..., pyhton3.10 using manual trigger
 #
 
 name: Additional Test Jobs
