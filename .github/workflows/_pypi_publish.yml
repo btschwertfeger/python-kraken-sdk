@@ -21,7 +21,7 @@ on:
 
 jobs:
   PyPI-Publish:
-    name: Upload release to PyPI ()
+    name: Upload to ${{ inputs.REPOSITORY_URL }}
     runs-on: ubuntu-latest
     permissions:
       id-token: write # IMPORTANT: this permission is mandatory for OIDC publishing
@@ -47,4 +47,4 @@ jobs:
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           API_TOKEN: ${{ secrets.API_TOKEN }}
-          REPOSITORY_URL: ${{ inputs.repository-url }}
+          REPOSITORY_URL: ${{ inputs.REPOSITORY_URL }}
