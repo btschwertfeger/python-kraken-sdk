@@ -4,8 +4,10 @@ on:
   workflow_call:
     inputs:
       os:
+        type: string
         required: true
       python-version:
+        type: string
         required: true
 
 jobs:
