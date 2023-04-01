@@ -1,8 +1,9 @@
+# -*- coding: utf-8 -*-
+# Copyright (C) 2023 Benjamin Thomas Schwertfeger
+# Github: https://github.com/btschwertfeger
 #
-# * Builds the package on different os
-# * Tests the package for Python 3.11
-# * Generate coverage report
-#
+# Workflow to apply pre-commit, build, test and upload the package
+# to the test index of PyPI.
 
 name: CI/CD
 
@@ -17,11 +18,11 @@ concurrency:
 
 jobs:
   Pre-Commit:
-    uses: ./.github/workflows/pre_commit.yml
+    uses: ./.github/workflows/_pre_commit.yml
 
   Build:
-    needs: [pre-commit]
-    uses: ./.github/workflows/build.yml
+    needs: [Pre-Commit]
+    uses: ./.github/workflows/_build.yml
     strategy:
       fail-fast: false
       matrix:
@@ -32,7 +33,7 @@ jobs:
       python-version: ${{ matrix.python-version }}
 
   Test:
-    needs: [build]
+    needs: [Build]
     uses: ./.github/workflows/test.yml
     strategy:
       max-parallel: 1 # to avoid failing tests because of API Rate limits
@@ -45,9 +46,17 @@ jobs:
       python-version: ${{ matrix.python-version }}
     secrets: inherit
 
+  UploadTestPyPI:
+    needs: [Test]
+    name: Upload current development version to Test PyPI
+    uses: ./.github/workflows/_pypi_publish.yml
+    with:
+      API_TOKEN: ${{ secrets.TEST_PYPI_API_TOKEN }}
+      REPOSITORY_URL: https://test.pypi.org/legacy/
+
   CodeCov:
-    needs: [test]
-    uses: ./.github/workflows/codecov.yml
+    needs: [UploadTestPyPI]
+    uses: ./.github/workflows/_codecov.yml
     with:
       os: "ubuntu-latest"
       python-version: "3.11"

@@ -1,3 +1,11 @@
+# -*- coding: utf-8 -*-
+# Copyright (C) 2023 Benjamin Thomas Schwertfeger
+# Github: https://github.com/btschwertfeger
+#
+# Template workflow to build the project for a specific os
+# and Python version.
+#
+
 name: Build
 
 on:

@@ -1,3 +1,10 @@
+# -*- coding: utf-8 -*-
+# Copyright (C) 2023 Benjamin Thomas Schwertfeger
+# Github: https://github.com/btschwertfeger
+#
+# Template workflow to run pre-commit.
+#
+
 name: Pre-Commit
 
 on:
