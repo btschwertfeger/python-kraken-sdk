@@ -29,6 +29,10 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+      - name: get github
+        script: |
+          apt-get install git
+          echo `git tag`
 
       - name: Set up Python 3.11
         uses: actions/setup-python@v4

@@ -48,6 +48,7 @@ jobs:
 
   UploadTestPyPI:
     needs: [Test]
+    # if: success() && github.ref == 'refs/heads/master'
     name: Upload current development version to Test PyPI
     uses: ./.github/workflows/_pypi_publish.yml
     with:
@@ -56,7 +57,7 @@ jobs:
       API_TOKEN: ${{ secrets.TEST_PYPI_API_TOKEN }}
 
   CodeCov:
-    needs: [UploadTestPyPI]
+    needs: [Test]
     uses: ./.github/workflows/_codecov.yml
     with:
       os: "ubuntu-latest"

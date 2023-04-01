@@ -45,6 +45,7 @@ jobs:
 
   UploadPyPI:
     needs: [Test]
+    if: success() && github.ref == 'refs/heads/master'
     name: Upload the current release to PyPI
     uses: ./.github/workflows/_pypi_publish.yml
     with:
