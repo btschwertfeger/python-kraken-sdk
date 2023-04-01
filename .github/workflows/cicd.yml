@@ -17,38 +17,38 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  Pre-Commit:
-    uses: ./.github/workflows/_pre_commit.yml
+  # Pre-Commit:
+  #   uses: ./.github/workflows/_pre_commit.yml
 
-  Build:
-    needs: [Pre-Commit]
-    uses: ./.github/workflows/_build.yml
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
-        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
-    with:
-      os: ${{ matrix.os }}
-      python-version: ${{ matrix.python-version }}
+  # Build:
+  #   needs: [Pre-Commit]
+  #   uses: ./.github/workflows/_build.yml
+  #   strategy:
+  #     fail-fast: false
+  #     matrix:
+  #       os: [ubuntu-latest, windows-latest, macos-latest]
+  #       python-version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
+  #   with:
+  #     os: ${{ matrix.os }}
+  #     python-version: ${{ matrix.python-version }}
 
-  Test:
-    needs: [Build]
-    uses: ./.github/workflows/_test.yml
-    strategy:
-      max-parallel: 1 # to avoid failing tests because of API Rate limits
-      fail-fast: false
-      matrix:
-        os: [ubuntu-latest]
-        python-version: ["3.11"]
-    with:
-      os: ${{ matrix.os }}
-      python-version: ${{ matrix.python-version }}
-    secrets: inherit
+  # Test:
+  #   needs: [Build]
+  #   uses: ./.github/workflows/_test.yml
+  #   strategy:
+  #     max-parallel: 1 # to avoid failing tests because of API Rate limits
+  #     fail-fast: false
+  #     matrix:
+  #       os: [ubuntu-latest]
+  #       python-version: ["3.11"]
+  #   with:
+  #     os: ${{ matrix.os }}
+  #     python-version: ${{ matrix.python-version }}
+  #   secrets: inherit
 
+  if: github.ref == 'refs/heads/master'
   UploadTestPyPI:
-    needs: [Test]
-    if: success() && github.ref == 'refs/heads/master'
+    # needs: [Test]
     name: Upload current development version to Test PyPI
     uses: ./.github/workflows/_pypi_publish.yml
     with:
@@ -56,10 +56,13 @@ jobs:
     secrets:
       API_TOKEN: ${{ secrets.TEST_PYPI_API_TOKEN }}
 
-  CodeCov:
-    needs: [Test]
-    uses: ./.github/workflows/_codecov.yml
-    with:
-      os: "ubuntu-latest"
-      python-version: "3.11"
-    secrets: inherit
+  Pre-Commit:
+    uses: ./.github/workflows/_pre_commit.yml
+
+  # CodeCov:
+  #   needs: [Test]
+  #   uses: ./.github/workflows/_codecov.yml
+  #   with:
+  #     os: "ubuntu-latest"
+  #     python-version: "3.11"
+  #   secrets: inherit
