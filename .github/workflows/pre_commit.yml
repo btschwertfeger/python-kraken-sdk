@@ -2,8 +2,6 @@ name: Pre-Commit
 
 on:
   workflow_call:
-    inputs:
-    secrets:
 
 jobs:
   pre-commit:
