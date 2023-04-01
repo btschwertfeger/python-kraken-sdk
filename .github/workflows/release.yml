@@ -15,10 +15,10 @@ on:
 
 jobs:
   Pre-Commit:
-    uses: ./.github/workflows/pre_commit.yml
+    uses: ./.github/workflows/_pre_commit.yml
 
   Build:
-    uses: ./.github/workflows/build.yml
+    uses: ./.github/workflows/_build.yml
     strategy:
       fail-fast: false
       matrix:
@@ -31,7 +31,7 @@ jobs:
   Test:
     name: Test the package
     needs: [Build]
-    uses: ./.github/workflows/test.yml
+    uses: ./.github/workflows/_test.yml
     strategy:
       max-parallel: 1 # to avoid failing tests because of API Rate limits
       fail-fast: false
@@ -46,7 +46,7 @@ jobs:
   UploadPyPI:
     needs: [Test]
     name: Upload the current release to PyPI
-    uses: ./.github/workflows/pypi_publish.yml
+    uses: ./.github/workflows/_pypi_publish.yml
     with:
       API_TOKEN: ${{ secrets.PYPI_API_TOKEN }}
       REPOSITORY_URL: https://pypi.org/simple
