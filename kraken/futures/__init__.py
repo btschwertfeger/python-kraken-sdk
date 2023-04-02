@@ -2,3 +2,46 @@
 # -*- coding: utf-8 -*-
 # Copyright (C) 2023 Benjamin Thomas Schwertfeger
 # Github: https://github.com/btschwertfeger
+
+"""This module provides the Kraken Futures clients"""
+
+from kraken.futures.funding import FundingClient
+from kraken.futures.market import MarketClient
+from kraken.futures.trade import TradeClient
+from kraken.futures.user import UserClient
+from kraken.futures.websocket import KrakenFuturesWSClientCl
+
+
+class User(UserClient):
+    """
+    Class that is used as a client to access the user-related
+    Kraken Futures endpoints.
+    """
+
+
+class Trade(TradeClient):
+    """
+    Class that is used as a client to access the trade-related
+    Kraken Futures endpoints.
+    """
+
+
+class Market(MarketClient):
+    """
+    Class that is used as a client to access the market-related
+    Kraken Futures endpoints.
+    """
+
+
+class Funding(FundingClient):
+    """
+    Class that is used as a client to access the funding-related
+    Kraken Futures endpoints.
+    """
+
+
+class KrakenFuturesWSClient(KrakenFuturesWSClientCl):
+    """
+    Class that is used as a client to create a websocket connection
+    and handle un/subscribing, reconnecting, ...
+    """

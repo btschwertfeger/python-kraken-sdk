@@ -11,6 +11,8 @@
 ![CI/CD](https://github.com/btschwertfeger/kraken-python-sdk/actions/workflows/cicd.yml/badge.svg)
 ![codecov](https://codecov.io/gh/btschwertfeger/Python-Kraken-SDK/branch/master/badge.svg)
 
+![release](https://shields.io/github/release-date/btschwertfeger/python-kraken-sdk)
+![release](https://shields.io/github/v/release/btschwertfeger/python-kraken-sdk?display_name=tag)
 [![DOI](https://zenodo.org/badge/510751854.svg)](https://zenodo.org/badge/latestdoi/510751854)
 
 </div>
@@ -26,10 +28,6 @@ This is an unofficial collection of REST and websocket clients for Spot and Futu
 There is no guarantee that this software will work flawlessly at this or later times. Of course, no responsibility is taken for possible profits or losses. This software probably has some errors in it, so use it at your own risk. Also no one should be motivated or tempted to invest assets in speculative forms of investment. By using this software you release the author(s) from any liability regarding the use of this software.
 
 ---
-
-## Package Update
-
-- March 27, 2023
 
 ## Features
 
@@ -113,7 +111,7 @@ A template Spot trading bot using both websocket and REST clients can be found i
 ... can be found in `/examples/spot_examples.py`
 
 ```python
-from kraken.spot.client import User, Market, Trade, Funding, Staking
+from kraken.spot import User, Market, Trade, Funding, Staking
 
 def main() -> None:
     key = 'Kraken-public-key'
@@ -159,7 +157,7 @@ if __name__ == '__main__': main()
 
 ```python
 import asyncio, time
-from kraken.spot.client import KrakenSpotWSClient
+from kraken.spot import KrakenSpotWSClient
 
 async def main() -> None:
 
@@ -242,7 +240,7 @@ A template Futures trading bot using both websocket and REST clients can be foun
 The following example can be found in `/examples/futures_examples.py`.
 
 ```python
-from kraken.futures.client import Market, User, Trade, Funding
+from kraken.futures import Market, User, Trade, Funding
 
 def main() -> None:
 
@@ -315,7 +313,7 @@ The following example can be found in `/examples/futures_ws_examples.py`.
 
 ```python
 import asyncio
-from kraken.futures.client import KrakenFuturesWSClient
+from kraken.futures import KrakenFuturesWSClient
 
 async def main() -> None:
 
@@ -379,7 +377,7 @@ Note: Authenticated Futures websocket clients can also un/subscribe from/to publ
 
 ## User
 
-`kraken.spot.client.User`
+`kraken.spot.User`
 
 | Method                     | Documentation                                                                 |
 | -------------------------- | ----------------------------------------------------------------------------- |
@@ -405,7 +403,7 @@ Note: Authenticated Futures websocket clients can also un/subscribe from/to publ
 
 ## Trade
 
-`kraken.spot.client.Trade`
+`kraken.spot.Trade`
 
 | Method                      | Documentation                                                |
 | --------------------------- | ------------------------------------------------------------ |
@@ -421,7 +419,7 @@ Note: Authenticated Futures websocket clients can also un/subscribe from/to publ
 
 ## Market
 
-`kraken.spot.client.Market`
+`kraken.spot.Market`
 
 | Method                    | Documentation                                                 |
 | ------------------------- | ------------------------------------------------------------- |
@@ -438,7 +436,7 @@ Note: Authenticated Futures websocket clients can also un/subscribe from/to publ
 
 ## Funding
 
-`kraken.spot.client.Funding`
+`kraken.spot.Funding`
 
 | Method                       | Documentation                                                      |
 | ---------------------------- | ------------------------------------------------------------------ |
@@ -455,7 +453,7 @@ Note: Authenticated Futures websocket clients can also un/subscribe from/to publ
 
 ## Staking
 
-`kraken.spot.client.Staking`
+`kraken.spot.Staking`
 
 | Method                             | Documentation                                                     |
 | ---------------------------------- | ----------------------------------------------------------------- |
@@ -469,7 +467,7 @@ Note: Authenticated Futures websocket clients can also un/subscribe from/to publ
 
 ## KrakenSpotWSClient
 
-`kraken.spot.client.KrakenSpotWSClient`
+`kraken.spot.KrakenSpotWSClient`
 
 | Method                         | Documentation                                                             |
 | ------------------------------ | ------------------------------------------------------------------------- |
@@ -497,7 +495,7 @@ Note: Authenticated Futures websocket clients can also un/subscribe from/to publ
 
 ## User
 
-`kraken.futures.client.User`
+`kraken.futures.User`
 
 | Method                | Documentation                                                                                                        |
 | --------------------- | -------------------------------------------------------------------------------------------------------------------- |
@@ -514,7 +512,7 @@ Note: Authenticated Futures websocket clients can also un/subscribe from/to publ
 
 ## Trade
 
-`kraken.futures.client.Trade`
+`kraken.futures.Trade`
 
 | Method               | Documentation                                                                                                        |
 | -------------------- | -------------------------------------------------------------------------------------------------------------------- |
@@ -531,7 +529,7 @@ Note: Authenticated Futures websocket clients can also un/subscribe from/to publ
 
 ## Market
 
-`kraken.futures.client.Market`
+`kraken.futures.Market`
 
 | Method                         | Documentation                                                                                                                                                                                               |
 | ------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -562,7 +560,7 @@ Note: Authenticated Futures websocket clients can also un/subscribe from/to publ
 
 ## Funding
 
-`kraken.futures.client.Funding`
+`kraken.futures.Funding`
 
 | Method                               | Documentation                                                                                            |
 | ------------------------------------ | -------------------------------------------------------------------------------------------------------- |
@@ -575,7 +573,7 @@ Note: Authenticated Futures websocket clients can also un/subscribe from/to publ
 
 ## KrakenFuturesWSClient
 
-`kraken.futures.client.KrakenFuturesWSClient`
+`kraken.futures.KrakenFuturesWSClient`
 
 | Method                                     | Documentation                                |
 | ------------------------------------------ | -------------------------------------------- |

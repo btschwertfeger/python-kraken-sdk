@@ -12,8 +12,8 @@ from time import sleep
 
 import pytest
 
-from kraken.exceptions.exceptions import KrakenExceptions
-from kraken.futures.client import Funding, Market, Trade, User
+from kraken.exceptions import KrakenExceptions
+from kraken.futures import Funding, Market, Trade, User
 
 
 def is_success(value) -> bool:

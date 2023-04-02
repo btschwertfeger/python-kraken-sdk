@@ -11,7 +11,7 @@ import logging.config
 import os
 import time
 
-from kraken.futures.client import KrakenFuturesWSClient
+from kraken.futures import KrakenFuturesWSClient
 
 logging.basicConfig(
     format="%(asctime)s %(module)s,line: %(lineno)d %(levelname)8s | %(message)s",

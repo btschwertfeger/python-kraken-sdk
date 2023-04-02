@@ -13,8 +13,8 @@ from datetime import datetime, timezone
 
 import pytest
 
-from kraken.exceptions.exceptions import KrakenExceptions
-from kraken.spot.client import Funding, Market, Staking, Trade, User
+from kraken.exceptions import KrakenExceptions
+from kraken.spot import Funding, Market, Staking, Trade, User
 
 
 def is_not_error(value) -> bool:

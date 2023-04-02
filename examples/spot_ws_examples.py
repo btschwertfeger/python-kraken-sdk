@@ -11,7 +11,7 @@ import logging.config
 import os
 import time
 
-from kraken.spot.client import KrakenSpotWSClient
+from kraken.spot import KrakenSpotWSClient
 
 logging.basicConfig(
     format="%(asctime)s %(module)s,line: %(lineno)d %(levelname)8s | %(message)s",

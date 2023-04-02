@@ -10,7 +10,7 @@ import logging.config
 import os
 import time
 
-from kraken.spot.client import Funding, Market, Staking, Trade, User
+from kraken.spot import Funding, Market, Staking, Trade, User
 
 logging.basicConfig(
     format="%(asctime)s %(module)s,line: %(lineno)d %(levelname)8s | %(message)s",
