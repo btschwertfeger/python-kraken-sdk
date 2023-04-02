@@ -14,9 +14,14 @@ on:
     types: [created]
 
 jobs:
+  ##    Run pre-commit - just to make shure that the code is still
+  ##    in the proper format
+  ##
   Pre-Commit:
     uses: ./.github/workflows/_pre_commit.yml
 
+  ##    Build the package - for all Python versions
+  ##
   Build:
     uses: ./.github/workflows/_build.yml
     strategy:
@@ -28,6 +33,8 @@ jobs:
       os: ${{ matrix.os }}
       python-version: ${{ matrix.python-version }}
 
+  ##    Run all tests to validate the package
+  ##
   Test:
     name: Test the package
     needs: [Build]
@@ -43,6 +50,8 @@ jobs:
       python-version: ${{ matrix.python-version }}
     secrets: inherit
 
+  ##    Upload the python-kraken-sdk to PyPI
+  ##
   UploadPyPI:
     needs: [Test]
     if: success() && github.ref == 'refs/heads/master'

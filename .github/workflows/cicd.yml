@@ -17,9 +17,14 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  ##    Checks the code logic, style and more
+  ##
   Pre-Commit:
     uses: ./.github/workflows/_pre_commit.yml
 
+  ##    Builds the package on multiple OS for multiple
+  ##    Python versions
+  ##
   Build:
     needs: [Pre-Commit]
     uses: ./.github/workflows/_build.yml
@@ -32,6 +37,8 @@ jobs:
       os: ${{ matrix.os }}
       python-version: ${{ matrix.python-version }}
 
+  ##    Run the unittests for Python 3.7 until Pyrthon 3.11
+  ##
   Test:
     needs: [Build]
     uses: ./.github/workflows/_test.yml
@@ -40,15 +47,18 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest]
-        python-version: ["3.11"]
+        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
     with:
       os: ${{ matrix.os }}
       python-version: ${{ matrix.python-version }}
     secrets: inherit
 
+  ##    Uploads the package to test.pypi.org on master if triggered by
+  ##    a regular commit/push.
+  ##
   UploadTestPyPI:
     if: success() && github.ref == 'refs/heads/master'
-    needs: [Test]
+    needs: [Test-Py<3.11]
     name: Upload current development version to Test PyPI
     uses: ./.github/workflows/_pypi_publish.yml
     with:
@@ -56,6 +66,8 @@ jobs:
     secrets:
       API_TOKEN: ${{ secrets.TEST_PYPI_API_TOKEN }}
 
+  ##    Generates and uploads the coverage statistics to codecov
+  ##
   CodeCov:
     needs: [Test]
     uses: ./.github/workflows/_codecov.yml
