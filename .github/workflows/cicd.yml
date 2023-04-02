@@ -69,7 +69,7 @@ jobs:
   ##    Generates and uploads the coverage statistics to codecov
   ##
   CodeCov:
-    needs: [Test]
+    # needs: [Test]
     uses: ./.github/workflows/_codecov.yml
     with:
       os: "ubuntu-latest"
