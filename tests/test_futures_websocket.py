@@ -11,7 +11,7 @@ import unittest
 
 import pytest
 
-from kraken.futures.client import KrakenFuturesWSClient
+from kraken.futures import KrakenFuturesWSClient
 
 
 class Bot(KrakenFuturesWSClient):

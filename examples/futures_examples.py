@@ -9,7 +9,7 @@ import logging
 import os
 import time
 
-from kraken.futures.client import Funding, Market, Trade, User
+from kraken.futures import Funding, Market, Trade, User
 
 logging.basicConfig(
     format="%(asctime)s %(module)s,line: %(lineno)d %(levelname)8s | %(message)s",

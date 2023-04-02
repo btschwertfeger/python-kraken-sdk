@@ -16,7 +16,7 @@ import requests
 import urllib3
 
 from kraken.exceptions.exceptions import KrakenExceptions
-from kraken.futures.client import Funding, KrakenFuturesWSClient, Market, Trade, User
+from kraken.futures import Funding, KrakenFuturesWSClient, Market, Trade, User
 
 logging.basicConfig(
     format="%(asctime)s %(module)s,line: %(lineno)d %(levelname)8s | %(message)s",

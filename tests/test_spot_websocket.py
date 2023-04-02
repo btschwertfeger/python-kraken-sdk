@@ -19,7 +19,7 @@ import unittest
 
 import pytest
 
-from kraken.spot.client import KrakenSpotWSClient
+from kraken.spot import KrakenSpotWSClient
 
 
 class KrakenPermissionDeniedError(Exception):
