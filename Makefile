@@ -1,4 +1,7 @@
-
+#!make
+# -*- coding: utf-8 -*-
+# Copyright (C) 2023 Benjamin Thomas Schwertfeger
+# Github: https://github.com/btschwertfeger
 
 VENV := venv
 GLOBAL_PYTHON := $(shell which python3)
@@ -17,16 +20,24 @@ build:
 dev:
 	$(PYTHON) -m pip install -e .
 
-##		Installs python dependencies
+##		Install the dependencies for testing
 ##
-install:
-	$(PYTHON) -m pip install build setuptools_scm
+test-install:
+	$(PYTHON) -m pip install .
+	$(PYTHON) -m pip install .[test]
 
 ##		Run the unittests
 ##
 test:
+	$(PYTHON) -m pytest tests/
 
+##		Installs Python dependencies
 ##
+doc-install:
+	$(PYTHON) -m pip install .
+	$(PYTHON) -m pip install .[doc]
+
+##		Build the documentation
 ##
 doc:
 	cd docs && make html
