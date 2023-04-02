@@ -261,7 +261,7 @@ class ConnectFuturesWebsocket:
 
 
 class KrakenFuturesWSClientCl(FuturesWsClientCl):
-    """https://docs.futures.kraken.com/#websocket-api
+    """(see: https://docs.futures.kraken.com/#websocket-api)
 
     Class to access public and (optional)
     private/authenticated websocket connection.
@@ -348,7 +348,7 @@ class KrakenFuturesWSClientCl(FuturesWsClientCl):
 
     async def subscribe(self, feed: str, products: List[str] = None) -> None:
         """Subscribe to a channel/feed
-        https://docs.futures.kraken.com/#websocket-api-websocket-api-introduction-subscriptions
+        (see: https://docs.futures.kraken.com/#websocket-api-websocket-api-introduction-subscriptions)
 
         ====== P A R A M E T E R S ======
         subscription: dict
@@ -391,7 +391,7 @@ class KrakenFuturesWSClientCl(FuturesWsClientCl):
 
     async def unsubscribe(self, feed: str, products: List[str] = None) -> None:
         """Unsubscribe from a topic/feed
-        https://docs.futures.kraken.com/#websocket-api-websocket-api-introduction-subscriptions
+        (see: https://docs.futures.kraken.com/#websocket-api-websocket-api-introduction-subscriptions)
 
         ====== P A R A M E T E R S ======
         subscription: dict

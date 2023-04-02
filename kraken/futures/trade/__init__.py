@@ -11,7 +11,21 @@ from kraken.base_api import KrakenBaseFuturesAPI
 
 
 class TradeClient(KrakenBaseFuturesAPI):
-    """Class that implements the Kraken Futures trade client"""
+    """
+        Class that implements the Kraken Futures trade client
+
+        If the sandbox environment is chosen, the keys must be generated from here:
+            https://demo-futures.kraken.com/settings/api
+
+    :param key: Futures API public key (default: "")
+    :type key: str
+    :param secret: Futures API secret key (default: "")
+    :type secret: str
+    :param url: The url to access the Futures Kraken API (default: https://futures.kraken.com)
+    :type url: str
+    :param sandbox: If set to true the url will be https://demo-futures.kraken.com
+    :type sandbox: bool
+    """
 
     def __init__(
         self, key: str = "", secret: str = "", url: str = "", sandbox: bool = False
@@ -19,7 +33,7 @@ class TradeClient(KrakenBaseFuturesAPI):
         super().__init__(key=key, secret=secret, url=url, sandbox=sandbox)
 
     def get_fills(self, lastFillTime: str = None) -> dict:
-        """https://docs.futures.kraken.com/#http-api-trading-v3-api-historical-data-get-your-fills"""
+        """(see: https://docs.futures.kraken.com/#http-api-trading-v3-api-historical-data-get-your-fills)"""
         query_params = {}
         if lastFillTime:
             query_params["lastFillTime"] = lastFillTime
@@ -31,7 +45,7 @@ class TradeClient(KrakenBaseFuturesAPI):
         )
 
     def create_batch_order(self, batchorder_list: List[dict]) -> dict:
-        """https://docs.futures.kraken.com/#http-api-trading-v3-api-order-management-batch-order-management"""
+        """(see: https://docs.futures.kraken.com/#http-api-trading-v3-api-order-management-batch-order-management)"""
         batchorder = {"batchOrder": batchorder_list}
         return self._request(
             method="POST",
@@ -41,7 +55,7 @@ class TradeClient(KrakenBaseFuturesAPI):
         )
 
     def cancel_all_orders(self, symbol: str = None) -> dict:
-        """https://docs.futures.kraken.com/#http-api-trading-v3-api-order-management-cancel-all-orders"""
+        """(see: https://docs.futures.kraken.com/#http-api-trading-v3-api-order-management-cancel-all-orders)"""
         params = {}
         if symbol is not None:
             params["symbol"] = symbol
@@ -53,7 +67,7 @@ class TradeClient(KrakenBaseFuturesAPI):
         )
 
     def dead_mans_switch(self, timeout: int = 60) -> dict:
-        """https://docs.futures.kraken.com/#http-api-trading-v3-api-order-management-dead-man-39-s-switch"""
+        """(see: https://docs.futures.kraken.com/#http-api-trading-v3-api-order-management-dead-man-39-s-switch)"""
         return self._request(
             method="POST",
             uri="/derivatives/api/v3/cancelallordersafter",
@@ -61,7 +75,7 @@ class TradeClient(KrakenBaseFuturesAPI):
         )
 
     def cancel_order(self, order_id: str = "", cliOrdId: str = "") -> dict:
-        """https://docs.futures.kraken.com/#http-api-trading-v3-api-order-management-cancel-order"""
+        """(see: https://docs.futures.kraken.com/#http-api-trading-v3-api-order-management-cancel-order)"""
 
         params = {}
         if order_id != "":
@@ -86,7 +100,7 @@ class TradeClient(KrakenBaseFuturesAPI):
         size: float = None,
         stopPrice: float = None,
     ) -> dict:
-        """https://docs.futures.kraken.com/#http-api-trading-v3-api-order-management-edit-order"""
+        """(see: https://docs.futures.kraken.com/#http-api-trading-v3-api-order-management-edit-order)"""
         if orderId == "" and cliOrdId == "":
             raise ValueError("Either orderId or cliOrdId must be set!")
 
@@ -111,7 +125,7 @@ class TradeClient(KrakenBaseFuturesAPI):
     def get_orders_status(
         self, orderIds: List[str] = None, cliOrdIds: List[str] = None
     ) -> dict:
-        """https://docs.futures.kraken.com/#http-api-trading-v3-api-order-management-get-the-current-status-for-specific-orders"""
+        """(see: https://docs.futures.kraken.com/#http-api-trading-v3-api-order-management-get-the-current-status-for-specific-orders)"""
         if orderIds is None and cliOrdIds is None:
             raise ValueError("Either orderIds or cliOrdIds must be specified!")
 
@@ -139,7 +153,7 @@ class TradeClient(KrakenBaseFuturesAPI):
         stopPrice: float = None,
         triggerSignal: str = None,
     ) -> dict:
-        """https://docs.futures.kraken.com/#http-api-trading-v3-api-order-management-send-order"""
+        """(see: https://docs.futures.kraken.com/#http-api-trading-v3-api-order-management-send-order)"""
 
         order_types = ("lmt", "post", "ioc", "mkt", "stp", "take_profit")
         if orderType not in order_types:

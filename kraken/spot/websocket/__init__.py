@@ -286,58 +286,57 @@ class ConnectSpotWebsocket:
 
 
 class KrakenSpotWSClientCl(SpotWsClientCl):
-    """https://docs.kraken.com/websockets/#overview
-
+    """
     Class to access public and (optional)
     private/authenticated websocket connection.
+
+    (see: https://docs.kraken.com/websockets/#overview)
 
     This class holds up to two websocket connections, one private
     and one public.
 
-    ====== P A R A M E T E R S ======
-    key: str, [optional], default: ''
-        API Key for the Kraken API
-    secret: str, [optional], default: ''
-        Secret API Key for the Kraken API
-    url: str, [optional], default: ''
-        Set a specific/custom url
-    callback: async function [optional], default=None
-        callback function which receives the websocket messages
-    beta: bool [optional], default=False
-        use the Kraken beta url
+    :param key: Optional - API Key for the Kraken Spot API (default: ``""``)
+    :type key: str
+    :param secret: Optional -  Secret API Key for the Kraken Spot API (default: ``""``)
+    :type secret: str
+    :param url: Set a specific/custom url to access the Kraken API
+    :type url: str
+    :param callback: Optional - callback function which receives the websocket messages (default: ``None``)
+    :type callback: function | None
+    :param beta: Use the Beta websocket channels (maybe not supported anymore, default: ``False``)
+    :type beta: bool
 
-    ====== P R O P E R T I E S ======
-    public_sub_names: List[str]
-        list of available public subscription names
-    private_sub_names: List[str]
-        list of available private subscription names
-    active_public_subscriptions: [dict]
-        list of active public subscriptions
-    active_private_subscriptions: [dict]
-        list of active private subscriptions
+    .. code-block:: python
+        :linenos:
+        :caption: Example
 
-    ====== E X A M P L E ======
-    import asyncio
-    from kraken.spot.client import KrakenSpotWSClient
+        import asyncio
+        from kraken.spot import KrakenSpotWSClient
 
-    async def main() -> None:
-        class Bot(KrakenSpotWSClient):
+        async def main() -> None:
+            class Bot(KrakenSpotWSClient):
 
-            async def on_message(self, event) -> None:
-                print(event)
+                async def on_message(self, event: dict) -> None:
+                    print(event)
 
-        bot = Bot() # unauthenticated
-        auth_bot = Bot(key='kraken-api-key', secret='kraken-secret-key') # authenticated
+            bot = Bot()         # unauthenticated
+            auth_bot = Bot(     # authenticated
+                key='kraken-api-key',
+                secret='kraken-secret-key'
+            )
 
-        # ... now call for example subscribe and so on
+            # ... now call for example subscribe and so on
 
-        while True: await asyncio.sleep(6)
+            while True:
+                await asyncio.sleep(6)
 
-    if __name__ == '__main__':
-        loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(loop)
-        try: asyncio.run(main())
-        except KeyboardInterrupt: loop.close()
+        if __name__ == '__main__':
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
+            try:
+                asyncio.run(main())
+            except KeyboardInterrupt:
+                loop.close()
     """
 
     PROD_ENV_URL = "ws.kraken.com"
@@ -375,16 +374,15 @@ class KrakenSpotWSClientCl(SpotWsClientCl):
             else None
         )
 
-    async def on_message(self, msg: dict):
-        """Calls the defined callback function (if defined)
-        or overload this function
+    async def on_message(self, msg: dict) -> None:
+        """
+        Calls the defined callback function (if defined)
+        or overload this function.
 
-        ====== P A R A M E T E R S ======
-        msg: dict
-            message received from Kraken via the websocket connection
+        Can be overloaded as described in :class:`kraken.spot.KrakenSpotWebsocketClient`
 
-        ====== N O T E S ======
-        Can be overloaded like in the documentation of this class.
+        :param msg: The message received sent by Kraken via the websocket connection
+        :type msg: dict
         """
         if self.__callback is not None:
             await self.__callback(msg)
@@ -393,22 +391,27 @@ class KrakenSpotWSClientCl(SpotWsClientCl):
             print(msg)
 
     async def subscribe(self, subscription: dict, pair: List[str] = None) -> None:
-        """Subscribe to a channel
-        https://docs.kraken.com/websockets-beta/#message-subscribe
+        """
+        Subscribe to a channel
+        (see: https://docs.kraken.com/websockets-beta/#message-subscribe)
 
-        ====== P A R A M E T E R S ======
-        subscription: dict
-            the subscription to subscribe to
-        pair: List[str]
-            list of asset pairs or list of a single pair
-
-        ====== E X A M P L E ======
-        # ... initialize bot as documented on top of this class.
-        await bot.subscribe(subscription={"name": ticker}, pair=["XBTUSD", "DOT/EUR"])
-
-        ====== N O T E S ======
         Success or failures are sent over the websocket connection and can be
         received via the on_message callback function.
+
+        :param subscribtion: The subscription message
+        :type subscription: dict
+        :param pair: The pair to subcribe to
+        :type pair: List[str]
+
+        .. code-block::
+            :linenos:
+            :caption: Example
+
+            # ... initialize bot as described in kraken.spot.KrakenSpotWebsocketClient
+            await bot.subscribe(
+                subscription={"name": ticker},
+                pair=["XBTUSD", "DOT/EUR"]
+            )
         """
 
         if "name" not in subscription:
@@ -444,22 +447,28 @@ class KrakenSpotWSClientCl(SpotWsClientCl):
             await self._pub_conn.send_message(payload, private=False)
 
     async def unsubscribe(self, subscription: dict, pair: List[str] = None) -> None:
-        """Unsubscribe from a topic
-        https://docs.kraken.com/websockets/#message-unsubscribe
+        """
+        Unsubscribe from a topic
 
-        ====== P A R A M E T E R S ======
-        subscription: dict
-            the subscription to unsubscribe from
-        pair: List[str]
-            list of asset pairs or list of a single pair
-
-        ====== E X A M P L E ======
-        # ... initialize bot as documented on top of this class.
-        bot.unsubscribe(subscription={"name": ticker}, pair=["XBTUSD", "DOT/EUR"])
-
-        ====== N O T E S ======
         Success or failures are sent over the websocket connection and can be
         received via the on_message callback function.
+
+        (see: https://docs.kraken.com/websockets/#message-unsubscribe)
+
+        :param subscribtion: The subscription to unsubscribe from
+        :type subscription: dict
+        :param pair: The pair or list of pairs to unsubscribe
+        :type pair: List[str]
+
+        .. code-block:: python
+            :linenos:
+            :caption: Example
+
+            # ... initialize bot as described in kraken.spot.KrakenSpotWebsocketClient
+            await bot.unsubscribe(
+                subscription={"name": ticker},
+                pair=["XBTUSD", "DOT/EUR"]
+            )
         """
         if "name" not in subscription:
             raise AttributeError('Subscription requires a "name" key."')
@@ -495,24 +504,46 @@ class KrakenSpotWSClientCl(SpotWsClientCl):
 
     @property
     def private_sub_names(self) -> List[str]:
-        """Returns the private subscription names"""
+        """
+        Returns the private subscription names
+
+        :return: List of private subscription names
+        :rtype: List[str]
+        """
         return ["ownTrades", "openOrders"]
 
     @property
     def public_sub_names(self) -> List[str]:
-        """Returns the public subscription names"""
+        """
+        Returns the public subscription names
+
+        :return: List of public subscription names
+        :rtype: List[str]
+        """
         return ["ticker", "spread", "book", "ohlc", "trade", "*"]
 
     @property
-    def active_public_subscriptions(self) -> List[str]:
-        """Returns the active public subscriptions"""
+    def active_public_subscriptions(self) -> List[dict]:
+        """
+        Returns the active public subscriptions
+
+        :return: List of active public subscriptions
+        :rtype: List[dict]
+        :raises ConnectionError: If there is no public connection.
+        """
         if self._pub_conn is not None:
             return self._pub_conn.subscriptions
         raise ConnectionError("Public connection does not exist!")
 
     @property
-    def active_private_subscriptions(self) -> List[str]:
-        """Returns the active private subscriptions"""
+    def active_private_subscriptions(self) -> List[dict]:
+        """
+        Returns the active private subscriptions
+
+        :return: List of active private subscriptions
+        :rtype: List[dict]
+        :raises ConnectionError: If there is no private connection
+        """
         if self._priv_conn is not None:
             return self._priv_conn.subscriptions
         raise ConnectionError("Private connection does not exist!")

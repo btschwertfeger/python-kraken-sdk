@@ -9,7 +9,21 @@ from kraken.base_api import KrakenBaseFuturesAPI
 
 
 class FundingClient(KrakenBaseFuturesAPI):
-    """Class that implements the Kraken Futures Funding client"""
+    """
+        Class that implements the Kraken Futures Funding client
+
+        If the sandbox environment is chosen, the keys must be generated from here:
+            https://demo-futures.kraken.com/settings/api
+
+    :param key: Futures API public key (default: "")
+    :type key: str
+    :param secret: Futures API secret key (default: "")
+    :type secret: str
+    :param url: The url to access the Futures Kraken API (default: https://futures.kraken.com)
+    :type url: str
+    :param sandbox: If set to true the url will be https://demo-futures.kraken.com
+    :type sandbox: bool
+    """
 
     def __init__(
         self, key: str = "", secret: str = "", url: str = "", sandbox: bool = False
@@ -17,7 +31,7 @@ class FundingClient(KrakenBaseFuturesAPI):
         super().__init__(key=key, secret=secret, url=url, sandbox=sandbox)
 
     def get_historical_funding_rates(self, symbol: str) -> dict:
-        """https://docs.futures.kraken.com/#http-api-trading-v3-api-historical-funding-rates-historicalfundingrates"""
+        """(see: https://docs.futures.kraken.com/#http-api-trading-v3-api-historical-funding-rates-historicalfundingrates)"""
         return self._request(
             method="GET",
             uri="/derivatives/api/v4/historicalfundingrates",
@@ -28,7 +42,7 @@ class FundingClient(KrakenBaseFuturesAPI):
     def initiate_wallet_transfer(
         self, amount: str, fromAccount: str, toAccount: str, unit: str
     ) -> dict:
-        """https://docs.futures.kraken.com/#http-api-trading-v3-api-transfers-initiate-wallet-transfer"""
+        """(see: https://docs.futures.kraken.com/#http-api-trading-v3-api-transfers-initiate-wallet-transfer)"""
         return self._request(
             method="POST",
             uri="/derivatives/api/v3/transfer",
@@ -50,7 +64,7 @@ class FundingClient(KrakenBaseFuturesAPI):
         toUser: str,
         unit: str,
     ) -> dict:
-        """https://docs.futures.kraken.com/#http-api-trading-v3-api-transfers-initiate-sub-account-transfer"""
+        """(see: https://docs.futures.kraken.com/#http-api-trading-v3-api-transfers-initiate-sub-account-transfer)"""
         return self._request(
             method="POST",
             uri="/derivatives/api/v3/transfer/subaccount",
@@ -68,7 +82,7 @@ class FundingClient(KrakenBaseFuturesAPI):
     def initiate_withdrawal_to_spot_wallet(
         self, amount: str, currency: str, sourceWallet: str = None, **kwargs
     ) -> dict:
-        """https://docs.futures.kraken.com/#http-api-trading-v3-api-transfers-initiate-withdrawal-to-spot-wallet"""
+        """(see: https://docs.futures.kraken.com/#http-api-trading-v3-api-transfers-initiate-withdrawal-to-spot-wallet)"""
         if self.sandbox:
             raise ValueError("This function is not available in sandbox mode.")
         params = {
