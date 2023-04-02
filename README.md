@@ -46,6 +46,12 @@ General:
 
 ---
 
+## ❗️ Attention
+
+**ONLY** tagged releases are availabe at PyPI. So the content of the master may not match with the content of the latest release. So please have a look at the release specifc READMEs and changelogs.
+
+---
+
 ## Table of Contents
 
 - [ Installation and setup ](#installation)
