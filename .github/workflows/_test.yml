@@ -1,3 +1,15 @@
+# -*- coding: utf-8 -*-
+# Copyright (C) 2023 Benjamin Thomas Schwertfeger
+# Github: https://github.com/btschwertfeger
+#
+# Template workflow to test the python-kraken-sdk.
+# Runs all non-trade endpoints and methods for:
+#   * Spot REST clients
+#   * Spot websocket client
+#   * Futures REST clients
+#   * Futures websocket client
+#
+
 name: Test
 
 on:
@@ -32,6 +44,9 @@ jobs:
       - name: Install package
         run: python -m pip install .
 
+      ##    Unittests of the Spot REST clients and endpoints
+      ##    Only non-trade endpoints are tested
+      ##
       - name: Testing Spot REST endpoints
         env:
           SPOT_API_KEY: ${{ secrets.SPOT_API_KEY }}
@@ -39,6 +54,8 @@ jobs:
         run: |
           pytest tests/test_spot_rest.py
 
+      ##    Unittests of the Spot websocket client
+      ##
       - name: Testing Spot websocket client
         env:
           SPOT_API_KEY: ${{ secrets.SPOT_API_KEY }}
@@ -46,6 +63,9 @@ jobs:
         run: |
           pytest tests/test_spot_websocket.py
 
+      ##    Unittests of the Futures REST clients and endpoints
+      ##    Only non-trade endpoints are tested
+      ##
       - name: Testing Futures REST endpoints
         env:
           FUTURES_API_KEY: ${{ secrets.FUTURES_API_KEY }}
@@ -55,6 +75,8 @@ jobs:
         run: |
           pytest tests/test_futures_rest.py
 
+      ##    Unittests of the Futures websocket client
+      ##
       - name: Testing Futures websocket client
         env:
           FUTURES_API_KEY: ${{ secrets.FUTURES_API_KEY }}
