@@ -58,7 +58,7 @@ jobs:
   ##
   UploadTestPyPI:
     if: success() && github.ref == 'refs/heads/master'
-    needs: [Test-Py<3.11]
+    needs: [Test]
     name: Upload current development version to Test PyPI
     uses: ./.github/workflows/_pypi_publish.yml
     with:
