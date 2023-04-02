@@ -15,7 +15,7 @@ from uuid import uuid1
 
 import requests
 
-from kraken.exceptions.exceptions import KrakenExceptions
+from kraken.exceptions import KrakenExceptions
 
 
 class KrakenErrorHandler:
