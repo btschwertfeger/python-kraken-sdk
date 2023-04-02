@@ -62,6 +62,5 @@ testpaths = ["tests"]
 
 [project.optional-dependencies]
 test = ["pytest"]
-# examples = [
-#   "matplotlib"
-# ]
+examples = ["matplotlib"]
+doc  = ["build", "sphinx", "sphinx-rtd-theme"]
