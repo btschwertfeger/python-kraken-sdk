@@ -260,7 +260,7 @@ class ConnectFuturesWebsocket:
         return self.__subscriptions
 
 
-class KrakenFuturesWSClientCl(FuturesWsClientCl):
+class KrakenFuturesWSClient(FuturesWsClientCl):
     """(see: https://docs.futures.kraken.com/#websocket-api)
 
     Class to access public and (optional)

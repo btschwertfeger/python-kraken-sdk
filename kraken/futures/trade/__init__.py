@@ -10,12 +10,12 @@ from typing import List
 from kraken.base_api import KrakenBaseFuturesAPI
 
 
-class TradeClient(KrakenBaseFuturesAPI):
+class Trade(KrakenBaseFuturesAPI):
     """
-        Class that implements the Kraken Futures trade client
+    Class that implements the Kraken Futures trade client
 
-        If the sandbox environment is chosen, the keys must be generated from here:
-            https://demo-futures.kraken.com/settings/api
+    If the sandbox environment is chosen, the keys must be generated from here:
+        https://demo-futures.kraken.com/settings/api
 
     :param key: Futures API public key (default: "")
     :type key: str

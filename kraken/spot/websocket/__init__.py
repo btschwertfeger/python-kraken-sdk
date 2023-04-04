@@ -285,7 +285,7 @@ class ConnectSpotWebsocket:
         return round(random() * min(60 * 3, (2**attempts) - 1) + 1)
 
 
-class KrakenSpotWSClientCl(SpotWsClientCl):
+class KrakenSpotWSClient(SpotWsClientCl):
     """
     Class to access public and (optional)
     private/authenticated websocket connection.

@@ -11,7 +11,7 @@ from typing import List, Union
 from kraken.base_api import KrakenBaseSpotAPI
 
 
-class UserClient(KrakenBaseSpotAPI):
+class User(KrakenBaseSpotAPI):
     """
     Class that implements the Kraken Spot User client
 

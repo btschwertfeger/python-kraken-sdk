@@ -10,7 +10,7 @@ from typing import Union
 from kraken.base_api import KrakenBaseSpotAPI
 
 
-class FundingClient(KrakenBaseSpotAPI):
+class Funding(KrakenBaseSpotAPI):
     """
     Class that implements the Spot Funding client
 

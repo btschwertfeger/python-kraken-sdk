@@ -10,7 +10,7 @@ from typing import List, Union
 from kraken.base_api import KrakenBaseSpotAPI
 
 
-class MarketClient(KrakenBaseSpotAPI):
+class Market(KrakenBaseSpotAPI):
     """
     Class that implements the Kraken Spot Market client
 

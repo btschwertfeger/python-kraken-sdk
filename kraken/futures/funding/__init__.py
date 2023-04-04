@@ -5,23 +5,25 @@
 
 
 """Module that implements the Kraken Futures Funding client"""
+from typing import Union
+
 from kraken.base_api import KrakenBaseFuturesAPI
 
 
-class FundingClient(KrakenBaseFuturesAPI):
+class Funding(KrakenBaseFuturesAPI):
     """
-        Class that implements the Kraken Futures Funding client
+    Class that implements the Kraken Futures Funding client
 
-        If the sandbox environment is chosen, the keys must be generated from here:
-            https://demo-futures.kraken.com/settings/api
+    If the sandbox environment is chosen, the keys must be generated from here:
+        https://demo-futures.kraken.com/settings/api
 
-    :param key: Futures API public key (default: "")
+    :param key: Optional - Futures API public key (default: ``""``)
     :type key: str
-    :param secret: Futures API secret key (default: "")
+    :param secret: Optional - Futures API secret key (default: ``""``)
     :type secret: str
-    :param url: The url to access the Futures Kraken API (default: https://futures.kraken.com)
+    :param url: Optional - The url to access the Futures Kraken API (default: https://futures.kraken.com)
     :type url: str
-    :param sandbox: If set to true the url will be https://demo-futures.kraken.com
+    :param sandbox: Optional - If set to ``True`` the url will be https://demo-futures.kraken.com (default: ``False``)
     :type sandbox: bool
     """
 
@@ -31,7 +33,14 @@ class FundingClient(KrakenBaseFuturesAPI):
         super().__init__(key=key, secret=secret, url=url, sandbox=sandbox)
 
     def get_historical_funding_rates(self, symbol: str) -> dict:
-        """(see: https://docs.futures.kraken.com/#http-api-trading-v3-api-historical-funding-rates-historicalfundingrates)"""
+        """
+        Retrieve information about the histrical funding rates of a specific ``symbol``
+
+        see: https://docs.futures.kraken.com/#http-api-trading-v3-api-historical-funding-rates-historicalfundingrates
+
+        :param symbol: The futures symbol to filter for
+        :type symbol: str
+        """
         return self._request(
             method="GET",
             uri="/derivatives/api/v4/historicalfundingrates",
@@ -40,14 +49,32 @@ class FundingClient(KrakenBaseFuturesAPI):
         )
 
     def initiate_wallet_transfer(
-        self, amount: str, fromAccount: str, toAccount: str, unit: str
+        self,
+        amount: Union[str, int, float],
+        fromAccount: str,
+        toAccount: str,
+        unit: str,
     ) -> dict:
-        """(see: https://docs.futures.kraken.com/#http-api-trading-v3-api-transfers-initiate-wallet-transfer)"""
+        """
+        Submit a wallet transfer request to transfer funds between margin accounts.
+
+        see: https://docs.futures.kraken.com/#http-api-trading-v3-api-transfers-initiate-wallet-transfer
+
+        :param amount: The volume to transfer
+        :type amount: str | int | float
+        :param fromAccount: The account to withdraw from
+        :type fromAccount: str
+        :param fromAccount: The account to deposit to
+        :type fromAccount: str
+        :param unit: The currency or asset to transfer
+        :type unit: str
+        """
+
         return self._request(
             method="POST",
             uri="/derivatives/api/v3/transfer",
             post_params={
-                "amount": amount,
+                "amount": str(amount),
                 "fromAccount": fromAccount,
                 "toAccount": toAccount,
                 "unit": unit,
@@ -57,19 +84,34 @@ class FundingClient(KrakenBaseFuturesAPI):
 
     def initiate_subccount_transfer(
         self,
-        amount: str,
+        amount: Union[str, int, float],
         fromAccount: str,
         fromUser: str,
         toAccount: str,
         toUser: str,
         unit: str,
     ) -> dict:
-        """(see: https://docs.futures.kraken.com/#http-api-trading-v3-api-transfers-initiate-sub-account-transfer)"""
+        """
+        Submit a request to transfer funds between the regular and subaccount.
+
+        see: https://docs.futures.kraken.com/#http-api-trading-v3-api-transfers-initiate-sub-account-transfer
+
+        :param amount: The volume to transfer
+        :type amount: str | int | float
+        :param fromAccount: The account to withdraw from
+        :type fromAccount: str
+        :param fromUser: The user account to transfer from
+        :type fromUser: str
+        :param toAccount: The account to deposit to
+        :type toAccount: str
+        :param unit: The asset to transfer
+        :type unit: str
+        """
         return self._request(
             method="POST",
             uri="/derivatives/api/v3/transfer/subaccount",
             post_params={
-                "amount": amount,
+                "amount": str(amount),
                 "fromAccount": fromAccount,
                 "fromUser": fromUser,
                 "toAccount": toAccount,
@@ -80,9 +122,25 @@ class FundingClient(KrakenBaseFuturesAPI):
         )
 
     def initiate_withdrawal_to_spot_wallet(
-        self, amount: str, currency: str, sourceWallet: str = None, **kwargs
+        self,
+        amount: Union[str, int, float],
+        currency: str,
+        sourceWallet: Union[str, None] = None,
+        **kwargs,
     ) -> dict:
-        """(see: https://docs.futures.kraken.com/#http-api-trading-v3-api-transfers-initiate-withdrawal-to-spot-wallet)"""
+        """
+        Enables the transfer of funds between the futures and spot wallet.
+
+        see: https://docs.futures.kraken.com/#http-api-trading-v3-api-transfers-initiate-withdrawal-to-spot-wallet
+
+        :param amount: The volume to transfer
+        :type amount: str | int | float
+        :param currency: The asset or currency to transfer
+        :type currency: str
+        :param sourceWallet: Optional - The wallet to withdraw from (default: ``cash``)
+        :type sourceWallet: str | None
+        :raises ValueError: If this function is called within the sandbox/demo environment
+        """
         if self.sandbox:
             raise ValueError("This function is not available in sandbox mode.")
         params = {

@@ -8,11 +8,12 @@
 from kraken.base_api import KrakenBaseFuturesAPI
 
 
-class UserClient(KrakenBaseFuturesAPI):
+class User(KrakenBaseFuturesAPI):
     """
-        Class that implements the Kraken Futures user client
-        If the sandbox environment is chosen, the keys must be generated from here:
-            https://demo-futures.kraken.com/settings/api
+    Class that implements the Kraken Futures user client
+
+    If the sandbox environment is chosen, the keys must be generated from here:
+        https://demo-futures.kraken.com/settings/api
 
     :param key: Futures API public key (default: "")
     :type key: str
