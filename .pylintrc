@@ -197,7 +197,8 @@ good-names=i,
            stopPrice,limitPrice,
            orderType,
            reduceOnly,triggerSignal,
-           EXCEPTION_ASSIGNMENT
+           EXCEPTION_ASSIGNMENT,
+           trailingStopDeviationUnit,trailingStopMaxDeviation
 
 
 # Good variable names regexes, separated by a comma. If names match any regex,
