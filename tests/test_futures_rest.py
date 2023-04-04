@@ -3,6 +3,10 @@
 # Copyright (C) 2023 Benjamin Thomas Schwertfeger
 # Github: https://github.com/btschwertfeger
 #
+# NOTE:
+#   * Trade endpoints are tested using the full authorized demo environment
+#     to prevent losses on live accounts.
+
 """Module to test the Kraken Futures Rest endpoints"""
 
 import os
@@ -67,6 +71,28 @@ class UserTests(unittest.TestCase):
             for chunk in response.iter_content(chunk_size=512):
                 if chunk:
                     file.write(chunk)
+
+    def test_get_execution_events(self) -> None:
+        result = self.__auth_user.get_execution_events(
+            tradeable="PF_SOLUSD", since=1668989233, before=1668999999, sort="asc"
+        )
+
+        assert isinstance(result, dict)
+        assert "elements" in result.keys()
+
+    def test_get_order_events(self) -> None:
+        result = self.__auth_user.get_order_events(
+            tradeable="PF_SOLUSD", since=1668989233, before=1668999999, sort="asc"
+        )
+        assert isinstance(result, dict)
+        assert "elements" in result.keys()
+
+    def test_get_trigger_events(self) -> None:
+        result = self.__auth_user.get_trigger_events(
+            tradeable="PF_SOLUSD", since=1668989233, before=1668999999, sort="asc"
+        )
+        assert isinstance(result, dict)
+        assert "elements" in result.keys()
 
     def tearDown(self) -> None:
         return super().tearDown()

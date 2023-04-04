@@ -580,14 +580,52 @@ class Market(KrakenBaseFuturesAPI):
         )
 
     def get_pnl_preference(self) -> dict:
-        """(see: https://docs.futures.kraken.com/#http-api-trading-v3-api-multi-collateral-get-pnl-currency-preference-for-a-market"""
+        """
+        Get the current pnl (profit & loss) preferences. This can be used to define the currency
+        in which the profits and losses are realized.
+
+        - https://docs.futures.kraken.com/#http-api-trading-v3-api-multi-collateral-get-pnl-currency-preference-for-a-market
+
+        :return: The current pnl preferences
+        :rtype: dict
+
+        .. code-block:: python
+            :linenos:
+            :caption: Example
+
+            >>> from kraken.futures import Market
+            >>> market = Market(key="api-key", secret="secret-key")
+            >>> market.get_pnl_preference()
+            {'result': 'success', 'serverTime': '2023-04-04T15:21:29.413Z', 'preferences': []}
+        """
         return self._request(
             method="GET", uri="/derivatives/api/v3/pnlpreferences", auth=True
         )
 
     def set_pnl_preference(self, symbol: str, pnlPreference: str) -> dict:
-        """(see: https://docs.futures.kraken.com/#http-api-trading-v3-api-multi-collateral-set-pnl-currency-preference-for-a-market"""
+        """
+        Modify or set the currenct pnl preference of the user. This can be used to define a
+        specific currency that should be used to realize profits and losses. The default is
+        the quote currency of the futures contract.
 
+        - https://docs.futures.kraken.com/#http-api-trading-v3-api-multi-collateral-set-pnl-currency-preference-for-a-market
+
+        :param symbol: The asset pair or futures contract
+        :type symbol: str
+        :param pnlPreference: The currency to pay out the profits and losses
+        :type str:
+        :return: Success or failure of the request
+        :rtype: dict
+
+        .. code-block:: python
+            :linenos:
+            :caption: Example
+
+            >>> from kraken.futures import Market
+            >>> market = Market(key="api-key", secret="secret-key")
+            >>> market.set_pnl_preference(symbol="PF_XBTUSD", pnlPreference="USD")
+            {'result': 'success', 'serverTime': '2023-04-04T15:24:18.406Z'}
+        """
         return self._request(
             method="PUT",
             uri="/derivatives/api/v3/pnlpreferences",
@@ -598,14 +636,34 @@ class Market(KrakenBaseFuturesAPI):
     def _get_historical_events(
         self,
         endpoint: str,
-        before: int = None,
-        continuation_token: str = None,
-        since: int = None,
-        sort: str = None,
-        tradeable: str = None,
+        before: Union[int, None] = None,
+        continuation_token: Union[str, None] = None,
+        since: Union[int, None] = None,
+        sort: Union[str, None] = None,
+        tradeable: Union[str, None] = None,
         auth: bool = True,
         **kwargs,
     ) -> dict:
+        """
+        Method that uses as a gateway for the methods :func:`kraken.futures.Market.get_public_execution_events`,
+        :func:`kraken.futures.Market.get_public_order_events`, and
+        :func:`kraken.futures.Market.get_public_mark_price_events`.
+
+        :param endpoint: The futures endpoint to access
+        :type endpoint: str
+        :param before: Optional - Filter by time
+        :type before: int | None
+        :param continuation_token: Optional - Token that can be used to continue requesting historical events
+        :type token: str | None
+        :param since: Optional - Filter by a specifying a start point
+        :type since: int | None
+        :param sort: Optional - Sort the results
+        :type sort: str | None
+        :param tradeable: Optional - The asset to filter for
+        :type tradeable: str | None
+        :param auth: Optional - If the request is accessing a private endpoint (default_ ``True``)
+        :type auth: bool
+        """
         params = {}
         if before is not None:
             params["before"] = before
@@ -620,36 +678,43 @@ class Market(KrakenBaseFuturesAPI):
         params.update(kwargs)
         return self._request(method="GET", uri=endpoint, post_params=params, auth=auth)
 
-    def get_execution_events(
-        self,
-        before: int = None,
-        continuation_token: str = None,
-        since: int = None,
-        sort: str = None,
-        tradeable: str = None,
-    ) -> dict:
-        """(see: https://docs.futures.kraken.com/#http-api-history-market-history-get-execution-events"""
-
-        return self._get_historical_events(
-            endpoint="/api/history/v2/executions",
-            before=before,
-            continuation_token=continuation_token,
-            since=since,
-            sort=sort,
-            tradeable=tradeable,
-            auth=True,
-        )
-
     def get_public_execution_events(
         self,
         tradeable: str,
-        before: int = None,
-        continuation_token: str = None,
-        since: int = None,
-        sort: str = None,
+        before: Union[int, None] = None,
+        continuation_token: Union[str, None] = None,
+        since: Union[int, None] = None,
+        sort: Union[str, None] = None,
     ) -> dict:
-        """(see: https://docs.futures.kraken.com/#http-api-history-market-history-get-public-execution-events and
-        https://support.kraken.com/hc/en-us/articles/4401755685268-Market-History-Executions
+        """
+        Retrieve information about the public execition events. The returned ``continuation_token```
+        can be used to request more data.
+
+        - https://docs.futures.kraken.com/#http-api-history-market-history-get-public-execution-events
+
+        - https://support.kraken.com/hc/en-us/articles/4401755685268-Market-History-Executions
+
+        :param tradeable: The contract to filter for
+        :type tradeable: str
+        :param before: Filter by time
+        :type before: int
+        :param continuation_token: Optional - Token that can be used to continue requesting historical events
+        :type token: str | None
+        :param since: Optional - Filter by a specifying a start point
+        :type since: int | None
+        :param sort: Optional - Sort the results
+        :type sort: str | None
+        :param tradeable: Optional - The asset to filter for
+        :type tradeable: str | None
+        :return: The public execution events
+        :rtype: dict
+
+        .. code-block:: python
+            :linenos:
+            :caption: Example
+
+            >>> from kraken.futures import Market
+            >>> Market().get_public_execution_events()
         """
         return self._get_historical_events(
             endpoint=f"/api/history/v2/market/{tradeable}/executions",
@@ -663,13 +728,41 @@ class Market(KrakenBaseFuturesAPI):
     def get_public_order_events(
         self,
         tradeable: str,
-        before: int = None,
-        continuation_token: str = None,
-        since: int = None,
-        sort: str = None,
+        before: Union[int, None] = None,
+        continuation_token: Union[str, None] = None,
+        since: Union[int, None] = None,
+        sort: Union[str, None] = None,
     ) -> dict:
-        """(see: https://docs.futures.kraken.com/#http-api-history-market-history-get-public-order-events and
-        https://support.kraken.com/hc/en-us/articles/4401755906452-Market-History-Orders
+        """
+        Retrive information about the oublic order events - filled, closed, opened, etc, for
+        a specific contract.The returned ``continuation_token``` can be used to request more data.
+
+        - https://docs.futures.kraken.com/#http-api-history-market-history-get-public-order-events and
+
+        - https://support.kraken.com/hc/en-us/articles/4401755906452-Market-History-Orders
+
+        :param tradeable: The contract to filter for
+        :type tradeable: str
+        :param before: Filter by time
+        :type before: int
+        :param continuation_token: Optional - Token that can be used to continue requesting historical events
+        :type token: str | None
+        :param since: Optional - Filter by a specifying a start point
+        :type since: int | None
+        :param sort: Optional - Sort the results
+        :type sort: str | None
+        :param tradeable: Optional - The asset to filter for
+        :type tradeable: str | None
+        :return: The public order events
+        :rtype: dict
+
+
+        .. code-block:: python
+            :linenos:
+            :caption: Example
+
+            >>> from kraken.futures import Market
+            >>> Market().get_public_order_events()
         """
         return self._get_historical_events(
             endpoint=f"/api/history/v2/market/{tradeable}/orders",
@@ -683,13 +776,40 @@ class Market(KrakenBaseFuturesAPI):
     def get_public_mark_price_events(
         self,
         tradeable: str,
-        before: int = None,
-        continuation_token: str = None,
-        since: int = None,
-        sort: str = None,
+        before: Union[int, None] = None,
+        continuation_token: Union[str, None] = None,
+        since: Union[int, None] = None,
+        sort: Union[str, None] = None,
     ) -> dict:
-        """(see: https://docs.futures.kraken.com/#http-api-history-market-history-get-public-mark-price-events and
-        https://support.kraken.com/hc/en-us/articles/4401748276116-Market-History-Mark-Price
+        """
+        Retrive information about public mark price events. The returned ``continuation_token```
+        can be used to request more data.
+
+        - https://docs.futures.kraken.com/#http-api-history-market-history-get-public-mark-price-events
+
+        - https://support.kraken.com/hc/en-us/articles/4401748276116-Market-History-Mark-Price
+
+        :param tradeable: The contract to filter for
+        :type tradeable: str
+        :param before: Filter by time
+        :type before: int
+        :param continuation_token: Optional - Token that can be used to continue requesting historical events
+        :type token: str | None
+        :param since: Optional - Filter by a specifying a start point
+        :type since: int | None
+        :param sort: Optional - Sort the results
+        :type sort: str | None
+        :param tradeable: Optional - The asset to filter for
+        :type tradeable: str | None
+        :return: The public order events
+        :rtype: dict
+
+        .. code-block:: python
+            :linenos:
+            :caption: Example
+
+            >>> from kraken.futures import Market
+            >>> Market().get_public_mark_price_events()
         """
         return self._get_historical_events(
             endpoint=f"/api/history/v2/market/{tradeable}/price",
@@ -698,50 +818,4 @@ class Market(KrakenBaseFuturesAPI):
             since=since,
             sort=sort,
             auth=False,
-        )
-
-    def get_order_events(
-        self,
-        before: int = None,
-        continuation_token: str = None,
-        since: int = None,
-        sort: str = None,
-        tradeable: str = None,
-    ) -> dict:
-        """
-
-
-        https://docs.futures.kraken.com/#http-api-history-market-history-get-order-events
-        """
-        return self._get_historical_events(
-            endpoint="/api/history/v2/orders",
-            before=before,
-            continuation_token=continuation_token,
-            since=since,
-            sort=sort,
-            tradeable=tradeable,
-            auth=True,
-        )
-
-    def get_trigger_events(
-        self,
-        before: int = None,
-        continuation_token: str = None,
-        since: int = None,
-        sort: str = None,
-        tradeable: str = None,
-    ) -> dict:
-        """
-
-
-        https://docs.futures.kraken.com/#http-api-history-market-history-get-trigger-events
-        """
-        return self._get_historical_events(
-            endpoint="/api/history/v2/triggers",
-            before=before,
-            continuation_token=continuation_token,
-            since=since,
-            sort=sort,
-            tradeable=tradeable,
-            auth=True,
         )
