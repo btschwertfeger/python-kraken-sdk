@@ -1,7 +1,7 @@
 Custom Kraken Exceptions
 =================================
 
-.. automodule:: kraken.Exceptions
+.. automodule:: kraken.exceptions
    :members:
    :show-inheritance:
    :inherited-members:

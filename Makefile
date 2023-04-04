@@ -42,6 +42,11 @@ doc-install:
 doc:
 	cd docs && make html
 
+##		Run the documentation tests
+##
+doctest:
+	cd docs && make doctest
+
 ##		Clean the workspace
 ##
 clean:
