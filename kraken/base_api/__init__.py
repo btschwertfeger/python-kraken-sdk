@@ -404,7 +404,7 @@ class KrakenBaseFuturesAPI:
                     "Content-Type": "application/x-www-form-urlencoded; charset=utf-8",
                     "Nonce": nonce,
                     "APIKey": self.__key,
-                    "Authent": self.get_kraken_futures_signature(
+                    "Authent": self._get_kraken_futures_signature(
                         uri, query_string + post_string, nonce
                     ),
                 }
@@ -446,7 +446,9 @@ class KrakenBaseFuturesAPI:
             return_raw,
         )
 
-    def get_kraken_futures_signature(self, endpoint: str, data: str, nonce: str) -> str:
+    def _get_kraken_futures_signature(
+        self, endpoint: str, data: str, nonce: str
+    ) -> str:
         """
         Creates the signature of the data. This is requred for authenticated requests
         to verify the user.

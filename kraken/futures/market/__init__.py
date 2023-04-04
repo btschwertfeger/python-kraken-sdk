@@ -25,6 +25,14 @@ class Market(KrakenBaseFuturesAPI):
     :type url: str
     :param sandbox: Optional - If set to ``True`` the url will be https://demo-futures.kraken.com (default: ``False``)
     :type sandbox: bool
+
+    .. code-block:: python
+        :linenos:
+        :caption: Example
+
+        >>> from kraken.futures import Market
+        >>> marker = Market() # unauthenticated
+        >>> marker = Market(key="api-key", secret="secret-key") # authenticated
     """
 
     def __init__(
@@ -58,6 +66,29 @@ class Market(KrakenBaseFuturesAPI):
         :type from_: int | None
         :param to: Optional - To date in epoch seconds (inclusive)
         :type to: int | None
+        :return: The current OHLC data for a specific asset pair
+        :rtype: dict
+
+
+        .. code-block:: python
+            :linenos:
+            :caption: Example
+
+            >>> from kraken.futures import Market
+            >>> Market().get_ohlc(tick_type="trade", symbol="PI_XBTUSD", resolution="1h")
+            {
+                'candles': [
+                    {
+                        'time': 1680624000000,
+                        'open': '28050.0',
+                        'high': '28150',
+                        'low': '27983.0',
+                        'close': '28126.0',
+                        'volume': '1089794.00000000'
+                    }
+                ],
+                'more_candles': True
+            }
         """
         ttypes = ("spot", "mark", "trade")
         resolutions = ("1m", "5m", "15m", "30m", "1h", "4h", "12h", "1d", "1w")
@@ -87,6 +118,14 @@ class Market(KrakenBaseFuturesAPI):
 
         :return: List of available tick types
         :rtype: List[str]
+
+        .. code-block:: python
+            :linenos:
+            :caption: Example
+
+            >>> from kraken.futures import Market
+            >>> Market().get_tick_types()
+            ['mark', 'spot', 'trade']
         """
         return self._request(method="GET", uri="/api/charts/v1/", auth=False)
 
@@ -581,12 +620,12 @@ class Market(KrakenBaseFuturesAPI):
 
     def get_pnl_preference(self) -> dict:
         """
-        Get the current pnl (profit & loss) preferences. This can be used to define the currency
+        Get the current PNL (profit & loss) preferences. This can be used to define the currency
         in which the profits and losses are realized.
 
         - https://docs.futures.kraken.com/#http-api-trading-v3-api-multi-collateral-get-pnl-currency-preference-for-a-market
 
-        :return: The current pnl preferences
+        :return: The current NPL preferences
         :rtype: dict
 
         .. code-block:: python
@@ -604,7 +643,7 @@ class Market(KrakenBaseFuturesAPI):
 
     def set_pnl_preference(self, symbol: str, pnlPreference: str) -> dict:
         """
-        Modify or set the currenct pnl preference of the user. This can be used to define a
+        Modify or set the currenct PNL preference of the user. This can be used to define a
         specific currency that should be used to realize profits and losses. The default is
         the quote currency of the futures contract.
 
@@ -782,7 +821,7 @@ class Market(KrakenBaseFuturesAPI):
         sort: Union[str, None] = None,
     ) -> dict:
         """
-        Retrive information about public mark price events. The returned ``continuation_token```
+        Retrive information about public mark price events. The returned ``continuation_token``
         can be used to request more data.
 
         - https://docs.futures.kraken.com/#http-api-history-market-history-get-public-mark-price-events

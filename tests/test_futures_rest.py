@@ -294,7 +294,11 @@ class TradeTests(unittest.TestCase):
         )  # reset dead mans switch
 
     def test_get_orders_status(self) -> None:
-        assert is_success(self.__auth_trade.get_orders_status(orderIds="378etweirzgu"))
+        assert is_success(
+            self.__auth_trade.get_orders_status(
+                orderIds=["378etweirzgu", "fc589be9-5095-48f0-b6f1-a2dfad6d9677"]
+            )
+        )
 
     def test_create_order(self) -> None:
         try:

@@ -25,6 +25,14 @@ class Funding(KrakenBaseFuturesAPI):
     :type url: str
     :param sandbox: Optional - If set to ``True`` the url will be https://demo-futures.kraken.com (default: ``False``)
     :type sandbox: bool
+
+    .. code-block:: python
+        :linenos:
+        :caption: Example
+
+        >>> from kraken.futures import Funding
+        >>> funding = Funding() # unauthenticated
+        >>> funding = Funding(key="api-key", secret="secret-key") # authenticated
     """
 
     def __init__(
@@ -36,10 +44,32 @@ class Funding(KrakenBaseFuturesAPI):
         """
         Retrieve information about the histrical funding rates of a specific ``symbol``
 
-        see: https://docs.futures.kraken.com/#http-api-trading-v3-api-historical-funding-rates-historicalfundingrates
+        - https://docs.futures.kraken.com/#http-api-trading-v3-api-historical-funding-rates-historicalfundingrates
 
         :param symbol: The futures symbol to filter for
         :type symbol: str
+        :return: The funding rates for a specific asset/contract
+        :rtype: dict
+
+        .. code-block:: python
+            :linenos:
+            :caption: Example
+
+            >>> from kraken.futures import Funding
+            >>> Fnding().get_historical_funding_rates(symbol="PI_XBTUSD")
+            {
+                'rates': [
+                    {
+                        'timestamp': '2019-02-27T16:00:00.000Z',
+                        'fundingRate': 1.31656208775e-07,
+                        'relativeFundingRate': 0.0005
+                    }, {
+                        'timestamp': '2019-02-27T20:00:00.000Z',
+                        'fundingRate': 1.30695377827e-07,
+                        'relativeFundingRate': 0.0005
+                    }, ...
+                ]
+            }
         """
         return self._request(
             method="GET",
@@ -58,7 +88,7 @@ class Funding(KrakenBaseFuturesAPI):
         """
         Submit a wallet transfer request to transfer funds between margin accounts.
 
-        see: https://docs.futures.kraken.com/#http-api-trading-v3-api-transfers-initiate-wallet-transfer
+        - https://docs.futures.kraken.com/#http-api-trading-v3-api-transfers-initiate-wallet-transfer
 
         :param amount: The volume to transfer
         :type amount: str | int | float
@@ -94,7 +124,7 @@ class Funding(KrakenBaseFuturesAPI):
         """
         Submit a request to transfer funds between the regular and subaccount.
 
-        see: https://docs.futures.kraken.com/#http-api-trading-v3-api-transfers-initiate-sub-account-transfer
+        - https://docs.futures.kraken.com/#http-api-trading-v3-api-transfers-initiate-sub-account-transfer
 
         :param amount: The volume to transfer
         :type amount: str | int | float
@@ -131,7 +161,7 @@ class Funding(KrakenBaseFuturesAPI):
         """
         Enables the transfer of funds between the futures and spot wallet.
 
-        see: https://docs.futures.kraken.com/#http-api-trading-v3-api-transfers-initiate-withdrawal-to-spot-wallet
+        - https://docs.futures.kraken.com/#http-api-trading-v3-api-transfers-initiate-withdrawal-to-spot-wallet
 
         :param amount: The volume to transfer
         :type amount: str | int | float

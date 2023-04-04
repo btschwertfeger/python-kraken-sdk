@@ -476,7 +476,6 @@ class Trade(KrakenBaseFuturesAPI):
                 },
                 'serverTime': '2023-04-04T17:31:52.089Z'
             }
-
         """
 
         sides = ("buy", "sell")
