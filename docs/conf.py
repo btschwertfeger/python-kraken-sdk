@@ -17,8 +17,14 @@ project = "Python Kraken SDK"  #
 copyright = "2023, Benjamin Thomas Schwertfeger"  # pylint: disable=redefined-builtin
 author = "Benjamin Thomas Schwertfeger"
 
-
+# to import the package
 sys.path.insert(0, os.path.abspath(".."))
+
+# import links
+rst_epilog = ""
+# Read link all targets from file
+with open("links.rst", encoding="utf-8") as f:
+    rst_epilog += f.read()
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
@@ -29,22 +35,15 @@ extensions = [
     "sphinx.ext.intersphinx",
     "sphinx.ext.coverage",
     "sphinx.ext.napoleon",
+    "sphinx.ext.autosectionlabel",
 ]
 
 templates_path = ["_templates"]
-exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
-
-# sphinx_reference_rename_mapping = {
-#     "kraken.spot.user.user.UserClient": "kraken.Spot.User",
-# }
+exclude_patterns = ["_build", "Thumbs.db", ".DS_Store", "links.rst"]
 
 
 def setup(app):
     """Run during the Sphinx building process"""
-    # from kraken.spot.user.user import UserClient
-
-    # UserClient.__module__ = "kraken.Spot.User"
-    # kraken.spot.user.user.UserClient.__name__ = "kraken.Spot.User"
 
 
 # -- Options for HTML output -------------------------------------------------

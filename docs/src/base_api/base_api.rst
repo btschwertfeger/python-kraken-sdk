@@ -1,7 +1,12 @@
 The Base Clients
 ==================
 
-.. automodule:: kraken.base_api
+.. autoclass:: kraken.base_api.KrakenBaseSpotAPI
+   :members:
+   :show-inheritance:
+   :inherited-members:
+
+.. autoclass:: kraken.base_api.KrakenBaseFuturesAPI
    :members:
    :show-inheritance:
    :inherited-members:

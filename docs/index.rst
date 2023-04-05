@@ -3,15 +3,19 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
+
 Welcome to Python Kraken SDK's documentation!
 =============================================
 
+|GitHub badge| |License badge| |PyVersions badge| |Downloads badge|
+|CodeQL badge| |CI/CD badge| |codecov badge|
+|Release date badge| |Release version badge| |DOI badge|
 
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
 
-   src/introduction/introduction.rst
+   src/introduction.rst
    src/getting_started/getting_started.rst
    src/spot/spot_rest.rst
    src/spot/spot_websocket.rst
