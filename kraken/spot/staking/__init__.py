@@ -118,7 +118,7 @@ class Staking(KrakenBaseSpotAPI):
             method="POST", uri="/private/Unstake", params=params, auth=True
         )
 
-    def list_stakeable_assets(self) -> List[dict[str, any]]:
+    def list_stakeable_assets(self) -> List[dict]:
         """
         Get a list of stakable assets. Only assets that the user is able to stake
         will be shown.
@@ -128,7 +128,7 @@ class Staking(KrakenBaseSpotAPI):
         https://docs.kraken.com/rest/#operation/getStakingAssetInfo
 
         :return:
-        :rtype: List[dict[str, any]]
+        :rtype: List[dict]
 
         .. code-block:: python
             :linenos:
@@ -173,7 +173,7 @@ class Staking(KrakenBaseSpotAPI):
         """
         return self._request(method="POST", uri="/private/Staking/Assets", auth=True)
 
-    def get_pending_staking_transactions(self) -> List[dict[str, any]]:
+    def get_pending_staking_transactions(self) -> List[dict]:
         """
         Get the list of pendin staking transactions of the user.
 
@@ -182,7 +182,7 @@ class Staking(KrakenBaseSpotAPI):
         - https://docs.kraken.com/rest/#operation/getStakingPendingDeposits
 
         :return: List of pending staking transactions
-        :rtype: List[dict[str, any]]
+        :rtype: List[dict]
 
         .. code-block:: python
             :linenos:
@@ -207,7 +207,7 @@ class Staking(KrakenBaseSpotAPI):
         """
         return self._request(method="POST", uri="/private/Staking/Pending", auth=True)
 
-    def list_staking_transactions(self) -> List[dict[str, any]]:
+    def list_staking_transactions(self) -> List[dict]:
         """
         List the last 1000 staking transactions of the past 90 days.
 
@@ -216,7 +216,7 @@ class Staking(KrakenBaseSpotAPI):
         - https://docs.kraken.com/rest/#operation/getStakingTransactions
 
         :return: List of historical staking transactions
-        :rtype: List[dict[str, any]]
+        :rtype: List[dict]
 
         .. code-block:: python
             :linenos:

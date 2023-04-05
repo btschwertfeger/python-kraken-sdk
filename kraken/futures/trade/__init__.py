@@ -75,7 +75,7 @@ class Trade(KrakenBaseFuturesAPI):
         - https://docs.futures.kraken.com/#http-api-trading-v3-api-order-management-batch-order-management
 
         :param batchorder_list: List of order instructions (see example below - or the linked official Kraken documentation)
-        :type batchorder_list: List[dict[str,any]]
+        :type batchorder_list: List[dict]
         :return: Information about the submitted request
         :rtype: dict
 

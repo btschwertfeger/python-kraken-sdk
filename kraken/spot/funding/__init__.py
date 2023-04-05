@@ -41,7 +41,7 @@ class Funding(KrakenBaseSpotAPI):
         :param asset: Asset being deposited
         :type asset: str
         :return: List of available deposit methods of the asset
-        :rtype: List[dict[str, any]]
+        :rtype: List[dict]
 
         .. code-block:: python
             :linenos:
@@ -68,7 +68,7 @@ class Funding(KrakenBaseSpotAPI):
 
     def get_deposit_address(
         self, asset: str, method: str, new: bool = False
-    ) -> List[dict[str, any]]:
+    ) -> List[dict]:
         """
         Get the deposit addresses for a specific asset. New deposit addresses can be generated.
 
@@ -81,7 +81,7 @@ class Funding(KrakenBaseSpotAPI):
         :param new: Optional - Generate a new deposit address (default: ``False``)
         :type new: bool
         :return: The user and asset specific deposit addresses
-        :rtype: List[dict[str, any]]
+        :rtype: List[dict]
 
         .. code-block:: python
             :linenos:
@@ -112,7 +112,7 @@ class Funding(KrakenBaseSpotAPI):
 
     def get_recend_deposits_status(
         self, asset: Union[str, None] = None, method: Union[str, None] = None
-    ) -> List[dict[str, any]]:
+    ) -> List[dict]:
         """
         Get information about the recend deposit status. The lookback period is 90 days and
         only the last 25 deposits will be returned.
@@ -124,7 +124,7 @@ class Funding(KrakenBaseSpotAPI):
         :param method: Optional - Filter by deposit method
         :type method: str
         :return: The user specific deposit history
-        :rtype: List[dict[str, any]]
+        :rtype: List[dict]
 
         .. code-block:: python
             :linenos:
@@ -179,7 +179,7 @@ class Funding(KrakenBaseSpotAPI):
 
     def get_withdrawal_info(
         self, asset: str, key: str, amount: Union[str, int, float]
-    ) -> List[dict[str, any]]:
+    ) -> List[dict]:
         """
         Get information about a possible withdraw, including fee and limit information.
         The ``key`` must be the name of the key defined in the account. You can add
@@ -261,7 +261,7 @@ class Funding(KrakenBaseSpotAPI):
 
     def get_recend_withdraw_status(
         self, asset: Union[str, None] = None, method: Union[str, None] = None
-    ) -> List[dict[str, any]]:
+    ) -> List[dict]:
         """
         Get information about the recend withdraw status, including withdraws of the
         past 90 days but at max 500 results.
@@ -274,7 +274,7 @@ class Funding(KrakenBaseSpotAPI):
         :type method: str | None
 
         :return:
-        :rtype: List[dict[str, any]]
+        :rtype: List[dict]
 
         .. code-block:: python
             :linenos:

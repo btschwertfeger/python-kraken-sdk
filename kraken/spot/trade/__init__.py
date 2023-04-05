@@ -203,7 +203,7 @@ class Trade(KrakenBaseSpotAPI):
         :param validate: Optional - Validate the orders without placing them. (default: ``False``)
         :type validate: bool
         :return: Information about the placed orders
-        :rtype: dict[str, any]
+        :rtype: dict
 
         .. code-block:: python
             :linenos:
