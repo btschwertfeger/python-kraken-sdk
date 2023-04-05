@@ -66,7 +66,7 @@ class UserTests(unittest.TestCase):
 
     def test_get_account_log_csv(self) -> None:
         response = self.__auth_user.get_account_log_csv()
-        assert response.status_code in [200, "200"]
+        assert response.status_code in (200, "200")
         with open(f"account_log-{random.randint(0, 10000)}.csv", "wb") as file:
             for chunk in response.iter_content(chunk_size=512):
                 if chunk:

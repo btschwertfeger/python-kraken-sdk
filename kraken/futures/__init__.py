@@ -9,4 +9,4 @@ from kraken.futures.funding import Funding
 from kraken.futures.market import Market
 from kraken.futures.trade import Trade
 from kraken.futures.user import User
-from kraken.futures.websocket import KrakenFuturesWSClient
+from kraken.futures.ws_client import KrakenFuturesWSClient

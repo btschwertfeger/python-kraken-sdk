@@ -680,7 +680,6 @@ class Market(KrakenBaseFuturesAPI):
         since: Union[int, None] = None,
         sort: Union[str, None] = None,
         tradeable: Union[str, None] = None,
-        auth: bool = True,
         **kwargs,
     ) -> dict:
         """
@@ -715,7 +714,7 @@ class Market(KrakenBaseFuturesAPI):
         if tradeable is not None:
             params["tradeable"] = tradeable
         params.update(kwargs)
-        return self._request(method="GET", uri=endpoint, post_params=params, auth=auth)
+        return self._request(method="GET", uri=endpoint, post_params=params, auth=False)
 
     def get_public_execution_events(
         self,
@@ -761,7 +760,6 @@ class Market(KrakenBaseFuturesAPI):
             continuation_token=continuation_token,
             since=since,
             sort=sort,
-            auth=False,
         )
 
     def get_public_order_events(
@@ -809,7 +807,6 @@ class Market(KrakenBaseFuturesAPI):
             continuation_token=continuation_token,
             since=since,
             sort=sort,
-            auth=False,
         )
 
     def get_public_mark_price_events(
@@ -856,5 +853,4 @@ class Market(KrakenBaseFuturesAPI):
             continuation_token=continuation_token,
             since=since,
             sort=sort,
-            auth=False,
         )

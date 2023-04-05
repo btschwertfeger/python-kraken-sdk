@@ -366,7 +366,6 @@ class User(KrakenBaseFuturesAPI):
         since: Union[int, None] = None,
         sort: Union[str, None] = None,
         tradeable: Union[str, None] = None,
-        auth: bool = True,
         **kwargs,
     ) -> dict:
         """
@@ -401,7 +400,7 @@ class User(KrakenBaseFuturesAPI):
         if tradeable is not None:
             params["tradeable"] = tradeable
         params.update(kwargs)
-        return self._request(method="GET", uri=endpoint, query_params=params, auth=auth)
+        return self._request(method="GET", uri=endpoint, query_params=params, auth=True)
 
     def get_execution_events(
         self,
@@ -452,7 +451,6 @@ class User(KrakenBaseFuturesAPI):
             since=since,
             sort=sort,
             tradeable=tradeable,
-            auth=True,
         )
 
     def get_order_events(
@@ -499,7 +497,6 @@ class User(KrakenBaseFuturesAPI):
             since=since,
             sort=sort,
             tradeable=tradeable,
-            auth=True,
         )
 
     def get_trigger_events(
@@ -546,5 +543,4 @@ class User(KrakenBaseFuturesAPI):
             since=since,
             sort=sort,
             tradeable=tradeable,
-            auth=True,
         )
