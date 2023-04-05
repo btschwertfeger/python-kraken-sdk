@@ -321,7 +321,7 @@ class KrakenFuturesWSClient(KrakenBaseFuturesAPI):
 
     def get_active_subscriptions(self) -> List[dict]:
         """
-        Returns the acitve subscriptions.
+        Returns the list of acitve subscriptions.
 
         :return: List of active subscriptions including the feed names, products and additional information.
         :rtype: List[dict]
@@ -331,10 +331,10 @@ class KrakenFuturesWSClient(KrakenBaseFuturesAPI):
             :caption: Example
 
             >>> from kraken.futures import KrakenFuturesWSClient
-            ....
+            ...
             >>> # ... initialize the bot and subscribe to ...
             ...
             >>> KrakenFuturesWSClient.get_active_subscriptions()
             [{"event": "subscribe", "feed": "ticker, "product_ids": ["PI_XBTUSD"]}]
         """
-        return self._conn.get_active_subscriptions()
+        return self._conn._get_active_subscriptions()

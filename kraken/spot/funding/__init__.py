@@ -5,14 +5,14 @@
 #
 
 """Module that implements the Spot Funding client"""
-from typing import Union
+from typing import List, Union
 
 from kraken.base_api import KrakenBaseSpotAPI
 
 
 class Funding(KrakenBaseSpotAPI):
     """
-    Class that implements the Spot Funding client
+    Class that implements the Spot Funding client.
 
     :param key: Optional Spot API public key (default: ``""``)
     :type key: str
@@ -22,33 +22,87 @@ class Funding(KrakenBaseSpotAPI):
     :type url: str
     :param sandbox: Optional use of the sandbox (not supported so far, default: ``False``)
     :type sandbox: bool
+
+    .. code-block:: python
+        :linenos:
+        :caption: Example
+
+        >>> from kraken.spot import Funding
+        >>> funding = Funding() # unauthenticated
+        >>> auth_funding = Funding(key="api-key", secret="secret-key") # authenticated
     """
 
     def get_deposit_methods(self, asset: str) -> dict:
         """
         Get the available deposit methods for a specific asset.
 
-        (see: https://docs.kraken.com/rest/#operation/getDepositMethods)
+        - https://docs.kraken.com/rest/#operation/getDepositMethods
 
         :param asset: Asset being deposited
         :type asset: str
+        :return: List of available deposit methods of the asset
+        :rtype: List[dict[str, any]]
+
+        .. code-block:: python
+            :linenos:
+            :caption: Example
+
+            >>> from kraken.spot import Funding
+            >>> funding = Funding(key="api-key", secret="secret-key")
+            >>> funding.get_deposit_methods(asset="XLM")
+            [
+                {
+                    'method': 'Stellar XLM',
+                    'limit': False,
+                    'gen-address': True
+                }, {
+                    'method': 'Stellar XLM (muxed)',
+                    'limit': False,
+                    'gen-address': True
+                }
+            ]
         """
         return self._request(
             method="POST", uri="/private/DepositMethods", params={"asset": asset}
         )
 
-    def get_deposit_address(self, asset: str, method: str, new: bool = False) -> dict:
+    def get_deposit_address(
+        self, asset: str, method: str, new: bool = False
+    ) -> List[dict[str, any]]:
         """
         Get the deposit addresses for a specific asset. New deposit addresses can be generated.
 
-        (see: https://docs.kraken.com/rest/#operation/getDepositAddresses)
+        - https://docs.kraken.com/rest/#operation/getDepositAddresses
 
         :param asset: Asset being deposited
         :type asset: str
         :param method: Deposit method name
         :type method: str
-        :param new: Generate a new address
+        :param new: Optional - Generate a new deposit address (default: ``False``)
         :type new: bool
+        :return: The user and asset specific deposit addresses
+        :rtype: List[dict[str, any]]
+
+        .. code-block:: python
+            :linenos:
+            :caption: Example
+
+            >>> from kraken.spot import Funding
+            >>> funding = Funding(key="api-key", secret="secret-key")
+            >>> funding.get_deposit_address(asset="XLM", method="Stellar XLM")
+            [
+                {
+                    'address': 'GA5XIGA5C7QTPTWXQHY6MCJRMTRZDOSHR6EFIBNDQTCQHG262N4GGKTM',
+                    'expiretm': '0',
+                    'new': True,
+                    'tag': '1668814718654064928'
+                }, {
+                    'address': 'GA5XIGA5C7QTPTWXQHY6MCJRMTRZDOSHR6EFIBNDQTCQHG262N4GGKTM',
+                    'expiretm': '0',
+                    'new': True,
+                    'tag': '1668815609618044006'
+                },  ...
+            ]
         """
         return self._request(
             method="POST",
@@ -56,17 +110,65 @@ class Funding(KrakenBaseSpotAPI):
             params={"asset": asset, "method": method, "new": new},
         )
 
-    def get_recend_deposits_status(self, asset: str = None, method: str = None) -> dict:
+    def get_recend_deposits_status(
+        self, asset: Union[str, None] = None, method: Union[str, None] = None
+    ) -> List[dict[str, any]]:
         """
         Get information about the recend deposit status. The lookback period is 90 days and
         only the last 25 deposits will be returned.
 
-        (see: https://docs.kraken.com/rest/#operation/getStatusRecentDeposits)
+        - https://docs.kraken.com/rest/#operation/getStatusRecentDeposits
 
-        :param asset: Asset being deposited
+        :param asset: Optional - Filter by asset
         :type asset: str
-        :param method: Deposit method name
+        :param method: Optional - Filter by deposit method
         :type method: str
+        :return: The user specific deposit history
+        :rtype: List[dict[str, any]]
+
+        .. code-block:: python
+            :linenos:
+            :caption: Example
+
+            >>> from kraken.spot import Funding
+            >>> funding = Funding(key="api-key", secret="secret-key")
+            >>> funding.get_recend_deposits_status()
+            [
+                {
+                    'method': 'Bank Frick (SEPA)',
+                    'aclass': 'currency',
+                    'asset': 'ZEUR',
+                    'refid': 'QDFN2EK-XMFWQ4-GPB7SG',
+                    'txid': '7702226',
+                    'info': 'NTSBDEB1XXX',
+                    'amount': '1000.0000',
+                    'fee': '0.0000',
+                    'time': 1680245166,
+                    'status': 'Success'
+                }, {
+                    'method': 'Bank Frick (SEPA)',
+                    'aclass': 'currency',
+                    'asset': 'ZEUR',
+                    'refid': 'QDFO35O-O4IU7K-ZEP77Y',
+                    'txid': '7559797',
+                    'info': 'NTSBDEB1XXX',
+                    'amount': '500.0000',
+                    'fee': '0.0000',
+                    'time': 1677827980,
+                    'status': 'Success'
+                }, {
+                    'method': 'Ethereum (ERC20)',
+                    'aclass': 'currency',
+                    'asset': 'XETH',
+                    'refid': 'Q5QTWMS-GXER37-ZI4IH6',
+                    'txid': '0x2abb04dafd3caed53d4f2912651391c53b912cc4bca1f8b30d09a5cebec5c2d6',
+                    'info': '0x35be16f2340c97c02c0cf4dcd9279f2eaa4a0980',
+                    'amount': '0.0119328120',
+                    'fee': '0.0000000000',
+                    'time': 1672901534,
+                    'status': 'Success'
+                }, ...
+            ]
         """
         params = {}
         if asset is not None:
@@ -77,18 +179,41 @@ class Funding(KrakenBaseSpotAPI):
 
     def get_withdrawal_info(
         self, asset: str, key: str, amount: Union[str, int, float]
-    ) -> dict:
+    ) -> List[dict[str, any]]:
         """
         Get information about a possible withdraw, including fee and limit information.
+        The ``key`` must be the name of the key defined in the account. You can add
+        a new key for any asset listed on Kraken here: https://www.kraken.com/u/funding/withdraw.
 
-        (see: https://docs.kraken.com/rest/#operation/getWithdrawalInformation)
+        - https://docs.kraken.com/rest/#operation/getWithdrawalInformation
 
         :param asset: Asset to withdraw
         :type asset: str
-        :param key: Withdrawal key name as set up in the account
+        :param key: Withdrawal key name as set up in the user account
         :type key: str
         :param amount: The amont to withdraw
         :type amount: str | int | float
+
+        :return: Information about a possible withdraw including the fee and amount.
+        :rtype: dict
+
+        .. code-block:: python
+            :linenos:
+            :caption: Example
+
+            >>> from kraken.spot import Funding
+            >>> funding = Funding(key="api-key", secret="secret-key")
+            >>> funding.get_withdrawal_info(
+            ...     asset="DOT",
+            ...     key="MyPolkadotWallet",
+            ...     amount="4"
+            ... )
+            {
+                'method': 'Polkadot',
+                'limit': '4.49880000',
+                'amount': '3.95000000',
+                'fee': '0.05000000'
+            }
         """
         return self._request(
             method="POST",
@@ -100,9 +225,11 @@ class Funding(KrakenBaseSpotAPI):
         self, asset: str, key: str, amount: Union[str, int, float]
     ) -> dict:
         """
-        Create a withdraw request.
+        Create a new withdraw. The key must be the name of the withdraw key
+        defined in the withdraw section of the Kraken WebUI
+        (https://docs.kraken.com/rest/#tag/User-Funding/operation/withdrawFunds).
 
-        (see: https://docs.kraken.com/rest/#operation/withdrawFund)
+        - https://docs.kraken.com/rest/#tag/User-Funding/operation/withdrawFunds
 
         :param asset: Asset to withdraw
         :type asset: str
@@ -110,6 +237,21 @@ class Funding(KrakenBaseSpotAPI):
         :type key: str
         :param amount: The amont to withdraw
         :type amount: str | int | float
+        :return: The reference id of the withdraw
+        :rtype: dict
+
+        .. code-block:: python
+            :linenos:
+            :caption: Example
+
+            >>> from kraken.spot import Funding
+            >>> funding = Funding(key="api-key", secret="secret-key")
+            >>> funding.withdraw_funds(
+            ...    asset="DOT",
+            ...    key="MyPolkadotWallet"
+            ...    amount=4
+            ... )
+            {"refid": "I7KGS6-UFMTTQ-AGBSO6T"}
         """
         return self._request(
             method="POST",
@@ -119,17 +261,42 @@ class Funding(KrakenBaseSpotAPI):
 
     def get_recend_withdraw_status(
         self, asset: Union[str, None] = None, method: Union[str, None] = None
-    ) -> dict:
+    ) -> List[dict[str, any]]:
         """
         Get information about the recend withdraw status, including withdraws of the
         past 90 days but at max 500 results.
 
-        (see: https://docs.kraken.com/rest/#operation/getStatusRecentWithdrawals)
+        - https://docs.kraken.com/rest/#operation/getStatusRecentWithdrawals
 
         :param asset: Optional - Filter withdraws by asset
         :type asset: str | None
         :param method: Optional - Filter by withdraw method
         :type method: str | None
+
+        :return:
+        :rtype: List[dict[str, any]]
+
+        .. code-block:: python
+            :linenos:
+            :caption: Example
+
+            >>> from kraken.spot import Funding
+            >>> funding = Funding(key="api-key", secret="secret-key")
+            >>> funding.get_recend_withdraw_status()
+            [
+                {
+                    'method': 'Polkadot',
+                    'aclass': 'currency',
+                    'asset': 'DOT',
+                    'refid': 'XXXXXX-XXXXXX-HLDRM5',
+                    'txid': '0x51d9d13ade1c31a138dae81b845f091d1a6cf2e3c1c36d9cf4f7baf905c483e4',
+                    'info': '16LrqRXyhjBCSfA6kKrdqxPKrZoMEUtmoW4nkx5ZhA374Bp3',
+                    'amount': '94.39581164',
+                    'fee': '0.05000000',
+                    'time': 1677816733,
+                    'status': 'Success'
+                }, ...
+            ]
         """
         params = {}
         if asset is not None:
@@ -145,12 +312,23 @@ class Funding(KrakenBaseSpotAPI):
         Cancel a requested withdraw. This will only be successful if the withdraw
         is not beeing processed so far.
 
-        (see: https://docs.kraken.com/rest/#operation/cancelWithdrawal)
+        - https://docs.kraken.com/rest/#operation/cancelWithdrawal
 
         :param asset: Asset of the pending withdraw
         :type asset: str
         :param refid: The reference ID returned the withdraw was requested
         :type refid: str
+        :return: Success or failure
+        :rtype: dict
+
+        .. code-block:: python
+            :linenos:
+            :caption: Example
+
+            >>> from kraken.spot import Funding
+            >>> funding = Funding(key="api-key", secret="secret-key")
+            >>> funding.cancel_withdraw(asset="DOT", refid="I7KGS6-UFMTTQ-AGBSO6T")
+            { 'result': True }
         """
         return self._request(
             method="POST",
@@ -164,7 +342,7 @@ class Funding(KrakenBaseSpotAPI):
         """
         Transfer assets between the Spot and Futures wallet.
 
-        (see: https://docs.kraken.com/rest/#operation/walletTransfer)
+        - https://docs.kraken.com/rest/#operation/walletTransfer
 
         :param asset: Asset to transfer
         :type asset: str
@@ -174,6 +352,22 @@ class Funding(KrakenBaseSpotAPI):
         :type to_: str
         :param amount: The amont to transfer
         :type amount: str | int | float
+        :return:
+        :rtype: dict
+
+        .. code-block:: python
+            :linenos:
+            :caption: Example
+
+            >>> from kraken.spot import Funding
+            >>> funding = Funding(key="api-key", secret="secret-key")
+            >>> funding.wallet_transfer(
+            ...     asset="XBT",
+            ...     from_="Spot Wallet",
+            ...     to_="Futures Wallet",
+            ...     amount=0.01
+            ... )
+            { 'refid': "ANS1EE5-SKACR4-PENGVP" }
         """
         return self._request(
             method="POST",

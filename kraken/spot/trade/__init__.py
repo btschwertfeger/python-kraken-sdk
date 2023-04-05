@@ -22,6 +22,14 @@ class Trade(KrakenBaseSpotAPI):
     :type url: str
     :param sandbox: Optional use of the sandbox (not supported so far, default: ``False``)
     :type sandbox: bool
+
+    .. code-block:: python
+        :linenos:
+        :caption: Example
+
+        >>> from kraken.spot import Trade
+        >>> trade = Trade() # unauthenticated
+        >>> auth_trade = Trade(key="api-key", secret="secret-key") # authenticated
     """
 
     def create_order(
@@ -51,7 +59,7 @@ class Trade(KrakenBaseSpotAPI):
         """
         Create a new order and place it on the market.
 
-        (see: https://docs.kraken.com/rest/#operation/addOrder)
+        - https://docs.kraken.com/rest/#operation/addOrder
 
         :param ordertype: The kind of the order, one of: ``market``, ``limit``, ``take-profit``, ``stop-loss-limit``, ``take-profit-limit`` and ``settle-position``
         :type ordertype: str
@@ -94,6 +102,33 @@ class Trade(KrakenBaseSpotAPI):
         :param userref: User reference id for example to group orders
         :type userref: int
         :raises ValueError: If input is not correct
+        :return: The transaction id
+        :rtype: dict
+
+        .. code-block:: python
+            :linenos:
+            :caption: Example
+
+            >>> from kraken.spot import Trade
+            >>> trade = Trade(key="api-key", secret="secret-key")
+            >>> trade.create_order(
+            ...     ordertype="market",
+            ...     side="buy",
+            ...     pair="XBTUSD",
+            ...     volume="0.0001"
+            ... )
+            { 'txid': 'TNGMNU-XQSRA-LKCWOK' }
+            >>> trade.create_order(
+            ...     ordertype="limit",
+            ...     side="buy",
+            ...     pair="XBTUSD",
+            ...     volume=4,
+            ...     price=23000,
+            ...     expiretm=121,
+            ...     displayvol=0.5,
+            ...     oflags=["post", "fcib"]
+            ... )
+            { 'txid': 'TPPI2H-CUZZ2-EQR2IE' }
         """
         params = {
             "ordertype": str(ordertype),
@@ -157,7 +192,7 @@ class Trade(KrakenBaseSpotAPI):
         """
         Create a batch of max 15 orders for a specifc asset pair.
 
-        (see: https://docs.kraken.com/rest/#operation/addOrderBatch)
+        - https://docs.kraken.com/rest/#operation/addOrderBatch
 
         :param orders: Dictionary of order objects (see the referenced Kraken documentaion for more information)
         :type orders: List[dict]
@@ -167,6 +202,50 @@ class Trade(KrakenBaseSpotAPI):
         :type deadline: str
         :param validate: Optional - Validate the orders without placing them. (default: ``False``)
         :type validate: bool
+        :return: Information about the placed orders
+        :rtype: dict[str, any]
+
+        .. code-block:: python
+            :linenos:
+            :caption: Example
+
+            >>> from kraken.spot import Trade
+            >>> trade = Trade(key="api-key", secret="secret-key")
+            >>> trade.create_order_batch(orders=[
+            ...         {
+            ...             "close": {
+            ...                 "ordertype": "stop-loss-limit",
+            ...                 "price": 21000,
+            ...                 "price2": 20000,
+            ...             },
+            ...             "ordertype": "limit",
+            ...             "price": 25000,
+            ...             "timeinforce": "GTC",
+            ...             "type": "buy",
+            ...             "userref": "147145322246",
+            ...             "volume": 1,
+            ...         },
+            ...         {
+            ...             "ordertype": "limit",
+            ...             "price": 1000000,
+            ...             "timeinforce": "GTC",
+            ...             "type": "sell",
+            ...             "userref": "16861348843",
+            ...             "volume": 2,
+            ...         },
+            ...     ],
+            ...     pair="BTC/USD"
+            ... )
+            {
+                'orders': [{
+                    'order': 'buy 1 BTCUSD @ limit 25000',
+                    'txid': 'O5TLGX-DKKTU-WKRAZ5',
+                    'close': 'close position @ stop loss 21000.0 -> limit 20000.0'
+                }, {
+                    'order': "sell 2 BTCUSD @ limit 1000000',
+                    'txid': 'OBGFYP-XVQNL-P4GMWF'
+                }]
+            }
         """
         params = {"orders": orders, "pair": pair, "validate": validate}
         if deadline is not None:
@@ -191,7 +270,7 @@ class Trade(KrakenBaseSpotAPI):
         """
         Edit an open order.
 
-        (see: https://docs.kraken.com/rest/#operation/editOrder)
+        - https://docs.kraken.com/rest/#operation/editOrder
 
         :param txid: The txid of the order to edit
         :type txid: str
@@ -213,6 +292,31 @@ class Trade(KrakenBaseSpotAPI):
         :type validate: bool
         :param userref: User reference id for example to group orders
         :type userref: int
+        :return: Success or failure
+        :rtype: dict
+
+        .. code-block:: python
+            :linenos:
+            :caption: Example
+
+            >>> from kraken.spot import Trade
+            >>> trade = Trade(key="api-key", secret="secret-key")
+            >>> trade.edit_order(txid="OBGFYP-XVQNL-P4GMWF",
+            ...     volume=0.75,
+            ...     pair="XBTUSD",
+            ...     price=1250000
+            ... )
+            {
+                'status': 'ok',
+                'txid': 'OFVXHJ-KPQ3B-VS7ELA',
+                'originaltxid': 'OBGFYP-XVQNL-P4GMWF',
+                'volume': '0.75',
+                'price': '1250000',
+                'orders_cancelled': 1,
+                'descr': {
+                    'order': 'sell 0.75 XXBTZUSD @ limit 1250000'
+                }
+            }
         """
         params = {"txid": txid, "pair": pair, "validate": validate}
         if userref is not None:

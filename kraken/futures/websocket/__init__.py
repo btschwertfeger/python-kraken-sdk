@@ -173,7 +173,15 @@ class ConnectFuturesWebsocket:
         logging.info(f"Recover subscriptions {self.__subscriptions} done.")
 
     async def send_message(self, msg: dict, private: bool = False) -> None:
-        """Sends a message via the websocket connection"""
+        """
+        Enables sending a message via the websocket connection
+
+        :param msg: The message as dictionary
+        :type msg: dict
+        :param private: Optional - If the message requires authentication (default: ``False``)
+        :type msg: bool
+        :rtype: None
+        """
         while not self.__socket:
             await asyncio.sleep(0.4)
 
@@ -253,6 +261,6 @@ class ConnectFuturesWebsocket:
             )
         return sub
 
-    def get_active_subscriptions(self) -> List[dict]:
+    def _get_active_subscriptions(self) -> List[dict]:
         """Returns the active subscriptions"""
         return self.__subscriptions

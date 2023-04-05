@@ -5,7 +5,7 @@
 #
 
 """Module that implements the Kraken Spot Stakung client"""
-from typing import Union
+from typing import List, Union
 
 from kraken.base_api import KrakenBaseSpotAPI
 
@@ -20,8 +20,16 @@ class Staking(KrakenBaseSpotAPI):
     :type secret: str
     :param url: Optional url to access the Kraken API (default: https://api.kraken.com)
     :type url: str
-    :param sandbox: Optional use of the sandbox (not supported so far, default: False)
+    :param sandbox: Optional use of the sandbox (not supported so far, default: ``False``)
     :type sandbox: bool
+
+    .. code-block:: python
+        :linenos:
+        :caption: Example
+
+        >>> from kraken.spot import Staking
+        >>> staking = Staking() # unauthenticated
+        >>> auth_staking = Staking(key="api-key", secret="secret-key") # authenticated
     """
 
     def stake_asset(
@@ -31,7 +39,10 @@ class Staking(KrakenBaseSpotAPI):
         Stake the specified asset from the Spot wallet.
         Requires the ``Withdraw funds`` permission in the API key settings.
 
-        (see: https://docs.kraken.com/rest/#operation/stake)
+        Have a look at :func:`kraken.spot.Funding.list_stakeable_assets` to get
+        information about the stakable assets and methods.
+
+        - https://docs.kraken.com/rest/#operation/stake
 
         :param asset: The asset to stake
         :type asset: str
@@ -39,6 +50,21 @@ class Staking(KrakenBaseSpotAPI):
         :type amount: str | int | float
         :param method: The staking method
         :type method: str
+        :return: The reference id of the staking transaction
+        :rtype: dict
+
+        .. code-block:: python
+            :linenos:
+            :caption: Example
+
+            >>> from kraken.spot import Staking
+            >>> staking = Staking(key="api-key", secret="secret-key")
+            ... staking.stake_asset(
+            ...     asset="DOT",
+            ...     amount=2000,
+            ...     method="polkadot-staked"
+            ... )
+            { 'refid': 'BOG5AE5-KSCNR4-VPNPEV' }
         """
         return self._request(
             method="POST",
@@ -57,7 +83,10 @@ class Staking(KrakenBaseSpotAPI):
         Unstake an asset and transfer the amount to the Spot wallet.
         Requires the ``Withdraw funds`` permission in the API key settings.
 
-        (see: https://docs.kraken.com/rest/#operation/unstake)
+        Have a look at :func:`kraken.spot.Funding.list_stakeable_assets` to get
+        information about the stakable assets and methods.
+
+        # https://docs.kraken.com/rest/#operation/unstake
 
         :param asset: The asset to stake
         :type asset: str
@@ -65,6 +94,21 @@ class Staking(KrakenBaseSpotAPI):
         :type amount: str | int | float
         :param method: Optional - Filter by staking method (default: None)
         :type method: str | None
+        :return: The reference id of the unstaking transaction
+        :rtype: dict
+
+        .. code-block:: python
+            :linenos:
+            :caption: Example
+
+            >>> from kraken.spot import Staking
+            >>> staking = Staking(key="api-key", secret="secret-key")
+            ... staking.unstake_asset(
+            ...     asset="DOT",
+            ...     amount=2000,
+            ...     method="polkadot-staked"
+            ... )
+            { 'refid': 'BOG5AE5-KSCNR4-VPNPEV' }
         """
         params = {"asset": asset, "amount": amount}
         if method is not None:
@@ -74,34 +118,129 @@ class Staking(KrakenBaseSpotAPI):
             method="POST", uri="/private/Unstake", params=params, auth=True
         )
 
-    def list_stakeable_assets(self) -> dict:
+    def list_stakeable_assets(self) -> List[dict[str, any]]:
         """
         Get a list of stakable assets. Only assets that the user is able to stake
         will be shown.
 
         Requires the ``Withdraw funds`` and ``Query funds`` API key permissions.
 
-        (see: https://docs.kraken.com/rest/#operation/getStakingAssetInfo)
+        https://docs.kraken.com/rest/#operation/getStakingAssetInfo
+
+        :return:
+        :rtype: List[dict[str, any]]
+
+        .. code-block:: python
+            :linenos:
+            :caption: Example
+
+            >>> from kraken.spot import Staking
+            >>> staking = Staking(key="api-key", secret="secret-key")
+            ... staking.list_stakeable_assets()
+            [
+                {
+                    "method": "polkadot-staked",
+                    "asset": "DOT",
+                    "staking_asset": "DOT.S",
+                    "rewards": {
+                        "type": "percentage",
+                        "reward": "7-11"
+                    },
+                    "on_chain": True,
+                    "can_stake": True,
+                    "can_unstake": True,
+                    "minimum_amount": {
+                        "staking": "0.0000000100",
+                        "unstaking": "0.0000000100"
+                    }
+                }, {
+                    "method": "polygon-staked",
+                    "asset": "MATIC",
+                    "staking_asset": "MATIC.S",
+                    "rewards": {
+                        "type": "percentage",
+                        "reward": "1-2"
+                    },
+                    "on_chain": True,
+                    "can_stake": True,
+                    "can_unstake": True,
+                    "minimum_amount": {
+                        "staking": "0.0000000000",
+                        "unstaking": "0.0000000000"
+                    }
+                }, ...
+            ]
         """
         return self._request(method="POST", uri="/private/Staking/Assets", auth=True)
 
-    def get_pending_staking_transactions(self) -> dict:
+    def get_pending_staking_transactions(self) -> List[dict[str, any]]:
         """
         Get the list of pendin staking transactions of the user.
 
         Requires the ``Withdraw funds`` and ``Query funds`` API key permissions.
 
-        (see: https://docs.kraken.com/rest/#operation/getStakingPendingDeposits)
+        - https://docs.kraken.com/rest/#operation/getStakingPendingDeposits
+
+        :return: List of pending staking transactions
+        :rtype: List[dict[str, any]]
+
+        .. code-block:: python
+            :linenos:
+            :caption: Example
+
+            >>> from kraken.spot import Staking
+            >>> staking = Staking(key="api-key", secret="secret-key")
+            ... staking.get_pending_staking_transactions()
+            [
+                {
+                    'method': 'polkadot-staked',
+                    'aclass': 'currency',
+                    'asset': 'DOT.S',
+                    'refid': 'BOG5AE5-KSCNR4-VPNPEV',
+                    'amount': '1982.17316',
+                    'fee': '0.00000000',
+                    'time': 1623653613,
+                    'status': 'Initial',
+                    'type': 'bonding'
+                }, ...
+            ]
         """
         return self._request(method="POST", uri="/private/Staking/Pending", auth=True)
 
-    def list_staking_transactions(self) -> dict:
+    def list_staking_transactions(self) -> List[dict[str, any]]:
         """
         List the last 1000 staking transactions of the past 90 days.
 
         Requires the ``Query funds`` API key permission.
 
-        (see: https://docs.kraken.com/rest/#operation/getStakingTransactions)
+        - https://docs.kraken.com/rest/#operation/getStakingTransactions
+
+        :return: List of historical staking transactions
+        :rtype: List[dict[str, any]]
+
+        .. code-block:: python
+            :linenos:
+            :caption: Example
+
+            >>> from kraken.spot import Staking
+            >>> staking = Staking(key="api-key", secret="secret-key")
+            ... staking.list_staking_transactions()
+            [
+                {
+                    'method': 'polkadot-staked',
+                    'aclass': 'currency',
+                    'asset': 'DOT.S',
+                    'refid': 'POLZN7T-RWBL2YD-3HAPL1',
+                    'amount': '121.1',
+                    'fee': '1.0000000000',
+                    'time': 1622971496,
+                    'status': 'Success'.
+                    'type': 'bonding',
+                    'bond_start': 1623234684,
+                    'bond_end': 1632345316
+                }, ...
+            ]
+
         """
         return self._request(
             method="POST", uri="/private/Staking/Transactions", auth=True
