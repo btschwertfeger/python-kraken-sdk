@@ -9,7 +9,7 @@ Welcome to Python Kraken SDK's documentation!
 
 |GitHub badge| |License badge| |PyVersions badge| |Downloads badge|
 |CodeQL badge| |CI/CD badge| |codecov badge|
-|Release date badge| |Release version badge| |DOI badge|
+|Release date badge| |Release version badge| |DOI badge| |Docs latest|
 
 .. toctree::
    :maxdepth: 2

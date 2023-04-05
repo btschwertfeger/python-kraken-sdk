@@ -1,3 +1,6 @@
+asyncio>=3.4
+requests
 setuptools_scm
 sphinx
 sphinx-rtd-theme
+websockets

@@ -35,3 +35,11 @@
 
 .. |DOI badge| image:: https://zenodo.org/badge/510751854.svg
    :target: https://zenodo.org/badge/latestdoi/510751854
+
+.. |Docs latest| image:: https://readthedocs.org/projects/python-kraken-sdk/badge/?version=latest
+    :target: https://python-kraken-sdk.readthedocs.io/en/latest
+    :alt: Documentation Status latest
+
+.. |Docs stable| image:: https://readthedocs.org/projects/python-kraken-sdk/badge/?version=stable
+    :target: https://python-kraken-sdk.readthedocs.io/en/stable
+    :alt: Documentation Status stable

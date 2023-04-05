@@ -6,6 +6,8 @@ Introduction
 |CodeQL badge| |CI/CD badge| |codecov badge|
 |Release date badge| |Release version badge| |DOI badge|
 
+|Docs stable| |Docs latest|
+
 📌 Disclaimer
 -------------
 

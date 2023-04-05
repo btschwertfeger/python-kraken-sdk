@@ -15,6 +15,9 @@
 ![release](https://shields.io/github/v/release/btschwertfeger/python-kraken-sdk?display_name=tag)
 [![DOI](https://zenodo.org/badge/510751854.svg)](https://zenodo.org/badge/latestdoi/510751854)
 
+[![Documentation Status stable](https://readthedocs.org/projects/python-kraken-sdk/badge/?version=stable)](https://python-kraken-sdk.readthedocs.io/en/stable)
+[![Documentation Status latest](https://readthedocs.org/projects/python-kraken-sdk/badge/?version=latest)](https://python-kraken-sdk.readthedocs.io/en/latest)
+
 </div>
 
 <h3>
