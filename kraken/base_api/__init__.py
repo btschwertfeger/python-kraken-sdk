@@ -152,7 +152,7 @@ class KrakenBaseSpotAPI:
         :type auth: bool
         :param params: The query or post prameter of the request (default: None)
         :type params: Union[dict, None]
-        :param do_json: If the `params` must be "jsonified" - in case of nested dict style
+        :param do_json: If the ``params`` must be "jsonified" - in case of nested dict style
         :type do_json: bool
         :param return_raw: If the response should be returned without parsing. This is used for example when requesting an export of the trade history as .zip archive.
         :type return_raw: bool
@@ -190,7 +190,7 @@ class KrakenBaseSpotAPI:
             )
 
         url = f"{self.url}{self.API_V}{uri}"
-        if method in ["GET", "DELETE"]:
+        if method in ("GET", "DELETE"):
             return self.__check_response_data(
                 self.__session.request(
                     method=method, url=url, headers=headers, timeout=timeout
@@ -244,14 +244,14 @@ class KrakenBaseSpotAPI:
         self, response: Response, return_raw: bool = False
     ) -> Union[dict, Response]:
         """
-            Checkes the response, handles the error (if exists) and returns the response data.
+        Checkes the response, handles the error (if exists) and returns the response data.
 
         :param response: The response of a request, requested by the requests module
         :type response: requests.Response
         :param return_raw: Defines if the return should be the raw response if there is no error
         :type data: bool
         :return: The reponse in raw or parsed to dict
-        :rtype: Union[dict,requests.Response]
+        :rtype: Union[dict, requests.Response]
         """
         if response.status_code in ("200", 200):
             if return_raw:

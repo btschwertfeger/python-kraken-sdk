@@ -337,22 +337,48 @@ class Trade(KrakenBaseSpotAPI):
 
     def cancel_order(self, txid: str) -> dict:
         """
-        Cancel a specific order by txid. Instead of a transaction id
-        a comma delimited list of ``userref`` (user reference ids) can be passed.
+        Cancel a specific order by ``txid``. Instead of a transaction id
+        a user reference id can be passed.
 
-        (see: https://docs.kraken.com/rest/#operation/cancelOrder)
+        - https://docs.kraken.com/rest/#operation/cancelOrder
 
         :param txid: Transaction id or comma delimited list of user reference ids to cancel.
         :type txid: str
+        :return: Success or failure - Number of closed orders
+        :rtype: dict
+
+        .. code-block:: python
+            :linenos:
+            :caption: Example
+
+            >>> from kraken.spot import Trade
+            >>> trade = Trade(key="api-key", secret="secret-key")
+            >>> trade.cancel_order(txid="OAUHYR-YCVK6-P22G6P")
+            {'count': 1 }
         """
         return self._request(
-            method="POST", uri="/private/CancelOrder", params={"txid": txid}
+            method="POST",
+            uri="/private/CancelOrder",
+            params={"txid": self._to_str_list(txid)},
         )
 
     def cancel_all_orders(self) -> dict:
         """
         Cancel all open orders.
-        (see: https://docs.kraken.com/rest/#operation/cancelAllOrders)
+
+        - https://docs.kraken.com/rest/#operation/cancelAllOrders
+
+        :return: Success or failure - Number of closed orders
+        :rtype: dict
+
+        .. code-block:: python
+            :linenos:
+            :caption: Example
+
+            >>> from kraken.spot import Trade
+            >>> trade = Trade(key="api-key", secret="secret-key")
+            >>> trade.cancel_all_orders()
+            { 'count': 2 }
         """
         return self._request(method="POST", uri="/private/CancelAll")
 
@@ -360,10 +386,24 @@ class Trade(KrakenBaseSpotAPI):
         """
         Cancel all orders after a timeout. This can be used as Dead Man's Switch.
 
-        (see: https://docs.kraken.com/rest/#operation/cancelAllOrdersAfter)
+        - https://docs.kraken.com/rest/#operation/cancelAllOrdersAfter
 
         :param timeout: The timeout in seconds, decativate by passing ``0``
         :type timeout: int
+        :return: Current time and trigger time
+        :rtype: dict
+
+        .. code-block:: python
+            :linenos:
+            :caption: Example
+
+            >>> from kraken.spot import Trade
+            >>> trade = Trade(key="api-key", secret="secret-key")
+            >>> trade.cancel_all_orders_after_x(timeout=60)
+            {
+                'currentTime': '2023-04-06T06:51:56Z',
+                'triggerTime': '2023-04-06T06:52:56Z'
+            }
         """
         return self._request(
             method="POST",
@@ -374,11 +414,25 @@ class Trade(KrakenBaseSpotAPI):
     def cancel_order_batch(self, orders: List[Union[str, int]]) -> dict:
         """
         Cancel a a list of orders by ``txid`` or ``userref``
+        This endpoint is broken, see https://github.com/btschwertfeger/Python-Kraken-SDK/issues/65
 
-        (see: https://docs.kraken.com/rest/#operation/cancelOrderBatch)
+        - https://docs.kraken.com/rest/#operation/cancelOrderBatch
 
         :param orders: List of orders to cancel
         :type orders: List[str | int]
+        :return: Success or failure - Number of closed orders
+        :rtype: dict
+
+        .. code-block:: python
+            :linenos:
+            :caption: Example
+
+            >>> from kraken.spot import Trade
+            >>> trade = Trade(key="api-key", secret="secret-key")
+            >>> trade.cancel_order_batch(
+            ...     orders=["OG5IL4-6AR7I-ZAPZEZ", "OAUHYR-YCVK6-P22G6P"]
+            ... )
+            { count': 2 }
         """
         return self._request(
             method="POST",
