@@ -15,20 +15,20 @@ class Funding(KrakenBaseFuturesAPI):
     Class that implements the Kraken Futures Funding client
 
     If the sandbox environment is chosen, the keys must be generated from here:
-        https://demo-futures.kraken.com/settings/api
+    https://demo-futures.kraken.com/settings/api
 
-    :param key: Optional - Futures API public key (default: ``""``)
-    :type key: str
-    :param secret: Optional - Futures API secret key (default: ``""``)
-    :type secret: str
-    :param url: Optional - The url to access the Futures Kraken API (default: https://futures.kraken.com)
-    :type url: str
-    :param sandbox: Optional - If set to ``True`` the url will be https://demo-futures.kraken.com (default: ``False``)
-    :type sandbox: bool
+    :param key: Futures API public key (default: ``""``)
+    :type key: str, optional
+    :param secret: Futures API secret key (default: ``""``)
+    :type secret: str, optional
+    :param url: Alternative URL to access the Futures Kraken API (default: https://futures.kraken.com)
+    :type url: str, optional
+    :param sandbox: If set to ``True`` the URL will be https://demo-futures.kraken.com (default: ``False``)
+    :type sandbox: bool, optional
 
     .. code-block:: python
         :linenos:
-        :caption: Example
+        :caption: Futures Funding: Create the funding client
 
         >>> from kraken.futures import Funding
         >>> funding = Funding() # unauthenticated
@@ -53,7 +53,7 @@ class Funding(KrakenBaseFuturesAPI):
 
         .. code-block:: python
             :linenos:
-            :caption: Example
+            :caption: Futures Funding: Get the historical funding rates
 
             >>> from kraken.futures import Funding
             >>> Fnding().get_historical_funding_rates(symbol="PI_XBTUSD")
@@ -88,6 +88,9 @@ class Funding(KrakenBaseFuturesAPI):
         """
         Submit a wallet transfer request to transfer funds between margin accounts.
 
+        Requires the ``General API - Full Access`` and ``Withdrawal API - Full access``
+        permissions in the API key settings.
+
         - https://docs.futures.kraken.com/#http-api-trading-v3-api-transfers-initiate-wallet-transfer
 
         :param amount: The volume to transfer
@@ -98,8 +101,24 @@ class Funding(KrakenBaseFuturesAPI):
         :type fromAccount: str
         :param unit: The currency or asset to transfer
         :type unit: str
-        """
 
+        .. code-block:: python
+            :linenos:
+            :caption: Futures Funding: Transfer funds between wallets
+
+            >>> from kraken.futures import Funding
+            >>> funding = Funding(key="api-key", secret="secret-key")
+            >>> funding.initiate_wallet_transfer(
+            ...     amount='100',
+            ...     fromAccount='some cash or margin account',
+            ...     toAccount='another cash or margin account',
+            ...     unit='ADA'
+            ... ))
+            {
+                'result': 'success',
+                'serverTime': '2023-04-07T15:23:45.196Z"
+            }
+        """
         return self._request(
             method="POST",
             uri="/derivatives/api/v3/transfer",
@@ -124,6 +143,9 @@ class Funding(KrakenBaseFuturesAPI):
         """
         Submit a request to transfer funds between the regular and subaccount.
 
+        Requires the ``General API - Full Access`` and ``Withdrawal API - Full access``
+        permissions in the API key settings.
+
         - https://docs.futures.kraken.com/#http-api-trading-v3-api-transfers-initiate-sub-account-transfer
 
         :param amount: The volume to transfer
@@ -136,6 +158,21 @@ class Funding(KrakenBaseFuturesAPI):
         :type toAccount: str
         :param unit: The asset to transfer
         :type unit: str
+
+        .. code-block:: python
+            :linenos:
+            :caption: Futures Funding: Transfer funds between subaccounts
+
+            >>> from kraken.futures import Funding
+            >>> funding = Funding(key="api-key", secret="secret-key")
+            >>> funding.initiate_subccount_transfer(
+            ...     amount='2',
+            ...     fromAccount='MyCashWallet',
+            ...     fromUser='Subaccount1',
+            ...     toAccount='MyCashWallet',
+            ...     toUser='Subaccount2',
+            ...     unit='XBT'
+            ... ))
         """
         return self._request(
             method="POST",
@@ -161,15 +198,30 @@ class Funding(KrakenBaseFuturesAPI):
         """
         Enables the transfer of funds between the futures and spot wallet.
 
+        Requires the ``General API - Full Access`` and ``Withdrawal API - Full access``
+        permissions in the API key settings.
+
         - https://docs.futures.kraken.com/#http-api-trading-v3-api-transfers-initiate-withdrawal-to-spot-wallet
 
         :param amount: The volume to transfer
         :type amount: str | int | float
         :param currency: The asset or currency to transfer
         :type currency: str
-        :param sourceWallet: Optional - The wallet to withdraw from (default: ``cash``)
-        :type sourceWallet: str | None
+        :param sourceWallet: The wallet to withdraw from (default: ``cash``)
+        :type sourceWallet: str | None, optional
         :raises ValueError: If this function is called within the sandbox/demo environment
+
+        .. code-block:: python
+            :linenos:
+            :caption: Futures Funding: Transfer funds between Spot and Futures wallets
+
+            >>> from kraken.futures import Funding
+            >>> funding = Funding(key="api-key", secret="secret-key")
+            >>> funding.initiate_withdrawal_to_spot_wallet(
+            ...     amount=100,
+            ...     currency='USDT',
+            ...     sourceWallet='cash'
+            ... ))
         """
         if self.sandbox:
             raise ValueError("This function is not available in sandbox mode.")

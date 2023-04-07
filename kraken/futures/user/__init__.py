@@ -15,20 +15,20 @@ class User(KrakenBaseFuturesAPI):
     Class that implements the Kraken Futures user client
 
     If the sandbox environment is chosen, the keys must be generated from here:
-        https://demo-futures.kraken.com/settings/api
+    https://demo-futures.kraken.com/settings/api
 
     :param key: Futures API public key (default: ``""``)
-    :type key: str
+    :type key: str, optional
     :param secret: Futures API secret key (default: ``""``)
-    :type secret: str
-    :param url: The url to access the Futures Kraken API (default: https://futures.kraken.com)
-    :type url: str
-    :param sandbox: If set to ``True`` the url will be https://demo-futures.kraken.com
-    :type sandbox: bool
+    :type secret: str, optional
+    :param url: Alternative URL to access the Futures Kraken API (default: https://futures.kraken.com)
+    :type url: str, optional
+    :param sandbox: If set to ``True`` the URL will be https://demo-futures.kraken.com
+    :type sandbox: bool, optional
 
     .. code-block:: python
         :linenos:
-        :caption: Example
+        :caption: Futures User: Create the user client
 
         >>> from kraken.futures import User
         >>> user = User() # unauthenticated
@@ -44,6 +44,8 @@ class User(KrakenBaseFuturesAPI):
         """
         Lists the current wallet balances of the user.
 
+        Requires at least the ``General API - Read Only`` permission in the API key settings.
+
         - https://docs.futures.kraken.com/#http-api-trading-v3-api-account-information-get-wallets
 
         :return: Information about the current balances of the user
@@ -51,115 +53,84 @@ class User(KrakenBaseFuturesAPI):
 
         .. code-block:: python
             :linenos:
-            :caption: Example
+            :caption: Futures User: Get the user's wallets
 
             >>> from kraken.futures import User
             >>> user = User(key="api-key", secret="secret-key")
             >>> user.get_wallets()
             {
-                "result": "success",
-                "accounts": {
-                    "fi_xbtusd": {
-                    "auxiliary": {
-                        "usd": 0,
-                        "pv": 0.0,
-                        "pnl": 0.0,
-                        "af": 0.0,
-                        "funding": 0.0
+                'result': 'success',
+                'accounts': {
+                    'fi_xbtusd': {
+                        'auxiliary': {
+                            'usd': 0,
+                            'pv': 0.0,
+                            'pnl': 0.0,
+                            'af': 0.0,
+                            'funding': 0.0
+                        },
+                        'marginRequirements': {
+                            'im': 0.0,
+                            'mm': 0.0,
+                            'lt': 0.0,
+                            'tt': 0.0
+                        },
+                        'triggerEstimates': {
+                            'im': 0,
+                            'mm': 0,
+                            'lt': 0,
+                            'tt': 0
+                        },
+                        'balances': {
+                            'xbt': 0.0
+                        },
+                        'currency': 'xbt',
+                        'type': 'marginAccount'
                     },
-                    "marginRequirements": { "im": 0.0, "mm": 0.0, "lt": 0.0, "tt": 0.0 },
-                    "triggerEstimates": { "im": 0, "mm": 0, "lt": 0, "tt": 0 },
-                    "balances": { "xbt": 0.0 },
-                    "currency": "xbt",
-                    "type": "marginAccount"
+                    'cash': {
+                        'balances': {
+                            'eur': 4567.7117591172,
+                            'gbp': 4002.4975584765,
+                            'bch': 39.3081761006,
+                            'usd': 5000.0,
+                            'xrp': 10055.1019587339,
+                            'eth': 2.6868286287,
+                            'usdt': 4999.3200924674,
+                            'usdc': 4999.8300057798,
+                            'ltc': 53.9199827456,
+                            'xbt': 0.1785169809
+                        },
+                        'type': 'cashAccount'
                     },
-                    "cash": {
-                    "balances": {
-                        "eur": 4567.7117591172,
-                        "gbp": 4002.4975584765,
-                        "bch": 39.3081761006,
-                        "usd": 5000.0,
-                        "xrp": 10055.1019587339,
-                        "eth": 2.6868286287,
-                        "usdt": 4999.3200924674,
-                        "usdc": 4999.8300057798,
-                        "ltc": 53.9199827456,
-                        "xbt": 0.1785169809
-                    },
-                    "type": "cashAccount"
-                    },
-                    "flex": {
-                    "currencies": {},
-                    "initialMargin": 0.0,
-                    "initialMarginWithOrders": 0.0,
-                    "maintenanceMargin": 0.0,
-                    "balanceValue": 0.0,
-                    "portfolioValue": 0.0,
-                    "collateralValue": 0.0,
-                    "pnl": 0.0,
-                    "unrealizedFunding": 0.0,
-                    "totalUnrealized": 0.0,
-                    "totalUnrealizedAsMargin": 0.0,
-                    "availableMargin": 0.0,
-                    "marginEquity": 0.0,
-                    "type": "multiCollateralMarginAccount"
+                    'flex': {
+                        'currencies': {},
+                        'initialMargin': 0.0,
+                        'initialMarginWithOrders': 0.0,
+                        'maintenanceMargin': 0.0,
+                        'balanceValue': 0.0,
+                        'portfolioValue': 0.0,
+                        'collateralValue': 0.0,
+                        'pnl': 0.0,
+                        'unrealizedFunding': 0.0,
+                        'totalUnrealized': 0.0,
+                        'totalUnrealizedAsMargin': 0.0,
+                        'availableMargin': 0.0,
+                        'marginEquity': 0.0,
+                        'type': 'multiCollateralMarginAccount'
                     }
                 },
-                "serverTime": "2023-04-04T17:56:49.027Z"
+                'serverTime': '2023-04-04T17:56:49.027Z'
             }
         """
         return self._request(
             method="GET", uri="/derivatives/api/v3/accounts", auth=True
         )
 
-    def get_open_orders(self) -> dict:
-        """
-        List the open orders of the user.
-
-        - https://docs.futures.kraken.com/#http-api-trading-v3-api-account-information-get-open-orders
-
-        :return: Information about the open orders
-        :rtype: dict
-
-        .. code-block:: python
-            :linenos:
-            :caption: Example
-
-            >>> from kraken.futures import User
-            >>> user = User(key="api-key", secret="secret-key")
-            >>> user.get_open_orders()
-            {'result': 'success', 'openOrders': [], 'serverTime': '2023-04-04T18:01:39.729Z'}
-        """
-        return self._request(
-            method="GET", uri="/derivatives/api/v3/openorders", auth=True
-        )
-
-    def get_open_positions(self) -> dict:
-        """
-        List the open positions of the user.
-
-        - https://docs.futures.kraken.com/#http-api-trading-v3-api-account-information-get-open-positions
-
-        :return: Information about the open positions
-        :rtype: dict
-
-        .. code-block:: python
-            :linenos:
-            :caption: Example
-
-            >>> from kraken.futures import User
-            >>> user = User(key="api-key", secret="secret-key")
-            >>> user.get_open_positions()
-            'result': 'success', 'openPositions': [], 'serverTime': '2023-04-04T18:02:44.132Z'}
-        """
-
-        return self._request(
-            method="GET", uri="/derivatives/api/v3/openpositions", auth=True
-        )
-
     def get_subaccounts(self) -> dict:
         """
         List the subaccounts of the user.
+
+        Requires at least the ``General API - Read Only`` permission in the API key settings.
 
         - https://docs.futures.kraken.com/#http-api-trading-v3-api-account-information-get-subaccounts
 
@@ -168,7 +139,7 @@ class User(KrakenBaseFuturesAPI):
 
         .. code-block:: python
             :linenos:
-            :caption: Example
+            :caption: Futures User: Get the user's subaccounts
 
             >>> from kraken.futures import User
             >>> user = User(key="api-key", secret="secret-key")
@@ -188,6 +159,8 @@ class User(KrakenBaseFuturesAPI):
         """
         Retrieve information about the percentile of the open position in case of unwinding.
 
+        Requires at least the ``General API - Read Only`` permission in the API key settings.
+
         - https://docs.futures.kraken.com/#http-api-trading-v3-api-account-information-get-position-percentile-of-unwind-queue
 
         :return: Information about unwindqueue
@@ -195,7 +168,7 @@ class User(KrakenBaseFuturesAPI):
 
         .. code-block:: python
             :linenos:
-            :caption: Example
+            :caption: Futures User: Get the user's unwind queue
 
             >>> from kraken.futures import User
             >>> user = User(key="api-key", secret="secret-key")
@@ -212,9 +185,11 @@ class User(KrakenBaseFuturesAPI):
             method="GET", uri="/derivatives/api/v3/unwindqueue", auth=True
         )
 
-    def get_notificatios(self) -> dict:
+    def get_notifications(self) -> dict:
         """
         Retrieve the latest notifications from the Kraken Futures API
+
+        Requires at least the ``General API - Read Only`` permission in the API key settings.
 
         - https://docs.futures.kraken.com/#http-api-trading-v3-api-general-get-notifications
 
@@ -223,11 +198,11 @@ class User(KrakenBaseFuturesAPI):
 
         .. code-block:: python
             :linenos:
-            :caption: Example
+            :caption: Futures User: Get the latest notifications
 
             >>> from kraken.futures import User
             >>> user = User(key="api-key", secret="secret-key")
-            >>> user.get_notificatios()
+            >>> user.get_notifications()
             {
                'result': 'success',
                 'notifications': [{
@@ -253,29 +228,32 @@ class User(KrakenBaseFuturesAPI):
         to: Union[str, None] = None,
     ) -> dict:
         """
+        Get the historical events of the user's account.
+
+        Requires at least the ``General API - Read Only`` permission in the API key settings.
 
         - https://docs.futures.kraken.com/#http-api-history-account-history-get-account-log
 
-        :param before: Optional - Filter to only return results before a specific timestamp or date
-        :type before: str | int | None
-        :param count: Optional - Define the maximum number of results (max: ``500``)
-        :type count: str | int | None
-        :param from_: Optional - Define the first id to start with
-        :type from_: str | int | None
-        :param info: Optional - Filter by info (e.g.,: ``futures liquidation``)
-        :type info: str | None
-        :param since: Optinoal - Define the first entry to begin with by item
-        :type since: str | int | None
-        :param sort: Optional - Sort the results
-        :type sort: str | None
-        :param to: Optional - Id of the last entry
-        :type to: str | None
+        :param before: Filter to only return results before a specific timestamp or date
+        :type before: str | int | None, optional
+        :param count: Defines the maximum number of results (max: ``500``)
+        :type count: str | int | None, optional
+        :param from_: Defines the first id to start with
+        :type from_: str | int | None, optional
+        :param info: Filter by info (e.g.,: ``futures liquidation``)
+        :type info: str | None, optional
+        :param since: Defines the first entry to begin with by item
+        :type since: str | int | None, optional
+        :param sort:Sort the results
+        :type sort: str | None, optional
+        :param to: Id of the last entry
+        :type to: str | None, optional
         :return: The account log
         :rtype: dict
 
         .. code-block:: python
             :linenos:
-            :caption: Example
+            :caption: Futures User: Get the account log
 
             >>> from kraken.futures import User
             >>> user = User(key="api-key", secret="secret-key")
@@ -308,6 +286,7 @@ class User(KrakenBaseFuturesAPI):
                 ], ...
             }
         """
+
         params = {}
         if before is not None:
             params["before"] = before
@@ -334,13 +313,13 @@ class User(KrakenBaseFuturesAPI):
         """
         Return the account log as csv, for example to export it.
 
-        - https://docs.futures.kraken.com/#http-api-history-account-log-get-recent-account-log-csv
+        Requires at least the ``General API - Read Only`` permission in the API key settings.
 
-        :return: raw chunked response
+        - https://docs.futures.kraken.com/#http-api-history-account-log-get-recent-account-log-csv
 
         .. code-block:: python
             :linenos:
-            :caption: Example
+            :caption: Futures User: Get the account log and export as CSV
 
             >>> from kraken.futures import User
             >>> user = User(key="api-key", secret="secret-key")
@@ -375,17 +354,17 @@ class User(KrakenBaseFuturesAPI):
 
         :param endpoint: The futures endpoint to access
         :type endpoint: str
-        :param before: Optional - Filter by time
-        :type before: int | None
-        :param continuation_token: Optional - Token that can be used to continue requesting historical events
-        :type token: str | None
-        :param since: Optional - Filter by a specifying a start point
-        :type since: int | None
-        :param sort: Optional - Sort the results
-        :type sort: str | None
-        :param tradeable: Optional - The asset to filter for
-        :type tradeable: str | None
-        :param auth: Optional - If the request is accessing a private endpoint (default_ ``True``)
+        :param before: Filter by time
+        :type before: int | None, optional
+        :param continuation_token: Token that can be used to continue requesting historical events
+        :type token: str | None, optional
+        :param since: Filter by a specifying a start point
+        :type since: int | None, optional
+        :param sort: Sort the results
+        :type sort: str | None, optional
+        :param tradeable: The asset to filter for
+        :type tradeable: str | None, optional
+        :param auth: If the request is accessing a private endpoint (default_ ``True``)
         :type auth: bool
         """
         params = {}
@@ -411,27 +390,29 @@ class User(KrakenBaseFuturesAPI):
         tradeable: Union[str, None] = None,
     ) -> dict:
         """
-        Retrieve the order/position execution events of this user. The returned ``continuation_token```
+        Retrieve the order/position execution events of this user. The returned ``continuation_token``
         can be used to request more data.
 
-        - https://docs.futures.kraken.com/#http-api-history-market-history-get-execution-events
+        Requires at least the ``General API - Read Only`` permission in the API key settings.
 
-        :param before: Optional - Filter by time
-        :type before: int | None
-        :param continuation_token: Optional - Token that can be used to continue requesting historical events
-        :type token: str | None
-        :param since: Optional - Filter by a specifying a start point
-        :type since: int | None
-        :param sort: Optional - Sort the results
-        :type sort: str | None
-        :param tradeable: Optional - The asset to filter for
-        :type tradeable: str | None
+        - https://docs.futures.kraken.com/#http-api-history-account-history-get-execution-events
+
+        :param before: Filter by time
+        :type before: int | None, optional
+        :param continuation_token: Token that can be used to continue requesting historical events
+        :type token: str | None, optional
+        :param since: Filter by a specifying a start point
+        :type since: int | None, optional
+        :param sort: Sort the results
+        :type sort: str | None, optional
+        :param tradeable: The asset to filter for
+        :type tradeable: str | None, optional
         :return: The user-specific execution events
         :rtype: dict
 
         .. code-block:: python
             :linenos:
-            :caption: Example
+            :caption: Futures User: Get the user's historical execution events
 
             >>> from kraken.futures import User
             >>> user = User(key="api-key", secret="secret-key")
@@ -441,9 +422,78 @@ class User(KrakenBaseFuturesAPI):
             ...    before=1668999999,
             ...    sort="asc"
             ... )
-            {'elements': [], 'accountUid': 'f7d5571c-6d10-4cf1-944a-048d25682ed0', 'len': 0}
+            {
+                'accountUid': 'f7d5571c-6d10-4cf1-944a-048d25682ed0',
+                'continuationToken': 'alp81a',
+                'elements': [{
+                    'event': {
+                        'execution': {
+                            'execution': {
+                                'limitFilled': false,
+                                'makerOrder': {
+                                    'accountUid': 'f7d5571c-6d10-4cf1-944a-048d25682ed0',
+                                    'direction': 'Buy',
+                                    'filled': '2332.12239',
+                                    'lastUpdateTimestamp': 1605126171852,
+                                    'limitPrice': '1234.56789',
+                                    'orderType': 'lmt',
+                                    'quantity': '1234.56789',
+                                    'reduceOnly': false,
+                                    'timestamp': 1605126171852,
+                                    'tradeable': 'pi_xbtusd',
+                                    'uid': 'f7d5571c-6d10-4cf1-944a-048d25682ed0'
+                                },
+                                'makerOrderData': {
+                                    'fee': '12.56789',
+                                    'positionSize': '2332.12239'
+                                },
+                                'markPrice': '27001.56',
+                                'oldTakerOrder': {
+                                    'accountUid': 'f7d5571c-6d10-4cf1-944a-048d25682ed0',
+                                    'direction': 'Buy',
+                                    'filled': '2332.12239',
+                                    'lastUpdateTimestamp': 1605126171852,
+                                    'limitPrice': '27002.56789',
+                                    'orderType': 'string',
+                                    'quantity': '0.156789',
+                                    'reduceOnly': false,
+                                    'timestamp': 1605126171852,
+                                    'tradeable': 'pi_xbtusd',
+                                    'uid': 'f7d5571c-6d10-4cf1-944a-048d25682ed0'
+                                },
+                                'price': '2701.8163',
+                                'quantity': '0.156121',
+                                'takerOrder': {
+                                    'accountUid': 'f7d5571c-6d10-4cf1-944a-048d25682ed0',
+                                    'direction': 'Buy',
+                                    'filled': '0.156121',
+                                    'lastUpdateTimestamp': 1605126171852,
+                                    'limitPrice': '2702.91',
+                                    'orderType': 'lmt',
+                                    'quantity': '0.156121',
+                                    'reduceOnly': false,
+                                    'timestamp': 1605126171852,
+                                    'tradeable': 'pi_xbtusd',
+                                    'uid': 'f7d5571c-6d10-4cf1-944a-048d25682ed0'
+                                },
+                                'takerOrderData': {
+                                    'fee': '12.83671',
+                                    'positionSize': '27012.91'
+                                },
+                                'timestamp': 1605126171852,
+                                'uid': 'f7d5571c-6d10-4cf1-944a-048d25682ed0',
+                                'usdValue': '2301.56789'
+                            },
+                            }
+                        },
+                    'timestamp': 1605126171852,
+                    'uid': 'f7d5571c-6d10-4cf1-944a-048d25682ed0'
+                }, ...
+            ],
+            'len': 0,
+            'serverTime': '2023-04-06T21:11:31.677Z'
+        }
         """
-
         return self._get_historical_events(
             endpoint="/api/history/v2/executions",
             before=before,
@@ -463,32 +513,62 @@ class User(KrakenBaseFuturesAPI):
     ) -> dict:
         """
         Retriev information about the user-specific order events including opened, closed, filled, etc.
-        The returned ``continuation_token``` can be used to request more data.
+        The returned ``continuation_token`` can be used to request more data.
+
+        Requires at least the ``General API - Read Only`` permission in the API key settings.
 
         - https://docs.futures.kraken.com/#http-api-history-market-history-get-order-events
 
-        :param before: Optional - Filter by time
-        :type before: int | None
-        :param continuation_token: Optional - Token that can be used to continue requesting historical events
-        :type token: str | None
-        :param since: Optional - Filter by a specifying a start point
-        :type since: int | None
-        :param sort: Optional - Sort the results
-        :type sort: str | None
-        :param tradeable: Optional - The asset to filter for
-        :type tradeable: str | None
+        :param before: Filter by time
+        :type before: int | None, optional
+        :param continuation_token: Token that can be used to continue requesting historical events
+        :type token: str | None, optional
+        :param since: Filter by a specifying a start point
+        :type since: int | None, optional
+        :param sort: Sort the results
+        :type sort: str | None, optional
+        :param tradeable: The asset to filter for
+        :type tradeable: str | None, optional
         :return: The user-specific order events
         :rtype: dict
 
         .. code-block:: python
             :linenos:
-            :caption: Example
+            :caption: Futures User: Get the user's historical order events
 
             >>> from kraken.futures import User
             >>> user = User(key="api-key", secret="secret-key")
             >>> user.get_order_events(tradeable="PF_SOLUSD", since=1668989233, before=1668999999, sort="asc")
-            {'elements': [], 'accountUid': 'f7d5571c-6d10-4cf1-944a-048d25682ed0', 'len': 0}
-
+            {
+                'accountUid': 'f7d5571c-6d10-4cf1-944a-048d25682ed0',
+                'continuationToken': 'simb178',
+                'elements': [{
+                    'event': {
+                        'OrderPlaced': {
+                            'order': {
+                                'accountUid': 'f7d5571c-6d10-4cf1-944a-048d25682ed0',
+                                'direction': 'Sell',
+                                'filled': '12.011',
+                                'lastUpdateTimestamp': 1605126171852,
+                                'limitPrice': '28900.0',
+                                'orderType': 'string',
+                                'quantity': '13.12',
+                                'reduceOnly': false,
+                                'timestamp': 1605126171852,
+                                'tradeable': 'pi_xbtusd',
+                                'uid': 'f7d5571c-6d10-4cf1-944a-048d25682ed0'
+                            },
+                            'reason': 'string',
+                            'reducedQuantity': 'string'
+                        }
+                    },
+                    'timestamp': 1605126171852,
+                    'uid': 'f7d5571c-6d10-4cf1-944a-048d25682ed0'
+                }, ...
+            ],
+            'len': 10,
+            'serverTime': '2023-04-05T12:31:42.677Z'
+        }
         """
         return self._get_historical_events(
             endpoint="/api/history/v2/orders",
@@ -510,31 +590,70 @@ class User(KrakenBaseFuturesAPI):
         """
         Retrieve information about trigger events.
 
-        The returned ``continuation_token``` can be used to request more data.
+        The returned ``continuation_token`` can be used to request more data.
+
+        Requires at least the ``General API - Read Only`` permission in the API key settings.
 
         - https://docs.futures.kraken.com/#http-api-history-market-history-get-trigger-events
 
-        :param before: Optional - Filter by time
-        :type before: int | None
-        :param continuation_token: Optional - Token that can be used to continue requesting historical events
-        :type token: str | None
-        :param since: Optional - Filter by a specifying a start point
-        :type since: int | None
-        :param sort: Optional - Sort the results
-        :type sort: str | None
-        :param tradeable: Optional - The asset to filter for
-        :type tradeable: str | None
+        :param before: Filter by time
+        :type before: int | None, optional
+        :param continuation_token: Token that can be used to continue requesting historical events
+        :type token: str | None, optional
+        :param since: Filter by a specifying a start point
+        :type since: int | None, optional
+        :param sort: Sort the results
+        :type sort: str | None, optional
+        :param tradeable: The asset to filter for
+        :type tradeable: str | None, optional
         :return: The user-specific trigger events
         :rtype: dict
 
         .. code-block:: python
             :linenos:
-            :caption: Example
+            :caption: Futures User: Get the user's historical trigger events
 
             >>> from kraken.futures import User
             >>> user = User(key="api-key", secret="secret-key")
             >>> user.get_trigger_events(tradeable="PF_SOLUSD", since=1668989233, before=1668999999, sort="asc")
-            {'elements': [], 'accountUid': 'f7d5571c-6d10-4cf1-944a-048d25682ed0', 'len': 0}
+            {
+                "accountUid": "f7d5571c-6d10-4cf1-944a-048d25682ed0",
+                "continuationToken": "c3RyaW5n",
+                "elements": [{
+                    "event": {
+                        "OrderTriggerPlaced": {
+                            "order": {
+                                "accountId": 0.0,
+                                "accountUid": "f7d5571c-6d10-4cf1-944a-048d25682ed0",
+                                "direction": "Buy",
+                                "lastUpdateTimestamp": 1605126171852,
+                                "limitPrice": "29000.0",
+                                "orderType": "lmt",
+                                "quantity": "1.0",
+                                "reduceOnly": false,
+                                "timestamp": 1605126171852,
+                                "tradeable": "pi_xbtusd",
+                                "triggerOptions": {
+                                    "trailingStopOptions": {
+                                        "maxDeviation": "0.1",
+                                        "unit": "Percent"
+                                    },
+                                    "triggerPrice": "29200.0",
+                                    "triggerSide": "Sell",
+                                    "triggerSignal": "trade"
+                                },
+                                "uid": "f7d5571c-6d10-4cf1-944a-048d25682ed0"
+                            },
+                            "reason": "maxDeviation triggered"
+                        }
+                    },
+                    "timestamp": 1605126171852,
+                    "uid": "f7d5571c-6d10-4cf1-944a-048d25682ed0"
+                }, ...
+            ],
+            "len": 10,
+            "serverTime": "2022-03-31T20:38:53.677Z"
+        }
         """
         return self._get_historical_events(
             endpoint="/api/history/v2/triggers",

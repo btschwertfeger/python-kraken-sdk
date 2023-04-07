@@ -99,14 +99,14 @@ class KrakenBaseSpotAPI:
     This class the the base for all Spot clients, handles un-/signed
     requests and returns exception handled results.
 
-    :param key: Optional Spot API public key (default: ``""``)
-    :type key: str
-    :param secret: Optional Spot API secret key (default: ``""``)
-    :type secret: str
-    :param url: Optional url to access the Kraken API (default: https://api.kraken.com)
-    :type url: str
-    :param sandbox: Optional use of the sandbox (not supported so far, default: ``False``)
-    :type sandbox: bool
+    :param key: Spot API public key (default: ``""``)
+    :type key: str, optional
+    :param secret: Spot API secret key (default: ``""``)
+    :type secret: str, optional
+    :param url: URL to access the Kraken API (default: https://api.kraken.com)
+    :type url: str, optional
+    :param sandbox: Use the sandbox (not supported for Spot trading so far, default: ``False``)
+    :type sandbox: bool, optional
     """
 
     URL = "https://api.kraken.com"
@@ -300,20 +300,20 @@ class KrakenBaseSpotAPI:
 
 class KrakenBaseFuturesAPI:
     """
-    The base class for all Futures clients handles un/signed requests
+    The base class for all Futures clients handles un-/signed requests
     and returns exception handled results.
 
     If the sandbox environment is chosen, the keys must be generated from here:
         https://demo-futures.kraken.com/settings/api
 
     :param key: Futures API public key (default: ``""``)
-    :type key: str
+    :type key: str, optional
     :param secret: Futures API secret key (default: ``""``)
-    :type secret: str
-    :param url: The url to access the Futures Kraken API (default: https://futures.kraken.com)
-    :type url: str
-    :param sandbox: If set to true the url will be https://demo-futures.kraken.com
-    :type sandbox: bool
+    :type secret: str, optional
+    :param url: The URL to access the Futures Kraken API (default: https://futures.kraken.com)
+    :type url: str, optional
+    :param sandbox: If set to ``True`` the URL will be https://demo-futures.kraken.com (default: ``False``)
+    :type sandbox: bool, optional
 
     """
 

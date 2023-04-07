@@ -15,14 +15,14 @@ class Funding(KrakenBaseSpotAPI):
     Class that implements the Spot Funding client. Currently there
     are no funding endpoints that could be accesses without authentication.
 
-    :param key: Optional Spot API public key (default: ``""``)
-    :type key: str
-    :param secret: Optional Spot API secret key (default: ``""``)
-    :type secret: str
-    :param url: Optional url to access the Kraken API (default: https://api.kraken.com)
-    :type url: str
-    :param sandbox: Optional use of the sandbox (not supported so far, default: ``False``)
-    :type sandbox: bool
+    :param key: Spot API public key (default: ``""``)
+    :type key: str, optional
+    :param secret: Spot API secret key (default: ``""``)
+    :type secret: str, optional
+    :param url: Alternative URL to access the Kraken API (default: https://api.kraken.com)
+    :type url: str, optional
+    :param sandbox: Use the sandbox (not supported for Spot trading so far, default: ``False``)
+    :type sandbox: bool, optional
 
     .. code-block:: python
         :linenos:
@@ -81,8 +81,8 @@ class Funding(KrakenBaseSpotAPI):
         :type asset: str
         :param method: Deposit method name
         :type method: str
-        :param new: Optional - Generate a new deposit address (default: ``False``)
-        :type new: bool
+        :param new: Generate a new deposit address (default: ``False``)
+        :type new: bool, optional
         :return: The user and asset specific deposit addresses
         :rtype: List[dict]
 
@@ -124,10 +124,10 @@ class Funding(KrakenBaseSpotAPI):
 
         - https://docs.kraken.com/rest/#operation/getStatusRecentDeposits
 
-        :param asset: Optional - Filter by asset
-        :type asset: str
-        :param method: Optional - Filter by deposit method
-        :type method: str
+        :param asset: Filter by asset
+        :type asset: str, optional
+        :param method: Filter by deposit method
+        :type method: str, optional
         :return: The user specific deposit history
         :rtype: List[dict]
 
@@ -276,10 +276,10 @@ class Funding(KrakenBaseSpotAPI):
 
         - https://docs.kraken.com/rest/#operation/getStatusRecentWithdrawals
 
-        :param asset: Optional - Filter withdraws by asset
-        :type asset: str | None
-        :param method: Optional - Filter by withdraw method
-        :type method: str | None
+        :param asset: Filter withdraws by asset (default: ``None``)
+        :type asset: str | None, optional
+        :param method: Filter by withdraw method (default: ``None``)
+        :type method: str | None, optional
         :return: Withdrawal information
         :rtype: List[dict]
 

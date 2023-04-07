@@ -4,8 +4,7 @@
 # Github: https://github.com/btschwertfeger
 #
 
-""" Module that implements the Kraken Spot User client
-"""
+""" Module that implements the Kraken Spot User client"""
 from typing import List, Union
 
 from kraken.base_api import KrakenBaseSpotAPI
@@ -15,18 +14,20 @@ class User(KrakenBaseSpotAPI):
     """
     Class that implements the Kraken Spot User client
 
-    :param key: Optional Spot API public key (default: ``""``)
-    :type key: str
-    :param secret: Optional Spot API secret key (default: ``""``)
-    :type secret: str
-    :param url: Optional url to access the Kraken API (default: https://api.kraken.com)
-    :type url: str
-    :param sandbox: Optional use of the sandbox (not supported so far, default: ``False``)
-    :type sandbox: bool
+    Requires the ``Query funds`` permission in the API key settings.
+
+    :param key: Spot API public key (default: ``""``)
+    :type key: str, optional
+    :param secret: Spot API secret key (default: ``""``)
+    :type secret: str, optional
+    :param url: The URL to access the Kraken API (default: https://api.kraken.com)
+    :type url: str, optional
+    :param sandbox: Use the sandbox (not supported for Spot trading so far, default: ``False``)
+    :type sandbox: bool, optional
 
     .. code-block:: python
         :linenos:
-        :caption: Example
+        :caption: Spot User: Create the user client
 
         >>> from kraken.spot import User
         >>> user = User() # unauthenticated
@@ -37,11 +38,13 @@ class User(KrakenBaseSpotAPI):
         """
         Get the current balances of the user.
 
+        Requires the ``Query funds`` permission in the API key settings.
+
         - https://docs.kraken.com/rest/#operation/getAccountBalance
 
         .. code-block:: python
             :linenos:
-            :caption: Example
+            :caption: Spot User: Get the account balances
 
             >>> from kraken.spot import User
             >>> user = User(key="api-key", secret="secret-key")
@@ -63,6 +66,8 @@ class User(KrakenBaseSpotAPI):
         """
         Returns the balance and available balance of a given currency.
 
+        Requires the ``Query funds`` and ``Query open orders & trades`` permissions in the API key settings.
+
         :param currency: The currency to get the balances from
         :type currency: str
         :return: Dictionary containing the ``currency`` (currency as string),
@@ -72,7 +77,7 @@ class User(KrakenBaseSpotAPI):
 
         .. code-block:: python
             :linenos:
-            :caption: Example
+            :caption: Spot User: Get balances
 
             >>> from kraken.spot import User
             >>> user = User(key="api-key", secret="secret-key")
@@ -112,14 +117,18 @@ class User(KrakenBaseSpotAPI):
         """
         Get the summary of all collateral balances.
 
+
+        Requires the ``Query funds``, ``Query open orders & trades``,
+        and ``Query closed orders & trades`` permissions in the API key settings.
+
         - https://docs.kraken.com/rest/#operation/getTradeBalance
 
-        :param asset: Optional - The base asset to determine the balances (default: ``ZUSD``)
-        :type asset: str
+        :param asset: The base asset to determine the balances (default: ``ZUSD``)
+        :type asset: str, optional
 
         .. code-block:: python
             :linenos:
-            :caption: Example
+            :caption: Spot User: Get the trade balance
 
             >>> from kraken.spot import User
             >>> user = User(key="api-key", secret="secret-key")
@@ -147,16 +156,18 @@ class User(KrakenBaseSpotAPI):
         """
         Get information about the open orders.
 
+        Requires the ``Query open orders & trades`` permission in the API key settings.
+
         - https://docs.kraken.com/rest/#operation/getOpenOrders
 
         :param trades: Include trades related to position or not into the response (default: ``False``)
         :type trades: bool
-        :param userref: Optional - Filter the results by user reference id
-        :type userref: int | None
+        :param userref: Filter the results by user reference id
+        :type userref: int | None, optional
 
         .. code-block:: python
             :linenos:
-            :caption: Example
+            :caption: Spot User: Get the open orders
 
             >>> from kraken.spot import User
             >>> user = User(key="api-key", secret="secret-key")
@@ -214,22 +225,24 @@ class User(KrakenBaseSpotAPI):
         """
         Get the 50 latest closed (filled or cancelled) orders.
 
+        Requires the ``Query closed orders & trades`` permission in the API key settings.
+
         - https://docs.kraken.com/rest/#operation/getClosedOrders
 
         :param trades: Include trades related to position into the response or not (default: ``False``)
         :type trades: bool
-        :param userref: Optional - Filter the results by user reference id
-        :type userref: int | None
-        :param start: Optional - Unix timestamp to start the search from
-        :type start: int | None
-        :param end: Optional - Unix timestamp to define the last result to include
-        :type end: int | None
-        :param closetime: Optional - Specify the exact time frame, one of: ``both``, ``open``, ``close`` (default: ``both``)
-        :type closetime: str
+        :param userref: Filter the results by user reference id
+        :type userref: int | None, optional
+        :param start: Unix timestamp to start the search from
+        :type start: int | None, optional
+        :param end: Unix timestamp to define the last result to include
+        :type end: int | None, optional
+        :param closetime: Specify the exact time frame, one of: ``both``, ``open``, ``close`` (default: ``both``)
+        :type closetime: str, optional
 
         .. code-block:: python
             :linenos:
-            :caption: Example
+            :caption: Spot User: Get the closed orders
 
             >>> from kraken.spot import User
             >>> user = User(key="api-key", secret="secret-key")
@@ -293,20 +306,23 @@ class User(KrakenBaseSpotAPI):
         """
         Get information about one or more orders.
 
+        Requires the ``Query open orders & trades`` and ``Query closed orders & trades``
+        permissions in the API key settings.
+
         - https://docs.kraken.com/rest/#tag/User-Data/operation/getOrdersInfo
 
         :param txid: A transaction id of a specific order, a list of txids or a string containing a comma delimited list of txids
         :type txid: str | List[str]
         :param trades: Include trades in the result or not (default: ``False``)
         :type trades: bool
-        :param userref: Optional - Filter results by user reference id
-        :type userref: int | None
+        :param userref: Filter results by user reference id
+        :type userref: int | None, optional
         :param consolidate_taker: Consolidate trdes by individual taker trades (default: ``True``)
         :type consolidate_taker: bool
 
         .. code-block:: python
             :linenos:
-            :caption: Example
+            :caption: Spot User: Get order information
 
             >>> from kraken.spot import User
             >>> user = User(key="api-key", secret="secret-key")
@@ -397,22 +413,24 @@ class User(KrakenBaseSpotAPI):
         """
         Get information about the latest 50 trades and fills. Can be paginated.
 
+        Requires the ``Query closed orders & trades`` permission in the API key settings.
+
         - https://docs.kraken.com/rest/#operation/getTradeHistory
 
         :param type_: Filter by type of trade, one of: ``all``, ``any position``, ``closed position``, ``closing position``, and ``no position`` (default: ``all``)
         :type type_: str
         :param trades: Include trades related to a position or not
         :type trades: bool
-        :param start: Optional - Timestamp to start the search
-        :type start: int | None
-        :param end: Optional - Timestamp to define the last inluded result
-        :type end: int | None
+        :param start: Timestamp to start the search
+        :type start: int | None, optional
+        :param end: Timestamp to define the last inluded result
+        :type end: int | None, optional
         :param consolidate_taker: Consolidate trades by individual taker trades (default: ``True``)
         :type consolidate_taker: bool
 
         .. code-block:: python
             :linenos:
-            :caption: Example
+            :caption: Spot User: Get the trade history
 
             >>> from kraken.spot import User
             >>> user = User(key="api-key", secret="secret-key")
@@ -458,7 +476,10 @@ class User(KrakenBaseSpotAPI):
         self, txid: Union[str, List[str]], trades: bool = False
     ) -> dict:
         """
-        Get information about specific trades/filled orders. 20 txids can be queried ad max.
+        Get information about specific trades/filled orders. 20 txids can be queried maximum.
+
+        Requires the ``Query open orders & trades`` and ``Query closed orders & trades``
+        permission in the API key settings.
 
         - https://docs.kraken.com/rest/#operation/getTradesInfo
 
@@ -469,7 +490,7 @@ class User(KrakenBaseSpotAPI):
 
         .. code-block:: python
             :linenos:
-            :caption: Example
+            :caption: Spot User: Get the historcal trade information
 
             >>> from kraken.spot import User
             >>> user = User(key="api-key", secret="secret-key")
@@ -509,18 +530,49 @@ class User(KrakenBaseSpotAPI):
         consolidation: str = "market",
     ) -> dict:
         """
-        Get information about the open positions.
+        Get information about the open margin positions.
+
+        Requires the ``Query open orders & trades`` permission in the API key settings.
 
         - https://docs.kraken.com/rest/#operation/getOpenPositions
 
-        :param txid: Optional - Filter by txid or list of txids or comma delimited list of txids as string
-        :type txid: str | List[str], None
+        :param txid: Filter by txid or list of txids or comma delimited list of txids as string
+        :type txid: str | List[str], None, optional
         :param docalcs: Include profit and loss calculation into the result (default: ``False``)
         :type docalcs: bool
         :param consolidation: Consolidate positions by market/pair
         :type consolidation: str
+        :return: List of open positions
+        :rtype: dict
 
+        .. code-block:: python
+            :linenos:
+            :caption: Spot User: Get the open margin positions
 
+            >>> from kraken.spot import User
+            >>> user = User(key="api-key", secret="secret-key")
+            >>> user.get_open_positions()
+            {
+                'TF5GVO-T7ZZ2-6NBKBI': {
+                    'ordertxid': 'O0SFFP-ABH4R-LOLNFG',
+                    'posstatus': 'open',
+                    'pair': 'XXBTZUSD',
+                    'time': 1618748097.12341,
+                    'type': 'buy',
+                    'ordertype': 'limit',
+                    'cost': '801243.52842',
+                    'fee': '208.44527',
+                    'vol': '8.82412861',
+                    'vol_closed': '0.20200000',
+                    'margin': '17234.123968',
+                    'value": '231463.1',
+                    'net": '+134186.9728',
+                    'terms": '0.0100% per 4 hours',
+                    'rollovertm': '1623672637',
+                    'misc': '',
+                    'oflags": ''
+                }, ...
+            }
         """
         params = {"docalcs": docalcs, "consolidation": consolidation}
         if txid is not None:
@@ -537,8 +589,10 @@ class User(KrakenBaseSpotAPI):
         ofs: Union[int, None] = None,
     ) -> dict:
         """
-        Get information about the users ledger entries.
-        50 results can be returned at a time.
+        Get information about the users ledger entries. 50 results can be returned at a time.
+
+        Requires the ``Query funds`` and ``Query ledger entries`` permissions in
+        the API key settings.
 
         - https://docs.kraken.com/rest/#operation/getLedgers
 
@@ -546,20 +600,20 @@ class User(KrakenBaseSpotAPI):
         :type asset: str | List[str]
         :param aclass: The asset class (default: ``currency`` )
         :type aclass: str
-        :param type_: Optional - Leder type, one of: ``all``, ``deposit``, ``withdrawal``,
+        :param type_: Ledger type, one of: ``all``, ``deposit``, ``withdrawal``,
          ``trade``, ``margin``, ``rollover``, ``credit``, ``transfer``, ``settled``,
          ``staking``, and ``sale`` (default: ``all``)
-        :type type_: str
-        :param start: Optional - Unix timestamp to start the search from
-        :type start: int | None
-        :param end: Optional - Unix timestamp to define the last result
-        :type end: int | None
-        :param ofs: Optional - Offset for pagination
-        :type ofs: int | None
+        :type type_: str, optional
+        :param start: Unix timestamp to start the search from
+        :type start: int | None, optional
+        :param end: Unix timestamp to define the last result
+        :type end: int | None, optional
+        :param ofs: Offset for pagination
+        :type ofs: int | None, optional
 
         .. code-block:: python
             :linenos:
-            :caption: Example
+            :caption: Spot User: Get ledgers info
 
             >>> from kraken.spot import User
             >>> user = User(key="api-key", secret="secret-key")
@@ -598,6 +652,9 @@ class User(KrakenBaseSpotAPI):
         """
         Get information about specific ledeger entries.
 
+        Requires the ``Query funds`` and ``Query ledger entries`` permissions in
+        the API key settings.
+
         - https://docs.kraken.com/rest/#operation/getLedgersInfo
 
         :param id_: Ledger id as string, list of strings, or comma delimited list of ledger ids as string
@@ -607,7 +664,7 @@ class User(KrakenBaseSpotAPI):
 
         .. code-block:: python
             :linenos:
-            :caption: Example
+            :caption: Spot User: Get ledgers
 
             >>> from kraken.spot import User
             >>> user = User(key="api-key", secret="secret-key")
@@ -638,16 +695,18 @@ class User(KrakenBaseSpotAPI):
         """
         Get the 30-day user specific trading volume in USD.
 
+        Requires the ``Query funds`` permission in the API key settings.
+
         - https://docs.kraken.com/rest/#operation/getTradeVolume
 
-        :param pair: Optional - Asset pair, list of asset pairs or comma delimited list (as string) of asset pairs to filter
-        :type pair: str | List[str] | None
-        :param fee_info: Optional - Include fee information or not (default: ``True``)
-        :type fee_info: bool
+        :param pair: Asset pair, list of asset pairs or comma delimited list (as string) of asset pairs to filter
+        :type pair: str | List[str] | None, optional
+        :param fee_info: Include fee information or not (default: ``True``)
+        :type fee_info: bool, optional
 
         .. code-block:: python
             :linenos:
-            :caption: Example
+            :caption: Spot User: Get the 30-day trade volume
 
             >>> from kraken.spot import User
             >>> user = User(key="api-key", secret="secret-key")
@@ -703,24 +762,29 @@ class User(KrakenBaseSpotAPI):
         """
         Request to export the trades or ledgers of the user.
 
+        Requires the ``Export data`` permission. In addition for exporting trades
+        data the permissions ``Query open orders & trades`` and
+        ``Query closed orders & trades`` must be set. For exporting ledgers the
+        ``Query funds`` and ``Query ledger entries`` must be set.
+
         - https://docs.kraken.com/rest/#operation/addExport
 
         :param report: Kind of report, one of: ``trades`` and ``ledgers``
         :type report: str
         :param format_: The export format of the requesting report, one of ``CSV`` and ``TSV`` (default: ``CSV``)
         :type format_: str
-        :param fields: Optional - Fields to include in the report (default: ``all``)
-        :type fields: str | List[str]
-        :param starttm: Optional - Unix timestamp to start
-        :type starttm: int | None
-        :param endtm: optional - Unix timestamp of the last result
-        :type endtm: int | None
+        :param fields: Fields to include in the report (default: ``all``)
+        :type fields: str | List[str], optional
+        :param starttm: Unix timestamp to start
+        :type starttm: int | None, optional
+        :param endtm: Unix timestamp of the last result
+        :type endtm: int | None, optional
         :return: A dictionary containing the export id
         :rtype: dict
 
         .. code-block:: python
             :linenos:
-            :caption: Example
+            :caption: Spot User: Request an report export
 
             >>> from kraken.spot import User
             >>> user = User(key="api-key", secret="secret-key")
@@ -748,6 +812,11 @@ class User(KrakenBaseSpotAPI):
     def get_export_report_status(self, report: str) -> dict:
         """
         Get the status of the current pending report.
+
+        Requires the ``Export data`` permission. In addition for exporting trades
+        data the permissions ``Query open orders & trades`` and
+        ``Query closed orders & trades`` must be set. For exporting ledgers the
+        ``Query funds`` and ``Query ledger entries`` must be set.
 
         - https://docs.kraken.com/rest/#operation/exportStatus
 
@@ -797,8 +866,12 @@ class User(KrakenBaseSpotAPI):
 
     def retrieve_export(self, id_: str) -> dict:
         """
-        Get the status of the requested report export by id. Can be used
-        to save the transaction history to CSV.
+        Retrieve the requested report export.
+
+        Requires the ``Export data`` permission. In addition for exporting trades
+        data the permissions ``Query open orders & trades`` and
+        ``Query closed orders & trades`` must be set. For exporting ledgers the
+        ``Query funds`` and ``Query ledger entries`` must be set.
 
         - https://docs.kraken.com/rest/#operation/retrieveExport
 
@@ -809,7 +882,7 @@ class User(KrakenBaseSpotAPI):
 
         .. code-block:: python
             :linenos:
-            :caption: Example
+            :caption: Spot User: Save the exported report to CSV
 
             >>> from kraken.spot import User
             >>> user = User(key="api-key", secret="secret-key")
@@ -831,26 +904,31 @@ class User(KrakenBaseSpotAPI):
             return_raw=True,
         )
 
-    def delete_export_report(self, id_: str, type_: str) -> dict:
+    def delete_export_report(self, id_: str, type_: str = "delete") -> dict:
         """
         Delete a report from the Kraken server.
+
+        Requires the ``Export data`` permission. In addition for exporting trades
+        data the permissions ``Query open orders & trades`` and
+        ``Query closed orders & trades`` must be set. For exporting ledgers the
+        ``Query funds`` and ``Query ledger entries`` must be set.
 
         - https://docs.kraken.com/rest/#operation/removeExport
 
         :param id_: The id of the report
         :type id_: str
-        :param type_: The type of the export, one of: ``trades`` and ``ledgers``
-        :type type_: str
+        :param type_: The type of the export, one of: ``cancel`` and ``delete`` (default: ``delete``)
+        :type type_: str, optional
         :return: Success or failure
         :rtype: dict
 
         .. code-block:: python
             :linenos:
-            :caption: Example
+            :caption: Spot User: Delete or cancel the report
 
             >>> from kraken.spot import User
             >>> user = User(key="api-key", secret="secret-key")
-            >>> user.delete_export_report(id_="GEHI", type_="trades")
+            >>> user.delete_export_report(id_="GEHI", type_="delete")
             { 'delete': True }
         """
         return self._request(
@@ -861,8 +939,8 @@ class User(KrakenBaseSpotAPI):
 
     def create_subaccount(self, username: str, email: str) -> dict:
         """
-        Create a subaccount for trading. This is currently only available
-        for institutional clients.
+        Create a subaccount for trading. This is currently *only available
+        for institutional clients*.
 
         - https://docs.kraken.com/rest/#tag/User-Subaccounts
 
@@ -870,12 +948,12 @@ class User(KrakenBaseSpotAPI):
         :type username: str
         :param email: The E-Mail address for the new subaccount
         :type email: str
-        :return: Success or failunre
+        :return: Success or failure
         :rtype: dict
 
         .. code-block:: python
             :linenos:
-            :caption: Example
+            :caption: Spot User: Create a subaccount
 
             >>> from kraken.spot import User
             >>> user = User(key="api-key", secret="secret-key")

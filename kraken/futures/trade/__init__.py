@@ -18,17 +18,17 @@ class Trade(KrakenBaseFuturesAPI):
     https://demo-futures.kraken.com/settings/api
 
     :param key: Futures API public key (default: ``""``)
-    :type key: str
+    :type key: str, optional
     :param secret: Futures API secret key (default: ``""``)
-    :type secret: str
-    :param url: The url to access the Futures Kraken API (default: https://futures.kraken.com)
-    :type url: str
-    :param sandbox: If set to true the url will be https://demo-futures.kraken.com
-    :type sandbox: bool
+    :type secret: str, optional
+    :param url: Alternative URL to access the Futures Kraken API (default: https://futures.kraken.com)
+    :type url: str, optional
+    :param sandbox: If set to ``True`` the URL will be https://demo-futures.kraken.com
+    :type sandbox: bool, optional
 
     .. code-block:: python
         :linenos:
-        :caption: Example
+        :caption: Futures Trade: Create the trade client
 
         >>> from kraken.futures import Trade
         >>> trade = Trade() # unauthenticated
@@ -44,21 +44,36 @@ class Trade(KrakenBaseFuturesAPI):
         """
         Return the current fills of the user.
 
+        Requires at least the ``General API - Read Only`` permission in the API key settings.
+
         - https://docs.futures.kraken.com/#http-api-trading-v3-api-historical-data-get-your-fills
 
-        :param lastFillTime: Optional - Filter by last filled timestamp
-        :type lastFillTime: str | None
+        :param lastFillTime: Filter by last filled timestamp
+        :type lastFillTime: str | None, optional
         :return: Fills
         :rtype: dict
 
         .. code-block:: python
             :linenos:
-            :caption: Example
+            :caption: Futures Trade: Get the recend fills
 
             >>> from kraken.futures import Trade
             >>> trade = Trade(key="api-key", secret="secret-key")
             >>> trade.get_fills()
-            {'result': 'success', 'fills': [], 'serverTime': '2023-04-04T16:55:47.534Z'}
+            {
+                'result': 'success',
+                'fills': [{
+                    'fill_id': '15dae264-01e9-4d4c-8962-2f49b98c46f6',
+                    'symbol': 'pi_ethusd',
+                    'side': 'buy',
+                    'order_id': '267372ec-272f-4ca7-9b8c-99a0dc8f781c',
+                    'size': 5,
+                    'price': 1859.075,
+                    'fillTime': '2023-04-07T15:07:46.540Z',
+                    'fillType': 'taker'
+                }, ...],
+                'serverTime': '2023-04-07T15:23:48.705Z'
+            }
         """
         query_params = {}
         if lastFillTime:
@@ -74,6 +89,8 @@ class Trade(KrakenBaseFuturesAPI):
         """
         Create multiple orders at once using the batch order endpoit.
 
+        Requires the ``General API - Full Access`` permission in the API key settings.
+
         - https://docs.futures.kraken.com/#http-api-trading-v3-api-order-management-batch-order-management
 
         :param batchorder_list: List of order instructions (see example below - or the linked official Kraken documentation)
@@ -83,42 +100,42 @@ class Trade(KrakenBaseFuturesAPI):
 
         .. code-block:: python
             :linenos:
-            :caption: Example
+            :caption: Futures Trade: Create a batch order
 
             >>> from kraken.futures import Trade
             >>> trade = Trade(key="api-key", secret="secret-key")
-            >>> trade..create_batch_order(
-                    batchorder_list=[
-                        {
-                            "order": "send",
-                            "order_tag": "1",
-                            "orderType": "lmt",
-                            "symbol": "PI_XBTUSD",
-                            "side": "buy",
-                            "size": 5,
-                            "limitPrice": 1.00,
-                            "cliOrdId": "my_another_client_id",
-                        },
-                        {
-                            "order": "send",
-                            "order_tag": "2",
-                            "orderType": "stp",
-                            "symbol": "PI_XBTUSD",
-                            "side": "buy",
-                            "size": 1,
-                            "limitPrice": 2.00,
-                            "stopPrice": 3.00,
-                        },
-                        {
-                            "order": "cancel",
-                            "order_id": "e35d61dd-8a30-4d5f-a574-b5593ef0c050",
-                        },
-                        {
-                            "order": "cancel",
-                            "cliOrdId": "my_client_id",
-                        },
-                    ],
-                )
+            >>> trade.create_batch_order(
+            ...     batchorder_list=[
+            ...         {
+            ...             "order": "send",
+            ...             "order_tag": "1",
+            ...             "orderType": "lmt",
+            ...             "symbol": "PI_XBTUSD",
+            ...             "side": "buy",
+            ...             "size": 5,
+            ...             "limitPrice": 1.00,
+            ...             "cliOrdId": "my_another_client_id",
+            ...         },
+            ...         {
+            ...             "order": "send",
+            ...             "order_tag": "2",
+            ...             "orderType": "stp",
+            ...             "symbol": "PI_XBTUSD",
+            ...             "side": "buy",
+            ...             "size": 1,
+            ...             "limitPrice": 2.00,
+            ...             "stopPrice": 3.00,
+            ...         },
+            ...         {
+            ...             "order": "cancel",
+            ...             "order_id": "e35d61dd-8a30-4d5f-a574-b5593ef0c050",
+            ...         },
+            ...         {
+            ...             "order": "cancel",
+            ...             "cliOrdId": "my_client_id",
+            ...         },
+            ...     ],
+            ... )
             {
                 'result': 'success',
                 'serverTime': '2023-04-04T17:03:36.100Z',
@@ -179,16 +196,18 @@ class Trade(KrakenBaseFuturesAPI):
         """
         Cancels all open orders, can be filtered by symbol.
 
+        Requires the ``General API - Full Access`` permission in the API key settings.
+
         - https://docs.futures.kraken.com/#http-api-trading-v3-api-order-management-cancel-all-orders
 
-        :param symbol: Optional - Filter by symbol
-        :type symbol: str | None
+        :param symbol: Filter by symbol
+        :type symbol: str | None, optional
         :return: Information about the success or failure
         :rtype: dict
 
         .. code-block:: python
             :linenos:
-            :caption: Example
+            :caption: Futures Trade: Cancell all open orders
 
             >>> from kraken.futures import Trade
             >>> trade = Trade(key="api-key", secret="secret-key")
@@ -228,16 +247,18 @@ class Trade(KrakenBaseFuturesAPI):
         can be pushed back by accessing this endpoint over and over again. Set the timeout to zero
         to reset.
 
+        Requires the ``General API - Full Access`` permission in the API key settings.
+
         - https://docs.futures.kraken.com/#http-api-trading-v3-api-order-management-dead-man-39-s-switch
 
         :param timeout: The timeout in seconds
-        :type timeout: int | None
+        :type timeout: int | None, optional
         :return: Success or failure
         :rtype: dict
 
         .. code-block:: python
             :linenos:
-            :caption: Example
+            :caption: Futures Trade: Setup the Death man's Switch
 
             >>> from kraken.futures import Trade
             >>> trade = Trade(key="api-key", secret="secret-key")
@@ -263,19 +284,21 @@ class Trade(KrakenBaseFuturesAPI):
         """
         This endpoint can be used to cancel a specific order by ``order_id`` or ``cliOrdId``.
 
+        Requires the ``General API - Full Access`` permission in the API key settings.
+
         - https://docs.futures.kraken.com/#http-api-trading-v3-api-order-management-cancel-order
 
-        :param order_id: Optional - The order_id to cancel
-        :type order_id: str | None
-        :param cliOrdId: Optional the client defined order id
-        :type cliOrdId: str | None
+        :param order_id: The order_id to cancel
+        :type order_id: str | None, optional
+        :param cliOrdId: The client defined order id
+        :type cliOrdId: str | None, optional
         :raises ValueError: If both ``order_id`` and ``cliOrdId`` are not set
         :return: Success or failure
         :rtype: dict
 
         .. code-block:: python
             :linenos:
-            :caption: Example
+            :caption: Futures Trade: Cancel an order
 
             >>> from kraken.futures import Trade
             >>> trade = Trade(key="api-key", secret="secret-key")
@@ -316,25 +339,27 @@ class Trade(KrakenBaseFuturesAPI):
         """
         Edit an open order.
 
+        Requires the ``General API - Full Access`` permission in the API key settings.
+
         - https://docs.futures.kraken.com/#http-api-trading-v3-api-order-management-edit-order
 
-        :param order_id: Optional - The order_id to cancel
-        :type order_id: str | None
-        :param cliOrdId: Optional the client defined order id
-        :type cliOrdId: str | None
-        :param limitPrice: Optional - The new limitprice
+        :param orderId: The order id to cancel
+        :type orderId: str | None, optional
+        :param cliOrdId: The client defined order id
+        :type cliOrdId: str | None, optional
+        :param limitPrice: The new limitprice
         :type limitPrice: str | int | float None
-        :param size: Optional - The new size of the position
-        :type size: str | int | float | None
-        :param stopPrice: Optional - The stop price
-        :type stopPrice: str | int | float | None
-        :raises ValueError:  If both ``order_id`` and ``cliOrdId`` are not set
+        :param size: The new size of the position
+        :type size: str | int | float | None, optional
+        :param stopPrice: The stop price
+        :type stopPrice: str | int | float | None, optional
+        :raises ValueError: If both ``orderId`` and ``cliOrdId`` are not set
         :return: Success or failure
         :rtype: dict
 
         .. code-block:: python
             :linenos:
-            :caption: Example
+            :caption: Futures Trade: Edit an open order
 
             >>> from kraken.futures import Trade
             >>> trade = Trade(key="api-key", secret="secret-key")
@@ -380,19 +405,20 @@ class Trade(KrakenBaseFuturesAPI):
         """
         Get the status of multiple orders.
 
+        Requires at least the ``General API - Read Only`` permission in the API key settings.
+
         - https://docs.futures.kraken.com/#http-api-trading-v3-api-order-management-get-the-current-status-for-specific-orders
 
-        :param order_id: Optional - The order ids to cancel
-        :type order_id: str | List[str] | None
-        :param cliOrdId: Optional the client defined order ids
-        :type cliOrdId: str | List[str] | None
-        :raises ValueError:  If both ``order_id`` and ``cliOrdId`` are not set
+        :param orderIds: The order ids to cancel
+        :type orderIds: str | List[str] | None, optional
+        :param cliOrdId: The client defined order ids
+        :type cliOrdId: str | List[str] | None, optional
         :return: Success or failure
         :rtype: dict
 
         .. code-block:: python
             :linenos:
-            :caption: Example
+            :caption: Futures Trade: Get the order status
 
             >>> from kraken.futures import Trade
             >>> trade = Trade(key="api-key", secret="secret-key")
@@ -404,13 +430,131 @@ class Trade(KrakenBaseFuturesAPI):
             params["orderIds"] = orderIds
         elif cliOrdIds is not None:
             params["cliOrdIds"] = cliOrdIds
-        else:
-            raise ValueError("Either orderIds or cliOrdIds must be specified!")
+
         return self._request(
             method="POST",
             uri="/derivatives/api/v3/orders/status",
             post_params=params,
             auth=True,
+        )
+
+    def get_open_positions(self) -> dict:
+        """
+        List the open positions of the user.
+
+        Requires at least the ``General API - Read Only`` permission in the API key settings.
+
+        - https://docs.futures.kraken.com/#http-api-trading-v3-api-account-information-get-open-positions
+
+        :return: Information about the open positions
+        :rtype: dict
+
+        .. code-block:: python
+            :linenos:
+            :caption: Futures Trade: Get the user's open positions
+
+            >>> from kraken.futures import Trade
+            >>> trade = Trade(key="api-key", secret="secret-key")
+            >>> trade.get_open_positions()
+            {
+                'result': 'success',
+                'openPositions': [
+                    {
+                        'side': 'short',
+                        'symbol': 'pi_xbtusd',
+                        'price': 27523.749993345933,
+                        'fillTime': '2023-04-05T12:31:21.410Z',
+                        'size': 8000,
+                        'unrealizedFunding': 0.00005879463852989987
+                    },
+                ],
+                'serverTime': '2023-04-06T16:12:15.410Z'
+            }
+        """
+        return self._request(
+            method="GET", uri="/derivatives/api/v3/openpositions", auth=True
+        )
+
+    def get_open_orders(self) -> dict:
+        """
+        Retrieve the open orders.
+
+        Requires at least the ``General API - Read Only`` permission in the API key settings.
+
+        - https://docs.futures.kraken.com/#http-api-trading-v3-api-order-management-get-open-orders
+
+        :return: The open futures positions/orders
+        :rtype: dict
+
+        .. code-block:: python
+            :linenos:
+            :caption: Futures Trade: Get open orders
+
+            >>> from kraken.futures import Trade
+            >>> trade = Trade(key="api-key", secret="secret-key")
+            >>> trade.get_open_orders()
+            {
+                'result': 'success',
+                'openOrders': [{
+                    'order_id': '2ce038ae-c144-4de7-a0f1-82f7f4fca864',
+                    'symbol': 'pi_ethusd',
+                    'side': 'buy',
+                    'orderType': 'lmt',
+                    'limitPrice': 1200,
+                    'unfilledSize': 100,
+                    'receivedTime': '2023-04-07T15:18:04.699Z',
+                    'status': 'untouched',
+                    'filledSize': 0,
+                    'reduceOnly': False,
+                    'lastUpdateTime': '2023-04-07T15:18:04.699Z'
+                }, {
+                    'order_id': 'c8135f52-2a86-4e26-b629-43cc37da9dbf',
+                    'symbol': 'pi_ethusd',
+                    'side': 'buy',
+                    'orderType': 'take_profit',
+                    'limitPrice': 1860,
+                    'stopPrice': 1880.4,
+                    'unfilledSize': 10,
+                    'receivedTime': '2023-04-07T15:14:25.995Z',
+                    'status': 'untouched',
+                    'filledSize': 0,
+                    'reduceOnly': False,
+                    'triggerSignal': 'last',
+                    'lastUpdateTime': '2023-04-07T15:14:25.995Z'
+                }, {
+                    'order_id': 'e58ed100-1fb8-4e6c-a5ea-1cf85b0f0654',
+                    'symbol': 'pi_ethusd',
+                    'side': 'buy',
+                    'orderType': 'take_profit',
+                    'limitPrice': 1860,
+                    'stopPrice': 1880.4,
+                    'unfilledSize': 10,
+                    'receivedTime': '2023-04-07T15:12:08.131Z',
+                    'status': 'untouched',
+                    'filledSize': 0,
+                    'reduceOnly': False,
+                    'triggerSignal': 'last',
+                    'lastUpdateTime': '2023-04-07T15:12:08.131Z'
+                }, {
+                    'order_id': 'c8776f6e-c29e-4c6a-83ee-2d3cc6781cda',
+                    'symbol': 'pf_ethusd',
+                    'side': 'buy',
+                    'orderType': 'take_profit',
+                    'limitPrice': 1860,
+                    'stopPrice': 5,
+                    'unfilledSize': 0.5,
+                    'receivedTime': '2023-04-07T14:57:37.849Z',
+                    'status': 'untouched',
+                    'filledSize': 0,
+                    'reduceOnly': True,
+                    'triggerSignal': 'last',
+                    'lastUpdateTime': '2023-04-07T14:57:37.849Z'
+                }, ...],
+                'serverTime': '2023-04-07T15:30:29.911Z'
+            }
+        """
+        return self._request(
+            method="GET", uri="/derivatives/api/v3/openorders", auth=True
         )
 
     def create_order(
@@ -430,6 +574,8 @@ class Trade(KrakenBaseFuturesAPI):
         """
         Create and place an order on the futures market.
 
+        Requires the ``General API - Full Access`` permission in the API key settings.
+
         - https://docs.futures.kraken.com/#http-api-trading-v3-api-order-management-send-order
 
         :param orderType: The order type, one of ``lmt``, ``post``, ``ioc``, ``mkt``, ``stp``, ``take_profit``, ``trailing_stop``
@@ -440,44 +586,142 @@ class Trade(KrakenBaseFuturesAPI):
         :type symbol: str
         :param side: Long or Short, i.e.,: ``buy`` or ``sell``
         :type side: str
-        :param cliOrdId: Optinoal - A user defined order id
-        :type cliOrdId: str | None
-        :param limitPrice: Optional - Define a custom limit price
+        :param cliOrdId: A user defined order id
+        :type cliOrdId: str | None, optional
+        :param limitPrice: Define a custom limit price
         :type limitPrice: str | int | float
         :param reduceOnly: Reduces existing positions if set to ``True``
-        :type reduceOnly: bool | None
-        :param stopPrice: Optional - define a price when to exit the order. Required for specific ordertypes
-        :type stopPrice: str | None
-        :param triggerSignal: Optional - Define a trigger for specific orders (must be one of ``mark``, ``index``, ``last``)
-        :type triggerSignal: str | None
-        :param trailingStopDeviationUnit: Optional - See referenced Kraken documentation
-        :type trailingStopDeviationUnit: str | None
-        :param trailingStopMaxDeviation: Optional - See referenced Kraken documentation
-        :type trailingStopMaxDeviation: str | None
+        :type reduceOnly: bool | None, optional
+        :param stopPrice: Define a price when to exit the order. Required for specific ordertypes
+        :type stopPrice: str | None, optional
+        :param triggerSignal: Define a trigger for specific orders (must be one of ``mark``, ``index``, ``last``)
+        :type triggerSignal: str | None, optional
+        :param trailingStopDeviationUnit: See referenced Kraken documentation
+        :type trailingStopDeviationUnit: str | None, optional
+        :param trailingStopMaxDeviation: See referenced Kraken documentation
+        :type trailingStopMaxDeviation: str | None, optional
         :return: Success or failure
         :rtype: dict
 
         .. code-block:: python
             :linenos:
-            :caption: Example
+            :caption: Futures Trade: Create and submit a new order
 
             >>> from kraken.futures import Trade
             >>> trade = Trade(key="api-key", secret="secret-key")
             >>> trade.create_order(
-                    orderType="lmt",
-                    size=1,
-                    symbol="PF_SOLUSD",
-                    side="buy",
-                    limitPrice=1,
-                    stopPrice=10
-                )
+            ...     orderType="lmt",
+            ...     size=1000,
+            ...     symbol="PF_ETHUSD",
+            ...     side="buy",
+            ...     limitPrice=1200.0,
+            ... )
             {
                 'result': 'success',
                 'sendStatus': {
-                    'status': 'insufficientAvailableFunds'
+                    'order_id': '2ce038ae-c144-4de7-a0f1-82f7f4fca864',
+                    'status': 'placed',
+                    'receivedTime': '2023-04-07T15:18:04.699Z',
+                    'orderEvents': [
+                        {
+                            'order': {
+                                'orderId': '2ce038ae-c144-4de7-a0f1-82f7f4fca864',
+                                'cliOrdId': None,
+                                'type': 'lmt',
+                                'symbol': 'pi_ethusd',
+                                'side': 'buy',
+                                'quantity': 100,
+                                'filled': 0,
+                                'limitPrice': 1200.0,
+                                'reduceOnly': False,
+                                'timestamp': '2023-04-07T15:18:04.699Z',
+                                'lastUpdateTimestamp': '2023-04-07T15:18:04.699Z'
+                            },
+                            'reducedQuantity': None,
+                            'type': 'PLACE'
+                        }
+                    ]
                 },
-                'serverTime': '2023-04-04T17:31:52.089Z'
+                'serverTime': '2023-04-07T15:18:04.700Z'
             }
+            >>> trade.create_order(
+            ...     orderType="mkt",
+            ...     size=5,
+            ...     side="buy",
+            ...     symbol="PI_ETHUSD",
+            ... )
+            {
+                'result': 'success',
+                'sendStatus': {
+                    'order_id': '267372ec-272f-4ca7-9b8c-99a0dc8f781c',
+                    'status': 'placed',
+                    'receivedTime': '2023-04-07T15:07:46.540Z',
+                    'orderEvents': [
+                        {
+                            'executionId': '15dae264-01e9-4d4c-8962-2f49b98c46f6',
+                            'price': 1859.075,
+                            'amount': 5,
+                            'orderPriorEdit': None,
+                            'orderPriorExecution': {
+                                'orderId': '267372ec-272f-4ca7-9b8c-99a0dc8f781c',
+                                'cliOrdId': None,
+                                'type': 'ioc',
+                                'symbol': 'pi_ethusd',
+                                'side': 'buy',
+                                'quantity': 5,
+                                'filled': 0,
+                                'limitPrice': 1877.65,
+                                'reduceOnly': False,
+                                'timestamp': '2023-04-07T15:07:46.540Z',
+                                'lastUpdateTimestamp': '2023-04-07T15:07:46.540Z'
+                            },
+                            'takerReducedQuantity': None,
+                            'type': 'EXECUTION'
+                        }
+                    ]
+                },
+                'serverTime': '2023-04-07T15:07:46.541Z'
+            }
+            >>> trade.create_order(
+            ...     orderType="take_profit",
+            ...     size=10,
+            ...     side="buy",
+            ...     symbol="PI_ETHUSD",
+            ...     limitPrice="1860.0",
+            ...     triggerSignal="last",
+            ...     stopPrice=1880.4,
+            ... )
+            {
+                'result': 'success',
+                'sendStatus': {
+                    'order_id': 'e58ed100-1fb8-4e6c-a5ea-1cf85b0f0654',
+                    'status': 'placed',
+                    'receivedTime': '2023-04-07T15:12:08.131Z',
+                    'orderEvents': [
+                        {
+                            'orderTrigger': {
+                                'uid': 'e58ed100-1fb8-4e6c-a5ea-1cf85b0f0654',
+                                'clientId': None,
+                                'type': 'lmt',
+                                'symbol': 'pi_ethusd',
+                                'side': 'buy',
+                                'quantity': 10,
+                                'limitPrice': 1860.0,
+                                'triggerPrice': 1880.4,
+                                'triggerSide': 'trigger_below',
+                                'triggerSignal': 'last_price',
+                                'reduceOnly': False,
+                                'timestamp': '2023-04-07T15:12:08.131Z',
+                                'lastUpdateTimestamp': '2023-04-07T15:12:08.131Z',
+                                'startTime': None
+                            },
+                            'type': 'PLACE'
+                        }
+                    ]
+                },
+                'serverTime': '2023-04-07T15:12:08.131Z'
+            }
+
         """
 
         sides = ("buy", "sell")

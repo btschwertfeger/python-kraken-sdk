@@ -14,18 +14,18 @@ class Trade(KrakenBaseSpotAPI):
     """
     Class that implements the Kraken Trade Spot client
 
-    :param key: Optional Spot API public key (default: ``""``)
-    :type key: str
-    :param secret: Optional Spot API secret key (default: ``""``)
-    :type secret: str
-    :param url: Optional url to access the Kraken API (default: https://api.kraken.com)
-    :type url: str
-    :param sandbox: Optional use of the sandbox (not supported so far, default: ``False``)
-    :type sandbox: bool
+    :param key: Spot API public key (default: ``""``)
+    :type key: str, optional
+    :param secret: Spot API secret key (default: ``""``)
+    :type secret: str, optional
+    :param url: The URL to access the Kraken API (default: https://api.kraken.com)
+    :type url: str, optional
+    :param sandbox: Use the sandbox (not supported for Spot trading so far, default: ``False``)
+    :type sandbox: bool, optional
 
     .. code-block:: python
         :linenos:
-        :caption: Example
+        :caption: Spot Trade: Create the trade client
 
         >>> from kraken.spot import Trade
         >>> trade = Trade() # unauthenticated
@@ -59,6 +59,9 @@ class Trade(KrakenBaseSpotAPI):
         """
         Create a new order and place it on the market.
 
+        Requires the ``Create and modify orders`` permission in
+        the API key settings.
+
         - https://docs.kraken.com/rest/#operation/addOrder
 
         :param ordertype: The kind of the order, one of: ``market``, ``limit``, ``take-profit``, ``stop-loss-limit``, ``take-profit-limit`` and ``settle-position``
@@ -67,38 +70,38 @@ class Trade(KrakenBaseSpotAPI):
         :type side: str
         :param volume: The volume of the position to create
         :type volume: str | int | float
-        :param price: Optional - The limit price for ``limit`` orders or the trigger price for orders with ``ordertype`` one of ``stop-loss``, ``stop-loss-limit``, ``take-profit``, and ``take-profit-limit``
-        :type price: str | int | float | None
-        :param price2: Optional - The second price for ``stop-loss-limit`` and ``take-profit-limit`` orders (see the referenced Kraken documentaion for more information)
-        :type price2: str | int | float | None
-        :param trigger: Optional - What triggers the position of ``top-loss``, ``stop-loss-limit``, ``take-profit``, and ``take-profit-limit`` orders.
-        :type trigger: str | None
-        :param leverage: Optional - The leverage
-        :type leverage: str | int | float | None
+        :param price: The limit price for ``limit`` orders or the trigger price for orders with ``ordertype`` one of ``stop-loss``, ``stop-loss-limit``, ``take-profit``, and ``take-profit-limit``
+        :type price: str | int | float | None, optional
+        :param price2: The second price for ``stop-loss-limit`` and ``take-profit-limit`` orders (see the referenced Kraken documentaion for more information)
+        :type price2: str | int | float | None, optional
+        :param trigger: What triggers the position of ``top-loss``, ``stop-loss-limit``, ``take-profit``, and ``take-profit-limit`` orders.
+        :type trigger: str | None, optional
+        :param leverage: The leverage
+        :type leverage: str | int | float | None, optional
         :param reduce_only: (default: ``False``)
         :type reduce_only: bool
         :param stptype: Define what cancells the order, one of ``cancel-newest``, ``cancel-oldest``, ``cancel-both`` (default: ``cancel-newest``)
-        :type stptype: str | None
+        :type stptype: str | None, optional
         :param oflags: Order flags like ``post``, ``fcib``, ``fciq``, ``nomp``, ``viqc`` (see the referenced Kraken documentaion for more information)
-        :type oflags: str | List[str] | None
-        :param timeinforce: Optional - how long the order raimains in the orderbook, one of: ``GTC``, `ÌOC``, ``GTD`` (see the referenced Kraken documentaion for more information)
-        :type timeinforce: str | None
-        :param displayvol: Optional - Define how much of the volume is visible in the order book (iceberg)
-        :type displayvol: str | int | float | None
+        :type oflags: str | List[str] | None, optional
+        :param timeinforce: how long the order raimains in the orderbook, one of: ``GTC``, `ÌOC``, ``GTD`` (see the referenced Kraken documentaion for more information)
+        :type timeinforce: str | None, optional
+        :param displayvol: Define how much of the volume is visible in the order book (iceberg)
+        :type displayvol: str | int | float | None, optional
         :param starttim: Unix timestamp or seconds defining the start time (default: ``"0"``)
         :type starttim: str
         :param expiretm: Unix timestamp or time in seconds defining the expiration of the order, (default: ``"0"`` - i.e., no expiration)
         :type expiretm: str
-        :param close_ordertype: Optional - Conditional close order type, one of: ``limit``, ``stop-loss``, ``take-profit``, ``stop-loss-limit``, ``take-profit-limit`` (see the referenced Kraken documentaion for more information)
-        :type close_ordertype: str | None
-        :param close_price: Optional - Conditional close price
-        :type close_price: str | int | float | None
-        :param close_price2: Optional - Second conditional close price
-        :type close_price2: str | int | float | None
+        :param close_ordertype: Conditional close order type, one of: ``limit``, ``stop-loss``, ``take-profit``, ``stop-loss-limit``, ``take-profit-limit`` (see the referenced Kraken documentaion for more information)
+        :type close_ordertype: str | None, optional
+        :param close_price: Conditional close price
+        :type close_price: str | int | float | None, optional
+        :param close_price2: Second conditional close price
+        :type close_price2: str | int | float | None, optional
         :param deadline: (see the referenced Kraken documentaion for more information)
         :type deadline: str
-        :param validate: Optinal - Validate the order without placing on the market (default: ``False``)
-        :type validate: bool
+        :param validate: Validate the order without placing on the market (default: ``False``)
+        :type validate: bool, optional
         :param userref: User reference id for example to group orders
         :type userref: int
         :raises ValueError: If input is not correct
@@ -107,7 +110,7 @@ class Trade(KrakenBaseSpotAPI):
 
         .. code-block:: python
             :linenos:
-            :caption: Example
+            :caption: Spot Trade: Create an order
 
             >>> from kraken.spot import Trade
             >>> trade = Trade(key="api-key", secret="secret-key")
@@ -192,22 +195,25 @@ class Trade(KrakenBaseSpotAPI):
         """
         Create a batch of max 15 orders for a specifc asset pair.
 
+        Requires the ``Create and modify orders`` permission in
+        the API key settings.
+
         - https://docs.kraken.com/rest/#operation/addOrderBatch
 
         :param orders: Dictionary of order objects (see the referenced Kraken documentaion for more information)
         :type orders: List[dict]
         :param pair: Asset pair to place the orders for
         :type pair: str
-        :param deadline: Optional - (see the referenced Kraken documentaion for more information)
-        :type deadline: str
-        :param validate: Optional - Validate the orders without placing them. (default: ``False``)
-        :type validate: bool
+        :param deadline: (see the referenced Kraken documentaion for more information)
+        :type deadline: str, optional
+        :param validate: Validate the orders without placing them. (default: ``False``)
+        :type validate: bool, optional
         :return: Information about the placed orders
         :rtype: dict
 
         .. code-block:: python
             :linenos:
-            :caption: Example
+            :caption: Spot Trade: Create a batch order
 
             >>> from kraken.spot import Trade
             >>> trade = Trade(key="api-key", secret="secret-key")
@@ -270,26 +276,29 @@ class Trade(KrakenBaseSpotAPI):
         """
         Edit an open order.
 
+        Requires the ``Create and modify orders`` permission in
+        the API key settings.
+
         - https://docs.kraken.com/rest/#operation/editOrder
 
         :param txid: The txid of the order to edit
         :type txid: str
         :param pair: The asset pair of the order
         :type pair: str
-        :param volume: Optional - Set a new volume
-        :type volume: str | int | float | None
-        :param price: Optional - Set a new price
-        :type price: str | int | float | None
-        :param price2: Optional - Set a new second price
-        :type price2: str | int | float | None
+        :param volume: Set a new volume
+        :type volume: str | int | float | None, optional
+        :param price: Set a new price
+        :type price: str | int | float | None, optional
+        :param price2: Set a new second price
+        :type price2: str | int | float | None, optional
         :param oflags: Order flags like ``post``, ``fcib``, ``fciq``, ``nomp``, ``viqc`` (see the referenced Kraken documentaion for more information)
-        :type oflags: str | List[str] | None
+        :type oflags: str | List[str] | None, optional
         :param deadline: (see the referenced Kraken documentaion for more information)
         :type deadline: string
-        :param cancel_response: Optional - (see the referenced Kraken documentaion for more information)
-        :type cancel_response: bool
-        :param validate: Optinal - Validate the order without placing on the market (default: ``False``)
-        :type validate: bool
+        :param cancel_response: See the referenced Kraken documentaion for more information
+        :type cancel_response: bool, optional
+        :param validate: Validate the order without placing on the market (default: ``False``)
+        :type validate: bool, optional
         :param userref: User reference id for example to group orders
         :type userref: int
         :return: Success or failure
@@ -297,7 +306,7 @@ class Trade(KrakenBaseSpotAPI):
 
         .. code-block:: python
             :linenos:
-            :caption: Example
+            :caption: Spot Trade: Modify an order
 
             >>> from kraken.spot import Trade
             >>> trade = Trade(key="api-key", secret="secret-key")
@@ -340,6 +349,9 @@ class Trade(KrakenBaseSpotAPI):
         Cancel a specific order by ``txid``. Instead of a transaction id
         a user reference id can be passed.
 
+        Requires the ``Cancel/close orders`` permission in
+        the API key settings.
+
         - https://docs.kraken.com/rest/#operation/cancelOrder
 
         :param txid: Transaction id or comma delimited list of user reference ids to cancel.
@@ -349,7 +361,7 @@ class Trade(KrakenBaseSpotAPI):
 
         .. code-block:: python
             :linenos:
-            :caption: Example
+            :caption: Spot Trade: Cancel an order
 
             >>> from kraken.spot import Trade
             >>> trade = Trade(key="api-key", secret="secret-key")
@@ -366,6 +378,9 @@ class Trade(KrakenBaseSpotAPI):
         """
         Cancel all open orders.
 
+        Requires the ``Cancel/close orders`` permission in
+        the API key settings.
+
         - https://docs.kraken.com/rest/#operation/cancelAllOrders
 
         :return: Success or failure - Number of closed orders
@@ -373,7 +388,7 @@ class Trade(KrakenBaseSpotAPI):
 
         .. code-block:: python
             :linenos:
-            :caption: Example
+            :caption: Spot Trade: Cancel all open orders
 
             >>> from kraken.spot import Trade
             >>> trade = Trade(key="api-key", secret="secret-key")
@@ -386,6 +401,9 @@ class Trade(KrakenBaseSpotAPI):
         """
         Cancel all orders after a timeout. This can be used as Dead Man's Switch.
 
+        Requires the ``Create and modify orders`` permission in
+        the API key settings.
+
         - https://docs.kraken.com/rest/#operation/cancelAllOrdersAfter
 
         :param timeout: Optional The timeout in seconds, decativate by passing the default: ``0``
@@ -395,7 +413,7 @@ class Trade(KrakenBaseSpotAPI):
 
         .. code-block:: python
             :linenos:
-            :caption: Example
+            :caption: Spot Trade: Set the Death Man's Switch
 
             >>> from kraken.spot import Trade
             >>> trade = Trade(key="api-key", secret="secret-key")
@@ -416,6 +434,9 @@ class Trade(KrakenBaseSpotAPI):
         Cancel a a list of orders by ``txid`` or ``userref``
         This endpoint is broken, see https://github.com/btschwertfeger/Python-Kraken-SDK/issues/65
 
+        Requires the ``Cancel/close orders`` permission in
+        the API key settings.
+
         - https://docs.kraken.com/rest/#operation/cancelOrderBatch
 
         :param orders: List of orders to cancel
@@ -425,7 +446,7 @@ class Trade(KrakenBaseSpotAPI):
 
         .. code-block:: python
             :linenos:
-            :caption: Example
+            :caption: Spot Trade: Cancel multiple orders
 
             >>> from kraken.spot import Trade
             >>> trade = Trade(key="api-key", secret="secret-key")

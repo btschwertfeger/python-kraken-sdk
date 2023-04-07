@@ -15,18 +15,18 @@ class Staking(KrakenBaseSpotAPI):
     Class that implements the Kraken Spot Stakung client.Currently there
     are no staking endpoints that could be accesses without authentication.
 
-    :param key: Optional Spot API public key (default: ``""``)
-    :type key: str
-    :param secret: Optional Spot API secret key (default: ``""``)
-    :type secret: str
-    :param url: Optional url to access the Kraken API (default: https://api.kraken.com)
-    :type url: str
-    :param sandbox: Optional use of the sandbox (not supported so far, default: ``False``)
-    :type sandbox: bool
+    :param key: Spot API public key (default: ``""``)
+    :type key: str, optional
+    :param secret: Spot API secret key (default: ``""``)
+    :type secret: str, optional
+    :param url: Alternative URL to access the Kraken API (default: https://api.kraken.com)
+    :type url: str, optional
+    :param sandbox: Use the sandbox (not supported for Spot trading so far, default: ``False``)
+    :type sandbox: bool, optional
 
     .. code-block:: python
         :linenos:
-        :caption: Example
+        :caption: Spot Staking: Create the staking client
 
         >>> from kraken.spot import Staking
         >>> staking = Staking() # unauthenticated
@@ -57,7 +57,7 @@ class Staking(KrakenBaseSpotAPI):
 
         .. code-block:: python
             :linenos:
-            :caption: Spot Staking: Stake Asset
+            :caption: Spot Staking: Stake an asset
 
             >>> from kraken.spot import Staking
             >>> staking = Staking(key="api-key", secret="secret-key")
@@ -95,14 +95,14 @@ class Staking(KrakenBaseSpotAPI):
         :type asset: str
         :param amount: The amount to stake
         :type amount: str | int | float
-        :param method: Optional - Filter by staking method (default: None)
-        :type method: str | None
+        :param method: Filter by staking method (default: ``None``)
+        :type method: str | None, optional
         :return: The reference id of the unstaking transaction
         :rtype: dict
 
         .. code-block:: python
             :linenos:
-            :caption: Spot Staking: Unstake Asset
+            :caption: Spot Staking: Unstake a staked asset
 
             >>> from kraken.spot import Staking
             >>> staking = Staking(key="api-key", secret="secret-key")

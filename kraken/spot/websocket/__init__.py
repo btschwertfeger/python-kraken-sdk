@@ -30,10 +30,10 @@ class ConnectSpotWebsocket:
     :param endpoint: The websocket endpoint
     :type endpoint: str
     :param callback: Callback function that receives the websocket messages
-    :type callback: function | None
-    :param private: Optional - If the websocket connects to endpoints that
+    :type callback: function
+    :param private: If the websocket connects to endpoints that
      require authentication (default: ``False``)
-    :type private: bool
+    :type private: bool, optional
     """
 
     MAX_RECONNECT_NUM = 10
@@ -211,8 +211,8 @@ class ConnectSpotWebsocket:
 
         :param msg: The content to send
         :type msg: dict
-        :param private: Optional - Need authentication (default: ``False``)
-        :type private: bool
+        :param private: Use authentication (default: ``False``)
+        :type private: bool, optional
         """
         if private and not self.__is_auth:
             raise ValueError("Cannot send private message with public websocket.")
@@ -299,14 +299,12 @@ class KrakenSpotWSClient(SpotWsClientCl):
     that the ``Access WebSockets API`` API key permission is set in the users Kraken
     account.
 
-    :param key: Optional - API Key for the Kraken Spot API (default: ``""``)
-    :type key: str
-    :param secret: Optional -  Secret API Key for the Kraken Spot API (default: ``""``)
-    :type secret: str
+    :param key: API Key for the Kraken Spot API (default: ``""``)
+    :type key: str, optional
+    :param secret: Secret API Key for the Kraken Spot API (default: ``""``)
+    :type secret: str, optional
     :param url: Set a specific/custom url to access the Kraken API
-    :type url: str
-    :param callback: Optional - callback function which receives the websocket messages (default: ``None``)
-    :type callback: function | None
+    :type url: str, optional
     :param beta: Use the Beta websocket channels (maybe not supported anymore, default: ``False``)
     :type beta: bool
 
@@ -415,7 +413,7 @@ class KrakenSpotWSClient(SpotWsClientCl):
         :param subscribtion: The subscription message
         :type subscription: dict
         :param pair: The pair to subcribe to
-        :type pair: List[str]
+        :type pair: List[str] | None, optional
 
         Initialize your client as described in :class:`kraken.spot.KrakenSpotWSClient` to
         run the following example:
@@ -480,7 +478,7 @@ class KrakenSpotWSClient(SpotWsClientCl):
         :param subscribtion: The subscription to unsubscribe from
         :type subscription: dict
         :param pair: The pair or list of pairs to unsubscribe
-        :type pair: List[str]
+        :type pair: List[str] | None, optional
 
         Initialize your client as described in :class:`kraken.spot.KrakenSpotWSClient` to
         run the following example:

@@ -15,20 +15,20 @@ class Market(KrakenBaseFuturesAPI):
     Class that implements the Kraken Futures market client
 
     If the sandbox environment is chosen, the keys must be generated from here:
-        https://demo-futures.kraken.com/settings/api
+    https://demo-futures.kraken.com/settings/api
 
-    :param key: Optional - Futures API public key (default: ``""``)
-    :type key: str
-    :param secret: Optional - Futures API secret key (default: ``""``)
-    :type secret: str
-    :param url: Optional - The url to access the Futures Kraken API (default: https://futures.kraken.com)
-    :type url: str
-    :param sandbox: Optional - If set to ``True`` the url will be https://demo-futures.kraken.com (default: ``False``)
-    :type sandbox: bool
+    :param key: Futures API public key (default: ``""``)
+    :type key: str, optional
+    :param secret: Futures API secret key (default: ``""``)
+    :type secret: str, optional
+    :param url: Alternative URL to access the Futures Kraken API (default: https://futures.kraken.com)
+    :type url: str, optional
+    :param sandbox: If set to ``True`` the URL will be https://demo-futures.kraken.com (default: ``False``)
+    :type sandbox: bool, optional
 
     .. code-block:: python
         :linenos:
-        :caption: Example
+        :caption: Futures Market: Create the market client
 
         >>> from kraken.futures import Market
         >>> marker = Market() # unauthenticated
@@ -62,17 +62,17 @@ class Market(KrakenBaseFuturesAPI):
         :type symbol: str
         :param resolution: The tick resolution, one of ``1m``. ``5m``, ``15m``, ``1h``, ``4h``, ``12h``, ``1d``, ``1w``
         :type resolution: str
-        :param from_: Optional - From date in epoch seconds
-        :type from_: int | None
-        :param to: Optional - To date in epoch seconds (inclusive)
-        :type to: int | None
+        :param from_: From date in epoch seconds
+        :type from_: int | None, optional
+        :param to: To date in epoch seconds (inclusive)
+        :type to: int | None, optional
         :return: The current OHLC data for a specific asset pair
         :rtype: dict
 
 
         .. code-block:: python
             :linenos:
-            :caption: Example
+            :caption: Futures Market: Get the OHLC data
 
             >>> from kraken.futures import Market
             >>> Market().get_ohlc(tick_type="trade", symbol="PI_XBTUSD", resolution="1h")
@@ -121,7 +121,7 @@ class Market(KrakenBaseFuturesAPI):
 
         .. code-block:: python
             :linenos:
-            :caption: Example
+            :caption: Futures Market: Get the available tick types
 
             >>> from kraken.futures import Market
             >>> Market().get_tick_types()
@@ -142,7 +142,7 @@ class Market(KrakenBaseFuturesAPI):
 
         .. code-block:: python
             :linenos:
-            :caption: Example
+            :caption: Futures Market: Get the tradeable products
 
             >>> from kraken.futures import Market
             >>> Market().get_tradeable_products(tick_type="trade")
@@ -167,7 +167,7 @@ class Market(KrakenBaseFuturesAPI):
 
         .. code-block:: python
             :linenos:
-            :caption: Example
+            :caption: Futures Market: Get the available resolutions
 
             >>> from kraken.futures import Market
             >>> Market().get_resolutions(tick_type="mark", tradeable="PI_XBTUSD")
@@ -190,7 +190,7 @@ class Market(KrakenBaseFuturesAPI):
 
         .. code-block:: python
             :linenos:
-            :caption: Example
+            :caption: Futures Market: Get the available fee schedules
 
             >>> from kraken.futures import Market
             >>> Market().get_fee_schedules()
@@ -217,14 +217,15 @@ class Market(KrakenBaseFuturesAPI):
 
     def get_fee_schedules_vol(self) -> dict:
         """
-
         Get the personal volumes per fee schedule
+
+        Requires the ``General API - Full Access`` permission in the API key settings.
 
         - https://docs.futures.kraken.com/#http-api-trading-v3-api-fee-schedules-get-fee-schedule-volumes
 
         .. code-block:: python
             :linenos:
-            :caption: Example
+            :caption: Futures Market: Get the personal fee schedule volumes
 
             >>> from kraken.futures import Market
             >>> market = Market(key="api-key", secret="secret-key")
@@ -244,7 +245,6 @@ class Market(KrakenBaseFuturesAPI):
 
     def get_orderbook(self, symbol: Union[str, None] = None) -> dict:
         """
-
         Get the orderboook of a specific asset/symbol. Even if the official kraken documentation
         states that the parameter ``symbol`` is not required, they will always respond with an error
         message, so it is recommanded to use the ``symbol`` parameter until they dont fix this issue.
@@ -253,14 +253,14 @@ class Market(KrakenBaseFuturesAPI):
 
         - https://support.kraken.com/hc/en-us/articles/360022839551-Order-Book
 
-        :param symbol: Optional - The asset/symbol to get the orderbook from
-        :type symbol: str | None
+        :param symbol: The asset/symbol to get the orderbook from
+        :type symbol: str | None, optional
         :return: The current orderbook for the futures contracts
         :rtype: dict
 
         .. code-block:: python
             :linenos:
-            :caption: Example
+            :caption: Futures Market: Get the assets order book
 
             >>> from kraken.futures import Market
             >>> Market().get_orderbook(symbol="PI_XBTUSD")
@@ -303,7 +303,7 @@ class Market(KrakenBaseFuturesAPI):
 
         .. code-block:: python
             :linenos:
-            :caption: Example
+            :caption: Futures Market: Get the available tickers
 
             >>> from kraken.futures import Market
             >>> Market().get_tickers()
@@ -338,7 +338,6 @@ class Market(KrakenBaseFuturesAPI):
 
     def get_instruments(self) -> dict:
         """
-
         Retrieve more specific information about the tradeable assets on the Futures market
 
         - https://docs.futures.kraken.com/#http-api-trading-v3-api-instrument-details-get-instruments
@@ -350,7 +349,7 @@ class Market(KrakenBaseFuturesAPI):
 
         .. code-block:: python
             :linenos:
-            :caption: Example
+            :caption: Futures Market: Get the available instruments/assets and information
 
             >>> from kraken.futures import Market
             >>> Market().get_instruments()
@@ -427,14 +426,14 @@ class Market(KrakenBaseFuturesAPI):
 
         - https://docs.futures.kraken.com/#http-api-trading-v3-api-instrument-details-get-instrument-status
 
-        :param instrument: Optional - Filter by asset
-        :type instrument: str | None
+        :param instrument: Filter by asset
+        :type instrument: str | None, optional
         :return: Status information about the asset(s)
         :rtype: dict
 
         .. code-block:: python
             :linenos:
-            :caption: Example
+            :caption: Futures Market: Retrive information about a specific asset/contract/instrument
 
             >>> from kraken.futures import Market
             >>> Market().get_instruments_status(instrument="PI_XBTUSD")
@@ -470,16 +469,16 @@ class Market(KrakenBaseFuturesAPI):
 
         - https://support.kraken.com/hc/en-us/articles/360022839511-History
 
-        :param symbol: Optional - The asset to filter for
-        :type symbol: str | None
-        :param lastTime: Optional - Filter by time
-        :type lastTime: str | None
+        :param symbol: The asset to filter for
+        :type symbol: str | None, optional
+        :param lastTime: Filter by time
+        :type lastTime: str | None, optional
         :return: Trade history
         :rtype: dict
 
         .. code-block:: python
             :linenos:
-            :caption: Example
+            :caption: Futures Market: Get the public trade history
 
             >>> from kraken.futures import Market
             >>> Market().get_trade_history(symbol="PI_XBTUSD")
@@ -527,7 +526,7 @@ class Market(KrakenBaseFuturesAPI):
 
         .. code-block:: python
             :linenos:
-            :caption: Example
+            :caption: Futures Market: Get the historical funding rates
 
             >>> from kraken.futures import Market
             >>> Market().get_historical_funding_rates(symbol="PI_XBTUSD")
@@ -559,6 +558,8 @@ class Market(KrakenBaseFuturesAPI):
         """
         Get the current leverage preferences of the user.
 
+        Requires at least the ``General API - Read Only`` permission in the API key settings.
+
         - https://docs.futures.kraken.com/#http-api-trading-v3-api-multi-collateral-get-the-leverage-setting-for-a-market
 
         :return: The leverage preferences for all futures contracts
@@ -566,7 +567,7 @@ class Market(KrakenBaseFuturesAPI):
 
         .. code-block:: python
             :linenos:
-            :caption: Example
+            :caption: Futures Market: Get the users leverage preferences
 
             >>> from kraken.futures import Market
             >>> market = Market(key="api-key", secret="secret-key")
@@ -577,8 +578,6 @@ class Market(KrakenBaseFuturesAPI):
                     ...
                 ]
             }
-
-
         """
         return self._request(
             method="GET", uri="/derivatives/api/v3/leveragepreferences", auth=True
@@ -590,18 +589,20 @@ class Market(KrakenBaseFuturesAPI):
         """
         Set a new leverage preference for a specific futures contract.
 
+        Requires the ``General API - Full Access`` permission in the API key settings.
+
         - https://docs.futures.kraken.com/#http-api-trading-v3-api-multi-collateral-set-the-leverage-setting-for-a-market
 
-        :param symbol: Optional - The symbol to set the preference
-        :type symbol: str | None
-        :param maxLeverage: Optional - The maximum allowd leverage for a futures contract
-        :type maxLeverage: str | int | float | None
+        :param symbol: The symbol to set the preference
+        :type symbol: str | None, optional
+        :param maxLeverage: The maximum allowd leverage for a futures contract
+        :type maxLeverage: str | int | float | None, optional
         :return: Information about the success or fail
         :rtype: dict
 
         .. code-block:: python
             :linenos:
-            :caption: Example
+            :caption: Futures Market: Set the users leverage preferences
 
             >>> from kraken.futures import Market
             >>> market = Market(key="api-key", secret="secret-key")
@@ -623,6 +624,8 @@ class Market(KrakenBaseFuturesAPI):
         Get the current PNL (profit & loss) preferences. This can be used to define the currency
         in which the profits and losses are realized.
 
+        Requires at least the ``General API - Read Only`` permission in the API key settings.
+
         - https://docs.futures.kraken.com/#http-api-trading-v3-api-multi-collateral-get-pnl-currency-preference-for-a-market
 
         :return: The current NPL preferences
@@ -630,7 +633,7 @@ class Market(KrakenBaseFuturesAPI):
 
         .. code-block:: python
             :linenos:
-            :caption: Example
+            :caption: Futures Market: Get the users profit/loss preferences
 
             >>> from kraken.futures import Market
             >>> market = Market(key="api-key", secret="secret-key")
@@ -647,6 +650,8 @@ class Market(KrakenBaseFuturesAPI):
         specific currency that should be used to realize profits and losses. The default is
         the quote currency of the futures contract.
 
+        Requires the ``General API - Full Access`` permission in the API key settings.
+
         - https://docs.futures.kraken.com/#http-api-trading-v3-api-multi-collateral-set-pnl-currency-preference-for-a-market
 
         :param symbol: The asset pair or futures contract
@@ -658,7 +663,7 @@ class Market(KrakenBaseFuturesAPI):
 
         .. code-block:: python
             :linenos:
-            :caption: Example
+            :caption: Futures Market: Set the users profit/loss preferences
 
             >>> from kraken.futures import Market
             >>> market = Market(key="api-key", secret="secret-key")
@@ -689,17 +694,17 @@ class Market(KrakenBaseFuturesAPI):
 
         :param endpoint: The futures endpoint to access
         :type endpoint: str
-        :param before: Optional - Filter by time
-        :type before: int | None
-        :param continuation_token: Optional - Token that can be used to continue requesting historical events
-        :type token: str | None
-        :param since: Optional - Filter by a specifying a start point
-        :type since: int | None
-        :param sort: Optional - Sort the results
-        :type sort: str | None
-        :param tradeable: Optional - The asset to filter for
-        :type tradeable: str | None
-        :param auth: Optional - If the request is accessing a private endpoint (default_ ``True``)
+        :param before: Filter by time
+        :type before: int | None, optional
+        :param continuation_token: Token that can be used to continue requesting historical events
+        :type token: str | None, optional
+        :param since: Filter by a specifying a start point
+        :type since: int | None, optional
+        :param sort: Sort the results
+        :type sort: str | None, optional
+        :param tradeable: The asset to filter for
+        :type tradeable: str | None, optional
+        :param auth: If the request is accessing a private endpoint (default: ``True``)
         :type auth: bool
         """
         params = {}
@@ -736,23 +741,69 @@ class Market(KrakenBaseFuturesAPI):
         :type tradeable: str
         :param before: Filter by time
         :type before: int
-        :param continuation_token: Optional - Token that can be used to continue requesting historical events
-        :type token: str | None
-        :param since: Optional - Filter by a specifying a start point
-        :type since: int | None
-        :param sort: Optional - Sort the results
-        :type sort: str | None
-        :param tradeable: Optional - The asset to filter for
-        :type tradeable: str | None
+        :param continuation_token: Token that can be used to continue requesting historical events
+        :type token: str | None, optional
+        :param since: Filter by a specifying a start point
+        :type since: int | None, optional
+        :param sort: Sort the results
+        :type sort: str | None, optional
+        :param tradeable: The asset to filter for
+        :type tradeable: str | None, optional
         :return: The public execution events
         :rtype: dict
 
         .. code-block:: python
             :linenos:
-            :caption: Example
+            :caption: Futures Market: Get the public execution events
 
             >>> from kraken.futures import Market
-            >>> Market().get_public_execution_events()
+            >>> Market().get_public_execution_events(tradeable="PI_XBTUSD")
+            {
+                'elements': [
+                    {
+                        'uid': '9c74d4ba-a658-4208-891c-eee6e13bf910',
+                        'timestamp': 1680874894684,
+                        'event': {
+                            'Execution': {
+                                'execution': {
+                                    'uid': '3df5cb59-d410-48f7-9c6f-ee9b849b9c91',
+                                    'makerOrder': {
+                                        'uid': 'a0d28216-54f8-4af0-9adc-0d0d4738936d',
+                                        'tradeable': 'PI_XBTUSD',
+                                        'direction': 'Buy',
+                                        'quantity': '626',
+                                        'timestamp': 1680874894675,
+                                        'limitPrice': '27909.5',
+                                        'orderType': 'Post',
+                                        'reduceOnly': False,
+                                        'lastUpdateTimestamp': 1680874894675
+                                    },
+                                    'takerOrder': {
+                                        'uid': '09246639-9130-42fb-8d90-4ed39913456f',
+                                        'tradeable': 'PI_XBTUSD',
+                                        'direction': 'Sell',
+                                        'quantity': '626',
+                                        'timestamp': 1680874894684,
+                                        'limitPrice': '27909.5000000000',
+                                        'orderType': 'IoC',
+                                        'reduceOnly': False,
+                                        'lastUpdateTimestamp': 1680874894684
+                                    },
+                                    'timestamp': 1680874894684,
+                                    'quantity': '626',
+                                    'price': '27909.5',
+                                    'markPrice': '27915.01610466227',
+                                    'limitFilled': True,
+                                    'usdValue': '626.00'
+                                },
+                                'takerReducedQuantity': ''
+                            }
+                        }
+                    }, ...
+                ],
+                'len': 1000,
+                'continuationToken': 'MTY4MDg2Nzg2ODkxOS85MDY0OTcwMTAxNA=='
+            }
         """
         return self._get_historical_events(
             endpoint=f"/api/history/v2/market/{tradeable}/executions",
@@ -782,24 +833,50 @@ class Market(KrakenBaseFuturesAPI):
         :type tradeable: str
         :param before: Filter by time
         :type before: int
-        :param continuation_token: Optional - Token that can be used to continue requesting historical events
-        :type token: str | None
-        :param since: Optional - Filter by a specifying a start point
-        :type since: int | None
-        :param sort: Optional - Sort the results
-        :type sort: str | None
-        :param tradeable: Optional - The asset to filter for
-        :type tradeable: str | None
+        :param continuation_token: Token that can be used to continue requesting historical events
+        :type token: str | None, optional
+        :param since: Filter by a specifying a start point
+        :type since: int | None, optional
+        :param sort: Sort the results
+        :type sort: str | None, optional
+        :param tradeable: The asset to filter for
+        :type tradeable: str | None, optional
         :return: The public order events
         :rtype: dict
 
-
         .. code-block:: python
             :linenos:
-            :caption: Example
+            :caption: Futures Market: Get the public order events
 
             >>> from kraken.futures import Market
-            >>> Market().get_public_order_events()
+            >>> Market().get_public_order_events(tradeable="PI_XBTUSD")
+            {
+                'elements': [
+                    {
+                        'uid': '430782d7-7b6d-472a-9e92-67047289d742',
+                        'timestamp': 1680875125649,
+                        'event': {
+                            'OrderPlaced': {
+                                'order': {
+                                    'uid': 'f9aaf471-95ba-4fde-ab68-251f12f96e47',
+                                    'tradeable': 'PI_XBTUSD',
+                                    'direction': 'Sell',
+                                    'quantity': '652',
+                                    'timestamp': 1680875125649,
+                                    'limitPrice': '27927.5',
+                                    'orderType': 'Post',
+                                    'reduceOnly': False,
+                                    'lastUpdateTimestamp': 1680875125649
+                                },
+                                'reason': 'new_user_order',
+                                'reducedQuantity': ''
+                            }
+                        }
+                    }, ...
+                ],
+                'len': 1000,
+                'continuationToken': 'MTY4MDg3NTExMzc2OS85MDY2NDA1ODIyNw=='
+            }
         """
         return self._get_historical_events(
             endpoint=f"/api/history/v2/market/{tradeable}/orders",
@@ -829,23 +906,46 @@ class Market(KrakenBaseFuturesAPI):
         :type tradeable: str
         :param before: Filter by time
         :type before: int
-        :param continuation_token: Optional - Token that can be used to continue requesting historical events
-        :type token: str | None
-        :param since: Optional - Filter by a specifying a start point
-        :type since: int | None
-        :param sort: Optional - Sort the results
-        :type sort: str | None
-        :param tradeable: Optional - The asset to filter for
-        :type tradeable: str | None
+        :param continuation_token: Token that can be used to continue requesting historical events
+        :type token: str | None, optional
+        :param since: Filter by a specifying a start point
+        :type since: int | None, optional
+        :param sort: Sort the results
+        :type sort: str | None, optional
+        :param tradeable: The asset to filter for
+        :type tradeable: str | None, optional
         :return: The public order events
         :rtype: dict
 
         .. code-block:: python
             :linenos:
-            :caption: Example
+            :caption: Futures Market: Get the public mark price events
 
             >>> from kraken.futures import Market
-            >>> Market().get_public_mark_price_events()
+            >>> Market().get_public_mark_price_events(tradeable="PI_XBTUSD")
+            {
+                'elements': [
+                    {
+                        'uid': '',
+                        'timestamp': 1680875273372,
+                        'event': {
+                            'MarkPriceChanged': {
+                                'price': '27900.67795901584'
+                            }
+                        }
+                    }, {
+                        'uid': '',
+                        'timestamp': 1680875272263,
+                        'event': {
+                            'MarkPriceChanged': {
+                                'price': '27900.09023205142'
+                            }
+                        }
+                    }, ...
+                ],
+                'len': 1000,
+                'continuationToken': 'MTY4MDg3NDEyNzg3OC85MDY2MjI3ODIzMA=='
+            }
         """
         return self._get_historical_events(
             endpoint=f"/api/history/v2/market/{tradeable}/price",

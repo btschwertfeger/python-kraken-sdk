@@ -15,18 +15,18 @@ class Market(KrakenBaseSpotAPI):
     Class that implements the Kraken Spot Market client. Can be used to access
     the Kraken Spot market data.
 
-    :param key: Optional Spot API public key (default: ``""``)
-    :type key: str
-    :param secret: Optional Spot API secret key (default: ``""``)
-    :type secret: str
-    :param url: Optional url to access the Kraken API (default: https://api.kraken.com)
-    :type url: str
-    :param sandbox: Optional use of the sandbox (not supported so far, default: ``False``)
-    :type sandbox: bool
+    :param key:  Spot API public key (default: ``""``)
+    :type key: str, optional
+    :param secret: Spot API secret key (default: ``""``)
+    :type secret: str, optional
+    :param url: Alternative URL to access the Kraken API (default: https://api.kraken.com)
+    :type url: str, optional
+    :param sandbox: Use the sandbox (not supported for Spot trading so far, default: ``False``)
+    :type sandbox: bool, optional
 
     .. code-block:: python
         :linenos:
-        :caption: Example
+        :caption: Spot Market: Create the market client
 
         >>> from kraken.spot import Market
         >>> market = Market() # unauthenticated
@@ -44,16 +44,16 @@ class Market(KrakenBaseSpotAPI):
 
         - https://docs.kraken.com/rest/#operation/getAssetInfo
 
-        :param asset: Optional - Filter by asset(s)
-        :type asset: str | List[str] | None
-        :param aclass: Optional - Filter by asset class
-        :type aclass: str | None
+        :param asset: Filter by asset(s)
+        :type asset: str | List[str] | None, optional
+        :param aclass: Filter by asset class
+        :type aclass: str | None, optional
         :return: Information about the requested assets
         :rtype: dict
 
         .. code-block:: python
             :linenos:
-            :caption: Example
+            :caption: Spot Market: Get information about the available assets
 
             >>> from kraken.spot import Market
             >>> market = Market()
@@ -107,14 +107,14 @@ class Market(KrakenBaseSpotAPI):
 
         :param asset: Filter by asset pair(s)
         :type asset: str | List[str]
-        :param info: Optional - Filter by info, can be one of: `info` (all info), `leverage` (leverage info), `fees` (fee info), and `margin` (margin info)
-        :type info: str | None
+        :param info: Filter by info, can be one of: `info` (all info), `leverage` (leverage info), `fees` (fee info), and `margin` (margin info)
+        :type info: str | None, optional
         :return: Information about the asset pair
         :rtype: dict
 
         .. code-block:: python
             :linenos:
-            :caption: Example
+            :caption: Spot Market: Get information about tradeable asset pairs
 
             >>> from kraken.spot import Market
             >>> Market().get_tradeable_asset_pair(pair="XBTUSD")
@@ -171,14 +171,14 @@ class Market(KrakenBaseSpotAPI):
 
         https://docs.kraken.com/rest/#operation/getTickerInformation
 
-        :param pair: Optional - Filter by pair(s)
-        :type pair: str | List[str] | None
+        :param pair: Filter by pair(s)
+        :type pair: str | List[str] | None, optional
         :return: The ticker(s) including ask, bid, close, volume, vwap, high, low, todays open and more
         :rtype: dict
 
         .. code-block:: python
             :linenos:
-            :caption: Example
+            :caption: Spot Market: Get the ticker(s)
 
             >>> from kraken.spot import Market
             >>> Market().get_ticker(pair="XBTUSD")
@@ -217,16 +217,16 @@ class Market(KrakenBaseSpotAPI):
 
         :param pair: The pair to get the ohlc from
         :type pair: str
-        :param interval: Optional - the Interval in minutes (default: ``1``)
-        :type interval: str | int
-        :param since: Timestamp to start from
-        :type since: int | str | None
+        :param interval: the Interval in minutes (default: ``1``)
+        :type interval: str | int, optional
+        :param since: Timestamp to start from (default: ``None``)
+        :type since: int | str | None, optional
         :return: The OHLC data of a given asset pair
         :rtype: dict
 
         .. code-block:: python
             :linenos:
-            :caption: Example
+            :caption: Spot Market: Get the OHLC data
 
             >>> from kraken.spot import Market
             >>> Market().get_ohlc(pair="XBTUSD")
@@ -268,7 +268,7 @@ class Market(KrakenBaseSpotAPI):
 
         .. code-block:: python
             :linenos:
-            :caption: Example
+            :caption: Spot Market: Get the order book
 
             >>> from kraken.spot import Market
             >>> Market().get_order_book(pair="XBTUSD", count=2)
@@ -300,14 +300,14 @@ class Market(KrakenBaseSpotAPI):
 
         :param pair: Pair to get the recend trades
         :type pair: str
-        :param since: Filter trades since given timestamp (default: None)
-        :type since: str | int | None
+        :param since: Filter trades since given timestamp (default: ``None``)
+        :type since: str | int | None, optional
         :return: The last public trades (up to 1000 results)
         :rtype: dict
 
         .. code-block:: python
             :linenos:
-            :caption: Example
+            :caption: Spot Market: Get the recend trades
 
             >>> from kraken.spot import Market
             >>> Market().get_recent_trades(pair="XBTUSD")
@@ -338,14 +338,14 @@ class Market(KrakenBaseSpotAPI):
 
         :param pair: Pair to get the recend spreads
         :type pair: str
-        :param since: Filter trades since given timestamp (default: None)
-        :type since: str | int | None
+        :param since: Filter trades since given timestamp (default: ``None``)
+        :type since: str | int | None, optional
         :return: The last *n* spreads of the asset pair
         :rtype: dict
 
         .. code-block:: python
             :linenos:
-            :caption: Example
+            :caption: Spot Market: Get the recend spreads
 
             >>> from kraken.spot import Market
             >>> Market().get_recend_spreads(pair="XBTUSD")
@@ -376,7 +376,7 @@ class Market(KrakenBaseSpotAPI):
 
         .. code-block:: python
             :linenos:
-            :caption: Example
+            :caption: Spot Market: Get the Kraken API system status
 
             >>> from kraken.spot import Market
             >>> Market().get_system_status()

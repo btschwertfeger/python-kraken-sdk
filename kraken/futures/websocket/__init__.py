@@ -176,9 +176,9 @@ class ConnectFuturesWebsocket:
 
         :param msg: The message as dictionary
         :type msg: dict
-        :param private: Optional - If the message requires authentication (default: ``False``)
-        :type msg: bool
-        :rtype: None
+        :param private: If the message requires authentication (default: ``False``)
+        :type private: bool, optional
+        :rtype: Coroutine
         """
         while not self.__socket:
             await asyncio.sleep(0.4)

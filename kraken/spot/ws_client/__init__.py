@@ -15,14 +15,17 @@ class SpotWsClientCl(KrakenBaseSpotAPI):
     """
     Class that implements the Spot Kraken Websocket client
 
-    :param key: Optional Spot API public key (default: ``""``)
-    :type key: str
-    :param secret: Optional Spot API secret key (default: ``""``)
-    :type secret: str
-    :param url: Optional url to access the Kraken API (default: "https://api.kraken.com")
-    :type url: str
-    :param sandbox: Optional use of the sandbox (not supported so far, default: ``False``)
-    :type sandbox: bool
+    :param key: Spot API public key (default: ``""``)
+    :type key: str, optional
+    :param secret: Spot API secret key (default: ``""``)
+    :type secret: str, optional
+    :param url: url to access the Kraken API (default: "https://api.kraken.com")
+    :type url: str, optional
+    :param sandbox: Use the sandbox (not supported for Spot trading so far, default: ``False``)
+    :type sandbox: bool, optional
+
+    This is just the class in which the Spot websocket methods are defined. It is derived
+    in :func:`kraken.spot.KrakenSpotWSClient`.
     """
 
     def __init__(
@@ -80,32 +83,32 @@ class SpotWsClientCl(KrakenBaseSpotAPI):
         :type pair: str
         :param volume: The volume of the order that is being created
         :type volume: str | int | float
-        :param price: Optional - The limit price for ``limit`` orders or the trigger price for orders with ``ordertype`` one of ``stop-loss``, ``stop-loss-limit``, ``take-profit``, and ``take-profit-limit``
-        :type price: str | int | float | None
-        :param price2: Optional - The second price for ``stop-loss-limit`` and ``take-profit-limit`` orders (see the referenced Kraken documentaion for more information)
-        :type price2: str | int | float | None
-        :param leverage: Optional - The leverage
-        :type leverage: str | int | float | None
+        :param price: The limit price for ``limit`` orders or the trigger price for orders with ``ordertype`` one of ``stop-loss``, ``stop-loss-limit``, ``take-profit``, and ``take-profit-limit``
+        :type price: str | int | float | None, optional
+        :param price2: The second price for ``stop-loss-limit`` and ``take-profit-limit`` orders (see the referenced Kraken documentaion for more information)
+        :type price2: str | int | float | None, optional
+        :param leverage: The leverage
+        :type leverage: str | int | float | None, optional
         :param oflags: Order flags like ``post``, ``fcib``, ``fciq``, ``nomp``, ``viqc`` (see the referenced Kraken documentaion for more information)
-        :type oflags: str | List[str] | None
+        :type oflags: str | List[str] | None, optional
         :param starttm: Unix timestamp or seconds defining the start time (default: ``"0"``)
-        :type starttm: str | int | None
+        :type starttm: str | int | None, optional
         :param expiretim: Unix timestamp or time in seconds defining the expiration of the order, (default: ``"0"`` - i.e., no expiration)
         :type expiretim: str
         :param deadline: (see the referenced Kraken documentaion for more information)
         :type deadline: str
         :param userref: User reference id for example to group orders
         :type userref: int
-        :param validate: Optinal - Validate the order without placing on the market (default: ``False``)
-        :type validate: bool
-        :param close_ordertype:  Optional - Conditional close order type, one of: ``limit``, ``stop-loss``, ``take-profit``, ``stop-loss-limit``, ``take-profit-limit`` (see the referenced Kraken documentaion for more information)
-        :type close_ordertype: str | None
-        :param close_price: Optional - Conditional close price
-        :type close_price: str | int | float | None
-        :param close_price2: Optional - Second conditional close price
-        :type close_price2: str | int | float | None
-        :param timeinforce: Optional - how long the order raimains in the orderbook, one of: ``GTC``, `ÌOC``, ``GTD`` (see the referenced Kraken documentaion for more information)
-        :type timeinforce: str | None
+        :param validate: Validate the order without placing on the market (default: ``False``)
+        :type validate: bool, optional
+        :param close_ordertype:  Conditional close order type, one of: ``limit``, ``stop-loss``, ``take-profit``, ``stop-loss-limit``, ``take-profit-limit`` (see the referenced Kraken documentaion for more information)
+        :type close_ordertype: str | None, optional
+        :param close_price: Conditional close price
+        :type close_price: str | int | float | None, optional
+        :param close_price2: Second conditional close price
+        :type close_price2: str | int | float | None, optional
+        :param timeinforce: How long the order raimains in the orderbook, one of: ``GTC``, `ÌOC``, ``GTD`` (see the referenced Kraken documentaion for more information)
+        :type timeinforce: str | None, optional
         :raises ValueError: If input is not correct
         :rtype: Coroutine
 
@@ -114,7 +117,7 @@ class SpotWsClientCl(KrakenBaseSpotAPI):
 
         .. code-block:: python
             :linenos:
-            :caption: Spot Websocket: Create Order
+            :caption: Spot Websocket: Create an order
 
             >>> await auth_bot.create_order(
             ...     ordertype="market",
@@ -201,22 +204,22 @@ class SpotWsClientCl(KrakenBaseSpotAPI):
 
         :param orderId: The orderId of the order to edit
         :type orderId: str
-        :param reqid: Optional - Filter by reqid
-        :type reqid: str | int | None
-        :param pair: Optional - Filter by pair
-        :type pair: str | None
-        :param price: Optional - Set a new price
-        :type price: str | int | float | None
-        :param price2: Optional - Set a new second price
-        :type price2: str | int | float | None
-        :param volume: Optional - Set a new volume
-        :type volume: str | int | float | None
-        :param oflags: Optional - Set new oflags (overwrite old ones)
-        :type oflags: str | List[str] | None
-        :param newuserref: Optional set a new user reference id
-        :type newuserref: str | int | None
-        :param validate: Optional - Validate the input without applying the changes (default: ``False``)
-        :type validate: bool
+        :param reqid: Filter by reqid
+        :type reqid: str | int | None, optional
+        :param pair: Filter by pair
+        :type pair: str | None, optional
+        :param price: Set a new price
+        :type price: str | int | float | None, optional
+        :param price2: Set a new second price
+        :type price2: str | int | float | None, optional
+        :param volume: Set a new volume
+        :type volume: str | int | float | None, optional
+        :param oflags: Set new oflags (overwrite old ones)
+        :type oflags: str | List[str] | None, optional
+        :param newuserref: Set a new user reference id
+        :type newuserref: str | int | None, optional
+        :param validate: Validate the input without applying the changes (default: ``False``)
+        :type validate: bool, optional
         :raises ValueError: If input is not correct
         :rtype: Coroutine
 
@@ -225,7 +228,7 @@ class SpotWsClientCl(KrakenBaseSpotAPI):
 
         .. code-block:: python
             :linenos:
-            :caption: Spot Websocket: Edit Order
+            :caption: Spot Websocket: Edit an order
 
             >>> await auth_bot.edit_order(
             ...     orderId="OBGFYP-XVQNL-P4GMWF",
@@ -276,7 +279,7 @@ class SpotWsClientCl(KrakenBaseSpotAPI):
 
         .. code-block:: python
             :linenos:
-            :caption: Spot Websocket: Cancel Order
+            :caption: Spot Websocket: Cancel an order
 
             >>> await auth_bot.cancel_order(txid="OBGFYP-XVQNL-P4GMWF")
         """
