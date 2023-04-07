@@ -9,24 +9,27 @@ Introduction
 
 |Docs stable| |Docs latest|
 
+This documentation refers to the `python-kraken-sdk`_ and serves to simplify the application of trading strategies,
+in which as far as possible all interaction possibilities with the cryptocurrency exchange Kraken are implemented, tested and documented.
+
+- Gladly open an issue on github on make if something is incorrect or missing (`python-kraken-sdk/issues`_)
+- The ouput in the examples may differ, as these are only intended as examples and may change in the future.
+- If a certain endpoint is not reachable, the function :func:`kraken.base_api.KrakenBaseSpotAPI._request` or :func:`kraken.base_api.KrakenBaseFuturesAPI._request`,
+  which is also available in all derived REST clients, can be used to reach an endpoint with the appropriate parameters. Here private content can also be accessed,
+  provided that either the base class or one of the clients has been initialized with valid credentials.
+
+
 Disclaimer
 -------------
 
-There is no guarantee that this software will work flawlessly at this or later times. Of course, no responsibility is taken for possible profits or losses. This software probably has some errors in it, so use it at your own risk. Also no one should be motivated or tempted to invest assets in speculative forms of investment. By using this software you release the author(s) from any liability regarding the use of this software.
-
-
-This documentation is based on the following documentations and is used to describe methods, functions and classes of the python-kraken-sdk.
-
-- Gladly open an issue on github on make if something is incorrect or missing (`python-kraken-sdk/issues`_)
-- The ouput in the examples may differ, as these are really only intended as examples and the full output would only overload this.
-- If a certain endpoint is not reachable, the function :func:`kraken.base_api.KrakenBaseSpotAPI._request` or :func:`kraken.base_api.KrakenBaseFuturesAPI._request`,
-  which is also available in all derived classes, can be used to reach an endpoint with the appropriate parameters. Here private content can also be accessed,
-  provided that either the base class or one of the clients has been initialized with valid credentials.
+There is no guarantee that this software will work flawlessly at this or later times. Of course,
+no responsibility is taken for possible profits or losses. This software probably has some errors in it, so use it at your own risk.
+Also no one should be motivated or tempted to invest assets in speculative forms of investment. By using this software you release the author(s)
+from any liability regarding the use of this software.
 
 
 Features
 -----------
-
 
 Clients:
 

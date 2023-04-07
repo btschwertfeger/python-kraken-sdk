@@ -20,4 +20,6 @@ The examples can be found within the repository of the `python-kraken-sdk`_ and 
 
 4. Error handling
 
-If any unexpected behaviour occurs, please check **your API permissions**, **rate limits**, update the `python-kraken-sdk`_, see the :ref:`section-troubleshooting` section, and if the error persits please open an issue (`python-kraken-sdk/issues`_).
+If any unexpected behaviour occurs, please check **your API permissions**, **rate limits**,
+update the `python-kraken-sdk`_, see the :ref:`section-troubleshooting` section, and if the error
+persits please open an issue at `python-kraken-sdk/issues`_.

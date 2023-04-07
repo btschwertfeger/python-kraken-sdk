@@ -1,8 +1,10 @@
 .. LINKS
 
+.. _python-kraken-sdk: https://github.com/btschwertfeger/python-kraken-sdk
+
 .. _python-kraken-sdk/issues: https://github.com/btschwertfeger/python-kraken-sdk/issues
 
-.. _python-kraken-sdk: https://github.com/btschwertfeger/python-kraken-sdk
+.. _python-kraken-sdk/discussions: https://github.com/btschwertfeger/python-kraken-sdk/discussions
 
 .. BADGES
 

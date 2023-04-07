@@ -51,4 +51,10 @@ def setup(app):
 
 html_theme = "sphinx_rtd_theme"
 html_static_path = ["_static"]
+html_context = {
+    "display_github": True,
+    "github_user": "btschwertfeger",
+    "github_repo": "python-kraken-sdk",
+    "github_version": "master/docs/",
+}
 # html_theme_options = {"rightsidebar": "true", "relbarbgcolor": "black"}
