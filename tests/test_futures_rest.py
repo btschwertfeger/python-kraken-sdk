@@ -82,10 +82,10 @@ class UserTests(unittest.TestCase):
         assert "elements" in result.keys()
 
     def test_get_open_orders(self) -> None:
-        assert is_success(self.__auth_trade.get_open_orders())
+        assert is_success(self.__auth_user.get_open_orders())
 
     def test_get_open_positions(self) -> None:
-        assert is_success(self.__auth_trade.get_open_positions())
+        assert is_success(self.__auth_user.get_open_positions())
 
     def test_get_trigger_events(self) -> None:
         result = self.__auth_user.get_trigger_events(
@@ -299,6 +299,15 @@ class TradeTests(unittest.TestCase):
                 orderIds=["378etweirzgu", "fc589be9-5095-48f0-b6f1-a2dfad6d9677"]
             )
         )
+        assert is_success(
+            self.__auth_trade.get_orders_status(
+                cliOrdIds=["378etweirzgu", "fc589be9-5095-48f0-b6f1-a2dfad6d9677"]
+            )
+        )
+
+    def test_failing_get_order_status(self) -> None:
+        with pytest.raises(ValueError):
+            self.__auth_trade.get_orders_status()
 
     def test_create_order(self) -> None:
         try:
@@ -309,9 +318,60 @@ class TradeTests(unittest.TestCase):
                 side="buy",
                 limitPrice=1,
                 stopPrice=10,
+                reduceOnly=True,
             )
         except KrakenException.KrakenInsufficientAvailableFundsError:
             pass
+
+        try:
+            self.__auth_trade.create_order(
+                orderType="take_profit",
+                size=10,
+                side="buy",
+                symbol="PI_XBTUSD",
+                limitPrice=12000,
+                triggerSignal="last",
+                stopPrice=13000,
+            )
+        except KrakenException.KrakenInsufficientAvailableFundsError:
+            pass
+
+        # try:
+        #     # does not work,  400 repsonse "invalid order type"
+        #     # but it is documented here: https://docs.futures.kraken.com/#http-api-trading-v3-api-order-management-send-order
+        #     # Kraken needs to fix this
+        #     self.__auth_trade.create_order(
+        #         orderType="trailing_stop",
+        #         size=10,
+        #         side="buy",
+        #         symbol="PI_XBTUSD",
+        #         limitPrice=12000,
+        #         triggerSignal="mark",
+        #         trailingStopDeviationUnit="PERCENT",
+        #         trailingStopMaxDeviation=10,
+        #     )
+        # except KrakenException.KrakenInsufficientAvailableFundsError:
+        #     pass
+
+    def test_failing_create_order(self) -> None:
+        with pytest.raises(ValueError):
+            self.__auth_trade.create_order(
+                orderType="mkt",
+                size=10,
+                symbol="PI_XBTUSD",
+                side="long",
+            )
+
+        with pytest.raises(ValueError):
+            self.__auth_trade.create_order(
+                orderType="take-profit",
+                size=10,
+                side="buy",
+                symbol="PI_XBTUSD",
+                limitPrice=12000,
+                triggerSignal="fail",
+                stopPrice=13000,
+            )
 
     def test_create_batch_order(self) -> None:
         try:
@@ -358,11 +418,25 @@ class TradeTests(unittest.TestCase):
             self.__auth_trade.edit_order(orderId="my_another_client_id", limitPrice=3)
         )
 
+        assert is_success(
+            self.__auth_trade.edit_order(
+                cliOrdId="myclientorderid", size=111.0, stopPrice=1000
+            )
+        )
+
+    def test_failing_edit_order(self) -> None:
+        with pytest.raises(ValueError):
+            self.__auth_trade.edit_order()
+
     def test_cancel_order(self) -> None:
         assert is_success(
             self.__auth_trade.cancel_order(cliOrdId="my_another_client_id")
         )
         assert is_success(self.__auth_trade.cancel_order(order_id="1234"))
+
+    def test_failing_cancel_order(self) -> None:
+        with pytest.raises(ValueError):
+            self.__auth_trade.cancel_order()
 
     def test_cancel_all_orders(self) -> None:
         assert is_success(self.__auth_trade.cancel_all_orders(symbol="pi_xbtusd"))

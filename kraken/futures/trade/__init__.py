@@ -314,9 +314,9 @@ class Trade(KrakenBaseFuturesAPI):
         """
 
         params = {}
-        if order_id != "":
+        if order_id is not None:
             params["order_id"] = order_id
-        elif cliOrdId != "":
+        elif cliOrdId is not None:
             params["cliOrdId"] = cliOrdId
         else:
             raise ValueError("Either order_id or cliOrdId must be set!")
@@ -341,7 +341,7 @@ class Trade(KrakenBaseFuturesAPI):
 
         Requires the ``General API - Full Access`` permission in the API key settings.
 
-        - https://docs.futures.kraken.com/#http-api-trading-v3-api-order-management-edit-order
+        - https://docs.futures.kraken.com/#http-api-trading-v3-api-order-management-send-order
 
         :param orderId: The order id to cancel
         :type orderId: str | None, optional
@@ -376,20 +376,21 @@ class Trade(KrakenBaseFuturesAPI):
                 }
             }
         """
-        if orderId == "" and cliOrdId == "":
+        params = {}
+        if orderId is not None:
+            params["orderId"] = orderId
+        elif cliOrdId is not None:
+            params["cliOrdId"] = cliOrdId
+        else:
             raise ValueError("Either orderId or cliOrdId must be set!")
 
-        params = {}
-        if orderId != "":
-            params["orderId"] = orderId
-        elif cliOrdId != "":
-            params["cliOrdId"] = cliOrdId
         if limitPrice is not None:
             params["limitPrice"] = limitPrice
         if size is not None:
             params["size"] = size
         if stopPrice is not None:
             params["stopPrice"] = stopPrice
+
         return self._request(
             method="POST",
             uri="/derivatives/api/v3/editorder",
@@ -430,6 +431,8 @@ class Trade(KrakenBaseFuturesAPI):
             params["orderIds"] = orderIds
         elif cliOrdIds is not None:
             params["cliOrdIds"] = cliOrdIds
+        else:
+            raise ValueError("Either orderIds or cliOrdIds must be specified!")
 
         return self._request(
             method="POST",
