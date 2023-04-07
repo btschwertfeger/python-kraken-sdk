@@ -4,19 +4,33 @@ repos:
     hooks:
       # all available hooks can be found here: https://github.com/pre-commit/pre-commit-hooks/blob/main/.pre-commit-hooks.yaml
       - id: check-yaml
+      - id: check-json
       - id: check-ast
+      - id: check-toml
       - id: check-docstring-first
       - id: check-case-conflict
       - id: check-merge-conflict
       - id: check-added-large-files
         args: ["--maxkb=500"]
+      - id: check-executables-have-shebangs
       - id: trailing-whitespace
       - id: fix-byte-order-marker
       - id: fix-encoding-pragma
+      - id: mixed-line-ending
+      - id: name-tests-test
+        args: ["--pytest-test-first"]
       - id: requirements-txt-fixer
       - id: end-of-file-fixer
-      - id: check-executables-have-shebangs
+      - id: pretty-format-json
       - id: detect-private-key
+  - repo: https://github.com/pre-commit/pygrep-hooks
+    rev: v1.10.0
+    hooks:
+      - id: python-use-type-annotations
+      - id: rst-backticks
+      - id: rst-inline-touching-normal
+      - id: rst-directive-colons
+      - id: text-unicode-replacement-char
   - repo: https://github.com/psf/black
     rev: 23.1.0
     hooks:
@@ -43,3 +57,16 @@ repos:
     rev: v2.7.1
     hooks:
       - id: prettier
+
+  ##    Could destroy py<3.11
+  ##
+  # - repo: https://github.com/asottile/pyupgrade
+  #   rev: v3.3.1
+  #   hooks:
+  #   -   id: pyupgrade
+  # ...
+  # - repo: https://github.com/rstcheck/rstcheck
+  #   rev: v6.1.2
+  #   hooks:
+  #     - id: rstcheck
+  #       name: rstcheck
