@@ -43,20 +43,14 @@ class UserTests(unittest.TestCase):
     def test_get_wallets(self) -> None:
         assert is_success(self.__auth_user.get_wallets())
 
-    def test_get_open_orders(self) -> None:
-        assert is_success(self.__auth_user.get_open_orders())
-
-    def test_get_open_positions(self) -> None:
-        assert is_success(self.__auth_user.get_open_positions())
-
     def test_get_subaccounts(self) -> None:
         assert is_success(self.__auth_user.get_subaccounts())
 
     def test_get_unwindqueue(self) -> None:
         assert is_success(self.__auth_user.get_unwindqueue())
 
-    def test_get_notificatios(self) -> None:
-        assert is_success(self.__auth_user.get_notificatios())
+    def test_get_notifications(self) -> None:
+        assert is_success(self.__auth_user.get_notifications())
 
     def test_get_account_log(self) -> None:
         assert isinstance(self.__auth_user.get_account_log(), dict)
@@ -286,6 +280,12 @@ class TradeTests(unittest.TestCase):
         assert is_success(
             self.__auth_trade.get_fills(lastFillTime="2020-07-21T12:41:52.790Z")
         )
+
+    def test_get_open_orders(self) -> None:
+        assert is_success(self.__auth_trade.get_open_orders())
+
+    def test_get_open_positions(self) -> None:
+        assert is_success(self.__auth_trade.get_open_positions())
 
     def test_dead_mans_switch(self) -> None:
         assert is_success(self.__auth_trade.dead_mans_switch(timeout=60))
