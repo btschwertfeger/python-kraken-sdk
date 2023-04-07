@@ -11,10 +11,10 @@ import hashlib
 import hmac
 import logging
 from copy import deepcopy
-from typing import List, Union
+from typing import Coroutine, List, Union
 
 from kraken.base_api import KrakenBaseFuturesAPI
-from kraken.exceptions import KrakenExceptions
+from kraken.exceptions import KrakenException
 from kraken.futures.websocket import ConnectFuturesWebsocket
 
 
@@ -114,11 +114,11 @@ class KrakenFuturesWSClient(KrakenBaseFuturesAPI):
         :param challenge: The challenge/message to sign
         :type challenge: str
         :return: The signed message
-        :raises KrakenExceptions.KrakenAuthenticationError: If the credentials are not valid
+        :raises kraken.exceptions.KrakenAuthenticationError: If the credentials are not valid
         :rtype: str
         """
         if not self.is_auth:
-            raise KrakenExceptions.KrakenAuthenticationError()
+            raise KrakenException.KrakenAuthenticationError()
 
         sha256_hash = hashlib.sha256()
         sha256_hash.update(challenge.encode("utf-8"))
@@ -128,7 +128,7 @@ class KrakenFuturesWSClient(KrakenBaseFuturesAPI):
             ).digest()
         ).decode("utf-8")
 
-    async def on_message(self, msg: dict) -> None:
+    async def on_message(self, msg: dict) -> Coroutine:
         """
         Method that serves as the default callback function Calls the defined callback function (if defined)
         or overload this function.
@@ -149,7 +149,7 @@ class KrakenFuturesWSClient(KrakenBaseFuturesAPI):
 
     async def subscribe(
         self, feed: str, products: Union[List[str], None] = None
-    ) -> None:
+    ) -> Coroutine:
         """
         Subscribe to a Futures websocket channel/feed. For some feeds authentication is requried.
 
@@ -199,7 +199,7 @@ class KrakenFuturesWSClient(KrakenBaseFuturesAPI):
 
     async def unsubscribe(
         self, feed: str, products: Union[List[str], None] = None
-    ) -> None:
+    ) -> Coroutine:
         """
         Subscribe to a Futures websocket channel/feed. For some feeds authentication is requried.
 

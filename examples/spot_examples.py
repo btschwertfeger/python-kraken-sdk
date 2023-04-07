@@ -30,7 +30,7 @@ secret = os.getenv("SECRET_KEY")
 # |  \| | | | || | |  _| (_)
 # | |\  | |_| || | | |___ _
 # |_| \_|\___/ |_| |_____(_)
-# ----> More examples can be found in kraken/tests/*.py
+# ----> More examples can be found in kraken/tests/*.py, the doc and in the docstrings
 # examples may not be updated regularily
 
 
@@ -68,7 +68,9 @@ def user_examples() -> None:
             if chunk:
                 file.write(chunk)
 
-    print(user.delete_export_report(id_=response["id"], type_="delete"))  # type=cancel
+    print(
+        user.delete_export_report(id_=response["id"], type_="delete")
+    )  # alternative: type_=cancel
 
 
 def market_examples() -> None:

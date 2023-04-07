@@ -9,13 +9,12 @@ import functools
 from typing import List
 
 
-class KrakenExceptions:
+class KrakenException:
     """
     Class that provides custom exceptions for the python-kraken-sdk based on the
     error messages that can be received from the Kraken Spot and Futures API.
 
-    (see: https://docs.kraken.com/rest/#section/General-Usage/Requests-Responses-and-Errors)
-
+    - https://docs.kraken.com/rest/#section/General-Usage/Requests-Responses-and-Errors
     """
 
     def __init__(self, msg=None, *args, **kwargs):

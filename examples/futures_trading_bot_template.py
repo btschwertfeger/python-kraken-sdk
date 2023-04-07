@@ -15,7 +15,7 @@ import traceback
 import requests
 import urllib3
 
-from kraken.exceptions.exceptions import KrakenExceptions
+from kraken.exceptions import KrakenException
 from kraken.futures import Funding, KrakenFuturesWSClient, Market, Trade, User
 
 logging.basicConfig(
@@ -173,7 +173,7 @@ class ManagedBot:
         except requests.exceptions.ConnectionError:
             logging.error("ConnectionError, Kraken not available.")
             return False
-        except KrakenExceptions.KrakenAuthenticationError:
+        except KrakenException.KrakenAuthenticationError:
             logging.error("Invalid credentials!")
             return False
 

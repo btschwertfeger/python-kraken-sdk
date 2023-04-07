@@ -6,7 +6,7 @@
 
 """Module that implements the Spot Kraken Websocket client"""
 import logging
-from typing import List, Union
+from typing import Coroutine, List, Union
 
 from kraken.base_api import KrakenBaseSpotAPI
 
@@ -38,7 +38,7 @@ class SpotWsClientCl(KrakenBaseSpotAPI):
         Get the authentication token to establish the authenticated
         websocket connection.
 
-        (see: https://docs.kraken.com/rest/#tag/Websockets-Authentication)
+        - https://docs.kraken.com/rest/#tag/Websockets-Authentication
 
         :returns: The authentication token
         :rtype: dict
@@ -64,11 +64,11 @@ class SpotWsClientCl(KrakenBaseSpotAPI):
         close_price: Union[str, int, float, None] = None,
         close_price2: Union[str, int, float, None] = None,
         timeinforce: Union[str, int, None] = None,
-    ) -> None:
+    ) -> Coroutine:
         """
         Create an order and submit it.
 
-        (see: https://docs.kraken.com/websockets/#message-addOrder)
+        - https://docs.kraken.com/websockets/#message-addOrder
 
         :param ordertype: The type of order, one of: ``limit``, ``market`` ``stop-loss``, ``take-profit``, ``stop-loss-limit``, ``settle-position``, ``take-profit-limit``
         :type ordertype: str
@@ -166,11 +166,11 @@ class SpotWsClientCl(KrakenBaseSpotAPI):
         oflags: Union[str, List[str], None] = None,
         newuserref: Union[str, int, None] = None,
         validate: bool = False,
-    ) -> None:
+    ) -> Coroutine:
         """
         Edit an open order that was placed on the Spot market.
 
-        (see: https://docs.kraken.com/websockets/#message-editOrder)
+        - https://docs.kraken.com/websockets/#message-editOrder
 
         :param orderId: The orderId of the order to edit
         :type orderId: str
@@ -217,11 +217,11 @@ class SpotWsClientCl(KrakenBaseSpotAPI):
 
         await self._priv_conn.send_message(msg=payload, private=True)
 
-    async def cancel_order(self, txid: Union[str, List[str]]) -> None:
+    async def cancel_order(self, txid: Union[str, List[str]]) -> Coroutine:
         """
         Cancel a specific order or a list of orders.
 
-        (see: https://docs.kraken.com/websockets/#message-cancelOrder)
+        - https://docs.kraken.com/websockets/#message-cancelOrder
 
         :param txid: Transaction id or list of txids or comma delimted list as string
         :type txid: str | List[str]
@@ -237,11 +237,11 @@ class SpotWsClientCl(KrakenBaseSpotAPI):
             msg={"event": "cancelOrder", "txid": self._to_str_list(txid)}, private=True
         )
 
-    async def cancel_all_orders(self) -> None:
+    async def cancel_all_orders(self) -> Coroutine:
         """
         Cancel all open Spot orders.
 
-        (see: https://docs.kraken.com/websockets/#message-cancelAll)
+        - https://docs.kraken.com/websockets/#message-cancelAll
 
         :return: None
         :raises ValueError: If the websocket is not connected or the connection is not authenticated
@@ -254,11 +254,11 @@ class SpotWsClientCl(KrakenBaseSpotAPI):
             raise ValueError("Cannot use cancel_all_orders on public websocket client!")
         await self._priv_conn.send_message(msg={"event": "cancelAll"}, private=True)
 
-    async def cancel_all_orders_after(self, timeout: int) -> None:
+    async def cancel_all_orders_after(self, timeout: int) -> Coroutine:
         """
         Set a Death Man's Switch
 
-        (see: https://docs.kraken.com/websockets/#message-cancelAllOrdersAfter)
+        - https://docs.kraken.com/websockets/#message-cancelAllOrdersAfter
 
         :param timeout: Set the timeout in seconds to cancel the orders after, set to ``0`` to reset.
         :type timeout: int

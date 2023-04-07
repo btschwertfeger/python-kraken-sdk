@@ -15,7 +15,7 @@ class Trade(KrakenBaseFuturesAPI):
     Class that implements the Kraken Futures trade client
 
     If the sandbox environment is chosen, the keys must be generated from here:
-        https://demo-futures.kraken.com/settings/api
+    https://demo-futures.kraken.com/settings/api
 
     :param key: Futures API public key (default: ``""``)
     :type key: str
@@ -47,14 +47,16 @@ class Trade(KrakenBaseFuturesAPI):
         - https://docs.futures.kraken.com/#http-api-trading-v3-api-historical-data-get-your-fills
 
         :param lastFillTime: Optional - Filter by last filled timestamp
-        :type: str
-        :
+        :type lastFillTime: str | None
+        :return: Fills
+        :rtype: dict
+
         .. code-block:: python
             :linenos:
             :caption: Example
 
             >>> from kraken.futures import Trade
-            >>> trade = Trade(key="api-key", secret?"secret-key")
+            >>> trade = Trade(key="api-key", secret="secret-key")
             >>> trade.get_fills()
             {'result': 'success', 'fills': [], 'serverTime': '2023-04-04T16:55:47.534Z'}
         """

@@ -11,11 +11,11 @@ import logging
 import traceback
 from copy import deepcopy
 from random import random
-from typing import List
+from typing import Coroutine, List
 
 import websockets
 
-from kraken.exceptions import KrakenExceptions
+from kraken.exceptions import KrakenException
 
 
 class ConnectFuturesWebsocket:
@@ -54,7 +54,7 @@ class ConnectFuturesWebsocket:
         """Returns the active subscriptions"""
         return self.__subscriptions
 
-    async def __run(self, event: asyncio.Event):
+    async def __run(self, event: asyncio.Event) -> Coroutine:
         keep_alive = True
         self.__new_challenge = None
         self.__last_challenge = None
@@ -97,15 +97,13 @@ class ConnectFuturesWebsocket:
                         if forward:
                             await self.__callback(msg)
 
-    async def __run_forever(self) -> None:
+    async def __run_forever(self) -> Coroutine:
         try:
             while True:
                 await self.__reconnect()
-        except KrakenExceptions.MaxReconnectError:
+        except KrakenException.MaxReconnectError:
             await self.__callback(
-                {
-                    "error": "kraken.exceptions.exceptions.KrakenExceptions.MaxReconnectError"
-                }
+                {"error": "kraken.exceptions.KrakenException.MaxReconnectError"}
             )
         except Exception:
             # for task in asyncio.all_tasks(): task.cancel()
@@ -114,12 +112,12 @@ class ConnectFuturesWebsocket:
         finally:
             self.__client.exception_occur = True
 
-    async def __reconnect(self):
+    async def __reconnect(self) -> Coroutine:
         logging.info("Websocket start connect/reconnect")
 
         self.__reconnect_num += 1
         if self.__reconnect_num >= self.MAX_RECONNECT_NUM:
-            raise KrakenExceptions.MaxReconnectError()
+            raise KrakenException.MaxReconnectError()
 
         reconnect_wait = self.__get_reconnect_wait(self.__reconnect_num)
         logging.debug(
@@ -159,7 +157,7 @@ class ConnectFuturesWebsocket:
                 break
         logging.warning("reconnect over")
 
-    async def __recover_subscription_req_msg(self, event) -> None:
+    async def __recover_subscription_req_msg(self, event) -> Coroutine:
         logging.info(f"Recover subscriptions {self.__subscriptions} waiting.")
         await event.wait()
 
@@ -172,7 +170,7 @@ class ConnectFuturesWebsocket:
 
         logging.info(f"Recover subscriptions {self.__subscriptions} done.")
 
-    async def send_message(self, msg: dict, private: bool = False) -> None:
+    async def send_message(self, msg: dict, private: bool = False) -> Coroutine:
         """
         Enables sending a message via the websocket connection
 
@@ -199,12 +197,12 @@ class ConnectFuturesWebsocket:
 
         await self.__socket.send(json.dumps(msg))
 
-    def __handle_new_challenge(self, msg: dict) -> None:
+    def __handle_new_challenge(self, msg: dict) -> Coroutine:
         self.__last_challenge = msg["message"]
         self.__new_challenge = self.__client._get_sign_challenge(self.__last_challenge)
         self.__challenge_ready = True
 
-    async def __check_challenge_ready(self) -> None:
+    async def __check_challenge_ready(self) -> Coroutine:
         await self.__socket.send(
             json.dumps({"event": "challenge", "api_key": self.__client._key})
         )

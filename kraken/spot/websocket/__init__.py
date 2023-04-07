@@ -12,30 +12,28 @@ import traceback
 from copy import deepcopy
 from random import random
 from time import time
-from typing import List
+from typing import Coroutine, List
 
 import websockets
 
-from kraken.exceptions import KrakenExceptions
+from kraken.exceptions import KrakenException
 from kraken.spot.ws_client import SpotWsClientCl
 
 
 class ConnectSpotWebsocket:
     """
-    This class is only called by the KrakenSpotWSClientCl class
+    This class is only called by the :class:`kraken.spot.KrakenSpotWSClient`
     to establish and handle a websocket connection.
 
-    ====== P A R A M E T E R S ======
-    client: kraken.spot.client.KrakenSpotWSClient
-        the websocket client
-    endpoint: str
-        endpoint/url to connect with
-    callback: function [optional], default=None
-        callback function to call when a message is received
-    private: bool [optional], default=False
-        if client is authenticated to send signed messages
-        and get private feeds
-
+    :param client: The websocket client that wants to connect
+    :type client: :class:`kraken.spot.KrakenSpotWSClient`
+    :param endpoint: The websocket endpoint
+    :type endpoint: str
+    :param callback: Callback function that receives the websocket messages
+    :type callback: function | None
+    :param private: Optional - If the websocket connects to endpoints that
+     require authentication (default: ``False``)
+    :type private: bool
     """
 
     MAX_RECONNECT_NUM = 10
@@ -66,7 +64,7 @@ class ConnectSpotWebsocket:
         """Returns true if the connection can access privat endpoints"""
         return self.__is_auth
 
-    async def __run(self, event: asyncio.Event):
+    async def __run(self, event: asyncio.Event) -> Coroutine:
         keep_alive = True
         self.__last_ping = time()
         self.__ws_conn_details = (
@@ -104,7 +102,8 @@ class ConnectSpotWebsocket:
                     else:
                         if "event" in msg:
                             if msg["event"] == "subscriptionStatus" and "status" in msg:
-                                # remove/assign un/subscriptions
+                                ##      remove and assign un-/subscriptions
+                                ##
                                 try:
                                     if msg["status"] == "subscribed":
                                         self.__append_subscription(msg)
@@ -116,27 +115,25 @@ class ConnectSpotWebsocket:
                                     pass
                         await self.__callback(msg)
 
-    async def __run_forever(self) -> None:
+    async def __run_forever(self) -> Coroutine:
         try:
             while True:
                 await self.__reconnect()
-        except KrakenExceptions.MaxReconnectError:
+        except KrakenException.MaxReconnectError:
             await self.__callback(
-                {
-                    "error": "kraken.exceptions.exceptions.KrakenExceptions.MaxReconnectError"
-                }
+                {"error": "kraken.exceptions.KrakenException.MaxReconnectError"}
             )
         except Exception as exc:
             logging.error(f"{exc}: {traceback.format_exc()}")
         finally:
             self.__client.exception_occur = True
 
-    async def __reconnect(self):
+    async def __reconnect(self) -> Coroutine:
         logging.info("Websocket start connect/reconnect")
 
         self.__reconnect_num += 1
         if self.__reconnect_num >= self.MAX_RECONNECT_NUM:
-            raise KrakenExceptions.MaxReconnectError()
+            raise KrakenException.MaxReconnectError()
 
         reconnect_wait = self.__get_reconnect_wait(self.__reconnect_num)
         logging.debug(
@@ -176,7 +173,7 @@ class ConnectSpotWebsocket:
                 break
         logging.warning("reconnect over")
 
-    async def __recover_subscriptions(self, event):
+    async def __recover_subscriptions(self, event) -> Coroutine:
         logging.info(
             f'Recover {"auth" if self.__is_auth else "public"} subscriptions {self.__subscriptions} waiting.'
         )
@@ -199,7 +196,7 @@ class ConnectSpotWebsocket:
             f'Recovering {"auth" if self.__is_auth else "public"} subscriptions {self.__subscriptions} done.'
         )
 
-    async def send_ping(self):
+    async def send_ping(self) -> Coroutine:
         """Sends ping to Keaken"""
         msg = {
             "event": "ping",
@@ -208,8 +205,15 @@ class ConnectSpotWebsocket:
         await self.__socket.send(json.dumps(msg))
         self.__last_ping = time()
 
-    async def send_message(self, msg, private: bool = False):
-        """Sends a message via websocket"""
+    async def send_message(self, msg: dict, private: bool = False) -> Coroutine:
+        """
+        Sends a message via websocket
+
+        :param msg: The content to send
+        :type msg: dict
+        :param private: Optional - Need authentication (default: ``False``)
+        :type private: bool
+        """
         if private and not self.__is_auth:
             raise ValueError("Cannot send private message with public websocket.")
 
@@ -224,36 +228,32 @@ class ConnectSpotWebsocket:
         await self.__socket.send(json.dumps(msg))
 
     def __append_subscription(self, msg: dict) -> None:
-        """ Add a dictionary containing subscription information to list
-            This is used to recover when the connection gets interrupted.
+        """
+        Add a dictionary containing subscription information to list
+        This is used to recover when the connection gets interrupted.
 
-            This function should only be called in
-            when self.__run receives a msg and the following conditions met:
-                'event' in msg                           \
-                and msg['event'] == 'subscriptionStatus' \
-                and 'status' in msg                      \
-                and msg['status'] == 'subscribed'
+        :param msg: The subcription
+        :type msg: dict
 
-            ====== P A R A M E T E R S ======
-            msg: dict
-                must be like: { 'subscription': { 'name': '<placeholder>', 'placeholder': 'placeholder', ... }}
+        This function should only be called in
+        when self.__run receives a msg and the following conditions met:
+        - ``msg.get("event") == "subscriptionStatus"```
+        - ``msg.get("status") == "subscribed"``
         """
         self.__remove_subscription(msg)  # remove from list, to avoid duplicates
         self.__subscriptions.append(self.__build_subscription(msg))
 
     def __remove_subscription(self, msg: dict) -> None:
-        """ Remove a dictionary containing subscription information from list.
+        """
+        Remove a dictionary containing subscription information from list.
 
-            This function should only be called in
-            when self.__run receives a msg and the following conditions met:
-                'event' in msg                           \
-                and msg['event'] == 'subscriptionStatus' \
-                and 'status' in msg                      \
-                and msg['status'] == 'unsubscribed'
+        :param msg: The subcription to remove
+        :type msg: dict
 
-            ====== P A R A M E T E R S ======
-            msg: dict
-                must be like: { 'subscription': { 'name': '<placeholder>', 'placeholder': 'placeholder', ... }}
+        This function should only be called in
+        when self.__run receives a msg and the following conditions met:
+        - ``msg.get("event") == "subscriptionStatus"```
+        - ``msg.get("status") == "unsubscribed"``
         """
         sub = self.__build_subscription(msg)
         self.__subscriptions = [x for x in self.__subscriptions if x != sub]
@@ -290,7 +290,7 @@ class KrakenSpotWSClient(SpotWsClientCl):
     Class to access public and (optional)
     private/authenticated websocket connection.
 
-    (see: https://docs.kraken.com/websockets/#overview)
+    - https://docs.kraken.com/websockets/#overview
 
     This class holds up to two websocket connections, one private
     and one public.
@@ -374,7 +374,7 @@ class KrakenSpotWSClient(SpotWsClientCl):
             else None
         )
 
-    async def on_message(self, msg: dict) -> None:
+    async def on_message(self, msg: dict) -> Coroutine:
         """
         Calls the defined callback function (if defined)
         or overload this function.
@@ -390,13 +390,14 @@ class KrakenSpotWSClient(SpotWsClientCl):
             logging.warning("Received event but no callback is defined")
             print(msg)
 
-    async def subscribe(self, subscription: dict, pair: List[str] = None) -> None:
+    async def subscribe(self, subscription: dict, pair: List[str] = None) -> Coroutine:
         """
         Subscribe to a channel
-        (see: https://docs.kraken.com/websockets-beta/#message-subscribe)
 
         Success or failures are sent over the websocket connection and can be
         received via the on_message callback function.
+
+        - https://docs.kraken.com/websockets-beta/#message-subscribe
 
         :param subscribtion: The subscription message
         :type subscription: dict
@@ -446,14 +447,16 @@ class KrakenSpotWSClient(SpotWsClientCl):
         else:
             await self._pub_conn.send_message(payload, private=False)
 
-    async def unsubscribe(self, subscription: dict, pair: List[str] = None) -> None:
+    async def unsubscribe(
+        self, subscription: dict, pair: List[str] = None
+    ) -> Coroutine:
         """
         Unsubscribe from a topic
 
         Success or failures are sent over the websocket connection and can be
         received via the on_message callback function.
 
-        (see: https://docs.kraken.com/websockets/#message-unsubscribe)
+        - https://docs.kraken.com/websockets/#message-unsubscribe
 
         :param subscribtion: The subscription to unsubscribe from
         :type subscription: dict

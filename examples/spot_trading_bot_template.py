@@ -15,7 +15,7 @@ import traceback
 import requests
 import urllib3
 
-from kraken.exceptions.exceptions import KrakenExceptions
+from kraken.exceptions import KrakenException
 from kraken.spot import Funding, KrakenSpotWSClient, Market, Staking, Trade, User
 
 logging.basicConfig(
@@ -81,7 +81,7 @@ class TradingBot(KrakenSpotWSClient):
         #         pair='XBTUSD',
         #         price=12000
         #     ))
-        # except KrakenExceptions.KrakenPermissionDeniedError:
+        # except KrakenException.KrakenPermissionDeniedError:
         #    # ... handle exceptions
         #    pass
 
@@ -96,7 +96,7 @@ class TradingBot(KrakenSpotWSClient):
         #     volume=200
         # )
         # more functions can be found in the documentation at:
-        # https://github.com/btschwertfeger/Python-Kraken-SDK
+        # https://github.com/btschwertfeger/python-kraken-sdk
 
     # add more functions to customize the bot/strategy
     # ...
@@ -195,7 +195,7 @@ class ManagedBot:
         except requests.exceptions.ConnectionError:
             logging.error("ConnectionError, Kraken not available.")
             return False
-        except KrakenExceptions.KrakenAuthenticationError:
+        except KrakenException.KrakenAuthenticationError:
             logging.error("Invalid credentials!")
             return False
 

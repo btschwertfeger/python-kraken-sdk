@@ -10,6 +10,7 @@ import logging
 import logging.config
 import os
 import time
+from typing import Coroutine
 
 from kraken.futures import KrakenFuturesWSClient
 
@@ -23,7 +24,7 @@ logging.getLogger("requests").setLevel(logging.WARNING)
 logging.getLogger("urllib3").setLevel(logging.WARNING)
 
 
-async def main() -> None:
+async def main() -> Coroutine:
     """Create bot and subscribe to topics/feeds"""
 
     key = os.getenv("Futures_API_KEY")
@@ -33,7 +34,7 @@ async def main() -> None:
     class Bot(KrakenFuturesWSClient):
         """Can be used to create a custom trading strategy/bot"""
 
-        async def on_message(self, event) -> None:
+        async def on_message(self, event) -> Coroutine:
             """receives the websocket events"""
             logging.info(event)
             # ... apply your trading strategy here

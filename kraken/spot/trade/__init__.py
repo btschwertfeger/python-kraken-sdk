@@ -354,7 +354,7 @@ class Trade(KrakenBaseSpotAPI):
             >>> from kraken.spot import Trade
             >>> trade = Trade(key="api-key", secret="secret-key")
             >>> trade.cancel_order(txid="OAUHYR-YCVK6-P22G6P")
-            {'count': 1 }
+            { 'count': 1 }
         """
         return self._request(
             method="POST",
