@@ -260,6 +260,62 @@ class Trade(KrakenBaseSpotAPI):
             method="POST", uri="/private/AddOrderBatch", params=params, do_json=True
         )
 
+    def get_open_positions(
+        self,
+        txid: Union[str, List[str], None] = None,
+        docalcs: bool = False,
+        consolidation: str = "market",
+    ) -> dict:
+        """
+        Get information about the open margin positions.
+
+        Requires the ``Query open orders & trades`` permission in the API key settings.
+
+        - https://docs.kraken.com/rest/#operation/getOpenPositions
+
+        :param txid: Filter by txid or list of txids or comma delimited list of txids as string
+        :type txid: str | List[str], None, optional
+        :param docalcs: Include profit and loss calculation into the result (default: ``False``)
+        :type docalcs: bool
+        :param consolidation: Consolidate positions by market/pair
+        :type consolidation: str
+        :return: List of open positions
+        :rtype: dict
+
+        .. code-block:: python
+            :linenos:
+            :caption: Spot User: Get the open margin positions
+
+            >>> from kraken.spot import User
+            >>> user = User(key="api-key", secret="secret-key")
+            >>> user.get_open_positions()
+            {
+                'TF5GVO-T7ZZ2-6NBKBI': {
+                    'ordertxid': 'O0SFFP-ABH4R-LOLNFG',
+                    'posstatus': 'open',
+                    'pair': 'XXBTZUSD',
+                    'time': 1618748097.12341,
+                    'type': 'buy',
+                    'ordertype': 'limit',
+                    'cost': '801243.52842',
+                    'fee': '208.44527',
+                    'vol': '8.82412861',
+                    'vol_closed': '0.20200000',
+                    'margin': '17234.123968',
+                    'value": '231463.1',
+                    'net": '+134186.9728',
+                    'terms": '0.0100% per 4 hours',
+                    'rollovertm': '1623672637',
+                    'misc': '',
+                    'oflags": ''
+                }, ...
+            }
+        """
+        params = {"docalcs": docalcs, "consolidation": consolidation}
+        if txid is not None:
+            params["txid"] = self._to_str_list(txid)
+        return self._request(method="POST", uri="/private/OpenPositions", params=params)
+
     def edit_order(
         self,
         txid: str,

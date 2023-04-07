@@ -81,6 +81,12 @@ class UserTests(unittest.TestCase):
         assert isinstance(result, dict)
         assert "elements" in result.keys()
 
+    def test_get_open_orders(self) -> None:
+        assert is_success(self.__auth_trade.get_open_orders())
+
+    def test_get_open_positions(self) -> None:
+        assert is_success(self.__auth_trade.get_open_positions())
+
     def test_get_trigger_events(self) -> None:
         result = self.__auth_user.get_trigger_events(
             tradeable="PF_SOLUSD", since=1668989233, before=1668999999, sort="asc"
@@ -280,12 +286,6 @@ class TradeTests(unittest.TestCase):
         assert is_success(
             self.__auth_trade.get_fills(lastFillTime="2020-07-21T12:41:52.790Z")
         )
-
-    def test_get_open_orders(self) -> None:
-        assert is_success(self.__auth_trade.get_open_orders())
-
-    def test_get_open_positions(self) -> None:
-        assert is_success(self.__auth_trade.get_open_positions())
 
     def test_dead_mans_switch(self) -> None:
         assert is_success(self.__auth_trade.dead_mans_switch(timeout=60))

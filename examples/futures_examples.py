@@ -74,7 +74,9 @@ def user_examples() -> None:
     print(user.get_unwindqueue())
     print(user.get_notifications())
 
-    # try:
+    print(user.get_open_positions())
+    print(user.get_open_orders())
+
     print(user.get_account_log(before="1604937694000"))
     print(user.get_account_log(info="futures liquidation"))
     time.sleep(2)
@@ -84,7 +86,6 @@ def user_examples() -> None:
         for chunk in response.iter_content(chunk_size=512):
             if chunk:
                 file.write(chunk)
-    # except Exception: pass
 
 
 def trade_examples() -> None:
@@ -129,8 +130,6 @@ def trade_examples() -> None:
             ],
         )
     )
-    print(trade.get_open_positions())
-    print(trade.get_open_orders())
     print(trade.cancel_all_orders())
     print(trade.cancel_all_orders(symbol="pi_xbtusd"))
     print(trade.dead_mans_switch(timeout=60))
