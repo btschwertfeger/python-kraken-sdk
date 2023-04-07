@@ -382,13 +382,13 @@ class Trade(KrakenBaseSpotAPI):
         """
         return self._request(method="POST", uri="/private/CancelAll")
 
-    def cancel_all_orders_after_x(self, timeout: int) -> dict:
+    def cancel_all_orders_after_x(self, timeout: int = 0) -> dict:
         """
         Cancel all orders after a timeout. This can be used as Dead Man's Switch.
 
         - https://docs.kraken.com/rest/#operation/cancelAllOrdersAfter
 
-        :param timeout: The timeout in seconds, decativate by passing ``0``
+        :param timeout: Optional The timeout in seconds, decativate by passing the default: ``0``
         :type timeout: int
         :return: Current time and trigger time
         :rtype: dict

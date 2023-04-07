@@ -295,6 +295,10 @@ class KrakenSpotWSClient(SpotWsClientCl):
     This class holds up to two websocket connections, one private
     and one public.
 
+    When accessing private endpoints that need authentication make shure,
+    that the ``Access WebSockets API`` API key permission is set in the users Kraken
+    account.
+
     :param key: Optional - API Key for the Kraken Spot API (default: ``""``)
     :type key: str
     :param secret: Optional -  Secret API Key for the Kraken Spot API (default: ``""``)
@@ -308,7 +312,7 @@ class KrakenSpotWSClient(SpotWsClientCl):
 
     .. code-block:: python
         :linenos:
-        :caption: Example
+        :caption: HowTo: Create a Bot and integrate the python-kraken-sdk Spot Websocket Client
 
         import asyncio
         from kraken.spot import KrakenSpotWSClient
@@ -325,7 +329,12 @@ class KrakenSpotWSClient(SpotWsClientCl):
                 secret='kraken-secret-key'
             )
 
-            # ... now call for example subscribe and so on
+            # subscribing is now possible:
+            await bot.subscribe(
+                subscription={"name": ticker},
+                pair=["XBTUSD", "DOT/EUR"]
+            )
+            # from now on the on_message function receives the ficker feed
 
             while True:
                 await asyncio.sleep(6)
@@ -379,7 +388,7 @@ class KrakenSpotWSClient(SpotWsClientCl):
         Calls the defined callback function (if defined)
         or overload this function.
 
-        Can be overloaded as described in :class:`kraken.spot.KrakenSpotWebsocketClient`
+        Can be overloaded as described in :class:`kraken.spot.KrakenSpotWSClient`
 
         :param msg: The message received sent by Kraken via the websocket connection
         :type msg: dict
@@ -397,6 +406,10 @@ class KrakenSpotWSClient(SpotWsClientCl):
         Success or failures are sent over the websocket connection and can be
         received via the on_message callback function.
 
+        When accessing private endpoints and subscription feeds that need authentication
+        make shure, that the ``Access WebSockets API`` API key permission is set
+        in the users Kraken account.
+
         - https://docs.kraken.com/websockets-beta/#message-subscribe
 
         :param subscribtion: The subscription message
@@ -404,15 +417,17 @@ class KrakenSpotWSClient(SpotWsClientCl):
         :param pair: The pair to subcribe to
         :type pair: List[str]
 
-        .. code-block::
-            :linenos:
-            :caption: Example
+        Initialize your client as described in :class:`kraken.spot.KrakenSpotWSClient` to
+        run the following example:
 
-            # ... initialize bot as described in kraken.spot.KrakenSpotWebsocketClient
-            await bot.subscribe(
-                subscription={"name": ticker},
-                pair=["XBTUSD", "DOT/EUR"]
-            )
+        .. code-block:: python
+            :linenos:
+            :caption: Spot Websocket: Subscribe to a websocket feed
+
+            >>> await bot.subscribe(
+            ...     subscription={"name": ticker},
+            ...     pair=["XBTUSD", "DOT/EUR"]
+            ... )
         """
 
         if "name" not in subscription:
@@ -456,6 +471,10 @@ class KrakenSpotWSClient(SpotWsClientCl):
         Success or failures are sent over the websocket connection and can be
         received via the on_message callback function.
 
+        When accessing private endpoints and subscription feeds that need authentication
+        make shure, that the ``Access WebSockets API`` API key permission is set
+        in the users Kraken account.
+
         - https://docs.kraken.com/websockets/#message-unsubscribe
 
         :param subscribtion: The subscription to unsubscribe from
@@ -463,15 +482,17 @@ class KrakenSpotWSClient(SpotWsClientCl):
         :param pair: The pair or list of pairs to unsubscribe
         :type pair: List[str]
 
+        Initialize your client as described in :class:`kraken.spot.KrakenSpotWSClient` to
+        run the following example:
+
         .. code-block:: python
             :linenos:
-            :caption: Example
+            :caption: Spot Websocket: Unsubscribe from a websocket feed
 
-            # ... initialize bot as described in kraken.spot.KrakenSpotWebsocketClient
-            await bot.unsubscribe(
-                subscription={"name": ticker},
-                pair=["XBTUSD", "DOT/EUR"]
-            )
+            >>> await bot.unsubscribe(
+            ...     subscription={"name": ticker},
+            ...     pair=["XBTUSD", "DOT/EUR"]
+            ... )
         """
         if "name" not in subscription:
             raise AttributeError('Subscription requires a "name" key."')
@@ -510,7 +531,7 @@ class KrakenSpotWSClient(SpotWsClientCl):
         """
         Returns the private subscription names
 
-        :return: List of private subscription names
+        :return: List of private subscription names (``ownTrades``, ``openOrders``)
         :rtype: List[str]
         """
         return ["ownTrades", "openOrders"]
@@ -520,7 +541,8 @@ class KrakenSpotWSClient(SpotWsClientCl):
         """
         Returns the public subscription names
 
-        :return: List of public subscription names
+        :return: List of public subscription names (``ticker``,
+         ``spread``, ``book``, ``ohlc``, ``trade``, ``*``)
         :rtype: List[str]
         """
         return ["ticker", "spread", "book", "ohlc", "trade", "*"]

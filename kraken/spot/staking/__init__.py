@@ -12,7 +12,8 @@ from kraken.base_api import KrakenBaseSpotAPI
 
 class Staking(KrakenBaseSpotAPI):
     """
-    Class that implements the Kraken Spot Stakung client
+    Class that implements the Kraken Spot Stakung client.Currently there
+    are no staking endpoints that could be accesses without authentication.
 
     :param key: Optional Spot API public key (default: ``""``)
     :type key: str
@@ -37,9 +38,10 @@ class Staking(KrakenBaseSpotAPI):
     ) -> dict:
         """
         Stake the specified asset from the Spot wallet.
+
         Requires the ``Withdraw funds`` permission in the API key settings.
 
-        Have a look at :func:`kraken.spot.Funding.list_stakeable_assets` to get
+        Have a look at :func:`kraken.spot.Staking.list_stakeable_assets` to get
         information about the stakable assets and methods.
 
         - https://docs.kraken.com/rest/#operation/stake
@@ -55,7 +57,7 @@ class Staking(KrakenBaseSpotAPI):
 
         .. code-block:: python
             :linenos:
-            :caption: Example
+            :caption: Spot Staking: Stake Asset
 
             >>> from kraken.spot import Staking
             >>> staking = Staking(key="api-key", secret="secret-key")
@@ -81,12 +83,13 @@ class Staking(KrakenBaseSpotAPI):
     ) -> dict:
         """
         Unstake an asset and transfer the amount to the Spot wallet.
+
         Requires the ``Withdraw funds`` permission in the API key settings.
 
-        Have a look at :func:`kraken.spot.Funding.list_stakeable_assets` to get
+        Have a look at :func:`kraken.spot.Staking.list_stakeable_assets` to get
         information about the stakable assets and methods.
 
-        # https://docs.kraken.com/rest/#operation/unstake
+        - https://docs.kraken.com/rest/#operation/unstake
 
         :param asset: The asset to stake
         :type asset: str
@@ -99,7 +102,7 @@ class Staking(KrakenBaseSpotAPI):
 
         .. code-block:: python
             :linenos:
-            :caption: Example
+            :caption: Spot Staking: Unstake Asset
 
             >>> from kraken.spot import Staking
             >>> staking = Staking(key="api-key", secret="secret-key")
@@ -127,12 +130,12 @@ class Staking(KrakenBaseSpotAPI):
 
         https://docs.kraken.com/rest/#operation/getStakingAssetInfo
 
-        :return:
+        :return: Information for all assets that can be staked on Kraken
         :rtype: List[dict]
 
         .. code-block:: python
             :linenos:
-            :caption: Example
+            :caption: Spot Staking: List the stakeable assets
 
             >>> from kraken.spot import Staking
             >>> staking = Staking(key="api-key", secret="secret-key")
@@ -186,7 +189,7 @@ class Staking(KrakenBaseSpotAPI):
 
         .. code-block:: python
             :linenos:
-            :caption: Example
+            :caption: Spot Staking: Get the pending staking transactions
 
             >>> from kraken.spot import Staking
             >>> staking = Staking(key="api-key", secret="secret-key")
@@ -220,7 +223,7 @@ class Staking(KrakenBaseSpotAPI):
 
         .. code-block:: python
             :linenos:
-            :caption: Example
+            :caption: Spot Staking: List the historical staking transactions
 
             >>> from kraken.spot import Staking
             >>> staking = Staking(key="api-key", secret="secret-key")

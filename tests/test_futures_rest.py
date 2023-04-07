@@ -16,7 +16,7 @@ from time import sleep
 
 import pytest
 
-from kraken.exceptions import KrakenExceptions
+from kraken.exceptions import KrakenException
 from kraken.futures import Funding, Market, Trade, User
 
 
@@ -310,7 +310,7 @@ class TradeTests(unittest.TestCase):
                 limitPrice=1,
                 stopPrice=10,
             )
-        except KrakenExceptions.KrakenInsufficientAvailableFundsError:
+        except KrakenException.KrakenInsufficientAvailableFundsError:
             pass
 
     def test_create_batch_order(self) -> None:
@@ -349,7 +349,7 @@ class TradeTests(unittest.TestCase):
                     ],
                 )
             )
-        except KrakenExceptions.KrakenInsufficientAvailableFundsError:
+        except KrakenException.KrakenInsufficientAvailableFundsError:
             pass
 
     def test_edit_order(self) -> None:

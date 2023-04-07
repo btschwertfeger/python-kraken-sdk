@@ -12,7 +12,8 @@ from kraken.base_api import KrakenBaseSpotAPI
 
 class Funding(KrakenBaseSpotAPI):
     """
-    Class that implements the Spot Funding client.
+    Class that implements the Spot Funding client. Currently there
+    are no funding endpoints that could be accesses without authentication.
 
     :param key: Optional Spot API public key (default: ``""``)
     :type key: str
@@ -25,7 +26,7 @@ class Funding(KrakenBaseSpotAPI):
 
     .. code-block:: python
         :linenos:
-        :caption: Example
+        :caption: Spot Funding: Create the funding client
 
         >>> from kraken.spot import Funding
         >>> funding = Funding() # unauthenticated
@@ -45,7 +46,7 @@ class Funding(KrakenBaseSpotAPI):
 
         .. code-block:: python
             :linenos:
-            :caption: Example
+            :caption: Spot Funding: Get the available deposit methods
 
             >>> from kraken.spot import Funding
             >>> funding = Funding(key="api-key", secret="secret-key")
@@ -72,6 +73,8 @@ class Funding(KrakenBaseSpotAPI):
         """
         Get the deposit addresses for a specific asset. New deposit addresses can be generated.
 
+        Requires the ``Deposit funds`` API key permission.
+
         - https://docs.kraken.com/rest/#operation/getDepositAddresses
 
         :param asset: Asset being deposited
@@ -85,7 +88,7 @@ class Funding(KrakenBaseSpotAPI):
 
         .. code-block:: python
             :linenos:
-            :caption: Example
+            :caption: Spot Funding: Get the available deposit addresses
 
             >>> from kraken.spot import Funding
             >>> funding = Funding(key="api-key", secret="secret-key")
@@ -117,6 +120,8 @@ class Funding(KrakenBaseSpotAPI):
         Get information about the recend deposit status. The lookback period is 90 days and
         only the last 25 deposits will be returned.
 
+        Requires the ``Query funds`` and ``Deposit funds`` API key permissions.
+
         - https://docs.kraken.com/rest/#operation/getStatusRecentDeposits
 
         :param asset: Optional - Filter by asset
@@ -128,7 +133,7 @@ class Funding(KrakenBaseSpotAPI):
 
         .. code-block:: python
             :linenos:
-            :caption: Example
+            :caption: Spot Funding: Get the recend deposit status
 
             >>> from kraken.spot import Funding
             >>> funding = Funding(key="api-key", secret="secret-key")
@@ -185,6 +190,8 @@ class Funding(KrakenBaseSpotAPI):
         The ``key`` must be the name of the key defined in the account. You can add
         a new key for any asset listed on Kraken here: https://www.kraken.com/u/funding/withdraw.
 
+        Requires the ``Query funds`` and ``Withdraw funds`` API key permissions.
+
         - https://docs.kraken.com/rest/#operation/getWithdrawalInformation
 
         :param asset: Asset to withdraw
@@ -199,7 +206,7 @@ class Funding(KrakenBaseSpotAPI):
 
         .. code-block:: python
             :linenos:
-            :caption: Example
+            :caption: Spot Funding: Get withdrawal information
 
             >>> from kraken.spot import Funding
             >>> funding = Funding(key="api-key", secret="secret-key")
@@ -227,7 +234,8 @@ class Funding(KrakenBaseSpotAPI):
         """
         Create a new withdraw. The key must be the name of the withdraw key
         defined in the withdraw section of the Kraken WebUI
-        (https://docs.kraken.com/rest/#tag/User-Funding/operation/withdrawFunds).
+
+        Requires the ``Withdraw funds`` API key permissions.
 
         - https://docs.kraken.com/rest/#tag/User-Funding/operation/withdrawFunds
 
@@ -242,7 +250,7 @@ class Funding(KrakenBaseSpotAPI):
 
         .. code-block:: python
             :linenos:
-            :caption: Example
+            :caption: Spot Funding: Withdraw Funds
 
             >>> from kraken.spot import Funding
             >>> funding = Funding(key="api-key", secret="secret-key")
@@ -251,7 +259,7 @@ class Funding(KrakenBaseSpotAPI):
             ...    key="MyPolkadotWallet"
             ...    amount=4
             ... )
-            {"refid": "I7KGS6-UFMTTQ-AGBSO6T"}
+            { 'refid': 'I7KGS6-UFMTTQ-AGBSO6T'}
         """
         return self._request(
             method="POST",
@@ -272,13 +280,12 @@ class Funding(KrakenBaseSpotAPI):
         :type asset: str | None
         :param method: Optional - Filter by withdraw method
         :type method: str | None
-
-        :return:
+        :return: Withdrawal information
         :rtype: List[dict]
 
         .. code-block:: python
             :linenos:
-            :caption: Example
+            :caption: Get the recend withdraw status
 
             >>> from kraken.spot import Funding
             >>> funding = Funding(key="api-key", secret="secret-key")
@@ -312,6 +319,8 @@ class Funding(KrakenBaseSpotAPI):
         Cancel a requested withdraw. This will only be successful if the withdraw
         is not beeing processed so far.
 
+        Requires the ``Withdraw funds`` API key permissions.
+
         - https://docs.kraken.com/rest/#operation/cancelWithdrawal
 
         :param asset: Asset of the pending withdraw
@@ -323,7 +332,7 @@ class Funding(KrakenBaseSpotAPI):
 
         .. code-block:: python
             :linenos:
-            :caption: Example
+            :caption: Spot Funding: Cancel Withdraw
 
             >>> from kraken.spot import Funding
             >>> funding = Funding(key="api-key", secret="secret-key")
@@ -342,6 +351,8 @@ class Funding(KrakenBaseSpotAPI):
         """
         Transfer assets between the Spot and Futures wallet.
 
+        Requires the ``Withdraw funds`` API key permissions.
+
         - https://docs.kraken.com/rest/#operation/walletTransfer
 
         :param asset: Asset to transfer
@@ -352,12 +363,12 @@ class Funding(KrakenBaseSpotAPI):
         :type to_: str
         :param amount: The amont to transfer
         :type amount: str | int | float
-        :return:
+        :return: The reference id
         :rtype: dict
 
         .. code-block:: python
             :linenos:
-            :caption: Example
+            :caption: Spot Funding: Wallet Transfer
 
             >>> from kraken.spot import Funding
             >>> funding = Funding(key="api-key", secret="secret-key")

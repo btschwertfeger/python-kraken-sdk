@@ -538,7 +538,7 @@ class User(KrakenBaseSpotAPI):
     ) -> dict:
         """
         Get information about the users ledger entries.
-        50 resuls can be returned at a time.
+        50 results can be returned at a time.
 
         - https://docs.kraken.com/rest/#operation/getLedgers
 
@@ -715,7 +715,7 @@ class User(KrakenBaseSpotAPI):
         :type starttm: int | None
         :param endtm: optional - Unix timestamp of the last result
         :type endtm: int | None
-        :return: A dictionary containing the export id e.g.,: ``{'id': 'INSG'}``
+        :return: A dictionary containing the export id
         :rtype: dict
 
         .. code-block:: python

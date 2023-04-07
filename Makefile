@@ -12,7 +12,7 @@ PYTHON := $(VENV)/bin/python
 ##		Builds the python-kraken-sdk
 ##
 build:
-	$(PYTHON) -m build .
+	$(PYTHON) -m pip wheel -w dist --no-deps .
 
 ##		Installs the local python-kraken-sdk
 ##		in edit mode
@@ -46,6 +46,10 @@ doc:
 ##
 doctest:
 	cd docs && make doctest
+
+##		Pre-Commit
+pre-commit:
+	@pre-commit run -a
 
 ##		Clean the workspace
 ##

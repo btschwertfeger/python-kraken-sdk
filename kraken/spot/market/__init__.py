@@ -184,15 +184,15 @@ class Market(KrakenBaseSpotAPI):
             >>> Market().get_ticker(pair="XBTUSD")
             {
                 'XXBTZUSD': {
-                    'a': ['27948.00000', '3', '3.000'], # ask
-                    'b': ['27947.90000', '1', '1.000'], # bid
-                    'c': ['27947.90000', '0.00842808'], # last trade close, lot volume
+                    'a': ['27948.00000', '3', '3.000'],      # ask
+                    'b': ['27947.90000', '1', '1.000'],      # bid
+                    'c': ['27947.90000', '0.00842808'],      # last trade close, lot volume
                     'v': ['3564.58017484', '4138.93906134'], # volume today and last 24h
-                    'p': ['28351.31431', '28329.55480'], # vwap today and last 24h
-                    't': [33574, 43062], # number of trades today and last 24h
-                    'l': ['27813.10000', '27813.10000'], # low today and last 24h
-                    'h': ['28792.30000', '28792.30000'], # high today and last 24
-                    'o': '28173.00000' # today's opening price
+                    'p': ['28351.31431', '28329.55480'],     # vwap today and last 24h
+                    't': [33574, 43062],                     # number of trades today and last 24h
+                    'l': ['27813.10000', '27813.10000'],     # low today and last 24h
+                    'h': ['28792.30000', '28792.30000'],     # high today and last 24
+                    'o': '28173.00000'                       # today's opening price
                 }
             }
         """
@@ -258,9 +258,9 @@ class Market(KrakenBaseSpotAPI):
 
         - https://docs.kraken.com/rest/#operation/getOrderBook
 
-        :param pair: The pair to get the orderbook
+        :param pair: The pair to get the orderbook from
         :type pair: str
-        :param count: Number of asks and bids, must be one of {1...500} (default: 100)
+        :param count: Number of asks and bids, must be one of {1...500} (default: ``100``)
         :type count: int
 
         :return:
@@ -301,8 +301,7 @@ class Market(KrakenBaseSpotAPI):
         :param pair: Pair to get the recend trades
         :type pair: str
         :param since: Filter trades since given timestamp (default: None)
-        :type str | int | None
-
+        :type since: str | int | None
         :return: The last public trades (up to 1000 results)
         :rtype: dict
 
@@ -340,8 +339,8 @@ class Market(KrakenBaseSpotAPI):
         :param pair: Pair to get the recend spreads
         :type pair: str
         :param since: Filter trades since given timestamp (default: None)
-        :type str | int | None
-        :return: The last n spreads of the asset pair
+        :type since: str | int | None
+        :return: The last *n* spreads of the asset pair
         :rtype: dict
 
         .. code-block:: python

@@ -68,6 +68,8 @@ class SpotWsClientCl(KrakenBaseSpotAPI):
         """
         Create an order and submit it.
 
+        Requires the ``Access WebSockets API`` and ``Create and modify orders`` API key permissions.
+
         - https://docs.kraken.com/websockets/#message-addOrder
 
         :param ordertype: The type of order, one of: ``limit``, ``market`` ``stop-loss``, ``take-profit``, ``stop-loss-limit``, ``settle-position``, ``take-profit-limit``
@@ -104,9 +106,32 @@ class SpotWsClientCl(KrakenBaseSpotAPI):
         :type close_price2: str | int | float | None
         :param timeinforce: Optional - how long the order raimains in the orderbook, one of: ``GTC``, `ÌOC``, ``GTD`` (see the referenced Kraken documentaion for more information)
         :type timeinforce: str | None
-
         :raises ValueError: If input is not correct
-        :rtype: None
+        :rtype: Coroutine
+
+        Initialize your client as described in :class:`kraken.spot.KrakenSpotWSClient` to
+        run the following example:
+
+        .. code-block:: python
+            :linenos:
+            :caption: Spot Websocket: Create Order
+
+            >>> await auth_bot.create_order(
+            ...     ordertype="market",
+            ...     pair="XBTUSD",
+            ...     side="buy",
+            ...     volume=0.001
+            ... )
+            >>> await auth_bot.create_order(
+            ...     ordertype="limit",
+            ...     side="buy",
+            ...     pair="XBTUSD",
+            ...     volume=0.02,
+            ...     price=23000,
+            ...     expiretm=120,
+            ...     oflags=["post", "fcib"]
+            ... )
+
         """
         if not self._priv_conn:
             logging.warning("Websocket not connected!")
@@ -170,6 +195,8 @@ class SpotWsClientCl(KrakenBaseSpotAPI):
         """
         Edit an open order that was placed on the Spot market.
 
+        Requires the ``Access WebSockets API`` and ``Create and modify orders`` API key permissions.
+
         - https://docs.kraken.com/websockets/#message-editOrder
 
         :param orderId: The orderId of the order to edit
@@ -191,7 +218,21 @@ class SpotWsClientCl(KrakenBaseSpotAPI):
         :param validate: Optional - Validate the input without applying the changes (default: ``False``)
         :type validate: bool
         :raises ValueError: If input is not correct
-        :rtype: None
+        :rtype: Coroutine
+
+        Initialize your client as described in :class:`kraken.spot.KrakenSpotWSClient` to
+        run the following example:
+
+        .. code-block:: python
+            :linenos:
+            :caption: Spot Websocket: Edit Order
+
+            >>> await auth_bot.edit_order(
+            ...     orderId="OBGFYP-XVQNL-P4GMWF",
+            ...     volume=0.75,
+            ...     pair="XBTUSD",
+            ...     price=20000
+            ... )
         """
         if not self._priv_conn:
             logging.warning("Websocket not connected!")
@@ -221,12 +262,23 @@ class SpotWsClientCl(KrakenBaseSpotAPI):
         """
         Cancel a specific order or a list of orders.
 
+        Requires the ``Access WebSockets API`` and ``Cancel/close orders`` API key permissions.
+
         - https://docs.kraken.com/websockets/#message-cancelOrder
 
         :param txid: Transaction id or list of txids or comma delimted list as string
         :type txid: str | List[str]
-        :return: None
         :raises ValueError: If the websocket is not connected or the connection is not authenticated
+        :return: Coroutine
+
+        Initialize your client as described in :class:`kraken.spot.KrakenSpotWSClient` to
+        run the following example:
+
+        .. code-block:: python
+            :linenos:
+            :caption: Spot Websocket: Cancel Order
+
+            >>> await auth_bot.cancel_order(txid="OBGFYP-XVQNL-P4GMWF")
         """
         if not self._priv_conn:
             logging.warning("Websocket not connected!")
@@ -241,10 +293,21 @@ class SpotWsClientCl(KrakenBaseSpotAPI):
         """
         Cancel all open Spot orders.
 
+        Requires the ``Access WebSockets API`` and ``Cancel/close orders`` API key permissions.
+
         - https://docs.kraken.com/websockets/#message-cancelAll
 
-        :return: None
         :raises ValueError: If the websocket is not connected or the connection is not authenticated
+        :return: Coroutine
+
+        Initialize your client as described in :class:`kraken.spot.KrakenSpotWSClient` to
+        run the following example:
+
+        .. code-block:: python
+            :linenos:
+            :caption: Spot Websocket: Cancel all Orders
+
+            >>> await auth_bot.cancel_all_orders()
         """
 
         if not self._priv_conn:
@@ -254,16 +317,27 @@ class SpotWsClientCl(KrakenBaseSpotAPI):
             raise ValueError("Cannot use cancel_all_orders on public websocket client!")
         await self._priv_conn.send_message(msg={"event": "cancelAll"}, private=True)
 
-    async def cancel_all_orders_after(self, timeout: int) -> Coroutine:
+    async def cancel_all_orders_after(self, timeout: int = 0) -> Coroutine:
         """
         Set a Death Man's Switch
+
+        Requires the ``Access WebSockets API`` and ``Cancel/close orders`` API key permissions.
 
         - https://docs.kraken.com/websockets/#message-cancelAllOrdersAfter
 
         :param timeout: Set the timeout in seconds to cancel the orders after, set to ``0`` to reset.
         :type timeout: int
-        :return: None
         :raises ValueError: If the websocket is not connected or the connection is not authenticated
+        :return: Coroutine
+
+        Initialize your client as described in :class:`kraken.spot.KrakenSpotWSClient` to
+        run the following example:
+
+        .. code-block:: python
+            :linenos:
+            :caption: Spot Websocket: Death Man's Switch
+
+            >>> await auth_bot.cancel_all_orders_after(timeout=60)
         """
         if not self._priv_conn:
             logging.warning("Websocket not connected!")

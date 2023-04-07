@@ -83,8 +83,10 @@ class KrakenException:
         return None
 
     def docstring_message(cls):
-        """Decorates an exception to make its docstring its default message.
-        https://stackoverflow.com/a/66491013/13618168
+        """
+        Decorates an exception to make its docstring its default message.
+
+        - https://stackoverflow.com/a/66491013/13618168
         """
         cls_init = cls.__init__
 
