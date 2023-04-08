@@ -9,8 +9,13 @@ import functools
 from typing import List
 
 
-class KrakenExceptions:
-    """https://docs.kraken.com/rest/#section/General-Usage/Requests-Responses-and-Errors"""
+class KrakenException:
+    """
+    Class that provides custom exceptions for the python-kraken-sdk based on the
+    error messages that can be received from the Kraken Spot and Futures API.
+
+    - https://docs.kraken.com/rest/#section/General-Usage/Requests-Responses-and-Errors
+    """
 
     def __init__(self, msg=None, *args, **kwargs):
         self.EXCEPTION_ASSIGNMENT = {
@@ -78,8 +83,10 @@ class KrakenExceptions:
         return None
 
     def docstring_message(cls):
-        """Decorates an exception to make its docstring its default message.
-        https://stackoverflow.com/a/66491013/13618168
+        """
+        Decorates an exception to make its docstring its default message.
+
+        - https://stackoverflow.com/a/66491013/13618168
         """
         cls_init = cls.__init__
 

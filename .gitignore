@@ -1,5 +1,6 @@
 # Important to ignore for setuptools_scm
 _version.py
+.vscode/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

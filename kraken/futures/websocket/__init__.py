@@ -11,26 +11,24 @@ import logging
 import traceback
 from copy import deepcopy
 from random import random
-from typing import List
+from typing import Coroutine, List
 
 import websockets
 
-from kraken.exceptions import KrakenExceptions
-from kraken.futures.ws_client import FuturesWsClientCl
+from kraken.exceptions import KrakenException
 
 
 class ConnectFuturesWebsocket:
     """
-    This class is only called by the KrakenFuturesWSClientCl class
-    to establish and handle a websocket connection.
+    This class is only called by the :class:`kraken.futures.KrakenFuturesWSClient`
+    to establish the websocket connection.
 
-    ====== P A R A M E T E R S ======
-    client: kraken.futures.client.KrakenFuturesWSClient
-        the websocket client
-    endpoint: str
-        endpoint/url to connect with
-    callback: function [optional], default=None
-        callback function to call when a message is received
+    :param client: The Futures websocket client that instantiates this class
+    :type client: :class:`kraken.futures.KrakenFuturesWSClient`
+    :param endpoint: The endpoint to access (either the live Kraken API or the sandbox environment)
+    :type endpoint: str
+    :param callback: The function that is used to receive the message objects
+    :type callback: function
     """
 
     MAX_RECONNECT_NUM = 2
@@ -56,7 +54,7 @@ class ConnectFuturesWebsocket:
         """Returns the active subscriptions"""
         return self.__subscriptions
 
-    async def __run(self, event: asyncio.Event):
+    async def __run(self, event: asyncio.Event) -> Coroutine:
         keep_alive = True
         self.__new_challenge = None
         self.__last_challenge = None
@@ -99,15 +97,13 @@ class ConnectFuturesWebsocket:
                         if forward:
                             await self.__callback(msg)
 
-    async def __run_forever(self) -> None:
+    async def __run_forever(self) -> Coroutine:
         try:
             while True:
                 await self.__reconnect()
-        except KrakenExceptions.MaxReconnectError:
+        except KrakenException.MaxReconnectError:
             await self.__callback(
-                {
-                    "error": "kraken.exceptions.exceptions.KrakenExceptions.MaxReconnectError"
-                }
+                {"error": "kraken.exceptions.KrakenException.MaxReconnectError"}
             )
         except Exception:
             # for task in asyncio.all_tasks(): task.cancel()
@@ -116,12 +112,12 @@ class ConnectFuturesWebsocket:
         finally:
             self.__client.exception_occur = True
 
-    async def __reconnect(self):
+    async def __reconnect(self) -> Coroutine:
         logging.info("Websocket start connect/reconnect")
 
         self.__reconnect_num += 1
         if self.__reconnect_num >= self.MAX_RECONNECT_NUM:
-            raise KrakenExceptions.MaxReconnectError()
+            raise KrakenException.MaxReconnectError()
 
         reconnect_wait = self.__get_reconnect_wait(self.__reconnect_num)
         logging.debug(
@@ -161,7 +157,7 @@ class ConnectFuturesWebsocket:
                 break
         logging.warning("reconnect over")
 
-    async def __recover_subscription_req_msg(self, event) -> None:
+    async def __recover_subscription_req_msg(self, event) -> Coroutine:
         logging.info(f"Recover subscriptions {self.__subscriptions} waiting.")
         await event.wait()
 
@@ -174,8 +170,16 @@ class ConnectFuturesWebsocket:
 
         logging.info(f"Recover subscriptions {self.__subscriptions} done.")
 
-    async def send_message(self, msg: dict, private: bool = False) -> None:
-        """Sends a message via the websocket connection"""
+    async def send_message(self, msg: dict, private: bool = False) -> Coroutine:
+        """
+        Enables sending a message via the websocket connection
+
+        :param msg: The message as dictionary
+        :type msg: dict
+        :param private: If the message requires authentication (default: ``False``)
+        :type private: bool, optional
+        :rtype: Coroutine
+        """
         while not self.__socket:
             await asyncio.sleep(0.4)
 
@@ -193,12 +197,12 @@ class ConnectFuturesWebsocket:
 
         await self.__socket.send(json.dumps(msg))
 
-    def __handle_new_challenge(self, msg: dict) -> None:
+    def __handle_new_challenge(self, msg: dict) -> Coroutine:
         self.__last_challenge = msg["message"]
         self.__new_challenge = self.__client._get_sign_challenge(self.__last_challenge)
         self.__challenge_ready = True
 
-    async def __check_challenge_ready(self) -> None:
+    async def __check_challenge_ready(self) -> Coroutine:
         await self.__socket.send(
             json.dumps({"event": "challenge", "api_key": self.__client._key})
         )
@@ -255,214 +259,6 @@ class ConnectFuturesWebsocket:
             )
         return sub
 
-    def get_active_subscriptions(self) -> List[dict]:
+    def _get_active_subscriptions(self) -> List[dict]:
         """Returns the active subscriptions"""
         return self.__subscriptions
-
-
-class KrakenFuturesWSClientCl(FuturesWsClientCl):
-    """https://docs.futures.kraken.com/#websocket-api
-
-    Class to access public and (optional)
-    private/authenticated websocket connection.
-
-    ====== P A R A M E T E R S ======
-    key: str, [optional], default: ''
-        API Key for the Kraken API
-    secret: str, [optional], default: ''
-        Secret API Key for the Kraken API
-    url: str, [optional], default: ''
-        Set a specific/custom url
-    callback: async function [optional], default=None
-        callback function which receives the websocket messages
-    sandbox: bool [optional], default=False
-        use the Kraken Futures demo url
-
-    ====== E X A M P L E ======
-    import asyncio
-    from kraken.futures.client import KrakenFuturesWSClient
-
-    async def main() -> None:
-
-        # ___Custom_Trading_Bot__________
-        class Bot(KrakenFuturesWSClient):
-
-            async def on_message(self, event) -> None:
-                print(event)
-
-        bot = Bot() # unauthenticated
-        auth_bot = Bot(key=key, secret=secret) # authenticated
-
-        # ... now call for example subscribe and so on
-
-        while True: await asyncio.sleep(6)
-
-    if __name__ == '__main__':
-        loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(loop)
-        try: asyncio.run(main())
-        except KeyboardInterrupt: loop.close()
-    """
-
-    PROD_ENV_URL = "futures.kraken.com/ws/v1"
-    DEMO_ENV_URL = "demo-futures.kraken.com/ws/v1"
-
-    def __init__(
-        self,
-        key: str = "",
-        secret: str = "",
-        url: str = "",
-        callback=None,
-        sandbox: bool = False,
-    ):
-        super().__init__(key=key, secret=secret, url=url, sandbox=sandbox)
-
-        self.exception_occur = False
-        self.__callback = callback
-        self._conn = ConnectFuturesWebsocket(
-            client=self,
-            endpoint=url
-            if url != ""
-            else self.DEMO_ENV_URL
-            if sandbox
-            else self.PROD_ENV_URL,
-            callback=self.on_message,
-        )
-
-    async def on_message(self, msg) -> None:
-        """Calls the defined callback function (if defined)
-        or overload this function
-
-        ====== P A R A M E T E R S ======
-        msg: dict
-            message received from Kraken via the websocket connection
-
-        ====== N O T E S ======
-        Can be overloaded like in the documentation of this class.
-        """
-        if self.__callback is not None:
-            await self.__callback(msg)
-        else:
-            logging.warning("Received event but no callback is defined")
-            logging.info(msg)
-
-    async def subscribe(self, feed: str, products: List[str] = None) -> None:
-        """Subscribe to a channel/feed
-        https://docs.futures.kraken.com/#websocket-api-websocket-api-introduction-subscriptions
-
-        ====== P A R A M E T E R S ======
-        subscription: dict
-            the subscription to subscribe to
-        products: List[str]
-            list of assets or list of a single product
-
-        ====== E X A M P L E ======
-        # ... initialize bot as documented on top of this class.
-        await bot.subscribe(feed='ticker', products=["XBTUSD", "DOT/EUR"])
-
-        ====== N O T E S ======
-        Success or failures are sent over the websocket connection and can be
-        received via the on_message callback function.
-        """
-
-        message = {"event": "subscribe", "feed": feed}
-
-        if products is not None:
-            if not isinstance(products, list):
-                raise ValueError(
-                    'Parameter products must be type of List[str] (e.g. pair=["PI_XBTUSD"])'
-                )
-            message["product_ids"] = products
-
-        if feed in self.get_available_private_subscription_feeds():
-            if products is not None:
-                raise ValueError("There is no private feed that accepts products!")
-            await self._conn.send_message(message, private=True)
-        elif feed in self.get_available_public_subscription_feeds():
-            if products is not None:
-                for product in products:
-                    sub = deepcopy(message)
-                    sub["product_ids"] = [product]
-                    await self._conn.send_message(sub, private=False)
-            else:
-                await self._conn.send_message(message, private=False)
-        else:
-            raise ValueError(f"Feed: {feed} not found. Not subscribing to it.")
-
-    async def unsubscribe(self, feed: str, products: List[str] = None) -> None:
-        """Unsubscribe from a topic/feed
-        https://docs.futures.kraken.com/#websocket-api-websocket-api-introduction-subscriptions
-
-        ====== P A R A M E T E R S ======
-        subscription: dict
-            the subscription to unsubscribe from
-        products: List[str]
-            list of assets or list of a single product
-
-        ====== E X A M P L E ======
-        # ... initialize bot as documented on top of this class.
-        bot.unsubscribe(feed='ticker', products=["XBTUSD", "DOT/EUR"])
-
-        ====== N O T E S ======
-        Success or failures are sent over the websocket connection and can be
-        received via the on_message callback function.
-        """
-
-        message = {"event": "unsubscribe", "feed": feed}
-
-        if products is not None:
-            if not isinstance(products, list):
-                raise ValueError(
-                    'Parameter products must be type of List[str]\
-                    (e.g. pair=["PI_XBTUSD"])'
-                )
-            message["product_ids"] = products
-
-        if feed in self.get_available_private_subscription_feeds():
-            if products is not None:
-                raise ValueError("There is no private feed that accepts products!")
-            await self._conn.send_message(message, private=True)
-        elif feed in self.get_available_public_subscription_feeds():
-            if products is not None:
-                for product in products:
-                    sub = deepcopy(message)
-                    sub["product_ids"] = [product]
-                    await self._conn.send_message(sub, private=False)
-            else:
-                await self._conn.send_message(message, private=False)
-        else:
-            raise ValueError(f"Feed: {feed} not found. Not unsubscribing it.")
-
-    @staticmethod
-    def get_available_public_subscription_feeds() -> List[str]:
-        """Return all available public feeds to subsribe."""
-        return ["trade", "book", "ticker", "ticker_lite", "heartbeat"]
-
-    @staticmethod
-    def get_available_private_subscription_feeds() -> List[str]:
-        """Return all available private feeds to subsribe."""
-        return [
-            "fills",
-            "open_positions",
-            "open_orders",
-            "open_orders_verbose",
-            "balances",
-            "deposits_withdrawals",
-            "account_balances_and_margins",
-            "account_log",
-            "notifications_auth",
-        ]
-
-    @property
-    def is_auth(self) -> bool:
-        """Checks if key and secret are set."""
-        return (
-            self._key is not None
-            and self._key != ""
-            and self._secret is not None
-            and self._secret != ""
-        )
-
-    def get_active_subscriptions(self) -> List[dict]:
-        """Returns the acitve subscriptions."""
-        return self._conn.get_active_subscriptions()

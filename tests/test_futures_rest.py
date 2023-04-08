@@ -3,6 +3,10 @@
 # Copyright (C) 2023 Benjamin Thomas Schwertfeger
 # Github: https://github.com/btschwertfeger
 #
+# NOTE:
+#   * Trade endpoints are tested using the full authorized demo environment
+#     to prevent losses on live accounts.
+
 """Module to test the Kraken Futures Rest endpoints"""
 
 import os
@@ -12,7 +16,7 @@ from time import sleep
 
 import pytest
 
-from kraken.exceptions import KrakenExceptions
+from kraken.exceptions import KrakenException
 from kraken.futures import Funding, Market, Trade, User
 
 
@@ -39,20 +43,14 @@ class UserTests(unittest.TestCase):
     def test_get_wallets(self) -> None:
         assert is_success(self.__auth_user.get_wallets())
 
-    def test_get_open_orders(self) -> None:
-        assert is_success(self.__auth_user.get_open_orders())
-
-    def test_get_open_positions(self) -> None:
-        assert is_success(self.__auth_user.get_open_positions())
-
     def test_get_subaccounts(self) -> None:
         assert is_success(self.__auth_user.get_subaccounts())
 
     def test_get_unwindqueue(self) -> None:
         assert is_success(self.__auth_user.get_unwindqueue())
 
-    def test_get_notificatios(self) -> None:
-        assert is_success(self.__auth_user.get_notificatios())
+    def test_get_notifications(self) -> None:
+        assert is_success(self.__auth_user.get_notifications())
 
     def test_get_account_log(self) -> None:
         assert isinstance(self.__auth_user.get_account_log(), dict)
@@ -62,11 +60,39 @@ class UserTests(unittest.TestCase):
 
     def test_get_account_log_csv(self) -> None:
         response = self.__auth_user.get_account_log_csv()
-        assert response.status_code in [200, "200"]
+        assert response.status_code in (200, "200")
         with open(f"account_log-{random.randint(0, 10000)}.csv", "wb") as file:
             for chunk in response.iter_content(chunk_size=512):
                 if chunk:
                     file.write(chunk)
+
+    def test_get_execution_events(self) -> None:
+        result = self.__auth_user.get_execution_events(
+            tradeable="PF_SOLUSD", since=1668989233, before=1668999999, sort="asc"
+        )
+
+        assert isinstance(result, dict)
+        assert "elements" in result.keys()
+
+    def test_get_order_events(self) -> None:
+        result = self.__auth_user.get_order_events(
+            tradeable="PF_SOLUSD", since=1668989233, before=1668999999, sort="asc"
+        )
+        assert isinstance(result, dict)
+        assert "elements" in result.keys()
+
+    def test_get_open_orders(self) -> None:
+        assert is_success(self.__auth_user.get_open_orders())
+
+    def test_get_open_positions(self) -> None:
+        assert is_success(self.__auth_user.get_open_positions())
+
+    def test_get_trigger_events(self) -> None:
+        result = self.__auth_user.get_trigger_events(
+            tradeable="PF_SOLUSD", since=1668989233, before=1668999999, sort="asc"
+        )
+        assert isinstance(result, dict)
+        assert "elements" in result.keys()
 
     def tearDown(self) -> None:
         return super().tearDown()
@@ -268,7 +294,22 @@ class TradeTests(unittest.TestCase):
         )  # reset dead mans switch
 
     def test_get_orders_status(self) -> None:
-        assert is_success(self.__auth_trade.get_orders_status(orderIds="378etweirzgu"))
+        assert is_success(
+            self.__auth_trade.get_orders_status(
+                orderIds=[
+                    "d47e7fb4-aed0-4f3d-987b-9e3ca78ba74e",
+                    "fc589be9-5095-48f0-b6f1-a2dfad6d9677",
+                ]
+            )
+        )
+        assert is_success(
+            self.__auth_trade.get_orders_status(
+                cliOrdIds=[
+                    "2c611222-bfe6-42d1-9f55-77bddc01a313",
+                    "fc589be9-5095-48f0-b6f1-a2dfad6d9677",
+                ]
+            )
+        )
 
     def test_create_order(self) -> None:
         try:
@@ -279,9 +320,60 @@ class TradeTests(unittest.TestCase):
                 side="buy",
                 limitPrice=1,
                 stopPrice=10,
+                reduceOnly=True,
             )
-        except KrakenExceptions.KrakenInsufficientAvailableFundsError:
+        except KrakenException.KrakenInsufficientAvailableFundsError:
             pass
+
+        try:
+            self.__auth_trade.create_order(
+                orderType="take_profit",
+                size=10,
+                side="buy",
+                symbol="PI_XBTUSD",
+                limitPrice=12000,
+                triggerSignal="last",
+                stopPrice=13000,
+            )
+        except KrakenException.KrakenInsufficientAvailableFundsError:
+            pass
+
+        # try:
+        #     # does not work,  400 repsonse "invalid order type"
+        #     # but it is documented here: https://docs.futures.kraken.com/#http-api-trading-v3-api-order-management-send-order
+        #     # Kraken needs to fix this
+        #     self.__auth_trade.create_order(
+        #         orderType="trailing_stop",
+        #         size=10,
+        #         side="buy",
+        #         symbol="PI_XBTUSD",
+        #         limitPrice=12000,
+        #         triggerSignal="mark",
+        #         trailingStopDeviationUnit="PERCENT",
+        #         trailingStopMaxDeviation=10,
+        #     )
+        # except KrakenException.KrakenInsufficientAvailableFundsError:
+        #     pass
+
+    def test_failing_create_order(self) -> None:
+        with pytest.raises(ValueError):
+            self.__auth_trade.create_order(
+                orderType="mkt",
+                size=10,
+                symbol="PI_XBTUSD",
+                side="long",
+            )
+
+        with pytest.raises(ValueError):
+            self.__auth_trade.create_order(
+                orderType="take-profit",
+                size=10,
+                side="buy",
+                symbol="PI_XBTUSD",
+                limitPrice=12000,
+                triggerSignal="fail",
+                stopPrice=13000,
+            )
 
     def test_create_batch_order(self) -> None:
         try:
@@ -319,7 +411,7 @@ class TradeTests(unittest.TestCase):
                     ],
                 )
             )
-        except KrakenExceptions.KrakenInsufficientAvailableFundsError:
+        except KrakenException.KrakenInsufficientAvailableFundsError:
             pass
 
     def test_edit_order(self) -> None:
@@ -328,11 +420,25 @@ class TradeTests(unittest.TestCase):
             self.__auth_trade.edit_order(orderId="my_another_client_id", limitPrice=3)
         )
 
+        assert is_success(
+            self.__auth_trade.edit_order(
+                cliOrdId="myclientorderid", size=111.0, stopPrice=1000
+            )
+        )
+
+    def test_failing_edit_order(self) -> None:
+        with pytest.raises(ValueError):
+            self.__auth_trade.edit_order()
+
     def test_cancel_order(self) -> None:
         assert is_success(
             self.__auth_trade.cancel_order(cliOrdId="my_another_client_id")
         )
         assert is_success(self.__auth_trade.cancel_order(order_id="1234"))
+
+    def test_failing_cancel_order(self) -> None:
+        with pytest.raises(ValueError):
+            self.__auth_trade.cancel_order()
 
     def test_cancel_all_orders(self) -> None:
         assert is_success(self.__auth_trade.cancel_all_orders(symbol="pi_xbtusd"))

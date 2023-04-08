@@ -9,11 +9,11 @@ import os
 import random
 import time
 import unittest
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 
 import pytest
 
-from kraken.exceptions import KrakenExceptions
+from kraken.exceptions import KrakenException
 from kraken.spot import Funding, Market, Staking, Trade, User
 
 
@@ -84,7 +84,7 @@ class UserTests(unittest.TestCase):
         ):
             try:
                 assert is_not_error(method(**params))
-            except KrakenExceptions.KrakenInvalidOrderError:
+            except KrakenException.KrakenInvalidOrderError:
                 pass
             finally:
                 time.sleep(2)
@@ -106,7 +106,7 @@ class UserTests(unittest.TestCase):
         ):
             try:
                 assert is_not_error(method(**params))
-            except KrakenExceptions.KrakenInvalidOrderError:
+            except KrakenException.KrakenInvalidOrderError:
                 pass
             finally:
                 time.sleep(2)
@@ -254,7 +254,7 @@ class UserTests(unittest.TestCase):
 
     def test_create_subaccount(self) -> None:
         # creating subaccounts is only availablle for institutional clients
-        with pytest.raises(KrakenExceptions.KrakenPermissionDeniedError):
+        with pytest.raises(KrakenException.KrakenPermissionDeniedError):
             self.__auth_user.create_subaccount(
                 email="abc@welt.de", username="tomtucker"
             )
@@ -331,7 +331,6 @@ class TradeTests(unittest.TestCase):
             key=os.getenv("SPOT_API_KEY"), secret=os.getenv("SPOT_SECRET_KEY")
         )
 
-    # @unittest.skip('Skipping Spot test_create_order endpoint')
     def test_create_order(self) -> None:
         try:
             assert isinstance(
@@ -347,7 +346,7 @@ class TradeTests(unittest.TestCase):
                 ),
                 dict,
             )
-        except KrakenExceptions.KrakenPermissionDeniedError:
+        except KrakenException.KrakenPermissionDeniedError:
             pass
 
         try:
@@ -365,7 +364,7 @@ class TradeTests(unittest.TestCase):
                 ),
                 dict,
             )
-        except KrakenExceptions.KrakenPermissionDeniedError:
+        except KrakenException.KrakenPermissionDeniedError:
             pass
 
         try:
@@ -377,7 +376,6 @@ class TradeTests(unittest.TestCase):
                     trigger="last",
                     pair="XBTUSD",
                     price="100",
-                    price2="120",
                     leverage="2",
                     reduce_only=True,
                     userref="12345",
@@ -388,24 +386,40 @@ class TradeTests(unittest.TestCase):
                 ),
                 dict,
             )
-        except KrakenExceptions.KrakenPermissionDeniedError:
+        except KrakenException.KrakenPermissionDeniedError:
             pass
 
         try:
+            deadline = (datetime.now(timezone.utc) + timedelta(seconds=20)).isoformat()
             self.__auth_trade.create_order(
                 ordertype="stop-loss-limit",
-                side="buy",
-                volume="1000",
-                trigger="index",
                 pair="XBTUSD",
-                price="100",
-                price2="80",
+                side="buy",
+                volume=0.001,
+                price=25000,
+                price2=27000,
+                validate=True,
+                trigger="last",
                 timeinforce="GTC",
+                leverage=4,
+                deadline=deadline,
+            )
+        except KrakenException.KrakenPermissionDeniedError:
+            pass
+
+    def test_failing_create_order(self) -> None:
+        # stop-loss-limit (and take-profit-limit) require a second price `price2`)
+        with pytest.raises(ValueError):
+            self.__auth_trade.create_order(
+                ordertype="stop-loss-limit",
+                pair="XBTUSD",
+                side="buy",
+                volume=0.001,
+                price=25000,
+                timeinforce="GTC",
+                leverage=4,
                 validate=True,
             )
-        except ValueError:
-            # cannot use trigger and timeinforce together
-            pass
 
     def test_create_order_batch(self) -> None:
         assert isinstance(
@@ -441,7 +455,6 @@ class TradeTests(unittest.TestCase):
         )
 
     def test_edit_order(self) -> None:
-        print(str(datetime.now(timezone.utc).isoformat()))
         try:
             assert isinstance(
                 self.__auth_trade.edit_order(
@@ -457,19 +470,19 @@ class TradeTests(unittest.TestCase):
                 ),
                 dict,
             )
-        except KrakenExceptions.KrakenPermissionDeniedError:
+        except KrakenException.KrakenPermissionDeniedError:
             pass
 
     def test_cancel_order(self) -> None:
         # because testing keys are not allowd to trade
-        with pytest.raises(KrakenExceptions.KrakenPermissionDeniedError):
+        with pytest.raises(KrakenException.KrakenPermissionDeniedError):
             self.__auth_trade.cancel_order(txid="OB6JJR-7NZ5P-N5SKCB")
 
     @unittest.skip("Skipping Spot test_cancel_all_orders endpoint")
     def test_cancel_all_orders(self) -> None:
         try:
             assert isinstance(self.__auth_trade.cancel_all_orders(), dict)
-        except KrakenExceptions.KrakenPermissionDeniedError:
+        except KrakenException.KrakenPermissionDeniedError:
             pass
 
     @unittest.skip("Skipping Spot test_cancel_all_orders_after_x endpoint")
@@ -478,7 +491,7 @@ class TradeTests(unittest.TestCase):
             assert isinstance(
                 self.__auth_trade.cancel_all_orders_after_x(timeout=6), dict
             )
-        except KrakenExceptions.KrakenPermissionDeniedError:
+        except KrakenException.KrakenPermissionDeniedError:
             pass
 
     def test_cancel_order_batch(self) -> None:
@@ -507,7 +520,7 @@ class StakingTests(unittest.TestCase):
     def test_list_stakeable_assets(self) -> None:
         try:
             assert isinstance(self.__auth_staking.list_stakeable_assets(), list)
-        except KrakenExceptions.KrakenPermissionDeniedError:
+        except KrakenException.KrakenPermissionDeniedError:
             pass
 
     @unittest.skip("Skipping Spot test_stake_asset endpoint")
@@ -518,7 +531,7 @@ class StakingTests(unittest.TestCase):
                     asset="DOT", amount="4500000", method="polkadot-staked"
                 )
             )
-        except KrakenExceptions.KrakenInvalidAmountError:
+        except KrakenException.KrakenInvalidAmountError:
             pass
 
     @unittest.skip("Skipping Spot test_unstake_asset endpoint")
@@ -527,7 +540,7 @@ class StakingTests(unittest.TestCase):
             assert is_not_error(
                 self.__auth_staking.unstake_asset(asset="DOT", amount="4500000")
             )
-        except KrakenExceptions.KrakenInvalidAmountError:
+        except KrakenException.KrakenInvalidAmountError:
             pass
 
     @unittest.skip("Skipping Spot test_get_pending_staking_transactions endpoint")
@@ -577,7 +590,7 @@ class FundingTests(unittest.TestCase):
     # @unittest.skip("Skipping Spot test_withdraw_funds endpoint")
     def test_withdraw_funds(self) -> None:
         # CI API Keys are not allowd to withdraw, trade and cancel
-        with pytest.raises(KrakenExceptions.KrakenPermissionDeniedError):
+        with pytest.raises(KrakenException.KrakenPermissionDeniedError):
             assert is_not_error(
                 self.__auth_funding.withdraw_funds(
                     asset="XLM", key="enter-withdraw-key", amount=10000000
@@ -587,7 +600,7 @@ class FundingTests(unittest.TestCase):
     # @unittest.skip("Skipping Spot test_get_withdrawal_info endpoint")
     def test_get_withdrawal_info(self) -> None:
         # CI API Keys are not allowd to withdraw, trade and cancel
-        with pytest.raises(KrakenExceptions.KrakenPermissionDeniedError):
+        with pytest.raises(KrakenException.KrakenPermissionDeniedError):
             assert is_not_error(
                 self.__auth_funding.get_withdrawal_info(
                     asset="XLM", amount=10000000, key="enter-withdraw-key"
@@ -608,7 +621,7 @@ class FundingTests(unittest.TestCase):
     def test_wallet_transfer(self) -> None:
         # CI API Keys are not allowd to withdraw, trade and cancel
         # this endpoint is broken, even the provided example on the kraken doc does not work
-        with pytest.raises(KrakenExceptions.KrakenInvalidArgumentsError):
+        with pytest.raises(KrakenException.KrakenInvalidArgumentsError):
             # only works if futures wallet exists
             assert is_not_error(
                 self.__auth_funding.wallet_transfer(

@@ -69,13 +69,14 @@ def user_examples() -> None:
     """Example User client usage"""
     user = User(key=key, secret=secret, sandbox=True)
     print(user.get_wallets())
-    print(user.get_open_orders())
-    print(user.get_open_positions())
+
     print(user.get_subaccounts())
     print(user.get_unwindqueue())
-    print(user.get_notificatios())
+    print(user.get_notifications())
 
-    # try:
+    print(user.get_open_positions())
+    print(user.get_open_orders())
+
     print(user.get_account_log(before="1604937694000"))
     print(user.get_account_log(info="futures liquidation"))
     time.sleep(2)
@@ -85,7 +86,6 @@ def user_examples() -> None:
         for chunk in response.iter_content(chunk_size=512):
             if chunk:
                 file.write(chunk)
-    # except Exception: pass
 
 
 def trade_examples() -> None:

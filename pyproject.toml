@@ -61,7 +61,5 @@ junit_family = "xunit2"
 testpaths = ["tests"]
 
 [project.optional-dependencies]
-test = ["pytest"]
-# examples = [
-#   "matplotlib"
-# ]
+dev = ["pytest", "sphinx", "sphinx-rtd-theme"]
+examples = ["matplotlib"]

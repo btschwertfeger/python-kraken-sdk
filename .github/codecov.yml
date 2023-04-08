@@ -1,0 +1,23 @@
+coverage:
+  ##    Status checks in PR
+  ##
+  status:
+    project:
+      default:
+        informational: true
+        ##    Target coverage is the last one
+        ##
+        target: auto
+        ##    this allows a 2% drop from the previous base commit coverage
+        ##
+        threshold: 2%
+    patch:
+      default:
+        informational: true
+
+comment:
+  layout: "reach, diff, flags, files"
+  behavior: default
+  require_changes: true # if false: post the comment even if coverage dont change
+  require_base: no # [yes :: must have a base report to post]
+  require_head: yes # [yes :: must have a head report to post]
