@@ -38,4 +38,4 @@ jobs:
         run: python -m pip wheel -w dist --no-deps .
 
       - name: Install the package
-        run: python3 -m pip install dist/python_kraken_sdk*.whl
+        run: cd dist && python3 -m pip install python_kraken_sdk*.whl
