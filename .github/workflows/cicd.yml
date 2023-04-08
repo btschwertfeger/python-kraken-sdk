@@ -83,7 +83,7 @@ jobs:
   ##
   UploadTestPyPI:
     if: success() && github.ref == 'refs/heads/master'
-    needs: [Test]
+    needs: [Test-Spot, Test-Futures]
     name: Upload current development version to Test PyPI
     uses: ./.github/workflows/_pypi_publish.yml
     with:
@@ -94,7 +94,7 @@ jobs:
   ##    Generates and uploads the coverage statistics to codecov
   ##
   CodeCov:
-    needs: [Test]
+    needs: [Test-Spot, Test-Futures]
     uses: ./.github/workflows/_codecov.yml
     with:
       os: "ubuntu-latest"

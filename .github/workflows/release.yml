@@ -78,7 +78,7 @@ jobs:
   ##    Upload the python-kraken-sdk to Test PyPI
   ##
   UploadTestPyPI:
-    needs: [Test]
+    needs: [Test-Spot, Test-Futures]
     name: Upload the current release to Test PyPI
     uses: ./.github/workflows/_pypi_publish.yml
     with:
