@@ -43,28 +43,53 @@ jobs:
       os: "ubuntu-latest"
       python-version: "3.11"
 
-  ##    Run all tests to validate the package
+  ##    Run the Spot tests for Python 3.7 until 3.11
   ##
-  Test:
-    name: Test the package
+  Test-Spot:
     needs: [Build]
-    uses: ./.github/workflows/_test.yml
+    uses: ./.github/workflows/_test_spot.yml
     strategy:
       max-parallel: 1 # to avoid failing tests because of API Rate limits
       fail-fast: false
       matrix:
-        os: ["ubuntu-latest"]
+        os: [ubuntu-latest]
         python-version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
     with:
       os: ${{ matrix.os }}
       python-version: ${{ matrix.python-version }}
     secrets: inherit
 
-  ##    Upload the python-kraken-sdk to PyPI
+  ##    Run the Futures tests for Python 3.7 until 3.11
+  ##
+  Test-Futures:
+    needs: [Build]
+    uses: ./.github/workflows/_test_futures.yml
+    strategy:
+      max-parallel: 1 # to avoid failing tests because of API Rate limits
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
+        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
+    with:
+      os: ${{ matrix.os }}
+      python-version: ${{ matrix.python-version }}
+    secrets: inherit
+
+  ##    Upload the python-kraken-sdk to Test PyPI
+  ##
+  UploadTestPyPI:
+    needs: [Test-Spot, Test-Futures]
+    name: Upload the current release to Test PyPI
+    uses: ./.github/workflows/_pypi_publish.yml
+    with:
+      REPOSITORY_URL: https://test.pypi.org/legacy/
+    secrets:
+      API_TOKEN: ${{ secrets.TEST_PYPI_API_TOKEN }}
+
+  ##    Upload the python-kraken-sdk to Production PyPI
   ##
   UploadPyPI:
     needs: [Test]
-    if: success() && github.ref == 'refs/heads/master'
     name: Upload the current release to PyPI
     uses: ./.github/workflows/_pypi_publish.yml
     with:

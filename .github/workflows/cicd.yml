@@ -46,11 +46,27 @@ jobs:
       os: "ubuntu-latest"
       python-version: "3.11"
 
-  ##    Run the unittests for Python 3.7 until Pyrthon 3.11
+  ##    Run the Spot tests for Python 3.7 until 3.11
   ##
-  Test:
+  Test-Spot:
     needs: [Build]
-    uses: ./.github/workflows/_test.yml
+    uses: ./.github/workflows/_test_spot.yml
+    strategy:
+      max-parallel: 1 # to avoid failing tests because of API Rate limits
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
+        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
+    with:
+      os: ${{ matrix.os }}
+      python-version: ${{ matrix.python-version }}
+    secrets: inherit
+
+  ##    Run the Futures tests for Python 3.7 until 3.11
+  ##
+  Test-Futures:
+    needs: [Build]
+    uses: ./.github/workflows/_test_futures.yml
     strategy:
       max-parallel: 1 # to avoid failing tests because of API Rate limits
       fail-fast: false
@@ -67,7 +83,7 @@ jobs:
   ##
   UploadTestPyPI:
     if: success() && github.ref == 'refs/heads/master'
-    needs: [Test]
+    needs: [Test-Spot, Test-Futures]
     name: Upload current development version to Test PyPI
     uses: ./.github/workflows/_pypi_publish.yml
     with:
@@ -78,7 +94,7 @@ jobs:
   ##    Generates and uploads the coverage statistics to codecov
   ##
   CodeCov:
-    needs: [Test]
+    needs: [Test-Spot, Test-Futures]
     uses: ./.github/workflows/_codecov.yml
     with:
       os: "ubuntu-latest"
