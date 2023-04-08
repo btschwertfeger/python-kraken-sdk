@@ -1,5 +1,7 @@
 .. Some Headline
 
+.. _section-trading-bot-templates:
+
 Trading Bot Templates
 =====================
 
