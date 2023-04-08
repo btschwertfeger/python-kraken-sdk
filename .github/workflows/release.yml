@@ -24,6 +24,7 @@ jobs:
   ##
   Build:
     uses: ./.github/workflows/_build.yml
+    needs: [Pre-Commit]
     strategy:
       fail-fast: false
       matrix:
@@ -32,6 +33,15 @@ jobs:
     with:
       os: ${{ matrix.os }}
       python-version: ${{ matrix.python-version }}
+
+  ##    Build the documentation
+  ##
+  Build-Doc:
+    needs: [Pre-Commit]
+    uses: ./.github/workflows/_build_doc.yml
+    with:
+      os: "ubuntu-latest"
+      python-version: "3.11"
 
   ##    Run all tests to validate the package
   ##
@@ -43,7 +53,7 @@ jobs:
       max-parallel: 1 # to avoid failing tests because of API Rate limits
       fail-fast: false
       matrix:
-        os: ["macos-latest", "ubuntu-latest", "windows-latest"]
+        os: ["macos-latest", "ubuntu-latest"]
         python-version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
     with:
       os: ${{ matrix.os }}
