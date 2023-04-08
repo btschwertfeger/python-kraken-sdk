@@ -57,6 +57,12 @@ Documentation:
 
 ---
 
+## ❗️ Attention ❗️
+
+### **ONLY tagged releases are availabe at PyPI**. The content of the master branch may not match with the content of the latest release. So please have a look at the release specific READMEs and changelogs.
+
+---
+
 ## Table of Contents
 
 - [ Installation and setup ](#installation)
