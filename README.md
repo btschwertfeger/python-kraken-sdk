@@ -14,9 +14,7 @@
 ![release](https://shields.io/github/release-date/btschwertfeger/python-kraken-sdk)
 ![release](https://shields.io/github/v/release/btschwertfeger/python-kraken-sdk?display_name=tag)
 [![DOI](https://zenodo.org/badge/510751854.svg)](https://zenodo.org/badge/latestdoi/510751854)
-
 [![Documentation Status stable](https://readthedocs.org/projects/python-kraken-sdk/badge/?version=stable)](https://python-kraken-sdk.readthedocs.io/en/stable)
-[![Documentation Status latest](https://readthedocs.org/projects/python-kraken-sdk/badge/?version=latest)](https://python-kraken-sdk.readthedocs.io/en/latest)
 
 </div>
 
@@ -68,19 +66,6 @@ Documentation:
 - [ Futures Client Example Usage ](#futuresusage)
   - [REST API](#futuresrest)
   - [Websockets](#futuresws)
-- [ Spot Client Documentation ](#spotdocu)
-  - [ User ](#spotuser)
-  - [ Trade ](#spottrade)
-  - [ Market ](#spotmarket)
-  - [ Funding ](#spotfunding)
-  - [ Staking ](#spotstaking)
-  - [ KrakenSpotWSClient ](#spotwsclient)
-- [ Futures Client Documentation ](#futuresdocu)
-  - [ User ](#futuresuser)
-  - [ Trade ](#futurestrade)
-  - [ Market ](#futuresmarket)
-  - [ Funding ](#futuresfunding)
-  - [ KrakenFuturesWSClient ](#futureswsclient)
 - [ Troubleshooting ](#trouble)
 - [ Notes ](#notes)
 - [ References ](#references)
@@ -396,8 +381,6 @@ Note: Authenticated Futures websocket clients can also un-/subscribe from/to pub
 <a name="notes"></a>
 
 # 📝 Notes:
-
-- Pull requests will be ignored until the owner finished the core idea
 
 - Coding standards are not always followed to make arguments and function names as similar as possible to those in the Kraken API documentations.
 
