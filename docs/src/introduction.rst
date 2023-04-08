@@ -12,7 +12,7 @@ Introduction
 This documentation refers to the `python-kraken-sdk`_ and serves to simplify the application of trading strategies,
 in which as far as possible all interaction possibilities with the cryptocurrency exchange Kraken are implemented, tested and documented.
 
-- Gladly open an issue on github on make if something is incorrect or missing (`python-kraken-sdk/issues`_)
+- Gladly open an issue on github on make if something is incorrect or missing (`python-kraken-sdk/issues`_).
 - The ouput in the examples may differ, as these are only intended as examples and may change in the future.
 - If a certain endpoint is not reachable, the function :func:`kraken.base_api.KrakenBaseSpotAPI._request` or :func:`kraken.base_api.KrakenBaseFuturesAPI._request`,
   which is also available in all derived REST clients, can be used to reach an endpoint with the appropriate parameters. Here private content can also be accessed,
@@ -43,6 +43,7 @@ General:
 - access both public and private endpoints
 - responsive error handling, custom exceptions and logging
 - extensive examples
+- coding standards like snake case are not always followed to maintain the parameter naming convention of the Kraken API
 
 Important Notice
 -----------------

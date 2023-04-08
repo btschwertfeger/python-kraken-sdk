@@ -3,6 +3,16 @@
 Futures Trading Bot Example
 ----------------------------
 
+The template presented below serves as a starting point for the development of a trading algorithm for
+trading futures contracts on the cryptocurrency platform Kraken using the
+`python-kraken-sdk`_.
+
+The ``ManagedBot`` class is a helper class that instantiates the trading strategy. The trading strategy
+can be implemented in the ``TradingBot`` class. This class has access to all REST clients and gets
+gets via the ``on_message`` method all messages that are sent via the subscribed websocket feeds.
+
+This is the starting point from which a strategy can be implemented and applied.
+
 .. code-block:: python
     :linenos:
     :caption: Futures Trading Bot Template
@@ -18,7 +28,7 @@ Futures Trading Bot Example
     import urllib3
 
     from kraken.exceptions import KrakenException
-    from kraken.futures import Funding, KrakenFuturesWSClient, Market, Trade, User
+    from kraken.futures import KrakenFuturesWSClient, Funding, Market, Trade, User
 
     logging.basicConfig(
         format="%(asctime)s %(module)s,line: %(lineno)d %(levelname)8s | %(message)s",
