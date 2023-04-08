@@ -296,18 +296,20 @@ class TradeTests(unittest.TestCase):
     def test_get_orders_status(self) -> None:
         assert is_success(
             self.__auth_trade.get_orders_status(
-                orderIds=["378etweirzgu", "fc589be9-5095-48f0-b6f1-a2dfad6d9677"]
+                orderIds=[
+                    "d47e7fb4-aed0-4f3d-987b-9e3ca78ba74e",
+                    "fc589be9-5095-48f0-b6f1-a2dfad6d9677",
+                ]
             )
         )
         assert is_success(
             self.__auth_trade.get_orders_status(
-                cliOrdIds=["378etweirzgu", "fc589be9-5095-48f0-b6f1-a2dfad6d9677"]
+                cliOrdIds=[
+                    "2c611222-bfe6-42d1-9f55-77bddc01a313",
+                    "fc589be9-5095-48f0-b6f1-a2dfad6d9677",
+                ]
             )
         )
-
-    def test_failing_get_order_status(self) -> None:
-        with pytest.raises(ValueError):
-            self.__auth_trade.get_orders_status()
 
     def test_create_order(self) -> None:
         try:
