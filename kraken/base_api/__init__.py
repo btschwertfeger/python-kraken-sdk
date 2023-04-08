@@ -416,7 +416,7 @@ class KrakenBaseFuturesAPI:
                 }
             )
 
-        if method in ["GET", "DELETE"]:
+        if method in ("GET", "DELETE"):
             return self.__check_response_data(
                 self.__session.request(
                     method=method,

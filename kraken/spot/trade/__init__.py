@@ -88,7 +88,7 @@ class Trade(KrakenBaseSpotAPI):
         :type trigger: str | None, optional
         :param leverage: The leverage
         :type leverage: str | int | float | None, optional
-        :param reduce_only: (default: ``False``)
+        :param reduce_only: Reduce existing orders (default: ``False``)
         :type reduce_only: bool, optional
         :param stptype: Define what cancells the order, one of ``cancel-newest``,
             ``cancel-oldest``, ``cancel-both`` (default: ``cancel-newest``)
@@ -97,7 +97,7 @@ class Trade(KrakenBaseSpotAPI):
             ``viqc`` (see the referenced Kraken documentaion for more information)
         :type oflags: str | List[str] | None, optional
         :param timeinforce: how long the order raimains in the orderbook, one of:
-            ``GTC``, `ÌOC``, ``GTD`` (see the referenced Kraken documentaion for more information)
+            ``GTC``, ``IOC``, ``GTD`` (see the referenced Kraken documentaion for more information)
         :type timeinforce: str | None, optional
         :param displayvol: Define how much of the volume is visible in the order book (iceberg)
         :type displayvol: str | int | float | None, optional
@@ -537,7 +537,7 @@ class Trade(KrakenBaseSpotAPI):
         - https://docs.kraken.com/rest/#operation/cancelAllOrdersAfter
 
         :param timeout: Optional The timeout in seconds, decativate by passing the default: ``0``
-        :type timeout: int
+        :type timeout: int, optional
         :return: Current time and trigger time
         :rtype: dict
 
@@ -562,7 +562,7 @@ class Trade(KrakenBaseSpotAPI):
     def cancel_order_batch(self, orders: List[Union[str, int]]) -> dict:
         """
         Cancel a a list of orders by ``txid`` or ``userref``
-        This endpoint is broken, see https://github.com/btschwertfeger/Python-Kraken-SDK/issues/65
+        This endpoint is broken, see https://github.com/btschwertfeger/python-kraken-sdk/issues/65
 
         Requires the ``Cancel/close orders`` permission in
         the API key settings.

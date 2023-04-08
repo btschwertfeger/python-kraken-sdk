@@ -293,7 +293,7 @@ class Market(KrakenBaseFuturesAPI):
 
     def get_tickers(self) -> dict:
         """
-        Retrieve information about the current tickers of all futures contracts
+        Retrieve information about the current tickers of all futures contracts.
 
         - https://docs.futures.kraken.com/#http-api-trading-v3-api-market-data-get-tickers
         - https://support.kraken.com/hc/en-us/articles/360022839531-Tickers
@@ -693,7 +693,7 @@ class Market(KrakenBaseFuturesAPI):
         :param before: Filter by time
         :type before: int | None, optional
         :param continuation_token: Token that can be used to continue requesting historical events
-        :type token: str | None, optional
+        :type continuation_token: str | None, optional
         :param since: Filter by a specifying a start point
         :type since: int | None, optional
         :param sort: Sort the results
@@ -726,7 +726,7 @@ class Market(KrakenBaseFuturesAPI):
         sort: Union[str, None] = None,
     ) -> dict:
         """
-        Retrieve information about the public execition events. The returned ``continuation_token```
+        Retrieve information about the public execition events. The returned ``continuation_token``
         can be used to request more data.
 
         - https://docs.futures.kraken.com/#http-api-history-market-history-get-public-execution-events
@@ -735,15 +735,13 @@ class Market(KrakenBaseFuturesAPI):
         :param tradeable: The contract to filter for
         :type tradeable: str
         :param before: Filter by time
-        :type before: int
+        :type before: int | None, optional
         :param continuation_token: Token that can be used to continue requesting historical events
-        :type token: str | None, optional
+        :type continuation_token: str | None, optional
         :param since: Filter by a specifying a start point
         :type since: int | None, optional
         :param sort: Sort the results
         :type sort: str | None, optional
-        :param tradeable: The asset to filter for
-        :type tradeable: str | None, optional
         :return: The public execution events
         :rtype: dict
 
@@ -818,7 +816,7 @@ class Market(KrakenBaseFuturesAPI):
     ) -> dict:
         """
         Retrive information about the oublic order events - filled, closed, opened, etc, for
-        a specific contract.The returned ``continuation_token``` can be used to request more data.
+        a specific contract.The returned ``continuation_token`` can be used to request more data.
 
         - https://docs.futures.kraken.com/#http-api-history-market-history-get-public-order-events
 
@@ -827,15 +825,13 @@ class Market(KrakenBaseFuturesAPI):
         :param tradeable: The contract to filter for
         :type tradeable: str
         :param before: Filter by time
-        :type before: int
+        :type before: int | None, optional
         :param continuation_token: Token that can be used to continue requesting historical events
-        :type token: str | None, optional
+        :type continuation_token: str | None, optional
         :param since: Filter by a specifying a start point
         :type since: int | None, optional
         :param sort: Sort the results
         :type sort: str | None, optional
-        :param tradeable: The asset to filter for
-        :type tradeable: str | None, optional
         :return: The public order events
         :rtype: dict
 
@@ -900,15 +896,13 @@ class Market(KrakenBaseFuturesAPI):
         :param tradeable: The contract to filter for
         :type tradeable: str
         :param before: Filter by time
-        :type before: int
+        :type before: int | None, optional
         :param continuation_token: Token that can be used to continue requesting historical events
-        :type token: str | None, optional
+        :type continuation_token: str | None, optional
         :param since: Filter by a specifying a start point
         :type since: int | None, optional
         :param sort: Sort the results
         :type sort: str | None, optional
-        :param tradeable: The asset to filter for
-        :type tradeable: str | None, optional
         :return: The public order events
         :rtype: dict
 

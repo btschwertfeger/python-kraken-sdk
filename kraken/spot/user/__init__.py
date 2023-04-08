@@ -223,7 +223,7 @@ class User(KrakenBaseSpotAPI):
         closetime: str = "both",
     ) -> dict:
         """
-        Get the 50 latest closed (filled or cancelled) orders.
+        Get the 50 latest closed (filled or canceled) orders.
 
         Requires the ``Query closed orders & trades`` permission in the API key settings.
 
@@ -237,7 +237,7 @@ class User(KrakenBaseSpotAPI):
         :type start: int | None, optional
         :param end: Unix timestamp to define the last result to include
         :type end: int | None, optional
-        :param ofs: Offset pagination
+        :param ofs: Offset for pagination
         :type ofs: int, optional
         :param closetime: Specify the exact time frame, one of: ``both``, ``open``, ``close`` (default: ``both``)
         :type closetime: str, optional
@@ -316,11 +316,11 @@ class User(KrakenBaseSpotAPI):
         :param txid: A transaction id of a specific order, a list of txids or a string containing a comma delimited list of txids
         :type txid: str | List[str], optional
         :param trades: Include trades in the result or not (default: ``False``)
-        :type trades: bool
+        :type trades: bool, optional
         :param userref: Filter results by user reference id
         :type userref: int | None, optional
         :param consolidate_taker: Consolidate trdes by individual taker trades (default: ``True``)
-        :type consolidate_taker: bool
+        :type consolidate_taker: bool, optional
 
         .. code-block:: python
             :linenos:
@@ -420,12 +420,12 @@ class User(KrakenBaseSpotAPI):
         - https://docs.kraken.com/rest/#operation/getTradeHistory
 
         :param type_: Filter by type of trade, one of: ``all``, ``any position``, ``closed position``, ``closing position``, and ``no position`` (default: ``all``)
-        :type type_: str
-        :param trades: Include trades related to a position or not
-        :type trades: bool
-        :param start: Timestamp to start the search
+        :type type_: str, optional
+        :param trades: Include trades related to a position or not (default: ``False``)
+        :type trades: bool, optional
+        :param start: Timestamp or txid to start the search
         :type start: int | None, optional
-        :param end: Timestamp to define the last inluded result
+        :param end: Timestamp or txid to define the last inluded result
         :type end: int | None, optional
         :param consolidate_taker: Consolidate trades by individual taker trades (default: ``True``)
         :type consolidate_taker: bool
@@ -880,7 +880,7 @@ class User(KrakenBaseSpotAPI):
         :param id_: Id of the report that was requested
         :type id_: str
         :return: The reponse - a zipped report
-        :rtype: ``requests.Response``
+        :rtype: requests.Response
 
         .. code-block:: python
             :linenos:

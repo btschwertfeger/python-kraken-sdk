@@ -61,7 +61,7 @@ class Staking(KrakenBaseSpotAPI):
 
             >>> from kraken.spot import Staking
             >>> staking = Staking(key="api-key", secret="secret-key")
-            ... staking.stake_asset(
+            >>> staking.stake_asset(
             ...     asset="DOT",
             ...     amount=2000,
             ...     method="polkadot-staked"
@@ -106,7 +106,7 @@ class Staking(KrakenBaseSpotAPI):
 
             >>> from kraken.spot import Staking
             >>> staking = Staking(key="api-key", secret="secret-key")
-            ... staking.unstake_asset(
+            >>> staking.unstake_asset(
             ...     asset="DOT",
             ...     amount=2000,
             ...     method="polkadot-staked"
@@ -139,7 +139,7 @@ class Staking(KrakenBaseSpotAPI):
 
             >>> from kraken.spot import Staking
             >>> staking = Staking(key="api-key", secret="secret-key")
-            ... staking.list_stakeable_assets()
+            >>> staking.list_stakeable_assets()
             [
                 {
                     "method": "polkadot-staked",
@@ -193,7 +193,7 @@ class Staking(KrakenBaseSpotAPI):
 
             >>> from kraken.spot import Staking
             >>> staking = Staking(key="api-key", secret="secret-key")
-            ... staking.get_pending_staking_transactions()
+            >>> staking.get_pending_staking_transactions()
             [
                 {
                     'method': 'polkadot-staked',
@@ -227,7 +227,7 @@ class Staking(KrakenBaseSpotAPI):
 
             >>> from kraken.spot import Staking
             >>> staking = Staking(key="api-key", secret="secret-key")
-            ... staking.list_staking_transactions()
+            >>> staking.list_staking_transactions()
             [
                 {
                     'method': 'polkadot-staked',

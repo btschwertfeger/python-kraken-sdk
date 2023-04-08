@@ -423,7 +423,11 @@ class Trade(KrakenBaseFuturesAPI):
 
             >>> from kraken.futures import Trade
             >>> trade = Trade(key="api-key", secret="secret-key")
-            >>> trade.get_orders_status(orderIds=["fc589be9-5095-48f0-b6f1-a2dfad6d9677","some-other-order"])
+            >>> trade.get_orders_status(
+            ...     orderIds=[
+            ...         "2c611222-bfe6-42d1-9f55-77bddc01a313",
+            ...         "5f204f95-4354-4610-bb3b-c902ad333012"
+            ... ])
             {'result': 'success', 'serverTime': '2023-04-04T17:27:29.667Z', 'orders': []}
         """
         params = {}
@@ -431,8 +435,6 @@ class Trade(KrakenBaseFuturesAPI):
             params["orderIds"] = orderIds
         elif cliOrdIds is not None:
             params["cliOrdIds"] = cliOrdIds
-        else:
-            raise ValueError("Either orderIds or cliOrdIds must be specified!")
 
         return self._request(
             method="POST",

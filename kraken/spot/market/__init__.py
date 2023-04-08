@@ -107,7 +107,8 @@ class Market(KrakenBaseSpotAPI):
 
         :param asset: Filter by asset pair(s)
         :type asset: str | List[str]
-        :param info: Filter by info, can be one of: `info` (all info), `leverage` (leverage info), `fees` (fee info), and `margin` (margin info)
+        :param info: Filter by info, can be one of: ``info`` (all info), ``leverage``
+            (leverage info), ``fees`` (fee info), and ``margin`` (margin info)
         :type info: str | None, optional
         :return: Information about the asset pair
         :rtype: dict
@@ -260,7 +261,7 @@ class Market(KrakenBaseSpotAPI):
 
         :param pair: The pair to get the orderbook from
         :type pair: str
-        :param count: Number of asks and bids, must be one of {1...500} (default: ``100``)
+        :param count: Number of asks and bids, must be one of {1..500} (default: ``100``)
         :type count: int, optional
 
         :return:

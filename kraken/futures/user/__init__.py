@@ -359,7 +359,7 @@ class User(KrakenBaseFuturesAPI):
         :param before: Filter by time
         :type before: int | None, optional
         :param continuation_token: Token that can be used to continue requesting historical events
-        :type token: str | None, optional
+        :type continuation_token: str | None, optional
         :param since: Filter by a specifying a start point
         :type since: int | None, optional
         :param sort: Sort the results
@@ -402,7 +402,7 @@ class User(KrakenBaseFuturesAPI):
         :param before: Filter by time
         :type before: int | None, optional
         :param continuation_token: Token that can be used to continue requesting historical events
-        :type token: str | None, optional
+        :type continuation_token: str | None, optional
         :param since: Filter by a specifying a start point
         :type since: int | None, optional
         :param sort: Sort the results
@@ -524,7 +524,7 @@ class User(KrakenBaseFuturesAPI):
         :param before: Filter by time
         :type before: int | None, optional
         :param continuation_token: Token that can be used to continue requesting historical events
-        :type token: str | None, optional
+        :type continuation_token: str | None, optional
         :param since: Filter by a specifying a start point
         :type since: int | None, optional
         :param sort: Sort the results
@@ -601,7 +601,7 @@ class User(KrakenBaseFuturesAPI):
         :param before: Filter by time
         :type before: int | None, optional
         :param continuation_token: Token that can be used to continue requesting historical events
-        :type token: str | None, optional
+        :type continuation_token: str | None, optional
         :param since: Filter by a specifying a start point
         :type since: int | None, optional
         :param sort: Sort the results

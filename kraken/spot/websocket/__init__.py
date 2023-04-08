@@ -295,8 +295,8 @@ class KrakenSpotWSClient(SpotWsClientCl):
     This class holds up to two websocket connections, one private
     and one public.
 
-    When accessing private endpoints that need authentication make shure,
-    that the ``Access WebSockets API`` API key permission is set in the users Kraken
+    When accessing private endpoints that need authentication make sure,
+    that the ``Access WebSockets API`` API key permission is set in the user's
     account.
 
     :param key: API Key for the Kraken Spot API (default: ``""``)
@@ -305,7 +305,7 @@ class KrakenSpotWSClient(SpotWsClientCl):
     :type secret: str, optional
     :param url: Set a specific/custom url to access the Kraken API
     :type url: str, optional
-    :param beta: Use the Beta websocket channels (maybe not supported anymore, default: ``False``)
+    :param beta: Use the beta websocket channels (maybe not supported anymore, default: ``False``)
     :type beta: bool
 
     .. code-block:: python

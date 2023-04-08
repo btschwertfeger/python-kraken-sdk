@@ -233,7 +233,7 @@ class Funding(KrakenBaseSpotAPI):
     ) -> dict:
         """
         Create a new withdraw. The key must be the name of the withdraw key
-        defined in the withdraw section of the Kraken WebUI
+        defined in the withdraw section of the Kraken WebUI.
 
         Requires the ``Withdraw funds`` API key permissions.
 

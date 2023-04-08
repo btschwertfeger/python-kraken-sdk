@@ -63,7 +63,7 @@ class KrakenFuturesWSClient(KrakenBaseFuturesAPI):
                 feed='ticker',
                 products=["XBTUSD", "DOT/EUR"]
             )
-            # the messages can be used within the `on_message`` callback method
+            # the messages can be used within the `on_message` callback method
 
             while True:
                 await asyncio.sleep(6)
@@ -263,7 +263,10 @@ class KrakenFuturesWSClient(KrakenBaseFuturesAPI):
 
             >>> from kraken.futures import KrakenFuturesWSClient
             >>> KrakenFuturesWSClient.get_available_private_subscription_feeds()
-            ["trade", "book", "ticker", "ticker_lite", "heartbeat"]
+            [
+                "trade", "book", "ticker",
+                "ticker_lite", "heartbeat"
+            ]
         """
         return ["trade", "book", "ticker", "ticker_lite", "heartbeat"]
 
@@ -282,7 +285,12 @@ class KrakenFuturesWSClient(KrakenBaseFuturesAPI):
 
             >>> from kraken.futures import KrakenFuturesWSClient
             >>> KrakenFuturesWSClient.get_available_private_subscription_feeds()
-            ["fills", "open_positions", "open_orders", "open_orders_verbose", "balances", "deposits_withdrawals", "account_balances_and_margins", "account_log", "notifications_auth"]
+            [
+                "fills", "open_positions", "open_orders",
+                "open_orders_verbose", "balances",
+                "deposits_withdrawals", "account_balances_and_margins",
+                "account_log", "notifications_auth"
+            ]
         """
         return [
             "fills",
@@ -336,6 +344,15 @@ class KrakenFuturesWSClient(KrakenBaseFuturesAPI):
             >>> from kraken.futures import KrakenFuturesWSClient
             ...
             >>> KrakenFuturesWSClient.get_active_subscriptions()
-            [{"event": "subscribe", "feed": "ticker, "product_ids": ["PI_XBTUSD"]}]
+            [
+                {
+                    "event": "subscribe",
+                    "feed": "ticker,
+                    "product_ids": ["PI_XBTUSD"]
+                }, {
+                    "event": "subscribe",
+                    "feed": "open_orders,
+                }, ...
+            ]
         """
         return self._conn._get_active_subscriptions()
