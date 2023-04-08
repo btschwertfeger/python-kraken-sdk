@@ -25,6 +25,7 @@ Welcome to Python Kraken SDK's documentation!
    src/futures/futures_websocket.rst
    src/base_api/base_api.rst
    src/krakenexceptions/krakenexceptions.rst
+   src/about/license.rst
 
 Indices and tables
 ==================

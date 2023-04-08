@@ -14,28 +14,20 @@ PYTHON := $(VENV)/bin/python
 build:
 	$(PYTHON) -m pip wheel -w dist --no-deps .
 
-##		Installs the local python-kraken-sdk
-##		in edit mode
+##		Installs the package in edit mode
 ##
 dev:
-	$(PYTHON) -m pip install -e .
+	$(PYTHON) -m pip install -e .[dev]
 
-##		Install the dependencies for testing
+##		Install the package
 ##
-test-install:
+install:
 	$(PYTHON) -m pip install .
-	$(PYTHON) -m pip install .[test]
 
 ##		Run the unittests
 ##
 test:
 	$(PYTHON) -m pytest tests/
-
-##		Installs Python dependencies
-##
-doc-install:
-	$(PYTHON) -m pip install .
-	$(PYTHON) -m pip install .[doc]
 
 ##		Build the documentation
 ##
