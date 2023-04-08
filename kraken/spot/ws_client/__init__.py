@@ -75,7 +75,9 @@ class SpotWsClientCl(KrakenBaseSpotAPI):
 
         - https://docs.kraken.com/websockets/#message-addOrder
 
-        :param ordertype: The type of order, one of: ``limit``, ``market`` ``stop-loss``, ``take-profit``, ``stop-loss-limit``, ``settle-position``, ``take-profit-limit``
+        :param ordertype: The type of order, one of: ``limit``, ``market`` ``stop-loss``,
+            ``take-profit``, ``stop-loss-limit``, ``settle-position``, ``take-profit-limit``
+            (see: https://support.kraken.com/hc/en-us/sections/200577136-Order-types)
         :type ordertype: str
         :param side: The side - one of ``buy``, ``sell``
         :type side: str
@@ -83,31 +85,38 @@ class SpotWsClientCl(KrakenBaseSpotAPI):
         :type pair: str
         :param volume: The volume of the order that is being created
         :type volume: str | int | float
-        :param price: The limit price for ``limit`` orders or the trigger price for orders with ``ordertype`` one of ``stop-loss``, ``stop-loss-limit``, ``take-profit``, and ``take-profit-limit``
+        :param price: The limit price for ``limit`` orders or the trigger price for orders with
+            ``ordertype`` one of ``stop-loss``, ``stop-loss-limit``, ``take-profit``, and ``take-profit-limit``
         :type price: str | int | float | None, optional
-        :param price2: The second price for ``stop-loss-limit`` and ``take-profit-limit`` orders (see the referenced Kraken documentaion for more information)
+        :param price2: The second price for ``stop-loss-limit`` and ``take-profit-limit``
+            orders (see the referenced Kraken documentaion for more information)
         :type price2: str | int | float | None, optional
         :param leverage: The leverage
         :type leverage: str | int | float | None, optional
-        :param oflags: Order flags like ``post``, ``fcib``, ``fciq``, ``nomp``, ``viqc`` (see the referenced Kraken documentaion for more information)
+        :param oflags: Order flags like ``post``, ``fcib``, ``fciq``, ``nomp``, ``viqc``
+            (see the referenced Kraken documentaion for more information)
         :type oflags: str | List[str] | None, optional
         :param starttm: Unix timestamp or seconds defining the start time (default: ``"0"``)
         :type starttm: str | int | None, optional
-        :param expiretim: Unix timestamp or time in seconds defining the expiration of the order, (default: ``"0"`` - i.e., no expiration)
+        :param expiretim: Unix timestamp or time in seconds defining the expiration of
+            the order (default: ``"0"`` - i.e., no expiration)
         :type expiretim: str
-        :param deadline: (see the referenced Kraken documentaion for more information)
+        :param deadline: RFC3339 timestamp + {0..60} seconds that defines when the matching
+            engine should reject the order.
         :type deadline: str
         :param userref: User reference id for example to group orders
         :type userref: int
         :param validate: Validate the order without placing on the market (default: ``False``)
         :type validate: bool, optional
-        :param close_ordertype:  Conditional close order type, one of: ``limit``, ``stop-loss``, ``take-profit``, ``stop-loss-limit``, ``take-profit-limit`` (see the referenced Kraken documentaion for more information)
+        :param close_ordertype:  Conditional close order type, one of: ``limit``, ``stop-loss``,
+            ``take-profit``, ``stop-loss-limit``, ``take-profit-limit``
         :type close_ordertype: str | None, optional
         :param close_price: Conditional close price
         :type close_price: str | int | float | None, optional
         :param close_price2: Second conditional close price
         :type close_price2: str | int | float | None, optional
-        :param timeinforce: How long the order raimains in the orderbook, one of: ``GTC``, `ÌOC``, ``GTD`` (see the referenced Kraken documentaion for more information)
+        :param timeinforce: How long the order raimains in the orderbook, one of: ``GTC``, ``IOC``,
+            ``GTD`` (see the referenced Kraken documentaion for more information)
         :type timeinforce: str | None, optional
         :raises ValueError: If input is not correct
         :rtype: Coroutine

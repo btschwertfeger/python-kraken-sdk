@@ -327,7 +327,7 @@ class KrakenSpotWSClient(SpotWsClientCl):
                 secret='kraken-secret-key'
             )
 
-            # subscribing is now possible:
+            # subscribe to the desired feeds:
             await bot.subscribe(
                 subscription={"name": ticker},
                 pair=["XBTUSD", "DOT/EUR"]

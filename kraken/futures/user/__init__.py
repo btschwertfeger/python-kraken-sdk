@@ -245,7 +245,7 @@ class User(KrakenBaseFuturesAPI):
         :type info: str | None, optional
         :param since: Defines the first entry to begin with by item
         :type since: str | int | None, optional
-        :param sort:Sort the results
+        :param sort: Sort the results
         :type sort: str | None, optional
         :param to: Id of the last entry
         :type to: str | None, optional
@@ -254,7 +254,7 @@ class User(KrakenBaseFuturesAPI):
 
         .. code-block:: python
             :linenos:
-            :caption: Futures User: Get the account log
+            :caption: Futures User: Get the user's account log
 
             >>> from kraken.futures import User
             >>> user = User(key="api-key", secret="secret-key")

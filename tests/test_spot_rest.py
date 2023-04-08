@@ -9,7 +9,7 @@ import os
 import random
 import time
 import unittest
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 
 import pytest
 
@@ -390,9 +390,7 @@ class TradeTests(unittest.TestCase):
             pass
 
         try:
-            deadline = (
-                datetime.now(timezone.utc) + datetime.timedelta(seconds=20)
-            ).isoformat()
+            deadline = (datetime.now(timezone.utc) + timedelta(seconds=20)).isoformat()
             self.__auth_trade.create_order(
                 ordertype="stop-loss-limit",
                 pair="XBTUSD",
@@ -418,7 +416,6 @@ class TradeTests(unittest.TestCase):
                 side="buy",
                 volume=0.001,
                 price=25000,
-                price2=27000,
                 timeinforce="GTC",
                 leverage=4,
                 validate=True,

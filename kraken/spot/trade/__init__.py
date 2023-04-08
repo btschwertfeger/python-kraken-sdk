@@ -56,7 +56,7 @@ class Trade(KrakenBaseSpotAPI):
         validate: bool = False,
         userref: Union[int, None] = None,
     ) -> dict:
-        r"""
+        """
         Create a new order and place it on the market.
 
         Requires the ``Create and modify orders`` permission in
@@ -139,7 +139,9 @@ class Trade(KrakenBaseSpotAPI):
             ... )
             {
                 'txid': 'TNGMNU-XQSRA-LKCWOK',
-                'descr': { ...}
+                'descr': {
+                    'order': 'buy 4.00000000 XBTUSD @ limit 23000.0'
+                }
             }
 
         .. code-block:: python
@@ -178,7 +180,12 @@ class Trade(KrakenBaseSpotAPI):
             ...     price=22000,
             ...     side="buy",
             ... )
-            { 'txid': 'THNUL1-8ZAS5-EEF3A8' }
+            {
+                'txid': 'THNUL1-8ZAS5-EEF3A8',
+                'descr': {
+                    'order': 'buy 20.00000000 XBTUSD @ stop loss 22000.0'
+                }
+            }
 
         .. code-block:: python
             :linenos:

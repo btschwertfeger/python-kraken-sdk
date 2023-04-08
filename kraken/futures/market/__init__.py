@@ -53,7 +53,6 @@ class Market(KrakenBaseFuturesAPI):
         It is also possible to filter by time.
 
         - https://docs.futures.kraken.com/#http-api-charts-ohlc-get-ohlc
-
         - https://support.kraken.com/hc/en-us/articles/4403284627220-OHLC
 
         :param tick_type: The kind of data, based on ``mark``, ``spot``, or ``trade``
@@ -182,7 +181,6 @@ class Market(KrakenBaseFuturesAPI):
         Retrieve information about the current fees
 
         - https://docs.futures.kraken.com/#http-api-trading-v3-api-fee-schedules-get-fee-schedules
-
         - https://support.kraken.com/hc/en-us/articles/360049269572-Fee-Schedules
 
         :return: Dictionary containing information about the fees for wide range of tradeable assets
@@ -298,7 +296,6 @@ class Market(KrakenBaseFuturesAPI):
         Retrieve information about the current tickers of all futures contracts
 
         - https://docs.futures.kraken.com/#http-api-trading-v3-api-market-data-get-tickers
-
         - https://support.kraken.com/hc/en-us/articles/360022839531-Tickers
 
         .. code-block:: python
@@ -423,7 +420,6 @@ class Market(KrakenBaseFuturesAPI):
         Retrieve status information of a specific or all futures contracts.
 
         - https://docs.futures.kraken.com/#http-api-trading-v3-api-instrument-details-get-instrument-status-list
-
         - https://docs.futures.kraken.com/#http-api-trading-v3-api-instrument-details-get-instrument-status
 
         :param instrument: Filter by asset
@@ -734,7 +730,6 @@ class Market(KrakenBaseFuturesAPI):
         can be used to request more data.
 
         - https://docs.futures.kraken.com/#http-api-history-market-history-get-public-execution-events
-
         - https://support.kraken.com/hc/en-us/articles/4401755685268-Market-History-Executions
 
         :param tradeable: The contract to filter for
@@ -825,7 +820,7 @@ class Market(KrakenBaseFuturesAPI):
         Retrive information about the oublic order events - filled, closed, opened, etc, for
         a specific contract.The returned ``continuation_token``` can be used to request more data.
 
-        - https://docs.futures.kraken.com/#http-api-history-market-history-get-public-order-events and
+        - https://docs.futures.kraken.com/#http-api-history-market-history-get-public-order-events
 
         - https://support.kraken.com/hc/en-us/articles/4401755906452-Market-History-Orders
 

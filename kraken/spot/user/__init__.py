@@ -539,11 +539,11 @@ class User(KrakenBaseSpotAPI):
         - https://docs.kraken.com/rest/#operation/getOpenPositions
 
         :param txid: Filter by txid or list of txids or comma delimited list of txids as string
-        :type txid: str | List[str], None, optional
+        :type txid: str | List[str] | None, optional
         :param docalcs: Include profit and loss calculation into the result (default: ``False``)
-        :type docalcs: bool
-        :param consolidation: Consolidate positions by market/pair
-        :type consolidation: str
+        :type docalcs: bool, optional
+        :param consolidation: Consolidate positions by market/pair (default: ``market``)
+        :type consolidation: str, optional
         :return: List of open positions
         :rtype: dict
 

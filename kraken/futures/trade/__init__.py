@@ -463,6 +463,7 @@ class Trade(KrakenBaseFuturesAPI):
         - https://docs.futures.kraken.com/#http-api-trading-v3-api-order-management-send-order
 
         :param orderType: The order type, one of ``lmt``, ``post``, ``ioc``, ``mkt``, ``stp``, ``take_profit``, ``trailing_stop``
+            (https://support.kraken.com/hc/en-us/sections/200577136-Order-types)
         :type orderType: str
         :param size: The volume of the position
         :type size: str | int | float
@@ -489,7 +490,50 @@ class Trade(KrakenBaseFuturesAPI):
 
         .. code-block:: python
             :linenos:
-            :caption: Futures Trade: Create and submit a new order
+            :caption: Futures Trade: Create and submit a new market order
+
+            >>> trade.create_order(
+            ...     orderType="mkt",
+            ...     size=5,
+            ...     side="buy",
+            ...     symbol="PI_ETHUSD",
+            ... )
+            {
+                'result': 'success',
+                'sendStatus': {
+                    'order_id': '67d3a732-b0d3-49e7-9577-45b31bceb833',
+                    'status': 'placed',
+                    'receivedTime': '2023-04-08T11:59:23.887Z',
+                    'orderEvents': [
+                        {
+                            'executionId': '495aae73-7cf7-4dfc-8963-3b766d8150de',
+                            'price': 1869.175,
+                            'amount': 5,
+                            'orderPriorEdit': None,
+                            'orderPriorExecution': {
+                                'orderId': '67d3a732-b0d3-49e7-9577-45b31bceb833',
+                                'cliOrdId': None,
+                                'type': 'ioc',
+                                'symbol': 'pi_ethusd',
+                                'side': 'buy',
+                                'quantity': 5,
+                                'filled': 0,
+                                'limitPrice': 1887.85,
+                                'reduceOnly': False,
+                                'timestamp': '2023-04-08T11:59:23.887Z',
+                                'lastUpdateTimestamp': '2023-04-08T11:59:23.887Z'
+                            },
+                            'takerReducedQuantity': None,
+                            'type': 'EXECUTION'
+                        }
+                    ]
+                },
+                'serverTime': '2023-04-08T11:59:23.888Z'
+            }
+
+        .. code-block:: python
+            :linenos:
+            :caption: Futures Trade: Create and submit a new limit order
 
             >>> from kraken.futures import Trade
             >>> trade = Trade(key="api-key", secret="secret-key")
@@ -528,52 +572,19 @@ class Trade(KrakenBaseFuturesAPI):
                 },
                 'serverTime': '2023-04-07T15:18:04.700Z'
             }
-            >>> trade.create_order(
-            ...     orderType="mkt",
-            ...     size=5,
-            ...     side="buy",
-            ...     symbol="PI_ETHUSD",
-            ... )
-            {
-                'result': 'success',
-                'sendStatus': {
-                    'order_id': '267372ec-272f-4ca7-9b8c-99a0dc8f781c',
-                    'status': 'placed',
-                    'receivedTime': '2023-04-07T15:07:46.540Z',
-                    'orderEvents': [
-                        {
-                            'executionId': '15dae264-01e9-4d4c-8962-2f49b98c46f6',
-                            'price': 1859.075,
-                            'amount': 5,
-                            'orderPriorEdit': None,
-                            'orderPriorExecution': {
-                                'orderId': '267372ec-272f-4ca7-9b8c-99a0dc8f781c',
-                                'cliOrdId': None,
-                                'type': 'ioc',
-                                'symbol': 'pi_ethusd',
-                                'side': 'buy',
-                                'quantity': 5,
-                                'filled': 0,
-                                'limitPrice': 1877.65,
-                                'reduceOnly': False,
-                                'timestamp': '2023-04-07T15:07:46.540Z',
-                                'lastUpdateTimestamp': '2023-04-07T15:07:46.540Z'
-                            },
-                            'takerReducedQuantity': None,
-                            'type': 'EXECUTION'
-                        }
-                    ]
-                },
-                'serverTime': '2023-04-07T15:07:46.541Z'
-            }
+
+        .. code-block:: python
+            :linenos:
+            :caption: Futures Trade: Create and submit a new take profit order
+
             >>> trade.create_order(
             ...     orderType="take_profit",
             ...     size=10,
             ...     side="buy",
             ...     symbol="PI_ETHUSD",
-            ...     limitPrice="1860.0",
+            ...     limitPrice=2500.0,
             ...     triggerSignal="last",
-            ...     stopPrice=1880.4,
+            ...     stopPrice=2498.4,
             ... )
             {
                 'result': 'success',
@@ -605,7 +616,6 @@ class Trade(KrakenBaseFuturesAPI):
                 },
                 'serverTime': '2023-04-07T15:12:08.131Z'
             }
-
         """
 
         sides = ("buy", "sell")

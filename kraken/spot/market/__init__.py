@@ -261,7 +261,7 @@ class Market(KrakenBaseSpotAPI):
         :param pair: The pair to get the orderbook from
         :type pair: str
         :param count: Number of asks and bids, must be one of {1...500} (default: ``100``)
-        :type count: int
+        :type count: int, optional
 
         :return:
         :rtype: dict
