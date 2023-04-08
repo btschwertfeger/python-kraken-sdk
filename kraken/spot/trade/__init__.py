@@ -80,7 +80,6 @@ class Trade(KrakenBaseSpotAPI):
                 * Prefixed using ``+`` or ``-`` defines the change in the quote asset
                 * Prefixed by # is the same as ``+`` and ``-`` but the sign is set automatically
                 * The percentate sign ``%`` can be used to define relative changes.
-
         :type price2: str | int | float | None, optional
         :param trigger: What triggers the position of ``stop-loss``, ``stop-loss-limit``, ``take-profit``, and
             ``take-profit-limit`` orders. Will also be used for associated conditional close orders.
