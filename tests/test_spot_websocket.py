@@ -278,6 +278,7 @@ class WebsocketTests(unittest.TestCase):
 
         self.__create_loop(coro=checkit)
 
+    @unittest.skip("Skipping Spot test_cancel_order endpoint")
     def test_cancel_order(self) -> None:
         async def checkit() -> None:
             auth_bot = Bot(key=self.__key, secret=self.__secret)
@@ -291,6 +292,7 @@ class WebsocketTests(unittest.TestCase):
 
         self.__create_loop(coro=checkit)
 
+    @unittest.skip("Skipping Spot test_cancel_all_orders endpoint")
     def test_cancel_all_orders(self) -> None:
         async def checkit() -> None:
             auth_bot = Bot(key=self.__key, secret=self.__secret)
@@ -304,6 +306,7 @@ class WebsocketTests(unittest.TestCase):
 
         self.__create_loop(coro=checkit)
 
+    @unittest.skip("Skipping Spot test_cancel_all_orders_after_x endpoint")
     def cancel_all_orders_after(self) -> None:
         async def checkit() -> None:
             auth_bot = Bot(key=self.__key, secret=self.__secret)

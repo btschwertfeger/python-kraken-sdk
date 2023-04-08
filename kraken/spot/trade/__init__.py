@@ -56,7 +56,7 @@ class Trade(KrakenBaseSpotAPI):
         validate: bool = False,
         userref: Union[int, None] = None,
     ) -> dict:
-        """
+        r"""
         Create a new order and place it on the market.
 
         Requires the ``Create and modify orders`` permission in
@@ -64,53 +64,70 @@ class Trade(KrakenBaseSpotAPI):
 
         - https://docs.kraken.com/rest/#operation/addOrder
 
-        :param ordertype: The kind of the order, one of: ``market``, ``limit``, ``take-profit``, ``stop-loss-limit``, ``take-profit-limit`` and ``settle-position``
+        :param ordertype: The kind of the order, one of: ``market``, ``limit``, ``take-profit``,
+            ``stop-loss-limit``, ``take-profit-limit`` and ``settle-position``
+            (see: https://support.kraken.com/hc/en-us/sections/200577136-Order-types)
         :type ordertype: str
         :param side: ``buy`` or ``sell``
         :type side: str
         :param volume: The volume of the position to create
         :type volume: str | int | float
-        :param price: The limit price for ``limit`` orders or the trigger price for orders with ``ordertype`` one of ``stop-loss``, ``stop-loss-limit``, ``take-profit``, and ``take-profit-limit``
+        :param price: The limit price for ``limit`` orders and the trigger price for orders with
+            ``ordertype`` one of ``stop-loss``, ``stop-loss-limit``, ``take-profit``, and ``take-profit-limit``
         :type price: str | int | float | None, optional
-        :param price2: The second price for ``stop-loss-limit`` and ``take-profit-limit`` orders (see the referenced Kraken documentaion for more information)
+        :param price2: The limit price for ``stop-loss-limit`` and ``take-profit-limit`` orders
+            The price2 can also be set to absolut or relative changes.
+                * Prefixed using ``+`` or ``-`` defines the change in the quote asset
+                * Prefixed by # is the same as ``+`` and ``-`` but the sign is set automatically
+                * The percentate sign ``%`` can be used to define relative changes.
+
         :type price2: str | int | float | None, optional
-        :param trigger: What triggers the position of ``top-loss``, ``stop-loss-limit``, ``take-profit``, and ``take-profit-limit`` orders.
+        :param trigger: What triggers the position of ``stop-loss``, ``stop-loss-limit``, ``take-profit``, and
+            ``take-profit-limit`` orders. Will also be used for associated conditional close orders.
+            Kraken will use ``last`` if nothing is specified.
         :type trigger: str | None, optional
         :param leverage: The leverage
         :type leverage: str | int | float | None, optional
         :param reduce_only: (default: ``False``)
-        :type reduce_only: bool
-        :param stptype: Define what cancells the order, one of ``cancel-newest``, ``cancel-oldest``, ``cancel-both`` (default: ``cancel-newest``)
+        :type reduce_only: bool, optional
+        :param stptype: Define what cancells the order, one of ``cancel-newest``,
+            ``cancel-oldest``, ``cancel-both`` (default: ``cancel-newest``)
         :type stptype: str | None, optional
-        :param oflags: Order flags like ``post``, ``fcib``, ``fciq``, ``nomp``, ``viqc`` (see the referenced Kraken documentaion for more information)
+        :param oflags: Order flags like ``post``, ``fcib``, ``fciq``, ``nomp``,
+            ``viqc`` (see the referenced Kraken documentaion for more information)
         :type oflags: str | List[str] | None, optional
-        :param timeinforce: how long the order raimains in the orderbook, one of: ``GTC``, `ÌOC``, ``GTD`` (see the referenced Kraken documentaion for more information)
+        :param timeinforce: how long the order raimains in the orderbook, one of:
+            ``GTC``, `ÌOC``, ``GTD`` (see the referenced Kraken documentaion for more information)
         :type timeinforce: str | None, optional
         :param displayvol: Define how much of the volume is visible in the order book (iceberg)
         :type displayvol: str | int | float | None, optional
         :param starttim: Unix timestamp or seconds defining the start time (default: ``"0"``)
-        :type starttim: str
-        :param expiretm: Unix timestamp or time in seconds defining the expiration of the order, (default: ``"0"`` - i.e., no expiration)
-        :type expiretm: str
-        :param close_ordertype: Conditional close order type, one of: ``limit``, ``stop-loss``, ``take-profit``, ``stop-loss-limit``, ``take-profit-limit`` (see the referenced Kraken documentaion for more information)
+        :type starttim: str, optional
+        :param expiretm: Unix timestamp or time in seconds defining the expiration of the order,
+            (default: ``"0"`` - i.e., no expiration)
+        :type expiretm: str, optional
+        :param close_ordertype: Conditional close order type, one of: ``limit``, ``stop-loss``,
+            ``take-profit``, ``stop-loss-limit``, ``take-profit-limit``
+                (see the referenced Kraken documentaion for more information)
         :type close_ordertype: str | None, optional
         :param close_price: Conditional close price
         :type close_price: str | int | float | None, optional
-        :param close_price2: Second conditional close price
+        :param close_price2: The price2 for the conditional order - see the price2 parameter description
         :type close_price2: str | int | float | None, optional
-        :param deadline: (see the referenced Kraken documentaion for more information)
-        :type deadline: str
+        :param deadline: RFC3339 timestamp + {0..60} seconds that defines when the matching
+            engine should reject the order.
+        :type deadline: str, optional
         :param validate: Validate the order without placing on the market (default: ``False``)
         :type validate: bool, optional
         :param userref: User reference id for example to group orders
-        :type userref: int
+        :type userref: int, optional
         :raises ValueError: If input is not correct
         :return: The transaction id
         :rtype: dict
 
         .. code-block:: python
             :linenos:
-            :caption: Spot Trade: Create an order
+            :caption: Spot Trade: Create a market order
 
             >>> from kraken.spot import Trade
             >>> trade = Trade(key="api-key", secret="secret-key")
@@ -120,7 +137,17 @@ class Trade(KrakenBaseSpotAPI):
             ...     pair="XBTUSD",
             ...     volume="0.0001"
             ... )
-            { 'txid': 'TNGMNU-XQSRA-LKCWOK' }
+            {
+                'txid': 'TNGMNU-XQSRA-LKCWOK',
+                'descr': { ...}
+            }
+
+        .. code-block:: python
+            :linenos:
+            :caption: Spot Trade: Create limit order
+
+            >>> from kraken.spot import Trade
+            >>> trade = Trade(key="api-key", secret="secret-key")
             >>> trade.create_order(
             ...     ordertype="limit",
             ...     side="buy",
@@ -131,7 +158,97 @@ class Trade(KrakenBaseSpotAPI):
             ...     displayvol=0.5,
             ...     oflags=["post", "fcib"]
             ... )
-            { 'txid': 'TPPI2H-CUZZ2-EQR2IE' }
+            {
+                'txid': 'TPPI2H-CUZZ2-EQR2IE',
+                'descr': {
+                    'order': 'buy 4.0000 XBTUSD @ limit 23000.0'
+                }
+            }
+
+        .. code-block:: python
+            :linenos:
+            :caption: Spot Trade: Create a stop loss order
+
+            >>> from kraken.spot import Trade
+            >>> trade = Trade(key="api-key", secret="secret-key")
+            >>> trade.create_order(
+            ...     ordertype="stop-loss",
+            ...     pair="XBTUSD",
+            ...     volume=20,
+            ...     price=22000,
+            ...     side="buy",
+            ... )
+            { 'txid': 'THNUL1-8ZAS5-EEF3A8' }
+
+        .. code-block:: python
+            :linenos:
+            :caption: Spot Trade: Create stop-loss-limit and take-profit-limit orders
+
+            '''
+            When the price hits $25000:
+               1. A limit buy order will be placed at $24000 with 2x leverage.
+               2. When the limit order gets closed/filled at $24000
+                  The stop-loss-limit part is done and the tale-profit-limit
+                  part begins.
+               3. When the price hits $27000 a limit order will be placed at
+                  $26800 to sell 1.2 BTC. This ensures that the asset will
+                  be sold for $26800 or better.
+            '''
+            >>> from kraken.spot import Trade
+            >>> trade = Trade(key="api-key", secret="secret-key")
+            >>> from datetime import datetime, timedelta, timezone
+            >>> deadline = (
+            ... datetime.now(timezone.utc) + timedelta(seconds=20)
+            ... ).isoformat()
+            >>> trade.create_order(
+            ...     ordertype="stop-loss-limit",
+            ...     pair="XBTUSD",
+            ...     side="buy",
+            ...     volume=1.2,
+            ...     price=24000,
+            ...     price2=25000,
+            ...     validate=True, # just validate the input, do not place on the market
+            ...     trigger="last",
+            ...     timeinforce="GTC",
+            ...     leverage=4,
+            ...     deadline=deadline,
+            ...     close_ordertype="take-profit-limit",
+            ...     close_price=27000,
+            ...     close_price2=26800,
+            ... )
+            {
+                'descr': {
+                    'order': 'buy 0.00100000 XBTUSD @ stop loss 24000.0 -> limit 25000.0 with 2:1 leverage',
+                    'close': 'close position @ take profit 27000.0 -> limit 26800.0'
+                }
+            }
+
+            '''
+            The price2 and close_price2 can also be set to absolut or relative changes.
+                * Prefixed using "+" or "-" defines the change in the quote asset
+                * Prefixed by # is the same as "+" and "-" but the sign is set automatically
+                * The the percentate sign "%" can be used to define relative changes.
+            '''
+            >>> trade.create_order(
+            ...     ordertype="stop-loss-limit",
+            ...     pair="XBTUSD",
+            ...     side="buy",
+            ...     volume=1.2,
+            ...     price=24000,
+            ...     price2="+1000",
+            ...     validate=True,
+            ...     trigger="last",
+            ...     timeinforce="GTC",
+            ...     close_ordertype="take-profit-limit",
+            ...     close_price=27000,
+            ...     close_price2="#2%",
+            ... )
+            {
+                'descr': {
+                    'order': 'buy 0.00100000 XBTUSD @ stop loss 24000.0 -> limit +1000.0',
+                    'close': 'close position @ take profit 27000.0 -> limit -2.0000%'
+                }
+            }
         """
         params = {
             "ordertype": str(ordertype),
@@ -143,30 +260,35 @@ class Trade(KrakenBaseSpotAPI):
             "validate": validate,
             "reduce_only": reduce_only,
         }
+        trigger_ordertypes = (
+            "stop-loss",
+            "stop-loss-limit",
+            "take-profit-limit",
+            "take-profit-limit",
+        )
         if trigger is not None:
-            if ordertype in [
-                "stop-loss",
-                "stop-loss-limit",
-                "take-profit-limit",
-                "take-profit-limit",
-            ]:
-                if timeinforce is None:
-                    params["trigger"] = trigger
-                else:
-                    raise ValueError(
-                        f"Cannot use trigger {trigger} and timeinforce {timeinforce} together"
-                    )
-            else:
-                raise ValueError(f"Cannot use trigger on ordertype {ordertype}")
-        elif timeinforce is not None:
-            params["timeinforce"] = timeinforce
+            if ordertype not in trigger_ordertypes:
+                raise ValueError(f"Cannot use trigger on ordertype {ordertype}!")
+            params["trigger"] = trigger
 
+        if timeinforce is not None:
+            params["timeinforce"] = timeinforce
         if expiretm is not None:
             params["expiretm"] = str(expiretm)
         if price is not None:
             params["price"] = str(price)
-        if price2 is not None:
+
+        if ordertype in ("stop-loss-limit", "take-profit-limit"):
+            if price2 is None:
+                raise ValueError(
+                    f"Ordertype {ordertype} requires a secondary price (price2)!"
+                )
             params["price2"] = str(price2)
+        elif price2 is not None:
+            raise ValueError(
+                f"Ordertype {ordertype} dont allow a second price (price2)!"
+            )
+
         if leverage is not None:
             params["leverage"] = str(leverage)
         if oflags is not None:
@@ -183,6 +305,7 @@ class Trade(KrakenBaseSpotAPI):
             params["userref"] = userref
         if displayvol is not None:
             params["displayvol"] = str(displayvol)
+
         return self._request(method="POST", uri="/private/AddOrder", params=params)
 
     def create_order_batch(
@@ -204,7 +327,7 @@ class Trade(KrakenBaseSpotAPI):
         :type orders: List[dict]
         :param pair: Asset pair to place the orders for
         :type pair: str
-        :param deadline: (see the referenced Kraken documentaion for more information)
+        :param deadline: RFC3339 timestamp + {0..60} seconds that defines when the matching engine should reject the order.
         :type deadline: str, optional
         :param validate: Validate the orders without placing them. (default: ``False``)
         :type validate: bool, optional
@@ -259,62 +382,6 @@ class Trade(KrakenBaseSpotAPI):
         return self._request(
             method="POST", uri="/private/AddOrderBatch", params=params, do_json=True
         )
-
-    def get_open_positions(
-        self,
-        txid: Union[str, List[str], None] = None,
-        docalcs: bool = False,
-        consolidation: str = "market",
-    ) -> dict:
-        """
-        Get information about the open margin positions.
-
-        Requires the ``Query open orders & trades`` permission in the API key settings.
-
-        - https://docs.kraken.com/rest/#operation/getOpenPositions
-
-        :param txid: Filter by txid or list of txids or comma delimited list of txids as string
-        :type txid: str | List[str], None, optional
-        :param docalcs: Include profit and loss calculation into the result (default: ``False``)
-        :type docalcs: bool
-        :param consolidation: Consolidate positions by market/pair
-        :type consolidation: str
-        :return: List of open positions
-        :rtype: dict
-
-        .. code-block:: python
-            :linenos:
-            :caption: Spot User: Get the open margin positions
-
-            >>> from kraken.spot import User
-            >>> user = User(key="api-key", secret="secret-key")
-            >>> user.get_open_positions()
-            {
-                'TF5GVO-T7ZZ2-6NBKBI': {
-                    'ordertxid': 'O0SFFP-ABH4R-LOLNFG',
-                    'posstatus': 'open',
-                    'pair': 'XXBTZUSD',
-                    'time': 1618748097.12341,
-                    'type': 'buy',
-                    'ordertype': 'limit',
-                    'cost': '801243.52842',
-                    'fee': '208.44527',
-                    'vol': '8.82412861',
-                    'vol_closed': '0.20200000',
-                    'margin': '17234.123968',
-                    'value": '231463.1',
-                    'net": '+134186.9728',
-                    'terms": '0.0100% per 4 hours',
-                    'rollovertm': '1623672637',
-                    'misc': '',
-                    'oflags": ''
-                }, ...
-            }
-        """
-        params = {"docalcs": docalcs, "consolidation": consolidation}
-        if txid is not None:
-            params["txid"] = self._to_str_list(txid)
-        return self._request(method="POST", uri="/private/OpenPositions", params=params)
 
     def edit_order(
         self,

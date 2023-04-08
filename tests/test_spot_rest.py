@@ -331,7 +331,6 @@ class TradeTests(unittest.TestCase):
             key=os.getenv("SPOT_API_KEY"), secret=os.getenv("SPOT_SECRET_KEY")
         )
 
-    # @unittest.skip('Skipping Spot test_create_order endpoint')
     def test_create_order(self) -> None:
         try:
             assert isinstance(
@@ -377,7 +376,6 @@ class TradeTests(unittest.TestCase):
                     trigger="last",
                     pair="XBTUSD",
                     price="100",
-                    price2="120",
                     leverage="2",
                     reduce_only=True,
                     userref="12345",
@@ -392,20 +390,39 @@ class TradeTests(unittest.TestCase):
             pass
 
         try:
+            deadline = (
+                datetime.now(timezone.utc) + datetime.timedelta(seconds=20)
+            ).isoformat()
             self.__auth_trade.create_order(
                 ordertype="stop-loss-limit",
-                side="buy",
-                volume="1000",
-                trigger="index",
                 pair="XBTUSD",
-                price="100",
-                price2="80",
+                side="buy",
+                volume=0.001,
+                price=25000,
+                price2=27000,
+                validate=True,
+                trigger="last",
                 timeinforce="GTC",
+                leverage=4,
+                deadline=deadline,
+            )
+        except KrakenException.KrakenPermissionDeniedError:
+            pass
+
+    def test_failing_create_order(self) -> None:
+        # stop-loss-limit (and take-profit-limit) require a second price `price2`)
+        with pytest.raises(ValueError):
+            self.__auth_trade.create_order(
+                ordertype="stop-loss-limit",
+                pair="XBTUSD",
+                side="buy",
+                volume=0.001,
+                price=25000,
+                price2=27000,
+                timeinforce="GTC",
+                leverage=4,
                 validate=True,
             )
-        except ValueError:
-            # cannot use trigger and timeinforce together
-            pass
 
     def test_create_order_batch(self) -> None:
         assert isinstance(
@@ -441,7 +458,6 @@ class TradeTests(unittest.TestCase):
         )
 
     def test_edit_order(self) -> None:
-        print(str(datetime.now(timezone.utc).isoformat()))
         try:
             assert isinstance(
                 self.__auth_trade.edit_order(

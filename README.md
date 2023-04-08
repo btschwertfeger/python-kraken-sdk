@@ -374,7 +374,7 @@ if __name__ == '__main__':
 
 ```
 
-Note: Authenticated Futures websocket clients can also un/subscribe from/to public feeds.
+Note: Authenticated Futures websocket clients can also un-/subscribe from/to public feeds.
 
 ---
 

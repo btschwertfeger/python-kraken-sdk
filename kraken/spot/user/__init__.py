@@ -237,6 +237,8 @@ class User(KrakenBaseSpotAPI):
         :type start: int | None, optional
         :param end: Unix timestamp to define the last result to include
         :type end: int | None, optional
+        :param ofs: Offset pagination
+        :type ofs: int, optional
         :param closetime: Specify the exact time frame, one of: ``both``, ``open``, ``close`` (default: ``both``)
         :type closetime: str, optional
 
@@ -298,7 +300,7 @@ class User(KrakenBaseSpotAPI):
 
     def get_orders_info(
         self,
-        txid: Union[List[str], str],
+        txid: Union[List[str], str] = None,
         trades: bool = False,
         userref: Union[int, None] = None,
         consolidate_taker: bool = True,
@@ -312,7 +314,7 @@ class User(KrakenBaseSpotAPI):
         - https://docs.kraken.com/rest/#tag/User-Data/operation/getOrdersInfo
 
         :param txid: A transaction id of a specific order, a list of txids or a string containing a comma delimited list of txids
-        :type txid: str | List[str]
+        :type txid: str | List[str], optional
         :param trades: Include trades in the result or not (default: ``False``)
         :type trades: bool
         :param userref: Filter results by user reference id

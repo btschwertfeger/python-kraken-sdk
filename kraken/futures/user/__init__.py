@@ -228,7 +228,8 @@ class User(KrakenBaseFuturesAPI):
         to: Union[str, None] = None,
     ) -> dict:
         """
-        Get the historical events of the user's account.
+        Get the historical events of the user's account. This is not available in the
+        Kraken demo/sandbox environment.
 
         Requires at least the ``General API - Read Only`` permission in the API key settings.
 
@@ -311,7 +312,8 @@ class User(KrakenBaseFuturesAPI):
 
     def get_account_log_csv(self):
         """
-        Return the account log as csv, for example to export it.
+        Return the account log as csv, for example to export it. This is not available in the
+        Kraken demo/sandbox environment.
 
         Requires at least the ``General API - Read Only`` permission in the API key settings.
 
