@@ -93,6 +93,6 @@ jobs:
     name: Upload the current release to PyPI
     uses: ./.github/workflows/_pypi_publish.yml
     with:
-      REPOSITORY_URL: https://pypi.org/simple
+      REPOSITORY_URL: https://upload.pypi.org/legacy/
     secrets:
       API_TOKEN: ${{ secrets.PYPI_API_TOKEN }}

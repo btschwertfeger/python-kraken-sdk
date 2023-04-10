@@ -44,7 +44,7 @@ jobs:
       - name: Build the package
         run: python -m pip wheel -w dist --no-deps .
 
-      - name: Publish package distributions to Test PyPI
+      - name: Publish package distributions to PyPI (optional - testpypi)
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           password: ${{ secrets.API_TOKEN }}
