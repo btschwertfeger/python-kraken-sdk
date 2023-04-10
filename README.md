@@ -7,9 +7,9 @@
 [![Generic badge](https://img.shields.io/badge/python-3.7_|_3.8_|_3.9_|_3.10_|_3.11-blue.svg)](https://shields.io/)
 [![Downloads](https://static.pepy.tech/personalized-badge/python-kraken-sdk?period=total&units=abbreviation&left_color=grey&right_color=orange&left_text=downloads)](https://pepy.tech/project/python-kraken-sdk)
 
-[![CodeQL](https://github.com/btschwertfeger/Python-Kraken-SDK/actions/workflows/codeql.yml/badge.svg?branch=master)](https://github.com/btschwertfeger/Python-Kraken-SDK/actions/workflows/codeql.yml)
-[![CI/CD](https://github.com/btschwertfeger/Python-Kraken-SDK/actions/workflows/cicd.yml/badge.svg?branch=master)](https://github.com/btschwertfeger/Python-Kraken-SDK/actions/workflows/cicd.yml)
-![codecov](https://codecov.io/gh/btschwertfeger/Python-Kraken-SDK/branch/master/badge.svg)
+[![CodeQL](https://github.com/btschwertfeger/python-kraken-sdk/actions/workflows/codeql.yml/badge.svg?branch=master)](https://github.com/btschwertfeger/python-kraken-sdk/actions/workflows/codeql.yml)
+[![CI/CD](https://github.com/btschwertfeger/python-kraken-sdk/actions/workflows/cicd.yml/badge.svg?branch=master)](https://github.com/btschwertfeger/python-kraken-sdk/actions/workflows/cicd.yml)
+![codecov](https://codecov.io/gh/btschwertfeger/python-kraken-sdk/branch/master/badge.svg)
 
 ![release](https://shields.io/github/release-date/btschwertfeger/python-kraken-sdk)
 ![release](https://shields.io/github/v/release/btschwertfeger/python-kraken-sdk?display_name=tag)
@@ -18,9 +18,7 @@
 
 </div>
 
-**This is an unofficial collection of REST and websocket clients for Spot and Futures trading on the Kraken cryptocurrency exchange using Python.**
-
-**Payward Ltd. and Kraken are in no way associated with the authors of this module and documentation.**
+> ⚠️This is an unofficial collection of REST and websocket clients for Spot and Futures trading on the Kraken cryptocurrency exchange using Python. Payward Ltd. and Kraken are in no way associated with the authors of this module and documentation.
 
 ---
 

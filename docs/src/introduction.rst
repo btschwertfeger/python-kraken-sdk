@@ -32,7 +32,7 @@ from any liability regarding the use of this software.
 
 
 Features
------------
+--------
 
 Clients:
 
@@ -55,7 +55,7 @@ Important Notice
 .. _section-troubleshooting:
 
 Troubleshooting
-------------------
+---------------
 - Check if you downloaded and installed the **latest version** of the python-kraken-sdk.
 - Check the **permissions of your API keys** and the required permissions on the respective endpoints.
 - If you get some cloudflare or **rate limit errors**, please check your Kraken Tier level and maybe apply for a higher rank if required.
@@ -64,7 +64,7 @@ Troubleshooting
 
 
 References
--------------
+----------
 - https://docs.kraken.com/rest
 - https://docs.kraken.com/websockets
 - https://docs.futures.kraken.com

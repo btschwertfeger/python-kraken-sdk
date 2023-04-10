@@ -1,5 +1,5 @@
 The Base Clients
-==================
+================
 
 .. autoclass:: kraken.base_api.KrakenBaseSpotAPI
    :members:

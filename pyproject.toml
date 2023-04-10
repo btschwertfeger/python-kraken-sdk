@@ -2,9 +2,6 @@
 requires = ["setuptools>=45", "setuptools_scm[toml]>=6.2", "wheel"]
 build-backend = "setuptools.build_meta"
 
-[tool.setuptools-git-versioning]
-enabled = true
-
 [project]
 name = "python-kraken-sdk"
 dynamic = ["version"]
@@ -36,8 +33,9 @@ classifiers = [
 ]
 
 [project.urls]
-"Homepage" = "https://github.com/btschwertfeger/Python-Kraken-SDK"
-"Bug Tracker" = "https://github.com/btschwertfeger/Python-Kraken-SDK/issues"
+"Homepage" = "https://github.com/btschwertfeger/python-kraken-sdk"
+"Bug Tracker" = "https://github.com/btschwertfeger/python-kraken-sdk/issues"
+"Documentation" = "https://python-kraken-sdk.readthedocs.io/en/stable/"
 
 [tool.setuptools]
 include-package-data = false
@@ -61,5 +59,8 @@ junit_family = "xunit2"
 testpaths = ["tests"]
 
 [project.optional-dependencies]
-dev = ["pytest", "sphinx", "sphinx-rtd-theme"]
+dev = [
+  "pytest", "pytest-cov",
+  "sphinx", "sphinx-rtd-theme"
+]
 examples = ["matplotlib"]

@@ -4,8 +4,7 @@
 # Github: https://github.com/btschwertfeger
 
 VENV := venv
-GLOBAL_PYTHON := $(shell which python3)
-PYTHON := $(VENV)/bin/python
+PYTHON := $(VENV)/bin/python3
 
 .PHONY := build dev install test test_upload live_upload clean
 
