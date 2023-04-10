@@ -13,7 +13,7 @@ import sys
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
-project = "Python Kraken SDK"  #
+project = "python-kraken-sdk"
 copyright = "2023, Benjamin Thomas Schwertfeger"  # pylint: disable=redefined-builtin
 author = "Benjamin Thomas Schwertfeger"
 
