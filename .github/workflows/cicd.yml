@@ -22,6 +22,11 @@ jobs:
   Pre-Commit:
     uses: ./.github/workflows/_pre_commit.yml
 
+  ##  Discover vulnerabilities
+  ##
+  CodeQL:
+    uses: ./.github/workflows/_codeql.yml
+
   ##    Builds the package on multiple OS for multiple
   ##    Python versions
   ##
