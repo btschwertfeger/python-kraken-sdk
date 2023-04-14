@@ -39,8 +39,21 @@ doctest:
 	cd docs && make doctest
 
 ##		Pre-Commit
+##
 pre-commit:
 	@pre-commit run -a
+
+##		Generate the changelog
+##
+changelog:
+	docker run -it --rm \
+		-v "$(pwd)":/usr/local/src/pksdk \
+		githubchangeloggenerator/github-changelog-generator \
+		-u btschwertfeger \
+		-p python-kraken-sdk \
+		-t $(GHTOKEN)  \
+		--breaking-labels Breaking \
+		--enhancement-labels Feature
 
 ##		Clean the workspace
 ##
