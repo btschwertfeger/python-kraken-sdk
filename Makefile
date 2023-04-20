@@ -8,42 +8,49 @@ PYTHON := $(VENV)/bin/python3
 
 .PHONY := build dev install test test_upload live_upload clean
 
-##		Builds the python-kraken-sdk
+help:
+	@grep "^##" Makefile | sed -e "s/##//"
+
+## ======= B U I L D I N G =======
+## build		Builds the python-kraken-sdk
 ##
 build:
 	$(PYTHON) -m pip wheel -w dist --no-deps .
 
-##		Installs the package in edit mode
+## dev		Installs the package in edit mode
 ##
 dev:
 	$(PYTHON) -m pip install -e .[dev]
 
-##		Install the package
-##
-install:
-	$(PYTHON) -m pip install .
-
-##		Run the unittests
-##
-test:
-	$(PYTHON) -m pytest tests/
-
-##		Build the documentation
+## doc		Build the documentation
 ##
 doc:
 	cd docs && make html
 
-##		Run the documentation tests
+## ======= I N S T A L L A T I O N =======
+## install	Install the package
+##
+install:
+	$(PYTHON) -m pip install .
+
+## ======= T E S T I N G =======
+## test		Run the unittests
+##
+test:
+	$(PYTHON) -m pytest tests/
+
+## doctest	Run the documentation tests
 ##
 doctest:
 	cd docs && make doctest
 
-##		Pre-Commit
+## ======= M I S C E L A N I O U S =======
+## pre-commit	Run the pre-commit targets
 ##
 pre-commit:
 	@pre-commit run -a
 
-##		Generate the changelog
+## changelog	Generate the changelog
 ##
 changelog:
 	docker run -it --rm \
@@ -55,7 +62,7 @@ changelog:
 		--breaking-labels Breaking \
 		--enhancement-labels Feature
 
-##		Clean the workspace
+## clean		Clean the workspace
 ##
 clean:
 	rm -rf .pytest_cache build/ dist/ python_kraken_sdk.egg-info docs/_build
