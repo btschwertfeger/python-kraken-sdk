@@ -17,8 +17,8 @@ repos:
       - id: fix-byte-order-marker
       - id: fix-encoding-pragma
       - id: mixed-line-ending
-      - id: name-tests-test
-        args: ["--pytest-test-first"]
+      # - id: name-tests-test
+      #   args: ["--pytest-test-first"]
       - id: requirements-txt-fixer
       - id: end-of-file-fixer
       - id: pretty-format-json

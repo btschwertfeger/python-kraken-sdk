@@ -17,6 +17,21 @@ on:
       python-version:
         type: string
         required: true
+    secrets:
+      CODECOV_TOKEN:
+        required: true
+      SPOT_API_KEY:
+        required: true
+      SPOT_SECRET_KEY:
+        required: true
+      FUTURES_API_KEY:
+        required: true
+      FUTURES_SECRET_KEY:
+        required: true
+      FUTURES_SANDBOX_KEY:
+        required: true
+      FUTURES_SANDBOX_SECRET:
+        required: true
 
 jobs:
   CodeCov:
