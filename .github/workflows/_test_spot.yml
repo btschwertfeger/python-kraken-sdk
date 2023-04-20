@@ -19,6 +19,11 @@ on:
       python-version:
         type: string
         required: true
+    secrets:
+      SPOT_API_KEY:
+        required: true
+      SPOT_SECRET_KEY:
+        required: true
 
 jobs:
   Test-Spot:
@@ -48,7 +53,7 @@ jobs:
           SPOT_API_KEY: ${{ secrets.SPOT_API_KEY }}
           SPOT_SECRET_KEY: ${{ secrets.SPOT_SECRET_KEY }}
         run: |
-          pytest tests/test_spot_rest.py
+          pytest `grep "websocket" -L tests/spot/test_spot_*.py`
 
       ##    Unit tests of the Spot websocket client
       ##
@@ -57,4 +62,4 @@ jobs:
           SPOT_API_KEY: ${{ secrets.SPOT_API_KEY }}
           SPOT_SECRET_KEY: ${{ secrets.SPOT_SECRET_KEY }}
         run: |
-          pytest tests/test_spot_websocket.py
+          pytest tests/spot/test_spot_websocket.py

@@ -19,6 +19,15 @@ on:
       python-version:
         type: string
         required: true
+    secrets:
+      FUTURES_API_KEY:
+        required: true
+      FUTURES_SECRET_KEY:
+        required: true
+      FUTURES_SANDBOX_KEY:
+        required: true
+      FUTURES_SANDBOX_SECRET:
+        required: true
 
 jobs:
   Test-Futures:
@@ -50,7 +59,7 @@ jobs:
           FUTURES_SANDBOX_KEY: ${{ secrets.FUTURES_SANDBOX_KEY }}
           FUTURES_SANDBOX_SECRET: ${{ secrets.FUTURES_SANDBOX_SECRET }}
         run: |
-          pytest tests/test_futures_rest.py
+          pytest `grep "websocket" -L tests/futures/test_futures_*.py`
 
       ##    Unit tests of the Futures websocket client
       ##
@@ -61,4 +70,4 @@ jobs:
           FUTURES_SANDBOX_KEY: ${{ secrets.FUTURES_SANDBOX_KEY }}
           FUTURES_SANDBOX_SECRET: ${{ secrets.FUTURES_SANDBOX_SECRET }}
         run: |
-          pytest tests/test_futures_websocket.py
+          pytest tests/futures/test_futures_websocket.py
