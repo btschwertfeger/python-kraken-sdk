@@ -21,14 +21,14 @@ def test_get_deposit_address(spot_auth_funding) -> None:
     )
 
 
-def test_get_recend_deposits_status(spot_auth_funding) -> None:
-    assert isinstance(spot_auth_funding.get_recend_deposits_status(), list)
-    assert isinstance(spot_auth_funding.get_recend_deposits_status(asset="XLM"), list)
+def test_get_recent_deposits_status(spot_auth_funding) -> None:
+    assert isinstance(spot_auth_funding.get_recent_deposits_status(), list)
+    assert isinstance(spot_auth_funding.get_recent_deposits_status(asset="XLM"), list)
     assert isinstance(
-        spot_auth_funding.get_recend_deposits_status(method="Stellar XLM"), list
+        spot_auth_funding.get_recent_deposits_status(method="Stellar XLM"), list
     )
     assert isinstance(
-        spot_auth_funding.get_recend_deposits_status(asset="XLM", method="Stellar XLM"),
+        spot_auth_funding.get_recent_deposits_status(asset="XLM", method="Stellar XLM"),
         list,
     )
 
@@ -55,12 +55,12 @@ def test_get_withdrawal_info(spot_auth_funding) -> None:
         )
 
 
-@pytest.mark.skip(reason="Skipping Spot test_get_recend_withdraw_status endpoint")
-def test_get_recend_withdraw_status(spot_auth_funding) -> None:
-    assert isinstance(spot_auth_funding.get_recend_withdraw_status(), list)
-    assert isinstance(spot_auth_funding.get_recend_withdraw_status(asset="XLM"), list)
+@pytest.mark.skip(reason="Skipping Spot test_get_recent_withdraw_status endpoint")
+def test_get_recent_withdraw_status(spot_auth_funding) -> None:
+    assert isinstance(spot_auth_funding.get_recent_withdraw_status(), list)
+    assert isinstance(spot_auth_funding.get_recent_withdraw_status(asset="XLM"), list)
     assert isinstance(
-        spot_auth_funding.get_recend_withdraw_status(method="Stellar XLM"), list
+        spot_auth_funding.get_recent_withdraw_status(method="Stellar XLM"), list
     )
 
 

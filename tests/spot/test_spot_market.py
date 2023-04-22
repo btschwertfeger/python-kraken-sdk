@@ -63,8 +63,8 @@ def test_get_recent_trades(spot_auth_market) -> None:
     )
 
 
-def test_get_recend_spreads(spot_auth_market) -> None:
-    assert is_not_error(spot_auth_market.get_recend_spreads(pair="XBTUSD"))
+def test_get_recent_spreads(spot_auth_market) -> None:
+    assert is_not_error(spot_auth_market.get_recent_spreads(pair="XBTUSD"))
     assert is_not_error(
-        spot_auth_market.get_recend_spreads(pair="XBTUSD", since="1616663618")
+        spot_auth_market.get_recent_spreads(pair="XBTUSD", since="1616663618")
     )

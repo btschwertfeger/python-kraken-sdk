@@ -83,7 +83,7 @@ def market_examples() -> None:
     print(market.get_ohlc(pair="XBTUSD", interval=5))
     print(market.get_order_book(pair="XBTUSD", count=10))
     print(market.get_recent_trades(pair="XBTUSD"))
-    print(market.get_recend_spreads(pair="XBTUSD"))
+    print(market.get_recent_spreads(pair="XBTUSD"))
     print(market.get_system_status())
     time.sleep(2)
 
@@ -159,7 +159,7 @@ def funding_examples() -> None:
     funding = Funding(key=key, secret=secret)
     print(funding.get_deposit_methods(asset="DOT"))
     # print(funding.get_deposit_address(asset='DOT', method='Polkadot'))
-    # print(funding.get_recend_deposits_status(asset='DOT'))
+    # print(funding.get_recent_deposits_status(asset='DOT'))
     print(
         funding.get_withdrawal_info(asset="DOT", key="MyPolkadotWallet", amount="200")
     )
@@ -170,7 +170,7 @@ def funding_examples() -> None:
     if False:
         time.sleep(2)
         print(funding.withdraw_funds(asset="DOT", key="MyPolkadotWallet", amount=200))
-        print(funding.get_recend_withdraw_status(asset="DOT"))
+        print(funding.get_recent_withdraw_status(asset="DOT"))
         print(funding.cancel_widthdraw(asset="DOT", refid="12345"))
         print(
             funding.wallet_transfer(

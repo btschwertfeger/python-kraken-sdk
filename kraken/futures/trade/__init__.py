@@ -55,7 +55,7 @@ class Trade(KrakenBaseFuturesAPI):
 
         .. code-block:: python
             :linenos:
-            :caption: Futures Trade: Get the recend fills
+            :caption: Futures Trade: Get the recent fills
 
             >>> from kraken.futures import Trade
             >>> trade = Trade(key="api-key", secret="secret-key")

@@ -299,7 +299,7 @@ class Market(KrakenBaseSpotAPI):
 
         - https://docs.kraken.com/rest/#operation/getRecentTrades
 
-        :param pair: Pair to get the recend trades
+        :param pair: Pair to get the recent trades
         :type pair: str
         :param since: Filter trades since given timestamp (default: ``None``)
         :type since: str | int | None, optional
@@ -308,7 +308,7 @@ class Market(KrakenBaseSpotAPI):
 
         .. code-block:: python
             :linenos:
-            :caption: Spot Market: Get the recend trades
+            :caption: Spot Market: Get the recent trades
 
             >>> from kraken.spot import Market
             >>> Market().get_recent_trades(pair="XBTUSD")
@@ -329,7 +329,7 @@ class Market(KrakenBaseSpotAPI):
             method="GET", uri="/public/Trades", params=params, auth=False
         )
 
-    def get_recend_spreads(
+    def get_recent_spreads(
         self, pair: str, since: Union[str, int, None] = None
     ) -> dict:
         """
@@ -337,7 +337,7 @@ class Market(KrakenBaseSpotAPI):
 
         - https://docs.kraken.com/rest/#operation/getRecentSpreads
 
-        :param pair: Pair to get the recend spreads
+        :param pair: Pair to get the recent spreads
         :type pair: str
         :param since: Filter trades since given timestamp (default: ``None``)
         :type since: str | int | None, optional
@@ -346,10 +346,10 @@ class Market(KrakenBaseSpotAPI):
 
         .. code-block:: python
             :linenos:
-            :caption: Spot Market: Get the recend spreads
+            :caption: Spot Market: Get the recent spreads
 
             >>> from kraken.spot import Market
-            >>> Market().get_recend_spreads(pair="XBTUSD")
+            >>> Market().get_recent_spreads(pair="XBTUSD")
             {
                 "XXBTZUSD": [
                     [1680714601, "28015.00000", "28019.40000"],

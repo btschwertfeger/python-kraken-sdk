@@ -113,11 +113,11 @@ class Funding(KrakenBaseSpotAPI):
             params={"asset": asset, "method": method, "new": new},
         )
 
-    def get_recend_deposits_status(
+    def get_recent_deposits_status(
         self, asset: Union[str, None] = None, method: Union[str, None] = None
     ) -> List[dict]:
         """
-        Get information about the recend deposit status. The lookback period is 90 days and
+        Get information about the recent deposit status. The lookback period is 90 days and
         only the last 25 deposits will be returned.
 
         Requires the ``Query funds`` and ``Deposit funds`` API key permissions.
@@ -133,11 +133,11 @@ class Funding(KrakenBaseSpotAPI):
 
         .. code-block:: python
             :linenos:
-            :caption: Spot Funding: Get the recend deposit status
+            :caption: Spot Funding: Get the recent deposit status
 
             >>> from kraken.spot import Funding
             >>> funding = Funding(key="api-key", secret="secret-key")
-            >>> funding.get_recend_deposits_status()
+            >>> funding.get_recent_deposits_status()
             [
                 {
                     'method': 'Bank Frick (SEPA)',
@@ -267,11 +267,11 @@ class Funding(KrakenBaseSpotAPI):
             params={"asset": asset, "key": str(key), "amount": str(amount)},
         )
 
-    def get_recend_withdraw_status(
+    def get_recent_withdraw_status(
         self, asset: Union[str, None] = None, method: Union[str, None] = None
     ) -> List[dict]:
         """
-        Get information about the recend withdraw status, including withdraws of the
+        Get information about the recent withdraw status, including withdraws of the
         past 90 days but at max 500 results.
 
         - https://docs.kraken.com/rest/#operation/getStatusRecentWithdrawals
@@ -285,11 +285,11 @@ class Funding(KrakenBaseSpotAPI):
 
         .. code-block:: python
             :linenos:
-            :caption: Get the recend withdraw status
+            :caption: Get the recent withdraw status
 
             >>> from kraken.spot import Funding
             >>> funding = Funding(key="api-key", secret="secret-key")
-            >>> funding.get_recend_withdraw_status()
+            >>> funding.get_recent_withdraw_status()
             [
                 {
                     'method': 'Polkadot',
