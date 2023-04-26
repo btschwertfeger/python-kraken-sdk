@@ -5,6 +5,7 @@
 #
 
 """ Module that implements the Kraken Spot User client"""
+from decimal import Decimal
 from typing import List, Union
 
 from kraken.base_api import KrakenBaseSpotAPI
@@ -89,28 +90,28 @@ class User(KrakenBaseSpotAPI):
             }
         """
 
-        balance = float(0)
+        balance = Decimal(0)
         curr_opts = (currency, f"Z{currency}", f"X{currency}")
         for symbol, value in self.get_account_balance().items():
             if symbol in curr_opts:
-                balance = float(value)
+                balance = Decimal(value)
                 break
 
         available_balance = balance
         for order in self.get_open_orders()["open"].values():
             if currency in order["descr"]["pair"][0 : len(currency)]:
                 if order["descr"]["type"] == "sell":
-                    available_balance -= float(order["vol"])
+                    available_balance -= Decimal(order["vol"])
             elif currency in order["descr"]["pair"][-len(currency) :]:
                 if order["descr"]["type"] == "buy":
-                    available_balance -= float(order["vol"]) * float(
+                    available_balance -= Decimal(order["vol"]) * Decimal(
                         order["descr"]["price"]
                     )
 
         return {
             "currency": currency,
-            "balance": balance,
-            "available_balance": available_balance,
+            "balance": float(balance),
+            "available_balance": float(available_balance),
         }
 
     def get_trade_balance(self, asset: str = "ZUSD") -> dict:

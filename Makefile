@@ -3,10 +3,9 @@
 # Copyright (C) 2023 Benjamin Thomas Schwertfeger
 # Github: https://github.com/btschwertfeger
 
-VENV := venv
-PYTHON := $(VENV)/bin/python3
+PYTHON := python
 
-.PHONY := build dev install test test_upload live_upload clean
+.PHONY := build dev install test tests doc doctests clean
 
 help:
 	@grep "^##" Makefile | sed -e "s/##//"
@@ -20,7 +19,7 @@ build:
 ## dev		Installs the package in edit mode
 ##
 dev:
-	$(PYTHON) -m pip install -e .[dev]
+	$(PYTHON) -m pip install -e ".[dev]"
 
 ## doc		Build the documentation
 ##
@@ -37,7 +36,9 @@ install:
 ## test		Run the unittests
 ##
 test:
-	$(PYTHON) -m pytest tests/
+	$(PYTHON) -m pytest -v tests/
+
+tests: test
 
 ## doctest	Run the documentation tests
 ##
@@ -65,8 +66,14 @@ changelog:
 ## clean		Clean the workspace
 ##
 clean:
-	rm -rf .pytest_cache build/ dist/ python_kraken_sdk.egg-info docs/_build
-	rm -f .coverage kraken/_version.py *.log *.csv *.zip tests/*.zip tests/.csv
+	rm -rf .pytest_cache build/ dist/ \
+		python_kraken_sdk.egg-info \
+		docs/_build \
+		.vscode
+	rm -f .coverage coverage.xml \
+		kraken/_version.py \
+		*.log *.csv *.zip \
+		tests/*.zip tests/.csv
 
 	find tests -name "__pycache__" | xargs rm -rf
 	find kraken -name "__pycache__" | xargs rm -rf
