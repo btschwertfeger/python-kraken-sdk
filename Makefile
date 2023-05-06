@@ -16,6 +16,8 @@ help:
 build:
 	$(PYTHON) -m pip wheel -w dist --no-deps .
 
+rebuild: clean build
+
 ## dev		Installs the package in edit mode
 ##
 dev:

@@ -23,6 +23,7 @@ def test_get_balances(spot_auth_user):
 
 
 def test_get_trade_balance(spot_auth_user) -> None:
+    sleep(3)
     assert is_not_error(spot_auth_user.get_trade_balance())
     assert is_not_error(spot_auth_user.get_trade_balance(asset="EUR"))
 

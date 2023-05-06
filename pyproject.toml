@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 name = "python-kraken-sdk"
 dynamic = ["version"]
 authors = [
-  { name="Benjamin Thomas Schwertfeger", email="development@b-schwertfeger.de" },
+  { name="Benjamin Thomas Schwertfeger", email="contact@b-schwertfeger.de" },
 ]
 description = "Collection of REST and websocket clients to interact with the Kraken cryptocurrency exchange."
 readme = "README.md"
