@@ -809,7 +809,7 @@ class User(KrakenBaseFuturesAPI):
             ...    subaccountUid="778387bh61b-f990-4128-16a7-gasdsdghasd",
             ... )
             {
-               "tradingEnabled": false
+               "tradingEnabled": False
             }
         """
         return self._request(
