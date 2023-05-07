@@ -17,16 +17,19 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  ## ==========================================================================
   ##    Checks the code logic, style and more
   ##
   Pre-Commit:
     uses: ./.github/workflows/_pre_commit.yml
 
+  ## ==========================================================================
   ##  Discover vulnerabilities
   ##
   CodeQL:
     uses: ./.github/workflows/_codeql.yml
 
+  ## ==========================================================================
   ##    Builds the package on multiple OS for multiple
   ##    Python versions
   ##
@@ -36,12 +39,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest] # todo: windows-latest
+        os: [ubuntu-latest, macos-latest] #, windows-latest]
         python-version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
     with:
       os: ${{ matrix.os }}
       python-version: ${{ matrix.python-version }}
 
+  ## ==========================================================================
   ##    Build the documentation
   ##
   Build-Doc:
@@ -51,11 +55,27 @@ jobs:
       os: "ubuntu-latest"
       python-version: "3.11"
 
-  ##    Run the Spot tests for Python 3.7 until 3.11
+  ## ==========================================================================
+  ##          Run the Spot tests for Python 3.7 until 3.11
   ##
-  Test-Spot:
+  ##  (public endpoints)
+  ##
+  Test-Spot-Public:
     needs: [Build]
-    uses: ./.github/workflows/_test_spot.yml
+    uses: ./.github/workflows/_test_spot_public.yml
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
+        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
+    with:
+      os: ${{ matrix.os }}
+      python-version: ${{ matrix.python-version }}
+  ##
+  ##  (private endpoints)
+  Test-Spot-Private:
+    needs: [Build]
+    uses: ./.github/workflows/_test_spot_private.yml
     strategy:
       max-parallel: 1 # to avoid failing tests because of API Rate limits
       fail-fast: false
@@ -65,15 +85,28 @@ jobs:
     with:
       os: ${{ matrix.os }}
       python-version: ${{ matrix.python-version }}
-    secrets:
-      SPOT_API_KEY: ${{ secrets.SPOT_API_KEY }}
-      SPOT_SECRET_KEY: ${{ secrets.SPOT_SECRET_KEY }}
+    secrets: inherit
 
-  ##    Run the Futures tests for Python 3.7 until 3.11
+  ## ==========================================================================
+  ##        Run the Futures tests for Python 3.7 until 3.11
   ##
-  Test-Futures:
+  ##  (public endpoints)
+  Test-Futures-Public:
     needs: [Build]
-    uses: ./.github/workflows/_test_futures.yml
+    uses: ./.github/workflows/_test_futures_public.yml
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
+        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
+    with:
+      os: ${{ matrix.os }}
+      python-version: ${{ matrix.python-version }}
+  ##
+  ##  (private endpoints)
+  Test-Futures-Private:
+    needs: [Build]
+    uses: ./.github/workflows/_test_futures_private.yml
     strategy:
       max-parallel: 1 # to avoid failing tests because of API Rate limits
       fail-fast: false
@@ -83,18 +116,21 @@ jobs:
     with:
       os: ${{ matrix.os }}
       python-version: ${{ matrix.python-version }}
-    secrets:
-      FUTURES_API_KEY: ${{ secrets.FUTURES_API_KEY }}
-      FUTURES_SECRET_KEY: ${{ secrets.FUTURES_SECRET_KEY }}
-      FUTURES_SANDBOX_KEY: ${{ secrets.FUTURES_SANDBOX_KEY }}
-      FUTURES_SANDBOX_SECRET: ${{ secrets.FUTURES_SANDBOX_SECRET }}
+    secrets: inherit
 
+  ## ==========================================================================
   ##    Uploads the package to test.pypi.org on master if triggered by
   ##    a regular commit/push.
   ##
   UploadTestPyPI:
     if: success() && github.ref == 'refs/heads/master'
-    needs: [Test-Spot, Test-Futures]
+    needs:
+      [
+        Test-Spot-Public,
+        Test-Spot-Private,
+        Test-Futures-Public,
+        Test-Futures-Private,
+      ]
     name: Upload current development version to Test PyPI
     uses: ./.github/workflows/_pypi_publish.yml
     with:
@@ -102,19 +138,19 @@ jobs:
     secrets:
       API_TOKEN: ${{ secrets.TEST_PYPI_API_TOKEN }}
 
+  ## ==========================================================================
   ##    Generates and uploads the coverage statistics to codecov
   ##
   CodeCov:
-    needs: [Test-Spot, Test-Futures]
+    needs:
+      [
+        Test-Spot-Public,
+        Test-Spot-Private,
+        Test-Futures-Public,
+        Test-Futures-Private,
+      ]
     uses: ./.github/workflows/_codecov.yml
     with:
       os: "ubuntu-latest"
       python-version: "3.11"
-    secrets:
-      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-      SPOT_API_KEY: ${{ secrets.SPOT_API_KEY }}
-      SPOT_SECRET_KEY: ${{ secrets.SPOT_SECRET_KEY }}
-      FUTURES_API_KEY: ${{ secrets.FUTURES_API_KEY }}
-      FUTURES_SECRET_KEY: ${{ secrets.FUTURES_SECRET_KEY }}
-      FUTURES_SANDBOX_KEY: ${{ secrets.FUTURES_SANDBOX_KEY }}
-      FUTURES_SANDBOX_SECRET: ${{ secrets.FUTURES_SANDBOX_SECRET }}
+    secrets: inherit

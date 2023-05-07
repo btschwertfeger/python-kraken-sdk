@@ -14,17 +14,20 @@ on:
     types: [created]
 
 jobs:
+  ## ==========================================================================
   ##    Run pre-commit - just to make shure that the code is still
   ##    in the proper format
   ##
   Pre-Commit:
     uses: ./.github/workflows/_pre_commit.yml
 
+  ## ==========================================================================
   ##  Discover vulnerabilities
   ##
   CodeQL:
     uses: ./.github/workflows/_codeql.yml
 
+  ## ==========================================================================
   ##    Build the package - for all Python versions
   ##
   Build:
@@ -33,12 +36,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: ["macos-latest", "ubuntu-latest"]
+        os: [macos-latest, ubuntu-latest] #, windows-latest]
         python-version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
     with:
       os: ${{ matrix.os }}
       python-version: ${{ matrix.python-version }}
 
+  ## ==========================================================================
   ##    Build the documentation
   ##
   Build-Doc:
@@ -48,11 +52,27 @@ jobs:
       os: "ubuntu-latest"
       python-version: "3.11"
 
-  ##    Run the Spot tests for Python 3.7 until 3.11
+  ## ==========================================================================
+  ##          Run the Spot tests for Python 3.7 until 3.11
   ##
-  Test-Spot:
+  ##  (public endpoints)
+  ##
+  Test-Spot-Public:
     needs: [Build]
-    uses: ./.github/workflows/_test_spot.yml
+    uses: ./.github/workflows/_test_spot_public.yml
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
+        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
+    with:
+      os: ${{ matrix.os }}
+      python-version: ${{ matrix.python-version }}
+  ##
+  ##  (private endpoints)
+  Test-Spot-Private:
+    needs: [Build]
+    uses: ./.github/workflows/_test_spot_private.yml
     strategy:
       max-parallel: 1 # to avoid failing tests because of API Rate limits
       fail-fast: false
@@ -64,11 +84,26 @@ jobs:
       python-version: ${{ matrix.python-version }}
     secrets: inherit
 
-  ##    Run the Futures tests for Python 3.7 until 3.11
+  ## ==========================================================================
+  ##        Run the Futures tests for Python 3.7 until 3.11
   ##
-  Test-Futures:
+  ##  (public endpoints)
+  Test-Futures-Public:
     needs: [Build]
-    uses: ./.github/workflows/_test_futures.yml
+    uses: ./.github/workflows/_test_futures_public.yml
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
+        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
+    with:
+      os: ${{ matrix.os }}
+      python-version: ${{ matrix.python-version }}
+  ##
+  ##  (private endpoints)
+  Test-Futures-Private:
+    needs: [Build]
+    uses: ./.github/workflows/_test_futures_private.yml
     strategy:
       max-parallel: 1 # to avoid failing tests because of API Rate limits
       fail-fast: false
@@ -80,10 +115,17 @@ jobs:
       python-version: ${{ matrix.python-version }}
     secrets: inherit
 
+  ## ==========================================================================
   ##    Upload the python-kraken-sdk to Test PyPI
   ##
   UploadTestPyPI:
-    needs: [Test-Spot, Test-Futures]
+    needs:
+      [
+        Test-Spot-Public,
+        Test-Spot-Private,
+        Test-Futures-Public,
+        Test-Futures-Private,
+      ]
     name: Upload the current release to Test PyPI
     uses: ./.github/workflows/_pypi_publish.yml
     with:
@@ -91,10 +133,11 @@ jobs:
     secrets:
       API_TOKEN: ${{ secrets.TEST_PYPI_API_TOKEN }}
 
+  ## ==========================================================================
   ##    Upload the python-kraken-sdk to Production PyPI
   ##
   UploadPyPI:
-    needs: [Test]
+    needs: [UploadTestPyPI]
     name: Upload the current release to PyPI
     uses: ./.github/workflows/_pypi_publish.yml
     with:

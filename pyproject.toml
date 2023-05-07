@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 name = "python-kraken-sdk"
 dynamic = ["version"]
 authors = [
-  { name="Benjamin Thomas Schwertfeger", email="development@b-schwertfeger.de" },
+  { name="Benjamin Thomas Schwertfeger", email="contact@b-schwertfeger.de" },
 ]
 description = "Collection of REST and websocket clients to interact with the Kraken cryptocurrency exchange."
 readme = "README.md"
@@ -37,6 +37,14 @@ classifiers = [
 "Bug Tracker" = "https://github.com/btschwertfeger/python-kraken-sdk/issues"
 "Documentation" = "https://python-kraken-sdk.readthedocs.io/en/stable/"
 
+[project.optional-dependencies]
+dev = [
+  "pytest", "pytest-cov",
+  "sphinx", "sphinx-rtd-theme",
+  "black"
+]
+examples = ["matplotlib"]
+
 [tool.setuptools]
 include-package-data = false
 
@@ -58,9 +66,21 @@ local_scheme = "no-local-version"
 junit_family = "xunit2"
 testpaths = ["tests"]
 
-[project.optional-dependencies]
-dev = [
-  "pytest", "pytest-cov",
-  "sphinx", "sphinx-rtd-theme"
+[tool.pytest.ini_options]
+markers = [
+    "spot: mark a test that tests a Spot endpoint.",
+    "spot_auth: mark a test that tests a authenticaed Spot endpoint.",
+    "spot_trade: mark a test that tests a Spot Trade endpoint.",
+    "spot_user: mark a test that tests a Spot User endpoint.",
+    "spot_market: mark a test that tests a Spot Market endpoint.",
+    "spot_funding: mark a test that tests a Spot Funding endpoint.",
+    "spot_staking: mark a test that tests a Spot Staking endpoint.",
+    "spot_websocket: mark a test that tests a Spot Websocket endpoint.",
+    "futures: mark a test that tests a Futures endpoint.",
+    "futures_auth: mark a test that tests a authenticated Futures endpoint.",
+    "futures_market: mark a test that tests a Futures Market endpoint.",
+    "futures_user: mark a test that tests a Futures User endpoint.",
+    "futures_trade: mark a test that tests a Futures Trade endpoint.",
+    "futures_funding: mark a test that tests a Futures Funding endpoint.",
+    "futures_websocket: mark a test that tests a Futures Websocket endpoint.",
 ]
-examples = ["matplotlib"]

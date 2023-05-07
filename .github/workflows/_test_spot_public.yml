@@ -2,11 +2,13 @@
 # Copyright (C) 2023 Benjamin Thomas Schwertfeger
 # Github: https://github.com/btschwertfeger
 #
-# Template workflow to build the project for a specific os
-# and Python version.
+# Template workflow to test the public Spot endpoints
+# of the python-kraken-sdk.
+# Runs tests for:
+#   * Spot REST clients
 #
 
-name: Build
+name: Test Spot
 
 on:
   workflow_call:
@@ -19,7 +21,8 @@ on:
         required: true
 
 jobs:
-  Build:
+  Test-Spot:
+    name: Test ${{ inputs.os }} ${{ inputs.python-version }}
     runs-on: ${{ inputs.os }}
     steps:
       - name: Checkout repository
@@ -33,9 +36,13 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
+          python -m pip install pytest
 
-      - name: Build the package
-        run: python -m pip wheel --no-deps .
+      - name: Install package
+        run: python -m pip install .
 
-      - name: Install the package
-        run: python -m pip install python_kraken_sdk*.whl
+      ##    Unit tests of the public Spot REST clients and endpoints
+      ##
+      - name: Testing Spot REST endpoints
+        run: |
+          pytest -vv -m "spot and not spot_auth and not spot_websocket" tests

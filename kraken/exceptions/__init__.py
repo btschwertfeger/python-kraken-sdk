@@ -31,6 +31,7 @@ class KrakenException:
             "EAPI:Invalid key": self.KrakenInvalidAPIKeyError,
             "EAPI:Invalid signature": self.KrakenInvalidSignatureError,
             "EAPI:Invalid nonce": self.KrakenInvalidNonceError,
+            "EAPI:Rate limit exceeded": self.KrakenApiLimitExceededError,
             "EOrder:Invalid order": self.KrakenInvalidOrderError,
             "EOrder:Invalid price": self.KrakenInvalidPriceError,
             "EOrder:Cannot open position": self.KrakenCannotOpenPositionError,
@@ -56,6 +57,7 @@ class KrakenException:
             "EFunding:Unknown asset": self.KrakenUnknownAssetError,
             "EQuery:Unknown asset": self.KrakenUnknownAssetError,
             "EQuery:Unknown asset pair": self.KrakenUnknownAssetPairError,
+            # "WDatabase:No change": ,
             ##      Futures Trading Errors
             ##
             "authenticationError": self.KrakenAuthenticationError,

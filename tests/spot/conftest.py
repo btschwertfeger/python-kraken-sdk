@@ -12,8 +12,13 @@ from kraken.spot import Funding, Market, Staking, Trade, User
 
 
 @pytest.fixture
-def spot_auth_user() -> Market:
+def spot_auth_user() -> User:
     return User(key=os.getenv("SPOT_API_KEY"), secret=os.getenv("SPOT_SECRET_KEY"))
+
+
+@pytest.fixture
+def spot_market() -> Market:
+    return Market()
 
 
 @pytest.fixture

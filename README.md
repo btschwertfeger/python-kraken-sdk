@@ -9,7 +9,7 @@
 
 [![CodeQL](https://github.com/btschwertfeger/python-kraken-sdk/actions/workflows/codeql.yml/badge.svg?branch=master)](https://github.com/btschwertfeger/python-kraken-sdk/actions/workflows/codeql.yml)
 [![CI/CD](https://github.com/btschwertfeger/python-kraken-sdk/actions/workflows/cicd.yml/badge.svg?branch=master)](https://github.com/btschwertfeger/python-kraken-sdk/actions/workflows/cicd.yml)
-![codecov](https://codecov.io/gh/btschwertfeger/python-kraken-sdk/branch/master/badge.svg)
+[![codecov](https://codecov.io/gh/btschwertfeger/python-kraken-sdk/branch/master/badge.svg)](https://app.codecov.io/gh/btschwertfeger/python-kraken-sdk)
 
 ![release](https://shields.io/github/release-date/btschwertfeger/python-kraken-sdk)
 ![release](https://shields.io/github/v/release/btschwertfeger/python-kraken-sdk?display_name=tag)

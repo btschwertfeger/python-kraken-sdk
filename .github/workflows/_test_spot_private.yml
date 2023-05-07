@@ -2,7 +2,8 @@
 # Copyright (C) 2023 Benjamin Thomas Schwertfeger
 # Github: https://github.com/btschwertfeger
 #
-# Template workflow to test the Spot endpoints python-kraken-sdk.
+# Template workflow to test the private Spot endpoints
+# of the python-kraken-sdk.
 # Runs tests for:
 #   * Spot REST clients
 #   * Spot websocket client
@@ -46,14 +47,14 @@ jobs:
       - name: Install package
         run: python -m pip install .
 
-      ##    Unit tests of the Spot REST clients and endpoints
+      ##    Unit tests of the private Spot REST clients and endpoints
       ##
       - name: Testing Spot REST endpoints
         env:
           SPOT_API_KEY: ${{ secrets.SPOT_API_KEY }}
           SPOT_SECRET_KEY: ${{ secrets.SPOT_SECRET_KEY }}
         run: |
-          pytest `grep "websocket" -L tests/spot/test_spot_*.py`
+          pytest -vv -m "spot_auth and not spot_websocket" tests
 
       ##    Unit tests of the Spot websocket client
       ##
@@ -62,4 +63,4 @@ jobs:
           SPOT_API_KEY: ${{ secrets.SPOT_API_KEY }}
           SPOT_SECRET_KEY: ${{ secrets.SPOT_SECRET_KEY }}
         run: |
-          pytest tests/spot/test_spot_websocket.py
+          pytest -vv -m spot_websocket tests

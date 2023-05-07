@@ -12,19 +12,19 @@ from kraken.futures import Funding, Market, Trade, User
 
 
 @pytest.fixture
-def futures_market() -> None:
+def futures_market() -> Market:
     return Market()
 
 
 @pytest.fixture
-def futures_auth_market() -> None:
+def futures_auth_market() -> Market:
     return Market(
         key=os.getenv("FUTURES_API_KEY"), secret=os.getenv("FUTURES_SECRET_KEY")
     )
 
 
 @pytest.fixture
-def futures_demo_market() -> None:
+def futures_demo_market() -> Market:
     return Market(
         key=os.getenv("FUTURES_SANDBOX_KEY"),
         secret=os.getenv("FUTURES_SANDBOX_SECRET"),
@@ -33,19 +33,19 @@ def futures_demo_market() -> None:
 
 
 @pytest.fixture
-def futures_user() -> None:
+def futures_user() -> User:
     return User()
 
 
 @pytest.fixture
-def futures_auth_user() -> None:
+def futures_auth_user() -> User:
     return User(
         key=os.getenv("FUTURES_API_KEY"), secret=os.getenv("FUTURES_SECRET_KEY")
     )
 
 
 @pytest.fixture
-def futures_demo_user() -> None:
+def futures_demo_user() -> User:
     return User(
         key=os.getenv("FUTURES_SANDBOX_KEY"),
         secret=os.getenv("FUTURES_SANDBOX_SECRET"),
@@ -54,19 +54,19 @@ def futures_demo_user() -> None:
 
 
 @pytest.fixture
-def futures_trade() -> None:
+def futures_trade() -> Trade:
     return Trade()
 
 
 @pytest.fixture
-def futures_auth_trade() -> None:
+def futures_auth_trade() -> Trade:
     return Trade(
         key=os.getenv("FUTURES_API_KEY"), secret=os.getenv("FUTURES_SECRET_KEY")
     )
 
 
 @pytest.fixture
-def futures_demo_trade() -> None:
+def futures_demo_trade() -> Trade:
     return Trade(
         key=os.getenv("FUTURES_SANDBOX_KEY"),
         secret=os.getenv("FUTURES_SANDBOX_SECRET"),
@@ -75,19 +75,19 @@ def futures_demo_trade() -> None:
 
 
 @pytest.fixture
-def futures_funding() -> None:
+def futures_funding() -> Funding:
     return Funding()
 
 
 @pytest.fixture
-def futures_auth_funding() -> None:
+def futures_auth_funding() -> Funding:
     return Funding(
         key=os.getenv("FUTURES_API_KEY"), secret=os.getenv("FUTURES_SECRET_KEY")
     )
 
 
 @pytest.fixture
-def futures_demo_funding() -> None:
+def futures_demo_funding() -> Funding:
     return Funding(
         key=os.getenv("FUTURES_SANDBOX_KEY"),
         secret=os.getenv("FUTURES_SANDBOX_SECRET"),

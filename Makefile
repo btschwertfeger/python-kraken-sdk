@@ -5,7 +5,11 @@
 
 PYTHON := python
 
-.PHONY := build dev install test tests doc doctests clean
+PYTEST_OPTS := -vv --junit-xml=pytest.xml
+PYTEST_COV_OPTS := $(PYTEST_OPTS) --cov --cov-report=xml:coverage.xml --cov-report=term
+TEST_DIR := tests
+
+.PHONY := build dev install test tests coverage doc doctest clean changelog pre-commit
 
 help:
 	@grep "^##" Makefile | sed -e "s/##//"
@@ -15,6 +19,8 @@ help:
 ##
 build:
 	$(PYTHON) -m pip wheel -w dist --no-deps .
+
+rebuild: clean build
 
 ## dev		Installs the package in edit mode
 ##
@@ -36,9 +42,12 @@ install:
 ## test		Run the unittests
 ##
 test:
-	$(PYTHON) -m pytest -v tests/
+	$(PYTHON) -m pytest $(PYTEST_OPTS) $(TEST_DIR)
 
 tests: test
+
+coverage:
+	$(PYTHON) -m pytest $(PYTEST_COV_OPTS) $(TEST_DIR)
 
 ## doctest	Run the documentation tests
 ##
@@ -55,7 +64,7 @@ pre-commit:
 ##
 changelog:
 	docker run -it --rm \
-		-v "$(pwd)":/usr/local/src/pksdk \
+		-v $(PWD):/usr/local/src/your-app \
 		githubchangeloggenerator/github-changelog-generator \
 		-u btschwertfeger \
 		-p python-kraken-sdk \
@@ -70,7 +79,7 @@ clean:
 		python_kraken_sdk.egg-info \
 		docs/_build \
 		.vscode
-	rm -f .coverage coverage.xml \
+	rm -f .coverage coverage.xml pytest.xml \
 		kraken/_version.py \
 		*.log *.csv *.zip \
 		tests/*.zip tests/.csv
