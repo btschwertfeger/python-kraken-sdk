@@ -434,7 +434,7 @@ class KrakenBaseFuturesAPI:
                 self.__session.request(
                     method=method,
                     url=f"{self.url}{uri}",
-                    params=str.encode(query_string),
+                    params=str.encode(post_string),
                     headers=headers,
                     timeout=timeout,
                 ),

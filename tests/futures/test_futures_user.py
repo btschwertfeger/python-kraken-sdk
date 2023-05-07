@@ -146,3 +146,39 @@ def test_get_trigger_events(futures_auth_user) -> None:
     )
     assert isinstance(result, dict)
     assert "elements" in result.keys()
+
+
+@pytest.mark.futures
+@pytest.mark.futures_auth
+@pytest.mark.futures_user
+@pytest.mark.skip("Subaccount actions are only available for insitutional clients")
+def test_check_trading_enabled_on_subaccount(futures_auth_user) -> None:
+    """
+    Checks the ``check_trading_enabled_on_subaccount`` function.
+
+    Until now, subaccounts are only available for institutional clients, so this
+    execution raises an error. This test will work correctly (hopefully) when
+    Kraken eneables subaccounts for pro trader.
+    """
+    assert {
+        "tradingEnabled": False
+    } == futures_auth_user.check_trading_enabled_on_subaccount(
+        subaccountUid="778387bh61b-f990-4128-16a7-gasdsdghasd"
+    )
+
+
+@pytest.mark.futures
+@pytest.mark.futures_auth
+@pytest.mark.futures_user
+@pytest.mark.skip("Subaccount actions are only available for insitutional clients")
+def test_set_trading_on_subaccount(futures_auth_user) -> None:
+    """
+    Checks the ``set_trading_on_subaccount`` function.
+
+    Until now, subaccounts are only available for institutional clients, so this
+    execution raises an error. This test will work correctly (hopefully) when
+    Kraken eneables subaccounts for pro trader.
+    """
+    assert {"tradingEnabled": True} == futures_auth_user.set_trading_on_subaccount(
+        subaccountUid="778387bh61b-f990-4128-16a7-gasdsdghasd", trading_enabled=True
+    )

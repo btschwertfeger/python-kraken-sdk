@@ -608,10 +608,11 @@ class Market(KrakenBaseFuturesAPI):
         params = {"symbol": symbol}
         if maxLeverage is not None:
             params["maxLeverage"] = maxLeverage
+
         return self._request(
             method="PUT",
             uri="/derivatives/api/v3/leveragepreferences",
-            query_params=params,
+            post_params=params,
             auth=True,
         )
 
@@ -669,7 +670,7 @@ class Market(KrakenBaseFuturesAPI):
         return self._request(
             method="PUT",
             uri="/derivatives/api/v3/pnlpreferences",
-            query_params={"symbol": symbol, "pnlPreference": pnlPreference},
+            post_params={"symbol": symbol, "pnlPreference": pnlPreference},
             auth=True,
         )
 

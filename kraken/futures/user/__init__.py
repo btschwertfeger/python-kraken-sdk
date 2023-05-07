@@ -784,3 +784,73 @@ class User(KrakenBaseFuturesAPI):
         return self._request(
             method="GET", uri="/derivatives/api/v3/openorders", auth=True
         )
+
+    def check_trading_enabled_on_subaccount(self, subaccountUid: str) -> dict:
+        """
+        Checks if trading is enabled or disabled on the specified subaccount.
+
+        Requires the ``General API - Full Access`` permission in the API key settings.
+
+        This endpoint is only available for institutional clients and is not tested so far and
+        results in ``KrakenAuthenticationError``.
+
+        - https://docs.futures.kraken.com/#http-api-trading-v3-api-other-check-if-a-subaccount-has-trading-enabled-or-disabled
+
+        :return: The open futures positions/orders
+        :rtype: dict
+
+        .. code-block:: python
+            :linenos:
+            :caption: Futures Trade: Check if trading is enabled on a subaccount
+
+            >>> from kraken.futures import Trade
+            >>> trade = Trade(key="api-key", secret="secret-key")
+            >>> trade.set_trading_on_subaccount(
+            ...    subaccountUid="778387bh61b-f990-4128-16a7-gasdsdghasd",
+            ... )
+            {
+               "tradingEnabled": false
+            }
+        """
+        return self._request(
+            method="GET",
+            uri=f"/derivatives/api/v3/subaccount/{subaccountUid}/trading-enabled",
+            auth=True,
+        )
+
+    def set_trading_on_subaccount(
+        self, subaccountUid: str, trading_enabled: bool
+    ) -> dict:
+        """
+        Enable or disable trading on a subaccount.
+
+        Requires the ``General API - Full Access`` permission in the API key settings.
+
+        This endpoint is only available for institutional clients and is not tested so far and
+        always results in ``INTERNAL_SERVER_ERROR``.
+
+        - https://docs.futures.kraken.com/#http-api-trading-v3-api-other-enable-or-disable-trading-on-a-subaccount
+
+        :return: The open futures positions/orders
+        :rtype: dict
+
+        .. code-block:: python
+            :linenos:
+            :caption: Futures Trade: Dis-/Enable trading on a subaccount
+
+            >>> from kraken.futures import Trade
+            >>> trade = Trade(key="api-key", secret="secret-key")
+            >>> trade.set_trading_on_subaccount(
+            ...    subaccountUid="778387bh61b-f990-4128-16a7-gasdsdghasd",
+            ...    trading_enabled=True
+            ... )
+            {
+                "tradingEnabled": True
+            }
+        """
+        return self._request(
+            method="PUT",
+            uri=f"/derivatives/api/v3/subaccount/{subaccountUid}/trading-enabled",
+            post_params={"tradingEnabled": trading_enabled},
+            auth=True,
+        )
