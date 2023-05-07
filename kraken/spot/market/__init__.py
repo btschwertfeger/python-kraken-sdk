@@ -31,6 +31,14 @@ class Market(KrakenBaseSpotAPI):
         >>> from kraken.spot import Market
         >>> market = Market() # unauthenticated
         >>> auth_market = Market(key="api-key", secret="secret-key") # authenticated
+
+    .. code-block:: python
+        :linenos:
+        :caption: Spot Market: Create the market client as context manager
+
+        >>> from kraken.spot import Market
+        >>> with Market() as market:
+        ...     print(market.get_assets())
     """
 
     def get_assets(

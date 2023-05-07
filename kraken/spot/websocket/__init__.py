@@ -344,6 +344,41 @@ class KrakenSpotWSClient(SpotWsClientCl):
                 asyncio.run(main())
             except KeyboardInterrupt:
                 loop.close()
+
+    .. code-block:: python
+        :linenos:
+        :caption: HowTo: Use the websocket client as context manager
+
+        import asyncio
+        from kraken.spot import KrakenSpotWSClient
+
+        async def on_message(msg):
+            print(msg)
+
+        async def main() -> None:
+            async with KrakenSpotWSClient(
+                key="api-key",
+                secret="secret-key",
+                callback=on_message
+            ) as session:
+                await session.subscribe(
+                    subscription={"name": "ticker"},
+                    pair=["XBT/USD"]
+                )
+
+            while True:
+                await asyncio.sleep(6)
+
+
+        if __name__ == "__main__":
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
+            try:
+                asyncio.run(main())
+            except KeyboardInterrupt:
+                pass
+            finally:
+                loop.close()
     """
 
     PROD_ENV_URL = "ws.kraken.com"
@@ -570,3 +605,9 @@ class KrakenSpotWSClient(SpotWsClientCl):
         if self._priv_conn is not None:
             return self._priv_conn.subscriptions
         raise ConnectionError("Private connection does not exist!")
+
+    async def __aenter__(self):
+        return self
+
+    async def __aexit__(self, *exc):
+        pass

@@ -308,6 +308,12 @@ class KrakenBaseSpotAPI:
             return ",".join(value)
         raise ValueError("a must be type of str or list of strings")
 
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *exc) -> None:
+        pass
+
 
 class KrakenBaseFuturesAPI:
     """
@@ -532,3 +538,9 @@ class KrakenBaseFuturesAPI:
         raise Exception(
             f"{response.status_code} - {response.text}"
         )  # pylint: disable=W0719
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *exc) -> None:
+        pass

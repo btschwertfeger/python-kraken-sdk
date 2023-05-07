@@ -33,6 +33,14 @@ class Trade(KrakenBaseFuturesAPI):
         >>> from kraken.futures import Trade
         >>> trade = Trade() # unauthenticated
         >>> trade = Trade(key="api-key", secret="secret-key") # authenticated
+
+    .. code-block:: python
+        :linenos:
+        :caption: Futures Trade: Create the trade client as context manager
+
+        >>> from kraken.futures import Trade
+        >>> with Trade(ke="api-key", secret="secret-key") as trade:
+        ...     print(trade.get_fills())
     """
 
     def __init__(

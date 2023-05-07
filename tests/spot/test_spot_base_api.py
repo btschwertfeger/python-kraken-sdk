@@ -6,10 +6,15 @@
 
 """Module that checks the general Spot Base API class."""
 
+import os
+
 import pytest
 
 from kraken.base_api import KrakenBaseSpotAPI
 from kraken.exceptions import KrakenException
+from kraken.spot import Funding, Market, Staking, Trade, User
+
+from .helper import is_not_error
 
 
 @pytest.mark.spot
@@ -31,3 +36,28 @@ def test_KrakenBaseSpotAPI_without_exception() -> None:
     )._request(method="POST", uri="/private/AddOrder", auth=True).json() == {
         "error": ["EAPI:Invalid key"]
     }
+
+
+@pytest.mark.spot
+@pytest.mark.spot_auth
+def test_spot_rest_contextmanager(
+    spot_market, spot_auth_funding, spot_auth_trade, spot_auth_user, spot_auth_staking
+) -> None:
+    """
+    Checks if the clients can be used as context manager.
+    """
+    with spot_market as market:
+        assert is_not_error(market.get_assets())
+
+    with spot_auth_funding as funding:
+        isinstance(funding.get_deposit_methods(asset="XBT"), list)
+
+    with spot_auth_user as user:
+        assert is_not_error(user.get_account_balance())
+
+    with spot_auth_staking as staking:
+        assert isinstance(staking.get_pending_staking_transactions(), list)
+
+    with spot_auth_trade as trade:
+        with pytest.raises(KrakenException.KrakenPermissionDeniedError):
+            trade.cancel_order(txid="OB6JJR-7NZ5P-N5SKCB")

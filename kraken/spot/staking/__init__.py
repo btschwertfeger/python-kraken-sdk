@@ -31,6 +31,14 @@ class Staking(KrakenBaseSpotAPI):
         >>> from kraken.spot import Staking
         >>> staking = Staking() # unauthenticated
         >>> auth_staking = Staking(key="api-key", secret="secret-key") # authenticated
+
+    .. code-block:: python
+        :linenos:
+        :caption: Spot Staking: Create the staking client as context manager
+
+        >>> from kraken.spot import Staking
+        >>> with Staking(key="api-key", secret="secret-key") as staking:
+        ...     print(staking.stake_asset(asset="XLM", amount=200, method="Lumen Staked"))
     """
 
     def stake_asset(

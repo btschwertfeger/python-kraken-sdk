@@ -31,8 +31,16 @@ class Market(KrakenBaseFuturesAPI):
         :caption: Futures Market: Create the market client
 
         >>> from kraken.futures import Market
-        >>> marker = Market() # unauthenticated
-        >>> marker = Market(key="api-key", secret="secret-key") # authenticated
+        >>> market = Market() # unauthenticated
+        >>> market = Market(key="api-key", secret="secret-key") # authenticated
+
+    .. code-block:: python
+        :linenos:
+        :caption: Futures Market: Create the market client as context manager
+
+        >>> from kraken.futures import Market
+        >>> with Market() as market:
+        ...     print(market.get_tick_types())
     """
 
     def __init__(

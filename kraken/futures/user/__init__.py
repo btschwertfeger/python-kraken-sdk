@@ -33,6 +33,14 @@ class User(KrakenBaseFuturesAPI):
         >>> from kraken.futures import User
         >>> user = User() # unauthenticated
         >>> user = User(key="api-key", secret="secret-key") # authenticated
+
+    .. code-block:: python
+        :linenos:
+        :caption: Futures User: Create the user client as context manager
+
+        >>> from kraken.futures import User
+        >>> with User(key="api-key", secret="secret-key") as user:
+        ...     print(user.get_wallets())
     """
 
     def __init__(
@@ -366,7 +374,7 @@ class User(KrakenBaseFuturesAPI):
         :type sort: str | None, optional
         :param tradeable: The asset to filter for
         :type tradeable: str | None, optional
-        :param auth: If the request is accessing a private endpoint (default_ ``True``)
+        :param auth: If the request is accessing a private endpoint (default: ``True``)
         :type auth: bool
         """
         params = {}

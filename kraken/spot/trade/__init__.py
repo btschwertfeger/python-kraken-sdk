@@ -30,6 +30,15 @@ class Trade(KrakenBaseSpotAPI):
         >>> from kraken.spot import Trade
         >>> trade = Trade() # unauthenticated
         >>> auth_trade = Trade(key="api-key", secret="secret-key") # authenticated
+
+    .. code-block:: python
+        :linenos:
+        :caption: Spot Trade: Create the trade client as context manager
+
+        >>> from kraken.spot import Trade
+        >>> with Trade(key="api-key", secret="secret-key") as trade:
+        ...     print(trade.create_order(...))
+
     """
 
     def create_order(
