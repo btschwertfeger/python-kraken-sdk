@@ -190,11 +190,10 @@ def funding_examples() -> None:
 
 
 def main() -> None:
-    """Main"""
-    # user_examples()
+    user_examples()
     market_examples()
-    # trade_examples()
-    # funding_examples()
+    trade_examples()
+    funding_examples()
 
 
 if __name__ == "__main__":
