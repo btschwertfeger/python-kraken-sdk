@@ -10,6 +10,12 @@
 - Add API rate limit exception; extend test doc strings [\#79](https://github.com/btschwertfeger/python-kraken-sdk/pull/79) ([btschwertfeger](https://github.com/btschwertfeger))
 - Fix bug/typo: "recend" -\> recent throughout kraken.spot [\#76](https://github.com/btschwertfeger/python-kraken-sdk/pull/76) ([jcr-jeff](https://github.com/jcr-jeff))
 
+**Implemented enhancements:**
+
+- Enable trading on Futures subaccount [\#72](https://github.com/btschwertfeger/python-kraken-sdk/issues/72)
+- Check if trading is enabled for Futures subaccount [\#71](https://github.com/btschwertfeger/python-kraken-sdk/issues/71)
+- Add Futures user endpoints: `check_trading_enabled_on_subaccount` and `set_trading_on_subaccount` [\#80](https://github.com/btschwertfeger/python-kraken-sdk/pull/80) ([btschwertfeger](https://github.com/btschwertfeger))
+
 **Fixed bugs:**
 
 - Release workflow skips the PyPI publish [\#67](https://github.com/btschwertfeger/python-kraken-sdk/issues/67)

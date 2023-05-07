@@ -13,7 +13,7 @@ import urllib.parse
 from typing import List, Union
 from uuid import uuid1
 
-from requests import Response, Session
+import requests
 
 from kraken.exceptions import KrakenException
 
@@ -113,7 +113,12 @@ class KrakenBaseSpotAPI:
     API_V = "/0"
 
     def __init__(
-        self, key: str = "", secret: str = "", url: str = "", sandbox: bool = False
+        self,
+        key: str = "",
+        secret: str = "",
+        url: str = "",
+        sandbox: bool = False,
+        use_custom_exceptions: bool = True,
     ):
         if sandbox:
             raise ValueError("Sandbox not available for Kraken Spot trading.")
@@ -122,11 +127,13 @@ class KrakenBaseSpotAPI:
         else:
             self.url = self.URL
 
-        self.__nonce = 0
-        self.__key = key
-        self.__secret = secret
-        self.__err_handler = KrakenErrorHandler()
-        self.__session = Session()
+        self.__nonce: int = 0
+        self.__key: str = key
+        self.__secret: str = secret
+        self.__use_custom_exceptions: bool = use_custom_exceptions
+
+        self.__err_handler: KrakenErrorHandler = KrakenErrorHandler()
+        self.__session: requests.Session = requests.Session()
         self.__session.headers.update({"User-Agent": "python-kraken-sdk"})
 
     def _request(
@@ -163,16 +170,17 @@ class KrakenBaseSpotAPI:
         :rtype: dict
         """
         if params is None:
-            params = {}
-        method = method.upper()
-        data_json = ""
+            params: dict = {}
+
+        method: str = method.upper()
+        data_json: str = ""
         if method in ("GET", "DELETE"):
             if params:
-                strl = [f"{key}={params[key]}" for key in sorted(params)]
-                data_json = "&".join(strl)
+                strl: List[str] = [f"{key}={params[key]}" for key in sorted(params)]
+                data_json: str = "&".join(strl)
                 uri += f"?{data_json}".replace(" ", "%20")
 
-        headers = {}
+        headers: dict = {}
         if auth:
             if (
                 not self.__key
@@ -193,7 +201,7 @@ class KrakenBaseSpotAPI:
                 }
             )
 
-        url = f"{self.url}{self.API_V}{uri}"
+        url: str = f"{self.url}{self.API_V}{uri}"
         if method in ("GET", "DELETE"):
             return self.__check_response_data(
                 self.__session.request(
@@ -245,8 +253,8 @@ class KrakenBaseSpotAPI:
         ).decode()
 
     def __check_response_data(
-        self, response: Response, return_raw: bool = False
-    ) -> Union[dict, Response]:
+        self, response: requests.Response, return_raw: bool = False
+    ) -> Union[dict, requests.Response]:
         """
         Checkes the response, handles the error (if exists) and returns the response data.
 
@@ -257,6 +265,9 @@ class KrakenBaseSpotAPI:
         :return: The reponse in raw or parsed to dict
         :rtype: Union[dict, requests.Response]
         """
+        if not self.__use_custom_exceptions:
+            return response
+
         if response.status_code in ("200", 200):
             if return_raw:
                 return response
@@ -321,22 +332,28 @@ class KrakenBaseFuturesAPI:
     SANDBOX_URL = "https://demo-futures.kraken.com"
 
     def __init__(
-        self, key: str = "", secret: str = "", url: str = "", sandbox: bool = False
+        self,
+        key: str = "",
+        secret: str = "",
+        url: str = "",
+        sandbox: bool = False,
+        use_custom_exceptions: bool = True,
     ):
-        self.sandbox = sandbox
+        self.sandbox: bool = sandbox
         if url:
-            self.url = url
+            self.url: str = url
         elif self.sandbox:
-            self.url = self.SANDBOX_URL
+            self.url: str = self.SANDBOX_URL
         else:
-            self.url = self.URL
+            self.url: str = self.URL
 
-        self.__key = key
-        self.__secret = secret
-        self.__nonce = 0
+        self.__key: str = key
+        self.__secret: str = secret
+        self.__nonce: int = 0
+        self.__use_custom_exceptions: bool = use_custom_exceptions
 
-        self.__err_handler = KrakenErrorHandler()
-        self.__session = Session()
+        self.__err_handler: KrakenErrorHandler = KrakenErrorHandler()
+        self.__session: requests.Session = requests.Session()
         self.__session.headers.update({"User-Agent": "python-kraken-sdk"})
 
     def _request(
@@ -368,33 +385,33 @@ class KrakenBaseFuturesAPI:
         :param do_json: If the ``post_params`` must be "jsonified" - in case of nested dict style
         :type do_json: bool
         :param return_raw: If the response should be returned without parsing.
-         This is used for example when requesting an export of the trade history as .zip archive.
+            This is used for example when requesting an export of the trade history as .zip archive.
         :type return_raw: bool
         :raise kraken.exceptions.KrakenException.*: If the response contains errors
         :return: The response
         :rtype: dict
         """
-        method = method.upper()
+        method: str = method.upper()
 
         post_string: str = ""
         if post_params is not None:
             strl: List[str] = [
                 f"{key}={post_params[key]}" for key in sorted(post_params)
             ]
-            post_string = "&".join(strl)
+            post_string: str = "&".join(strl)
         else:
-            post_params = {}
+            post_params: dict = {}
 
         query_string: str = ""
         if query_params is not None:
             strl: List[str] = [
                 f"{key}={query_params[key]}" for key in sorted(query_params)
             ]
-            query_string = "&".join(strl).replace(" ", "%20")
+            query_string: str = "&".join(strl).replace(" ", "%20")
         else:
-            query_params = {}
+            query_params: dict = {}
 
-        headers = {}
+        headers: dict = {}
         if auth:
             if (
                 not self.__key
@@ -403,8 +420,8 @@ class KrakenBaseFuturesAPI:
                 or self.__secret == ""
             ):
                 raise ValueError("Missing credentials")
-            self.__nonce = (self.__nonce + 1) % 1
-            nonce = str(int(time.time() * 1000)) + str(self.__nonce).zfill(4)
+            self.__nonce: int = (self.__nonce + 1) % 1
+            nonce: str = str(int(time.time() * 1000)) + str(self.__nonce).zfill(4)
             headers.update(
                 {
                     "Content-Type": "application/x-www-form-urlencoded; charset=utf-8",
@@ -480,8 +497,8 @@ class KrakenBaseFuturesAPI:
         )
 
     def __check_response_data(
-        self, response: Response, return_raw: bool = False
-    ) -> dict:
+        self, response: requests.Response, return_raw: bool = False
+    ) -> Union[dict, requests.Response]:
         """
         Checkes the response, handles the error (if exists) and returns the response data.
 
@@ -491,13 +508,16 @@ class KrakenBaseFuturesAPI:
         :type return_raw: dict
         :raise kraken.exceptions.KrakenException.*: If the response contains the error key
         :return: The signed string
-        :rtype: str
+        :rtype: Union[dict, Response]
         """
+        if not self.__use_custom_exceptions:
+            return response
+
         if response.status_code in ("200", 200):
             if return_raw:
                 return response
             try:
-                data = response.json()
+                data: dict = response.json()
             except ValueError as exc:
                 raise ValueError(response.content) from exc
 

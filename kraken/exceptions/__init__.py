@@ -62,6 +62,7 @@ class KrakenException:
             ##
             "authenticationError": self.KrakenAuthenticationError,
             "insufficientAvailableFunds": self.KrakenInsufficientAvailableFundsError,
+            "requiredArgumentMissing": self.KrakenRequiredArgumentMissingError,
             "apiLimitExceeded": self.KrakenApiLimitExceededError,
             "invalidUnit": self.KrakenInvalidUnitError,
             "Unavailable": self.KrakenUnavailableError,
@@ -103,6 +104,10 @@ class KrakenException:
     @docstring_message
     class KrakenInvalidArgumentsError(Exception):
         """The request payload is malformed, incorrect or ambiguous."""
+
+    @docstring_message
+    class KrakenRequiredArgumentMissingError(Exception):
+        """The request is missing a required argument."""
 
     @docstring_message
     class KrakenInvalidArgumentsIndexUnavailableError(Exception):

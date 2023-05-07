@@ -79,10 +79,12 @@ clean:
 		python_kraken_sdk.egg-info \
 		docs/_build \
 		.vscode
+
 	rm -f .coverage coverage.xml pytest.xml \
 		kraken/_version.py \
 		*.log *.csv *.zip \
-		tests/*.zip tests/.csv
+		tests/*.zip tests/.csv \
+		python_kraken_sdk-*.whl
 
 	find tests -name "__pycache__" | xargs rm -rf
 	find kraken -name "__pycache__" | xargs rm -rf
