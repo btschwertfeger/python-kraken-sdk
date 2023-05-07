@@ -5,66 +5,120 @@
 #
 from time import sleep
 
+import pytest
+
 from .helper import is_not_error
 
 
-def test_get_system_status(spot_auth_market) -> None:
-    assert is_not_error(spot_auth_market.get_system_status())
+@pytest.mark.spot
+@pytest.mark.spot_market
+def test_get_system_status(spot_market) -> None:
+    """
+    Checks the ``get_system_status`` endpoint by performing a
+    valid request and validating that the response does not
+    contain the error key.
+    """
+    assert is_not_error(spot_market.get_system_status())
 
 
-def test_get_assets(spot_auth_market) -> None:
-    for params in [
+@pytest.mark.spot
+@pytest.mark.spot_market
+def test_get_assets(spot_market) -> None:
+    """
+    Checks the ``get_assets`` endpoint by performing multiple
+    requests with different paramaters and
+    validating that the response does not contain the error key.
+    """
+    for params in (
         {},
         {"assets": "USD"},
         {"assets": ["USD"]},
         {"assets": ["XBT", "USD"]},
         {"assets": ["XBT", "USD"], "aclass": "currency"},
-    ]:
-        assert is_not_error(spot_auth_market.get_assets(**params))
+    ):
+        assert is_not_error(spot_market.get_assets(**params))
         sleep(1.5)
 
 
-def test_get_tradable_asset_pair(spot_auth_market) -> None:
-    assert is_not_error(spot_auth_market.get_tradable_asset_pair(pair="BTCUSD"))
-    assert is_not_error(
-        spot_auth_market.get_tradable_asset_pair(pair=["DOTEUR", "BTCUSD"])
-    )
+@pytest.mark.spot
+@pytest.mark.spot_market
+def test_get_tradable_asset_pair(spot_market) -> None:
+    """
+    Checks the ``get_tradable_asset_pair`` endpoint by performing multiple
+    requests with different paramaters and validating that the response
+    does not contain the error key.
+    """
+    assert is_not_error(spot_market.get_tradable_asset_pair(pair="BTCUSD"))
+    assert is_not_error(spot_market.get_tradable_asset_pair(pair=["DOTEUR", "BTCUSD"]))
     for i in ("info", "leverage", "fees", "margin"):
-        assert is_not_error(
-            spot_auth_market.get_tradable_asset_pair(pair="DOTEUR", info=i)
-        )
-        break
+        assert is_not_error(spot_market.get_tradable_asset_pair(pair="DOTEUR", info=i))
+        break  # there is no reason for requesting more - but this loop is just for info
 
 
-def test_get_ticker(spot_auth_market) -> None:
-    assert is_not_error(spot_auth_market.get_ticker())
-    assert is_not_error(spot_auth_market.get_ticker(pair="XBTUSD"))
-    assert is_not_error(spot_auth_market.get_ticker(pair=["DOTUSD", "XBTUSD"]))
+@pytest.mark.spot
+@pytest.mark.spot_market
+def test_get_ticker(spot_market) -> None:
+    """
+    Checks the ``get_ticker`` endpoint by performing multiple
+    requests with different paramaters and validating that the response
+    does not contain the error key.
+    """
+    assert is_not_error(spot_market.get_ticker())
+    assert is_not_error(spot_market.get_ticker(pair="XBTUSD"))
+    assert is_not_error(spot_market.get_ticker(pair=["DOTUSD", "XBTUSD"]))
 
 
-def test_get_ohlc(spot_auth_market) -> None:
-    assert is_not_error(spot_auth_market.get_ohlc(pair="XBTUSD"))
+@pytest.mark.spot
+@pytest.mark.spot_market
+def test_get_ohlc(spot_market) -> None:
+    """
+    Checks the ``get_ohlc`` endpoint by performing multiple
+    requests with different paramaters and validating that the response
+    does not contain the error key.
+    """
+    assert is_not_error(spot_market.get_ohlc(pair="XBTUSD"))
     assert is_not_error(
-        spot_auth_market.get_ohlc(pair="XBTUSD", interval=240, since="1616663618")
+        spot_market.get_ohlc(pair="XBTUSD", interval=240, since="1616663618")
     )  # interval in [1 5 15 30 60 240 1440 10080 21600]
 
 
-def test_get_order_book(spot_auth_market) -> None:
-    assert is_not_error(spot_auth_market.get_order_book(pair="XBTUSD"))
+@pytest.mark.spot
+@pytest.mark.spot_market
+def test_get_order_book(spot_market) -> None:
+    """
+    Checks the ``get_order_book`` endpoint by performing multiple
+    requests with different paramaters and validating that the response
+    does not contain the error key.
+    """
+    assert is_not_error(spot_market.get_order_book(pair="XBTUSD"))
     assert is_not_error(
-        spot_auth_market.get_order_book(pair="XBTUSD", count=2)
+        spot_market.get_order_book(pair="XBTUSD", count=2)
     )  # count in [1...500]
 
 
-def test_get_recent_trades(spot_auth_market) -> None:
-    assert is_not_error(spot_auth_market.get_recent_trades(pair="XBTUSD"))
+@pytest.mark.spot
+@pytest.mark.spot_market
+def test_get_recent_trades(spot_market) -> None:
+    """
+    Checks the ``get_recent_trades`` endpoint by performing multiple
+    requests with different paramaters and validating that the response
+    does not contain the error key.
+    """
+    assert is_not_error(spot_market.get_recent_trades(pair="XBTUSD"))
     assert is_not_error(
-        spot_auth_market.get_recent_trades(pair="XBTUSD", since="1616663618")
+        spot_market.get_recent_trades(pair="XBTUSD", since="1616663618")
     )
 
 
-def test_get_recent_spreads(spot_auth_market) -> None:
-    assert is_not_error(spot_auth_market.get_recent_spreads(pair="XBTUSD"))
+@pytest.mark.spot
+@pytest.mark.spot_market
+def test_get_recent_spreads(spot_market) -> None:
+    """
+    Checks the ``get_recent_spreads`` endpoint by performing multiple
+    requests with different paramaters and validating that the response
+    does not contain the error key.
+    """
+    assert is_not_error(spot_market.get_recent_spreads(pair="XBTUSD"))
     assert is_not_error(
-        spot_auth_market.get_recent_spreads(pair="XBTUSD", since="1616663618")
+        spot_market.get_recent_spreads(pair="XBTUSD", since="1616663618")
     )

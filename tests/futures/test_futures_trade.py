@@ -14,30 +14,51 @@ from .helper import is_success
 
 @pytest.fixture(autouse=True)
 def run_before_and_after_tests(futures_demo_trade):
-    """Fixture to execute asserts before and after a test is run"""
+    """
+    Fixture that ensures all orders are cancelled after test.
+    """
     # Setup: fill with any logic you want
 
     yield  # this is where the testing happens
 
-    # Teardown : fill with any logic you want
+    # Teardown: fill with any logic you want
     futures_demo_trade.cancel_all_orders()
+    sleep(0.25)
 
 
+@pytest.mark.futures
+@pytest.mark.futures_auth
+@pytest.mark.futures_trade
 def test_get_fills(futures_demo_trade) -> None:
+    """
+    Checks the ``get_fills`` endpoint.
+    """
     assert is_success(futures_demo_trade.get_fills())
     assert is_success(
         futures_demo_trade.get_fills(lastFillTime="2020-07-21T12:41:52.790Z")
     )
 
 
+@pytest.mark.futures
+@pytest.mark.futures_auth
+@pytest.mark.futures_trade
 def test_dead_mans_switch(futures_demo_trade) -> None:
+    """
+    Checks the ``dead_mans_switch`` endpoint.
+    """
     assert is_success(futures_demo_trade.dead_mans_switch(timeout=60))
     assert is_success(
         futures_demo_trade.dead_mans_switch(timeout=0)
     )  # reset dead mans switch
 
 
+@pytest.mark.futures
+@pytest.mark.futures_auth
+@pytest.mark.futures_trade
 def test_get_orders_status(futures_demo_trade) -> None:
+    """
+    Checks the ``get_orders_status`` endpoint.
+    """
     assert is_success(
         futures_demo_trade.get_orders_status(
             orderIds=[
@@ -56,7 +77,13 @@ def test_get_orders_status(futures_demo_trade) -> None:
     )
 
 
+@pytest.mark.futures
+@pytest.mark.futures_auth
+@pytest.mark.futures_trade
 def test_create_order(futures_demo_trade) -> None:
+    """
+    Checks the ``create_order`` endpoint.
+    """
     try:
         futures_demo_trade.create_order(
             orderType="lmt",
@@ -101,7 +128,14 @@ def test_create_order(futures_demo_trade) -> None:
     #     pass
 
 
-def test_failing_create_order(futures_demo_trade) -> None:
+@pytest.mark.futures
+@pytest.mark.futures_auth
+@pytest.mark.futures_trade
+def test_create_order_failing(futures_demo_trade) -> None:
+    """
+    Checks ``create_order`` endpoint to fail when using invalid
+    parameters.
+    """
     with pytest.raises(ValueError):
         futures_demo_trade.create_order(
             orderType="mkt",
@@ -122,7 +156,13 @@ def test_failing_create_order(futures_demo_trade) -> None:
         )
 
 
+@pytest.mark.futures
+@pytest.mark.futures_auth
+@pytest.mark.futures_trade
 def test_create_batch_order(futures_demo_trade) -> None:
+    """
+    Checks the ``create_order_batch`` endpoint.
+    """
     try:
         assert is_success(
             futures_demo_trade.create_batch_order(
@@ -162,7 +202,13 @@ def test_create_batch_order(futures_demo_trade) -> None:
         pass
 
 
+@pytest.mark.futures
+@pytest.mark.futures_auth
+@pytest.mark.futures_trade
 def test_edit_order(futures_demo_trade) -> None:
+    """
+    Checks the ``edit_order`` endpoint.
+    """
     # success, because kraken received the correct message, even if the id is invalid
     assert is_success(
         futures_demo_trade.edit_order(orderId="my_another_client_id", limitPrice=3)
@@ -175,21 +221,47 @@ def test_edit_order(futures_demo_trade) -> None:
     )
 
 
-def test_failing_edit_order(futures_demo_trade) -> None:
+@pytest.mark.futures
+@pytest.mark.futures_auth
+@pytest.mark.futures_trade
+def test_edit_order_failing(futures_demo_trade) -> None:
+    """
+    Checks if the ``edit_order`` endpoint fails when using invalid
+    parameters.
+    """
     with pytest.raises(ValueError):
         futures_demo_trade.edit_order()
 
 
+@pytest.mark.futures
+@pytest.mark.futures_auth
+@pytest.mark.futures_trade
 def test_cancel_order(futures_demo_trade) -> None:
+    """
+    Checks the ``cancel_order`` endpoint.
+    """
     assert is_success(futures_demo_trade.cancel_order(cliOrdId="my_another_client_id"))
     assert is_success(futures_demo_trade.cancel_order(order_id="1234"))
 
 
-def test_failing_cancel_order(futures_demo_trade) -> None:
+@pytest.mark.futures
+@pytest.mark.futures_auth
+@pytest.mark.futures_trade
+def test_cancel_order_failing(futures_demo_trade) -> None:
+    """
+    Checks if the ``cancel_order`` endpoint is failing when
+    passing invalid arguments.
+    """
     with pytest.raises(ValueError):
         futures_demo_trade.cancel_order()
 
 
+@pytest.mark.futures
+@pytest.mark.futures_auth
+@pytest.mark.futures_trade
 def test_cancel_all_orders(futures_demo_trade) -> None:
+    """
+    Checks the ``cancel_all_orders`` endpoint.
+    """
     assert is_success(futures_demo_trade.cancel_all_orders(symbol="pi_xbtusd"))
     assert is_success(futures_demo_trade.cancel_all_orders())
