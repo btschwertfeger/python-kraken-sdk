@@ -39,7 +39,7 @@ class Trade(KrakenBaseFuturesAPI):
         :caption: Futures Trade: Create the trade client as context manager
 
         >>> from kraken.futures import Trade
-        >>> with Trade(ke="api-key", secret="secret-key") as trade:
+        >>> with Trade(key="api-key", secret="secret-key") as trade:
         ...     print(trade.get_fills())
     """
 
