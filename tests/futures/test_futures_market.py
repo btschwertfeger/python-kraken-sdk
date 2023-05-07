@@ -150,6 +150,7 @@ def test_get_historical_funding_rates(futures_market) -> None:
 
 
 @pytest.mark.futures
+@pytest.mark.futures_auth
 @pytest.mark.futures_market
 def test_get_leverage_preference(futures_auth_market) -> None:
     """
