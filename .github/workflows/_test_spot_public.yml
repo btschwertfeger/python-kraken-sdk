@@ -1,0 +1,48 @@
+# -*- coding: utf-8 -*-
+# Copyright (C) 2023 Benjamin Thomas Schwertfeger
+# Github: https://github.com/btschwertfeger
+#
+# Template workflow to test the public Spot endpoints
+# of the python-kraken-sdk.
+# Runs tests for:
+#   * Spot REST clients
+#
+
+name: Test Spot
+
+on:
+  workflow_call:
+    inputs:
+      os:
+        type: string
+        required: true
+      python-version:
+        type: string
+        required: true
+
+jobs:
+  Test-Spot:
+    name: Test ${{ inputs.os }} ${{ inputs.python-version }}
+    runs-on: ${{ inputs.os }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python ${{ inputs.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ inputs.python-version }}
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install pytest
+
+      - name: Install package
+        run: python -m pip install .
+
+      ##    Unit tests of the public Spot REST clients and endpoints
+      ##
+      - name: Testing Spot REST endpoints
+        run: |
+          pytest -vv -m "spot and not spot_auth and not spot_websocket" tests
