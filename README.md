@@ -42,11 +42,14 @@ General:
 - access both public and private endpoints
 - responsive error handling, custom exceptions and logging
 - extensive example scripts (see `/examples`)
+- clients can be used as context manager
+- coding standards like snake case are not always followed to maintain the parameter naming convention of the Kraken API
+- ...
 
 Documentation:
 
 - Stable: [https://python-kraken-sdk.readthedocs.io/en/stable](https://python-kraken-sdk.readthedocs.io/en/stable)
-- Latest: [https://python-kraken-sdk.readthedocs.io/en/katest](https://python-kraken-sdk.readthedocs.io/en/latest)
+- Latest: [https://python-kraken-sdk.readthedocs.io/en/latest](https://python-kraken-sdk.readthedocs.io/en/latest)
 
 ---
 

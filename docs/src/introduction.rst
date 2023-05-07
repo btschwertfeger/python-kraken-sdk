@@ -46,6 +46,7 @@ General:
 - access both public and private endpoints
 - responsive error handling, custom exceptions and logging
 - extensive examples
+- all clients can be used as context manager
 - coding standards like snake case are not always followed to maintain the parameter naming convention of the Kraken API
 
 Important Notice
