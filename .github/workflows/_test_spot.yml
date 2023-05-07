@@ -53,7 +53,7 @@ jobs:
           SPOT_API_KEY: ${{ secrets.SPOT_API_KEY }}
           SPOT_SECRET_KEY: ${{ secrets.SPOT_SECRET_KEY }}
         run: |
-          pytest -vv -m "spot not spot_websocket" tests
+          pytest -vv -m "spot and not spot_websocket" tests
 
       ##    Unit tests of the Spot websocket client
       ##
@@ -62,4 +62,4 @@ jobs:
           SPOT_API_KEY: ${{ secrets.SPOT_API_KEY }}
           SPOT_SECRET_KEY: ${{ secrets.SPOT_SECRET_KEY }}
         run: |
-          pytest -vv -m "spot_websocket" tests
+          pytest -vv -m spot_websocket tests

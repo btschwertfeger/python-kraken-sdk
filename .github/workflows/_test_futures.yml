@@ -59,7 +59,7 @@ jobs:
           FUTURES_SANDBOX_KEY: ${{ secrets.FUTURES_SANDBOX_KEY }}
           FUTURES_SANDBOX_SECRET: ${{ secrets.FUTURES_SANDBOX_SECRET }}
         run: |
-          pytest -vv -m "futures not futures_websocket" tests
+          pytest -vv -m "futures and not futures_websocket" tests
 
       ##    Unit tests of the Futures websocket client
       ##
@@ -70,4 +70,4 @@ jobs:
           FUTURES_SANDBOX_KEY: ${{ secrets.FUTURES_SANDBOX_KEY }}
           FUTURES_SANDBOX_SECRET: ${{ secrets.FUTURES_SANDBOX_SECRET }}
         run: |
-          pytest -vv -m "futures_websocket" tests
+          pytest -vv -m futures_websocket tests
