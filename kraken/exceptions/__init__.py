@@ -57,6 +57,7 @@ class KrakenException:
             "EFunding:Unknown asset": self.KrakenUnknownAssetError,
             "EQuery:Unknown asset": self.KrakenUnknownAssetError,
             "EQuery:Unknown asset pair": self.KrakenUnknownAssetPairError,
+            # "WDatabase:No change": ,
             ##      Futures Trading Errors
             ##
             "authenticationError": self.KrakenAuthenticationError,
