@@ -64,7 +64,7 @@ pre-commit:
 ##
 changelog:
 	docker run -it --rm \
-		-v "$(pwd)":/usr/local/src/pksdk \
+		-v $(PWD):/usr/local/src/your-app \
 		githubchangeloggenerator/github-changelog-generator \
 		-u btschwertfeger \
 		-p python-kraken-sdk \

@@ -4,11 +4,23 @@
 
 [Full Changelog](https://github.com/btschwertfeger/python-kraken-sdk/compare/v1.1.0...HEAD)
 
+**Breaking changes:**
+
+- \(inconsistent spelling/typo\) recend --\> recent in kraken.spot [\#77](https://github.com/btschwertfeger/python-kraken-sdk/issues/77)
+- Fix bug/typo: "recend" -\> recent throughout kraken.spot [\#76](https://github.com/btschwertfeger/python-kraken-sdk/pull/76) ([jcr-jeff](https://github.com/jcr-jeff))
+
 **Fixed bugs:**
 
 - Release workflow skips the PyPI publish [\#67](https://github.com/btschwertfeger/python-kraken-sdk/issues/67)
+- Fixed bug where `spot.user.get_balances` floats to periodic X.9999... [\#78](https://github.com/btschwertfeger/python-kraken-sdk/pull/78) ([btschwertfeger](https://github.com/btschwertfeger))
 - Fix PyPI upload job + extend disclaimer [\#70](https://github.com/btschwertfeger/python-kraken-sdk/pull/70) ([btschwertfeger](https://github.com/btschwertfeger))
 - Fix and extend release workflow [\#68](https://github.com/btschwertfeger/python-kraken-sdk/pull/68) ([btschwertfeger](https://github.com/btschwertfeger))
+
+**Merged pull requests:**
+
+- Split the unit tests into individual files [\#75](https://github.com/btschwertfeger/python-kraken-sdk/pull/75) ([btschwertfeger](https://github.com/btschwertfeger))
+- Removed matrix from CodeQL job [\#74](https://github.com/btschwertfeger/python-kraken-sdk/pull/74) ([btschwertfeger](https://github.com/btschwertfeger))
+- Add a Changelog [\#73](https://github.com/btschwertfeger/python-kraken-sdk/pull/73) ([btschwertfeger](https://github.com/btschwertfeger))
 
 ## [v1.1.0](https://github.com/btschwertfeger/python-kraken-sdk/tree/v1.1.0) (2023-04-08)
 
@@ -32,7 +44,7 @@
 **Fixed bugs:**
 
 - Cannot access private historical events of the Futures Market client [\#62](https://github.com/btschwertfeger/python-kraken-sdk/issues/62)
-- Avoid raising ValueError in get_balance if currency is not found in the portfolio [\#46](https://github.com/btschwertfeger/python-kraken-sdk/issues/46)
+- Avoid raising ValueError in `get_balance` if currency is not found in the portfolio [\#46](https://github.com/btschwertfeger/python-kraken-sdk/issues/46)
 
 **Closed issues:**
 
@@ -74,8 +86,8 @@
 
 **Merged pull requests:**
 
-- Release v1.0.1 [\#44](https://github.com/btschwertfeger/python-kraken-sdk/pull/44) ([btschwertfeger](https://github.com/btschwertfeger))
 - examples now use os.getenv instead of python-dotenv [\#34](https://github.com/btschwertfeger/python-kraken-sdk/pull/34) ([btschwertfeger](https://github.com/btschwertfeger))
+- Release v1.0.1 [\#44](https://github.com/btschwertfeger/python-kraken-sdk/pull/44) ([btschwertfeger](https://github.com/btschwertfeger))
 
 ## [v1.0.0](https://github.com/btschwertfeger/python-kraken-sdk/tree/v1.0.0) (2023-03-04)
 
