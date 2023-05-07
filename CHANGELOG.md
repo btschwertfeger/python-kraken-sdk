@@ -7,6 +7,7 @@
 **Breaking changes:**
 
 - \(inconsistent spelling/typo\) recend --\> recent in kraken.spot [\#77](https://github.com/btschwertfeger/python-kraken-sdk/issues/77)
+- Add API rate limit exception; extend test doc strings [\#79](https://github.com/btschwertfeger/python-kraken-sdk/pull/79) ([btschwertfeger](https://github.com/btschwertfeger))
 - Fix bug/typo: "recend" -\> recent throughout kraken.spot [\#76](https://github.com/btschwertfeger/python-kraken-sdk/pull/76) ([jcr-jeff](https://github.com/jcr-jeff))
 
 **Fixed bugs:**
