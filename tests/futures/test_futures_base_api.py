@@ -43,17 +43,6 @@ def test_KrakenBaseFuturesAPI_without_exception() -> None:
 
 
 @pytest.mark.futures
-def test_futures_rest_contextmanager() -> None:
-    """
-    Checks if the clients can be used as context manager.
-    - Only the Market client is tested since the base class
-      is defined to be a context manager.
-    """
-    with Market() as market:
-        assert isinstance(market.get_instruments(), dict)
-
-
-@pytest.mark.futures
 @pytest.mark.futures_auth
 def test_futures_rest_contextmanager(
     futures_market,
