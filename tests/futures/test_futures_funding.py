@@ -5,7 +5,7 @@
 #
 import pytest
 
-from .helper import is_not_error, is_success
+from .helper import is_success
 
 # todo: Mocking? Or is this to dangerous?
 

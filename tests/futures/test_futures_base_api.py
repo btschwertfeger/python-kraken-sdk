@@ -11,6 +11,9 @@ import pytest
 
 from kraken.base_api import KrakenBaseFuturesAPI
 from kraken.exceptions import KrakenException
+from kraken.futures import Market
+
+from .helper import is_success
 
 
 @pytest.mark.futures
@@ -37,3 +40,27 @@ def test_KrakenBaseFuturesAPI_without_exception() -> None:
         result.get("result") == "error"
         and result.get("error") == "requiredArgumentMissing"
     )
+
+
+@pytest.mark.futures
+@pytest.mark.futures_auth
+def test_futures_rest_contextmanager(
+    futures_market,
+    futures_auth_funding,
+    futures_demo_trade,
+    futures_auth_user,
+) -> None:
+    """
+    Checks if the clients can be used as context manager.
+    """
+    with futures_market as market:
+        assert isinstance(market.get_tick_types(), list)
+
+    with futures_auth_funding as funding:
+        assert is_success(funding.get_historical_funding_rates(symbol="PF_SOLUSD"))
+
+    with futures_auth_user as user:
+        assert is_success(user.get_wallets())
+
+    with futures_demo_trade as trade:
+        assert is_success(trade.get_fills())

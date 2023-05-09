@@ -33,6 +33,14 @@ class Funding(KrakenBaseFuturesAPI):
         >>> from kraken.futures import Funding
         >>> funding = Funding() # unauthenticated
         >>> funding = Funding(key="api-key", secret="secret-key") # authenticated
+
+    .. code-block:: python
+        :linenos:
+        :caption: Futures Funding: Create the funding client as context manager
+
+        >>> from kraken.futures import Funding
+        >>> with Funding(key="api-key", secret="secret-key") as funding:
+        ...     print(funding.get_historical_funding_rates(symbol="PI_XBTUSD"))
     """
 
     def __init__(

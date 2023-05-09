@@ -75,6 +75,36 @@ class KrakenFuturesWSClient(KrakenBaseFuturesAPI):
                 asyncio.run(main())
             except KeyboardInterrupt:
                 loop.close()
+
+
+                from kraken.futures import KrakenFuturesWSClient
+
+    .. code-block:: python
+        :linenos:
+        :caption: Futures Websocket: Create the websocket client as context manager
+
+        import asyncio
+        from kraken.futures import KrakenFuturesWSClient
+
+        async def on_message(msg):
+            print(msg)
+
+        async def main() -> None:
+            async with KrakenFuturesWSClient(callback=on_message) as session:
+                await session.subscribe(feed="ticker", products=["PF_XBTUSD"])
+
+            while True:
+                await asyncio.sleep(6)
+
+        if __name__ == "__main__":
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
+            try:
+                asyncio.run(main())
+            except KeyboardInterrupt:
+                pass
+            finally:
+                loop.close()
     """
 
     PROD_ENV_URL = "futures.kraken.com/ws/v1"
@@ -356,3 +386,9 @@ class KrakenFuturesWSClient(KrakenBaseFuturesAPI):
             ]
         """
         return self._conn._get_active_subscriptions()
+
+    async def __aenter__(self):
+        return self
+
+    async def __aexit__(self, *exc) -> None:
+        pass

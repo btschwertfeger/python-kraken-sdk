@@ -128,7 +128,7 @@ def trade_examples() -> None:
                     },
                 ],
                 pair="BTC/USD",
-                validate=False,
+                validate=True,
             )
         )
 
@@ -195,7 +195,6 @@ def staking_examples() -> None:
 
 
 def main() -> None:
-    """Main"""
     user_examples()
     market_examples()
     trade_examples()

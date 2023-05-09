@@ -56,7 +56,7 @@ async def main() -> Coroutine:
     # unsubscribe from a websocket feed
     time.sleep(2)  # in case subscribe is not done yet
     # await bot.unsubscribe(feed='ticker', products=['PI_XBTUSD'])
-    await bot.unsubscribe(feed="ticker", products=["PF_SOLUSD"])
+    await bot.unsubscribe(feed="ticker", products=["PF_XBTUSD"])
     await bot.unsubscribe(feed="book", products=products)
     # ....
 
@@ -100,3 +100,28 @@ if __name__ == "__main__":
         pass
     finally:
         loop.close()
+
+# ============================================================
+# Alternative - as ContextManager:
+
+# from kraken.futures import KrakenFuturesWSClient
+# import asyncio
+
+# async def on_message(msg):
+#     print(msg)
+
+# async def main() -> None:
+#     async with KrakenFuturesWSClient(callback=on_message) as session:
+#         await session.subscribe(feed="ticker", products=["PF_XBTUSD"])
+#     while True:
+#         await asyncio.sleep(6)
+
+# if __name__ == "__main__":
+#     loop = asyncio.new_event_loop()
+#     asyncio.set_event_loop(loop)
+#     try:
+#         asyncio.run(main())
+#     except KeyboardInterrupt:
+#         pass
+#     finally:
+#         loop.close()

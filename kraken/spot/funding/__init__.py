@@ -31,6 +31,14 @@ class Funding(KrakenBaseSpotAPI):
         >>> from kraken.spot import Funding
         >>> funding = Funding() # unauthenticated
         >>> auth_funding = Funding(key="api-key", secret="secret-key") # authenticated
+
+    .. code-block:: python
+        :linenos:
+        :caption: Spot Funding: Create the funding client as context manager
+
+        >>> from kraken.spot import Funding
+        >>> with Funding(key="api-key", secret="secret-key") as funding:
+        ...     print(funding.get_deposit_methods(asset="XLM"))
     """
 
     def get_deposit_methods(self, asset: str) -> dict:

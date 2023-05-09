@@ -33,6 +33,14 @@ class User(KrakenBaseSpotAPI):
         >>> from kraken.spot import User
         >>> user = User() # unauthenticated
         >>> auth_user = User(key="api-key", secret="secret-key") # authenticated
+
+    .. code-block:: python
+        :linenos:
+        :caption: Spot User: Create the user client as context manager
+
+        >>> from kraken.spot import User
+        >>> with User(key="api-key", secret="secret-key") as user:
+        ...     print(user.get_account_balances())
     """
 
     def get_account_balance(self) -> dict:

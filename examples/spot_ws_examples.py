@@ -103,3 +103,29 @@ if __name__ == "__main__":
         # so you can handle the behaviour/next actions individually within you bot
     finally:
         loop.close()
+
+# ============================================================
+# Alternative - as ContextManager:
+
+# from kraken.spot import KrakenSpotWSClient
+# import asyncio
+
+# async def on_message(msg):
+#     print(msg)
+
+# async def main() -> None:
+#     async with KrakenSpotWSClient(callback=on_message) as session:
+#         await session.subscribe(subscription={"name": "ticker"}, pair=["XBT/USD"])
+
+#     while True:
+#         await asyncio.sleep(6)
+
+# if __name__ == "__main__":
+#     loop = asyncio.new_event_loop()
+#     asyncio.set_event_loop(loop)
+#     try:
+#         asyncio.run(main())
+#     except KeyboardInterrupt:
+#         pass
+#     finally:
+#         loop.close()
