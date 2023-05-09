@@ -1,8 +1,8 @@
 # Changelog
 
-## [Unreleased](https://github.com/btschwertfeger/python-kraken-sdk/tree/HEAD)
+## [v1.2.0](https://github.com/btschwertfeger/python-kraken-sdk/tree/v1.2.0) (2023-05-09)
 
-[Full Changelog](https://github.com/btschwertfeger/python-kraken-sdk/compare/v1.1.0...HEAD)
+[Full Changelog](https://github.com/btschwertfeger/python-kraken-sdk/compare/v1.1.0...v1.2.0)
 
 **Breaking changes:**
 
@@ -14,7 +14,12 @@
 
 - Enable trading on Futures subaccount [\#72](https://github.com/btschwertfeger/python-kraken-sdk/issues/72)
 - Check if trading is enabled for Futures subaccount [\#71](https://github.com/btschwertfeger/python-kraken-sdk/issues/71)
+- Optionally disable the custom KrakenErrors [\#69](https://github.com/btschwertfeger/python-kraken-sdk/issues/69)
+- Let clients be used as context manager [\#81](https://github.com/btschwertfeger/python-kraken-sdk/issues/81)
+- Let REST and websocket clients be used as context manager [\#83](https://github.com/btschwertfeger/python-kraken-sdk/pull/83) ([btschwertfeger](https://github.com/btschwertfeger))
+- Disable custom Kraken exceptions \(optional\) [\#82](https://github.com/btschwertfeger/python-kraken-sdk/pull/82) ([btschwertfeger](https://github.com/btschwertfeger))
 - Add Futures user endpoints: `check_trading_enabled_on_subaccount` and `set_trading_on_subaccount` [\#80](https://github.com/btschwertfeger/python-kraken-sdk/pull/80) ([btschwertfeger](https://github.com/btschwertfeger))
+- Let clients be used as context manager [\#81](https://github.com/btschwertfeger/python-kraken-sdk/issues/81)
 
 **Fixed bugs:**
 
