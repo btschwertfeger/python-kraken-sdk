@@ -3,6 +3,9 @@
 # Copyright (C) 2023 Benjamin Thomas Schwertfeger
 # Github: https://github.com/btschwertfeger
 #
+
+"""Module that implements the unit tests for the Futures funding client"""
+
 import pytest
 
 from .helper import is_success

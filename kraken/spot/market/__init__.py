@@ -5,7 +5,8 @@
 #
 
 """Module that implements the Kraken Spot market client"""
-from typing import List, Union
+
+from typing import List, Optional, Union
 
 from kraken.base_api import KrakenBaseSpotAPI
 
@@ -41,10 +42,22 @@ class Market(KrakenBaseSpotAPI):
         ...     print(market.get_assets())
     """
 
+    def __init__(
+        self: "Market",
+        key: Optional[str] = "",
+        secret: Optional[str] = "",
+        url: Optional[str] = "",
+    ) -> None:
+        super().__init__(key=key, secret=secret, url=url)
+
+    def __enter__(self: "Market") -> "Market":
+        super().__enter__()
+        return self
+
     def get_assets(
-        self,
-        assets: Union[str, List[str], None] = None,
-        aclass: Union[str, None] = None,
+        self: "Market",
+        assets: Optional[Union[str, List[str]]] = None,
+        aclass: Optional[str] = None,
     ) -> dict:
         """
         Get information about all available assets for trading, staking, deposit,
@@ -53,9 +66,9 @@ class Market(KrakenBaseSpotAPI):
         - https://docs.kraken.com/rest/#operation/getAssetInfo
 
         :param asset: Filter by asset(s)
-        :type asset: str | List[str] | None, optional
+        :type asset: str | List[str], optional
         :param aclass: Filter by asset class
-        :type aclass: str | None, optional
+        :type aclass: str, optional
         :return: Information about the requested assets
         :rtype: dict
 
@@ -96,17 +109,17 @@ class Market(KrakenBaseSpotAPI):
                 }
             }
         """
-        params = {}
+        params: dict = {}
         if assets is not None:
             params["asset"] = self._to_str_list(assets)
         if aclass is not None:
             params["aclass"] = aclass
-        return self._request(
+        return self._request(  # type: ignore[return-value]
             method="GET", uri="/public/Assets", params=params, auth=False
         )
 
     def get_tradable_asset_pair(
-        self, pair: Union[str, List[str]], info: Union[str, None] = None
+        self: "Market", pair: Union[str, List[str]], info: Optional[str] = None
     ) -> dict:
         """
         Get information about the tradable asset pairs.
@@ -117,7 +130,7 @@ class Market(KrakenBaseSpotAPI):
         :type asset: str | List[str]
         :param info: Filter by info, can be one of: ``info`` (all info), ``leverage``
             (leverage info), ``fees`` (fee info), and ``margin`` (margin info)
-        :type info: str | None, optional
+        :type info: str, optional
         :return: Information about the asset pair
         :rtype: dict
 
@@ -164,16 +177,18 @@ class Market(KrakenBaseSpotAPI):
                 }
             }
         """
-        params = {}
+        params: dict = {}
         params["pair"] = self._to_str_list(pair)
         if info is not None:
             params["info"] = info
 
-        return self._request(
+        return self._request(  # type: ignore[return-value]
             method="GET", uri="/public/AssetPairs", params=params, auth=False
         )
 
-    def get_ticker(self, pair: Union[str, List[str], None] = None) -> dict:
+    def get_ticker(
+        self: "Market", pair: Optional[Union[str, List[str]]] = None
+    ) -> dict:
         """
         Returns all tickers if pair is not specified - else just
         the ticker of the ``pair``. Multiple pairs can be specified.
@@ -181,7 +196,7 @@ class Market(KrakenBaseSpotAPI):
         https://docs.kraken.com/rest/#operation/getTickerInformation
 
         :param pair: Filter by pair(s)
-        :type pair: str | List[str] | None, optional
+        :type pair: str | List[str], optional
         :return: The ticker(s) including ask, bid, close, volume, vwap, high, low, todays open and more
         :rtype: dict
 
@@ -205,18 +220,18 @@ class Market(KrakenBaseSpotAPI):
                 }
             }
         """
-        params = {}
+        params: dict = {}
         if pair is not None:
             params["pair"] = self._to_str_list(pair)
-        return self._request(
+        return self._request(  # type: ignore[return-value]
             method="GET", uri="/public/Ticker", params=params, auth=False
         )
 
     def get_ohlc(
-        self,
+        self: "Market",
         pair: str,
         interval: Union[int, str] = 1,
-        since: Union[int, str, None] = None,
+        since: Optional[Union[int, str]] = None,
     ) -> dict:
         """
         Get the open, high, low, and close data for a specific trading pair.
@@ -229,7 +244,7 @@ class Market(KrakenBaseSpotAPI):
         :param interval: the Interval in minutes (default: ``1``)
         :type interval: str | int, optional
         :param since: Timestamp to start from (default: ``None``)
-        :type since: int | str | None, optional
+        :type since: int | str, optional
         :return: The OHLC data of a given asset pair
         :rtype: dict
 
@@ -254,14 +269,14 @@ class Market(KrakenBaseSpotAPI):
                 ]
             }
         """
-        params = {"pair": pair, "interval": interval}
+        params: dict = {"pair": pair, "interval": interval}
         if since is not None:
             params["since"] = since
-        return self._request(
+        return self._request(  # type: ignore[return-value]
             method="GET", uri="/public/OHLC", params=params, auth=False
         )
 
-    def get_order_book(self, pair: str, count: int = 100) -> dict:
+    def get_order_book(self: "Market", pair: str, count: Optional[int] = 100) -> dict:
         """
         Get the current orderbook of a specified trading pair.
 
@@ -294,14 +309,16 @@ class Market(KrakenBaseSpotAPI):
                 }
             }
         """
-        return self._request(
+        return self._request(  # type: ignore[return-value]
             method="GET",
             uri="/public/Depth",
             params={"pair": pair, "count": count},
             auth=False,
         )
 
-    def get_recent_trades(self, pair: str, since: Union[str, int, None] = None) -> dict:
+    def get_recent_trades(
+        self: "Market", pair: str, since: Optional[Union[str, int]] = None
+    ) -> dict:
         """
         Get the latest trades for a specific trading pair (up to 1000).
 
@@ -310,7 +327,7 @@ class Market(KrakenBaseSpotAPI):
         :param pair: Pair to get the recent trades
         :type pair: str
         :param since: Filter trades since given timestamp (default: ``None``)
-        :type since: str | int | None, optional
+        :type since: str | int, optional
         :return: The last public trades (up to 1000 results)
         :rtype: dict
 
@@ -330,15 +347,15 @@ class Market(KrakenBaseSpotAPI):
             }
 
         """
-        params = {"pair": pair}
+        params: dict = {"pair": pair}
         if since is not None:
             params["since"] = None
-        return self._request(
+        return self._request(  # type: ignore[return-value]
             method="GET", uri="/public/Trades", params=params, auth=False
         )
 
     def get_recent_spreads(
-        self, pair: str, since: Union[str, int, None] = None
+        self: "Market", pair: str, since: Optional[Union[str, int]] = None
     ) -> dict:
         """
         Get the latest spreads for a specific trading pair.
@@ -348,7 +365,7 @@ class Market(KrakenBaseSpotAPI):
         :param pair: Pair to get the recent spreads
         :type pair: str
         :param since: Filter trades since given timestamp (default: ``None``)
-        :type since: str | int | None, optional
+        :type since: str | int, optional
         :return: The last *n* spreads of the asset pair
         :rtype: dict
 
@@ -367,14 +384,14 @@ class Market(KrakenBaseSpotAPI):
                 ]
             }
         """
-        params = {"pair": pair}
+        params: dict = {"pair": pair}
         if since is not None:
             params["since"] = since
-        return self._request(
+        return self._request(  # type: ignore[return-value]
             method="GET", uri="/public/Spread", params=params, auth=False
         )
 
-    def get_system_status(self) -> dict:
+    def get_system_status(self: "Market") -> dict:
         """
         Returns the system status of the Kraken Spot API.
 
@@ -391,4 +408,6 @@ class Market(KrakenBaseSpotAPI):
             >>> Market().get_system_status()
             {'status': 'online', 'timestamp': '2023-04-05T17:12:31Z'}
         """
-        return self._request(method="GET", uri="/public/SystemStatus", auth=False)
+        return self._request(  # type: ignore[return-value]
+            method="GET", uri="/public/SystemStatus", auth=False
+        )

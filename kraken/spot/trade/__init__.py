@@ -5,7 +5,7 @@
 #
 
 """Module that implements the Kraken Trade Spot client"""
-from typing import List, Union
+from typing import List, Optional, Tuple, Union
 
 from kraken.base_api import KrakenBaseSpotAPI
 
@@ -41,29 +41,41 @@ class Trade(KrakenBaseSpotAPI):
 
     """
 
+    def __init__(
+        self: "Trade",
+        key: Optional[str] = "",
+        secret: Optional[str] = "",
+        url: Optional[str] = "",
+    ) -> None:
+        super().__init__(key=key, secret=secret, url=url)
+
+    def __enter__(self: "Trade") -> "Trade":
+        super().__enter__()
+        return self
+
     def create_order(
-        self,
+        self: "Trade",
         ordertype: str,
         side: str,
         volume: Union[str, int, float],
         pair: str,
-        price: Union[str, int, float, None] = None,
-        price2: Union[str, int, float, None] = None,
-        trigger: Union[str, None] = None,
-        leverage: Union[str, None] = None,
-        reduce_only: bool = False,
-        stptype: str = "cancel-newest",
-        oflags: Union[str, List[str], None] = None,
-        timeinforce: Union[str, None] = None,
-        displayvol: Union[str, None] = None,
-        starttm: str = "0",
-        expiretm: Union[str, None] = None,
-        close_ordertype: Union[str, None] = None,
-        close_price: Union[str, int, float, None] = None,
-        close_price2: Union[str, int, float, None] = None,
-        deadline: Union[str, None] = None,
-        validate: bool = False,
-        userref: Union[int, None] = None,
+        price: Optional[Union[str, int, float]] = None,
+        price2: Optional[Union[str, int, float]] = None,
+        trigger: Optional[str] = None,
+        leverage: Optional[str] = None,
+        reduce_only: Optional[bool] = False,
+        stptype: Optional[str] = "cancel-newest",
+        oflags: Optional[Union[str, List[str]]] = None,
+        timeinforce: Optional[str] = None,
+        displayvol: Optional[str] = None,
+        starttm: Optional[str] = "0",
+        expiretm: Optional[str] = None,
+        close_ordertype: Optional[str] = None,
+        close_price: Optional[Union[str, int, float]] = None,
+        close_price2: Optional[Union[str, int, float]] = None,
+        deadline: Optional[str] = None,
+        validate: Optional[bool] = False,
+        userref: Optional[int] = None,
     ) -> dict:
         """
         Create a new order and place it on the market.
@@ -83,32 +95,32 @@ class Trade(KrakenBaseSpotAPI):
         :type volume: str | int | float
         :param price: The limit price for ``limit`` orders and the trigger price for orders with
             ``ordertype`` one of ``stop-loss``, ``stop-loss-limit``, ``take-profit``, and ``take-profit-limit``
-        :type price: str | int | float | None, optional
+        :type price: str | int | float, optional
         :param price2: The limit price for ``stop-loss-limit`` and ``take-profit-limit`` orders
             The price2 can also be set to absolut or relative changes.
                 * Prefixed using ``+`` or ``-`` defines the change in the quote asset
                 * Prefixed by # is the same as ``+`` and ``-`` but the sign is set automatically
                 * The percentate sign ``%`` can be used to define relative changes.
-        :type price2: str | int | float | None, optional
+        :type price2: str | int | float, optional
         :param trigger: What triggers the position of ``stop-loss``, ``stop-loss-limit``, ``take-profit``, and
             ``take-profit-limit`` orders. Will also be used for associated conditional close orders.
             Kraken will use ``last`` if nothing is specified.
-        :type trigger: str | None, optional
+        :type trigger: str, optional
         :param leverage: The leverage
-        :type leverage: str | int | float | None, optional
+        :type leverage: str | int | float, optional
         :param reduce_only: Reduce existing orders (default: ``False``)
         :type reduce_only: bool, optional
         :param stptype: Define what cancells the order, one of ``cancel-newest``,
             ``cancel-oldest``, ``cancel-both`` (default: ``cancel-newest``)
-        :type stptype: str | None, optional
+        :type stptype: str, optional
         :param oflags: Order flags like ``post``, ``fcib``, ``fciq``, ``nomp``,
             ``viqc`` (see the referenced Kraken documentaion for more information)
-        :type oflags: str | List[str] | None, optional
+        :type oflags: str | List[str], optional
         :param timeinforce: how long the order raimains in the orderbook, one of:
             ``GTC``, ``IOC``, ``GTD`` (see the referenced Kraken documentaion for more information)
-        :type timeinforce: str | None, optional
+        :type timeinforce: str, optional
         :param displayvol: Define how much of the volume is visible in the order book (iceberg)
-        :type displayvol: str | int | float | None, optional
+        :type displayvol: str | int | float, optional
         :param starttim: Unix timestamp or seconds defining the start time (default: ``"0"``)
         :type starttim: str, optional
         :param expiretm: Unix timestamp or time in seconds defining the expiration of the order,
@@ -117,11 +129,11 @@ class Trade(KrakenBaseSpotAPI):
         :param close_ordertype: Conditional close order type, one of: ``limit``, ``stop-loss``,
             ``take-profit``, ``stop-loss-limit``, ``take-profit-limit``
                 (see the referenced Kraken documentaion for more information)
-        :type close_ordertype: str | None, optional
+        :type close_ordertype: str, optional
         :param close_price: Conditional close price
-        :type close_price: str | int | float | None, optional
+        :type close_price: str | int | float, optional
         :param close_price2: The price2 for the conditional order - see the price2 parameter description
-        :type close_price2: str | int | float | None, optional
+        :type close_price2: str | int | float, optional
         :param deadline: RFC3339 timestamp + {0..60} seconds that defines when the matching
             engine should reject the order.
         :type deadline: str, optional
@@ -265,7 +277,7 @@ class Trade(KrakenBaseSpotAPI):
                 }
             }
         """
-        params = {
+        params: dict = {
             "ordertype": str(ordertype),
             "type": str(side),
             "volume": str(volume),
@@ -275,7 +287,7 @@ class Trade(KrakenBaseSpotAPI):
             "validate": validate,
             "reduce_only": reduce_only,
         }
-        trigger_ordertypes = (
+        trigger_ordertypes: tuple = (
             "stop-loss",
             "stop-loss-limit",
             "take-profit-limit",
@@ -321,14 +333,16 @@ class Trade(KrakenBaseSpotAPI):
         if displayvol is not None:
             params["displayvol"] = str(displayvol)
 
-        return self._request(method="POST", uri="/private/AddOrder", params=params)
+        return self._request(  # type: ignore[return-value]
+            method="POST", uri="/private/AddOrder", params=params
+        )
 
     def create_order_batch(
-        self,
+        self: "Trade",
         orders: List[dict],
         pair: str,
-        deadline: Union[str, None] = None,
-        validate: bool = False,
+        deadline: Optional[str] = None,
+        validate: Optional[bool] = False,
     ) -> dict:
         """
         Create a batch of max 15 orders for a specifc asset pair.
@@ -391,25 +405,25 @@ class Trade(KrakenBaseSpotAPI):
                 }]
             }
         """
-        params = {"orders": orders, "pair": pair, "validate": validate}
+        params: dict = {"orders": orders, "pair": pair, "validate": validate}
         if deadline is not None:
             params["deadline"] = deadline
-        return self._request(
+        return self._request(  # type: ignore[return-value]
             method="POST", uri="/private/AddOrderBatch", params=params, do_json=True
         )
 
     def edit_order(
-        self,
+        self: "Trade",
         txid: str,
         pair: str,
-        volume: Union[str, int, float, None] = None,
-        price: Union[str, int, float, None] = None,
-        price2: Union[str, int, float, None] = None,
-        oflags: Union[str, None] = None,
-        deadline: Union[str, None] = None,
-        cancel_response: Union[bool, None] = None,
-        validate: bool = False,
-        userref: Union[int, None] = None,
+        volume: Optional[Union[str, int, float]] = None,
+        price: Optional[Union[str, int, float]] = None,
+        price2: Optional[Union[str, int, float]] = None,
+        oflags: Optional[str] = None,
+        deadline: Optional[str] = None,
+        cancel_response: Optional[bool] = None,
+        validate: Optional[bool] = False,
+        userref: Optional[int] = None,
     ) -> dict:
         """
         Edit an open order.
@@ -424,13 +438,13 @@ class Trade(KrakenBaseSpotAPI):
         :param pair: The asset pair of the order
         :type pair: str
         :param volume: Set a new volume
-        :type volume: str | int | float | None, optional
+        :type volume: str | int | float, optional
         :param price: Set a new price
-        :type price: str | int | float | None, optional
+        :type price: str | int | float, optional
         :param price2: Set a new second price
-        :type price2: str | int | float | None, optional
+        :type price2: str | int | float, optional
         :param oflags: Order flags like ``post``, ``fcib``, ``fciq``, ``nomp``, ``viqc`` (see the referenced Kraken documentaion for more information)
-        :type oflags: str | List[str] | None, optional
+        :type oflags: str | List[str], optional
         :param deadline: (see the referenced Kraken documentaion for more information)
         :type deadline: string
         :param cancel_response: See the referenced Kraken documentaion for more information
@@ -465,7 +479,7 @@ class Trade(KrakenBaseSpotAPI):
                 }
             }
         """
-        params = {"txid": txid, "pair": pair, "validate": validate}
+        params: dict = {"txid": txid, "pair": pair, "validate": validate}
         if userref is not None:
             params["userref"] = userref
         if volume is not None:
@@ -480,9 +494,11 @@ class Trade(KrakenBaseSpotAPI):
             params["cancel_response"] = cancel_response
         if deadline is not None:
             params["deadline"] = deadline
-        return self._request("POST", uri="/private/EditOrder", params=params)
+        return self._request(  # type: ignore[return-value]
+            "POST", uri="/private/EditOrder", params=params
+        )
 
-    def cancel_order(self, txid: str) -> dict:
+    def cancel_order(self: "Trade", txid: str) -> dict:
         """
         Cancel a specific order by ``txid``. Instead of a transaction id
         a user reference id can be passed.
@@ -506,13 +522,13 @@ class Trade(KrakenBaseSpotAPI):
             >>> trade.cancel_order(txid="OAUHYR-YCVK6-P22G6P")
             { 'count': 1 }
         """
-        return self._request(
+        return self._request(  # type: ignore[return-value]
             method="POST",
             uri="/private/CancelOrder",
             params={"txid": self._to_str_list(txid)},
         )
 
-    def cancel_all_orders(self) -> dict:
+    def cancel_all_orders(self: "Trade") -> dict:
         """
         Cancel all open orders.
 
@@ -533,9 +549,11 @@ class Trade(KrakenBaseSpotAPI):
             >>> trade.cancel_all_orders()
             { 'count': 2 }
         """
-        return self._request(method="POST", uri="/private/CancelAll")
+        return self._request(  # type: ignore[return-value]
+            method="POST", uri="/private/CancelAll"
+        )
 
-    def cancel_all_orders_after_x(self, timeout: int = 0) -> dict:
+    def cancel_all_orders_after_x(self: "Trade", timeout: int = 0) -> dict:
         """
         Cancel all orders after a timeout. This can be used as Dead Man's Switch.
 
@@ -561,13 +579,13 @@ class Trade(KrakenBaseSpotAPI):
                 'triggerTime': '2023-04-06T06:52:56Z'
             }
         """
-        return self._request(
+        return self._request(  # type: ignore[return-value]
             method="POST",
             uri="/private/CancelAllOrdersAfter",
             params={"timeout": timeout},
         )
 
-    def cancel_order_batch(self, orders: List[Union[str, int]]) -> dict:
+    def cancel_order_batch(self: "Trade", orders: List[Union[str, int]]) -> dict:
         """
         Cancel a a list of orders by ``txid`` or ``userref``
         This endpoint is broken, see https://github.com/btschwertfeger/python-kraken-sdk/issues/65
@@ -593,7 +611,7 @@ class Trade(KrakenBaseSpotAPI):
             ... )
             { count': 2 }
         """
-        return self._request(
+        return self._request(  # type: ignore[return-value]
             method="POST",
             uri="/private/CancelOrderBatch",
             params={"orders": orders},

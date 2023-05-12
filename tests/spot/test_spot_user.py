@@ -4,6 +4,8 @@
 # Github: https://github.com/btschwertfeger
 #
 
+"""Module that implements the unit tests for the Spot user client."""
+
 import os
 import random
 import tempfile
@@ -12,6 +14,7 @@ from time import sleep, time
 import pytest
 
 from kraken.exceptions import KrakenException
+from kraken.spot import User
 
 from .helper import is_not_error
 
@@ -19,7 +22,7 @@ from .helper import is_not_error
 @pytest.mark.spot
 @pytest.mark.spot_auth
 @pytest.mark.spot_user
-def test_get_account_balance(spot_auth_user) -> None:
+def test_get_account_balance(spot_auth_user: User) -> None:
     """
     Checks the ``get_account_balance`` function by validating that
     the response do not contain the error key.
@@ -41,7 +44,7 @@ def test_get_balances(spot_auth_user):
 @pytest.mark.spot
 @pytest.mark.spot_auth
 @pytest.mark.spot_user
-def test_get_trade_balance(spot_auth_user) -> None:
+def test_get_trade_balance(spot_auth_user: User) -> None:
     """
     Checks the ``get_trade_balances`` function by validating that
     the response do not contain the error key.
@@ -56,7 +59,7 @@ def test_get_trade_balance(spot_auth_user) -> None:
 @pytest.mark.spot
 @pytest.mark.spot_auth
 @pytest.mark.spot_user
-def test_get_open_orders(spot_auth_user) -> None:
+def test_get_open_orders(spot_auth_user: User) -> None:
     """
     Checks the ``get_open_orders`` function by validating that
     the response do not contain the error key.
@@ -68,7 +71,7 @@ def test_get_open_orders(spot_auth_user) -> None:
 @pytest.mark.spot
 @pytest.mark.spot_auth
 @pytest.mark.spot_user
-def test_get_closed_orders(spot_auth_user) -> None:
+def test_get_closed_orders(spot_auth_user: User) -> None:
     """
     Checks the ``get_closed_orders`` function by validating that
     the responses do not contain the error key.
@@ -97,7 +100,7 @@ def test_get_closed_orders(spot_auth_user) -> None:
 @pytest.mark.spot
 @pytest.mark.spot_auth
 @pytest.mark.spot_user
-def test_get_trades_info(spot_auth_user) -> None:
+def test_get_trades_info(spot_auth_user: User) -> None:
     """
     Checks the ``get_trades_info`` function by validating that
     the responses do not contain the error key.
@@ -127,7 +130,7 @@ def test_get_trades_info(spot_auth_user) -> None:
 @pytest.mark.spot
 @pytest.mark.spot_auth
 @pytest.mark.spot_user
-def test_get_orders_info(spot_auth_user) -> None:
+def test_get_orders_info(spot_auth_user: User) -> None:
     """
     Checks the ``get_orders_info`` function by validating that
     the responses do not contain the error key.
@@ -157,7 +160,7 @@ def test_get_orders_info(spot_auth_user) -> None:
 @pytest.mark.spot
 @pytest.mark.spot_auth
 @pytest.mark.spot_user
-def test_get_trades_history(spot_auth_user) -> None:
+def test_get_trades_history(spot_auth_user: User) -> None:
     """
     Checks the ``get_trades_history`` function by validating that
     the responses do not contain the error key.
@@ -177,7 +180,7 @@ def test_get_trades_history(spot_auth_user) -> None:
 @pytest.mark.spot
 @pytest.mark.spot_auth
 @pytest.mark.spot_user
-def test_get_open_positions(spot_auth_user) -> None:
+def test_get_open_positions(spot_auth_user: User) -> None:
     """
     Checks the ``get_open_positions`` function by validating that
     the responses do not contain the error key.
@@ -195,7 +198,7 @@ def test_get_open_positions(spot_auth_user) -> None:
 @pytest.mark.spot
 @pytest.mark.spot_auth
 @pytest.mark.spot_user
-def test_get_ledgers_info(spot_auth_user) -> None:
+def test_get_ledgers_info(spot_auth_user: User) -> None:
     """
     Checks the ``get_ledgers_info`` function by validating that
     the responses do not contain the error key.
@@ -222,7 +225,7 @@ def test_get_ledgers_info(spot_auth_user) -> None:
 @pytest.mark.spot
 @pytest.mark.spot_auth
 @pytest.mark.spot_user
-def test_get_ledgers(spot_auth_user) -> None:
+def test_get_ledgers(spot_auth_user: User) -> None:
     """
     Checks the ``get_ledgers`` function by validating that
     the responses do not contain the error key.
@@ -238,7 +241,7 @@ def test_get_ledgers(spot_auth_user) -> None:
 @pytest.mark.spot
 @pytest.mark.spot_auth
 @pytest.mark.spot_user
-def test_get_trade_volume(spot_auth_user) -> None:
+def test_get_trade_volume(spot_auth_user: User) -> None:
     """
     Checks the ``get_trade_volume`` function by validating that
     the responses do not contain the error key.
@@ -250,18 +253,16 @@ def test_get_trade_volume(spot_auth_user) -> None:
 @pytest.mark.spot
 @pytest.mark.spot_auth
 @pytest.mark.spot_user
-def test_request_save_export_report(spot_auth_user) -> None:
+def test_request_save_export_report(spot_auth_user: User) -> None:
     """
     Checks the ``save_export_report`` function by requesting an
     report and saving them.
     """
-    try:
+    with pytest.raises(ValueError):
+        # invalid report type
         spot_auth_user.request_export_report(
             report="invalid", description="this is an invalid report type"
         )
-    except ValueError:
-        # invalid report type
-        pass
 
     for report in ("trades", "ledgers"):
         if report == "trades":
@@ -333,7 +334,7 @@ def test_request_save_export_report(spot_auth_user) -> None:
 @pytest.mark.spot
 @pytest.mark.spot_auth
 @pytest.mark.spot_user
-def test_export_report_status_invalid(spot_auth_user) -> None:
+def test_export_report_status_invalid(spot_auth_user: User) -> None:
     """
     Checks the ``export_report_status`` function by passing an invalid
     report type.
@@ -347,12 +348,12 @@ def test_export_report_status_invalid(spot_auth_user) -> None:
 @pytest.mark.spot
 @pytest.mark.spot_auth
 @pytest.mark.spot_user
-def test_create_subaccount(spot_auth_user) -> None:
+def test_create_subaccount(spot_auth_user: User) -> None:
     """
     Checks the ``create_subaccount`` function by creating one.
 
     Creating subaccounts is only available for institutional clients (May 2023),
-    so a KrakenPermissionDeniedError will be raised.
+    so a KrakenException.KrakenPermissionDeniedError will be raised.
     """
     with pytest.raises(KrakenException.KrakenPermissionDeniedError):
         spot_auth_user.create_subaccount(email="abc@welt.de", username="tomtucker")

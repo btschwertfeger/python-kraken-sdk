@@ -6,10 +6,35 @@
 
 """Module that provides custom exceptions for the python-kraken-sdk"""
 import functools
-from typing import List
+from typing import Any, Dict, List, Optional, Union
 
 
-class KrakenException:
+def docstring_message(cls: Any) -> Any:
+    """
+    Decorates an exception to make its docstring its default message.
+
+    - https://stackoverflow.com/a/66491013/13618168
+    """
+    cls_init = cls.__init__
+
+    @functools.wraps(cls.__init__)
+    def wrapped_init(
+        self: "KrakenException",
+        msg: Optional[Union[str, dict]] = None,
+        *args: tuple,
+        **kwargs: Dict[str, Any],
+    ) -> None:
+        err_message: str = (
+            self.__doc__ if not msg else f"{self.__doc__}\ndetails: {msg}"
+        )
+        cls_init(self, err_message, *args, **kwargs)
+
+    cls.__init__ = wrapped_init
+    return cls
+
+
+@docstring_message
+class KrakenException(Exception):
     """
     Class that provides custom exceptions for the python-kraken-sdk based on the
     error messages that can be received from the Kraken Spot and Futures API.
@@ -17,13 +42,19 @@ class KrakenException:
     - https://docs.kraken.com/rest/#section/General-Usage/Requests-Responses-and-Errors
     """
 
-    def __init__(self, msg=None, *args, **kwargs):
-        self.EXCEPTION_ASSIGNMENT = {
+    def __init__(
+        self: "KrakenException",
+        msg: Optional[Union[str, dict]] = None,
+        *args: tuple,
+        **kwargs: Dict[str, Any],
+    ) -> None:
+        self.EXCEPTION_ASSIGNMENT: Dict[str, Any] = {
             ##      Spot, Margin, and Futures trading Errors
             ##
             "EGeneral:Invalid arguments": self.KrakenInvalidArgumentsError,
             "EGeneral:Invalid arguments:Index unavailable": self.KrakenInvalidArgumentsIndexUnavailableError,
             "EGeneral:Permission denied": self.KrakenPermissionDeniedError,
+            "EGeneral:Unknown method": self.KrakenUnknownMethodError,
             "EService:Unavailable": self.KrakenServiceUnavailableError,
             "EService:Market in cancel_only mode": self.KrakenMarketInOnlyCancelModeError,
             "EService:Market in post_only mode": self.KrakenMarketInOnlyPostModeError,
@@ -57,7 +88,7 @@ class KrakenException:
             "EFunding:Unknown asset": self.KrakenUnknownAssetError,
             "EQuery:Unknown asset": self.KrakenUnknownAssetError,
             "EQuery:Unknown asset pair": self.KrakenUnknownAssetPairError,
-            # "WDatabase:No change": ,
+            # "WDatabase:No change": self.,
             ##      Futures Trading Errors
             ##
             "authenticationError": self.KrakenAuthenticationError,
@@ -71,9 +102,11 @@ class KrakenException:
             "orderForEditNotFound": self.KrakenOrderForEditNotFoundError,
         }
 
-    def get_exception(self, data: List[str]):
+    def get_exception(
+        self: "KrakenException", data: Union[str, List[str]]
+    ) -> Optional[Any]:
         """Returns the exception given by name if available"""
-        is_list = isinstance(data, list)
+        is_list: bool = isinstance(data, list)
         for name, exception in self.EXCEPTION_ASSIGNMENT.items():
             if is_list:
                 if name in data:
@@ -84,22 +117,6 @@ class KrakenException:
             elif data == name:
                 return exception
         return None
-
-    def docstring_message(cls):
-        """
-        Decorates an exception to make its docstring its default message.
-
-        - https://stackoverflow.com/a/66491013/13618168
-        """
-        cls_init = cls.__init__
-
-        @functools.wraps(cls.__init__)
-        def wrapped_init(self, msg=None, *args, **kwargs):
-            err_message = self.__doc__ if not msg else f"{self.__doc__}\ndetails: {msg}"
-            cls_init(self, err_message, *args, **kwargs)
-
-        cls.__init__ = wrapped_init
-        return cls
 
     @docstring_message
     class KrakenInvalidArgumentsError(Exception):
@@ -272,6 +289,10 @@ class KrakenException:
     @docstring_message
     class KrakenToManyAdressesError(Exception):
         """To many adresses specified."""
+
+    @docstring_message
+    class KrakenUnknownMethodError(Exception):
+        """The endpoint or method is not known."""
 
     # ? ____CUSTOM_EXCEPTIONS_________
     @docstring_message

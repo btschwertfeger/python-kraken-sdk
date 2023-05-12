@@ -4,6 +4,8 @@
 # Github: https://github.com/btschwertfeger
 #
 
+"""Module that implements the unit tests for the Futures market client"""
+
 import pytest
 
 from .helper import is_not_error, is_success

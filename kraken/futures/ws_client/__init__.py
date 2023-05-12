@@ -11,7 +11,7 @@ import hashlib
 import hmac
 import logging
 from copy import deepcopy
-from typing import Coroutine, List, Union
+from typing import Any, Dict, List, Optional
 
 from kraken.base_api import KrakenBaseFuturesAPI
 from kraken.exceptions import KrakenException
@@ -35,7 +35,8 @@ class KrakenFuturesWSClient(KrakenBaseFuturesAPI):
     :type secret: str, optional
     :param url: Set a custum URL (default: ``futures.kraken.com/ws/v1``)
     :type url: str, optional
-    :param sanbox: Use the Kraken Futures demo environment (URL will switch to ``demo-futures.kraken.com/ws/v1``, default: ``False``)
+    :param sanbox: Use the Kraken Futures demo environment
+        (URL will switch to ``demo-futures.kraken.com/ws/v1``, default: ``False``)
     :type sandbox: bool, optional
 
     .. code-block:: python
@@ -45,11 +46,11 @@ class KrakenFuturesWSClient(KrakenBaseFuturesAPI):
         import asyncio
         from kraken.futures import KrakenFuturesWSClient
 
-        async def main() -> Coroutine:
+        async def main() -> None:
 
             # Create a custom bot
             class Bot(KrakenFuturesWSClient):
-                async def on_message(self, event: dict) -> Coroutine:
+                async def on_message(self, event: dict) -> None:
                     print(event)
 
             bot = Bot()     # unauthenticated
@@ -107,25 +108,25 @@ class KrakenFuturesWSClient(KrakenBaseFuturesAPI):
                 loop.close()
     """
 
-    PROD_ENV_URL = "futures.kraken.com/ws/v1"
-    DEMO_ENV_URL = "demo-futures.kraken.com/ws/v1"
+    PROD_ENV_URL: str = "futures.kraken.com/ws/v1"
+    DEMO_ENV_URL: str = "demo-futures.kraken.com/ws/v1"
 
     def __init__(
-        self,
+        self: "KrakenFuturesWSClient",
         key: str = "",
         secret: str = "",
         url: str = "",
-        callback=None,
+        callback: Optional[Any] = None,
         sandbox: bool = False,
     ):
         super().__init__(key=key, secret=secret, url=url, sandbox=sandbox)
 
-        self._key = key
-        self._secret = secret
+        self._key: str = key
+        self._secret: str = secret
 
-        self.exception_occur = False
-        self.__callback = callback
-        self._conn = ConnectFuturesWebsocket(
+        self.exception_occur: bool = False
+        self.__callback: Any = callback
+        self._conn: ConnectFuturesWebsocket = ConnectFuturesWebsocket(
             client=self,
             endpoint=url
             if url != ""
@@ -135,7 +136,7 @@ class KrakenFuturesWSClient(KrakenBaseFuturesAPI):
             callback=self.on_message,
         )
 
-    def _get_sign_challenge(self, challenge: str) -> str:
+    def _get_sign_challenge(self: "KrakenFuturesWSClient", challenge: str) -> str:
         """
         Sign the challenge/message using the secret key
 
@@ -156,7 +157,7 @@ class KrakenFuturesWSClient(KrakenBaseFuturesAPI):
             ).digest()
         ).decode("utf-8")
 
-    async def on_message(self, msg: dict) -> Coroutine:
+    async def on_message(self: "KrakenFuturesWSClient", msg: dict) -> None:
         """
         Method that serves as the default callback function Calls the defined callback function (if defined)
         or overload this function.
@@ -166,7 +167,7 @@ class KrakenFuturesWSClient(KrakenBaseFuturesAPI):
 
         :param msg: The message that was send by Kraken via the websocket connection.
         :type msg: dict
-        :rtype: Coroutine
+        :rtype: NOne
         """
         if self.__callback is not None:
             await self.__callback(msg)
@@ -175,8 +176,8 @@ class KrakenFuturesWSClient(KrakenBaseFuturesAPI):
             logging.info(msg)
 
     async def subscribe(
-        self, feed: str, products: Union[List[str], None] = None
-    ) -> Coroutine:
+        self: "KrakenFuturesWSClient", feed: str, products: Optional[List[str]] = None
+    ) -> None:
         """
         Subscribe to a Futures websocket channel/feed. For some feeds authentication is requried.
 
@@ -185,7 +186,7 @@ class KrakenFuturesWSClient(KrakenBaseFuturesAPI):
         :param feed: The websocket feed/channel to subscribe to
         :type feed: str
         :param products: The products/futures contracts to subscribe to
-        :type products: List[str] | None, optional
+        :type products: List[str], optional
         :raises ValueError: If the parameters dont match the requirements set by the Kraken API
 
         Initialize your client as described in :class:`kraken.futures.KrakenFuturesWSClient` to
@@ -202,7 +203,7 @@ class KrakenFuturesWSClient(KrakenBaseFuturesAPI):
         or a custom callback function.
         """
 
-        message = {"event": "subscribe", "feed": feed}
+        message: dict = {"event": "subscribe", "feed": feed}
 
         if products is not None:
             if not isinstance(products, list):
@@ -227,8 +228,8 @@ class KrakenFuturesWSClient(KrakenBaseFuturesAPI):
             raise ValueError(f"Feed: {feed} not found. Not subscribing to it.")
 
     async def unsubscribe(
-        self, feed: str, products: Union[List[str], None] = None
-    ) -> Coroutine:
+        self: "KrakenFuturesWSClient", feed: str, products: Optional[List[str]] = None
+    ) -> None:
         """
         Subscribe to a Futures websocket channel/feed. For some feeds authentication is requried.
 
@@ -237,7 +238,7 @@ class KrakenFuturesWSClient(KrakenBaseFuturesAPI):
         :param feed: The websocket feed/channel to unsubscribe from
         :type feed: str
         :param products: The products/futures contracts to unsubscribe from
-        :type products: List[str] | None, optional
+        :type products: List[str], optional
         :raises ValueError: If the parameters dont match the requirements set by the Kraken API
 
         Initialize your client as described in :class:`kraken.futures.KrakenFuturesWSClient` to
@@ -254,7 +255,7 @@ class KrakenFuturesWSClient(KrakenBaseFuturesAPI):
         or a custom callback function.
         """
 
-        message = {"event": "unsubscribe", "feed": feed}
+        message: dict = {"event": "unsubscribe", "feed": feed}
 
         if products is not None:
             if not isinstance(products, list):
@@ -335,7 +336,7 @@ class KrakenFuturesWSClient(KrakenBaseFuturesAPI):
         ]
 
     @property
-    def is_auth(self) -> bool:
+    def is_auth(self: "KrakenFuturesWSClient") -> bool:
         """
         Checks if key and secret are set.
 
@@ -357,7 +358,7 @@ class KrakenFuturesWSClient(KrakenBaseFuturesAPI):
             and self._secret != ""
         )
 
-    def get_active_subscriptions(self) -> List[dict]:
+    def get_active_subscriptions(self: "KrakenFuturesWSClient") -> List[dict]:
         """
         Returns the list of acitve subscriptions.
 
@@ -387,8 +388,10 @@ class KrakenFuturesWSClient(KrakenBaseFuturesAPI):
         """
         return self._conn._get_active_subscriptions()
 
-    async def __aenter__(self):
+    async def __aenter__(self: "KrakenFuturesWSClient") -> "KrakenFuturesWSClient":
         return self
 
-    async def __aexit__(self, *exc) -> None:
+    async def __aexit__(
+        self: "KrakenFuturesWSClient", *exc: tuple, **kwargs: Dict[str, Any]
+    ) -> None:
         pass

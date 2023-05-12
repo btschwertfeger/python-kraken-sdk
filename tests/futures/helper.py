@@ -4,8 +4,10 @@
 # Github: https://github.com/btschwertfeger
 #
 
+from typing import Any
 
-def is_success(value) -> bool:
+
+def is_success(value: Any) -> bool:
     """
     Returns true if result is success, even if the order may not exist - but kraken received the correct request.
     """
@@ -14,6 +16,6 @@ def is_success(value) -> bool:
     )
 
 
-def is_not_error(value) -> bool:
+def is_not_error(value: Any) -> bool:
     """Returns true if result is not error"""
     return isinstance(value, dict) and "error" not in value.keys()

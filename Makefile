@@ -22,7 +22,7 @@ build:
 
 rebuild: clean build
 
-## dev		Installs the package in edit mode
+## dev		Installs the extended package in edit mode
 ##
 dev:
 	$(PYTHON) -m pip install -e ".[dev]"
@@ -78,7 +78,8 @@ clean:
 	rm -rf .pytest_cache build/ dist/ \
 		python_kraken_sdk.egg-info \
 		docs/_build \
-		.vscode
+		.vscode \
+		.mypy_cache
 
 	rm -f .coverage coverage.xml pytest.xml \
 		kraken/_version.py \

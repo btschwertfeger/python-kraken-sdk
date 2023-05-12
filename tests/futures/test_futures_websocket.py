@@ -4,7 +4,7 @@
 # Github: https://github.com/btschwertfeger
 #
 
-"""Module that tests the Kraken Futures websocket client"""
+"""Module that implements the unit tests for the Futures websocket client"""
 
 import asyncio
 import os

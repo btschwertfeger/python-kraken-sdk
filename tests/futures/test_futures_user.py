@@ -4,6 +4,8 @@
 # Github: https://github.com/btschwertfeger
 #
 
+"""Module that implements the unit tests for the Futures user client"""
+
 import os
 import random
 import tempfile

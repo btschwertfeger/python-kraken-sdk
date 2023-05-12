@@ -5,17 +5,24 @@
 #
 
 """Module that implements the Kraken Futures websocket client"""
+
+from __future__ import annotations
+
 import asyncio
 import json
 import logging
 import traceback
 from copy import deepcopy
 from random import random
-from typing import Coroutine, List
+from typing import TYPE_CHECKING, Any, List, Optional
 
 import websockets
 
 from kraken.exceptions import KrakenException
+
+if TYPE_CHECKING:
+    # to avaoid circular import for type checking
+    from kraken.futures import KrakenFuturesWSClient
 
 
 class ConnectFuturesWebsocket:
@@ -31,35 +38,40 @@ class ConnectFuturesWebsocket:
     :type callback: function
     """
 
-    MAX_RECONNECT_NUM = 2
+    MAX_RECONNECT_NUM: int = 2
 
-    def __init__(self, client, endpoint: str, callback):
-        self.__client = client
-        self.__ws_endpoint = endpoint
-        self.__callback = callback
+    def __init__(
+        self: "ConnectFuturesWebsocket",
+        client: KrakenFuturesWSClient,
+        endpoint: str,
+        callback: Any,
+    ):
+        self.__client: KrakenFuturesWSClient = client
+        self.__ws_endpoint: str = endpoint
+        self.__callback: Any = callback
 
-        self.__reconnect_num = 0
+        self.__reconnect_num: int = 0
 
-        self.__last_challenge = None
-        self.__new_challenge = None
-        self.__challenge_ready = False
+        self.__last_challenge: Optional[str] = None
+        self.__new_challenge: Optional[str] = None
+        self.__challenge_ready: bool = False
 
-        self.__socket = None
-        self.__subscriptions = []
+        self.__socket: Any = None
+        self.__subscriptions: List[dict] = []
 
         asyncio.ensure_future(self.__run_forever(), loop=asyncio.get_running_loop())
 
     @property
-    def subscriptions(self) -> list:
+    def subscriptions(self: "ConnectFuturesWebsocket") -> List[dict]:
         """Returns the active subscriptions"""
         return self.__subscriptions
 
-    async def __run(self, event: asyncio.Event) -> Coroutine:
-        keep_alive = True
+    async def __run(self: "ConnectFuturesWebsocket", event: asyncio.Event) -> None:
+        keep_alive: bool = True
         self.__new_challenge = None
         self.__last_challenge = None
 
-        async with websockets.connect(
+        async with websockets.connect(  # type: ignore[attr-defined] # pylint: disable=no-member
             f"wss://{self.__ws_endpoint}", ping_interval=30
         ) as socket:
             logging.info("Websocket connected!")
@@ -80,13 +92,13 @@ class ConnectFuturesWebsocket:
                     await self.__callback({"error": "asyncio.CancelledError"})
                 else:
                     try:
-                        msg = json.loads(_msg)
+                        msg: dict = json.loads(_msg)
                     except ValueError:
                         logging.warning(_msg)
                     else:
-                        forward = True
+                        forward: bool = True
                         if "event" in msg:
-                            _event = msg["event"]
+                            _event: str = msg["event"]
                             if _event == "challenge" and "message" in msg:
                                 forward = False
                                 self.__handle_new_challenge(msg)
@@ -97,7 +109,7 @@ class ConnectFuturesWebsocket:
                         if forward:
                             await self.__callback(msg)
 
-    async def __run_forever(self) -> Coroutine:
+    async def __run_forever(self: "ConnectFuturesWebsocket") -> None:
         try:
             while True:
                 await self.__reconnect()
@@ -112,22 +124,22 @@ class ConnectFuturesWebsocket:
         finally:
             self.__client.exception_occur = True
 
-    async def __reconnect(self) -> Coroutine:
+    async def __reconnect(self: "ConnectFuturesWebsocket") -> None:
         logging.info("Websocket start connect/reconnect")
 
         self.__reconnect_num += 1
         if self.__reconnect_num >= self.MAX_RECONNECT_NUM:
             raise KrakenException.MaxReconnectError()
 
-        reconnect_wait = self.__get_reconnect_wait(self.__reconnect_num)
+        reconnect_wait: float = self.__get_reconnect_wait(self.__reconnect_num)
         logging.debug(
             f"asyncio sleep reconnect_wait={reconnect_wait} s reconnect_num={self.__reconnect_num}"
         )
         await asyncio.sleep(reconnect_wait)
         logging.debug("asyncio sleep done")
-        event = asyncio.Event()
+        event: asyncio.Event = asyncio.Event()
 
-        tasks = {
+        tasks: dict = {
             asyncio.ensure_future(
                 self.__recover_subscription_req_msg(event)
             ): self.__recover_subscription_req_msg,
@@ -138,7 +150,7 @@ class ConnectFuturesWebsocket:
             finished, pending = await asyncio.wait(
                 tasks.keys(), return_when=asyncio.FIRST_EXCEPTION
             )
-            exception_occur = False
+            exception_occur: bool = False
             for task in finished:
                 if task.exception():
                     exception_occur = True
@@ -157,7 +169,9 @@ class ConnectFuturesWebsocket:
                 break
         logging.warning("reconnect over")
 
-    async def __recover_subscription_req_msg(self, event) -> Coroutine:
+    async def __recover_subscription_req_msg(
+        self: "ConnectFuturesWebsocket", event: asyncio.Event
+    ) -> None:
         logging.info(f"Recover subscriptions {self.__subscriptions} waiting.")
         await event.wait()
 
@@ -170,7 +184,9 @@ class ConnectFuturesWebsocket:
 
         logging.info(f"Recover subscriptions {self.__subscriptions} done.")
 
-    async def send_message(self, msg: dict, private: bool = False) -> Coroutine:
+    async def send_message(
+        self: "ConnectFuturesWebsocket", msg: dict, private: bool = False
+    ) -> None:
         """
         Enables sending a message via the websocket connection
 
@@ -197,12 +213,12 @@ class ConnectFuturesWebsocket:
 
         await self.__socket.send(json.dumps(msg))
 
-    def __handle_new_challenge(self, msg: dict) -> Coroutine:
+    def __handle_new_challenge(self: "ConnectFuturesWebsocket", msg: dict) -> None:
         self.__last_challenge = msg["message"]
         self.__new_challenge = self.__client._get_sign_challenge(self.__last_challenge)
         self.__challenge_ready = True
 
-    async def __check_challenge_ready(self) -> Coroutine:
+    async def __check_challenge_ready(self: "ConnectFuturesWebsocket") -> None:
         await self.__socket.send(
             json.dumps({"event": "challenge", "api_key": self.__client._key})
         )
@@ -212,19 +228,21 @@ class ConnectFuturesWebsocket:
             await asyncio.sleep(0.2)
 
     def __get_reconnect_wait(self, attempts: int) -> float:
-        return round(random() * min(60 * 3, (2**attempts) - 1) + 1)
+        return round(random() * min(60 * 3, (2**attempts) - 1) + 1)  # type: ignore[no-any-return]
 
-    def __append_subscription(self, msg: dict) -> None:
+    def __append_subscription(self: "ConnectFuturesWebsocket", msg: dict) -> None:
         self.__remove_subscription(msg=msg)  # remove from list, to avoid duplicates
-        sub = self.__build_subscription(msg)
+        sub: dict = self.__build_subscription(msg)
         self.__subscriptions.append(sub)
 
-    def __remove_subscription(self, msg: dict) -> None:
-        sub = self.__build_subscription(msg)
+    def __remove_subscription(self: "ConnectFuturesWebsocket", msg: dict) -> None:
+        sub: dict = self.__build_subscription(msg)
         self.__subscriptions = [x for x in self.__subscriptions if x != sub]
 
-    def __build_subscription(self, subscription: dict) -> dict:
-        sub = {"event": "subscribe"}
+    def __build_subscription(
+        self: "ConnectFuturesWebsocket", subscription: dict
+    ) -> dict:
+        sub: dict = {"event": "subscribe"}
 
         if (
             "event" not in subscription
@@ -259,6 +277,6 @@ class ConnectFuturesWebsocket:
             )
         return sub
 
-    def _get_active_subscriptions(self) -> List[dict]:
+    def _get_active_subscriptions(self: "ConnectFuturesWebsocket") -> List[dict]:
         """Returns the active subscriptions"""
         return self.__subscriptions

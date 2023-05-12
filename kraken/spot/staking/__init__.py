@@ -5,7 +5,8 @@
 #
 
 """Module that implements the Kraken Spot Stakung client"""
-from typing import List, Union
+
+from typing import Any, Dict, List, Optional, Union
 
 from kraken.base_api import KrakenBaseSpotAPI
 
@@ -41,8 +42,20 @@ class Staking(KrakenBaseSpotAPI):
         ...     print(staking.stake_asset(asset="XLM", amount=200, method="Lumen Staked"))
     """
 
+    def __init__(
+        self,
+        key: Optional[str] = "",
+        secret: Optional[str] = "",
+        url: Optional[str] = "",
+    ) -> None:
+        super().__init__(key=key, secret=secret, url=url)
+
+    def __enter__(self: "Staking") -> "Staking":
+        super().__enter__()
+        return self
+
     def stake_asset(
-        self, asset: str, amount: Union[str, int, float], method: str
+        self: "Staking", asset: str, amount: Union[str, int, float], method: str
     ) -> dict:
         """
         Stake the specified asset from the Spot wallet.
@@ -76,7 +89,7 @@ class Staking(KrakenBaseSpotAPI):
             ... )
             { 'refid': 'BOG5AE5-KSCNR4-VPNPEV' }
         """
-        return self._request(
+        return self._request(  # type: ignore[return-value]
             method="POST",
             uri="/private/Stake",
             params={"asset": asset, "amount": amount, "method": method},
@@ -84,10 +97,10 @@ class Staking(KrakenBaseSpotAPI):
         )
 
     def unstake_asset(
-        self,
+        self: "Staking",
         asset: str,
         amount: Union[str, int, float],
-        method: Union[str, None] = None,
+        method: Optional[str] = None,
     ) -> dict:
         """
         Unstake an asset and transfer the amount to the Spot wallet.
@@ -104,7 +117,7 @@ class Staking(KrakenBaseSpotAPI):
         :param amount: The amount to stake
         :type amount: str | int | float
         :param method: Filter by staking method (default: ``None``)
-        :type method: str | None, optional
+        :type method: str, optional
         :return: The reference id of the unstaking transaction
         :rtype: dict
 
@@ -121,15 +134,15 @@ class Staking(KrakenBaseSpotAPI):
             ... )
             { 'refid': 'BOG5AE5-KSCNR4-VPNPEV' }
         """
-        params = {"asset": asset, "amount": amount}
+        params: dict = {"asset": asset, "amount": amount}
         if method is not None:
             params["method"] = method
 
-        return self._request(
+        return self._request(  # type: ignore[return-value]
             method="POST", uri="/private/Unstake", params=params, auth=True
         )
 
-    def list_stakeable_assets(self) -> List[dict]:
+    def list_stakeable_assets(self: "Staking") -> List[dict]:
         """
         Get a list of stakable assets. Only assets that the user is able to stake
         will be shown.
@@ -182,9 +195,11 @@ class Staking(KrakenBaseSpotAPI):
                 }, ...
             ]
         """
-        return self._request(method="POST", uri="/private/Staking/Assets", auth=True)
+        return self._request(  # type: ignore[return-value]
+            method="POST", uri="/private/Staking/Assets", auth=True
+        )
 
-    def get_pending_staking_transactions(self) -> List[dict]:
+    def get_pending_staking_transactions(self: "Staking") -> List[dict]:
         """
         Get the list of pendin staking transactions of the user.
 
@@ -216,9 +231,11 @@ class Staking(KrakenBaseSpotAPI):
                 }, ...
             ]
         """
-        return self._request(method="POST", uri="/private/Staking/Pending", auth=True)
+        return self._request(  # type: ignore[return-value]
+            method="POST", uri="/private/Staking/Pending", auth=True
+        )
 
-    def list_staking_transactions(self) -> List[dict]:
+    def list_staking_transactions(self: "Staking") -> List[dict]:
         """
         List the last 1000 staking transactions of the past 90 days.
 
@@ -253,6 +270,6 @@ class Staking(KrakenBaseSpotAPI):
             ]
 
         """
-        return self._request(
+        return self._request(  # type: ignore[return-value]
             method="POST", uri="/private/Staking/Transactions", auth=True
         )

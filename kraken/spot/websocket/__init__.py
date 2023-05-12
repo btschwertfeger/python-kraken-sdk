@@ -5,6 +5,9 @@
 #
 
 """Module that implements the kraken Spot websocket clients"""
+
+from __future__ import annotations  # to avaoid circular import for type checking
+
 import asyncio
 import json
 import logging
@@ -12,7 +15,7 @@ import traceback
 from copy import deepcopy
 from random import random
 from time import time
-from typing import Coroutine, List
+from typing import TYPE_CHECKING, Any, List, Optional, Union
 
 import websockets
 
@@ -36,43 +39,49 @@ class ConnectSpotWebsocket:
     :type private: bool, optional
     """
 
-    MAX_RECONNECT_NUM = 10
+    MAX_RECONNECT_NUM: int = 10
 
-    def __init__(self, client, endpoint: str, callback, is_auth: bool = False):
-        self.__client = client
-        self.__ws_endpoint = endpoint
-        self.__callback = callback
+    def __init__(
+        self,
+        client: KrakenSpotWSClient,
+        endpoint: str,
+        callback: Any,
+        is_auth: Optional[bool] = False,
+    ):
+        self.__client: KrakenSpotWSClient = client
+        self.__ws_endpoint: str = endpoint
+        self.__callback: Any = callback
 
-        self.__reconnect_num = 0
-        self.__ws_conn_details = None
+        self.__reconnect_num: int = 0
+        self.__ws_conn_details: Optional[dict] = None
 
-        self.__is_auth = is_auth
+        self.__is_auth: bool = is_auth
 
-        self.__last_ping = None
-        self.__socket = None
-        self.__subscriptions = []
+        self.__last_ping: Optional[Union[int, float]] = None
+        self.__socket: Optional[Any] = None
+        self.__subscriptions: List[dict] = []
 
         asyncio.ensure_future(self.__run_forever(), loop=asyncio.get_running_loop())
 
     @property
-    def subscriptions(self) -> list:
+    def subscriptions(self: "ConnectSpotWebsocket") -> list:
         """Returns the active subscriptions"""
         return self.__subscriptions
 
     @property
-    def is_auth(self) -> bool:
+    def is_auth(self: "ConnectSpotWebsocket") -> bool:
         """Returns true if the connection can access privat endpoints"""
         return self.__is_auth
 
-    async def __run(self, event: asyncio.Event) -> Coroutine:
-        keep_alive = True
+    async def __run(self: "ConnectSpotWebsocket", event: asyncio.Event) -> None:
+        keep_alive: bool = True
         self.__last_ping = time()
         self.__ws_conn_details = (
             None if not self.__is_auth else self.__client.get_ws_token()
         )
         logging.debug(f"Websocket token: {self.__ws_conn_details}")
 
-        async with websockets.connect(
+        async with websockets.connect(  # type: ignore[attr-defined]
             f"wss://{self.__ws_endpoint}", ping_interval=30
         ) as socket:
             logging.info("Websocket connected!")
@@ -96,7 +105,7 @@ class ConnectSpotWebsocket:
                     await self.__callback({"error": "asyncio.CancelledError"})
                 else:
                     try:
-                        msg = json.loads(_msg)
+                        msg: dict = json.loads(_msg)
                     except ValueError:
                         logging.warning(_msg)
                     else:
@@ -115,7 +124,7 @@ class ConnectSpotWebsocket:
                                     pass
                         await self.__callback(msg)
 
-    async def __run_forever(self) -> Coroutine:
+    async def __run_forever(self: "ConnectSpotWebsocket") -> None:
         try:
             while True:
                 await self.__reconnect()
@@ -128,22 +137,22 @@ class ConnectSpotWebsocket:
         finally:
             self.__client.exception_occur = True
 
-    async def __reconnect(self) -> Coroutine:
+    async def __reconnect(self: "ConnectSpotWebsocket") -> None:
         logging.info("Websocket start connect/reconnect")
 
         self.__reconnect_num += 1
         if self.__reconnect_num >= self.MAX_RECONNECT_NUM:
             raise KrakenException.MaxReconnectError()
 
-        reconnect_wait = self.__get_reconnect_wait(self.__reconnect_num)
+        reconnect_wait: float = self.__get_reconnect_wait(self.__reconnect_num)
         logging.debug(
             f"asyncio sleep reconnect_wait={reconnect_wait} s reconnect_num={self.__reconnect_num}"
         )
         await asyncio.sleep(reconnect_wait)
         logging.debug("asyncio sleep done")
-        event = asyncio.Event()
+        event: asyncio.Event = asyncio.Event()
 
-        tasks = {
+        tasks: dict = {
             asyncio.ensure_future(
                 self.__recover_subscriptions(event)
             ): self.__recover_subscriptions,
@@ -159,7 +168,7 @@ class ConnectSpotWebsocket:
                 if task.exception():
                     exception_occur = True
                     traceback.print_stack()
-                    message = f"{task} got an exception {task.exception()}\n {task.get_stack()}"
+                    message: str = f"{task} got an exception {task.exception()}\n {task.get_stack()}"
                     logging.warning(message)
                     for process in pending:
                         logging.warning(f"pending {process}")
@@ -173,7 +182,9 @@ class ConnectSpotWebsocket:
                 break
         logging.warning("reconnect over")
 
-    async def __recover_subscriptions(self, event) -> Coroutine:
+    async def __recover_subscriptions(
+        self: "ConnectSpotWebsocket", event: asyncio.Event
+    ) -> None:
         logging.info(
             f'Recover {"auth" if self.__is_auth else "public"} subscriptions {self.__subscriptions} waiting.'
         )
@@ -196,7 +207,7 @@ class ConnectSpotWebsocket:
             f'Recovering {"auth" if self.__is_auth else "public"} subscriptions {self.__subscriptions} done.'
         )
 
-    async def send_ping(self) -> Coroutine:
+    async def send_ping(self: "ConnectSpotWebsocket") -> None:
         """Sends ping to Keaken"""
         msg = {
             "event": "ping",
@@ -205,7 +216,9 @@ class ConnectSpotWebsocket:
         await self.__socket.send(json.dumps(msg))
         self.__last_ping = time()
 
-    async def send_message(self, msg: dict, private: bool = False) -> Coroutine:
+    async def send_message(
+        self: "ConnectSpotWebsocket", msg: dict, private: Optional[bool] = False
+    ) -> None:
         """
         Sends a message via websocket
 
@@ -227,7 +240,7 @@ class ConnectSpotWebsocket:
             msg["token"] = self.__ws_conn_details["token"]
         await self.__socket.send(json.dumps(msg))
 
-    def __append_subscription(self, msg: dict) -> None:
+    def __append_subscription(self: "ConnectSpotWebsocket", msg: dict) -> None:
         """
         Add a dictionary containing subscription information to list
         This is used to recover when the connection gets interrupted.
@@ -243,7 +256,7 @@ class ConnectSpotWebsocket:
         self.__remove_subscription(msg)  # remove from list, to avoid duplicates
         self.__subscriptions.append(self.__build_subscription(msg))
 
-    def __remove_subscription(self, msg: dict) -> None:
+    def __remove_subscription(self: "ConnectSpotWebsocket", msg: dict) -> None:
         """
         Remove a dictionary containing subscription information from list.
 
@@ -258,8 +271,8 @@ class ConnectSpotWebsocket:
         sub = self.__build_subscription(msg)
         self.__subscriptions = [x for x in self.__subscriptions if x != sub]
 
-    def __build_subscription(self, msg: dict) -> dict:
-        sub = {"event": "subscribe"}
+    def __build_subscription(self: "ConnectSpotWebsocket", msg: dict) -> dict:
+        sub: dict = {"event": "subscribe"}
 
         if not "subscription" in msg or "name" not in msg["subscription"]:
             raise ValueError("Cannot remove subscription with missing attributes.")
@@ -281,7 +294,7 @@ class ConnectSpotWebsocket:
             )
         return sub
 
-    def __get_reconnect_wait(self, attempts: int) -> float:
+    def __get_reconnect_wait(self, attempts: int) -> Union[float, Any]:
         return round(random() * min(60 * 3, (2**attempts) - 1) + 1)
 
 
@@ -381,31 +394,31 @@ class KrakenSpotWSClient(SpotWsClientCl):
                 loop.close()
     """
 
-    PROD_ENV_URL = "ws.kraken.com"
-    AUTH_PROD_ENV_URL = "ws-auth.kraken.com"
-    BETA_ENV_URL = "beta-ws.kraken.com"
-    AUTH_BETA_ENV_URL = "beta-ws-auth.kraken.com"
+    PROD_ENV_URL: str = "ws.kraken.com"
+    AUTH_PROD_ENV_URL: str = "ws-auth.kraken.com"
+    BETA_ENV_URL: str = "beta-ws.kraken.com"
+    AUTH_BETA_ENV_URL: str = "beta-ws-auth.kraken.com"
 
     def __init__(
-        self,
-        key: str = "",
-        secret: str = "",
-        url: str = "",
-        callback=None,
-        beta: bool = False,
+        self: "KrakenSpotWSClient",
+        key: Optional[str] = "",
+        secret: Optional[str] = "",
+        url: Optional[str] = "",
+        callback: Any = None,
+        beta: Optional[bool] = False,
     ):
         super().__init__(key=key, secret=secret, url=url, sandbox=beta)
-        self.__callback = callback
-        self.__is_auth = key and secret
-        self.exception_occur = False
-        self._pub_conn = ConnectSpotWebsocket(
+        self.__callback: Any = callback
+        self.__is_auth: bool = bool(key and secret)
+        self.exception_occur: bool = False
+        self._pub_conn: ConnectSpotWebsocket = ConnectSpotWebsocket(
             client=self,
             endpoint=self.PROD_ENV_URL if not beta else self.BETA_ENV_URL,
             is_auth=False,
             callback=self.on_message,
         )
 
-        self._priv_conn = (
+        self._priv_conn: Optional[ConnectSpotWebsocket] = (
             ConnectSpotWebsocket(
                 client=self,
                 endpoint=self.AUTH_PROD_ENV_URL if not beta else self.AUTH_BETA_ENV_URL,
@@ -416,7 +429,7 @@ class KrakenSpotWSClient(SpotWsClientCl):
             else None
         )
 
-    async def on_message(self, msg: dict) -> Coroutine:
+    async def on_message(self: "KrakenSpotWSClient", msg: dict) -> None:
         """
         Calls the defined callback function (if defined)
         or overload this function.
@@ -432,7 +445,9 @@ class KrakenSpotWSClient(SpotWsClientCl):
             logging.warning("Received event but no callback is defined")
             print(msg)
 
-    async def subscribe(self, subscription: dict, pair: List[str] = None) -> Coroutine:
+    async def subscribe(
+        self: "KrakenSpotWSClient", subscription: dict, pair: List[str] = None
+    ) -> None:
         """
         Subscribe to a channel
 
@@ -465,9 +480,9 @@ class KrakenSpotWSClient(SpotWsClientCl):
 
         if "name" not in subscription:
             raise AttributeError('Subscription requires a "name" key."')
-        private = bool(subscription["name"] in self.private_sub_names)
+        private: bool = bool(subscription["name"] in self.private_sub_names)
 
-        payload = {"event": "subscribe", "subscription": subscription}
+        payload: dict = {"event": "subscribe", "subscription": subscription}
         if pair is not None:
             if not isinstance(pair, list):
                 raise ValueError(
@@ -496,8 +511,8 @@ class KrakenSpotWSClient(SpotWsClientCl):
             await self._pub_conn.send_message(payload, private=False)
 
     async def unsubscribe(
-        self, subscription: dict, pair: List[str] = None
-    ) -> Coroutine:
+        self: "KrakenSpotWSClient", subscription: dict, pair: Optional[List[str]] = None
+    ) -> None:
         """
         Unsubscribe from a topic
 
@@ -513,7 +528,7 @@ class KrakenSpotWSClient(SpotWsClientCl):
         :param subscribtion: The subscription to unsubscribe from
         :type subscription: dict
         :param pair: The pair or list of pairs to unsubscribe
-        :type pair: List[str] | None, optional
+        :type pair: List[str], optional
 
         Initialize your client as described in :class:`kraken.spot.KrakenSpotWSClient` to
         run the following example:
@@ -529,9 +544,9 @@ class KrakenSpotWSClient(SpotWsClientCl):
         """
         if "name" not in subscription:
             raise AttributeError('Subscription requires a "name" key."')
-        private = bool(subscription["name"] in self.private_sub_names)
+        private: bool = bool(subscription["name"] in self.private_sub_names)
 
-        payload = {"event": "unsubscribe", "subscription": subscription}
+        payload: dict = {"event": "unsubscribe", "subscription": subscription}
         if pair is not None:
             if not isinstance(pair, list):
                 raise ValueError(
@@ -560,7 +575,7 @@ class KrakenSpotWSClient(SpotWsClientCl):
             await self._pub_conn.send_message(payload, private=False)
 
     @property
-    def private_sub_names(self) -> List[str]:
+    def private_sub_names(self: "KrakenSpotWSClient") -> List[str]:
         """
         Returns the private subscription names
 
@@ -570,7 +585,7 @@ class KrakenSpotWSClient(SpotWsClientCl):
         return ["ownTrades", "openOrders"]
 
     @property
-    def public_sub_names(self) -> List[str]:
+    def public_sub_names(self: "KrakenSpotWSClient") -> List[str]:
         """
         Returns the public subscription names
 
@@ -581,12 +596,14 @@ class KrakenSpotWSClient(SpotWsClientCl):
         return ["ticker", "spread", "book", "ohlc", "trade", "*"]
 
     @property
-    def active_public_subscriptions(self) -> List[dict]:
+    def active_public_subscriptions(
+        self: "KrakenSpotWSClient",
+    ) -> Union[List[dict], Any]:
         """
         Returns the active public subscriptions
 
         :return: List of active public subscriptions
-        :rtype: List[dict]
+        :rtype: Union[List[dict], Any]
         :raises ConnectionError: If there is no public connection.
         """
         if self._pub_conn is not None:
@@ -594,20 +611,22 @@ class KrakenSpotWSClient(SpotWsClientCl):
         raise ConnectionError("Public connection does not exist!")
 
     @property
-    def active_private_subscriptions(self) -> List[dict]:
+    def active_private_subscriptions(
+        self: "KrakenSpotWSClient",
+    ) -> Union[List[dict], Any]:
         """
         Returns the active private subscriptions
 
         :return: List of active private subscriptions
-        :rtype: List[dict]
+        :rtype: Union[List[dict], Any]
         :raises ConnectionError: If there is no private connection
         """
         if self._priv_conn is not None:
             return self._priv_conn.subscriptions
         raise ConnectionError("Private connection does not exist!")
 
-    async def __aenter__(self):
+    async def __aenter__(self: "KrakenSpotWSClient") -> "KrakenSpotWSClient":
         return self
 
-    async def __aexit__(self, *exc):
+    async def __aexit__(self, *exc: tuple, **kwargs: dict) -> None:
         pass

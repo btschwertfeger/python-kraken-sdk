@@ -1,5 +1,17 @@
 # Changelog
 
+## [Unreleased](https://github.com/btschwertfeger/python-kraken-sdk/tree/HEAD)
+
+[Full Changelog](https://github.com/btschwertfeger/python-kraken-sdk/compare/v1.2.0...HEAD)
+
+**Implemented enhancements:**
+
+- Let clients be used as context manager [\#81](https://github.com/btschwertfeger/python-kraken-sdk/issues/81)
+
+**Merged pull requests:**
+
+- Updated changelog to match v1.2.0 [\#86](https://github.com/btschwertfeger/python-kraken-sdk/pull/86) ([btschwertfeger](https://github.com/btschwertfeger))
+
 ## [v1.2.0](https://github.com/btschwertfeger/python-kraken-sdk/tree/v1.2.0) (2023-05-09)
 
 [Full Changelog](https://github.com/btschwertfeger/python-kraken-sdk/compare/v1.1.0...v1.2.0)
@@ -19,7 +31,6 @@
 - Let REST and websocket clients be used as context manager [\#83](https://github.com/btschwertfeger/python-kraken-sdk/pull/83) ([btschwertfeger](https://github.com/btschwertfeger))
 - Disable custom Kraken exceptions \(optional\) [\#82](https://github.com/btschwertfeger/python-kraken-sdk/pull/82) ([btschwertfeger](https://github.com/btschwertfeger))
 - Add Futures user endpoints: `check_trading_enabled_on_subaccount` and `set_trading_on_subaccount` [\#80](https://github.com/btschwertfeger/python-kraken-sdk/pull/80) ([btschwertfeger](https://github.com/btschwertfeger))
-- Let clients be used as context manager [\#81](https://github.com/btschwertfeger/python-kraken-sdk/issues/81)
 
 **Fixed bugs:**
 
@@ -33,6 +44,7 @@
 - Split the unit tests into individual files [\#75](https://github.com/btschwertfeger/python-kraken-sdk/pull/75) ([btschwertfeger](https://github.com/btschwertfeger))
 - Removed matrix from CodeQL job [\#74](https://github.com/btschwertfeger/python-kraken-sdk/pull/74) ([btschwertfeger](https://github.com/btschwertfeger))
 - Add a Changelog [\#73](https://github.com/btschwertfeger/python-kraken-sdk/pull/73) ([btschwertfeger](https://github.com/btschwertfeger))
+- Updated changelog to match v1.2.0 [\#86](https://github.com/btschwertfeger/python-kraken-sdk/pull/86) ([btschwertfeger](https://github.com/btschwertfeger))
 
 ## [v1.1.0](https://github.com/btschwertfeger/python-kraken-sdk/tree/v1.1.0) (2023-04-08)
 

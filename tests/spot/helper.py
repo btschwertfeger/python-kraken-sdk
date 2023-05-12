@@ -4,9 +4,9 @@
 # Github: https://github.com/btschwertfeger
 #
 
-from typing import Union
+from typing import Any, Union
 
 
-def is_not_error(value: Union[dict, any]) -> bool:
+def is_not_error(value: Union[dict, Any]) -> bool:
     """Returns True if 'error' in dict."""
     return isinstance(value, dict) and "error" not in value
