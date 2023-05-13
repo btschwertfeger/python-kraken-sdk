@@ -70,8 +70,7 @@ class User(KrakenBaseSpotAPI):
             >>> from kraken.spot import User
             >>> user = User(key="api-key", secret="secret-key")
             >>> user.get_account_balances()
-            {
-                'ZUSD': '241983.1415',
+            {                'ZUSD': '241983.1415',
                 'KFEE': '8020.22',
                 'BCH': '0.0000077100',
                 'ETHW': '0.0000040',

@@ -351,7 +351,7 @@ class User(KrakenBaseFuturesAPI):
             ...             file.write(chunk)
         """
 
-        return self._request( # type: ignore[return-value]
+        return self._request(
             method="GET",
             uri="/api/history/v2/accountlogcsv",
             auth=True,

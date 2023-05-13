@@ -71,7 +71,7 @@ class ConnectFuturesWebsocket:
         self.__new_challenge = None
         self.__last_challenge = None
 
-        async with websockets.connect(  # type: ignore[attr-defined] # pylint: disable=no-member
+        async with websockets.connect(  # pylint: disable=no-member
             f"wss://{self.__ws_endpoint}", ping_interval=30
         ) as socket:
             logging.info("Websocket connected!")
