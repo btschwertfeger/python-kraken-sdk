@@ -19,8 +19,8 @@ from typing import TYPE_CHECKING, Any, List, Optional, Union
 
 import websockets
 
-from kraken.exceptions import KrakenException
-from kraken.spot.ws_client import SpotWsClientCl
+from ...exceptions import KrakenException
+from ...spot.ws_client import SpotWsClientCl
 
 
 class ConnectSpotWebsocket:
@@ -81,7 +81,7 @@ class ConnectSpotWebsocket:
         )
         logging.debug(f"Websocket token: {self.__ws_conn_details}")
 
-        async with websockets.connect(  # type: ignore[attr-defined]
+        async with websockets.connect(  # type: ignore[attr-defined] # pylint: disable=no-member
             f"wss://{self.__ws_endpoint}", ping_interval=30
         ) as socket:
             logging.info("Websocket connected!")

@@ -8,7 +8,7 @@
 
 from typing import List, Optional, Union
 
-from kraken.base_api import KrakenBaseSpotAPI
+from ...base_api import KrakenBaseSpotAPI
 
 
 class Market(KrakenBaseSpotAPI):

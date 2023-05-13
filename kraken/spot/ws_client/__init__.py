@@ -10,11 +10,11 @@ from __future__ import annotations
 import logging
 from typing import TYPE_CHECKING, List, Optional, Union
 
-from kraken.base_api import KrakenBaseSpotAPI
+from ...base_api import KrakenBaseSpotAPI
 
 if TYPE_CHECKING:
     # to avaoid circular import for type checking
-    from kraken.spot.websocket import ConnectSpotWebsocket
+    from ...spot.websocket import ConnectSpotWebsocket
 
 
 class SpotWsClientCl(KrakenBaseSpotAPI):

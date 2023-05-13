@@ -5,9 +5,10 @@
 #
 
 """Module that implements the Kraken Trade Spot client"""
-from typing import List, Optional, Tuple, Union
 
-from kraken.base_api import KrakenBaseSpotAPI
+from typing import List, Optional, Union
+
+from ...base_api import KrakenBaseSpotAPI
 
 
 class Trade(KrakenBaseSpotAPI):

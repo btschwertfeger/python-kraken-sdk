@@ -5,9 +5,10 @@
 #
 
 """Module that implements the Kraken Futures trade client"""
+
 from typing import List, Optional, Tuple, Union
 
-from kraken.base_api import KrakenBaseFuturesAPI
+from ...base_api import KrakenBaseFuturesAPI
 
 
 class Trade(KrakenBaseFuturesAPI):

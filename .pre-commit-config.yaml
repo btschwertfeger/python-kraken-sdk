@@ -27,7 +27,8 @@ repos:
     rev: "v1.2.0"
     hooks:
       - id: mypy
-        args: ["--config-file=pyproject.toml"]
+        name: mypy
+        args: [--config-file=pyproject.toml]
   - repo: https://github.com/pre-commit/pygrep-hooks
     rev: v1.10.0
     hooks:

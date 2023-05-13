@@ -18,11 +18,11 @@ from typing import TYPE_CHECKING, Any, List, Optional
 
 import websockets
 
-from kraken.exceptions import KrakenException
+from ...exceptions import KrakenException
 
 if TYPE_CHECKING:
     # to avaoid circular import for type checking
-    from kraken.futures import KrakenFuturesWSClient
+    from ...futures import KrakenFuturesWSClient
 
 
 class ConnectFuturesWebsocket:

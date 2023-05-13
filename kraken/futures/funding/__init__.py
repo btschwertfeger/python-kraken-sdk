@@ -3,11 +3,11 @@
 # Copyright (C) 2023 Benjamin Thomas Schwertfeger
 # Github: https://github.com/btschwertfeger
 
-
 """Module that implements the Kraken Futures Funding client"""
+
 from typing import Optional, Union
 
-from kraken.base_api import KrakenBaseFuturesAPI
+from ...base_api import KrakenBaseFuturesAPI
 
 
 class Funding(KrakenBaseFuturesAPI):

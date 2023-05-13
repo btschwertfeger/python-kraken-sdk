@@ -4,9 +4,10 @@
 # Github: https://github.com/btschwertfeger
 
 """Module that implements the Kraken Futures market client"""
+
 from typing import List, Optional, Union
 
-from kraken.base_api import KrakenBaseFuturesAPI
+from ...base_api import KrakenBaseFuturesAPI
 
 
 class Market(KrakenBaseFuturesAPI):

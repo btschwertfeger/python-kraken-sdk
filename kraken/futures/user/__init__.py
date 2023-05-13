@@ -10,7 +10,7 @@ from typing import Optional, Union
 
 import requests  # type: ignore[import]
 
-from kraken.base_api import KrakenBaseFuturesAPI
+from ...base_api import KrakenBaseFuturesAPI
 
 
 class User(KrakenBaseFuturesAPI):
@@ -351,7 +351,7 @@ class User(KrakenBaseFuturesAPI):
             ...             file.write(chunk)
         """
 
-        return self._request(
+        return self._request( # type: ignore[return-value]
             method="GET",
             uri="/api/history/v2/accountlogcsv",
             auth=True,

@@ -6,9 +6,9 @@
 
 """ Module that implements the Kraken Spot User client"""
 from decimal import Decimal
-from typing import List, Optional, Tuple, Union
+from typing import List, Optional, Union
 
-from kraken.base_api import KrakenBaseSpotAPI
+from ...base_api import KrakenBaseSpotAPI
 
 
 class User(KrakenBaseSpotAPI):

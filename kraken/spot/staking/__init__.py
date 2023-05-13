@@ -6,9 +6,9 @@
 
 """Module that implements the Kraken Spot Stakung client"""
 
-from typing import Any, Dict, List, Optional, Union
+from typing import List, Optional, Union
 
-from kraken.base_api import KrakenBaseSpotAPI
+from ...base_api import KrakenBaseSpotAPI
 
 
 class Staking(KrakenBaseSpotAPI):

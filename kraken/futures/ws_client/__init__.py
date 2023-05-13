@@ -13,9 +13,9 @@ import logging
 from copy import deepcopy
 from typing import Any, Dict, List, Optional
 
-from kraken.base_api import KrakenBaseFuturesAPI
-from kraken.exceptions import KrakenException
-from kraken.futures.websocket import ConnectFuturesWebsocket
+from ...base_api import KrakenBaseFuturesAPI
+from ...exceptions import KrakenException
+from ...futures.websocket import ConnectFuturesWebsocket
 
 
 class KrakenFuturesWSClient(KrakenBaseFuturesAPI):
