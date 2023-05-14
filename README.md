@@ -7,6 +7,7 @@
 [![Generic badge](https://img.shields.io/badge/python-3.7_|_3.8_|_3.9_|_3.10_|_3.11-blue.svg)](https://shields.io/)
 [![Downloads](https://static.pepy.tech/personalized-badge/python-kraken-sdk?period=total&units=abbreviation&left_color=grey&right_color=orange&left_text=downloads)](https://pepy.tech/project/python-kraken-sdk)
 
+[![Typing][https://img.shields.io/badge/typing-mypy-informational](https://img.shields.io/badge/Typing-mypy-informational)]
 [![CodeQL](https://github.com/btschwertfeger/python-kraken-sdk/actions/workflows/codeql.yml/badge.svg?branch=master)](https://github.com/btschwertfeger/python-kraken-sdk/actions/workflows/codeql.yml)
 [![CI/CD](https://github.com/btschwertfeger/python-kraken-sdk/actions/workflows/cicd.yml/badge.svg?branch=master)](https://github.com/btschwertfeger/python-kraken-sdk/actions/workflows/cicd.yml)
 [![codecov](https://codecov.io/gh/btschwertfeger/python-kraken-sdk/branch/master/badge.svg)](https://app.codecov.io/gh/btschwertfeger/python-kraken-sdk)
@@ -40,9 +41,10 @@ Clients:
 General:
 
 - access both public and private endpoints
-- responsive error handling, custom exceptions and logging
-- extensive example scripts (see `/examples`)
-- clients can be used as context manager
+- responsive error handling and custom exceptions
+- extensive example scripts (see `/examples` and `/tests`)
+- tested using pytest
+- releases are archived at [Zenodo](https://zenodo.org/badge/latestdoi/510751854)
 - coding standards like snake case are not always followed to maintain the parameter naming convention of the Kraken API
 - ...
 
@@ -55,7 +57,7 @@ Documentation:
 
 ## ❗️ Attention
 
-**ONLY** tagged releases are availabe at PyPI. So the content of the master may not match with the content of the latest release. So please have a look at the release specifc READMEs and changelogs.
+**ONLY** tagged releases are availabe at PyPI. So the content of the master may not match with the content of the latest release. - Please have a look at the release specifc READMEs and changelogs.
 
 ---
 
@@ -390,6 +392,7 @@ Note: Authenticated Futures websocket clients can also un-/subscribe from/to pub
 
 # 🔭 References
 
+- https://python-kraken-sdk.readthedocs.io/en/stable
 - https://docs.kraken.com/rest
 - https://docs.kraken.com/websockets
 - https://docs.futures.kraken.com
