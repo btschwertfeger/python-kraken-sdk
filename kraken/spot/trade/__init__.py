@@ -589,7 +589,6 @@ class Trade(KrakenBaseSpotAPI):
     def cancel_order_batch(self: "Trade", orders: List[Union[str, int]]) -> dict:
         """
         Cancel a a list of orders by ``txid`` or ``userref``
-        This endpoint is broken, see https://github.com/btschwertfeger/python-kraken-sdk/issues/65
 
         Requires the ``Cancel/close orders`` permission in
         the API key settings.

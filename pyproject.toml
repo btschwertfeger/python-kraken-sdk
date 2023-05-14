@@ -64,6 +64,7 @@ testpaths = ["tests"]
 
 [tool.pytest.ini_options]
 markers = [
+    "selection: Used to run a specific test by hand.",
     "spot: mark a test that tests a Spot endpoint.",
     "spot_auth: mark a test that tests a authenticaed Spot endpoint.",
     "spot_trade: mark a test that tests a Spot Trade endpoint.",

@@ -8,8 +8,10 @@
 import base64
 import hashlib
 import hmac
+import json
 import time
 import urllib.parse
+from copy import deepcopy
 from typing import Any, Dict, List, Optional, Type, Union
 from urllib.parse import urljoin
 from uuid import uuid1
@@ -196,12 +198,25 @@ class KrakenBaseSpotAPI:
                 raise ValueError("Missing credentials.")
             self.__nonce = (self.__nonce + 1) % 1
             params["nonce"] = str(int(time.time() * 1000)) + str(self.__nonce).zfill(4)
+
+            content_type: str
+            sign_data: str
+
+            if do_json:
+                content_type = "application/json; charset=utf-8"
+                sign_data = json.dumps(params)
+            else:
+                content_type = "application/x-www-form-urlencoded; charset=utf-8"
+                sign_data = urllib.parse.urlencode(params)
+
             headers.update(
                 {
-                    "Content-Type": "application/x-www-form-urlencoded; charset=utf-8",
+                    "Content-Type": content_type,
                     "API-Key": self.__key,
                     "API-Sign": self._get_kraken_signature(
-                        f"{self.API_V}{uri}", params
+                        urlpath=f"{self.API_V}{uri}",
+                        data=sign_data,
+                        nonce=params["nonce"],
                     ),
                 }
             )
@@ -234,7 +249,9 @@ class KrakenBaseSpotAPI:
             return_raw,
         )
 
-    def _get_kraken_signature(self, urlpath: str, data: dict) -> str:
+    def _get_kraken_signature(
+        self: "KrakenBaseSpotAPI", urlpath: str, data: str, nonce: int
+    ) -> str:
         """
         Creates the signature of the data. This is requred for authenticated requests
         to verify the user.
@@ -242,7 +259,9 @@ class KrakenBaseSpotAPI:
         :param urlpath: The endpont including the api version
         :type urlpath: str
         :param data: Data of the request to sign, including the nonce.
-        :type data: dict
+        :type data: str
+        :param nonce: The nonce to sign with
+        :type nonce: int
         :return: The signed string
         :rtype: str
         """
@@ -250,15 +269,13 @@ class KrakenBaseSpotAPI:
             hmac.new(
                 base64.b64decode(self.__secret),
                 urlpath.encode()
-                + hashlib.sha256(
-                    (str(data["nonce"]) + urllib.parse.urlencode(data)).encode()
-                ).digest(),
+                + hashlib.sha256((str(nonce) + data).encode()).digest(),
                 hashlib.sha512,
             ).digest()
         ).decode()
 
     def __check_response_data(
-        self, response: requests.Response, return_raw: bool = False
+        self: "KrakenBaseSpotAPI", response: requests.Response, return_raw: bool = False
     ) -> Union[dict, list, requests.Response]:
         """
         Checkes the response, handles the error (if exists) and returns the response data.
@@ -297,7 +314,7 @@ class KrakenBaseSpotAPI:
         """
         return "".join(str(uuid1()).split("-"))
 
-    def _to_str_list(self, value: Union[str, list]) -> str:
+    def _to_str_list(self: "KrakenBaseSpotAPI", value: Union[str, list]) -> str:
         """
         Converts a list to a comme separated string
 
@@ -315,7 +332,9 @@ class KrakenBaseSpotAPI:
     def __enter__(self: "KrakenBaseSpotAPI") -> "KrakenBaseSpotAPI":
         return self
 
-    def __exit__(self, *exc: tuple, **kwargs: Dict[str, Any]) -> None:
+    def __exit__(
+        self: "KrakenBaseSpotAPI", *exc: tuple, **kwargs: Dict[str, Any]
+    ) -> None:
         pass
 
 
