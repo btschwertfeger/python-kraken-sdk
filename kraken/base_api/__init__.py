@@ -14,7 +14,7 @@ from typing import Any, Dict, List, Optional, Type, Union
 from urllib.parse import urljoin
 from uuid import uuid1
 
-import requests  # type: ignore[import]
+import requests
 
 from kraken.exceptions import KrakenException
 
@@ -131,7 +131,6 @@ class KrakenBaseSpotAPI:
             self.url = url
         else:
             self.url = urljoin(self.URL, self.API_V)
-            print(self.url)
 
         self.__nonce: int = 0
         self.__key: str = key

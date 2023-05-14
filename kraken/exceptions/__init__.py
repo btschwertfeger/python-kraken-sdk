@@ -25,7 +25,7 @@ def docstring_message(cls: Any) -> Any:
         **kwargs: Dict[str, Any],
     ) -> None:
         err_message: str = (
-            self.__doc__ if not msg else f"{self.__doc__}\ndetails: {msg}"
+            self.__doc__ if not msg else f"{self.__doc__}\nDetails: {msg}"
         )
         cls_init(self, err_message, *args, **kwargs)
 
@@ -63,6 +63,7 @@ class KrakenException(Exception):
             "EAPI:Invalid signature": self.KrakenInvalidSignatureError,
             "EAPI:Invalid nonce": self.KrakenInvalidNonceError,
             "EAPI:Rate limit exceeded": self.KrakenApiLimitExceededError,
+            "EAPI:Bad request": self.KrakenBadRequestError,
             "EOrder:Invalid order": self.KrakenInvalidOrderError,
             "EOrder:Invalid price": self.KrakenInvalidPriceError,
             "EOrder:Cannot open position": self.KrakenCannotOpenPositionError,
@@ -120,6 +121,10 @@ class KrakenException(Exception):
 
     @docstring_message
     class KrakenInvalidArgumentsError(Exception):
+        """The request payload is malformed, incorrect or ambiguous."""
+
+    @docstring_message
+    class KrakenBadRequestError(Exception):
         """The request payload is malformed, incorrect or ambiguous."""
 
     @docstring_message

@@ -5,6 +5,7 @@
 #
 
 """Module that implements the Spot Kraken Websocket client"""
+
 from __future__ import annotations
 
 import logging
