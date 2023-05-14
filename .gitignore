@@ -29,8 +29,8 @@ share/python-wheels/
 *.egg-info/
 .installed.cfg
 *.egg
+*.whl
 MANIFEST
-*whl
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
@@ -130,12 +130,14 @@ venv.bak/
 .mypy_cache/
 .dmypy.json
 dmypy.json
-del*.py
 mypy.xml
+
 # Pyre type checker
 .pyre/
 
 # misc
+del*.py
+del/
 .DS_Store
 *.csv
 *.log
