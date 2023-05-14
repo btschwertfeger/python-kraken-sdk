@@ -81,7 +81,7 @@ clean:
 		.vscode \
 		.mypy_cache
 
-	rm -f .coverage coverage.xml pytest.xml \
+	rm -f .coverage coverage.xml pytest.xml mypy.xml \
 		kraken/_version.py \
 		*.log *.csv *.zip \
 		tests/*.zip tests/.csv \
