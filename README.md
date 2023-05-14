@@ -7,7 +7,7 @@
 [![Generic badge](https://img.shields.io/badge/python-3.7_|_3.8_|_3.9_|_3.10_|_3.11-blue.svg)](https://shields.io/)
 [![Downloads](https://static.pepy.tech/personalized-badge/python-kraken-sdk?period=total&units=abbreviation&left_color=grey&right_color=orange&left_text=downloads)](https://pepy.tech/project/python-kraken-sdk)
 
-[![Typing](https://img.shields.io/badge/typing-mypy-informational)](https://img.shields.io/badge/Typing-mypy-informational)
+[![Typing](https://img.shields.io/badge/typing-mypy-informational)](https://mypy-lang.org/)
 [![CodeQL](https://github.com/btschwertfeger/python-kraken-sdk/actions/workflows/codeql.yml/badge.svg?branch=master)](https://github.com/btschwertfeger/python-kraken-sdk/actions/workflows/codeql.yml)
 [![CI/CD](https://github.com/btschwertfeger/python-kraken-sdk/actions/workflows/cicd.yml/badge.svg?branch=master)](https://github.com/btschwertfeger/python-kraken-sdk/actions/workflows/cicd.yml)
 [![codecov](https://codecov.io/gh/btschwertfeger/python-kraken-sdk/branch/master/badge.svg)](https://app.codecov.io/gh/btschwertfeger/python-kraken-sdk)

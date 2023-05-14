@@ -381,7 +381,7 @@ class Trade(KrakenBaseSpotAPI):
             ...             "price": 25000,
             ...             "timeinforce": "GTC",
             ...             "type": "buy",
-            ...             "userref": "147145322246",
+            ...             "userref": 16861348843,
             ...             "volume": 1,
             ...         },
             ...         {
@@ -389,7 +389,7 @@ class Trade(KrakenBaseSpotAPI):
             ...             "price": 1000000,
             ...             "timeinforce": "GTC",
             ...             "type": "sell",
-            ...             "userref": "16861348843",
+            ...             "userref": 16861348843,
             ...             "volume": 2,
             ...         },
             ...     ],
