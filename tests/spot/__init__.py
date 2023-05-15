@@ -3,3 +3,4 @@
 # Copyright (C) 2023 Benjamin Thomas Schwertfeger
 # Github: https://github.com/btschwertfeger
 #
+# This file is required for the CI/CD codecov workflow.

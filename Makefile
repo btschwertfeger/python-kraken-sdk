@@ -5,6 +5,7 @@
 
 PYTHON := python
 
+PYTEST := $(PYTHON) -m pytest
 PYTEST_OPTS := -vv --junit-xml=pytest.xml
 PYTEST_COV_OPTS := $(PYTEST_OPTS) --cov --cov-report=xml:coverage.xml --cov-report=term
 TEST_DIR := tests
@@ -42,12 +43,12 @@ install:
 ## test		Run the unittests
 ##
 test:
-	$(PYTHON) -m pytest $(PYTEST_OPTS) $(TEST_DIR)
+	$(PYTEST) $(PYTEST_OPTS) $(TEST_DIR)
 
 tests: test
 
 coverage:
-	$(PYTHON) -m pytest $(PYTEST_COV_OPTS) $(TEST_DIR)
+	$(PYTEST) $(PYTEST_COV_OPTS) $(TEST_DIR)
 
 ## doctest	Run the documentation tests
 ##

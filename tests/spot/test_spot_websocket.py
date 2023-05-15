@@ -16,10 +16,13 @@ NOTE:
 todo: Create fixtures for the custom exception and the Bot class.
 """
 
+from __future__ import annotations
+
 import asyncio
 import os
 import time
 import unittest
+from typing import Optional, Union
 
 import pytest
 
@@ -52,7 +55,7 @@ class KrakenPermissionDeniedError(Exception):
 class Bot(KrakenSpotWSClient):
     """Class to create a websocket bot"""
 
-    async def on_message(self, event) -> None:
+    async def on_message(self: "Bot", event: Union[list, dict]) -> None:
         """
         This is the callback function that must be implemented
         to handle custom websocket messages.
@@ -75,10 +78,10 @@ class Bot(KrakenSpotWSClient):
 
 
 class WebsocketTests(unittest.TestCase):
-    def setUp(self) -> None:
-        self.__key = os.getenv("SPOT_API_KEY")
-        self.__secret = os.getenv("SPOT_SECRET_KEY")
-        self.__full_ws_access = os.getenv("FULLACCESS") == "True"
+    def setUp(self: "WebsocketTests") -> None:
+        self.__key: str = os.getenv("SPOT_API_KEY")
+        self.__secret: str = os.getenv("SPOT_SECRET_KEY")
+        self.__full_ws_access: str = os.getenv("FULLACCESS") == "True"
 
     def __create_loop(self, coro) -> None:
         """Function that creates an event loop."""
@@ -87,22 +90,22 @@ class WebsocketTests(unittest.TestCase):
         asyncio.run(coro())
         loop.close()
 
-    async def __wait(self, seconds: float = 1.0) -> None:
+    async def __wait(self: "WebsocketTests", seconds: Optional[float] = 1.0) -> None:
         """Function that realizes the wait for ``seconds``."""
-        start = time.time()
+        start: int = time.time()
         while time.time() - seconds < start:
             await asyncio.sleep(0.2)
         return
 
     @pytest.mark.spot
     @pytest.mark.spot_websocket
-    def test_create_public_bot(self) -> None:
+    def test_create_public_bot(self: "WebsocketTests") -> None:
         """
         Checks if the websocket client can be instantiated.
         """
 
         async def create_bot():
-            bot = Bot()
+            bot: Bot = Bot()
             await self.__wait(seconds=2.5)
 
         self.__create_loop(coro=create_bot)
@@ -110,7 +113,7 @@ class WebsocketTests(unittest.TestCase):
     @pytest.mark.spot
     @pytest.mark.spot_auth
     @pytest.mark.spot_websocket
-    def test_create_private_bot(self) -> None:
+    def test_create_private_bot(self: "WebsocketTests") -> None:
         """
         Checks if the authenticated websocket client can be instantiated.
         """
@@ -128,14 +131,14 @@ class WebsocketTests(unittest.TestCase):
 
     @pytest.mark.spot
     @pytest.mark.spot_websocket
-    def test_access_public_bot_attributes(self) -> None:
+    def test_access_public_bot_attributes(self: "WebsocketTests") -> None:
         """
         Checks the ``access_public_bot_attributes`` function
         works as expected.
         """
 
         async def checkit() -> None:
-            bot = Bot()
+            bot: Bot = Bot()
 
             assert bot.private_sub_names == ["ownTrades", "openOrders"]
             assert bot.public_sub_names == [
@@ -150,7 +153,7 @@ class WebsocketTests(unittest.TestCase):
             await self.__wait(seconds=1)
             with pytest.raises(ConnectionError):
                 # cannot access private subscriptions on unauthenticated client
-                bot.active_private_subscriptions
+                bot.active_private_subscriptions()
 
             await self.__wait(seconds=1.5)
 
@@ -166,6 +169,7 @@ class WebsocketTests(unittest.TestCase):
         """
 
         async def checkit() -> None:
+            auth_bot: Bot
             if self.__full_ws_access:
                 auth_bot = Bot(key=self.__key, secret=self.__secret)
                 assert auth_bot.active_private_subscriptions == []
@@ -180,14 +184,14 @@ class WebsocketTests(unittest.TestCase):
 
     @pytest.mark.spot
     @pytest.mark.spot_websocket
-    def test_public_subscribe(self) -> None:
+    def test_public_subscribe(self: "WebsocketTests") -> None:
         """
         Function that checks if the websocket client
         is able to subscribe to public feeds.
         """
 
         async def checkit() -> None:
-            bot = Bot()
+            bot: Bot = Bot()
             subscription = {"name": "ticker"}
 
             with pytest.raises(AttributeError):
@@ -204,7 +208,7 @@ class WebsocketTests(unittest.TestCase):
     @pytest.mark.spot
     @pytest.mark.spot_auth
     @pytest.mark.spot_websocket
-    def test_private_subscribe(self) -> None:
+    def test_private_subscribe(self: "WebsocketTests") -> None:
         """
         Checks if the authenticated websocket client can subscribe to private feeds.
         """
@@ -212,13 +216,13 @@ class WebsocketTests(unittest.TestCase):
         async def checkit() -> None:
             subscription = {"name": "ownTrades"}
 
-            bot = Bot()
+            bot: Bot = Bot()
             with pytest.raises(ValueError):  # unauthenticated
                 await bot.subscribe(subscription=subscription)
             with pytest.raises(ValueError):  # unauthenticated and pair and pair is list
                 await bot.subscribe(subscription=subscription, pair=["XBT/EUR"])
 
-            auth_bot = Bot(key=self.__key, secret=self.__secret)
+            auth_bot: Bot = Bot(key=self.__key, secret=self.__secret)
             with pytest.raises(ValueError):  # private conns does not accept pairs
                 await auth_bot.subscribe(subscription=subscription, pair=["XBT/EUR"])
                 await self.__wait(seconds=1)
@@ -235,13 +239,13 @@ class WebsocketTests(unittest.TestCase):
 
     @pytest.mark.spot
     @pytest.mark.spot_websocket
-    def test_public_unsubscribe(self) -> None:
+    def test_public_unsubscribe(self: "WebsocketTests") -> None:
         """
         Checks if the websocket client can unsubscrube from public feeds.
         """
 
         async def checkit() -> None:
-            bot = Bot()
+            bot: Bot = Bot()
 
             # since we have no subscriptions, this will work, but the response will inform us that there are no subscriptions
             await bot.unsubscribe(subscription={"name": "ticker"}, pair=["XBT/USD"])
@@ -255,14 +259,14 @@ class WebsocketTests(unittest.TestCase):
 
     @pytest.mark.spot
     @pytest.mark.spot_websocket
-    def test_public_unsubscribe_failure(self) -> None:
+    def test_public_unsubscribe_failure(self: "WebsocketTests") -> None:
         """
         Checks if the websocket client responses with failures
         when the ``unsubscribe`` funciton receives invalid parameters.
         """
 
         async def checkit() -> None:
-            bot = Bot()
+            bot: Bot = Bot()
 
             with pytest.raises(AttributeError):
                 await bot.unsubscribe(subscription={})
@@ -277,10 +281,13 @@ class WebsocketTests(unittest.TestCase):
     @pytest.mark.spot
     @pytest.mark.spot_auth
     @pytest.mark.spot_websocket
-    def test_private_unsubscribe(self) -> None:
+    def test_private_unsubscribe(self: "WebsocketTests") -> None:
+        """
+        Checks if private subscriptions are available.
+        """
+
         async def checkit() -> None:
-            bot = Bot()
-            auth_bot = Bot(key=self.__key, secret=self.__secret)
+            auth_bot: Bot = Bot(key=self.__key, secret=self.__secret)
 
             if self.__full_ws_access:
                 await auth_bot.unsubscribe(subscription={"name": "ownTrades"})
@@ -294,15 +301,15 @@ class WebsocketTests(unittest.TestCase):
     @pytest.mark.spot
     @pytest.mark.spot_auth
     @pytest.mark.spot_websocket
-    def test_private_unsubscribe_failing(self) -> None:
+    def test_private_unsubscribe_failing(self: "WebsocketTests") -> None:
         """
         Checks if the ``unsubscribe`` function fails when invalid
         parameters are passed.
         """
 
         async def checkit() -> None:
-            bot = Bot()
-            auth_bot = Bot(key=self.__key, secret=self.__secret)
+            bot: Bot = Bot()
+            auth_bot: Bot = Bot(key=self.__key, secret=self.__secret)
 
             with pytest.raises(ValueError):  # private feed on unauthenticated client
                 await bot.unsubscribe(subscription={"name": "ownTrades"})
@@ -319,15 +326,15 @@ class WebsocketTests(unittest.TestCase):
     @pytest.mark.spot
     @pytest.mark.spot_auth
     @pytest.mark.spot_websocket
-    def test_create_order(self) -> None:
+    def test_create_order(self: "WebsocketTests") -> None:
         """
         Checks the ``create_order`` function by submitting a
         new order - but in validate mode.
         """
 
         async def checkit() -> None:
-            auth_bot = Bot(key=self.__key, secret=self.__secret)
-            params = dict(
+            auth_bot: Bot = Bot(key=self.__key, secret=self.__secret)
+            params: dict = dict(
                 ordertype="limit",
                 side="buy",
                 pair="XBT/USD",
@@ -358,15 +365,15 @@ class WebsocketTests(unittest.TestCase):
     @pytest.mark.spot
     @pytest.mark.spot_auth
     @pytest.mark.spot_websocket
-    def test_edit_order(self) -> None:
+    def test_edit_order(self: "WebsocketTests") -> None:
         """
         Checks the edit order function by editing an order in validate mode.
         """
 
         async def checkit() -> None:
-            auth_bot = Bot(key=self.__key, secret=self.__secret)
+            auth_bot: Bot = Bot(key=self.__key, secret=self.__secret)
 
-            params = dict(
+            params: dict = dict(
                 orderid="OHSAUDZ-ASJKGD-EPAFUIH",
                 reqid=1244,
                 pair="XBT/USD",
@@ -390,14 +397,14 @@ class WebsocketTests(unittest.TestCase):
     @pytest.mark.spot
     @pytest.mark.spot_auth
     @pytest.mark.spot_websocket
-    @unittest.skip("CI does not have trade/cancel permission")
-    def test_cancel_order(self) -> None:
+    @pytest.mark.skip("CI does not have trade/cancel permission")
+    def test_cancel_order(self: "WebsocketTests") -> None:
         """
         Checks the ``cancel_order`` function by canceling some orders.
         """
 
         async def checkit() -> None:
-            auth_bot = Bot(key=self.__key, secret=self.__secret)
+            auth_bot: Bot = Bot(key=self.__key, secret=self.__secret)
             if self.__full_ws_access:
                 await auth_bot.cancel_order(txid="AOUEHF-ASLBD-A6B4A")
                 await self.__wait(seconds=2)
@@ -411,14 +418,14 @@ class WebsocketTests(unittest.TestCase):
     @pytest.mark.spot
     @pytest.mark.spot_auth
     @pytest.mark.spot_websocket
-    @unittest.skip("CI does not have trade/cancel permission")
-    def test_cancel_all_orders(self) -> None:
+    @pytest.mark.skip("CI does not have trade/cancel permission")
+    def test_cancel_all_orders(self: "WebsocketTests") -> None:
         """
         Check the ``cancel_all_orders`` function by executing the function.
         """
 
         async def checkit() -> None:
-            auth_bot = Bot(key=self.__key, secret=self.__secret)
+            auth_bot: Bot = Bot(key=self.__key, secret=self.__secret)
             if self.__full_ws_access:
                 await auth_bot.cancel_all_orders()
                 await self.__wait(seconds=2)
@@ -432,15 +439,15 @@ class WebsocketTests(unittest.TestCase):
     @pytest.mark.spot
     @pytest.mark.spot_auth
     @pytest.mark.spot_websocket
-    @unittest.skip("CI does not have trade/cancel permission")
-    def test_cancel_all_orders_after(self) -> None:
+    @pytest.mark.skip("CI does not have trade/cancel permission")
+    def test_cancel_all_orders_after(self: "Bot") -> None:
         """
         Checking the ``cancel_all_orders_after`` function by
         executing it.
         """
 
         async def checkit() -> None:
-            auth_bot = Bot(key=self.__key, secret=self.__secret)
+            auth_bot: Bot = Bot(key=self.__key, secret=self.__secret)
             if self.__full_ws_access:
                 await auth_bot.cancel_all_orders_after(0)
                 await self.__wait(seconds=2)
@@ -451,9 +458,5 @@ class WebsocketTests(unittest.TestCase):
 
         self.__create_loop(coro=checkit)
 
-    def tearDown(self) -> None:
+    def tearDown(self: "WebsocketTests") -> None:
         return super().tearDown()
-
-
-if __name__ == "__main__":
-    asyncio.run(unittest.main)

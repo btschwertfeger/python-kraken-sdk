@@ -5,6 +5,7 @@
 #
 
 """Module that implements the unit tests for the Spot funding client."""
+
 import pytest
 
 from kraken.exceptions import KrakenException
