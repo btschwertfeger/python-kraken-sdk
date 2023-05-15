@@ -51,7 +51,7 @@ General:
 
 Important Notice
 -----------------
-**ONLY tagged releases are availabe at PyPI**. The content of the master branch may not match with the content of the latest release. So please have a look at the release specific READMEs and changelogs.
+**ONLY tagged releases are availabe at PyPI**. The content of the master branch may not match with the content of the latest release.  - Please have a look at the release specifc READMEs and changelogs.
 
 .. _section-troubleshooting:
 

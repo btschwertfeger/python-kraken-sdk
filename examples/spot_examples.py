@@ -4,7 +4,7 @@
 # Github: https://github.com/btschwertfeger
 #
 
-"""Module that implements some example usage for the Kraken Futures REST clients"""
+"""Module that implements some example usage for the Kraken Futures REST clients."""
 import logging
 import logging.config
 import os

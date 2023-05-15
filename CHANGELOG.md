@@ -1,17 +1,5 @@
 # Changelog
 
-## [Unreleased](https://github.com/btschwertfeger/python-kraken-sdk/tree/HEAD)
-
-[Full Changelog](https://github.com/btschwertfeger/python-kraken-sdk/compare/v1.2.0...HEAD)
-
-**Implemented enhancements:**
-
-- Let clients be used as context manager [\#81](https://github.com/btschwertfeger/python-kraken-sdk/issues/81)
-
-**Merged pull requests:**
-
-- Updated changelog to match v1.2.0 [\#86](https://github.com/btschwertfeger/python-kraken-sdk/pull/86) ([btschwertfeger](https://github.com/btschwertfeger))
-
 ## [v1.2.0](https://github.com/btschwertfeger/python-kraken-sdk/tree/v1.2.0) (2023-05-09)
 
 [Full Changelog](https://github.com/btschwertfeger/python-kraken-sdk/compare/v1.1.0...v1.2.0)
@@ -24,10 +12,10 @@
 
 **Implemented enhancements:**
 
+- Let clients be used as context manager [\#81](https://github.com/btschwertfeger/python-kraken-sdk/issues/81)
 - Enable trading on Futures subaccount [\#72](https://github.com/btschwertfeger/python-kraken-sdk/issues/72)
 - Check if trading is enabled for Futures subaccount [\#71](https://github.com/btschwertfeger/python-kraken-sdk/issues/71)
 - Optionally disable the custom KrakenErrors [\#69](https://github.com/btschwertfeger/python-kraken-sdk/issues/69)
-- Let clients be used as context manager [\#81](https://github.com/btschwertfeger/python-kraken-sdk/issues/81)
 - Let REST and websocket clients be used as context manager [\#83](https://github.com/btschwertfeger/python-kraken-sdk/pull/83) ([btschwertfeger](https://github.com/btschwertfeger))
 - Disable custom Kraken exceptions \(optional\) [\#82](https://github.com/btschwertfeger/python-kraken-sdk/pull/82) ([btschwertfeger](https://github.com/btschwertfeger))
 - Add Futures user endpoints: `check_trading_enabled_on_subaccount` and `set_trading_on_subaccount` [\#80](https://github.com/btschwertfeger/python-kraken-sdk/pull/80) ([btschwertfeger](https://github.com/btschwertfeger))
@@ -35,9 +23,9 @@
 **Fixed bugs:**
 
 - Release workflow skips the PyPI publish [\#67](https://github.com/btschwertfeger/python-kraken-sdk/issues/67)
-- Fixed bug where `spot.user.get_balances` floats to periodic X.9999... [\#78](https://github.com/btschwertfeger/python-kraken-sdk/pull/78) ([btschwertfeger](https://github.com/btschwertfeger))
 - Fix PyPI upload job + extend disclaimer [\#70](https://github.com/btschwertfeger/python-kraken-sdk/pull/70) ([btschwertfeger](https://github.com/btschwertfeger))
 - Fix and extend release workflow [\#68](https://github.com/btschwertfeger/python-kraken-sdk/pull/68) ([btschwertfeger](https://github.com/btschwertfeger))
+- Fixed bug where `spot.user.get_balances` floats to periodic X.9999... [\#78](https://github.com/btschwertfeger/python-kraken-sdk/pull/78) ([btschwertfeger](https://github.com/btschwertfeger))
 
 **Merged pull requests:**
 

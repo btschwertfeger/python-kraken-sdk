@@ -3,14 +3,17 @@
 # Copyright (C) 2023 Benjamin Thomas Schwertfeger
 # Github: https://github.com/btschwertfeger
 #
-"""Module that provides an excample usage for the Kraken Spot websocket client"""
+
+"""Module that provides an excample usage for the Kraken Spot websocket client."""
+
+from __future__ import annotations
 
 import asyncio
 import logging
 import logging.config
 import os
 import time
-from typing import Coroutine
+from typing import Union
 
 from kraken.spot import KrakenSpotWSClient
 
@@ -24,17 +27,17 @@ logging.getLogger("requests").setLevel(logging.WARNING)
 logging.getLogger("urllib3").setLevel(logging.WARNING)
 
 
-async def main() -> Coroutine:
+async def main() -> None:
     """Create bot and subscribe to topics/feeds"""
 
-    key = os.getenv("API_KEY")
-    secret = os.getenv("SECRET_KEY")
+    key: str = os.getenv("API_KEY")
+    secret: str = os.getenv("SECRET_KEY")
 
     # ___Custom_Trading_Bot______________
     class Bot(KrakenSpotWSClient):
         """Can be used to create a custom trading strategy/bot"""
 
-        async def on_message(self, event) -> Coroutine:
+        async def on_message(self: "Bot", event: Union[list, dict]) -> None:
             """receives the websocket events"""
             if "event" in event:
                 topic = event["event"]
@@ -57,7 +60,7 @@ async def main() -> Coroutine:
             # you can also un/subscribe here using self.subscribe/self-unsubscribe
 
     # ___Public_Websocket_Feed_____
-    bot = Bot()  # only use this one if you dont need private feeds
+    bot: Bot = Bot()  # only use this one if you dont need private feeds
     # print(bot.public_sub_names) # list public subscription names
 
     await bot.subscribe(subscription={"name": "ticker"}, pair=["XBT/EUR", "DOT/EUR"])

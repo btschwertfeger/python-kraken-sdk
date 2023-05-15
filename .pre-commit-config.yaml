@@ -69,10 +69,3 @@ repos:
     rev: v2.7.1
     hooks:
       - id: prettier
-
-  ##    Could destroy py<3.11
-  ##
-  # - repo: https://github.com/asottile/pyupgrade
-  #   rev: v3.3.1
-  #   hooks:
-  #   -   id: pyupgrade
