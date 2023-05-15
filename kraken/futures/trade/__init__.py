@@ -5,9 +5,10 @@
 #
 
 """Module that implements the Kraken Futures trade client"""
-from typing import List, Union
 
-from kraken.base_api import KrakenBaseFuturesAPI
+from typing import List, Optional, Tuple, Union
+
+from ...base_api import KrakenBaseFuturesAPI
 
 
 class Trade(KrakenBaseFuturesAPI):
@@ -44,11 +45,19 @@ class Trade(KrakenBaseFuturesAPI):
     """
 
     def __init__(
-        self, key: str = "", secret: str = "", url: str = "", sandbox: bool = False
+        self: "Trade",
+        key: Optional[str] = "",
+        secret: Optional[str] = "",
+        url: Optional[str] = "",
+        sandbox: Optional[bool] = False,
     ) -> None:
         super().__init__(key=key, secret=secret, url=url, sandbox=sandbox)
 
-    def get_fills(self, lastFillTime: Union[str, None] = None) -> dict:
+    def __enter__(self: "Trade") -> "Trade":
+        super().__enter__()
+        return self
+
+    def get_fills(self: "Trade", lastFillTime: Optional[str] = None) -> dict:
         """
         Return the current fills of the user.
 
@@ -57,7 +66,7 @@ class Trade(KrakenBaseFuturesAPI):
         - https://docs.futures.kraken.com/#http-api-trading-v3-api-historical-data-get-your-fills
 
         :param lastFillTime: Filter by last filled timestamp
-        :type lastFillTime: str | None, optional
+        :type lastFillTime: str, optional
         :return: Fills
         :rtype: dict
 
@@ -83,17 +92,17 @@ class Trade(KrakenBaseFuturesAPI):
                 'serverTime': '2023-04-07T15:23:48.705Z'
             }
         """
-        query_params = {}
+        query_params: dict = {}
         if lastFillTime:
             query_params["lastFillTime"] = lastFillTime
-        return self._request(
+        return self._request(  # type: ignore[return-value]
             method="GET",
             uri="/derivatives/api/v3/fills",
             query_params=query_params,
             auth=True,
         )
 
-    def create_batch_order(self, batchorder_list: List[dict]) -> dict:
+    def create_batch_order(self: "Trade", batchorder_list: List[dict]) -> dict:
         """
         Create multiple orders at once using the batch order endpoit.
 
@@ -193,14 +202,14 @@ class Trade(KrakenBaseFuturesAPI):
             }
         """
         batchorder = {"batchOrder": batchorder_list}
-        return self._request(
+        return self._request(  # type: ignore[return-value]
             method="POST",
             uri="/derivatives/api/v3/batchorder",
             post_params={"json": f"{batchorder}"},
             auth=True,
         )
 
-    def cancel_all_orders(self, symbol: Union[str, None] = None) -> dict:
+    def cancel_all_orders(self: "Trade", symbol: Optional[str] = None) -> dict:
         """
         Cancels all open orders, can be filtered by symbol.
 
@@ -209,7 +218,7 @@ class Trade(KrakenBaseFuturesAPI):
         - https://docs.futures.kraken.com/#http-api-trading-v3-api-order-management-cancel-all-orders
 
         :param symbol: Filter by symbol
-        :type symbol: str | None, optional
+        :type symbol: str, optional
         :return: Information about the success or failure
         :rtype: dict
 
@@ -238,17 +247,17 @@ class Trade(KrakenBaseFuturesAPI):
                 'serverTime': '2023-04-04T17:09:09.987Z'
             }
         """
-        params = {}
+        params: dict = {}
         if symbol is not None:
             params["symbol"] = symbol
-        return self._request(
+        return self._request(  # type: ignore[return-value]
             method="POST",
             uri="/derivatives/api/v3/cancelallorders",
             post_params=params,
             auth=True,
         )
 
-    def dead_mans_switch(self, timeout: Union[int, None] = 0) -> dict:
+    def dead_mans_switch(self: "Trade", timeout: Optional[int] = 0) -> dict:
         """
         The Death Man's Switch can be used to cancel all orders after a specific timeout.
         If the timeout is set to 60, all orders will be cancelled after 60 seconds. The timeout
@@ -260,7 +269,7 @@ class Trade(KrakenBaseFuturesAPI):
         - https://docs.futures.kraken.com/#http-api-trading-v3-api-order-management-dead-man-39-s-switch
 
         :param timeout: The timeout in seconds
-        :type timeout: int | None, optional
+        :type timeout: int, optional
         :return: Success or failure
         :rtype: dict
 
@@ -280,14 +289,14 @@ class Trade(KrakenBaseFuturesAPI):
                 }
             }
         """
-        return self._request(
+        return self._request(  # type: ignore[return-value]
             method="POST",
             uri="/derivatives/api/v3/cancelallordersafter",
             post_params={"timeout": timeout},
         )
 
     def cancel_order(
-        self, order_id: Union[str, None] = None, cliOrdId: Union[str, None] = None
+        self: "Trade", order_id: Optional[str] = None, cliOrdId: Optional[str] = None
     ) -> dict:
         """
         This endpoint can be used to cancel a specific order by ``order_id`` or ``cliOrdId``.
@@ -297,9 +306,9 @@ class Trade(KrakenBaseFuturesAPI):
         - https://docs.futures.kraken.com/#http-api-trading-v3-api-order-management-cancel-order
 
         :param order_id: The order_id to cancel
-        :type order_id: str | None, optional
+        :type order_id: str, optional
         :param cliOrdId: The client defined order id
-        :type cliOrdId: str | None, optional
+        :type cliOrdId: str, optional
         :raises ValueError: If both ``order_id`` and ``cliOrdId`` are not set
         :return: Success or failure
         :rtype: dict
@@ -321,7 +330,7 @@ class Trade(KrakenBaseFuturesAPI):
             }
         """
 
-        params = {}
+        params: dict = {}
         if order_id is not None:
             params["order_id"] = order_id
         elif cliOrdId is not None:
@@ -329,7 +338,7 @@ class Trade(KrakenBaseFuturesAPI):
         else:
             raise ValueError("Either order_id or cliOrdId must be set!")
 
-        return self._request(
+        return self._request(  # type: ignore[return-value]
             method="POST",
             uri="/derivatives/api/v3/cancelorder",
             post_params=params,
@@ -337,12 +346,12 @@ class Trade(KrakenBaseFuturesAPI):
         )
 
     def edit_order(
-        self,
-        orderId: Union[str, None] = None,
-        cliOrdId: Union[str, None] = None,
-        limitPrice: Union[str, int, float, None] = None,
-        size: Union[str, int, float, None] = None,
-        stopPrice: Union[str, int, float, None] = None,
+        self: "Trade",
+        orderId: Optional[str] = None,
+        cliOrdId: Optional[str] = None,
+        limitPrice: Optional[Union[str, int, float]] = None,
+        size: Optional[Union[str, int, float]] = None,
+        stopPrice: Optional[Union[str, int, float]] = None,
     ) -> dict:
         """
         Edit an open order.
@@ -352,15 +361,15 @@ class Trade(KrakenBaseFuturesAPI):
         - https://docs.futures.kraken.com/#http-api-trading-v3-api-order-management-send-order
 
         :param orderId: The order id to cancel
-        :type orderId: str | None, optional
+        :type orderId: str, optional
         :param cliOrdId: The client defined order id
-        :type cliOrdId: str | None, optional
+        :type cliOrdId: str, optional
         :param limitPrice: The new limitprice
         :type limitPrice: str | int | float None
         :param size: The new size of the position
-        :type size: str | int | float | None, optional
+        :type size: str | int | float, optional
         :param stopPrice: The stop price
-        :type stopPrice: str | int | float | None, optional
+        :type stopPrice: str | int | float, optional
         :raises ValueError: If both ``orderId`` and ``cliOrdId`` are not set
         :return: Success or failure
         :rtype: dict
@@ -384,7 +393,7 @@ class Trade(KrakenBaseFuturesAPI):
                 }
             }
         """
-        params = {}
+        params: dict = {}
         if orderId is not None:
             params["orderId"] = orderId
         elif cliOrdId is not None:
@@ -399,7 +408,7 @@ class Trade(KrakenBaseFuturesAPI):
         if stopPrice is not None:
             params["stopPrice"] = stopPrice
 
-        return self._request(
+        return self._request(  # type: ignore[return-value]
             method="POST",
             uri="/derivatives/api/v3/editorder",
             post_params=params,
@@ -407,9 +416,9 @@ class Trade(KrakenBaseFuturesAPI):
         )
 
     def get_orders_status(
-        self,
-        orderIds: Union[str, List[str], None] = None,
-        cliOrdIds: Union[str, List[str], None] = None,
+        self: "Trade",
+        orderIds: Optional[Union[str, List[str]]] = None,
+        cliOrdIds: Optional[Union[str, List[str]]] = None,
     ) -> dict:
         """
         Get the status of multiple orders.
@@ -419,9 +428,9 @@ class Trade(KrakenBaseFuturesAPI):
         - https://docs.futures.kraken.com/#http-api-trading-v3-api-order-management-get-the-current-status-for-specific-orders
 
         :param orderIds: The order ids to cancel
-        :type orderIds: str | List[str] | None, optional
+        :type orderIds: str | List[str], optional
         :param cliOrdId: The client defined order ids
-        :type cliOrdId: str | List[str] | None, optional
+        :type cliOrdId: str | List[str], optional
         :return: Success or failure
         :rtype: dict
 
@@ -444,7 +453,7 @@ class Trade(KrakenBaseFuturesAPI):
         elif cliOrdIds is not None:
             params["cliOrdIds"] = cliOrdIds
 
-        return self._request(
+        return self._request(  # type: ignore[return-value]
             method="POST",
             uri="/derivatives/api/v3/orders/status",
             post_params=params,
@@ -452,18 +461,18 @@ class Trade(KrakenBaseFuturesAPI):
         )
 
     def create_order(
-        self,
+        self: "Trade",
         orderType: str,
         size: Union[str, int, float],
         symbol: str,
         side: str,
-        cliOrdId: Union[str, None] = None,
-        limitPrice: Union[str, int, float, None] = None,
-        reduceOnly: Union[bool, None] = None,
-        stopPrice: Union[str, int, float, None] = None,
-        triggerSignal: Union[str, None] = None,
-        trailingStopDeviationUnit: Union[str, None] = None,
-        trailingStopMaxDeviation: Union[str, None] = None,
+        cliOrdId: Optional[str] = None,
+        limitPrice: Optional[Union[str, int, float]] = None,
+        reduceOnly: Optional[bool] = None,
+        stopPrice: Optional[Union[str, int, float]] = None,
+        triggerSignal: Optional[str] = None,
+        trailingStopDeviationUnit: Optional[str] = None,
+        trailingStopMaxDeviation: Optional[str] = None,
     ) -> dict:
         """
         Create and place an order on the futures market.
@@ -482,19 +491,19 @@ class Trade(KrakenBaseFuturesAPI):
         :param side: Long or Short, i.e.,: ``buy`` or ``sell``
         :type side: str
         :param cliOrdId: A user defined order id
-        :type cliOrdId: str | None, optional
+        :type cliOrdId: str, optional
         :param limitPrice: Define a custom limit price
         :type limitPrice: str | int | float
         :param reduceOnly: Reduces existing positions if set to ``True``
-        :type reduceOnly: bool | None, optional
+        :type reduceOnly: bool, optional
         :param stopPrice: Define a price when to exit the order. Required for specific ordertypes
-        :type stopPrice: str | None, optional
+        :type stopPrice: str, optional
         :param triggerSignal: Define a trigger for specific orders (must be one of ``mark``, ``index``, ``last``)
-        :type triggerSignal: str | None, optional
+        :type triggerSignal: str, optional
         :param trailingStopDeviationUnit: See referenced Kraken documentation
-        :type trailingStopDeviationUnit: str | None, optional
+        :type trailingStopDeviationUnit: str, optional
         :param trailingStopMaxDeviation: See referenced Kraken documentation
-        :type trailingStopMaxDeviation: str | None, optional
+        :type trailingStopMaxDeviation: str, optional
         :return: Success or failure
         :rtype: dict
 
@@ -628,11 +637,16 @@ class Trade(KrakenBaseFuturesAPI):
             }
         """
 
-        sides = ("buy", "sell")
+        sides: Tuple[str, str] = ("buy", "sell")
         if side not in sides:
             raise ValueError(f"Invalid side. One of [{sides}] is required!")
 
-        params = {"orderType": orderType, "side": side, "size": size, "symbol": symbol}
+        params: dict = {
+            "orderType": orderType,
+            "side": side,
+            "size": size,
+            "symbol": symbol,
+        }
         if cliOrdId is not None:
             params["cliOrdId"] = cliOrdId
         if limitPrice is not None:
@@ -651,7 +665,7 @@ class Trade(KrakenBaseFuturesAPI):
         if trailingStopMaxDeviation is not None:
             params["trailingStopMaxDeviation"] = trailingStopMaxDeviation
 
-        return self._request(
+        return self._request(  # type: ignore[return-value]
             method="POST",
             uri="/derivatives/api/v3/sendorder",
             post_params=params,

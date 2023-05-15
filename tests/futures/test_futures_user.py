@@ -4,11 +4,16 @@
 # Github: https://github.com/btschwertfeger
 #
 
+"""Module that implements the unit tests for the Futures user client."""
+
 import os
 import random
 import tempfile
 
 import pytest
+import requests
+
+from kraken.futures import User
 
 from .helper import is_success
 
@@ -16,7 +21,7 @@ from .helper import is_success
 @pytest.mark.futures
 @pytest.mark.futures_auth
 @pytest.mark.futures_user
-def test_get_wallets(futures_auth_user) -> None:
+def test_get_wallets(futures_auth_user: User) -> None:
     """
     Checks the ``get_wallets`` endpoint.
     """
@@ -26,7 +31,7 @@ def test_get_wallets(futures_auth_user) -> None:
 @pytest.mark.futures
 @pytest.mark.futures_auth
 @pytest.mark.futures_user
-def test_get_subaccounts(futures_auth_user) -> None:
+def test_get_subaccounts(futures_auth_user: User) -> None:
     """
     Checks the ``get_subaccounts`` endpoint.
     """
@@ -36,7 +41,7 @@ def test_get_subaccounts(futures_auth_user) -> None:
 @pytest.mark.futures
 @pytest.mark.futures_auth
 @pytest.mark.futures_user
-def test_get_unwindqueue(futures_auth_user) -> None:
+def test_get_unwindqueue(futures_auth_user: User) -> None:
     """
     Checks the ``get_unwindqueue`` endpoint.
     """
@@ -46,7 +51,7 @@ def test_get_unwindqueue(futures_auth_user) -> None:
 @pytest.mark.futures
 @pytest.mark.futures_auth
 @pytest.mark.futures_user
-def test_get_notifications(futures_auth_user) -> None:
+def test_get_notifications(futures_auth_user: User) -> None:
     """
     Checks the ``get_notifications`` endpoint.
     """
@@ -56,7 +61,7 @@ def test_get_notifications(futures_auth_user) -> None:
 @pytest.mark.futures
 @pytest.mark.futures_auth
 @pytest.mark.futures_user
-def test_get_account_log(futures_auth_user) -> None:
+def test_get_account_log(futures_auth_user: User) -> None:
     """
     Checks the ``get_account_log`` endpoint.
     """
@@ -69,11 +74,11 @@ def test_get_account_log(futures_auth_user) -> None:
 @pytest.mark.futures
 @pytest.mark.futures_auth
 @pytest.mark.futures_user
-def test_get_account_log_csv(futures_auth_user) -> None:
+def test_get_account_log_csv(futures_auth_user: User) -> None:
     """
     Checks the ``get_account_log_csv`` endpoint.
     """
-    response = futures_auth_user.get_account_log_csv()
+    response: requests.Response = futures_auth_user.get_account_log_csv()
     assert response.status_code in (200, "200")
 
     with tempfile.TemporaryDirectory() as tmp_dir:
@@ -88,11 +93,11 @@ def test_get_account_log_csv(futures_auth_user) -> None:
 @pytest.mark.futures
 @pytest.mark.futures_auth
 @pytest.mark.futures_user
-def test_get_execution_events(futures_auth_user) -> None:
+def test_get_execution_events(futures_auth_user: User) -> None:
     """
     Checks the ``get_execution_events`` endpoint.
     """
-    result = futures_auth_user.get_execution_events(
+    result: dict = futures_auth_user.get_execution_events(
         tradeable="PF_SOLUSD", since=1668989233, before=1668999999, sort="asc"
     )
 
@@ -103,11 +108,11 @@ def test_get_execution_events(futures_auth_user) -> None:
 @pytest.mark.futures
 @pytest.mark.futures_auth
 @pytest.mark.futures_user
-def test_get_order_events(futures_auth_user) -> None:
+def test_get_order_events(futures_auth_user: User) -> None:
     """
     Checks the ``get_order_events`` endpoint.
     """
-    result = futures_auth_user.get_order_events(
+    result: dict = futures_auth_user.get_order_events(
         tradeable="PF_SOLUSD", since=1668989233, before=1668999999, sort="asc"
     )
     assert isinstance(result, dict)
@@ -117,7 +122,7 @@ def test_get_order_events(futures_auth_user) -> None:
 @pytest.mark.futures
 @pytest.mark.futures_auth
 @pytest.mark.futures_user
-def test_get_open_orders(futures_auth_user) -> None:
+def test_get_open_orders(futures_auth_user: User) -> None:
     """
     Checks the ``get_open_orders`` endpoint.
     """
@@ -127,7 +132,7 @@ def test_get_open_orders(futures_auth_user) -> None:
 @pytest.mark.futures
 @pytest.mark.futures_auth
 @pytest.mark.futures_user
-def test_get_open_positions(futures_auth_user) -> None:
+def test_get_open_positions(futures_auth_user: User) -> None:
     """
     Checks the ``get_open_positions`` endpoint.
     """
@@ -137,7 +142,7 @@ def test_get_open_positions(futures_auth_user) -> None:
 @pytest.mark.futures
 @pytest.mark.futures_auth
 @pytest.mark.futures_user
-def test_get_trigger_events(futures_auth_user) -> None:
+def test_get_trigger_events(futures_auth_user: User) -> None:
     """
     Checks the ``get_trigger_events`` endpoint.
     """
@@ -152,7 +157,7 @@ def test_get_trigger_events(futures_auth_user) -> None:
 @pytest.mark.futures_auth
 @pytest.mark.futures_user
 @pytest.mark.skip("Subaccount actions are only available for insitutional clients")
-def test_check_trading_enabled_on_subaccount(futures_auth_user) -> None:
+def test_check_trading_enabled_on_subaccount(futures_auth_user: User) -> None:
     """
     Checks the ``check_trading_enabled_on_subaccount`` function.
 
@@ -171,7 +176,7 @@ def test_check_trading_enabled_on_subaccount(futures_auth_user) -> None:
 @pytest.mark.futures_auth
 @pytest.mark.futures_user
 @pytest.mark.skip("Subaccount actions are only available for insitutional clients")
-def test_set_trading_on_subaccount(futures_auth_user) -> None:
+def test_set_trading_on_subaccount(futures_auth_user: User) -> None:
     """
     Checks the ``set_trading_on_subaccount`` function.
 

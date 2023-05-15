@@ -4,7 +4,8 @@
 # Github: https://github.com/btschwertfeger
 #
 
-"""Module that implements some example usage for the Kraken Futures REST clients"""
+"""Module that implements some example usage for the Kraken Futures REST clients."""
+
 import logging
 import os
 import time
@@ -107,7 +108,6 @@ def trade_examples() -> None:
                     "side": "buy",
                     "size": 1,
                     "limitPrice": 1.00,
-                    "cliOrdId": "my_another_client_id",
                 },
                 {
                     "order": "send",
@@ -125,7 +125,7 @@ def trade_examples() -> None:
                 },
                 {
                     "order": "cancel",
-                    "cliOrdId": "my_client_id",
+                    "cliOrdId": 123456789,
                 },
             ],
         )
@@ -142,7 +142,7 @@ def trade_examples() -> None:
     )
     print(trade.get_orders_status(orderIds=["orderid1", "orderid2"]))
     print(
-        trade.create_order(  # limit order to buy bch ...
+        trade.create_order(
             orderType="lmt",
             side="buy",
             size=1,
@@ -151,7 +151,7 @@ def trade_examples() -> None:
         )
     )
     print(
-        trade.create_order(  # take_profit order
+        trade.create_order(
             orderType="take_profit",
             side="buy",
             size=1,
@@ -166,27 +166,6 @@ def funding_examples() -> None:
     """Example Funding client usage"""
     funding = Funding(key=key, secret=secret, sandbox=True)
     print(funding.get_historical_funding_rates(symbol="PF_SOLUSD"))
-    # print(funding.initiate_wallet_transfer(
-    #     amount='100',
-    #     fromAccount='some-cash-or-margin-account',
-    #     toAccount='another-cash-or-margin-account',
-    #     unit='The-currency-unit-to-transfer'
-    # ))
-    # print(funding.initiate_subccount_transfer(
-    #     amount='The-amount-to-transfer',
-    #     fromAccount='The-wallet-cash-or-margin-account-from-which-funds-should-be-debited',
-    #     fromUser='The-user-account-this-or-a-sub-account-from-which-funds-should-be-debited',
-    #     toAccount='The-wallet-cash-or-margin-account-to-which-funds-should-be-credited',
-    #     toUser='The-user-account-this-or-a-sub-account-to-which-funds-should-be-credited',
-    #     unit='The-currency-unit-to-transfer'
-    # ))
-
-    # this does only work on the live account, not in the demo version (disable sandbox parameter)
-    # print(funding.initiate_withdrawal_to_spot_wallet(
-    #     amount=100,
-    #     currency='USDT',
-    #     # sourceWallet='cash'
-    # ))
 
 
 def main() -> None:

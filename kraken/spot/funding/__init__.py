@@ -5,9 +5,10 @@
 #
 
 """Module that implements the Spot Funding client"""
-from typing import List, Union
 
-from kraken.base_api import KrakenBaseSpotAPI
+from typing import List, Optional, Union
+
+from ...base_api import KrakenBaseSpotAPI
 
 
 class Funding(KrakenBaseSpotAPI):
@@ -41,7 +42,19 @@ class Funding(KrakenBaseSpotAPI):
         ...     print(funding.get_deposit_methods(asset="XLM"))
     """
 
-    def get_deposit_methods(self, asset: str) -> dict:
+    def __init__(
+        self: "Funding",
+        key: Optional[str] = "",
+        secret: Optional[str] = "",
+        url: Optional[str] = "",
+    ) -> None:
+        super().__init__(key=key, secret=secret, url=url)
+
+    def __enter__(self: "Funding") -> "Funding":
+        super().__enter__()
+        return self
+
+    def get_deposit_methods(self: "Funding", asset: str) -> List[dict]:
         """
         Get the available deposit methods for a specific asset.
 
@@ -72,11 +85,11 @@ class Funding(KrakenBaseSpotAPI):
             ]
         """
         return self._request(
-            method="POST", uri="/private/DepositMethods", params={"asset": asset}
+            method="POST", uri="/private/DepositMethods", params={"asset": asset}  # type: ignore
         )
 
     def get_deposit_address(
-        self, asset: str, method: str, new: bool = False
+        self: "Funding", asset: str, method: str, new: Optional[bool] = False
     ) -> List[dict]:
         """
         Get the deposit addresses for a specific asset. New deposit addresses can be generated.
@@ -115,14 +128,14 @@ class Funding(KrakenBaseSpotAPI):
                 },  ...
             ]
         """
-        return self._request(
+        return self._request(  # type: ignore[return-value]
             method="POST",
             uri="/private/DepositAddresses",
             params={"asset": asset, "method": method, "new": new},
         )
 
     def get_recent_deposits_status(
-        self, asset: Union[str, None] = None, method: Union[str, None] = None
+        self: "Funding", asset: Optional[str] = None, method: Optional[str] = None
     ) -> List[dict]:
         """
         Get information about the recent deposit status. The lookback period is 90 days and
@@ -183,16 +196,18 @@ class Funding(KrakenBaseSpotAPI):
                 }, ...
             ]
         """
-        params = {}
+        params: dict = {}
         if asset is not None:
             params["asset"] = asset
         if method is not None:
             params["method"] = method
-        return self._request(method="POST", uri="/private/DepositStatus", params=params)
+        return self._request(  # type: ignore[return-value]
+            method="POST", uri="/private/DepositStatus", params=params
+        )
 
     def get_withdrawal_info(
-        self, asset: str, key: str, amount: Union[str, int, float]
-    ) -> List[dict]:
+        self: "Funding", asset: str, key: str, amount: Union[str, int, float]
+    ) -> dict:
         """
         Get information about a possible withdraw, including fee and limit information.
         The ``key`` must be the name of the key defined in the account. You can add
@@ -230,14 +245,14 @@ class Funding(KrakenBaseSpotAPI):
                 'fee': '0.05000000'
             }
         """
-        return self._request(
+        return self._request(  # type: ignore[return-value]
             method="POST",
             uri="/private/WithdrawInfo",
             params={"asset": asset, "key": str(key), "amount": str(amount)},
         )
 
     def withdraw_funds(
-        self, asset: str, key: str, amount: Union[str, int, float]
+        self: "Funding", asset: str, key: str, amount: Union[str, int, float]
     ) -> dict:
         """
         Create a new withdraw. The key must be the name of the withdraw key
@@ -269,14 +284,14 @@ class Funding(KrakenBaseSpotAPI):
             ... )
             { 'refid': 'I7KGS6-UFMTTQ-AGBSO6T'}
         """
-        return self._request(
+        return self._request(  # type: ignore[return-value]
             method="POST",
             uri="/private/Withdraw",
             params={"asset": asset, "key": str(key), "amount": str(amount)},
         )
 
     def get_recent_withdraw_status(
-        self, asset: Union[str, None] = None, method: Union[str, None] = None
+        self: "Funding", asset: Optional[str] = None, method: Optional[str] = None
     ) -> List[dict]:
         """
         Get information about the recent withdraw status, including withdraws of the
@@ -285,9 +300,9 @@ class Funding(KrakenBaseSpotAPI):
         - https://docs.kraken.com/rest/#operation/getStatusRecentWithdrawals
 
         :param asset: Filter withdraws by asset (default: ``None``)
-        :type asset: str | None, optional
+        :type asset: str, optional
         :param method: Filter by withdraw method (default: ``None``)
-        :type method: str | None, optional
+        :type method: str, optional
         :return: Withdrawal information
         :rtype: List[dict]
 
@@ -313,16 +328,16 @@ class Funding(KrakenBaseSpotAPI):
                 }, ...
             ]
         """
-        params = {}
+        params: dict = {}
         if asset is not None:
             params["asset"] = asset
         if method is not None:
             params["method"] = method
-        return self._request(
+        return self._request(  # type: ignore[return-value]
             method="POST", uri="/private/WithdrawStatus", params=params
         )
 
-    def cancel_withdraw(self, asset: str, refid: str) -> dict:
+    def cancel_withdraw(self: "Funding", asset: str, refid: str) -> dict:
         """
         Cancel a requested withdraw. This will only be successful if the withdraw
         is not beeing processed so far.
@@ -347,14 +362,18 @@ class Funding(KrakenBaseSpotAPI):
             >>> funding.cancel_withdraw(asset="DOT", refid="I7KGS6-UFMTTQ-AGBSO6T")
             { 'result': True }
         """
-        return self._request(
+        return self._request(  # type: ignore[return-value]
             method="POST",
             uri="/private/WithdrawCancel",
             params={"asset": asset, "refid": str(refid)},
         )
 
     def wallet_transfer(
-        self, asset: str, from_: str, to_: str, amount: Union[str, int, float]
+        self: "Funding",
+        asset: str,
+        from_: str,
+        to_: str,
+        amount: Union[str, int, float],
     ) -> dict:
         """
         Transfer assets between the Spot and Futures wallet.
@@ -388,7 +407,7 @@ class Funding(KrakenBaseSpotAPI):
             ... )
             { 'refid': "ANS1EE5-SKACR4-PENGVP" }
         """
-        return self._request(
+        return self._request(  # type: ignore[return-value]
             method="POST",
             uri="/private/WalletTransfer",
             params={"asset": asset, "from": from_, "to": to_, "amount": str(amount)},

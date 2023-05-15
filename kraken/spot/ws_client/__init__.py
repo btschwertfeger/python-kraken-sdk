@@ -5,10 +5,17 @@
 #
 
 """Module that implements the Spot Kraken Websocket client"""
-import logging
-from typing import Coroutine, List, Union
 
-from kraken.base_api import KrakenBaseSpotAPI
+from __future__ import annotations
+
+import logging
+from typing import TYPE_CHECKING, List, Optional, Union
+
+from ...base_api import KrakenBaseSpotAPI
+
+if TYPE_CHECKING:
+    # to avaoid circular import for type checking
+    from ...spot.websocket import ConnectSpotWebsocket
 
 
 class SpotWsClientCl(KrakenBaseSpotAPI):
@@ -29,14 +36,18 @@ class SpotWsClientCl(KrakenBaseSpotAPI):
     """
 
     def __init__(
-        self, key: str = "", secret: str = "", url: str = "", sandbox: bool = False
+        self: "SpotWsClientCl",
+        key: Optional[str] = "",
+        secret: Optional[str] = "",
+        url: Optional[str] = "",
+        sandbox: Optional[bool] = False,
     ):
         super().__init__(key=key, secret=secret, url=url, sandbox=sandbox)
 
-        self._pub_conn = None
-        self._priv_conn = None
+        self._pub_conn: Optional[ConnectSpotWebsocket] = None
+        self._priv_conn: Optional[ConnectSpotWebsocket] = None
 
-    def get_ws_token(self) -> dict:
+    def get_ws_token(self: "SpotWsClientCl") -> dict:
         """
         Get the authentication token to establish the authenticated
         websocket connection.
@@ -46,28 +57,30 @@ class SpotWsClientCl(KrakenBaseSpotAPI):
         :returns: The authentication token
         :rtype: dict
         """
-        return self._request("POST", "/private/GetWebSocketsToken")
+        return self._request(  # type: ignore[return-value]
+            "POST", "/private/GetWebSocketsToken"
+        )
 
     async def create_order(
-        self,
+        self: "SpotWsClientCl",
         ordertype: str,
         side: str,
         pair: str,
         volume: Union[str, int, float],
-        price: Union[str, int, float, None] = None,
-        price2: Union[str, int, float, None] = None,
-        leverage: Union[str, int, float, None] = None,
-        oflags: Union[str, List[str], None] = None,
-        starttm: Union[str, int, None] = None,
-        expiretm: Union[str, int, None] = None,
-        deadline: str = None,
-        userref: Union[str, int, None] = None,
-        validate: bool = False,
-        close_ordertype: Union[str, None] = None,
-        close_price: Union[str, int, float, None] = None,
-        close_price2: Union[str, int, float, None] = None,
-        timeinforce: Union[str, int, None] = None,
-    ) -> Coroutine:
+        price: Optional[Union[str, int, float]] = None,
+        price2: Optional[Union[str, int, float]] = None,
+        leverage: Optional[Union[str, int, float]] = None,
+        oflags: Optional[Union[str, List[str]]] = None,
+        starttm: Optional[Union[str, int]] = None,
+        expiretm: Optional[Union[str, int]] = None,
+        deadline: Optional[str] = None,
+        userref: Optional[Union[str, int]] = None,
+        validate: Optional[bool] = False,
+        close_ordertype: Optional[str] = None,
+        close_price: Optional[Union[str, int, float]] = None,
+        close_price2: Optional[Union[str, int, float]] = None,
+        timeinforce: Optional[Union[str, int]] = None,
+    ) -> None:
         """
         Create an order and submit it.
 
@@ -87,17 +100,17 @@ class SpotWsClientCl(KrakenBaseSpotAPI):
         :type volume: str | int | float
         :param price: The limit price for ``limit`` orders or the trigger price for orders with
             ``ordertype`` one of ``stop-loss``, ``stop-loss-limit``, ``take-profit``, and ``take-profit-limit``
-        :type price: str | int | float | None, optional
+        :type price: str | int | float, optional
         :param price2: The second price for ``stop-loss-limit`` and ``take-profit-limit``
             orders (see the referenced Kraken documentaion for more information)
-        :type price2: str | int | float | None, optional
+        :type price2: str | int | float, optional
         :param leverage: The leverage
-        :type leverage: str | int | float | None, optional
+        :type leverage: str | int | float, optional
         :param oflags: Order flags like ``post``, ``fcib``, ``fciq``, ``nomp``, ``viqc``
             (see the referenced Kraken documentaion for more information)
-        :type oflags: str | List[str] | None, optional
+        :type oflags: str | List[str], optional
         :param starttm: Unix timestamp or seconds defining the start time (default: ``"0"``)
-        :type starttm: str | int | None, optional
+        :type starttm: str | int, optional
         :param expiretim: Unix timestamp or time in seconds defining the expiration of
             the order (default: ``"0"`` - i.e., no expiration)
         :type expiretim: str
@@ -110,16 +123,16 @@ class SpotWsClientCl(KrakenBaseSpotAPI):
         :type validate: bool, optional
         :param close_ordertype:  Conditional close order type, one of: ``limit``, ``stop-loss``,
             ``take-profit``, ``stop-loss-limit``, ``take-profit-limit``
-        :type close_ordertype: str | None, optional
+        :type close_ordertype: str, optional
         :param close_price: Conditional close price
-        :type close_price: str | int | float | None, optional
+        :type close_price: str | int | float, optional
         :param close_price2: Second conditional close price
-        :type close_price2: str | int | float | None, optional
+        :type close_price2: str | int | float, optional
         :param timeinforce: How long the order raimains in the orderbook, one of: ``GTC``, ``IOC``,
             ``GTD`` (see the referenced Kraken documentaion for more information)
-        :type timeinforce: str | None, optional
+        :type timeinforce: str, optional
         :raises ValueError: If input is not correct
-        :rtype: Coroutine
+        :rtype: None
 
         Initialize your client as described in :class:`kraken.spot.KrakenSpotWSClient` to
         run the following example:
@@ -151,7 +164,7 @@ class SpotWsClientCl(KrakenBaseSpotAPI):
         if not self._priv_conn.is_auth:
             raise ValueError("Cannot create_order on public websocket client!")
 
-        payload = {
+        payload: dict = {
             "event": "addOrder",
             "ordertype": str(ordertype),
             "type": str(side),
@@ -193,17 +206,17 @@ class SpotWsClientCl(KrakenBaseSpotAPI):
         await self._priv_conn.send_message(msg=payload, private=True)
 
     async def edit_order(
-        self,
+        self: "SpotWsClientCl",
         orderid: str,
-        reqid: Union[str, int, None] = None,
-        pair: Union[str, None] = None,
-        price: Union[str, int, float, None] = None,
-        price2: Union[str, int, float, None] = None,
-        volume: Union[str, int, float, None] = None,
-        oflags: Union[str, List[str], None] = None,
-        newuserref: Union[str, int, None] = None,
-        validate: bool = False,
-    ) -> Coroutine:
+        reqid: Optional[Union[str, int]] = None,
+        pair: Optional[str] = None,
+        price: Optional[Union[str, int, float]] = None,
+        price2: Optional[Union[str, int, float]] = None,
+        volume: Optional[Union[str, int, float]] = None,
+        oflags: Optional[Union[str, List[str]]] = None,
+        newuserref: Optional[Union[str, int]] = None,
+        validate: Optional[bool] = False,
+    ) -> None:
         """
         Edit an open order that was placed on the Spot market.
 
@@ -214,23 +227,23 @@ class SpotWsClientCl(KrakenBaseSpotAPI):
         :param orderId: The orderId of the order to edit
         :type orderId: str
         :param reqid: Filter by reqid
-        :type reqid: str | int | None, optional
+        :type reqid: str | int, optional
         :param pair: Filter by pair
-        :type pair: str | None, optional
+        :type pair: str, optional
         :param price: Set a new price
-        :type price: str | int | float | None, optional
+        :type price: str | int | float, optional
         :param price2: Set a new second price
-        :type price2: str | int | float | None, optional
+        :type price2: str | int | float, optional
         :param volume: Set a new volume
-        :type volume: str | int | float | None, optional
+        :type volume: str | int | float, optional
         :param oflags: Set new oflags (overwrite old ones)
-        :type oflags: str | List[str] | None, optional
+        :type oflags: str | List[str], optional
         :param newuserref: Set a new user reference id
-        :type newuserref: str | int | None, optional
+        :type newuserref: str | int, optional
         :param validate: Validate the input without applying the changes (default: ``False``)
         :type validate: bool, optional
         :raises ValueError: If input is not correct
-        :rtype: Coroutine
+        :rtype: None
 
         Initialize your client as described in :class:`kraken.spot.KrakenSpotWSClient` to
         run the following example:
@@ -252,7 +265,11 @@ class SpotWsClientCl(KrakenBaseSpotAPI):
         if not self._priv_conn.is_auth:
             raise ValueError("Cannot edit_order on public websocket client!")
 
-        payload = {"event": "editOrder", "orderid": orderid, "validate": str(validate)}
+        payload: dict = {
+            "event": "editOrder",
+            "orderid": orderid,
+            "validate": str(validate),
+        }
         if reqid is not None:
             payload["reqid"] = reqid
         if pair is not None:
@@ -270,7 +287,7 @@ class SpotWsClientCl(KrakenBaseSpotAPI):
 
         await self._priv_conn.send_message(msg=payload, private=True)
 
-    async def cancel_order(self, txid: Union[str, List[str]]) -> Coroutine:
+    async def cancel_order(self: "SpotWsClientCl", txid: Union[str, List[str]]) -> None:
         """
         Cancel a specific order or a list of orders.
 
@@ -281,7 +298,7 @@ class SpotWsClientCl(KrakenBaseSpotAPI):
         :param txid: Transaction id or list of txids or comma delimted list as string
         :type txid: str | List[str]
         :raises ValueError: If the websocket is not connected or the connection is not authenticated
-        :return: Coroutine
+        :return: None
 
         Initialize your client as described in :class:`kraken.spot.KrakenSpotWSClient` to
         run the following example:
@@ -301,7 +318,7 @@ class SpotWsClientCl(KrakenBaseSpotAPI):
             msg={"event": "cancelOrder", "txid": self._to_str_list(txid)}, private=True
         )
 
-    async def cancel_all_orders(self) -> Coroutine:
+    async def cancel_all_orders(self: "SpotWsClientCl") -> None:
         """
         Cancel all open Spot orders.
 
@@ -310,7 +327,7 @@ class SpotWsClientCl(KrakenBaseSpotAPI):
         - https://docs.kraken.com/websockets/#message-cancelAll
 
         :raises ValueError: If the websocket is not connected or the connection is not authenticated
-        :return: Coroutine
+        :return: None
 
         Initialize your client as described in :class:`kraken.spot.KrakenSpotWSClient` to
         run the following example:
@@ -329,7 +346,7 @@ class SpotWsClientCl(KrakenBaseSpotAPI):
             raise ValueError("Cannot use cancel_all_orders on public websocket client!")
         await self._priv_conn.send_message(msg={"event": "cancelAll"}, private=True)
 
-    async def cancel_all_orders_after(self, timeout: int = 0) -> Coroutine:
+    async def cancel_all_orders_after(self: "SpotWsClientCl", timeout: int = 0) -> None:
         """
         Set a Death Man's Switch
 
@@ -340,7 +357,7 @@ class SpotWsClientCl(KrakenBaseSpotAPI):
         :param timeout: Set the timeout in seconds to cancel the orders after, set to ``0`` to reset.
         :type timeout: int
         :raises ValueError: If the websocket is not connected or the connection is not authenticated
-        :return: Coroutine
+        :return: None
 
         Initialize your client as described in :class:`kraken.spot.KrakenSpotWSClient` to
         run the following example:

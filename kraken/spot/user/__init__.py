@@ -6,9 +6,9 @@
 
 """ Module that implements the Kraken Spot User client"""
 from decimal import Decimal
-from typing import List, Union
+from typing import List, Optional, Union
 
-from kraken.base_api import KrakenBaseSpotAPI
+from ...base_api import KrakenBaseSpotAPI
 
 
 class User(KrakenBaseSpotAPI):
@@ -43,7 +43,19 @@ class User(KrakenBaseSpotAPI):
         ...     print(user.get_account_balances())
     """
 
-    def get_account_balance(self) -> dict:
+    def __init__(
+        self: "User",
+        key: Optional[str] = "",
+        secret: Optional[str] = "",
+        url: Optional[str] = "",
+    ) -> None:
+        super().__init__(key=key, secret=secret, url=url)
+
+    def __enter__(self: "User") -> "User":
+        super().__enter__()
+        return self
+
+    def get_account_balance(self: "User") -> dict:
         """
         Get the current balances of the user.
 
@@ -58,8 +70,7 @@ class User(KrakenBaseSpotAPI):
             >>> from kraken.spot import User
             >>> user = User(key="api-key", secret="secret-key")
             >>> user.get_account_balances()
-            {
-                'ZUSD': '241983.1415',
+            {                'ZUSD': '241983.1415',
                 'KFEE': '8020.22',
                 'BCH': '0.0000077100',
                 'ETHW': '0.0000040',
@@ -69,9 +80,11 @@ class User(KrakenBaseSpotAPI):
                 ...
             }
         """
-        return self._request(method="POST", uri="/private/Balance")
+        return self._request(  # type: ignore[return-value]
+            method="POST", uri="/private/Balance"
+        )
 
-    def get_balances(self, currency: str) -> dict:
+    def get_balances(self: "User", currency: str) -> dict:
         """
         Returns the balance and available balance of a given currency.
 
@@ -98,14 +111,14 @@ class User(KrakenBaseSpotAPI):
             }
         """
 
-        balance = Decimal(0)
-        curr_opts = (currency, f"Z{currency}", f"X{currency}")
+        balance: Decimal = Decimal(0)
+        curr_opts: tuple = (currency, f"Z{currency}", f"X{currency}")
         for symbol, value in self.get_account_balance().items():
             if symbol in curr_opts:
                 balance = Decimal(value)
                 break
 
-        available_balance = balance
+        available_balance: Decimal = balance
         for order in self.get_open_orders()["open"].values():
             if currency in order["descr"]["pair"][0 : len(currency)]:
                 if order["descr"]["type"] == "sell":
@@ -122,7 +135,7 @@ class User(KrakenBaseSpotAPI):
             "available_balance": float(available_balance),
         }
 
-    def get_trade_balance(self, asset: str = "ZUSD") -> dict:
+    def get_trade_balance(self: "User", asset: Optional[str] = "ZUSD") -> dict:
         """
         Get the summary of all collateral balances.
 
@@ -154,13 +167,15 @@ class User(KrakenBaseSpotAPI):
                 'mf': '322296.9914'  # Free margin ( tb / initial margin ) * 100
             }
         """
-        params = {}
+        params: dict = {}
         if asset is not None:
             params["asset"] = asset
-        return self._request(method="POST", uri="/private/TradeBalance", params=params)
+        return self._request(  # type: ignore[return-value]
+            method="POST", uri="/private/TradeBalance", params=params
+        )
 
     def get_open_orders(
-        self, trades: bool = False, userref: Union[int, None] = None
+        self: "User", trades: Optional[bool] = False, userref: Optional[int] = None
     ) -> dict:
         """
         Get information about the open orders.
@@ -172,7 +187,7 @@ class User(KrakenBaseSpotAPI):
         :param trades: Include trades related to position or not into the response (default: ``False``)
         :type trades: bool
         :param userref: Filter the results by user reference id
-        :type userref: int | None, optional
+        :type userref: int, optional
 
         .. code-block:: python
             :linenos:
@@ -217,19 +232,21 @@ class User(KrakenBaseSpotAPI):
                 }
             }
         """
-        params = {"trades": trades}
+        params: dict = {"trades": trades}
         if userref is not None:
             params["userref"] = userref
-        return self._request(method="POST", uri="/private/OpenOrders", params=params)
+        return self._request(  # type: ignore[return-value]
+            method="POST", uri="/private/OpenOrders", params=params
+        )
 
     def get_closed_orders(
-        self,
-        trades: bool = False,
-        userref: Union[int, None] = None,
-        start: Union[int, None] = None,
-        end: Union[int, None] = None,
-        ofs: Union[int, None] = None,
-        closetime: str = "both",
+        self: "User",
+        trades: Optional[bool] = False,
+        userref: Optional[int] = None,
+        start: Optional[int] = None,
+        end: Optional[int] = None,
+        ofs: Optional[int] = None,
+        closetime: Optional[str] = "both",
     ) -> dict:
         """
         Get the 50 latest closed (filled or canceled) orders.
@@ -241,11 +258,11 @@ class User(KrakenBaseSpotAPI):
         :param trades: Include trades related to position into the response or not (default: ``False``)
         :type trades: bool
         :param userref: Filter the results by user reference id
-        :type userref: int | None, optional
+        :type userref: int, optional
         :param start: Unix timestamp to start the search from
-        :type start: int | None, optional
+        :type start: int, optional
         :param end: Unix timestamp to define the last result to include
-        :type end: int | None, optional
+        :type end: int, optional
         :param ofs: Offset for pagination
         :type ofs: int, optional
         :param closetime: Specify the exact time frame, one of: ``both``, ``open``, ``close`` (default: ``both``)
@@ -295,7 +312,7 @@ class User(KrakenBaseSpotAPI):
                 }
             }
         """
-        params = {"trades": trades, "closetime": closetime}
+        params: dict = {"trades": trades, "closetime": closetime}
         if userref is not None:
             params["userref"] = userref
         if start is not None:
@@ -305,14 +322,16 @@ class User(KrakenBaseSpotAPI):
         if ofs is not None:
             params["ofs"] = ofs
 
-        return self._request(method="POST", uri="/private/ClosedOrders", params=params)
+        return self._request(  # type: ignore[return-value]
+            method="POST", uri="/private/ClosedOrders", params=params
+        )
 
     def get_orders_info(
-        self,
+        self: "User",
         txid: Union[List[str], str] = None,
-        trades: bool = False,
-        userref: Union[int, None] = None,
-        consolidate_taker: bool = True,
+        trades: Optional[bool] = False,
+        userref: Optional[int] = None,
+        consolidate_taker: Optional[bool] = True,
     ) -> dict:
         """
         Get information about one or more orders.
@@ -327,7 +346,7 @@ class User(KrakenBaseSpotAPI):
         :param trades: Include trades in the result or not (default: ``False``)
         :type trades: bool, optional
         :param userref: Filter results by user reference id
-        :type userref: int | None, optional
+        :type userref: int, optional
         :param consolidate_taker: Consolidate trdes by individual taker trades (default: ``True``)
         :type consolidate_taker: bool, optional
 
@@ -401,7 +420,7 @@ class User(KrakenBaseSpotAPI):
                 }
             }
         """
-        params = {
+        params: dict = {
             "txid": txid,
             "trades": trades,
             "consolidate_taker": consolidate_taker,
@@ -410,15 +429,17 @@ class User(KrakenBaseSpotAPI):
             params["txid"] = self._to_str_list(txid)
         if userref is not None:
             params["userref"] = userref
-        return self._request(method="POST", uri="/private/QueryOrders", params=params)
+        return self._request(  # type: ignore[return-value]
+            method="POST", uri="/private/QueryOrders", params=params
+        )
 
     def get_trades_history(
-        self,
-        type_: str = "all",
-        trades: bool = False,
-        start: Union[int, None] = None,
-        end: Union[int, None] = None,
-        ofs: Union[int, None] = None,
+        self: "User",
+        type_: Optional[str] = "all",
+        trades: Optional[bool] = False,
+        start: Optional[int] = None,
+        end: Optional[int] = None,
+        ofs: Optional[int] = None,
         consolidate_taker: bool = True,
     ) -> dict:
         """
@@ -433,9 +454,9 @@ class User(KrakenBaseSpotAPI):
         :param trades: Include trades related to a position or not (default: ``False``)
         :type trades: bool, optional
         :param start: Timestamp or txid to start the search
-        :type start: int | None, optional
+        :type start: int, optional
         :param end: Timestamp or txid to define the last inluded result
-        :type end: int | None, optional
+        :type end: int, optional
         :param consolidate_taker: Consolidate trades by individual taker trades (default: ``True``)
         :type consolidate_taker: bool
 
@@ -470,7 +491,7 @@ class User(KrakenBaseSpotAPI):
                 }
             }
         """
-        params = {
+        params: dict = {
             "type": type_,
             "trades": trades,
             "consolidate_taker": consolidate_taker,
@@ -481,10 +502,12 @@ class User(KrakenBaseSpotAPI):
             params["end"] = end
         if ofs is not None:
             params["ofs"] = ofs
-        return self._request(method="POST", uri="/private/TradesHistory", params=params)
+        return self._request(  # type: ignore[return-value]
+            method="POST", uri="/private/TradesHistory", params=params
+        )
 
     def get_trades_info(
-        self, txid: Union[str, List[str]], trades: bool = False
+        self: "User", txid: Union[str, List[str]], trades: Optional[bool] = False
     ) -> dict:
         """
         Get information about specific trades/filled orders. 20 txids can be queried maximum.
@@ -525,7 +548,7 @@ class User(KrakenBaseSpotAPI):
                 }
             }
         """
-        return self._request(
+        return self._request(  # type: ignore[return-value]
             method="POST",
             uri="/private/QueryTrades",
             params={
@@ -535,10 +558,10 @@ class User(KrakenBaseSpotAPI):
         )
 
     def get_open_positions(
-        self,
-        txid: Union[str, List[str], None] = None,
-        docalcs: bool = False,
-        consolidation: str = "market",
+        self: "User",
+        txid: Optional[Union[str, List[str]]] = None,
+        docalcs: Optional[bool] = False,
+        consolidation: Optional[str] = "market",
     ) -> dict:
         """
         Get information about the open margin positions.
@@ -548,7 +571,7 @@ class User(KrakenBaseSpotAPI):
         - https://docs.kraken.com/rest/#operation/getOpenPositions
 
         :param txid: Filter by txid or list of txids or comma delimited list of txids as string
-        :type txid: str | List[str] | None, optional
+        :type txid: str | List[str], optional
         :param docalcs: Include profit and loss calculation into the result (default: ``False``)
         :type docalcs: bool, optional
         :param consolidation: Consolidate positions by market/pair (default: ``market``)
@@ -585,19 +608,21 @@ class User(KrakenBaseSpotAPI):
                 }, ...
             }
         """
-        params = {"docalcs": docalcs, "consolidation": consolidation}
+        params: dict = {"docalcs": docalcs, "consolidation": consolidation}
         if txid is not None:
             params["txid"] = self._to_str_list(txid)
-        return self._request(method="POST", uri="/private/OpenPositions", params=params)
+        return self._request(  # type: ignore[return-value]
+            method="POST", uri="/private/OpenPositions", params=params
+        )
 
     def get_ledgers_info(
-        self,
-        asset: Union[str, List[str]] = "all",
-        aclass: str = "currency",
-        type_: str = "all",
-        start: Union[int, None] = None,
-        end: Union[int, None] = None,
-        ofs: Union[int, None] = None,
+        self: "User",
+        asset: Optional[Union[str, List[str]]] = "all",
+        aclass: Optional[str] = "currency",
+        type_: Optional[str] = "all",
+        start: Optional[int] = None,
+        end: Optional[int] = None,
+        ofs: Optional[int] = None,
     ) -> dict:
         """
         Get information about the users ledger entries. 50 results can be returned at a time.
@@ -616,11 +641,11 @@ class User(KrakenBaseSpotAPI):
          ``staking``, and ``sale`` (default: ``all``)
         :type type_: str, optional
         :param start: Unix timestamp to start the search from
-        :type start: int | None, optional
+        :type start: int, optional
         :param end: Unix timestamp to define the last result
-        :type end: int | None, optional
+        :type end: int, optional
         :param ofs: Offset for pagination
-        :type ofs: int | None, optional
+        :type ofs: int, optional
 
         .. code-block:: python
             :linenos:
@@ -648,7 +673,7 @@ class User(KrakenBaseSpotAPI):
                 }
             }
         """
-        params = {"asset": asset, "aclass": aclass, "type": type_}
+        params: dict = {"asset": asset, "aclass": aclass, "type": type_}
         if isinstance(params["asset"], list):
             params["asset"] = self._to_str_list(asset)
         if start is not None:
@@ -657,9 +682,13 @@ class User(KrakenBaseSpotAPI):
             params["end"] = end
         if ofs is not None:
             params["ofs"] = ofs
-        return self._request(method="POST", uri="/private/Ledgers", params=params)
+        return self._request(  # type: ignore[return-value]
+            method="POST", uri="/private/Ledgers", params=params
+        )
 
-    def get_ledgers(self, id_: Union[str, List[str]], trades: bool = False) -> dict:
+    def get_ledgers(
+        self: "User", id_: Union[str, List[str]], trades: Optional[bool] = False
+    ) -> dict:
         """
         Get information about specific ledeger entries.
 
@@ -671,7 +700,7 @@ class User(KrakenBaseSpotAPI):
         :param id_: Ledger id as string, list of strings, or comma delimited list of ledger ids as string
         :type id_: str | List[str]
         :param trades: Include trades related to a position or not (default: ``False``)
-        :type trades: bool
+        :type trades: bool, optional
 
         .. code-block:: python
             :linenos:
@@ -694,14 +723,16 @@ class User(KrakenBaseSpotAPI):
                 }
             }
         """
-        return self._request(
+        return self._request(  # type: ignore[return-value]
             method="POST",
             uri="/private/QueryLedgers",
             params={"trades": trades, "id": self._to_str_list(id_)},
         )
 
     def get_trade_volume(
-        self, pair: Union[str, List[str], None] = None, fee_info: bool = True
+        self: "User",
+        pair: Optional[Union[str, List[str]]] = None,
+        fee_info: Optional[bool] = True,
     ) -> dict:
         """
         Get the 30-day user specific trading volume in USD.
@@ -711,7 +742,7 @@ class User(KrakenBaseSpotAPI):
         - https://docs.kraken.com/rest/#operation/getTradeVolume
 
         :param pair: Asset pair, list of asset pairs or comma delimited list (as string) of asset pairs to filter
-        :type pair: str | List[str] | None, optional
+        :type pair: str | List[str], optional
         :param fee_info: Include fee information or not (default: ``True``)
         :type fee_info: bool, optional
 
@@ -755,20 +786,22 @@ class User(KrakenBaseSpotAPI):
             }
 
         """
-        params = {"fee-info": fee_info}
+        params: dict = {"fee-info": fee_info}
         if pair is not None:
             params["pair"] = self._to_str_list(pair)
-        return self._request(method="POST", uri="/private/TradeVolume", params=params)
+        return self._request(  # type: ignore[return-value]
+            method="POST", uri="/private/TradeVolume", params=params
+        )
 
     def request_export_report(
-        self,
+        self: "User",
         report: str,
         description: str,
-        format_: str = "CSV",
-        fields: Union[str, List[str]] = "all",
-        starttm: int = None,
-        endtm: int = None,
-        **kwargs,
+        format_: Optional[str] = "CSV",
+        fields: Optional[Union[str, List[str]]] = "all",
+        starttm: Optional[int] = None,
+        endtm: Optional[int] = None,
+        **kwargs: dict,
     ) -> dict:
         """
         Request to export the trades or ledgers of the user.
@@ -787,9 +820,9 @@ class User(KrakenBaseSpotAPI):
         :param fields: Fields to include in the report (default: ``all``)
         :type fields: str | List[str], optional
         :param starttm: Unix timestamp to start
-        :type starttm: int | None, optional
+        :type starttm: int, optional
         :param endtm: Unix timestamp of the last result
-        :type endtm: int | None, optional
+        :type endtm: int, optional
         :return: A dictionary containing the export id
         :rtype: dict
 
@@ -807,7 +840,7 @@ class User(KrakenBaseSpotAPI):
         if report not in ["trades", "ledgers"]:
             raise ValueError('report must be one of "trades", "ledgers"')
 
-        params = {
+        params: dict = {
             "report": report,
             "description": description,
             "format": format_,
@@ -818,9 +851,11 @@ class User(KrakenBaseSpotAPI):
             params["starttm"] = starttm
         if endtm is not None:
             params["endtm"] = endtm
-        return self._request(method="POST", uri="/private/AddExport", params=params)
+        return self._request(  # type: ignore[return-value]
+            method="POST", uri="/private/AddExport", params=params
+        )
 
-    def get_export_report_status(self, report: str) -> dict:
+    def get_export_report_status(self: "User", report: str) -> dict:
         """
         Get the status of the current pending report.
 
@@ -869,13 +904,13 @@ class User(KrakenBaseSpotAPI):
                 }
             ]
         """
-        if report not in ["trades", "ledgers"]:
+        if report not in ("trades", "ledgers"):
             raise ValueError('report must be one of "trades", "ledgers"')
-        return self._request(
+        return self._request(  # type: ignore[return-value]
             method="POST", uri="/private/ExportStatus", params={"report": report}
         )
 
-    def retrieve_export(self, id_: str) -> dict:
+    def retrieve_export(self: "User", id_: str) -> dict:
         """
         Retrieve the requested report export.
 
@@ -908,14 +943,16 @@ class User(KrakenBaseSpotAPI):
             ...             file.write(chunk)
 
         """
-        return self._request(
+        return self._request(  # type: ignore[return-value]
             method="POST",
             uri="/private/RetrieveExport",
             params={"id": id_},
             return_raw=True,
         )
 
-    def delete_export_report(self, id_: str, type_: str = "delete") -> dict:
+    def delete_export_report(
+        self: "User", id_: str, type_: Optional[str] = "delete"
+    ) -> dict:
         """
         Delete a report from the Kraken server.
 
@@ -942,13 +979,13 @@ class User(KrakenBaseSpotAPI):
             >>> user.delete_export_report(id_="GEHI", type_="delete")
             { 'delete': True }
         """
-        return self._request(
+        return self._request(  # type: ignore[return-value]
             method="POST",
             uri="/private/RemoveExport",
             params={"id": id_, "type": type_},
         )
 
-    def create_subaccount(self, username: str, email: str) -> dict:
+    def create_subaccount(self: "User", username: str, email: str) -> dict:
         """
         Create a subaccount for trading. This is currently *only available
         for institutional clients*.
@@ -971,7 +1008,7 @@ class User(KrakenBaseSpotAPI):
             >>> user.create_subaccount(username="user", email="user@domain.com")
             { 'result': True }
         """
-        return self._request(
+        return self._request(  # type: ignore[return-value]
             method="POST",
             uri="/private/CreateSubaccount",
             params={"username": username, "email": email},

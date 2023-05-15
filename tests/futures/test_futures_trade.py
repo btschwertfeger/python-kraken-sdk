@@ -3,6 +3,9 @@
 # Copyright (C) 2023 Benjamin Thomas Schwertfeger
 # Github: https://github.com/btschwertfeger
 #
+
+"""Module that implements the unit tests for the Futures trade client"""
+
 from time import sleep
 
 import pytest
@@ -124,7 +127,7 @@ def test_create_order(futures_demo_trade) -> None:
     #         trailingStopDeviationUnit="PERCENT",
     #         trailingStopMaxDeviation=10,
     #     )
-    # except KrakenException.KrakenInsufficientAvailableFundsError:
+    # except KrakenException.KrakenException.KrakenInsufficientAvailableFundsError:
     #     pass
 
 

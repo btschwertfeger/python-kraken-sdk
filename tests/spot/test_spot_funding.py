@@ -3,9 +3,13 @@
 # Copyright (C) 2023 Benjamin Thomas Schwertfeger
 # Github: https://github.com/btschwertfeger
 #
+
+"""Module that implements the unit tests for the Spot funding client."""
+
 import pytest
 
 from kraken.exceptions import KrakenException
+from kraken.spot import Funding
 
 from .helper import is_not_error
 
@@ -15,7 +19,7 @@ from .helper import is_not_error
 @pytest.mark.spot
 @pytest.mark.spot_auth
 @pytest.mark.spot_funding
-def test_get_deposit_methods(spot_auth_funding) -> None:
+def test_get_deposit_methods(spot_auth_funding: Funding) -> None:
     """
     Checks if the response of the ``get_deposit_methods`` is of
     type list which mean that the request was successful.
@@ -26,7 +30,7 @@ def test_get_deposit_methods(spot_auth_funding) -> None:
 @pytest.mark.spot
 @pytest.mark.spot_auth
 @pytest.mark.spot_funding
-def test_get_deposit_address(spot_auth_funding) -> None:
+def test_get_deposit_address(spot_auth_funding: Funding) -> None:
     """
     Checks the ``get_deposit_address`` function by performing a valid request
     and validating that the response is of type list.
@@ -40,7 +44,7 @@ def test_get_deposit_address(spot_auth_funding) -> None:
 @pytest.mark.spot
 @pytest.mark.spot_auth
 @pytest.mark.spot_funding
-def test_get_recent_deposits_status(spot_auth_funding) -> None:
+def test_get_recent_deposits_status(spot_auth_funding: Funding) -> None:
     """
     Checks the ``get_recent_deposit_status`` endpoint by executing multiple
     request with different parameters and validating its return value.
@@ -60,7 +64,7 @@ def test_get_recent_deposits_status(spot_auth_funding) -> None:
 @pytest.mark.spot_auth
 @pytest.mark.spot_funding
 @pytest.mark.skip(reason="CI does not have withdraw permission")
-def test_withdraw_funds(spot_auth_funding) -> None:
+def test_withdraw_funds(spot_auth_funding: Funding) -> None:
     """
     Checks the ``withdraw_funds`` endpoint by performing a withdraw.
 
@@ -80,7 +84,7 @@ def test_withdraw_funds(spot_auth_funding) -> None:
 @pytest.mark.spot_auth
 @pytest.mark.spot_funding
 @pytest.mark.skip(reason="CI does not have withdraw permission")
-def test_get_withdrawal_info(spot_auth_funding) -> None:
+def test_get_withdrawal_info(spot_auth_funding: Funding) -> None:
     """
     Checks the ``get_withdrawa_info`` endpoint by requesting the data.
 
@@ -99,7 +103,7 @@ def test_get_withdrawal_info(spot_auth_funding) -> None:
 @pytest.mark.spot_auth
 @pytest.mark.spot_funding
 @pytest.mark.skip(reason="CI does not have withdraw permission")
-def test_get_recent_withdraw_status(spot_auth_funding) -> None:
+def test_get_recent_withdraw_status(spot_auth_funding: Funding) -> None:
     """
     Checks the ``get_recend_withdraw_status`` endpoint using different arguments.
 
@@ -119,7 +123,7 @@ def test_get_recent_withdraw_status(spot_auth_funding) -> None:
 @pytest.mark.spot_auth
 @pytest.mark.spot_funding
 @pytest.mark.skip(reason="CI does not have withdraw permission")
-def test_wallet_transfer(spot_auth_funding) -> None:
+def test_wallet_transfer(spot_auth_funding: Funding) -> None:
     """
     Checks the ``get_recend_withdraw_status`` endpoint using different arguments.
     (only works if futures wallet exists)

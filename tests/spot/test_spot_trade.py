@@ -3,11 +3,15 @@
 # Copyright (C) 2023 Benjamin Thomas Schwertfeger
 # Github: https://github.com/btschwertfeger
 #
+
+"""Module that implements the unit tests for the Spot trade client."""
+
 from datetime import datetime, timedelta, timezone
 
 import pytest
 
 from kraken.exceptions import KrakenException
+from kraken.spot import Trade
 
 # todo: Mock skipped tests - or is this to dangerous?
 
@@ -15,14 +19,14 @@ from kraken.exceptions import KrakenException
 @pytest.mark.spot
 @pytest.mark.spot_auth
 @pytest.mark.spot_trade
-def test_create_order(spot_auth_trade) -> None:
+def test_create_order(spot_auth_trade: Trade) -> None:
     """
     This test checks the ``create_order`` function by performing
     calls to create an order - but in validate mode - so that
-    no real order is placed. In some cases the KrakenPermissionDeniedError
-    will be catched.
+    no real order is placed. The KrakenException.KrakenPermissionDeniedError
+    will be raised since the CI does not have trade permission.
     """
-    try:
+    with pytest.raises(KrakenException.KrakenPermissionDeniedError):
         assert isinstance(
             spot_auth_trade.create_order(
                 ordertype="limit",
@@ -36,10 +40,8 @@ def test_create_order(spot_auth_trade) -> None:
             ),
             dict,
         )
-    except KrakenException.KrakenPermissionDeniedError:
-        pass
 
-    try:
+    with pytest.raises(KrakenException.KrakenPermissionDeniedError):
         assert isinstance(
             spot_auth_trade.create_order(
                 ordertype="limit",
@@ -54,10 +56,8 @@ def test_create_order(spot_auth_trade) -> None:
             ),
             dict,
         )
-    except KrakenException.KrakenPermissionDeniedError:
-        pass
 
-    try:
+    with pytest.raises(KrakenException.KrakenPermissionDeniedError):
         assert isinstance(
             spot_auth_trade.create_order(
                 ordertype="stop-loss",
@@ -76,10 +76,8 @@ def test_create_order(spot_auth_trade) -> None:
             ),
             dict,
         )
-    except KrakenException.KrakenPermissionDeniedError:
-        pass
 
-    try:
+    with pytest.raises(KrakenException.KrakenPermissionDeniedError):
         deadline = (datetime.now(timezone.utc) + timedelta(seconds=20)).isoformat()
         spot_auth_trade.create_order(
             ordertype="stop-loss-limit",
@@ -94,14 +92,12 @@ def test_create_order(spot_auth_trade) -> None:
             leverage=4,
             deadline=deadline,
         )
-    except KrakenException.KrakenPermissionDeniedError:
-        pass
 
 
 @pytest.mark.spot
 @pytest.mark.spot_auth
 @pytest.mark.spot_trade
-def test_failing_create_order(spot_auth_trade) -> None:
+def test_failing_create_order(spot_auth_trade: Trade) -> None:
     """
     Test that checks if the ``create_order`` function raises a ValueError
     bevause of missing or invalid parameters.
@@ -123,12 +119,13 @@ def test_failing_create_order(spot_auth_trade) -> None:
 @pytest.mark.spot
 @pytest.mark.spot_auth
 @pytest.mark.spot_trade
-def test_create_order_batch(spot_auth_trade) -> None:
+def test_create_order_batch(spot_auth_trade: Trade) -> None:
     """
     Checks the ``create_order_batch`` function by executing
-    a batch order in validate mode.
+    a batch order in validate mode. (Permission denied,
+    since the CI does not have trade permissions)
     """
-    assert isinstance(
+    with pytest.raises(KrakenException.KrakenPermissionDeniedError):
         spot_auth_trade.create_order_batch(
             orders=[
                 {
@@ -142,7 +139,7 @@ def test_create_order_batch(spot_auth_trade) -> None:
                     "price2": 130,
                     "timeinforce": "GTC",
                     "type": "buy",
-                    "userref": "345dsdfddfgdsgdfgsfdsfsdf",
+                    "userref": 1680953421,
                     "volume": 1000,
                 },
                 {
@@ -150,53 +147,47 @@ def test_create_order_batch(spot_auth_trade) -> None:
                     "price": 150,
                     "timeinforce": "GTC",
                     "type": "sell",
-                    "userref": "1dfgesggwe5t3",
+                    "userref": 1680953421,
                     "volume": 123,
                 },
             ],
             pair="BTC/USD",
             validate=True,  # important
-        ),
-        dict,
-    )
+        )
 
 
 @pytest.mark.spot
 @pytest.mark.spot_auth
 @pytest.mark.spot_trade
-def test_edit_order(spot_auth_trade) -> None:
+def test_edit_order(spot_auth_trade: Trade) -> None:
     """
     Test the ``edit_order`` function by editing an order.
 
-    In some cases KrakenPermissionDeniedError will be raised.
+    KrakenException.KrakenPermissionDeniedError: since CI does not have
+    trade permissions.
     """
-    try:
-        assert isinstance(
-            spot_auth_trade.edit_order(
-                txid="OHYO67-6LP66-HMQ437",
-                userref="12345678",
-                volume=1.25,
-                pair="XBTUSD",
-                price=27500,
-                price2=26500,
-                cancel_response=False,
-                oflags=["post"],
-                validate=True,
-            ),
-            dict,
+    with pytest.raises(KrakenException.KrakenPermissionDeniedError):
+        spot_auth_trade.edit_order(
+            txid="OHYO67-6LP66-HMQ437",
+            userref="12345678",
+            volume=1.25,
+            pair="XBTUSD",
+            price=27500,
+            price2=26500,
+            cancel_response=False,
+            oflags=["post"],
+            validate=True,
         )
-    except KrakenException.KrakenPermissionDeniedError:
-        pass
 
 
 @pytest.mark.spot
 @pytest.mark.spot_auth
 @pytest.mark.spot_trade
-def test_cancel_order(spot_auth_trade) -> None:
+def test_cancel_order(spot_auth_trade: Trade) -> None:
     """
     Checks the ``cancel_order`` function by canceling an order.
 
-    A KrakenPermissionDeniedError is expected since CI keys are
+    A KrakenException.KrakenPermissionDeniedError is expected since CI keys are
     not allowd to trade/cancel/withdraw/stake.
     """
     with pytest.raises(KrakenException.KrakenPermissionDeniedError):
@@ -207,53 +198,50 @@ def test_cancel_order(spot_auth_trade) -> None:
 @pytest.mark.spot_auth
 @pytest.mark.spot_trade
 @pytest.mark.skip(reason="CI does not have trade/cancel permission")
-def test_cancel_all_orders(spot_auth_trade) -> None:
+def test_cancel_all_orders(spot_auth_trade: Trade) -> None:
     """
     Checks the ``cancel_all_orders`` endpoint by executing the function.
-    A KrakenPermissionDeniedError will be raised since the CI API keys
+    A KrakenException.KrakenPermissionDeniedError will be raised since the CI API keys
     do not have cancel permission.
     """
-    try:
+    with pytest.raises(KrakenException.KrakenPermissionDeniedError):
         assert isinstance(spot_auth_trade.cancel_all_orders(), dict)
-    except KrakenException.KrakenPermissionDeniedError:
-        pass
 
 
 @pytest.mark.spot
 @pytest.mark.spot_auth
 @pytest.mark.spot_trade
 @pytest.mark.skip(reason="CI does not have trade/cancel permission")
-def test_cancel_all_orders_after_x(spot_auth_trade) -> None:
+def test_cancel_all_orders_after_x(spot_auth_trade: Trade) -> None:
     """
     Checks the ``cancel_all_orders_after_x`` function by validating its response data
     type.
 
-    THe KrakenPermissionDeniedError will be catched since the CI API keys are not
+    THe KrakenException.KrakenPermissionDeniedError will be catched since the CI API keys are not
     allowed to cancel orders.
     """
-    try:
+    with pytest.raises(KrakenException.KrakenPermissionDeniedError):
         assert isinstance(spot_auth_trade.cancel_all_orders_after_x(timeout=0), dict)
-    except KrakenException.KrakenPermissionDeniedError:
-        pass
 
 
 @pytest.mark.spot
 @pytest.mark.spot_auth
 @pytest.mark.spot_trade
-def test_cancel_order_batch(spot_auth_trade) -> None:
+def test_cancel_order_batch(spot_auth_trade: Trade) -> None:
     """
     Tests the ``cancel_order_batch`` function by cancelling dummy orders that
-    do not exist anymore. In this way the endpoint is tested without raising
-    a KrakenPermissionDeniedError because of missing CI API key permissions.
+    do not exist anymore. Error will be raised since the CI do not have trade
+    permissions.
     """
-    assert isinstance(
-        spot_auth_trade.cancel_order_batch(
-            orders=[
-                "O2JLFP-VYFIW-35ZAAE",
-                "O523KJ-DO4M2-KAT243",
-                "OCDIAL-YC66C-DOF7HS",
-                "OVFPZ2-DA2GV-VBFVVI",
-            ]
-        ),
-        dict,
-    )
+    with pytest.raises(KrakenException.KrakenPermissionDeniedError):
+        assert isinstance(
+            spot_auth_trade.cancel_order_batch(
+                orders=[
+                    "O2JLFP-VYFIW-35ZAAE",
+                    "O523KJ-DO4M2-KAT243",
+                    "OCDIAL-YC66C-DOF7HS",
+                    "OVFPZ2-DA2GV-VBFVVI",
+                ]
+            ),
+            dict,
+        )

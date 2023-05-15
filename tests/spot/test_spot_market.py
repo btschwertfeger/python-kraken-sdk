@@ -3,16 +3,21 @@
 # Copyright (C) 2023 Benjamin Thomas Schwertfeger
 # Github: https://github.com/btschwertfeger
 #
+
+"""Module that implements the unit tests for the Spot market client."""
+
 from time import sleep
 
 import pytest
+
+from kraken.spot import Market
 
 from .helper import is_not_error
 
 
 @pytest.mark.spot
 @pytest.mark.spot_market
-def test_get_system_status(spot_market) -> None:
+def test_get_system_status(spot_market: Market) -> None:
     """
     Checks the ``get_system_status`` endpoint by performing a
     valid request and validating that the response does not
@@ -23,7 +28,7 @@ def test_get_system_status(spot_market) -> None:
 
 @pytest.mark.spot
 @pytest.mark.spot_market
-def test_get_assets(spot_market) -> None:
+def test_get_assets(spot_market: Market) -> None:
     """
     Checks the ``get_assets`` endpoint by performing multiple
     requests with different paramaters and
@@ -42,7 +47,7 @@ def test_get_assets(spot_market) -> None:
 
 @pytest.mark.spot
 @pytest.mark.spot_market
-def test_get_tradable_asset_pair(spot_market) -> None:
+def test_get_tradable_asset_pair(spot_market: Market) -> None:
     """
     Checks the ``get_tradable_asset_pair`` endpoint by performing multiple
     requests with different paramaters and validating that the response
@@ -57,7 +62,7 @@ def test_get_tradable_asset_pair(spot_market) -> None:
 
 @pytest.mark.spot
 @pytest.mark.spot_market
-def test_get_ticker(spot_market) -> None:
+def test_get_ticker(spot_market: Market) -> None:
     """
     Checks the ``get_ticker`` endpoint by performing multiple
     requests with different paramaters and validating that the response
@@ -70,7 +75,7 @@ def test_get_ticker(spot_market) -> None:
 
 @pytest.mark.spot
 @pytest.mark.spot_market
-def test_get_ohlc(spot_market) -> None:
+def test_get_ohlc(spot_market: Market) -> None:
     """
     Checks the ``get_ohlc`` endpoint by performing multiple
     requests with different paramaters and validating that the response
@@ -84,7 +89,7 @@ def test_get_ohlc(spot_market) -> None:
 
 @pytest.mark.spot
 @pytest.mark.spot_market
-def test_get_order_book(spot_market) -> None:
+def test_get_order_book(spot_market: Market) -> None:
     """
     Checks the ``get_order_book`` endpoint by performing multiple
     requests with different paramaters and validating that the response
@@ -98,7 +103,7 @@ def test_get_order_book(spot_market) -> None:
 
 @pytest.mark.spot
 @pytest.mark.spot_market
-def test_get_recent_trades(spot_market) -> None:
+def test_get_recent_trades(spot_market: Market) -> None:
     """
     Checks the ``get_recent_trades`` endpoint by performing multiple
     requests with different paramaters and validating that the response
@@ -112,7 +117,7 @@ def test_get_recent_trades(spot_market) -> None:
 
 @pytest.mark.spot
 @pytest.mark.spot_market
-def test_get_recent_spreads(spot_market) -> None:
+def test_get_recent_spreads(spot_market: Market) -> None:
     """
     Checks the ``get_recent_spreads`` endpoint by performing multiple
     requests with different paramaters and validating that the response

@@ -5,12 +5,15 @@
 #
 
 """Module that provides an excample usage for the Kraken Futures websocket client"""
+
+from __future__ import annotations
+
 import asyncio
 import logging
 import logging.config
 import os
 import time
-from typing import Coroutine
+from typing import Union
 
 from kraken.futures import KrakenFuturesWSClient
 
@@ -24,7 +27,7 @@ logging.getLogger("requests").setLevel(logging.WARNING)
 logging.getLogger("urllib3").setLevel(logging.WARNING)
 
 
-async def main() -> Coroutine:
+async def main() -> None:
     """Create bot and subscribe to topics/feeds"""
 
     key = os.getenv("Futures_API_KEY")
@@ -34,7 +37,7 @@ async def main() -> Coroutine:
     class Bot(KrakenFuturesWSClient):
         """Can be used to create a custom trading strategy/bot"""
 
-        async def on_message(self, event) -> Coroutine:
+        async def on_message(self: "Bot", event: Union[list, dict]) -> None:
             """receives the websocket events"""
             logging.info(event)
             # ... apply your trading strategy here

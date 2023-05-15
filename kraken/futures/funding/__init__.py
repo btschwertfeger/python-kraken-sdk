@@ -3,11 +3,11 @@
 # Copyright (C) 2023 Benjamin Thomas Schwertfeger
 # Github: https://github.com/btschwertfeger
 
-
 """Module that implements the Kraken Futures Funding client"""
-from typing import Union
 
-from kraken.base_api import KrakenBaseFuturesAPI
+from typing import Optional, Union
+
+from ...base_api import KrakenBaseFuturesAPI
 
 
 class Funding(KrakenBaseFuturesAPI):
@@ -44,9 +44,17 @@ class Funding(KrakenBaseFuturesAPI):
     """
 
     def __init__(
-        self, key: str = "", secret: str = "", url: str = "", sandbox: bool = False
+        self,
+        key: Optional[str] = "",
+        secret: Optional[str] = "",
+        url: Optional[str] = "",
+        sandbox: Optional[bool] = False,
     ) -> None:
         super().__init__(key=key, secret=secret, url=url, sandbox=sandbox)
+
+    def __enter__(self: "Funding") -> "Funding":
+        super().__enter__()
+        return self
 
     def get_historical_funding_rates(self, symbol: str) -> dict:
         """
@@ -79,7 +87,7 @@ class Funding(KrakenBaseFuturesAPI):
                 ]
             }
         """
-        return self._request(
+        return self._request(  # type: ignore[return-value]
             method="GET",
             uri="/derivatives/api/v4/historicalfundingrates",
             query_params={"symbol": symbol},
@@ -127,7 +135,7 @@ class Funding(KrakenBaseFuturesAPI):
                 'serverTime': '2023-04-07T15:23:45.196Z"
             }
         """
-        return self._request(
+        return self._request(  # type: ignore[return-value]
             method="POST",
             uri="/derivatives/api/v3/transfer",
             post_params={
@@ -182,7 +190,7 @@ class Funding(KrakenBaseFuturesAPI):
             ...     unit='XBT'
             ... ))
         """
-        return self._request(
+        return self._request(  # type: ignore[return-value]
             method="POST",
             uri="/derivatives/api/v3/transfer/subaccount",
             post_params={
@@ -200,8 +208,8 @@ class Funding(KrakenBaseFuturesAPI):
         self,
         amount: Union[str, int, float],
         currency: str,
-        sourceWallet: Union[str, None] = None,
-        **kwargs,
+        sourceWallet: Optional[str] = None,
+        **kwargs: dict,
     ) -> dict:
         """
         Enables the transfer of funds between the futures and spot wallet.
@@ -216,7 +224,7 @@ class Funding(KrakenBaseFuturesAPI):
         :param currency: The asset or currency to transfer
         :type currency: str
         :param sourceWallet: The wallet to withdraw from (default: ``cash``)
-        :type sourceWallet: str | None, optional
+        :type sourceWallet: str, optional
         :raises ValueError: If this function is called within the sandbox/demo environment
 
         .. code-block:: python
@@ -233,14 +241,14 @@ class Funding(KrakenBaseFuturesAPI):
         """
         if self.sandbox:
             raise ValueError("This function is not available in sandbox mode.")
-        params = {
+        params: dict = {
             "amount": str(amount),
             "currency": currency,
         }
         if sourceWallet is not None:
             params["sourceWallet"] = sourceWallet
         params.update(kwargs)
-        return self._request(
+        return self._request(  # type: ignore[return-value]
             method="POST",
             uri="/derivatives/api/v3/withdrawal",
             post_params=params,

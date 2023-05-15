@@ -6,13 +6,10 @@
 
 """Module that checks the general Spot Base API class."""
 
-import os
-
 import pytest
 
 from kraken.base_api import KrakenBaseSpotAPI
 from kraken.exceptions import KrakenException
-from kraken.spot import Funding, Market, Staking, Trade, User
 
 from .helper import is_not_error
 

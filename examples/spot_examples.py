@@ -4,7 +4,7 @@
 # Github: https://github.com/btschwertfeger
 #
 
-"""Module that implements some example usage for the Kraken Futures REST clients"""
+"""Module that implements some example usage for the Kraken Futures REST clients."""
 import logging
 import logging.config
 import os
@@ -141,7 +141,6 @@ def trade_examples() -> None:
         print(trade.cancel_all_orders())
         print(trade.cancel_all_orders_after_x(timeout=6))
 
-        # __ not working
     print(
         trade.cancel_order_batch(
             orders=[

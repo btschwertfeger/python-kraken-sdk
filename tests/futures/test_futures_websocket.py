@@ -4,12 +4,15 @@
 # Github: https://github.com/btschwertfeger
 #
 
-"""Module that tests the Kraken Futures websocket client"""
+"""Module that implements the unit tests for the Futures websocket client"""
+
+from __future__ import annotations
 
 import asyncio
 import os
 import time
 import unittest
+from typing import Any, List, Union
 
 import pytest
 
@@ -19,7 +22,7 @@ from kraken.futures import KrakenFuturesWSClient
 class Bot(KrakenFuturesWSClient):
     """Class to create a websocket bot"""
 
-    async def on_message(self, event) -> None:
+    async def on_message(self: "Bot", event: Union[list, dict]) -> None:
         # The following comments are only for debugging.
         # log = ""
         # try:
@@ -34,35 +37,35 @@ class Bot(KrakenFuturesWSClient):
 
 
 class WebsocketTests(unittest.TestCase):
-    def setUp(self) -> None:
-        self.__key = os.getenv("FUTURES_API_KEY")
-        self.__secret = os.getenv("FUTURES_SECRET_KEY")
-        self.__full_ws_access = os.getenv("FULLACCESS") is not None
+    def setUp(self: "WebsocketTests") -> None:
+        self.__key: str = os.getenv("FUTURES_API_KEY")
+        self.__secret: str = os.getenv("FUTURES_SECRET_KEY")
+        self.__full_ws_access: str = os.getenv("FULLACCESS") is not None
 
-    def __create_loop(self, coro) -> None:
+    def __create_loop(self: "WebsocketTests", coro: Any) -> None:
         """Function that creates an event loop."""
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
         asyncio.run(coro())
         loop.close()
 
-    async def __wait(self, seconds: float = 1.0) -> None:
+    async def __wait(self: "WebsocketTests", seconds: float = 1.0) -> None:
         """Function that realizes the wait for ``seconds``."""
-        start = time.time()
+        start: int = time.time()
         while time.time() - seconds < start:
             await asyncio.sleep(0.2)
         return
 
     @pytest.mark.futures
     @pytest.mark.futures_websocket
-    def test_create_public_bot(self) -> None:
+    def test_create_public_bot(self: "WebsocketTests") -> None:
         """
         Checks if the unauthenticated websocket client
         can be instantiated.
         """
 
         async def create_bot() -> None:
-            bot = Bot()
+            bot: Bot = Bot()
             await self.__wait(1.5)
 
         self.__create_loop(coro=create_bot)
@@ -70,7 +73,7 @@ class WebsocketTests(unittest.TestCase):
     @pytest.mark.futures
     @pytest.mark.futures_auth
     @pytest.mark.futures_websocket
-    def test_create_private_bot(self) -> None:
+    def test_create_private_bot(self: "WebsocketTests") -> None:
         """
         Checks if the authenticated websocket client
         can be instantiated.
@@ -84,14 +87,14 @@ class WebsocketTests(unittest.TestCase):
 
     @pytest.mark.futures
     @pytest.mark.futures_websocket
-    def test_get_subscriptions(self) -> None:
+    def test_get_subscriptions(self: "WebsocketTests") -> None:
         """
         Checks the ``get_subscriptions`` function.
         """
 
         async def create_bot() -> None:
-            bot = Bot()
-            bot.get_active_subscriptions
+            bot: Bot = Bot()
+            bot.get_active_subscriptions()
             await self.__wait(1.5)
 
         self.__create_loop(coro=create_bot)
@@ -104,7 +107,7 @@ class WebsocketTests(unittest.TestCase):
         """
 
         async def create_bot() -> None:
-            bot = Bot()
+            bot: Bot = Bot()
             assert bot.get_available_public_subscription_feeds() == [
                 "trade",
                 "book",
@@ -118,13 +121,13 @@ class WebsocketTests(unittest.TestCase):
 
     @pytest.mark.futures
     @pytest.mark.futures_websocket
-    def test_get_available_private_subscriptions(self) -> None:
+    def test_get_available_private_subscriptions(self: "WebsocketTests") -> None:
         """
         Checks the ``get_available_private_subscriptions`` function.
         """
 
         async def create_bot() -> None:
-            bot = Bot()
+            bot: Bot = Bot()
             assert bot.get_available_private_subscription_feeds() == [
                 "fills",
                 "open_positions",
@@ -143,16 +146,16 @@ class WebsocketTests(unittest.TestCase):
     @pytest.mark.futures
     @pytest.mark.futures_auth
     @pytest.mark.futures_websocket
-    def test_get_auth_state(self) -> None:
+    def test_get_auth_state(self: "WebsocketTests") -> None:
         """
         Checks if the ``is_auth`` attribute is set correctly.
         """
 
         async def create_bot() -> None:
-            bot = Bot()
+            bot: Bot = Bot()
             assert not bot.is_auth
 
-            auth_bot = Bot(key=self.__key, secret=self.__secret)
+            auth_bot: Bot = Bot(key=self.__key, secret=self.__secret)
             assert auth_bot.is_auth
 
             await self.__wait(2)
@@ -161,14 +164,14 @@ class WebsocketTests(unittest.TestCase):
 
     @pytest.mark.futures
     @pytest.mark.futures_websocket
-    def test_subscribe_public(self) -> None:
+    def test_subscribe_public(self: "WebsocketTests") -> None:
         """
         Checks if the unauthenticated websocket client is able to subscribe
         to public feeds.
         """
 
         async def create_bot() -> None:
-            bot = Bot()
+            bot: Bot = Bot()
             products = ["PI_XBTUSD", "PF_SOLUSD"]
 
             with pytest.raises(ValueError):  # products must be List[str]
@@ -183,14 +186,14 @@ class WebsocketTests(unittest.TestCase):
     @pytest.mark.futures
     @pytest.mark.futures_auth
     @pytest.mark.futures_websocket
-    def test_subscribe_private(self) -> None:
+    def test_subscribe_private(self: "WebsocketTests") -> None:
         """
         Checks if the authenticated websocket client is able to subscribe
         to private feeds.
         """
 
         async def create_bot() -> None:
-            auth_bot = Bot(key=self.__key, secret=self.__secret)
+            auth_bot: Bot = Bot(key=self.__key, secret=self.__secret)
 
             with pytest.raises(
                 ValueError
@@ -204,15 +207,15 @@ class WebsocketTests(unittest.TestCase):
 
     @pytest.mark.futures
     @pytest.mark.futures_websocket
-    def test_unsubsribe_public(self) -> None:
+    def test_unsubsribe_public(self: "WebsocketTests") -> None:
         """
         Checks if the unauthenticated websocket client is able to unsubscribe
         from public feeds.
         """
 
         async def create_bot() -> None:
-            bot = Bot()
-            products = ["PI_XBTUSD", "PF_SOLUSD"]
+            bot: Bot = Bot()
+            products: List[str] = ["PI_XBTUSD", "PF_SOLUSD"]
 
             with pytest.raises(ValueError):  # products must be type List[str]
                 await bot.unsubscribe(feed="ticker", products="PI_XBTUSD")
@@ -232,7 +235,7 @@ class WebsocketTests(unittest.TestCase):
         """
 
         async def create_bot() -> None:
-            auth_bot = Bot(key=self.__key, secret=self.__secret)
+            auth_bot: Bot = Bot(key=self.__key, secret=self.__secret)
 
             with pytest.raises(
                 ValueError
@@ -246,13 +249,13 @@ class WebsocketTests(unittest.TestCase):
 
     @pytest.mark.futures
     @pytest.mark.futures_websocket
-    def test_get_active_subscriptions(self) -> None:
+    def test_get_active_subscriptions(self: "WebsocketTests") -> None:
         """
         Checks the ``get_active_subscriptions`` function.
         """
 
         async def create_bot() -> None:
-            bot = Bot()
+            bot: Bot = Bot()
             assert bot.get_active_subscriptions() == []
             await self.__wait(2)
             await bot.subscribe(feed="ticker", products=["PI_XBTUSD"])
@@ -264,7 +267,7 @@ class WebsocketTests(unittest.TestCase):
 
         self.__create_loop(coro=create_bot)
 
-    def tearDown(self) -> None:
+    def tearDown(self: "WebsocketTests") -> None:
         return super().tearDown()
 
 

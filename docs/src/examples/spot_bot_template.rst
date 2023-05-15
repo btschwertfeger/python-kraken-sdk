@@ -16,13 +16,15 @@ This is the starting point from which a strategy can be implemented and applied.
     :linenos:
     :caption: Spot Trading Bot Template
 
+    from __future__ import annotations
+
     import asyncio
     import logging
     import logging.config
     import os
     import sys
     import traceback
-    from typing import Coroutine
+    from typing import Optional, Union
 
     import requests
     import urllib3
@@ -58,26 +60,26 @@ This is the starting point from which a strategy can be implemented and applied.
             }
         """
 
-        def __init__(self, config: dict):
+        def __init__(self: "TradingBot", config: dict) -> None:
             super().__init__(
                 key=config["key"], secret=config["secret"]
             )  # initialize the KakenFuturesWSClient
-            self.__config = config
+            self.__config: dict = config
 
-            self.__user = User(key=config["key"], secret=config["secret"])
-            self.__trade = Trade(key=config["key"], secret=config["secret"])
-            self.__market = Market(key=config["key"], secret=config["secret"])
-            self.__funding = Funding(key=config["key"], secret=config["secret"])
-            self.__staking = Staking(key=config["key"], secret=config["secret"])
+            self.__user: Use = User(key=config["key"], secret=config["secret"])
+            self.__trade: Trade = Trade(key=config["key"], secret=config["secret"])
+            self.__market: Market = Market(key=config["key"], secret=config["secret"])
+            self.__funding: Funding = Funding(key=config["key"], secret=config["secret"])
+            self.__staking: Staking = Staking(key=config["key"], secret=config["secret"])
 
-        async def on_message(self, event: dict) -> Coroutine:
+        async def on_message(self: "TradingBot", event: Union[dict,list]) -> None:
             """receives all events that came form the websocket connection"""
-            if "event" in event:
+            if isinstance(event, dict) and "event" in event:
                 if event["event"] == "heartbeat":
                     return
                 if event["event"] == "pong":
                     return
-            elif "error" in event:
+            if "error" in event:
                 # handle exceptions/errors sent by websocket connection ...
                 pass
 
@@ -117,7 +119,7 @@ This is the starting point from which a strategy can be implemented and applied.
         # add more functions to customize the strading strategy
         # ...
 
-        def save_exit(self, reason: str = "") -> None:
+        def save_exit(self: "TradingBot", reason: Optional[str] = "") -> None:
             """controlled shutdown of the strategy"""
             logging.warning(f"Save exit triggered, reason: {reason}")
             # ideas:
@@ -143,10 +145,10 @@ This is the starting point from which a strategy can be implemented and applied.
         """
 
         def __init__(self, config: dict):
-            self.__config = config
-            self.__trading_strategy = None
+            self.__config: dict = config
+            self.__trading_strategy: Optional[TradingBot] = None
 
-        def run(self) -> None:
+        def run(self: "ManagedBot") -> None:
             """Starts the event loop and bot"""
             if not self.__check_credentials():
                 sys.exit(1)
@@ -162,7 +164,7 @@ This is the starting point from which a strategy can be implemented and applied.
                 if self.__trading_strategy is not None:
                     self.__trading_strategy.save_exit(reason="Asyncio loop left")
 
-        async def __main(self) -> Coroutine:
+        async def __main(self: ""ManagedBot) -> None:
             """
             Instantiates the trading strategy (bot) and subscribes to the
             desired websocket feeds. While no exception within the strategy occur
@@ -192,7 +194,7 @@ This is the starting point from which a strategy can be implemented and applied.
                     pass
 
                 except Exception as exc:
-                    message = f"Exception in main: {exc} {traceback.format_exc()}"
+                    message: str = f"Exception in main: {exc} {traceback.format_exc()}"
                     logging.error(message)
                     self.__trading_strategy.save_exit(reason=message)
 
@@ -202,7 +204,7 @@ This is the starting point from which a strategy can be implemented and applied.
             )
             return
 
-        def __check_credentials(self) -> bool:
+        def __check_credentials(self: "ManagedBot") -> bool:
             """Checks the user credentials and the connection to Kraken"""
             try:
                 User(self.__config["key"], self.__config["secret"]).get_account_balance()
@@ -225,7 +227,7 @@ This is the starting point from which a strategy can be implemented and applied.
 
     def main() -> None:
         """Main"""
-        bot_config = {
+        bot_config: dict = {
             "key": os.getenv("API_KEY"),
             "secret": os.getenv("SECRET_KEY"),
             "pairs": ["DOT/EUR", "XBT/USD"],

@@ -5,6 +5,7 @@
 
 PYTHON := python
 
+PYTEST := $(PYTHON) -m pytest
 PYTEST_OPTS := -vv --junit-xml=pytest.xml
 PYTEST_COV_OPTS := $(PYTEST_OPTS) --cov --cov-report=xml:coverage.xml --cov-report=term
 TEST_DIR := tests
@@ -22,7 +23,7 @@ build:
 
 rebuild: clean build
 
-## dev		Installs the package in edit mode
+## dev		Installs the extended package in edit mode
 ##
 dev:
 	$(PYTHON) -m pip install -e ".[dev]"
@@ -42,12 +43,12 @@ install:
 ## test		Run the unittests
 ##
 test:
-	$(PYTHON) -m pytest $(PYTEST_OPTS) $(TEST_DIR)
+	$(PYTEST) $(PYTEST_OPTS) $(TEST_DIR)
 
 tests: test
 
 coverage:
-	$(PYTHON) -m pytest $(PYTEST_COV_OPTS) $(TEST_DIR)
+	$(PYTEST) $(PYTEST_COV_OPTS) $(TEST_DIR)
 
 ## doctest	Run the documentation tests
 ##
@@ -78,9 +79,10 @@ clean:
 	rm -rf .pytest_cache build/ dist/ \
 		python_kraken_sdk.egg-info \
 		docs/_build \
-		.vscode
+		.vscode \
+		.mypy_cache
 
-	rm -f .coverage coverage.xml pytest.xml \
+	rm -f .coverage coverage.xml pytest.xml mypy.xml \
 		kraken/_version.py \
 		*.log *.csv *.zip \
 		tests/*.zip tests/.csv \
