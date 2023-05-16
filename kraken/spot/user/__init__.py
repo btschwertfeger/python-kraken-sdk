@@ -84,6 +84,20 @@ class User(KrakenBaseSpotAPI):
             method="POST", uri="/private/Balance"
         )
 
+    def get_balances_and_excluded(self: "User") -> dict:
+        """
+        Returns the currenzies with a nonzero balance and the corresponding amount held by an open trade.
+        
+        :return: Dictionary containing the ``currency`` (currency as string),
+         ``balance`` (inclding value in orders), and ``hold_trade``
+         (amount is in orders)
+        :rtype: dict
+        """
+        return self._request(  # type: ignore[return-value]
+            method="POST", uri="/private/BalanceEx"
+        )
+
+
     def get_balances(self: "User", currency: str) -> dict:
         """
         Returns the balance and available balance of a given currency.
@@ -112,22 +126,14 @@ class User(KrakenBaseSpotAPI):
         """
 
         balance: Decimal = Decimal(0)
+        available_balance: Decimal(0)
+        
         curr_opts: tuple = (currency, f"Z{currency}", f"X{currency}")
-        for symbol, value in self.get_account_balance().items():
+        for symbol, data in self.get_balances_and_excluded().items():
             if symbol in curr_opts:
-                balance = Decimal(value)
+                balance = Decimal(data['balance'])
+                available_balance=balance-Decimal(data['hold_trade'])
                 break
-
-        available_balance: Decimal = balance
-        for order in self.get_open_orders()["open"].values():
-            if currency in order["descr"]["pair"][0 : len(currency)]:
-                if order["descr"]["type"] == "sell":
-                    available_balance -= Decimal(order["vol"])
-            elif currency in order["descr"]["pair"][-len(currency) :]:
-                if order["descr"]["type"] == "buy":
-                    available_balance -= Decimal(order["vol"]) * Decimal(
-                        order["descr"]["price"]
-                    )
 
         return {
             "currency": currency,
