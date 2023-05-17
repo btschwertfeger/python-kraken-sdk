@@ -124,7 +124,7 @@ class Market(KrakenBaseSpotAPI):
         info: Optional[str] = None,
     ) -> dict:
         """
-        Get information about the tradable asset pairs. Can be filtered by name.
+        Get information about the tradable asset pairs. Can be filtered by ``pair``.
 
         - https://docs.kraken.com/rest/#operation/getTradableAssetPairs
 
