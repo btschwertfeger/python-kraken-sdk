@@ -1,0 +1,18 @@
+# -*- coding: utf-8 -*-
+# Copyright (C) 2023 Benjamin Thomas Schwertfeger
+# GitHub: https://github.com/btschwertfeger
+#
+# NOTE: This workflow is intended to be used manually for example on fork
+#       branches to validate that the pre-commit hooks run through. This ensures
+#       the coding style and quality of the package and is a requirement for
+#       every PR.
+#
+
+name: Pre-Commit Manual
+
+on:
+  workflow_dispatch:
+
+jobs:
+  Pre-Commit:
+    uses: ./.github/workflows/_pre_commit.yaml

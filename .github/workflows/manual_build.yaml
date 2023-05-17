@@ -1,0 +1,24 @@
+# -*- coding: utf-8 -*-
+# Copyright (C) 2023 Benjamin Thomas Schwertfeger
+# GitHub: https://github.com/btschwertfeger
+#
+# NOTE: This workflow is intended to be used manually for example on fork
+#       branches to validate that the building of the python-kraken-sdk package
+#       runs through. These is a requirement for a successfully PR.
+#
+
+name: Build Manual
+
+on:
+  workflow_dispatch:
+
+jobs:
+  Build:
+    uses: ./.github/workflows/_build.yaml
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
+    with:
+      os: ${{ matrix.os }}
+      python-version: ${{ matrix.python-version }}

@@ -1,0 +1,53 @@
+# -*- coding: utf-8 -*-
+# Copyright (C) 2023 Benjamin Thomas Schwertfeger
+# GitJub: https://github.com/btschwertfeger
+#
+# NOTE: This workflow is intended to be used manually for example on fork
+#       branches to validate that all Futures REST and websocket unit tests
+#       run through successfully.
+#
+#       This is required in PR when changes were made that (could) affect
+#       the Futures related code parts.
+#
+#       To run this action the following secrets must be set in the forked
+#       repository:
+#         * FUTURES_API_KEY
+#         * FUTURES_SECRET_KEY
+#         * FUTURES_SANDBOX_KEY
+#         * FUTURES_SANDBOX_SECRET
+#
+#       ... see the README for information about how to generate Futures API
+#       keys for the live and demo/sandbox environment. Please also make sure
+#       to set the "Read Only" permission for the live account to not risk any
+#       funds during testing! The demo account requires full permissions.
+#
+
+name: Test Futures Manual
+
+on:
+  workflow_dispatch:
+
+jobs:
+  Test-Futures-Public:
+    uses: ./.github/workflows/_test_futures_public.yaml
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
+    with:
+      os: ${{ matrix.os }}
+      python-version: ${{ matrix.python-version }}
+
+  Test-Futures-Private:
+    uses: ./.github/workflows/_test_futures_private.yaml
+    strategy:
+      max-parallel: 1 # to avoid failing tests because of API Rate limits
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
+    with:
+      os: ${{ matrix.os }}
+      python-version: ${{ matrix.python-version }}
+    secrets: inherit

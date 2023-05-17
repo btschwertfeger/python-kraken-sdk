@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 # Copyright (C) 2023 Benjamin Thomas Schwertfeger
-# Github: https://github.com/btschwertfeger
+# GitHub: https://github.com/btschwertfeger
 #
 # Workflow that gets triggered, when a release was created in the
-# Github UI. This enables the upload of the python-kraken-sdk
+# GitHub UI. This enables the upload of the python-kraken-sdk
 # for the latest tag to PyPI.
 #
 
@@ -15,7 +15,7 @@ on:
 
 jobs:
   ## ==========================================================================
-  ##    Run pre-commit - just to make shure that the code is still
+  ##    Run pre-commit - just to make sure that the code is still
   ##    in the proper format
   ##
   Pre-Commit:

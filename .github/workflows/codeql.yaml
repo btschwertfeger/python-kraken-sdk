@@ -10,4 +10,4 @@ concurrency:
 
 jobs:
   CodeQL:
-    uses: ./.github/workflows/_codeql.yml
+    uses: ./.github/workflows/_codeql.yaml
