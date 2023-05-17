@@ -1,8 +1,10 @@
 # Welcome to python-kraken-sdk contributing guide
 
-Thank you for investing your time in contributing to the python-kraken-sdk project! 🔥
+Thank you for investing your time in contributing to the [python-kraken-sdk](https://github.com/btschwertfeger/python-kraken-sdk/) project! 🔥
 
 Read our [Code of Conduct](./CODE_OF_CONDUCT.md) to keep our community approachable and respectable.
+
+If you have any questions, comments, suggestions or general topics, please feel free to open or join a thread at [python-kraken-sdk/discussions](https://github.com/btschwertfeger/python-kraken-sdk/discussions). We are looking forward to nice conversations, strategy exchange and an knowledge transfer!
 
 ## Getting started 🚀
 
@@ -26,17 +28,18 @@ Scan through our [existing issues](https://github.com/github/docs/issues) to fin
 git clone https://github.com/btschwertfeger/python-kraken-sdk.git
 ```
 
-2. Install the provided [pre-commit](https://pre-commit.com/) hooks within the repository:
+2. Install the provided [pre-commit](https://pre-commit.com/) hooks within the repository and make sure that all hooks run through, before pushing changes.
 
 ```bash
 python-kraken-sdk~$: pre-commit install
+python-kraken-sdk~$: pre-commit run -a
 ```
 
-Make sure that all hooks run through, before pushing changes!
+3. Create a new branch and start implementing your changes.
 
-3. Create a new branch and start implementing your changes
+   In the project provides a `Makefile` which offers many shortcuts to execute different commands. For example, you can use `make test` to run all unit tests or `make build` to build the package. `make dev` installs the python-kraken-sdk in editable state into the current environment. However, for development it is recommended to set up a virtual environment first.
 
-### Commit your updates
+### Commit your updates 🎬
 
 Once you're happy or reached some minor goal - commit the changes. Please take care to address **all** requirements of the [self-review checklist](./.github/self-review.md) before creating a PR to speed up the review process. ⚡️
 
@@ -49,7 +52,7 @@ When you're finished with the changes, create a pull request.
 - You may asked for changes to be made before a PR can be merged, either using _suggested changes_ or pull request _comments_. You can make any other changes in your fork, then commit them to your branch.
 - As you update your PR and apply changes, mark each conversation as resolved.
 
-### Your PR is merged!
+### Your PR is merged! 🏅
 
 Great! We're happy and proud of any contribution made on this project. So you may want to start to work on the next issue? 🔥
 

@@ -43,10 +43,9 @@ General:
 - access both public and private endpoints
 - responsive error handling and custom exceptions
 - extensive example scripts (see `/examples` and `/tests`)
-- tested using pytest
-- releases are archived at [Zenodo](https://zenodo.org/badge/latestdoi/510751854)
-- coding standards like snake case are not always followed to maintain the parameter naming convention of the Kraken API
-- ...
+- tested using the pytest framework
+- releases are permanently archived at [Zenodo](https://zenodo.org/badge/latestdoi/510751854)
+- coding standards are not always followed to maintain the parameter naming convention of the Kraken API
 
 Documentation:
 
@@ -368,6 +367,14 @@ if __name__ == '__main__':
 ```
 
 Note: Authenticated Futures websocket clients can also un-/subscribe from/to public feeds.
+
+---
+
+<a name="contribution"></a>
+
+# 🆕 Contributions
+
+... are welcome! - Please have a look at [CONTRIBUTION.md](./CONTRIBUTING.md).
 
 ---
 
