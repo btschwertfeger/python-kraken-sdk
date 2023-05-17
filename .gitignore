@@ -2,6 +2,10 @@
 _version.py
 .vscode/
 
+# Vale
+vale.ini
+styles/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

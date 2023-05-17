@@ -15,8 +15,8 @@ no way associated with the authors of this module and documentation.**
 This documentation refers to the `python-kraken-sdk`_ and serves to simplify the application of trading strategies,
 in which as far as possible all interaction possibilities with the cryptocurrency exchange Kraken are implemented, tested and documented.
 
-- Gladly open an issue on github on make if something is incorrect or missing (`python-kraken-sdk/issues`_).
-- The ouput in the examples may differ, as these are only intended as examples and may change in the future.
+- Gladly open an issue on GitHub on make if something is incorrect or missing (`python-kraken-sdk/issues`_).
+- The output in the examples may differ, as these are only intended as examples and may change in the future.
 - If a certain endpoint is not reachable, the function :func:`kraken.base_api.KrakenBaseSpotAPI._request` or :func:`kraken.base_api.KrakenBaseFuturesAPI._request`,
   which is also available in all derived REST clients, can be used to reach an endpoint with the appropriate parameters. Here private content can also be accessed,
   provided that either the base class or one of the clients has been initialized with valid credentials.
@@ -51,7 +51,7 @@ General:
 
 Important Notice
 -----------------
-**ONLY tagged releases are availabe at PyPI**. The content of the master branch may not match with the content of the latest release.  - Please have a look at the release specifc READMEs and changelogs.
+**ONLY tagged releases are available at PyPI**. The content of the master branch may not match with the content of the latest release.  - Please have a look at the release specific READMEs and changelogs.
 
 .. _section-troubleshooting:
 
