@@ -168,7 +168,7 @@ jobs:
         Test-Futures-Private,
       ]
     name: Upload current development version to Test PyPI
-    uses: ./.github/workflows/_pypi_publish.yml
+    uses: ./.github/workflows/_pypi_publish.yaml
     with:
       REPOSITORY_URL: https://test.pypi.org/legacy/
     secrets:
