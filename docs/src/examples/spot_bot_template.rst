@@ -116,7 +116,7 @@ This is the starting point from which a strategy can be implemented and applied.
 
             # more can be found in the documentation
 
-        # add more functions to customize the strading strategy
+        # add more functions to customize the trading strategy
         # ...
 
         def save_exit(self: "TradingBot", reason: Optional[str] = "") -> None:
@@ -171,7 +171,7 @@ This is the starting point from which a strategy can be implemented and applied.
             run the loop.
 
             This variable `exception_occur` which is an attribute of the KrakenSpotWSClient
-            can be set individually but is also beeing set to True if the websocket connection
+            can be set individually but is also being set to True if the websocket connection
             has some fatal error. This is used to exit the asyncio loop.
             """
             self.__trading_strategy = TradingBot(config=self.__config)

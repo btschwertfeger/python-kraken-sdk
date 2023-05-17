@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 # Copyright (C) 2023 Benjamin Thomas Schwertfeger
-# Github: https://github.com/btschwertfeger
+# GitHub: https://github.com/btschwertfeger
 #
 # Workflow that gets triggered, when a release was created in the
-# Github UI. This enables the upload of the python-kraken-sdk
+# GitHub UI. This enables the upload of the python-kraken-sdk
 # for the latest tag to PyPI.
 #
 
@@ -15,23 +15,23 @@ on:
 
 jobs:
   ## ==========================================================================
-  ##    Run pre-commit - just to make shure that the code is still
+  ##    Run pre-commit - just to make sure that the code is still
   ##    in the proper format
   ##
   Pre-Commit:
-    uses: ./.github/workflows/_pre_commit.yml
+    uses: ./.github/workflows/_pre_commit.yaml
 
   ## ==========================================================================
   ##  Discover vulnerabilities
   ##
   CodeQL:
-    uses: ./.github/workflows/_codeql.yml
+    uses: ./.github/workflows/_codeql.yaml
 
   ## ==========================================================================
   ##    Build the package - for all Python versions
   ##
   Build:
-    uses: ./.github/workflows/_build.yml
+    uses: ./.github/workflows/_build.yaml
     needs: [Pre-Commit]
     strategy:
       fail-fast: false
@@ -47,7 +47,7 @@ jobs:
   ##
   Build-Doc:
     needs: [Pre-Commit]
-    uses: ./.github/workflows/_build_doc.yml
+    uses: ./.github/workflows/_build_doc.yaml
     with:
       os: "ubuntu-latest"
       python-version: "3.11"
@@ -59,7 +59,7 @@ jobs:
   ##
   Test-Spot-Public:
     needs: [Build]
-    uses: ./.github/workflows/_test_spot_public.yml
+    uses: ./.github/workflows/_test_spot_public.yaml
     strategy:
       fail-fast: false
       matrix:
@@ -72,7 +72,7 @@ jobs:
   ##  (private endpoints)
   Test-Spot-Private:
     needs: [Build]
-    uses: ./.github/workflows/_test_spot_private.yml
+    uses: ./.github/workflows/_test_spot_private.yaml
     strategy:
       max-parallel: 1 # to avoid failing tests because of API Rate limits
       fail-fast: false
@@ -90,7 +90,7 @@ jobs:
   ##  (public endpoints)
   Test-Futures-Public:
     needs: [Build]
-    uses: ./.github/workflows/_test_futures_public.yml
+    uses: ./.github/workflows/_test_futures_public.yaml
     strategy:
       fail-fast: false
       matrix:
@@ -103,7 +103,7 @@ jobs:
   ##  (private endpoints)
   Test-Futures-Private:
     needs: [Build]
-    uses: ./.github/workflows/_test_futures_private.yml
+    uses: ./.github/workflows/_test_futures_private.yaml
     strategy:
       max-parallel: 1 # to avoid failing tests because of API Rate limits
       fail-fast: false
@@ -127,7 +127,7 @@ jobs:
         Test-Futures-Private,
       ]
     name: Upload the current release to Test PyPI
-    uses: ./.github/workflows/_pypi_publish.yml
+    uses: ./.github/workflows/_pypi_publish.yaml
     with:
       REPOSITORY_URL: https://test.pypi.org/legacy/
     secrets:
@@ -139,7 +139,7 @@ jobs:
   UploadPyPI:
     needs: [UploadTestPyPI]
     name: Upload the current release to PyPI
-    uses: ./.github/workflows/_pypi_publish.yml
+    uses: ./.github/workflows/_pypi_publish.yaml
     with:
       REPOSITORY_URL: https://upload.pypi.org/legacy/
     secrets:

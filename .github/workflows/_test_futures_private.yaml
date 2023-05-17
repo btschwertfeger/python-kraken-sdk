@@ -1,12 +1,15 @@
 # -*- coding: utf-8 -*-
 # Copyright (C) 2023 Benjamin Thomas Schwertfeger
-# Github: https://github.com/btschwertfeger
+# GitHub: https://github.com/btschwertfeger
 #
-# Template workflow to build the project for a specific os
-# and Python version, run the tests and upload the results to codecov.
+# Template workflow to test the private Futures endpoints
+# of the python-kraken-sdk.
+# Runs tests for:
+#   * Futures REST clients
+#   * Futures websocket client
 #
 
-name: CodeCov
+name: Test Futures
 
 on:
   workflow_call:
@@ -18,12 +21,6 @@ on:
         type: string
         required: true
     secrets:
-      CODECOV_TOKEN:
-        required: true
-      SPOT_API_KEY:
-        required: true
-      SPOT_SECRET_KEY:
-        required: true
       FUTURES_API_KEY:
         required: true
       FUTURES_SECRET_KEY:
@@ -34,13 +31,9 @@ on:
         required: true
 
 jobs:
-  CodeCov:
-    name: Coverage
+  Test-Futures:
+    name: Test ${{ inputs.os }} ${{ inputs.python-version }}
     runs-on: ${{ inputs.os }}
-    env:
-      OS: ${{ inputs.os }}
-      PYTHON: ${{ inputs.python-version }}
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -53,28 +46,29 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
+          python -m pip install pytest
 
       - name: Install package
-        run: python -m pip install ".[dev]"
+        run: python -m pip install .
 
-      - name: Generate coverage report
+      ##    Unit tests of the private Futures REST clients and endpoints
+      ##
+      - name: Testing Futures REST endpoints
         env:
-          SPOT_API_KEY: ${{ secrets.SPOT_API_KEY }}
-          SPOT_SECRET_KEY: ${{ secrets.SPOT_SECRET_KEY }}
           FUTURES_API_KEY: ${{ secrets.FUTURES_API_KEY }}
           FUTURES_SECRET_KEY: ${{ secrets.FUTURES_SECRET_KEY }}
           FUTURES_SANDBOX_KEY: ${{ secrets.FUTURES_SANDBOX_KEY }}
           FUTURES_SANDBOX_SECRET: ${{ secrets.FUTURES_SANDBOX_SECRET }}
         run: |
-          pytest -vv -s --cov --cov-report=xml:coverage.xml tests
+          pytest -vv -m "futures_auth and not futures_websocket" tests
 
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v3
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          files: coverage.xml
-          env_vars: OS,PYTHON
-          fail_ci_if_error: false
-          flags: unittests
-          name: codecov-umbrella
-          verbose: true
+      ##    Unit tests of the Futures websocket client
+      ##
+      - name: Testing Futures websocket client
+        env:
+          FUTURES_API_KEY: ${{ secrets.FUTURES_API_KEY }}
+          FUTURES_SECRET_KEY: ${{ secrets.FUTURES_SECRET_KEY }}
+          FUTURES_SANDBOX_KEY: ${{ secrets.FUTURES_SANDBOX_KEY }}
+          FUTURES_SANDBOX_SECRET: ${{ secrets.FUTURES_SANDBOX_SECRET }}
+        run: |
+          pytest -vv -m futures_websocket tests
