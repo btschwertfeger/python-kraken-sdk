@@ -5,6 +5,7 @@
 #
 
 """Module that implements some example usage for the Kraken Futures REST clients."""
+
 import logging
 import logging.config
 import os
@@ -78,7 +79,7 @@ def market_examples() -> None:
     market = Market()
 
     print(market.get_assets(assets=["XBT"]))
-    print(market.get_tradable_asset_pair(pair=["DOTEUR"]))
+    print(market.get_asset_pairs(pair=["DOTEUR"]))
     print(market.get_ticker(pair="XBTUSD"))
     print(market.get_ohlc(pair="XBTUSD", interval=5))
     print(market.get_order_book(pair="XBTUSD", count=10))

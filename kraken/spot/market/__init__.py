@@ -118,16 +118,18 @@ class Market(KrakenBaseSpotAPI):
             method="GET", uri="/public/Assets", params=params, auth=False
         )
 
-    def get_tradable_asset_pair(
-        self: "Market", pair: Union[str, List[str]], info: Optional[str] = None
+    def get_asset_pairs(
+        self: "Market",
+        pair: Optional[Union[str, List[str]]] = None,
+        info: Optional[str] = None,
     ) -> dict:
         """
-        Get information about the tradable asset pairs.
+        Get information about the tradable asset pairs. Can be filtered by ``pair``.
 
         - https://docs.kraken.com/rest/#operation/getTradableAssetPairs
 
         :param asset: Filter by asset pair(s)
-        :type asset: str | List[str]
+        :type asset: str | List[str], optional
         :param info: Filter by info, can be one of: ``info`` (all info), ``leverage``
             (leverage info), ``fees`` (fee info), and ``margin`` (margin info)
         :type info: str, optional
@@ -178,7 +180,8 @@ class Market(KrakenBaseSpotAPI):
             }
         """
         params: dict = {}
-        params["pair"] = self._to_str_list(pair)
+        if pair is not None:
+            params["pair"] = self._to_str_list(pair)
         if info is not None:
             params["info"] = info
 

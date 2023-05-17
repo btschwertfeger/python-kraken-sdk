@@ -47,17 +47,19 @@ def test_get_assets(spot_market: Market) -> None:
 
 @pytest.mark.spot
 @pytest.mark.spot_market
-def test_get_tradable_asset_pair(spot_market: Market) -> None:
+def test_get_asset_pairs(spot_market: Market) -> None:
     """
     Checks the ``get_tradable_asset_pair`` endpoint by performing multiple
     requests with different paramaters and validating that the response
     does not contain the error key.
     """
-    assert is_not_error(spot_market.get_tradable_asset_pair(pair="BTCUSD"))
-    assert is_not_error(spot_market.get_tradable_asset_pair(pair=["DOTEUR", "BTCUSD"]))
+    assert is_not_error(spot_market.get_asset_pairs())
+    assert is_not_error(spot_market.get_asset_pairs(pair="BTCUSD"))
+    assert is_not_error(spot_market.get_asset_pairs(pair=["DOTEUR", "BTCUSD"]))
     for i in ("info", "leverage", "fees", "margin"):
-        assert is_not_error(spot_market.get_tradable_asset_pair(pair="DOTEUR", info=i))
+        assert is_not_error(spot_market.get_asset_pairs(pair="DOTEUR", info=i))
         break  # there is no reason for requesting more - but this loop is just for info
+    sleep(3)
 
 
 @pytest.mark.spot
