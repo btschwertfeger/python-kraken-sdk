@@ -1,5 +1,21 @@
 # Changelog
 
+## [Unreleased](https://github.com/btschwertfeger/python-kraken-sdk/tree/HEAD)
+
+[Full Changelog](https://github.com/btschwertfeger/python-kraken-sdk/compare/v1.2.0...HEAD)
+
+**Breaking changes:**
+
+- Extend typing + add `KrakenUnknownMethodError` and `KrakenBadRequestError` + Fix \#65 [\#87](https://github.com/btschwertfeger/python-kraken-sdk/pull/87) ([btschwertfeger](https://github.com/btschwertfeger))
+
+**Fixed bugs:**
+
+- The `cancel_order_batch` endpoint in Spot trading does not work. {'error': \['EAPI:Bad request'\]} [\#65](https://github.com/btschwertfeger/python-kraken-sdk/issues/65)
+
+**Closed issues:**
+
+- Extend the typing - using mypy [\#84](https://github.com/btschwertfeger/python-kraken-sdk/issues/84)
+
 ## [v1.2.0](https://github.com/btschwertfeger/python-kraken-sdk/tree/v1.2.0) (2023-05-09)
 
 [Full Changelog](https://github.com/btschwertfeger/python-kraken-sdk/compare/v1.1.0...v1.2.0)
