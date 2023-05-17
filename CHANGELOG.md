@@ -19,7 +19,12 @@
 
 **Closed issues:**
 
+- Create CONTRIBUTING.md [\#91](https://github.com/btschwertfeger/python-kraken-sdk/issues/91)
 - Extend the typing - using mypy [\#84](https://github.com/btschwertfeger/python-kraken-sdk/issues/84)
+
+**Merged pull requests:**
+
+- Create a contribution guideline [\#92](https://github.com/btschwertfeger/python-kraken-sdk/pull/92) ([btschwertfeger](https://github.com/btschwertfeger))
 
 ## [v1.2.0](https://github.com/btschwertfeger/python-kraken-sdk/tree/v1.2.0) (2023-05-09)
 
