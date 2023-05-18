@@ -1,5 +1,31 @@
 # Changelog
 
+## [Unreleased](https://github.com/btschwertfeger/python-kraken-sdk/tree/HEAD)
+
+[Full Changelog](https://github.com/btschwertfeger/python-kraken-sdk/compare/v1.2.0...HEAD)
+
+**Breaking changes:**
+
+- Rename `get_tradeable_asset_pair` to `get_asset_pairs` and make the `pair` parameter optional [\#93](https://github.com/btschwertfeger/python-kraken-sdk/pull/93) ([btschwertfeger](https://github.com/btschwertfeger))
+- Extend typing + add `KrakenUnknownMethodError` and `KrakenBadRequestError` + Fix \#65 [\#87](https://github.com/btschwertfeger/python-kraken-sdk/pull/87) ([btschwertfeger](https://github.com/btschwertfeger))
+
+**Implemented enhancements:**
+
+- /public/AssetPairs would be nice. [\#90](https://github.com/btschwertfeger/python-kraken-sdk/issues/90)
+
+**Fixed bugs:**
+
+- The `cancel_order_batch` endpoint in Spot trading does not work. {'error': \['EAPI:Bad request'\]} [\#65](https://github.com/btschwertfeger/python-kraken-sdk/issues/65)
+
+**Closed issues:**
+
+- Create CONTRIBUTING.md [\#91](https://github.com/btschwertfeger/python-kraken-sdk/issues/91)
+- Extend the typing - using mypy [\#84](https://github.com/btschwertfeger/python-kraken-sdk/issues/84)
+
+**Merged pull requests:**
+
+- Create a contribution guideline [\#92](https://github.com/btschwertfeger/python-kraken-sdk/pull/92) ([btschwertfeger](https://github.com/btschwertfeger))
+
 ## [v1.2.0](https://github.com/btschwertfeger/python-kraken-sdk/tree/v1.2.0) (2023-05-09)
 
 [Full Changelog](https://github.com/btschwertfeger/python-kraken-sdk/compare/v1.1.0...v1.2.0)

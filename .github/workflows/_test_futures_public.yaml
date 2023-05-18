@@ -1,12 +1,14 @@
 # -*- coding: utf-8 -*-
 # Copyright (C) 2023 Benjamin Thomas Schwertfeger
-# Github: https://github.com/btschwertfeger
+# GitHub: https://github.com/btschwertfeger
 #
-# Template workflow to build the project for a specific os
-# and Python version.
+# Template workflow to test the public Futures endpoints
+# of the python-kraken-sdk.
+# Runs tests for:
+#   * Futures REST clients
 #
 
-name: Build
+name: Test Futures
 
 on:
   workflow_call:
@@ -19,7 +21,8 @@ on:
         required: true
 
 jobs:
-  Build:
+  Test-Futures:
+    name: Test ${{ inputs.os }} ${{ inputs.python-version }}
     runs-on: ${{ inputs.os }}
     steps:
       - name: Checkout repository
@@ -33,9 +36,13 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
+          python -m pip install pytest
 
-      - name: Build the package
-        run: python -m pip wheel --no-deps .
+      - name: Install package
+        run: python -m pip install .
 
-      - name: Install the package
-        run: python -m pip install python_kraken_sdk*.whl
+      ##    Unit tests of the public Futures REST clients and endpoints
+      ##
+      - name: Testing Futures REST endpoints
+        run: |
+          pytest -vv -m "futures and not futures_auth and not futures_websocket" tests

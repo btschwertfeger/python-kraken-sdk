@@ -141,7 +141,7 @@ This is the starting point from which a strategy can be implemented and applied.
             Instantiates the trading strategy/algorithm and subscribes to the
             desired websocket feeds. Run the loop while no exception occur.
 
-            Thi variable `exception_occu` which is an attribute of the KrakenFuturesWSClient
+            The variable `exception_occur` which is an attribute of the KrakenFuturesWSClient
             can be set individually but is also beeing set to `True` if the websocket connection
             has some fatal error. This is used to exit the asyncio loop.
             """

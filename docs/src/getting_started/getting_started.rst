@@ -23,4 +23,4 @@ For trading algorithms templates see the :ref:`section-trading-bot-templates` se
 
 If any unexpected behaviour occurs, please check **your API permissions**, **rate limits**,
 update the `python-kraken-sdk`_, see the :ref:`section-troubleshooting` section, and if the error
-persits please open an issue at `python-kraken-sdk/issues`_.
+persists please open an issue at `python-kraken-sdk/issues`_.

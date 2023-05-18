@@ -1,9 +1,45 @@
 # -*- coding: utf-8 -*-
 # Copyright (C) 2023 Benjamin Thomas Schwertfeger
-# Github: https://github.com/btschwertfeger
+# GitHub: https://github.com/btschwertfeger
 #
 # Workflow to apply pre-commit, build, test and upload the package
 # to the test index of PyPI.
+#
+# This workflow runs the whole CI of the python-kraken-sdk and serves
+# to run the following checks:
+#   * pre-commit: checks the code style, syntax, formatting, etc.
+#   * CodeQL: checks security issues
+#   * Build: builds the python-kraken-sdk for multiple versions and os
+#   * Build Doc: builds the documentation
+#   * Test: Runs the unit tests for Spot and Futures. This
+#           requires the following repository secrets to be set:
+#             for Spot:
+#               * SPOT_API_KEY
+#               * SPOT_SECRET_KEY
+#             ... see the README for information about how to generate
+#             Spot API keys. Please also make sure to enable the
+#             following API permissions:
+#                * Query funds
+#                * Deposit funds
+#                * Query open orders & trades
+#                * Query closed orders & trades
+#                * Query ledger entries
+#                * Export data
+#                * Access WebSockets API
+#             Disable all other permissions since we don't want to create or cancel
+#             real orders or withdraw funds during testing. These tests are disabled
+#             by default but having the permissions disabled is the safest way of
+#             testing.
+#
+#             for Futures:
+#                * FUTURES_API_KEY
+#                * FUTURES_SECRET_KEY
+#                * FUTURES_SANDBOX_KEY
+#                * FUTURES_SANDBOX_SECRET
+#             Please also make sure to set the "Read Only" permission
+#             for the live account to not risk any funds during testing!
+#             The demo/sandbox account requires full permissions.
+#
 
 name: CI/CD
 
@@ -21,13 +57,13 @@ jobs:
   ##    Checks the code logic, style and more
   ##
   Pre-Commit:
-    uses: ./.github/workflows/_pre_commit.yml
+    uses: ./.github/workflows/_pre_commit.yaml
 
   ## ==========================================================================
   ##  Discover vulnerabilities
   ##
   CodeQL:
-    uses: ./.github/workflows/_codeql.yml
+    uses: ./.github/workflows/_codeql.yaml
 
   ## ==========================================================================
   ##    Builds the package on multiple OS for multiple
@@ -35,7 +71,7 @@ jobs:
   ##
   Build:
     needs: [Pre-Commit]
-    uses: ./.github/workflows/_build.yml
+    uses: ./.github/workflows/_build.yaml
     strategy:
       fail-fast: false
       matrix:
@@ -50,7 +86,7 @@ jobs:
   ##
   Build-Doc:
     needs: [Pre-Commit]
-    uses: ./.github/workflows/_build_doc.yml
+    uses: ./.github/workflows/_build_doc.yaml
     with:
       os: "ubuntu-latest"
       python-version: "3.11"
@@ -62,7 +98,7 @@ jobs:
   ##
   Test-Spot-Public:
     needs: [Build]
-    uses: ./.github/workflows/_test_spot_public.yml
+    uses: ./.github/workflows/_test_spot_public.yaml
     strategy:
       fail-fast: false
       matrix:
@@ -75,7 +111,7 @@ jobs:
   ##  (private endpoints)
   Test-Spot-Private:
     needs: [Build]
-    uses: ./.github/workflows/_test_spot_private.yml
+    uses: ./.github/workflows/_test_spot_private.yaml
     strategy:
       max-parallel: 1 # to avoid failing tests because of API Rate limits
       fail-fast: false
@@ -93,7 +129,7 @@ jobs:
   ##  (public endpoints)
   Test-Futures-Public:
     needs: [Build]
-    uses: ./.github/workflows/_test_futures_public.yml
+    uses: ./.github/workflows/_test_futures_public.yaml
     strategy:
       fail-fast: false
       matrix:
@@ -106,7 +142,7 @@ jobs:
   ##  (private endpoints)
   Test-Futures-Private:
     needs: [Build]
-    uses: ./.github/workflows/_test_futures_private.yml
+    uses: ./.github/workflows/_test_futures_private.yaml
     strategy:
       max-parallel: 1 # to avoid failing tests because of API Rate limits
       fail-fast: false
@@ -123,7 +159,7 @@ jobs:
   ##    a regular commit/push.
   ##
   UploadTestPyPI:
-    if: success() && github.ref == 'refs/heads/master'
+    if: success() && ${{ github.actor }} == "btschwertfeger" && github.ref == 'refs/heads/master'
     needs:
       [
         Test-Spot-Public,
@@ -132,7 +168,7 @@ jobs:
         Test-Futures-Private,
       ]
     name: Upload current development version to Test PyPI
-    uses: ./.github/workflows/_pypi_publish.yml
+    uses: ./.github/workflows/_pypi_publish.yaml
     with:
       REPOSITORY_URL: https://test.pypi.org/legacy/
     secrets:
@@ -142,6 +178,7 @@ jobs:
   ##    Generates and uploads the coverage statistics to codecov
   ##
   CodeCov:
+    if: ${{ github.actor }} == "btschwertfeger"
     needs:
       [
         Test-Spot-Public,
@@ -149,7 +186,7 @@ jobs:
         Test-Futures-Public,
         Test-Futures-Private,
       ]
-    uses: ./.github/workflows/_codecov.yml
+    uses: ./.github/workflows/_codecov.yaml
     with:
       os: "ubuntu-latest"
       python-version: "3.11"
