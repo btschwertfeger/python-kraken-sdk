@@ -6,7 +6,6 @@
 
 """Module that implements the Kraken Spot market client"""
 
-from functools import lru_cache
 from typing import List, Optional, Union
 
 from ...base_api import KrakenBaseSpotAPI
@@ -55,7 +54,6 @@ class Market(KrakenBaseSpotAPI):
         super().__enter__()
         return self
 
-    @lru_cache()
     def get_assets(
         self: "Market",
         assets: Optional[Union[str, List[str]]] = None,
@@ -120,7 +118,6 @@ class Market(KrakenBaseSpotAPI):
             method="GET", uri="/public/Assets", params=params, auth=False
         )
 
-    @lru_cache()
     def get_asset_pairs(
         self: "Market",
         pair: Optional[Union[str, List[str]]] = None,
