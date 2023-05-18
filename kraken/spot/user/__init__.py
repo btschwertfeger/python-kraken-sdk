@@ -84,7 +84,7 @@ class User(KrakenBaseSpotAPI):
             method="POST", uri="/private/Balance"
         )
 
-    def get_balances_and_excluded(self: "User") -> dict:
+    def get_balances(self: "User") -> dict:
         """
         Returns the currenzies with a nonzero balance and the corresponding amount held by an open trade.
         
