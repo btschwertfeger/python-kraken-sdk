@@ -126,7 +126,7 @@ class User(KrakenBaseSpotAPI):
         """
 
         balance: Decimal = Decimal(0)
-        available_balance: Decimal(0)
+        available_balance: Decimal = Decimal(0)
         
         curr_opts: tuple = (currency, f"Z{currency}", f"X{currency}")
         for symbol, data in self.get_balances_and_excluded().items():
