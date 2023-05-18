@@ -86,7 +86,7 @@ class User(KrakenBaseSpotAPI):
 
     def get_balances(self: "User") -> dict:
         """
-        Returns the currenzies with a nonzero balance and the corresponding amount held by an open trade.
+        Returns the currencies with a non-zero balance and the corresponding amount held by open orders.
         
         :return: Dictionary containing the ``currency`` (currency as string),
          ``balance`` (inclding value in orders), and ``hold_trade``
