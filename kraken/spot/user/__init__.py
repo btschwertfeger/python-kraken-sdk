@@ -98,7 +98,7 @@ class User(KrakenBaseSpotAPI):
         )
 
 
-    def get_balances(self: "User", currency: str) -> dict:
+    def get_balance(self: "User", currency: str) -> dict:
         """
         Returns the balance and available balance of a given currency.
 
