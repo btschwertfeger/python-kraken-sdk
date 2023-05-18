@@ -159,7 +159,7 @@ jobs:
   ##    a regular commit/push.
   ##
   UploadTestPyPI:
-    if: success() && github.actor == "btschwertfeger" && github.ref == 'refs/heads/master'
+    if: success() && github.actor == 'btschwertfeger' && github.ref == 'refs/heads/master'
     needs:
       [
         Test-Spot-Public,
