@@ -107,7 +107,7 @@ class Trade(KrakenBaseSpotAPI):
                 * Prefixed by # is the same as ``+`` and ``-`` but the sign is set automatically
                 * The percentate sign ``%`` can be used to define relative changes.
         :type price2: str | int | float, optional
-        :param truncate: If enabled: round the price and volume to Kraken's
+        :param truncate: If enabled: round the ``price`` and ``volume`` to Kraken's
             maximum allowed decimal places. See https://support.kraken.com/hc/en-us/articles/4521313131540
             fore more information about decimals.
         :type truncate: bool, optional
@@ -318,7 +318,7 @@ class Trade(KrakenBaseSpotAPI):
 
         if price is not None:
             params["price"] = (
-                str(price)
+                price
                 if not truncate
                 else Utils.truncate(amount=price, amount_type="price", pair=pair)
             )

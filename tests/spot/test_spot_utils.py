@@ -109,7 +109,6 @@ def test_utils_truncate_fail_volume_ordermin() -> None:
 
 @pytest.mark.spot
 @pytest.mark.spot_market
-@pytest.mark.selection
 def test_utils_truncate_fail_invalid_amount_type() -> None:
     """
     Checks if the truncate function fails when no valid ``amount_type`` was specified.

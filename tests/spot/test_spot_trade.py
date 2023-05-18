@@ -31,11 +31,12 @@ def test_create_order(spot_auth_trade: Trade) -> None:
             spot_auth_trade.create_order(
                 ordertype="limit",
                 side="buy",
-                volume=1,
+                volume=1.001,
                 oflags=["post"],
                 pair="BTC/EUR",
                 price=0.01,
                 timeinforce="GTC",
+                truncate=True,
                 validate=True,  # important to just test this endpoint without risking money
             ),
             dict,

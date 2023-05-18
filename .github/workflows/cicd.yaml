@@ -178,7 +178,7 @@ jobs:
   ##    Generates and uploads the coverage statistics to codecov
   ##
   CodeCov:
-    if: ${{ github.actor }} == "btschwertfeger"
+    if: success() && github.actor == 'btschwertfeger'
     needs:
       [
         Test-Spot-Public,
