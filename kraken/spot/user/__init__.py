@@ -132,7 +132,7 @@ class User(KrakenBaseSpotAPI):
         for symbol, data in self.get_balances_and_excluded().items():
             if symbol in curr_opts:
                 balance = Decimal(data['balance'])
-                available_balance=balance-Decimal(data['hold_trade'])
+                available_balance=balance-Decimal(data["hold_trade"])
                 break
 
         return {
