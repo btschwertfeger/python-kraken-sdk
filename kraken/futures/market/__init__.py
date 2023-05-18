@@ -5,6 +5,7 @@
 
 """Module that implements the Kraken Futures market client"""
 
+from functools import lru_cache
 from typing import List, Optional, Union
 
 from ...base_api import KrakenBaseFuturesAPI
@@ -125,6 +126,7 @@ class Market(KrakenBaseFuturesAPI):
             auth=False,
         )
 
+    @lru_cache()
     def get_tick_types(self: "Market") -> List[str]:
         """
         Retrieve the available tick types that can be used for example to access
@@ -145,6 +147,7 @@ class Market(KrakenBaseFuturesAPI):
         """
         return self._request(method="GET", uri="/api/charts/v1/", auth=False)  # type: ignore[return-value]
 
+    @lru_cache()
     def get_tradeable_products(self: "Market", tick_type: str) -> List[str]:
         """
         Retrieve a list containing the tradeable assets on the futures market.
@@ -168,6 +171,7 @@ class Market(KrakenBaseFuturesAPI):
             method="GET", uri=f"/api/charts/v1/{tick_type}", auth=False
         )
 
+    @lru_cache()
     def get_resolutions(self: "Market", tick_type: str, tradeable: str) -> List[str]:
         """
         Retrieve the list of available resolutions for a specific asset.
@@ -193,6 +197,7 @@ class Market(KrakenBaseFuturesAPI):
             method="GET", uri=f"/api/charts/v1/{tick_type}/{tradeable}", auth=False
         )
 
+    @lru_cache()
     def get_fee_schedules(self: "Market") -> dict:
         """
         Retrieve information about the current fees
@@ -301,6 +306,7 @@ class Market(KrakenBaseFuturesAPI):
         params: dict = {}
         if symbol is not None:
             params["symbol"] = symbol
+
         return self._request(  # type: ignore[return-value]
             method="GET",
             uri="/derivatives/api/v3/orderbook",

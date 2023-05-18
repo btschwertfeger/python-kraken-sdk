@@ -15,7 +15,7 @@ import traceback
 from copy import deepcopy
 from random import random
 from time import time
-from typing import TYPE_CHECKING, Any, List, Optional, Union
+from typing import Any, List, Optional, Union
 
 import websockets
 
@@ -35,14 +35,14 @@ class ConnectSpotWebsocket:
     :param callback: Callback function that receives the websocket messages
     :type callback: function
     :param private: If the websocket connects to endpoints that
-     require authentication (default: ``False``)
+        require authentication (default: ``False``)
     :type private: bool, optional
     """
 
     MAX_RECONNECT_NUM: int = 10
 
     def __init__(
-        self,
+        self: "ConnectSpotWebsocket",
         client: KrakenSpotWSClient,
         endpoint: str,
         callback: Any,
@@ -163,7 +163,7 @@ class ConnectSpotWebsocket:
             finished, pending = await asyncio.wait(
                 tasks.keys(), return_when=asyncio.FIRST_EXCEPTION
             )
-            exception_occur = False
+            exception_occur: bool = False
             for task in finished:
                 if task.exception():
                     exception_occur = True
@@ -208,12 +208,15 @@ class ConnectSpotWebsocket:
         )
 
     async def send_ping(self: "ConnectSpotWebsocket") -> None:
-        """Sends ping to Keaken"""
-        msg = {
-            "event": "ping",
-            "reqid": int(time() * 1000),
-        }
-        await self.__socket.send(json.dumps(msg))
+        """Sends ping to Kraken"""
+        await self.__socket.send(
+            json.dumps(
+                {
+                    "event": "ping",
+                    "reqid": int(time() * 1000),
+                }
+            )
+        )
         self.__last_ping = time()
 
     async def send_message(
@@ -253,7 +256,7 @@ class ConnectSpotWebsocket:
         - ``msg.get("event") == "subscriptionStatus"```
         - ``msg.get("status") == "subscribed"``
         """
-        self.__remove_subscription(msg)  # remove from list, to avoid duplicates
+        self.__remove_subscription(msg)  # remove from list, to avoid duplicate entries
         self.__subscriptions.append(self.__build_subscription(msg))
 
     def __remove_subscription(self: "ConnectSpotWebsocket", msg: dict) -> None:
@@ -268,7 +271,7 @@ class ConnectSpotWebsocket:
         - ``msg.get("event") == "subscriptionStatus"```
         - ``msg.get("status") == "unsubscribed"``
         """
-        sub = self.__build_subscription(msg)
+        sub: dict = self.__build_subscription(msg)
         self.__subscriptions = [x for x in self.__subscriptions if x != sub]
 
     def __build_subscription(self: "ConnectSpotWebsocket", msg: dict) -> dict:
@@ -442,7 +445,7 @@ class KrakenSpotWSClient(SpotWsClientCl):
         if self.__callback is not None:
             await self.__callback(msg)
         else:
-            logging.warning("Received event but no callback is defined")
+            logging.warning("Received event but no callback is defined.")
             print(msg)
 
     async def subscribe(
