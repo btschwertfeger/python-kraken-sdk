@@ -71,7 +71,8 @@ changelog:
 		-p python-kraken-sdk \
 		-t $(GHTOKEN)  \
 		--breaking-labels Breaking \
-		--enhancement-labels Feature
+		--enhancement-labels Feature \
+		--release-branch master
 
 ## clean		Clean the workspace
 ##
