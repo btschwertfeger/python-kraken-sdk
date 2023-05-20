@@ -32,6 +32,7 @@ def test_get_asset(spot_market: Market) -> None:
     """
     Checks the ``get_asset`` endpoint by requesting some asset info.
     """
+    assert is_not_error(spot_market.get_asset())
     assert is_not_error(spot_market.get_asset(asset="BTC"))
     assert is_not_error(spot_market.get_asset(asset="BTC,EUR"))
     assert is_not_error(spot_market.get_asset(asset="EUR", aclass="currency"))
@@ -39,7 +40,6 @@ def test_get_asset(spot_market: Market) -> None:
 
 @pytest.mark.spot
 @pytest.mark.spot_market
-@pytest.mark.selection
 def test_get_assets(spot_market: Market) -> None:
     """
     Checks the ``get_assets`` endpoint by performing multiple
@@ -64,6 +64,7 @@ def test_get_asset_pair(spot_market: Market) -> None:
     Checks the ``get_asset_pair`` endpoint by performing multiple
     requests with different paramaters.
     """
+    assert is_not_error(spot_market.get_asset_pair())
     assert is_not_error(spot_market.get_asset_pair(pair="BTCUSD"))
     assert is_not_error(spot_market.get_asset_pair(pair="BTCUSD,ETHUSD"))
     assert is_not_error(spot_market.get_asset_pair(pair="ETHUSD", info="info"))

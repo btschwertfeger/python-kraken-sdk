@@ -58,19 +58,22 @@ class Market(KrakenBaseSpotAPI):
     @lru_cache()
     def get_asset(
         self: "Market",
-        asset: str,
+        asset: Optional[str] = None,
         aclass: Optional[str] = None,
     ) -> dict:
         """
-        Get information about a specific asset. Multiple assets
+        Get information about one or more assets. Multiple assets
         can be requested as follows: ``get_asset(asset="BTC,EUR")``.
+        If left blank, all assets will be returned.
+
+        For requesting a list of assets, use :func:`get_assets`.
 
         - https://docs.kraken.com/rest/#operation/getAssetInfo
 
         This function uses caching. Run ``get_asset.cache_clear()`` to clear.
 
         :param asset: The currency pair(s) of interest
-        :type asset: str
+        :type asset: str, optional
         :param aclass: Filter by asset class
         :type aclass: str, optional
         :return: Information about the requested asset
@@ -82,7 +85,7 @@ class Market(KrakenBaseSpotAPI):
 
             >>> from kraken.spot import Market
             >>> market = Market()
-            >>> market.get_assets(asset="DOT")
+            >>> market.get_asset(asset="DOT")
             {
                 'DOT': {
                     'aclass': 'currency',
@@ -93,50 +96,7 @@ class Market(KrakenBaseSpotAPI):
                     'status': 'enabled'
                 }
             }
-        """
-        params: dict = {"asset": asset}
-        if aclass is not None:
-            params["aclass"] = aclass
-        return self._request(  # type: ignore[return-value]
-            method="GET", uri="/public/Assets", params=params, auth=False
-        )
-
-    def get_assets(
-        self: "Market",
-        assets: Optional[Union[str, List[str]]] = None,
-        aclass: Optional[str] = None,
-    ) -> dict:
-        """
-        Get information about all available assets for trading, staking, deposit,
-        and withdraw.
-
-        - https://docs.kraken.com/rest/#operation/getAssetInfo
-
-        :param asset: Filter by asset(s)
-        :type asset: str | List[str], optional
-        :param aclass: Filter by asset class
-        :type aclass: str, optional
-        :return: Information about the requested assets
-        :rtype: dict
-
-        .. code-block:: python
-            :linenos:
-            :caption: Spot Market: Get information about the available assets
-
-            >>> from kraken.spot import Market
-            >>> market = Market()
-            >>> market.get_assets(assets="DOT")
-            {
-                'DOT': {
-                    'aclass': 'currency',
-                    'altname': 'DOT',
-                    'decimals': 10,
-                    'display_decimals': 8,
-                    'collateral_value': 0.9,
-                    'status': 'enabled'
-                }
-            }
-            >>> market.get_assets(assets=["MATIC", "XBT"])
+            >>> market.get_asset(asset="MATIC,XBT")
             {
                 'MATIC': {
                     'aclass': 'currency',
@@ -157,76 +117,90 @@ class Market(KrakenBaseSpotAPI):
             }
         """
         params: dict = {}
-        if assets is not None:
-            params["asset"] = self._to_str_list(assets)
+        if asset is not None:
+            params["asset"] = asset
         if aclass is not None:
             params["aclass"] = aclass
         return self._request(  # type: ignore[return-value]
             method="GET", uri="/public/Assets", params=params, auth=False
         )
 
+    def get_assets(
+        self: "Market",
+        assets: Optional[Union[str, List[str]]] = None,
+        aclass: Optional[str] = None,
+    ) -> dict:
+        """
+        Get information about available assets for trading, staking, deposit,
+        and withdraw.
+
+        - https://docs.kraken.com/rest/#operation/getAssetInfo
+
+        :param assets: Filter by asset(s)
+        :type assets: str | List[str], optional
+        :param aclass: Filter by asset class
+        :type aclass: str, optional
+        :return: Information about the requested assets
+        :rtype: dict
+
+        .. code-block:: python
+            :linenos:
+            :caption: Spot Market: Get information about the available assets
+
+            >>> from kraken.spot import Market
+            >>> market = Market()
+            >>> market.get_assets(assets=["MATIC", "XBT"]) # same as market.get_assets(assets="MATIC,XBT"])
+            {
+                'MATIC': {
+                    'aclass': 'currency',
+                    'altname': 'MATIC',
+                    'decimals': 10,
+                    'display_decimals': 5,
+                    'collateral_value': 0.7,
+                    'status': 'enabled'
+                },
+                'XXBT': {
+                    'aclass': 'currency',
+                    'altname': 'XBT',
+                    'decimals': 10,
+                    'display_decimals': 5,
+                    'collateral_value': 1.0,
+                    'status': 'enabled'
+                }
+            }
+        """
+        if assets is not None:
+            assets = self._to_str_list(assets)
+        return self.get_asset(asset=assets, aclass=aclass)
+
     @lru_cache()
-    def get_asset_pair(self: "Market", pair: str, info: Optional[str] = None) -> dict:
+    def get_asset_pair(
+        self: "Market", pair: Optional[str] = None, info: Optional[str] = None
+    ) -> dict:
         """
         Get information about a single asset/currency pair. Multiple currency pairs
-        can be requested as follows: ``get_asset_pair(asset="BTCUSD,BTCEUR")``.
+        can be requested as follows: ``get_asset_pair(asset="BTCUSD,BTCEUR")``. If left
+        blank, all currency pairs will be returned.
+
+        For requesting a list of asset pairs, use :func:`get_asset_pairs`.
+
+        See :func:`get_asset_pairs` for example output.
 
         - https://docs.kraken.com/rest/#operation/getTradableAssetPairs
 
-        This function uses caching. Run ``get_asset_pair.cache_clear()`` to to clear.
+        This function uses caching. Run ``get_asset_pair.cache_clear()`` to clear.
 
-        :param asset: The asset of interest
-        :type asset: str
+        :param pair: The asset(s) of interest
+        :type pair: str, optional
         :param info: Filter by info, can be one of: ``info`` (all info), ``leverage``
             (leverage info), ``fees`` (fee info), and ``margin`` (margin info)
         :type info: str, optional
         :return: Information about the asset pair
         :rtype: dict
-
-        .. code-block:: python
-            :linenos:
-            :caption: Spot Market: Get information about a specific currency pair
-
-            >>> from kraken.spot import Market
-            >>> Market().get_asset_pair(pair="XBTUSD")
-            {
-                'XXBTZUSD': {
-                    'altname': 'XBTUSD',
-                    'wsname': 'XBT/USD',
-                    'aclass_base': 'currency',
-                    'base': 'XXBT',
-                    'aclass_quote': 'currency',
-                    'quote': 'ZUSD',
-                    'lot': 'unit',
-                    'cost_decimals': 5,
-                    'pair_decimals': 1,
-                    'lot_decimals': 8,
-                    'lot_multiplier': 1,
-                    'leverage_buy': [2, 3, 4, 5],
-                    'leverage_sell': [2, 3, 4, 5],
-                    'fees': [
-                        [0, 0.26], [50000, 0.24], [100000, 0.22],
-                        [250000, 0.2], [500000, 0.18], [1000000, 0.16],
-                        [2500000, 0.14], [5000000, 0.12], [10000000, 0.1]
-                    ],
-                    'fees_maker': [
-                        [0, 0.16], [50000, 0.14], [100000, 0.12],
-                        [250000, 0.1], [500000, 0.08], [1000000, 0.06],
-                        [2500000, 0.04], [5000000, 0.02], [10000000, 0.0]
-                    ],
-                    'fee_volume_currency': 'ZUSD',
-                    'margin_call': 80,
-                    'margin_stop': 40,
-                    'ordermin': '0.0001',
-                    'costmin': '0.5',
-                    'tick_size': '0.1',
-                    'status': 'online',
-                    'long_position_limit': 270,
-                    'short_position_limit': 180
-                }
-            }
         """
-        params: dict = {"pair": pair}
+        params: dict = {}
+        if pair is not None:
+            params["pair"] = pair
         if info is not None:
             params["info"] = info
         return self._request(  # type: ignore[return-value]
@@ -243,8 +217,8 @@ class Market(KrakenBaseSpotAPI):
 
         - https://docs.kraken.com/rest/#operation/getTradableAssetPairs
 
-        :param asset: Filter by asset pair(s)
-        :type asset: str | List[str], optional
+        :param pair: Filter by asset pair(s)
+        :type pair: str | List[str], optional
         :param info: Filter by info, can be one of: ``info`` (all info), ``leverage``
             (leverage info), ``fees`` (fee info), and ``margin`` (margin info)
         :type info: str, optional
@@ -294,15 +268,9 @@ class Market(KrakenBaseSpotAPI):
                 }
             }
         """
-        params: dict = {}
         if pair is not None:
-            params["pair"] = self._to_str_list(pair)
-        if info is not None:
-            params["info"] = info
-
-        return self._request(  # type: ignore[return-value]
-            method="GET", uri="/public/AssetPairs", params=params, auth=False
-        )
+            pair = self._to_str_list(pair)
+        return self.get_asset_pair(pair=pair, info=info)
 
     def get_ticker(
         self: "Market", pair: Optional[Union[str, List[str]]] = None

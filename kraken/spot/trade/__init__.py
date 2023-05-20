@@ -141,7 +141,7 @@ class Trade(KrakenBaseSpotAPI):
         :type expiretm: str, optional
         :param close_ordertype: Conditional close order type, one of: ``limit``, ``stop-loss``,
             ``take-profit``, ``stop-loss-limit``, ``take-profit-limit``
-                (see the referenced Kraken documentaion for more information)
+            (see the referenced Kraken documentaion for more information)
         :type close_ordertype: str, optional
         :param close_price: Conditional close price
         :type close_price: str | int | float, optional
