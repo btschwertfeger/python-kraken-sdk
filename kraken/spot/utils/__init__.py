@@ -6,6 +6,7 @@
 """Module that provides the Utils class that stores Spot related functions."""
 
 from decimal import Decimal
+from functools import lru_cache
 from math import floor
 from typing import Union
 
@@ -17,6 +18,7 @@ class Utils:
     The Utils class provides utility functions for the Spot related clients.
     """
 
+    @lru_cache()
     @staticmethod
     def truncate(
         amount: Union[Decimal, float, int, str], amount_type: str, pair: str
@@ -29,6 +31,9 @@ class Utils:
         the correct number of decimal places.
 
         - https://support.kraken.com/hc/en-us/articles/4521313131540
+
+        This function uses caching. Run ``Utils.truncate.clear_cache()`` to clear
+        the cache.
 
         :param amount: The floating point number to represent
         :type amount: Decimal | float | int | str
