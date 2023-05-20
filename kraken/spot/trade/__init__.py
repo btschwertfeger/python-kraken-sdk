@@ -167,7 +167,7 @@ class Trade(KrakenBaseSpotAPI):
             ...     volume="0.0001"
             ... )
             {
-                'txid': 'TNGMNU-XQSRA-LKCWOK',
+                'txid': ['TNGMNU-XQSRA-LKCWOK'],
                 'descr': {
                     'order': 'buy 4.00000000 XBTUSD @ limit 23000.0'
                 }
@@ -190,7 +190,7 @@ class Trade(KrakenBaseSpotAPI):
             ...     oflags=["post", "fcib"]
             ... )
             {
-                'txid': 'TPPI2H-CUZZ2-EQR2IE',
+                'txid': ['TPPI2H-CUZZ2-EQR2IE'],
                 'descr': {
                     'order': 'buy 4.0000 XBTUSD @ limit 23000.0'
                 }
@@ -210,7 +210,7 @@ class Trade(KrakenBaseSpotAPI):
             ...     side="buy",
             ... )
             {
-                'txid': 'THNUL1-8ZAS5-EEF3A8',
+                'txid': ['THNUL1-8ZAS5-EEF3A8'],
                 'descr': {
                     'order': 'buy 20.00000000 XBTUSD @ stop loss 22000.0'
                 }
