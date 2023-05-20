@@ -11,13 +11,66 @@ import hmac
 import json
 import time
 import urllib.parse
-from typing import Any, Dict, List, Optional, Type, Union
+from typing import Any, Callable, Dict, List, Optional, Type, Union
 from urllib.parse import urljoin
 from uuid import uuid1
 
 import requests
 
 from kraken.exceptions import KrakenException
+
+
+def defined(value: Any) -> bool:
+    """Returns ``True`` if ``value`` is not ``None``"""
+    return value is not None
+
+
+def ensure_string(parameter_name: str) -> Callable:
+    """
+    This function is intended to be used as decorator
+    to ensure that a specific parameter is of type string.
+
+    .. code-block:: python
+        :linenos:
+        :caption: Example
+
+        @ensure_string("assets")
+        @lru_cache()
+        def get_assets(
+            self: "Market",
+            assets: Optional[Union[str, List[str]]] = None,
+            aclass: Optional[str] = None,
+        ) -> dict:
+            # If the function was called using
+            # get_assets(assets=["BTC","USD","ETH"])
+            # there will be no error because of the non-hashable
+            # parameters, because the decorator transforms the
+            # list into: "BTC,USD,ETH"
+
+    :param parameter_name: The parameter name to transform into string
+    :type parameter_name: str
+    :return: The called function
+    :rtype: Callable
+    """
+
+    def decorator(func: Callable) -> Callable:
+        def wrapper(*args: Any, **kwargs: Any) -> Any:
+            if parameter_name in kwargs:
+                value: Any = kwargs[parameter_name]
+                if isinstance(value, str) or value is None:
+                    pass
+                elif isinstance(value, list):
+                    kwargs[parameter_name] = ",".join(value)
+                else:
+                    raise ValueError(
+                        f"{parameter_name} cannot be {type(kwargs[parameter_name])}!"
+                    )
+
+            return func(*args, **kwargs)
+
+        return wrapper
+
+    return decorator
 
 
 class KrakenErrorHandler:
@@ -312,21 +365,6 @@ class KrakenBaseSpotAPI:
         :rtype: str
         """
         return "".join(str(uuid1()).split("-"))
-
-    def _to_str_list(self: "KrakenBaseSpotAPI", value: Union[str, list]) -> str:
-        """
-        Converts a list to a comme separated string
-
-        :param value: The value to convert to e.g., ["XBT", "USD"] => "XBT,USD"
-        :type value: Union[str,dict]
-        :return: The content ov `value` as comma-separated string
-        :rtype: str
-        """
-        if isinstance(value, str):
-            return value
-        if isinstance(value, list):
-            return ",".join(value)
-        raise ValueError("a must be type of str or list of strings")
 
     def __enter__(self: "KrakenBaseSpotAPI") -> "KrakenBaseSpotAPI":
         return self

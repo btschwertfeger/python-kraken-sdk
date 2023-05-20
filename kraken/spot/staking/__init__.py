@@ -8,7 +8,7 @@
 
 from typing import List, Optional, Union
 
-from ...base_api import KrakenBaseSpotAPI
+from ...base_api import KrakenBaseSpotAPI, defined
 
 
 class Staking(KrakenBaseSpotAPI):
@@ -44,9 +44,9 @@ class Staking(KrakenBaseSpotAPI):
 
     def __init__(
         self,
-        key: Optional[str] = "",
-        secret: Optional[str] = "",
-        url: Optional[str] = "",
+        key: str = "",
+        secret: str = "",
+        url: str = "",
     ) -> None:
         super().__init__(key=key, secret=secret, url=url)
 
@@ -135,7 +135,7 @@ class Staking(KrakenBaseSpotAPI):
             { 'refid': 'BOG5AE5-KSCNR4-VPNPEV' }
         """
         params: dict = {"asset": asset, "amount": amount}
-        if method is not None:
+        if defined(method):
             params["method"] = method
 
         return self._request(  # type: ignore[return-value]

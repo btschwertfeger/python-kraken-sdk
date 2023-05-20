@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # Copyright (C) 2023 Benjamin Thomas Schwertfeger
-# Github: https://github.com/btschwertfeger
+# GitHub: https://github.com/btschwertfeger
 #
 
 """Module that implements the kraken Spot websocket clients"""
 
-from __future__ import annotations  # to avaoid circular import for type checking
+from __future__ import annotations  # to avoid circular import for type checking
 
 import asyncio
 import json
@@ -46,7 +46,7 @@ class ConnectSpotWebsocket:
         client: KrakenSpotWSClient,
         endpoint: str,
         callback: Any,
-        is_auth: Optional[bool] = False,
+        is_auth: bool = False,
     ):
         self.__client: KrakenSpotWSClient = client
         self.__ws_endpoint: str = endpoint

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # Copyright (C) 2023 Benjamin Thomas Schwertfeger
-# Github: https://github.com/btschwertfeger
+# GitHub: https://github.com/btschwertfeger
 #
 
 """Module that implements the Spot Kraken Websocket client"""
@@ -11,7 +11,7 @@ from __future__ import annotations
 import logging
 from typing import TYPE_CHECKING, List, Optional, Union
 
-from ...base_api import KrakenBaseSpotAPI
+from ...base_api import KrakenBaseSpotAPI, defined, ensure_string
 
 if TYPE_CHECKING:
     # to avaoid circular import for type checking
@@ -37,10 +37,10 @@ class SpotWsClientCl(KrakenBaseSpotAPI):
 
     def __init__(
         self: "SpotWsClientCl",
-        key: Optional[str] = "",
-        secret: Optional[str] = "",
-        url: Optional[str] = "",
-        sandbox: Optional[bool] = False,
+        key: str = "",
+        secret: str = "",
+        url: str = "",
+        sandbox: bool = False,
     ):
         super().__init__(key=key, secret=secret, url=url, sandbox=sandbox)
 
@@ -61,6 +61,7 @@ class SpotWsClientCl(KrakenBaseSpotAPI):
             "POST", "/private/GetWebSocketsToken"
         )
 
+    @ensure_string("oflags")
     async def create_order(
         self: "SpotWsClientCl",
         ordertype: str,
@@ -75,7 +76,7 @@ class SpotWsClientCl(KrakenBaseSpotAPI):
         expiretm: Optional[Union[str, int]] = None,
         deadline: Optional[str] = None,
         userref: Optional[Union[str, int]] = None,
-        validate: Optional[bool] = False,
+        validate: bool = False,
         close_ordertype: Optional[str] = None,
         close_price: Optional[Union[str, int, float]] = None,
         close_price2: Optional[Union[str, int, float]] = None,
@@ -173,38 +174,37 @@ class SpotWsClientCl(KrakenBaseSpotAPI):
             "volume": str(volume),
             "validate": str(validate),
         }
-        if price2 is not None:
+        if defined(price2):
             payload["price2"] = str(price2)
-        if oflags is not None:
+        if defined(oflags):
             if isinstance(oflags, str):
                 payload["oflags"] = oflags
-            elif isinstance(oflags, list):
-                payload["oflags"] = self._to_str_list(oflags)
             else:
                 raise ValueError(
-                    "oflags must be type List[str] or comma delimited list of order flags as str. Available flags: viqc, fcib, fciq, nompp, post"
+                    "oflags must be a comma delimited list of order flags as str. Available flags: viqc, fcib, fciq, nompp, post"
                 )
-        if starttm is not None:
+        if defined(starttm):
             payload["starttm"] = str(starttm)
-        if expiretm is not None:
+        if defined(expiretm):
             payload["expiretm"] = str(expiretm)
-        if deadline is not None:
+        if defined(deadline):
             payload["deadline"] = str(deadline)
-        if userref is not None:
+        if defined(userref):
             payload["userref"] = str(userref)
-        if leverage is not None:
+        if defined(leverage):
             payload["leverage"] = str(leverage)
-        if close_ordertype is not None:
+        if defined(close_ordertype):
             payload["close[ordertype]"] = close_ordertype
-        if close_price is not None:
+        if defined(close_price):
             payload["close[price]"] = str(close_price)
-        if close_price2 is not None:
+        if defined(close_price2):
             payload["close[price2]"] = str(close_price2)
-        if timeinforce is not None:
+        if defined(timeinforce):
             payload["timeinforce"] = timeinforce
 
         await self._priv_conn.send_message(msg=payload, private=True)
 
+    @ensure_string("oflags")
     async def edit_order(
         self: "SpotWsClientCl",
         orderid: str,
@@ -215,7 +215,7 @@ class SpotWsClientCl(KrakenBaseSpotAPI):
         volume: Optional[Union[str, int, float]] = None,
         oflags: Optional[Union[str, List[str]]] = None,
         newuserref: Optional[Union[str, int]] = None,
-        validate: Optional[bool] = False,
+        validate: bool = False,
     ) -> None:
         """
         Edit an open order that was placed on the Spot market.
@@ -270,23 +270,24 @@ class SpotWsClientCl(KrakenBaseSpotAPI):
             "orderid": orderid,
             "validate": str(validate),
         }
-        if reqid is not None:
+        if defined(reqid):
             payload["reqid"] = reqid
-        if pair is not None:
+        if defined(pair):
             payload["pair"] = pair
-        if price is not None:
+        if defined(price):
             payload["price"] = str(price)
-        if price2 is not None:
+        if defined(price2):
             payload["price2"] = str(price2)
-        if volume is not None:
+        if defined(volume):
             payload["volume"] = str(volume)
-        if oflags is not None:
-            payload["oflags"] = self._to_str_list(oflags)
-        if newuserref is not None:
+        if defined(oflags):
+            payload["oflags"] = oflags
+        if defined(newuserref):
             payload["newuserref"] = str(newuserref)
 
         await self._priv_conn.send_message(msg=payload, private=True)
 
+    @ensure_string("txid")
     async def cancel_order(self: "SpotWsClientCl", txid: Union[str, List[str]]) -> None:
         """
         Cancel a specific order or a list of orders.
@@ -315,7 +316,7 @@ class SpotWsClientCl(KrakenBaseSpotAPI):
         if not self._priv_conn.is_auth:
             raise ValueError("Cannot cancel_order on public websocket client!")
         await self._priv_conn.send_message(
-            msg={"event": "cancelOrder", "txid": self._to_str_list(txid)}, private=True
+            msg={"event": "cancelOrder", "txid": txid}, private=True
         )
 
     async def cancel_all_orders(self: "SpotWsClientCl") -> None:

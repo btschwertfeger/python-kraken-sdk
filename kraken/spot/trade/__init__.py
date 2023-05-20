@@ -6,10 +6,13 @@
 
 """Module that implements the Kraken Trade Spot client"""
 
+from decimal import Decimal
+from functools import lru_cache
+from math import floor
 from typing import List, Optional, Union
 
-from ...base_api import KrakenBaseSpotAPI
-from ..utils import Utils
+from ...base_api import KrakenBaseSpotAPI, defined, ensure_string
+from ...spot import Market
 
 
 class Trade(KrakenBaseSpotAPI):
@@ -45,16 +48,18 @@ class Trade(KrakenBaseSpotAPI):
 
     def __init__(
         self: "Trade",
-        key: Optional[str] = "",
-        secret: Optional[str] = "",
-        url: Optional[str] = "",
+        key: str = "",
+        secret: str = "",
+        url: str = "",
     ) -> None:
         super().__init__(key=key, secret=secret, url=url)
+        self.__market: Market = Market()
 
     def __enter__(self: "Trade") -> "Trade":
         super().__enter__()
         return self
 
+    @ensure_string("oflags")
     def create_order(
         self: "Trade",
         ordertype: str,
@@ -137,7 +142,7 @@ class Trade(KrakenBaseSpotAPI):
         :type expiretm: str, optional
         :param close_ordertype: Conditional close order type, one of: ``limit``, ``stop-loss``,
             ``take-profit``, ``stop-loss-limit``, ``take-profit-limit``
-                (see the referenced Kraken documentaion for more information)
+            (see the referenced Kraken documentaion for more information)
         :type close_ordertype: str, optional
         :param close_price: Conditional close price
         :type close_price: str | int | float, optional
@@ -234,7 +239,7 @@ class Trade(KrakenBaseSpotAPI):
             >>> trade = Trade(key="api-key", secret="secret-key")
             >>> from datetime import datetime, timedelta, timezone
             >>> deadline = (
-            ... datetime.now(timezone.utc) + timedelta(seconds=20)
+            ...     datetime.now(timezone.utc) + timedelta(seconds=20)
             ... ).isoformat()
             >>> trade.create_order(
             ...     ordertype="stop-loss-limit",
@@ -292,7 +297,7 @@ class Trade(KrakenBaseSpotAPI):
             "pair": pair,
             "volume": volume
             if not truncate
-            else Utils.truncate(amount=volume, amount_type="volume", pair=pair),
+            else self.truncate(amount=volume, amount_type="volume", pair=pair),
             "stp_type": stptype,
             "starttm": starttm,
             "validate": validate,
@@ -306,49 +311,49 @@ class Trade(KrakenBaseSpotAPI):
             "take-profit-limit",
         )
 
-        if trigger is not None:
+        if defined(trigger):
             if ordertype not in trigger_ordertypes:
                 raise ValueError(f"Cannot use trigger on ordertype {ordertype}!")
             params["trigger"] = trigger
 
-        if timeinforce is not None:
+        if defined(timeinforce):
             params["timeinforce"] = timeinforce
-        if expiretm is not None:
+        if defined(expiretm):
             params["expiretm"] = str(expiretm)
 
-        if price is not None:
+        if defined(price):
             params["price"] = (
                 price
                 if not truncate
-                else Utils.truncate(amount=price, amount_type="price", pair=pair)
+                else self.truncate(amount=price, amount_type="price", pair=pair)
             )
 
         if ordertype in ("stop-loss-limit", "take-profit-limit"):
-            if price2 is None:
+            if not defined(price2):
                 raise ValueError(
                     f"Ordertype {ordertype} requires a secondary price (price2)!"
                 )
             params["price2"] = str(price2)
         elif price2 is not None:
             raise ValueError(
-                f"Ordertype {ordertype} dont allow a second price (price2)!"
+                f"Ordertype {ordertype} dos not allow a second price (price2)!"
             )
 
-        if leverage is not None:
+        if defined(leverage):
             params["leverage"] = str(leverage)
-        if oflags is not None:
-            params["oflags"] = self._to_str_list(oflags)
-        if close_ordertype is not None:
+        if defined(oflags):
+            params["oflags"] = oflags
+        if defined(close_ordertype):
             params["close[ordertype]"] = close_ordertype
-        if close_price is not None:
+        if defined(close_price):
             params["close[price]"] = str(close_price)
-        if close_price2 is not None:
+        if defined(close_price2):
             params["close[price2]"] = str(close_price2)
-        if deadline is not None:
+        if defined(deadline):
             params["deadline"] = deadline
-        if userref is not None:
+        if defined(userref):
             params["userref"] = userref
-        if displayvol is not None:
+        if defined(displayvol):
             params["displayvol"] = str(displayvol)
 
         return self._request(  # type: ignore[return-value]
@@ -360,7 +365,7 @@ class Trade(KrakenBaseSpotAPI):
         orders: List[dict],
         pair: str,
         deadline: Optional[str] = None,
-        validate: Optional[bool] = False,
+        validate: bool = False,
     ) -> dict:
         """
         Create a batch of max 15 orders for a specifc asset pair.
@@ -424,12 +429,13 @@ class Trade(KrakenBaseSpotAPI):
             }
         """
         params: dict = {"orders": orders, "pair": pair, "validate": validate}
-        if deadline is not None:
+        if defined(deadline):
             params["deadline"] = deadline
         return self._request(  # type: ignore[return-value]
             method="POST", uri="/private/AddOrderBatch", params=params, do_json=True
         )
 
+    @ensure_string("oflags")
     def edit_order(
         self: "Trade",
         txid: str,
@@ -440,7 +446,7 @@ class Trade(KrakenBaseSpotAPI):
         oflags: Optional[str] = None,
         deadline: Optional[str] = None,
         cancel_response: Optional[bool] = None,
-        validate: Optional[bool] = False,
+        validate: bool = False,
         userref: Optional[int] = None,
     ) -> dict:
         """
@@ -498,24 +504,25 @@ class Trade(KrakenBaseSpotAPI):
             }
         """
         params: dict = {"txid": txid, "pair": pair, "validate": validate}
-        if userref is not None:
+        if defined(userref):
             params["userref"] = userref
-        if volume is not None:
+        if defined(volume):
             params["volume"] = volume
-        if price is not None:
+        if defined(price):
             params["price"] = price
-        if price2 is not None:
+        if defined(price2):
             params["price2"] = price2
-        if oflags is not None:
-            params["oflags"] = self._to_str_list(oflags)
-        if cancel_response is not None:
+        if defined(oflags):
+            params["oflags"] = oflags
+        if defined(cancel_response):
             params["cancel_response"] = cancel_response
-        if deadline is not None:
+        if defined(deadline):
             params["deadline"] = deadline
         return self._request(  # type: ignore[return-value]
             "POST", uri="/private/EditOrder", params=params
         )
 
+    @ensure_string("txid")
     def cancel_order(self: "Trade", txid: str) -> dict:
         """
         Cancel a specific order by ``txid``. Instead of a transaction id
@@ -543,7 +550,7 @@ class Trade(KrakenBaseSpotAPI):
         return self._request(  # type: ignore[return-value]
             method="POST",
             uri="/private/CancelOrder",
-            params={"txid": self._to_str_list(txid)},
+            params={"txid": txid},
         )
 
     def cancel_all_orders(self: "Trade") -> dict:
@@ -634,3 +641,62 @@ class Trade(KrakenBaseSpotAPI):
             params={"orders": orders},
             do_json=True,
         )
+
+    @lru_cache()
+    def truncate(
+        self: "Trade",
+        amount: Union[Decimal, float, int, str],
+        amount_type: str,
+        pair: str,
+    ) -> str:
+        """
+        Kraken only allows volume and price amounts to be specified with a specific number of
+        decimal places, and these varry depending on the currency pair used.
+
+        This function converts an amount of a specific type and pair to a string that uses
+        the correct number of decimal places.
+
+        - https://support.kraken.com/hc/en-us/articles/4521313131540
+
+        This function uses caching. Run ``truncate.clear_cache()`` to clear.
+
+        :param amount: The floating point number to represent
+        :type amount: Decimal | float | int | str
+        :param amount_type: What the amount represents. Either ``"price"`` or ``"volume"``
+        :type amount_type: str
+        :param pair: The currency pair the amount is in reference to.
+        :type pair: str
+        :raises ValueError: If the ``amount_type`` is ``price`` and the price is less
+            than the costmin.
+        :raises ValueError: If the ``amount_type`` is ``volume`` and the volume is
+            less than the ordermin.
+        :raises ValueError: If no valid ``amount_type`` was passed.
+        :return: A string representation of the amount.
+        :rtype: str
+        """
+        if amount_type not in ("price", "volume"):
+            raise ValueError("Amount type must be 'volume' or 'price'!")
+
+        pair_data: dict = self.__market.get_asset_pairs(pair=pair)
+        data: dict = pair_data[list(pair_data)[0]]
+
+        pair_decimals: int = int(data["pair_decimals"])
+        lot_decimals: int = int(data["lot_decimals"])
+
+        ordermin: Decimal = Decimal(data["ordermin"])
+        costmin: Decimal = Decimal(data["costmin"])
+
+        amount = Decimal(amount)
+        decimals: int
+
+        if amount_type == "price":
+            if costmin > amount:
+                raise ValueError(f"Price is less than the costmin: {costmin}!")
+            decimals = pair_decimals
+        else:  # amount_type == "volume":
+            if ordermin > amount:
+                raise ValueError(f"Volume is less than the ordermin: {ordermin}!")
+            decimals = lot_decimals
+
+        amount_rounded: float = floor(float(amount) * 10**decimals) / 10**decimals
+        return f"{amount_rounded:.{decimals}f}"

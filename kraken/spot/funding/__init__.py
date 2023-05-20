@@ -8,7 +8,7 @@
 
 from typing import List, Optional, Union
 
-from ...base_api import KrakenBaseSpotAPI
+from ...base_api import KrakenBaseSpotAPI, defined
 
 
 class Funding(KrakenBaseSpotAPI):
@@ -44,9 +44,9 @@ class Funding(KrakenBaseSpotAPI):
 
     def __init__(
         self: "Funding",
-        key: Optional[str] = "",
-        secret: Optional[str] = "",
-        url: Optional[str] = "",
+        key: str = "",
+        secret: str = "",
+        url: str = "",
     ) -> None:
         super().__init__(key=key, secret=secret, url=url)
 
@@ -197,9 +197,9 @@ class Funding(KrakenBaseSpotAPI):
             ]
         """
         params: dict = {}
-        if asset is not None:
+        if defined(asset):
             params["asset"] = asset
-        if method is not None:
+        if defined(method):
             params["method"] = method
         return self._request(  # type: ignore[return-value]
             method="POST", uri="/private/DepositStatus", params=params
@@ -329,9 +329,9 @@ class Funding(KrakenBaseSpotAPI):
             ]
         """
         params: dict = {}
-        if asset is not None:
+        if defined(asset):
             params["asset"] = asset
-        if method is not None:
+        if defined(method):
             params["method"] = method
         return self._request(  # type: ignore[return-value]
             method="POST", uri="/private/WithdrawStatus", params=params
