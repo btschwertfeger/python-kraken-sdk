@@ -10,7 +10,7 @@ from typing import Optional, Union
 
 import requests
 
-from ...base_api import KrakenBaseFuturesAPI
+from ...base_api import KrakenBaseFuturesAPI, defined
 
 
 class User(KrakenBaseFuturesAPI):
@@ -308,19 +308,19 @@ class User(KrakenBaseFuturesAPI):
         """
 
         params: dict = {}
-        if before is not None:
+        if defined(before):
             params["before"] = before
-        if count is not None:
+        if defined(count):
             params["count"] = count
-        if from_ is not None:
+        if defined(from_):
             params["from"] = from_
-        if info is not None:
+        if defined(info):
             params["info"] = info
-        if since is not None:
+        if defined(since):
             params["since"] = since
-        if sort is not None:
+        if defined(sort):
             params["sort"] = sort
-        if to is not None:
+        if defined(to):
             params["to"] = to
         return self._request(  # type: ignore[return-value]
             method="GET",
@@ -389,15 +389,15 @@ class User(KrakenBaseFuturesAPI):
         :type auth: bool
         """
         params: dict = {}
-        if before is not None:
+        if defined(before):
             params["before"] = before
-        if continuation_token is not None:
+        if defined(continuation_token):
             params["continuation_token"] = continuation_token
-        if since is not None:
+        if defined(since):
             params["since"] = since
-        if sort is not None:
+        if defined(sort):
             params["sort"] = sort
-        if tradeable is not None:
+        if defined(tradeable):
             params["tradeable"] = tradeable
         params.update(kwargs)
         return self._request(  # type: ignore[return-value]

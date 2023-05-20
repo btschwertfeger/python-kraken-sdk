@@ -251,7 +251,7 @@ def test_cancel_order_batch(spot_auth_trade: Trade) -> None:
 
 @pytest.mark.spot
 @pytest.mark.spot_trade
-def test_utils_truncate_price(spot_trade: Trade) -> None:
+def test_truncate_price(spot_trade: Trade) -> None:
     """
     Checks if the truncate function returns the expected results by
     checking different inputs for price.
@@ -285,8 +285,8 @@ def test_utils_truncate_price(spot_trade: Trade) -> None:
 
 
 @pytest.mark.spot
-@pytest.mark.spot_market
-def test_utils_truncate_volume(spot_trade: Trade) -> None:
+@pytest.mark.spot_trade
+def test_truncate_volume(spot_trade: Trade) -> None:
     """
     Checks if the truncate function returns the expected results by
     checking different inputs for volume.
@@ -320,8 +320,8 @@ def test_utils_truncate_volume(spot_trade: Trade) -> None:
 
 
 @pytest.mark.spot
-@pytest.mark.spot_market
-def test_utils_truncate_fail_price_costmin(spot_trade: Trade) -> None:
+@pytest.mark.spot_trade
+def test_truncate_fail_price_costmin(spot_trade: Trade) -> None:
     """
     Checks if the truncate function fails if the price is less than the costmin.
 
@@ -333,8 +333,8 @@ def test_utils_truncate_fail_price_costmin(spot_trade: Trade) -> None:
 
 
 @pytest.mark.spot
-@pytest.mark.spot_market
-def test_utils_truncate_fail_volume_ordermin(spot_trade: Trade) -> None:
+@pytest.mark.spot_trade
+def test_truncate_fail_volume_ordermin(spot_trade: Trade) -> None:
     """
     Checks if the truncate function fails if the volume is less than the ordermin.
 
@@ -346,13 +346,10 @@ def test_utils_truncate_fail_volume_ordermin(spot_trade: Trade) -> None:
 
 
 @pytest.mark.spot
-@pytest.mark.spot_market
-def test_utils_truncate_fail_invalid_amount_type(spot_trade: Trade) -> None:
+@pytest.mark.spot_trade
+def test_truncate_fail_invalid_amount_type(spot_trade: Trade) -> None:
     """
     Checks if the truncate function fails when no valid ``amount_type`` was specified.
-
-    NOTE: This test may break in the future since the lot_decimals, pair_decimals,
-    ordermin and costmin attributes could change.
     """
     with pytest.raises(ValueError):
         spot_trade.truncate(amount=1, amount_type="invalid", pair="XBTUSD")

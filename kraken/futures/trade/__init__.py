@@ -8,7 +8,7 @@
 
 from typing import List, Optional, Tuple, Union
 
-from ...base_api import KrakenBaseFuturesAPI
+from ...base_api import KrakenBaseFuturesAPI, defined
 
 
 class Trade(KrakenBaseFuturesAPI):
@@ -93,7 +93,7 @@ class Trade(KrakenBaseFuturesAPI):
             }
         """
         query_params: dict = {}
-        if lastFillTime:
+        if defined(lastFillTime):
             query_params["lastFillTime"] = lastFillTime
         return self._request(  # type: ignore[return-value]
             method="GET",
@@ -248,7 +248,7 @@ class Trade(KrakenBaseFuturesAPI):
             }
         """
         params: dict = {}
-        if symbol is not None:
+        if defined(symbol):
             params["symbol"] = symbol
         return self._request(  # type: ignore[return-value]
             method="POST",
@@ -331,9 +331,9 @@ class Trade(KrakenBaseFuturesAPI):
         """
 
         params: dict = {}
-        if order_id is not None:
+        if defined(order_id):
             params["order_id"] = order_id
-        elif cliOrdId is not None:
+        elif defined(cliOrdId):
             params["cliOrdId"] = cliOrdId
         else:
             raise ValueError("Either order_id or cliOrdId must be set!")
@@ -394,18 +394,18 @@ class Trade(KrakenBaseFuturesAPI):
             }
         """
         params: dict = {}
-        if orderId is not None:
+        if defined(orderId):
             params["orderId"] = orderId
-        elif cliOrdId is not None:
+        elif defined(cliOrdId):
             params["cliOrdId"] = cliOrdId
         else:
             raise ValueError("Either orderId or cliOrdId must be set!")
 
-        if limitPrice is not None:
+        if defined(limitPrice):
             params["limitPrice"] = limitPrice
-        if size is not None:
+        if defined(size):
             params["size"] = size
-        if stopPrice is not None:
+        if defined(stopPrice):
             params["stopPrice"] = stopPrice
 
         return self._request(  # type: ignore[return-value]
@@ -448,9 +448,9 @@ class Trade(KrakenBaseFuturesAPI):
             {'result': 'success', 'serverTime': '2023-04-04T17:27:29.667Z', 'orders': []}
         """
         params = {}
-        if orderIds is not None:
+        if defined(orderIds):
             params["orderIds"] = orderIds
-        elif cliOrdIds is not None:
+        elif defined(cliOrdIds):
             params["cliOrdIds"] = cliOrdIds
 
         return self._request(  # type: ignore[return-value]
@@ -647,22 +647,22 @@ class Trade(KrakenBaseFuturesAPI):
             "size": size,
             "symbol": symbol,
         }
-        if cliOrdId is not None:
+        if defined(cliOrdId):
             params["cliOrdId"] = cliOrdId
-        if limitPrice is not None:
+        if defined(limitPrice):
             params["limitPrice"] = limitPrice
-        if reduceOnly is not None:
+        if defined(reduceOnly):
             params["reduceOnly"] = reduceOnly
-        if stopPrice is not None:
+        if defined(stopPrice):
             params["stopPrice"] = stopPrice
-        if triggerSignal is not None:
-            trigger_signals = ("mark", "spot", "last")
+        if defined(triggerSignal):
+            trigger_signals: tuple = ("mark", "spot", "last")
             if triggerSignal not in trigger_signals:
                 raise ValueError(f"Trigger signal must be in [{trigger_signals}]!")
             params["triggerSignal"] = triggerSignal
-        if trailingStopDeviationUnit is not None:
+        if defined(trailingStopDeviationUnit):
             params["trailingStopDeviationUnit"] = trailingStopDeviationUnit
-        if trailingStopMaxDeviation is not None:
+        if defined(trailingStopMaxDeviation):
             params["trailingStopMaxDeviation"] = trailingStopMaxDeviation
 
         return self._request(  # type: ignore[return-value]

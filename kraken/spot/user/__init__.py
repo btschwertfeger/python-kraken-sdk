@@ -8,7 +8,7 @@
 from decimal import Decimal
 from typing import List, Optional, Union
 
-from ...base_api import KrakenBaseSpotAPI
+from ...base_api import KrakenBaseSpotAPI, defined, ensure_string
 
 
 class User(KrakenBaseSpotAPI):
@@ -201,7 +201,7 @@ class User(KrakenBaseSpotAPI):
             }
         """
         params: dict = {}
-        if asset is not None:
+        if defined(asset):
             params["asset"] = asset
         return self._request(  # type: ignore[return-value]
             method="POST", uri="/private/TradeBalance", params=params
@@ -266,7 +266,7 @@ class User(KrakenBaseSpotAPI):
             }
         """
         params: dict = {"trades": trades}
-        if userref is not None:
+        if defined(userref):
             params["userref"] = userref
         return self._request(  # type: ignore[return-value]
             method="POST", uri="/private/OpenOrders", params=params
@@ -346,19 +346,20 @@ class User(KrakenBaseSpotAPI):
             }
         """
         params: dict = {"trades": trades, "closetime": closetime}
-        if userref is not None:
+        if defined(userref):
             params["userref"] = userref
-        if start is not None:
+        if defined(start):
             params["start"] = start
-        if end is not None:
+        if defined(end):
             params["end"] = end
-        if ofs is not None:
+        if defined(ofs):
             params["ofs"] = ofs
 
         return self._request(  # type: ignore[return-value]
             method="POST", uri="/private/ClosedOrders", params=params
         )
 
+    @ensure_string("txid")
     def get_orders_info(
         self: "User",
         txid: Union[List[str], str] = None,
@@ -458,9 +459,7 @@ class User(KrakenBaseSpotAPI):
             "trades": trades,
             "consolidate_taker": consolidate_taker,
         }
-        if isinstance(txid, list):
-            params["txid"] = self._to_str_list(txid)
-        if userref is not None:
+        if defined(userref):
             params["userref"] = userref
         return self._request(  # type: ignore[return-value]
             method="POST", uri="/private/QueryOrders", params=params
@@ -529,16 +528,17 @@ class User(KrakenBaseSpotAPI):
             "trades": trades,
             "consolidate_taker": consolidate_taker,
         }
-        if start is not None:
+        if defined(start):
             params["start"] = start
-        if end is not None:
+        if defined(end):
             params["end"] = end
-        if ofs is not None:
+        if defined(ofs):
             params["ofs"] = ofs
         return self._request(  # type: ignore[return-value]
             method="POST", uri="/private/TradesHistory", params=params
         )
 
+    @ensure_string("txid")
     def get_trades_info(
         self: "User", txid: Union[str, List[str]], trades: Optional[bool] = False
     ) -> dict:
@@ -586,10 +586,11 @@ class User(KrakenBaseSpotAPI):
             uri="/private/QueryTrades",
             params={
                 "trades": trades,
-                "txid": self._to_str_list(txid),
+                "txid": txid,
             },
         )
 
+    @ensure_string("txid")
     def get_open_positions(
         self: "User",
         txid: Optional[Union[str, List[str]]] = None,
@@ -642,12 +643,13 @@ class User(KrakenBaseSpotAPI):
             }
         """
         params: dict = {"docalcs": docalcs, "consolidation": consolidation}
-        if txid is not None:
-            params["txid"] = self._to_str_list(txid)
+        if defined(txid):
+            params["txid"] = txid
         return self._request(  # type: ignore[return-value]
             method="POST", uri="/private/OpenPositions", params=params
         )
 
+    @ensure_string("asset")
     def get_ledgers_info(
         self: "User",
         asset: Optional[Union[str, List[str]]] = "all",
@@ -707,18 +709,17 @@ class User(KrakenBaseSpotAPI):
             }
         """
         params: dict = {"asset": asset, "aclass": aclass, "type": type_}
-        if isinstance(params["asset"], list):
-            params["asset"] = self._to_str_list(asset)
-        if start is not None:
+        if defined(start):
             params["start"] = start
-        if end is not None:
+        if defined(end):
             params["end"] = end
-        if ofs is not None:
+        if defined(ofs):
             params["ofs"] = ofs
         return self._request(  # type: ignore[return-value]
             method="POST", uri="/private/Ledgers", params=params
         )
 
+    @ensure_string("id_")
     def get_ledgers(
         self: "User", id_: Union[str, List[str]], trades: Optional[bool] = False
     ) -> dict:
@@ -759,9 +760,10 @@ class User(KrakenBaseSpotAPI):
         return self._request(  # type: ignore[return-value]
             method="POST",
             uri="/private/QueryLedgers",
-            params={"trades": trades, "id": self._to_str_list(id_)},
+            params={"trades": trades, "id": id_},
         )
 
+    @ensure_string("pair")
     def get_trade_volume(
         self: "User",
         pair: Optional[Union[str, List[str]]] = None,
@@ -820,12 +822,13 @@ class User(KrakenBaseSpotAPI):
 
         """
         params: dict = {"fee-info": fee_info}
-        if pair is not None:
-            params["pair"] = self._to_str_list(pair)
+        if defined(pair):
+            params["pair"] = pair
         return self._request(  # type: ignore[return-value]
             method="POST", uri="/private/TradeVolume", params=params
         )
 
+    @ensure_string("fields")
     def request_export_report(
         self: "User",
         report: str,
@@ -877,12 +880,12 @@ class User(KrakenBaseSpotAPI):
             "report": report,
             "description": description,
             "format": format_,
-            "fields": self._to_str_list(fields),
+            "fields": fields,
         }
         params.update(kwargs)
-        if starttm is not None:
+        if defined(starttm):
             params["starttm"] = starttm
-        if endtm is not None:
+        if defined(endtm):
             params["endtm"] = endtm
         return self._request(  # type: ignore[return-value]
             method="POST", uri="/private/AddExport", params=params

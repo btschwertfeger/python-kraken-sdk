@@ -8,7 +8,7 @@
 from functools import lru_cache
 from typing import List, Optional, Union
 
-from ...base_api import KrakenBaseFuturesAPI
+from ...base_api import KrakenBaseFuturesAPI, defined
 
 
 class Market(KrakenBaseFuturesAPI):
@@ -115,9 +115,9 @@ class Market(KrakenBaseFuturesAPI):
             raise ValueError(f"resolution must be in {resolutions}")
 
         params: dict = {}
-        if from_ is not None:
+        if defined(from_):
             params["from"] = from_
-        if to is not None:
+        if defined(to):
             params["to"] = to
         return self._request(  # type: ignore[return-value]
             method="GET",
@@ -313,7 +313,7 @@ class Market(KrakenBaseFuturesAPI):
             }
         """
         params: dict = {}
-        if symbol is not None:
+        if defined(symbol):
             params["symbol"] = symbol
 
         return self._request(  # type: ignore[return-value]
@@ -535,9 +535,9 @@ class Market(KrakenBaseFuturesAPI):
                 ]
         """
         params: dict = {}
-        if symbol is not None:
+        if defined(symbol):
             params["symbol"] = symbol
-        if lastTime is not None:
+        if defined(lastTime):
             params["lastTime"] = lastTime
         params.update(kwargs)
         return self._request(  # type: ignore[return-value]
@@ -646,7 +646,7 @@ class Market(KrakenBaseFuturesAPI):
             {'result': 'success', 'serverTime': '2023-04-04T05:59:49.576Z'}
         """
         params: dict = {"symbol": symbol}
-        if maxLeverage is not None:
+        if defined(maxLeverage):
             params["maxLeverage"] = maxLeverage
 
         return self._request(  # type: ignore[return-value]
@@ -745,15 +745,15 @@ class Market(KrakenBaseFuturesAPI):
         :type auth: bool
         """
         params: dict = {}
-        if before is not None:
+        if defined(before):
             params["before"] = before
-        if continuation_token is not None:
+        if defined(continuation_token):
             params["continuation_token"] = continuation_token
-        if since is not None:
+        if defined(since):
             params["since"] = since
-        if sort is not None:
+        if defined(sort):
             params["sort"] = sort
-        if tradeable is not None:
+        if defined(tradeable):
             params["tradeable"] = tradeable
         params.update(kwargs)
         return self._request(  # type: ignore[return-value]
