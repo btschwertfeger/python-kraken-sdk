@@ -10,6 +10,7 @@ import os
 import random
 import tempfile
 from time import sleep, time
+from unittest import mock
 
 import pytest
 
@@ -33,12 +34,41 @@ def test_get_account_balance(spot_auth_user: User) -> None:
 @pytest.mark.spot
 @pytest.mark.spot_auth
 @pytest.mark.spot_user
-def test_get_balances(spot_auth_user):
+def test_get_balances(spot_auth_user: User) -> None:
     """
     Checks the ``get_balances`` function by validating that
     the response do not contain the error key.
     """
-    assert is_not_error(spot_auth_user.get_balances(currency="USD"))
+    result: dict = spot_auth_user.get_balances()
+    assert isinstance(result, dict)
+    assert is_not_error(result)
+
+
+@pytest.mark.spot
+@pytest.mark.spot_auth
+@pytest.mark.spot_user
+@mock.patch.object(
+    User,
+    "get_balances",
+    return_value={
+        "XXLM": {"balance": "0.00000000", "hold_trade": "0.00000000"},
+        "ZEUR": {"balance": "500.0000", "hold_trade": "0.0000"},
+        "XXBT": {"balance": "2.1031709100", "hold_trade": "0.1401000000"},
+        "KFEE": {"balance": "7407.73", "hold_trade": "0.00"},
+    },
+)
+def test_get_balance(mock_user: mock.MagicMock, spot_auth_user: User) -> None:
+    """
+    Checks the ``get_balances`` function by mocking the internal API call
+    (which is already covered by :func:`test_get_balances`) and checking the
+    return value.
+    """
+    result: dict = spot_auth_user.get_balance(currency="XBT")
+    assert result == {
+        "currency": "XXBT",
+        "balance": 2.1031709100,
+        "available_balance": 1.96307091,
+    }
 
 
 @pytest.mark.spot

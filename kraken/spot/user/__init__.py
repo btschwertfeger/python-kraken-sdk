@@ -70,7 +70,8 @@ class User(KrakenBaseSpotAPI):
             >>> from kraken.spot import User
             >>> user = User(key="api-key", secret="secret-key")
             >>> user.get_account_balances()
-            {                'ZUSD': '241983.1415',
+            {
+                'ZUSD': '241983.1415',
                 'KFEE': '8020.22',
                 'BCH': '0.0000077100',
                 'ETHW': '0.0000040',
@@ -84,17 +85,18 @@ class User(KrakenBaseSpotAPI):
             method="POST", uri="/private/Balance"
         )
 
-    def get_balances(self: "User", currency: str) -> dict:
+    def get_balances(self: "User") -> dict:
         """
-        Returns the balance and available balance of a given currency.
+        Retrieve the user's asset balances and the
+        the corresponding amount held by open orders.
 
-        Requires the ``Query funds`` and ``Query open orders & trades`` permissions in the API key settings.
+        Requires the ``Query funds`` permission in the API key settings.
 
-        :param currency: The currency to get the balances from
-        :type currency: str
-        :return: Dictionary containing the ``currency`` (currency as string),
-         ``balance`` (inclding value in orders), and ``available_balance``
-         (amount that is not in orders)
+        :return: Dictionary containing the ``currency`` as keys, that
+            hold a dictinoary containing the ``balance`` key
+            holding the actual balance including the value in orders
+            and the ``hold_trade`` key that represents the amount
+            held in open orders.
         :rtype: dict
 
         .. code-block:: python
@@ -103,31 +105,63 @@ class User(KrakenBaseSpotAPI):
 
             >>> from kraken.spot import User
             >>> user = User(key="api-key", secret="secret-key")
-            >>> user.get_balances(currency="DOT")
+            >>> user.get_balances()
             {
-                'currency': 'DOT',
-                'balance': 32011.21197000,
-                'available_balance': 14999.06197000
+                'XXLM': {
+                    'balance': '0.00000000', 'hold_trade': '0.00000000'
+                },
+                'ZEUR': {
+                    'balance': '500.0000', 'hold_trade': '0.0000'
+                },
+                'XXBT': {
+                    'balance': '2.1031709100', 'hold_trade': '0.1401000000'
+                },
+                'KFEE': {
+                    'balance': '1407.73', 'hold_trade': '0.00'
+                },
+                ...
             }
         """
+        return self._request(  # type: ignore[return-value]
+            method="POST", uri="/private/BalanceEx"
+        )
 
+    def get_balance(self: "User", currency: str) -> dict:
+        """
+        Returns the balance and available balance of a given currency.
+
+        Requires the ``Query funds`` permission in the API key settings.
+
+        :param currency: The currency to get the balances from
+        :type currency: str
+        :return: Dictionary containing the ``currency`` (currency as string),
+            ``balance`` (inclding value in orders), and ``available_balance``
+            (amount that is not in orders)
+        :rtype: dict
+
+        .. code-block:: python
+            :linenos:
+            :caption: Spot User: Get balance
+
+            >>> from kraken.spot import User
+            >>> user = User(key="api-key", secret="secret-key")
+            >>> user.get_balance(currency="EUR")
+            {
+                'currency': 'ZEUR',
+                'balance': 6011.2119,
+                'available_balance': 4999.0619
+            }
+        """
         balance: Decimal = Decimal(0)
-        curr_opts: tuple = (currency, f"Z{currency}", f"X{currency}")
-        for symbol, value in self.get_account_balance().items():
-            if symbol in curr_opts:
-                balance = Decimal(value)
-                break
+        available_balance: Decimal = Decimal(0)
 
-        available_balance: Decimal = balance
-        for order in self.get_open_orders()["open"].values():
-            if currency in order["descr"]["pair"][0 : len(currency)]:
-                if order["descr"]["type"] == "sell":
-                    available_balance -= Decimal(order["vol"])
-            elif currency in order["descr"]["pair"][-len(currency) :]:
-                if order["descr"]["type"] == "buy":
-                    available_balance -= Decimal(order["vol"]) * Decimal(
-                        order["descr"]["price"]
-                    )
+        curr_opts: tuple = (currency, f"Z{currency}", f"X{currency}")
+        for symbol, data in self.get_balances().items():
+            if symbol in curr_opts:
+                currency = symbol
+                balance = Decimal(data["balance"])
+                available_balance = balance - Decimal(data["hold_trade"])
+                break
 
         return {
             "currency": currency,
@@ -138,7 +172,6 @@ class User(KrakenBaseSpotAPI):
     def get_trade_balance(self: "User", asset: Optional[str] = "ZUSD") -> dict:
         """
         Get the summary of all collateral balances.
-
 
         Requires the ``Query funds``, ``Query open orders & trades``,
         and ``Query closed orders & trades`` permissions in the API key settings.

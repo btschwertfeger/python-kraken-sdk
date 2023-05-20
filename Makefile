@@ -67,12 +67,13 @@ changelog:
 	docker run -it --rm \
 		-v $(PWD):/usr/local/src/your-app \
 		githubchangeloggenerator/github-changelog-generator \
-		-u btschwertfeger \
-		-p python-kraken-sdk \
-		-t $(GHTOKEN)  \
+		--user btschwertfeger \
+		--project python-kraken-sdk \
+		--token $(GHTOKEN)  \
 		--breaking-labels Breaking \
 		--enhancement-labels Feature \
-		--release-branch master
+		--release-branch master \
+		--pr-label "Uncategorized merged pull requests:"
 
 ## clean		Clean the workspace
 ##
