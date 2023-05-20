@@ -124,12 +124,12 @@ def main():
     print(user.get_open_orders())
     # ...
 
-    # ____MARKET_____
+    # ____MARKET____
     market = Market()
     print(market.get_ticker(pair="BTCUSD"))
     # ...
 
-    # ____TRADE__________________________
+    # ____TRADE_________________________
     trade = Trade(key=key, secret=secret)
     print(trade.create_order(
          ordertype="limit",
@@ -150,7 +150,7 @@ def main():
     print(funding.cancel_widthdraw(asset="DOT", refid="<some id>"))
     # ...
 
-    # ____STAKING______
+    # ____STAKING___________________________
     staking = Staking(key=key, secret=secret)
     print(staking.list_stakeable_assets())
     print(
@@ -199,7 +199,7 @@ async def main() -> None:
             # but using the WsClient's functions is more efficient
             # because the requests will be sent via the ws connection
 
-    # ___Public_Websocket_Feeds_______
+    # ___Public_Websocket_Feeds__
     bot = Bot() # only use the unauthenticated client if you don't need private feeds
     print(bot.public_sub_names) # list public subscription names
 
@@ -218,7 +218,7 @@ async def main() -> None:
     await bot.unsubscribe(subscription={ "name": "spread" }, pair=["DOT/EUR"])
     # ....
 
-    # ___Authenticated_Websocket_____
+    # ___Authenticated_Websocket_________
     # when using the authenticated client, you can also subscribe to public feeds
     auth_bot = Bot(key=key, secret=secret)
     print(auth_bot.private_sub_names) # list private subscription names
@@ -275,7 +275,7 @@ def main():
     print(user.get_subaccounts())
     # ...
 
-    # ____MARKET_____
+    # ____MARKET____
     market = Market()
     print(market.get_ohlc(tick_type="trade", symbol="PI_XBTUSD", resolution="5m"))
 
@@ -284,7 +284,7 @@ def main():
     print(priv_market.get_execution_events())
     # ...
 
-    # ____TRADE__________________________
+    # ____TRADE_________________________
     trade = Trade(key=key, secret=secret)
     print(trade.get_fills())
     print(trade.create_batch_order(
@@ -349,7 +349,7 @@ async def main():
     key = "futures-api-key"
     secret = "futures-secret-key"
 
-    # ___Custom_Trading_Bot__________
+    # ___Custom_Trading_Bot________
     class Bot(KrakenFuturesWSClient):
 
         async def on_message(self, event):
@@ -357,7 +357,7 @@ async def main():
             # >> apply your trading strategy here <<
             # you can also combine this with the Futures REST clients
 
-    # ___Public_Websocket_Feeds____:
+    # ___Public_Websocket_Feeds____
     bot = Bot()
     # print(bot.get_available_public_subscription_feeds())
 
