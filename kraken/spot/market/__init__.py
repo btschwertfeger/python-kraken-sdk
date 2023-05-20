@@ -141,7 +141,7 @@ class Market(KrakenBaseSpotAPI):
             :caption: Spot Market: Get information about tradeable asset pairs
 
             >>> from kraken.spot import Market
-            >>> Market().get_tradeable_asset_pair(pair="XBTUSD")
+            >>> Market().get_asset_pairs(pair="XBTUSD")
             {
                 'XXBTZUSD': {
                     'altname': 'XBTUSD',

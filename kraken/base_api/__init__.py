@@ -11,7 +11,6 @@ import hmac
 import json
 import time
 import urllib.parse
-from copy import deepcopy
 from typing import Any, Dict, List, Optional, Type, Union
 from urllib.parse import urljoin
 from uuid import uuid1

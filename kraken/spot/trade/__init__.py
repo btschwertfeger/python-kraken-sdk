@@ -9,6 +9,7 @@
 from typing import List, Optional, Union
 
 from ...base_api import KrakenBaseSpotAPI
+from ..utils import Utils
 
 
 class Trade(KrakenBaseSpotAPI):
@@ -58,10 +59,11 @@ class Trade(KrakenBaseSpotAPI):
         self: "Trade",
         ordertype: str,
         side: str,
-        volume: Union[str, int, float],
         pair: str,
+        volume: Union[str, int, float],
         price: Optional[Union[str, int, float]] = None,
         price2: Optional[Union[str, int, float]] = None,
+        truncate: bool = False,
         trigger: Optional[str] = None,
         leverage: Optional[str] = None,
         reduce_only: Optional[bool] = False,
@@ -75,7 +77,7 @@ class Trade(KrakenBaseSpotAPI):
         close_price: Optional[Union[str, int, float]] = None,
         close_price2: Optional[Union[str, int, float]] = None,
         deadline: Optional[str] = None,
-        validate: Optional[bool] = False,
+        validate: bool = False,
         userref: Optional[int] = None,
     ) -> dict:
         """
@@ -92,6 +94,8 @@ class Trade(KrakenBaseSpotAPI):
         :type ordertype: str
         :param side: ``buy`` or ``sell``
         :type side: str
+        :param pair: The asset to trade
+        :type pair: str
         :param volume: The volume of the position to create
         :type volume: str | int | float
         :param price: The limit price for ``limit`` orders and the trigger price for orders with
@@ -103,6 +107,10 @@ class Trade(KrakenBaseSpotAPI):
                 * Prefixed by # is the same as ``+`` and ``-`` but the sign is set automatically
                 * The percentate sign ``%`` can be used to define relative changes.
         :type price2: str | int | float, optional
+        :param truncate: If enabled: round the ``price`` and ``volume`` to Kraken's
+            maximum allowed decimal places. See https://support.kraken.com/hc/en-us/articles/4521313131540
+            fore more information about decimals.
+        :type truncate: bool, optional
         :param trigger: What triggers the position of ``stop-loss``, ``stop-loss-limit``, ``take-profit``, and
             ``take-profit-limit`` orders. Will also be used for associated conditional close orders.
             Kraken will use ``last`` if nothing is specified.
@@ -159,7 +167,7 @@ class Trade(KrakenBaseSpotAPI):
             ...     volume="0.0001"
             ... )
             {
-                'txid': 'TNGMNU-XQSRA-LKCWOK',
+                'txid': ['TNGMNU-XQSRA-LKCWOK'],
                 'descr': {
                     'order': 'buy 4.00000000 XBTUSD @ limit 23000.0'
                 }
@@ -182,7 +190,7 @@ class Trade(KrakenBaseSpotAPI):
             ...     oflags=["post", "fcib"]
             ... )
             {
-                'txid': 'TPPI2H-CUZZ2-EQR2IE',
+                'txid': ['TPPI2H-CUZZ2-EQR2IE'],
                 'descr': {
                     'order': 'buy 4.0000 XBTUSD @ limit 23000.0'
                 }
@@ -202,7 +210,7 @@ class Trade(KrakenBaseSpotAPI):
             ...     side="buy",
             ... )
             {
-                'txid': 'THNUL1-8ZAS5-EEF3A8',
+                'txid': ['THNUL1-8ZAS5-EEF3A8'],
                 'descr': {
                     'order': 'buy 20.00000000 XBTUSD @ stop loss 22000.0'
                 }
@@ -279,21 +287,25 @@ class Trade(KrakenBaseSpotAPI):
             }
         """
         params: dict = {
-            "ordertype": str(ordertype),
-            "type": str(side),
-            "volume": str(volume),
-            "pair": str(pair),
+            "ordertype": ordertype,
+            "type": side,
+            "pair": pair,
+            "volume": volume
+            if not truncate
+            else Utils.truncate(amount=volume, amount_type="volume", pair=pair),
             "stp_type": stptype,
             "starttm": starttm,
             "validate": validate,
             "reduce_only": reduce_only,
         }
+
         trigger_ordertypes: tuple = (
             "stop-loss",
             "stop-loss-limit",
             "take-profit-limit",
             "take-profit-limit",
         )
+
         if trigger is not None:
             if ordertype not in trigger_ordertypes:
                 raise ValueError(f"Cannot use trigger on ordertype {ordertype}!")
@@ -303,8 +315,13 @@ class Trade(KrakenBaseSpotAPI):
             params["timeinforce"] = timeinforce
         if expiretm is not None:
             params["expiretm"] = str(expiretm)
+
         if price is not None:
-            params["price"] = str(price)
+            params["price"] = (
+                price
+                if not truncate
+                else Utils.truncate(amount=price, amount_type="price", pair=pair)
+            )
 
         if ordertype in ("stop-loss-limit", "take-profit-limit"):
             if price2 is None:
