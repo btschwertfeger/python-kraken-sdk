@@ -8,7 +8,7 @@
 from functools import lru_cache
 from typing import List, Optional, Union
 
-from ...base_api import KrakenBaseFuturesAPI
+from ...base_api import KrakenBaseFuturesAPI, defined
 
 
 class Market(KrakenBaseFuturesAPI):
@@ -47,10 +47,10 @@ class Market(KrakenBaseFuturesAPI):
 
     def __init__(
         self: "Market",
-        key: Optional[str] = "",
-        secret: Optional[str] = "",
-        url: Optional[str] = "",
-        sandbox: Optional[bool] = False,
+        key: str = "",
+        secret: str = "",
+        url: str = "",
+        sandbox: bool = False,
     ) -> None:
         super().__init__(key=key, secret=secret, url=url, sandbox=sandbox)
 
@@ -115,9 +115,9 @@ class Market(KrakenBaseFuturesAPI):
             raise ValueError(f"resolution must be in {resolutions}")
 
         params: dict = {}
-        if from_ is not None:
+        if defined(from_):
             params["from"] = from_
-        if to is not None:
+        if defined(to):
             params["to"] = to
         return self._request(  # type: ignore[return-value]
             method="GET",
@@ -133,6 +133,8 @@ class Market(KrakenBaseFuturesAPI):
         the :func:`kraken.futures.Market.get_ohlc` endpoint.
 
         - https://docs.futures.kraken.com/#http-api-charts-ohlc-get-tick-types
+
+        This function uses caching. Run ``get_tick_types.cache_clear()`` to clear.
 
         :return: List of available tick types
         :rtype: List[str]
@@ -153,6 +155,8 @@ class Market(KrakenBaseFuturesAPI):
         Retrieve a list containing the tradeable assets on the futures market.
 
         - https://docs.futures.kraken.com/#http-api-charts-ohlc-get-tradeable-products
+
+        This function uses caching. Run ``get_tradeable_products.cache_clear()`` to clear.
 
         :param tick_type: The kind of data, based on ``mark``, ``spot``, or ``trade``
         :type tick_type: str
@@ -177,6 +181,8 @@ class Market(KrakenBaseFuturesAPI):
         Retrieve the list of available resolutions for a specific asset.
 
         - https://docs.futures.kraken.com/#http-api-charts-ohlc-get-resolutions
+
+        This function uses caching. Run ``get_resolutions.cache_clear()`` to clear.
 
         :param tick_type: The kind of data, based on ``mark``, ``spot``, or ``trade``
         :type tick_type: str
@@ -203,7 +209,10 @@ class Market(KrakenBaseFuturesAPI):
         Retrieve information about the current fees
 
         - https://docs.futures.kraken.com/#http-api-trading-v3-api-fee-schedules-get-fee-schedules
+
         - https://support.kraken.com/hc/en-us/articles/360049269572-Fee-Schedules
+
+        This function uses caching. Run ``get_fee_schedules.cache_clear()`` to clear.
 
         :return: Dictionary containing information about the fees for wide range of tradeable assets
         :rtype: dict
@@ -304,7 +313,7 @@ class Market(KrakenBaseFuturesAPI):
             }
         """
         params: dict = {}
-        if symbol is not None:
+        if defined(symbol):
             params["symbol"] = symbol
 
         return self._request(  # type: ignore[return-value]
@@ -526,9 +535,9 @@ class Market(KrakenBaseFuturesAPI):
                 ]
         """
         params: dict = {}
-        if symbol is not None:
+        if defined(symbol):
             params["symbol"] = symbol
-        if lastTime is not None:
+        if defined(lastTime):
             params["lastTime"] = lastTime
         params.update(kwargs)
         return self._request(  # type: ignore[return-value]
@@ -637,7 +646,7 @@ class Market(KrakenBaseFuturesAPI):
             {'result': 'success', 'serverTime': '2023-04-04T05:59:49.576Z'}
         """
         params: dict = {"symbol": symbol}
-        if maxLeverage is not None:
+        if defined(maxLeverage):
             params["maxLeverage"] = maxLeverage
 
         return self._request(  # type: ignore[return-value]
@@ -736,15 +745,15 @@ class Market(KrakenBaseFuturesAPI):
         :type auth: bool
         """
         params: dict = {}
-        if before is not None:
+        if defined(before):
             params["before"] = before
-        if continuation_token is not None:
+        if defined(continuation_token):
             params["continuation_token"] = continuation_token
-        if since is not None:
+        if defined(since):
             params["since"] = since
-        if sort is not None:
+        if defined(sort):
             params["sort"] = sort
-        if tradeable is not None:
+        if defined(tradeable):
             params["tradeable"] = tradeable
         params.update(kwargs)
         return self._request(  # type: ignore[return-value]

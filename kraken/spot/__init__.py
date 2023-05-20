@@ -11,5 +11,4 @@ from kraken.spot.market import Market
 from kraken.spot.staking import Staking
 from kraken.spot.trade import Trade
 from kraken.spot.user import User
-from kraken.spot.utils import Utils
 from kraken.spot.websocket import KrakenSpotWSClient

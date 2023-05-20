@@ -38,18 +38,18 @@ def test_get_assets(spot_market: Market) -> None:
         {},
         {"assets": "USD"},
         {"assets": ["USD"]},
-        {"assets": ["XBT", "USD"]},
+        {"assets": ["XBT,USD"]},
         {"assets": ["XBT", "USD"], "aclass": "currency"},
     ):
         assert is_not_error(spot_market.get_assets(**params))
-        sleep(1.5)
+    sleep(3)
 
 
 @pytest.mark.spot
 @pytest.mark.spot_market
 def test_get_asset_pairs(spot_market: Market) -> None:
     """
-    Checks the ``get_tradable_asset_pair`` endpoint by performing multiple
+    Checks the ``get_asset_pairs`` endpoint by performing multiple
     requests with different paramaters and validating that the response
     does not contain the error key.
     """
