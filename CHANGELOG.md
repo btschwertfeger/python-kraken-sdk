@@ -14,6 +14,7 @@
 
 - `kraken.spot.Trade.create_order`: Ability to use floats as trade amounts or prices [\#94](https://github.com/btschwertfeger/python-kraken-sdk/issues/94)
 - /public/AssetPairs would be nice. [\#90](https://github.com/btschwertfeger/python-kraken-sdk/issues/90)
+- Improve caching [\#102](https://github.com/btschwertfeger/python-kraken-sdk/pull/102) ([btschwertfeger](https://github.com/btschwertfeger))
 - Add the `truncate` parameter to `kraken.spot.Trade.create_order` [\#95](https://github.com/btschwertfeger/python-kraken-sdk/pull/95) ([btschwertfeger](https://github.com/btschwertfeger))
 
 **Fixed bugs:**

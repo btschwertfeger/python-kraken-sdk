@@ -83,7 +83,7 @@ class Market(KrakenBaseSpotAPI):
 
             >>> from kraken.spot import Market
             >>> market = Market()
-            >>> market.get_assets(asset="DOT")
+            >>> market.get_assets(assets="DOT")
             {
                 'DOT': {
                     'aclass': 'currency',

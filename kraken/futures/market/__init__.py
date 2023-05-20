@@ -333,6 +333,7 @@ class Market(KrakenBaseFuturesAPI):
 
         :return: The current tickers
         :rtype: dict
+
         .. code-block:: python
             :linenos:
             :caption: Futures Market: Get the available tickers
