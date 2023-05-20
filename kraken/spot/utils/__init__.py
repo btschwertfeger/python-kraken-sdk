@@ -18,8 +18,8 @@ class Utils:
     The Utils class provides utility functions for the Spot related clients.
     """
 
-    @lru_cache()
     @staticmethod
+    @lru_cache()
     def truncate(
         amount: Union[Decimal, float, int, str], amount_type: str, pair: str
     ) -> str:
