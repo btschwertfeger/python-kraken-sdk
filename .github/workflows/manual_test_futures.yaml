@@ -22,7 +22,7 @@
 #       funds during testing! The demo account requires full permissions.
 #
 
-name: Test Futures Manual
+name: PR Manual Test Futures
 
 on:
   workflow_dispatch:

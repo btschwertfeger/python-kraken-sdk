@@ -30,7 +30,7 @@
 #       testing.
 #
 
-name: Test Spot Manual
+name: PR Manual Test Spot
 
 on:
   workflow_dispatch:
