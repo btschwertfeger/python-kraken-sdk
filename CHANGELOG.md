@@ -11,18 +11,21 @@
 
 **Implemented enhancements:**
 
+- `kraken.spot.Trade.create_order`: Ability to use floats as trade amounts or prices [\#94](https://github.com/btschwertfeger/python-kraken-sdk/issues/94)
 - /public/AssetPairs would be nice. [\#90](https://github.com/btschwertfeger/python-kraken-sdk/issues/90)
+- Add the `truncate` parameter to `kraken.spot.Trade.create_order` [\#95](https://github.com/btschwertfeger/python-kraken-sdk/pull/95) ([btschwertfeger](https://github.com/btschwertfeger))
 
 **Fixed bugs:**
 
-- The `cancel_order_batch` endpoint in Spot trading does not work. {'error': \['EAPI:Bad request'\]} [\#65](https://github.com/btschwertfeger/python-kraken-sdk/issues/65)
+- `kraken.spot.Trade.cancel_order_batch` endpoint in Spot trading does not work. `{'error': ['EAPI:Bad request']}` [\#65](https://github.com/btschwertfeger/python-kraken-sdk/issues/65)
 
 **Closed issues:**
 
-- Create CONTRIBUTING.md [\#91](https://github.com/btschwertfeger/python-kraken-sdk/issues/91)
+- `kraken.spot.Trade.create_order`: documentatoin for txid outdated. [\#96](https://github.com/btschwertfeger/python-kraken-sdk/issues/96)
+- Create `CONTRIBUTING.md` [\#91](https://github.com/btschwertfeger/python-kraken-sdk/issues/91)
 - Extend the typing - using mypy [\#84](https://github.com/btschwertfeger/python-kraken-sdk/issues/84)
 
-**Merged pull requests:**
+Uncategorized merged pull requests:
 
 - Create a contribution guideline [\#92](https://github.com/btschwertfeger/python-kraken-sdk/pull/92) ([btschwertfeger](https://github.com/btschwertfeger))
 
@@ -53,7 +56,7 @@
 - Fix and extend release workflow [\#68](https://github.com/btschwertfeger/python-kraken-sdk/pull/68) ([btschwertfeger](https://github.com/btschwertfeger))
 - Fixed bug where `spot.user.get_balances` floats to periodic X.9999... [\#78](https://github.com/btschwertfeger/python-kraken-sdk/pull/78) ([btschwertfeger](https://github.com/btschwertfeger))
 
-**Merged pull requests:**
+Uncategorized merged pull requests:
 
 - Split the unit tests into individual files [\#75](https://github.com/btschwertfeger/python-kraken-sdk/pull/75) ([btschwertfeger](https://github.com/btschwertfeger))
 - Removed matrix from CodeQL job [\#74](https://github.com/btschwertfeger/python-kraken-sdk/pull/74) ([btschwertfeger](https://github.com/btschwertfeger))
@@ -92,7 +95,7 @@
 - Add a workflow or jobs that run all tests before a merge is done [\#54](https://github.com/btschwertfeger/python-kraken-sdk/issues/54)
 - Move from setup.py to pyroject.toml [\#45](https://github.com/btschwertfeger/python-kraken-sdk/issues/45)
 
-**Merged pull requests:**
+Uncategorized merged pull requests:
 
 - Prepare Release v1.1.0 [\#61](https://github.com/btschwertfeger/python-kraken-sdk/pull/61) ([btschwertfeger](https://github.com/btschwertfeger))
 - 57 remove the unnecessary `client` when importing clients [\#59](https://github.com/btschwertfeger/python-kraken-sdk/pull/59) ([btschwertfeger](https://github.com/btschwertfeger))
@@ -122,7 +125,7 @@
 
 - Missing package \(dotenv\) in requirements.txt [\#33](https://github.com/btschwertfeger/python-kraken-sdk/issues/33)
 
-**Merged pull requests:**
+Uncategorized merged pull requests:
 
 - examples now use os.getenv instead of python-dotenv [\#34](https://github.com/btschwertfeger/python-kraken-sdk/pull/34) ([btschwertfeger](https://github.com/btschwertfeger))
 - Release v1.0.1 [\#44](https://github.com/btschwertfeger/python-kraken-sdk/pull/44) ([btschwertfeger](https://github.com/btschwertfeger))
@@ -135,7 +138,7 @@
 
 - Extended CI/CD [\#31](https://github.com/btschwertfeger/python-kraken-sdk/pull/31) ([btschwertfeger](https://github.com/btschwertfeger))
 
-**Merged pull requests:**
+Uncategorized merged pull requests:
 
 - Extend unittests [\#32](https://github.com/btschwertfeger/python-kraken-sdk/pull/32) ([btschwertfeger](https://github.com/btschwertfeger))
 - Add unit tests \#2 [\#30](https://github.com/btschwertfeger/python-kraken-sdk/pull/30) ([btschwertfeger](https://github.com/btschwertfeger))
@@ -144,7 +147,7 @@
 
 [Full Changelog](https://github.com/btschwertfeger/python-kraken-sdk/compare/v0.7.7...v0.8.0)
 
-**Merged pull requests:**
+Uncategorized merged pull requests:
 
 - Add unit tests [\#29](https://github.com/btschwertfeger/python-kraken-sdk/pull/29) ([btschwertfeger](https://github.com/btschwertfeger))
 
@@ -168,7 +171,7 @@
 
 [Full Changelog](https://github.com/btschwertfeger/python-kraken-sdk/compare/v0.7.2...v0.7.3)
 
-**Merged pull requests:**
+Uncategorized merged pull requests:
 
 - Add exceptions [\#28](https://github.com/btschwertfeger/python-kraken-sdk/pull/28) ([btschwertfeger](https://github.com/btschwertfeger))
 - Create CODE_OF_CONDUCT.md [\#27](https://github.com/btschwertfeger/python-kraken-sdk/pull/27) ([btschwertfeger](https://github.com/btschwertfeger))
@@ -185,7 +188,7 @@
 
 - add futures websocket endpoints [\#21](https://github.com/btschwertfeger/python-kraken-sdk/issues/21)
 
-**Merged pull requests:**
+Uncategorized merged pull requests:
 
 - Optimized websocket clients [\#26](https://github.com/btschwertfeger/python-kraken-sdk/pull/26) ([btschwertfeger](https://github.com/btschwertfeger))
 
@@ -197,7 +200,7 @@
 
 - add futures trade endpoints [\#20](https://github.com/btschwertfeger/python-kraken-sdk/issues/20)
 
-**Merged pull requests:**
+Uncategorized merged pull requests:
 
 - Add testing [\#25](https://github.com/btschwertfeger/python-kraken-sdk/pull/25) ([btschwertfeger](https://github.com/btschwertfeger))
 - implemented Futures WS Client; adjust spot ws client [\#24](https://github.com/btschwertfeger/python-kraken-sdk/pull/24) ([btschwertfeger](https://github.com/btschwertfeger))
@@ -206,7 +209,7 @@
 
 [Full Changelog](https://github.com/btschwertfeger/python-kraken-sdk/compare/v0.5.4.2...v0.6.1)
 
-**Merged pull requests:**
+Uncategorized merged pull requests:
 
 - Add futures clients [\#23](https://github.com/btschwertfeger/python-kraken-sdk/pull/23) ([btschwertfeger](https://github.com/btschwertfeger))
 
@@ -226,7 +229,7 @@
 
 - Add futures market endpoints [\#19](https://github.com/btschwertfeger/python-kraken-sdk/issues/19)
 
-**Merged pull requests:**
+Uncategorized merged pull requests:
 
 - 19 add futures market endpoints [\#22](https://github.com/btschwertfeger/python-kraken-sdk/pull/22) ([btschwertfeger](https://github.com/btschwertfeger))
 
@@ -252,7 +255,7 @@
 - Add setup files for publishing package [\#17](https://github.com/btschwertfeger/python-kraken-sdk/issues/17)
 - Create README [\#14](https://github.com/btschwertfeger/python-kraken-sdk/issues/14)
 
-**Merged pull requests:**
+Uncategorized merged pull requests:
 
 - 17 add setup files for publishing package [\#18](https://github.com/btschwertfeger/python-kraken-sdk/pull/18) ([btschwertfeger](https://github.com/btschwertfeger))
 - added README.md now ... [\#16](https://github.com/btschwertfeger/python-kraken-sdk/pull/16) ([btschwertfeger](https://github.com/btschwertfeger))
