@@ -46,7 +46,7 @@ class ConnectSpotWebsocket:
         client: KrakenSpotWSClient,
         endpoint: str,
         callback: Any,
-        is_auth: Optional[bool] = False,
+        is_auth: bool = False,
     ):
         self.__client: KrakenSpotWSClient = client
         self.__ws_endpoint: str = endpoint

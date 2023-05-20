@@ -6,6 +6,7 @@
 
 """Module that implements the Kraken Spot market client"""
 
+from functools import lru_cache
 from typing import List, Optional, Union
 
 from ...base_api import KrakenBaseSpotAPI
@@ -44,15 +45,61 @@ class Market(KrakenBaseSpotAPI):
 
     def __init__(
         self: "Market",
-        key: Optional[str] = "",
-        secret: Optional[str] = "",
-        url: Optional[str] = "",
+        key: str = "",
+        secret: str = "",
+        url: str = "",
     ) -> None:
         super().__init__(key=key, secret=secret, url=url)
 
     def __enter__(self: "Market") -> "Market":
         super().__enter__()
         return self
+
+    @lru_cache()
+    def get_asset(
+        self: "Market",
+        asset: str,
+        aclass: Optional[str] = None,
+    ) -> dict:
+        """
+        Get information about a specific asset. Multiple assets
+        can be requested as follows: ``get_asset(asset="BTC,EUR")``.
+
+        - https://docs.kraken.com/rest/#operation/getAssetInfo
+
+        This function uses caching. Run ``get_asset.cache_clear()`` to clear.
+
+        :param asset: The currency pair(s) of interest
+        :type asset: str
+        :param aclass: Filter by asset class
+        :type aclass: str, optional
+        :return: Information about the requested asset
+        :rtype: dict
+
+        .. code-block:: python
+            :linenos:
+            :caption: Spot Market: Get information about a specific asset
+
+            >>> from kraken.spot import Market
+            >>> market = Market()
+            >>> market.get_assets(asset="DOT")
+            {
+                'DOT': {
+                    'aclass': 'currency',
+                    'altname': 'DOT',
+                    'decimals': 10,
+                    'display_decimals': 8,
+                    'collateral_value': 0.9,
+                    'status': 'enabled'
+                }
+            }
+        """
+        params: dict = {"asset": asset}
+        if aclass is not None:
+            params["aclass"] = aclass
+        return self._request(  # type: ignore[return-value]
+            method="GET", uri="/public/Assets", params=params, auth=False
+        )
 
     def get_assets(
         self: "Market",
@@ -118,13 +165,81 @@ class Market(KrakenBaseSpotAPI):
             method="GET", uri="/public/Assets", params=params, auth=False
         )
 
+    @lru_cache()
+    def get_asset_pair(self: "Market", pair: str, info: Optional[str] = None) -> dict:
+        """
+        Get information about a single asset/currency pair. Multiple currency pairs
+        can be requested as follows: ``get_asset_pair(asset="BTCUSD,BTCEUR")``.
+
+        - https://docs.kraken.com/rest/#operation/getTradableAssetPairs
+
+        This function uses caching. Run ``get_asset_pair.cache_clear()`` to to clear.
+
+        :param asset: The asset of interest
+        :type asset: str
+        :param info: Filter by info, can be one of: ``info`` (all info), ``leverage``
+            (leverage info), ``fees`` (fee info), and ``margin`` (margin info)
+        :type info: str, optional
+        :return: Information about the asset pair
+        :rtype: dict
+
+        .. code-block:: python
+            :linenos:
+            :caption: Spot Market: Get information about a specific currency pair
+
+            >>> from kraken.spot import Market
+            >>> Market().get_asset_pair(pair="XBTUSD")
+            {
+                'XXBTZUSD': {
+                    'altname': 'XBTUSD',
+                    'wsname': 'XBT/USD',
+                    'aclass_base': 'currency',
+                    'base': 'XXBT',
+                    'aclass_quote': 'currency',
+                    'quote': 'ZUSD',
+                    'lot': 'unit',
+                    'cost_decimals': 5,
+                    'pair_decimals': 1,
+                    'lot_decimals': 8,
+                    'lot_multiplier': 1,
+                    'leverage_buy': [2, 3, 4, 5],
+                    'leverage_sell': [2, 3, 4, 5],
+                    'fees': [
+                        [0, 0.26], [50000, 0.24], [100000, 0.22],
+                        [250000, 0.2], [500000, 0.18], [1000000, 0.16],
+                        [2500000, 0.14], [5000000, 0.12], [10000000, 0.1]
+                    ],
+                    'fees_maker': [
+                        [0, 0.16], [50000, 0.14], [100000, 0.12],
+                        [250000, 0.1], [500000, 0.08], [1000000, 0.06],
+                        [2500000, 0.04], [5000000, 0.02], [10000000, 0.0]
+                    ],
+                    'fee_volume_currency': 'ZUSD',
+                    'margin_call': 80,
+                    'margin_stop': 40,
+                    'ordermin': '0.0001',
+                    'costmin': '0.5',
+                    'tick_size': '0.1',
+                    'status': 'online',
+                    'long_position_limit': 270,
+                    'short_position_limit': 180
+                }
+            }
+        """
+        params: dict = {"pair": pair}
+        if info is not None:
+            params["info"] = info
+        return self._request(  # type: ignore[return-value]
+            method="GET", uri="/public/AssetPairs", params=params, auth=False
+        )
+
     def get_asset_pairs(
         self: "Market",
         pair: Optional[Union[str, List[str]]] = None,
         info: Optional[str] = None,
     ) -> dict:
         """
-        Get information about the tradable asset pairs. Can be filtered by ``pair``.
+        Get information about the multiplle tradable asset pairs. Can be filtered by ``pair``.
 
         - https://docs.kraken.com/rest/#operation/getTradableAssetPairs
 

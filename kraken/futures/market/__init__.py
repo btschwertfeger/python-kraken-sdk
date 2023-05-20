@@ -47,10 +47,10 @@ class Market(KrakenBaseFuturesAPI):
 
     def __init__(
         self: "Market",
-        key: Optional[str] = "",
-        secret: Optional[str] = "",
-        url: Optional[str] = "",
-        sandbox: Optional[bool] = False,
+        key: str = "",
+        secret: str = "",
+        url: str = "",
+        sandbox: bool = False,
     ) -> None:
         super().__init__(key=key, secret=secret, url=url, sandbox=sandbox)
 
@@ -134,6 +134,8 @@ class Market(KrakenBaseFuturesAPI):
 
         - https://docs.futures.kraken.com/#http-api-charts-ohlc-get-tick-types
 
+        This function uses caching. Run ``get_tick_types.cache_clear()`` to clear.
+
         :return: List of available tick types
         :rtype: List[str]
 
@@ -153,6 +155,8 @@ class Market(KrakenBaseFuturesAPI):
         Retrieve a list containing the tradeable assets on the futures market.
 
         - https://docs.futures.kraken.com/#http-api-charts-ohlc-get-tradeable-products
+
+        This function uses caching. Run ``get_tradeable_products.cache_clear()`` to clear.
 
         :param tick_type: The kind of data, based on ``mark``, ``spot``, or ``trade``
         :type tick_type: str
@@ -177,6 +181,8 @@ class Market(KrakenBaseFuturesAPI):
         Retrieve the list of available resolutions for a specific asset.
 
         - https://docs.futures.kraken.com/#http-api-charts-ohlc-get-resolutions
+
+        This function uses caching. Run ``get_resolutions.cache_clear()`` to clear.
 
         :param tick_type: The kind of data, based on ``mark``, ``spot``, or ``trade``
         :type tick_type: str
@@ -203,7 +209,10 @@ class Market(KrakenBaseFuturesAPI):
         Retrieve information about the current fees
 
         - https://docs.futures.kraken.com/#http-api-trading-v3-api-fee-schedules-get-fee-schedules
+
         - https://support.kraken.com/hc/en-us/articles/360049269572-Fee-Schedules
+
+        This function uses caching. Run ``get_fee_schedules.cache_clear()`` to clear.
 
         :return: Dictionary containing information about the fees for wide range of tradeable assets
         :rtype: dict

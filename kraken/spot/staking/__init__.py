@@ -44,9 +44,9 @@ class Staking(KrakenBaseSpotAPI):
 
     def __init__(
         self,
-        key: Optional[str] = "",
-        secret: Optional[str] = "",
-        url: Optional[str] = "",
+        key: str = "",
+        secret: str = "",
+        url: str = "",
     ) -> None:
         super().__init__(key=key, secret=secret, url=url)
 

@@ -46,10 +46,10 @@ class Trade(KrakenBaseFuturesAPI):
 
     def __init__(
         self: "Trade",
-        key: Optional[str] = "",
-        secret: Optional[str] = "",
-        url: Optional[str] = "",
-        sandbox: Optional[bool] = False,
+        key: str = "",
+        secret: str = "",
+        url: str = "",
+        sandbox: bool = False,
     ) -> None:
         super().__init__(key=key, secret=secret, url=url, sandbox=sandbox)
 

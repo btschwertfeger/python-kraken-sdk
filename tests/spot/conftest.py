@@ -27,6 +27,11 @@ def spot_auth_market() -> Market:
 
 
 @pytest.fixture
+def spot_trade() -> Trade:
+    return Trade()
+
+
+@pytest.fixture
 def spot_auth_trade() -> Trade:
     return Trade(key=os.getenv("SPOT_API_KEY"), secret=os.getenv("SPOT_SECRET_KEY"))
 
