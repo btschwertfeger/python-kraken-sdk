@@ -145,11 +145,11 @@ class User(KrakenBaseSpotAPI):
 
             >>> from kraken.spot import User
             >>> user = User(key="api-key", secret="secret-key")
-            >>> user.get_balance(currency="DOT")
+            >>> user.get_balance(currency="EUR")
             {
-                'currency': 'DOT',
-                'balance': 32011.21197000,
-                'available_balance': 14999.06197000
+                'currency': 'ZEUR',
+                'balance': 6011.2119,
+                'available_balance': 4999.0619
             }
         """
         balance: Decimal = Decimal(0)
