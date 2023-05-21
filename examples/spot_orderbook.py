@@ -47,7 +47,7 @@ class Orderbook(KrakenSpotWSClient):
     """
     The Orderbook class inherts the subscribe function from the
     KrakenSpotWSClient class. This function is used to subscribe to the
-    order book feed will initially send the current orderbook
+    order book feed will initially send the current order book
     and then send updates when anything changes.
     """
 
@@ -71,7 +71,7 @@ class Orderbook(KrakenSpotWSClient):
             return
 
         if not isinstance(msg, list):
-            # The orderbook feed only sends messages in type list,
+            # The order book feed only sends messages with type list,
             # so we can ignore anything else.
             return
 
@@ -82,7 +82,7 @@ class Orderbook(KrakenSpotWSClient):
         if "as" in msg[1]:
             # This will be triggered initially when the
             # first message comes in that provides the initial snapshot
-            # of the current orderbook.
+            # of the current order book.
             self.__update_book(pair=pair, side="ask", snapshot=msg[1]["as"])
             self.__update_book(pair=pair, side="bid", snapshot=msg[1]["bs"])
         else:
@@ -106,7 +106,7 @@ class Orderbook(KrakenSpotWSClient):
 
     def __update_book(self: "Orderbook", pair: str, side: str, snapshot: list) -> None:
         """
-        This functions updates the local orderbook based on the
+        This functions updates the local order book based on the
         information provided in ``data`` and assigns/update the
         asks and bids in book.
 
@@ -172,7 +172,7 @@ class Orderbook(KrakenSpotWSClient):
 async def main() -> None:
     """
     This is the actual main function where we define the depth of the
-    orderbook and also a pair. We could subscribe to multiple pairs,
+    order book and also a pair. We could subscribe to multiple pairs,
     but for simplicity only XBT/USD is coosen.
 
     After defined some constants, the order book class can be instantiated,
