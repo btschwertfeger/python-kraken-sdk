@@ -40,6 +40,7 @@ from __future__ import annotations
 
 import asyncio
 import binascii
+from itertools import islice
 from typing import Dict, List, Optional, Union
 
 from kraken.spot import KrakenSpotWSClient
@@ -79,7 +80,7 @@ class Orderbook(KrakenSpotWSClient):
 
         pair: str = msg[-1]
         if pair not in self.__book:
-            self.__book[pair] = {"bid": {}, "ask": {}, "valid": False}
+            self.__book[pair] = {"bid": {}, "ask": {}, "valid": True}
 
         if "as" in msg[1]:
             # This will be triggered initially when the
@@ -168,13 +169,23 @@ class Orderbook(KrakenSpotWSClient):
         :param checksum: The checksum sent by the Kraken API
         :type checksum: str
         """
+        book: dict = self.__book[pair]
+
+        # sort ask (desc) and bid (asc)
+        ask: List[dict] = sorted(book["ask"].items(), key=self.get_first)  # type: ignore[arg-type]
+        bid: List[dict] = sorted(
+            book["bid"].items(),
+            key=self.get_first,  # type: ignore[arg-type]
+            reverse=True,
+        )
+
         local_checksum: str = ""
-        for price_level, volume in self.__book[pair]["ask"].items():
+        for price_level, volume in islice(ask, 10):
             local_checksum += price_level.replace(".", "").lstrip("0") + volume.replace(
                 ".", ""
             ).lstrip("0")
 
-        for price_level, volume in self.__book[pair]["bid"].items():
+        for price_level, volume in islice(bid, 10):
             local_checksum += price_level.replace(".", "").lstrip("0") + volume.replace(
                 ".", ""
             ).lstrip("0")
@@ -215,7 +226,7 @@ async def main() -> None:
     loop we print out the order book on the console - but this is the place
     where some could implement or call an order book depending strategy.
     """
-    DEPTH: int = 10
+    DEPTH: int = 10  # we can also change the depth to 100
     PAIR: str = "XBT/USD"
 
     orderbook: Orderbook = Orderbook(depth=DEPTH)
@@ -229,12 +240,12 @@ async def main() -> None:
         if not book or len(book["bid"]) < DEPTH or len(book["ask"]) < DEPTH:
             pass
         else:
-            bid: List[str] = sorted(
+            bid: List[dict] = sorted(
                 book["bid"].items(),
                 key=orderbook.get_first,  # type: ignore[arg-type]
                 reverse=True,
             )
-            ask: List[str] = sorted(book["ask"].items(), key=orderbook.get_first)  # type: ignore[arg-type]
+            ask: List[dict] = sorted(book["ask"].items(), key=orderbook.get_first)  # type: ignore[arg-type]
             print("Bid\t\tVolume\t\tAsk\t\tVolume")
             for level in range(DEPTH):
                 print(
