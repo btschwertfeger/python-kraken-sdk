@@ -14,9 +14,10 @@ python-kraken-sdk is installed.
     python3 -m pip install python-kraken-sdk
 
 The output when running this snippet looks like the following table and
-updates the book every 0.1 seconds.
+updates the book as soon as Kraken sent any order book update. The
+stdout refreshes every 0.1 seconds.
 
-Bid             Volume          Ask             Volume
+Bid         Volume               Ask         Volume
 27076.00000 (8.28552127)         27076.10000 (2.85897056)
 27075.90000 (3.75748052)         27077.30000 (0.57243521)
 27074.40000 (0.57249652)         27080.80000 (0.00100000)
@@ -245,7 +246,7 @@ async def main() -> None:
                 reverse=True,
             )
             ask: List[dict] = sorted(book["ask"].items(), key=orderbook.get_first)  # type: ignore[arg-type]
-            print("Bid\t\tVolume\t\tAsk\t\tVolume")
+            print("Bid         Volume\t\t Ask         Volume")
             for level in range(DEPTH):
                 print(
                     f"{bid[level][0]} ({bid[level][1]}) \t {ask[level][0]} ({ask[level][1]})"
