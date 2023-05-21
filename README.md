@@ -218,7 +218,7 @@ async def main() -> None:
     await bot.unsubscribe(subscription={ "name": "ticker" }, pair=["XBT/EUR","DOT/EUR"])
     await bot.unsubscribe(subscription={ "name": "spread" }, pair=["XBT/EUR"])
     await bot.unsubscribe(subscription={ "name": "spread" }, pair=["DOT/EUR"])
-    # ....
+    # ...
 
     # ___Authenticated_Websocket_________
     # when using the authenticated client, you can also subscribe to public feeds
@@ -238,7 +238,7 @@ if __name__ == "__main__":
     try:
         asyncio.run(main())
     except KeyboardInterrupt:
-        # do some exception hanlding...
+        # do some exception handling ...
         pass
 ```
 
@@ -392,7 +392,7 @@ if __name__ == "__main__":
     try:
         asyncio.run(main())
     except KeyboardInterrupt:
-        # do some exception handling...
+        # do some exception handling ...
         pass
 ```
 

@@ -40,7 +40,6 @@ from __future__ import annotations
 
 import asyncio
 import binascii
-from itertools import islice
 from typing import Dict, List, Optional, Union
 
 from kraken.spot import KrakenSpotWSClient
@@ -172,20 +171,20 @@ class Orderbook(KrakenSpotWSClient):
         book: dict = self.__book[pair]
 
         # sort ask (desc) and bid (asc)
-        ask: List[dict] = sorted(book["ask"].items(), key=self.get_first)  # type: ignore[arg-type]
-        bid: List[dict] = sorted(
+        ask: List[tuple] = sorted(book["ask"].items(), key=self.get_first)  # type: ignore[arg-type]
+        bid: List[tuple] = sorted(
             book["bid"].items(),
             key=self.get_first,  # type: ignore[arg-type]
             reverse=True,
         )
 
         local_checksum: str = ""
-        for price_level, volume in islice(ask, 10):
+        for price_level, volume in ask[:10]:
             local_checksum += price_level.replace(".", "").lstrip("0") + volume.replace(
                 ".", ""
             ).lstrip("0")
 
-        for price_level, volume in islice(bid, 10):
+        for price_level, volume in bid[:10]:
             local_checksum += price_level.replace(".", "").lstrip("0") + volume.replace(
                 ".", ""
             ).lstrip("0")
@@ -196,14 +195,14 @@ class Orderbook(KrakenSpotWSClient):
         # assert self.__book[pair]["valid"]
 
     @staticmethod
-    def get_first(values: List[float]) -> float:
+    def get_first(values: tuple) -> float:
         """
         This function is used as callback for the ``sorted`` method
-        to sort a list by its first value and while ensuring
+        to sort a tuple/list by its first value and while ensuring
         that the values are floats and comparable.
 
-        :param values: A list oft string or float values
-        :type values: List[float]
+        :param values: A tuple of string values
+        :type values: tuple
         :return: The first value of ``values`` as float.
         :rtype: float
         """
