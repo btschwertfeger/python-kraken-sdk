@@ -13,7 +13,7 @@
 [![codecov](https://codecov.io/gh/btschwertfeger/python-kraken-sdk/branch/master/badge.svg)](https://app.codecov.io/gh/btschwertfeger/python-kraken-sdk)
 
 ![release](https://shields.io/github/release-date/btschwertfeger/python-kraken-sdk)
-![release](https://img.shields.io/pypi/v/python-kraken-sdk)
+[![release](https://img.shields.io/pypi/v/python-kraken-sdk)](https://pypi.org/project/python-kraken-sdk/)
 [![DOI](https://zenodo.org/badge/510751854.svg)](https://zenodo.org/badge/latestdoi/510751854)
 [![Documentation Status stable](https://readthedocs.org/projects/python-kraken-sdk/badge/?version=stable)](https://python-kraken-sdk.readthedocs.io/en/stable)
 
@@ -170,6 +170,8 @@ if __name__ == "__main__":
 
 ... can be found in `/examples/spot_ws_examples.py`
 
+For creating a realtime order book that updates it self, please have a look at `/examples/spot_orderbook.py`.
+
 ```python
 import time
 import asyncio
@@ -233,12 +235,11 @@ async def main() -> None:
         await asyncio.sleep(6)
 
 if __name__ == "__main__":
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
     try:
         asyncio.run(main())
     except KeyboardInterrupt:
-        loop.close()
+        # do some exception hanlding...
+        pass
 ```
 
 Note: Authenticated Spot websocket clients can also un/subscribe from/to public feeds.
@@ -388,13 +389,11 @@ async def main():
         await asyncio.sleep(6)
 
 if __name__ == "__main__":
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
     try:
         asyncio.run(main())
     except KeyboardInterrupt:
-        loop.close()
-
+        # do some exception handling...
+        pass
 ```
 
 Note: Authenticated Futures websocket clients can also un-/subscribe from/to public feeds.

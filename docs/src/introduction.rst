@@ -4,10 +4,9 @@ Introduction
 =============
 
 |GitHub badge| |License badge| |PyVersions badge| |Downloads badge|
-|CodeQL badge| |CI/CD badge| |codecov badge|
+|CodeQL badge| |CI/CD badge| |codecov badge| |Typing badge|
 |Release date badge| |Release version badge| |DOI badge|
 
-|Docs stable| |Docs latest|
 
 **This is the documentation of the unofficial Python SDK to interact with the Kraken cryptocurrency exchange. Payward Ltd. and Kraken are in
 no way associated with the authors of this module and documentation.**
@@ -47,7 +46,6 @@ General:
 - responsive error handling, custom exceptions and logging
 - extensive examples
 - all clients can be used as context manager
-- coding standards like snake case are not always followed to maintain the parameter naming convention of the Kraken API
 
 Important Notice
 -----------------
@@ -66,6 +64,7 @@ Troubleshooting
 
 References
 ----------
+- https://python-kraken-sdk.readthedocs.io/en/stable
 - https://docs.kraken.com/rest
 - https://docs.kraken.com/websockets
 - https://docs.futures.kraken.com

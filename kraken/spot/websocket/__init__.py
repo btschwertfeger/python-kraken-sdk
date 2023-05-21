@@ -15,7 +15,7 @@ import traceback
 from copy import deepcopy
 from random import random
 from time import time
-from typing import Any, List, Optional, Union
+from typing import Any, Callable, List, Optional, Union
 
 import websockets
 
@@ -404,11 +404,11 @@ class KrakenSpotWSClient(SpotWsClientCl):
 
     def __init__(
         self: "KrakenSpotWSClient",
-        key: Optional[str] = "",
-        secret: Optional[str] = "",
-        url: Optional[str] = "",
-        callback: Any = None,
-        beta: Optional[bool] = False,
+        key: str = "",
+        secret: str = "",
+        url: str = "",
+        callback: Optional[Callable] = None,
+        beta: bool = False,
     ):
         super().__init__(key=key, secret=secret, url=url, sandbox=beta)
         self.__callback: Any = callback

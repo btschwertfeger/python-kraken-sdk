@@ -66,11 +66,11 @@ async def main() -> None:
     await bot.subscribe(subscription={"name": "ticker"}, pair=["XBT/EUR", "DOT/EUR"])
     await bot.subscribe(subscription={"name": "spread"}, pair=["XBT/EUR", "DOT/EUR"])
     await bot.subscribe(subscription={"name": "book"}, pair=["BTC/EUR"])
-    # await bot.subscribe(subscription={ 'name': 'book', 'depth': 25}, pair=['BTC/EUR'])
-    # await bot.subscribe(subscription={ 'name': 'ohlc' }, pair=['BTC/EUR'])
-    # await bot.subscribe(subscription={ 'name': 'ohlc', 'interval': 15}, pair=['XBT/EUR', 'DOT/EUR'])
-    # await bot.subscribe(subscription={ 'name': 'trade' }, pair=['BTC/EUR'])
-    # await bot.subscribe(subscription={ 'name': '*' } , pair=['BTC/EUR'])
+    # await bot.subscribe(subscription={ "name": "book", "depth": 25}, pair=["BTC/EUR"])
+    # await bot.subscribe(subscription={ "name": "ohlc" }, pair=["BTC/EUR"])
+    # await bot.subscribe(subscription={ "name": "ohlc", "interval": 15}, pair=["XBT/EUR", "DOT/EUR"])
+    # await bot.subscribe(subscription={ "name": "trade" }, pair=["BTC/EUR"])
+    # await bot.subscribe(subscription={ "name": "*"} , pair=["BTC/EUR"])
 
     time.sleep(2)  # wait because unsubscribing is faster than subscribing ...
     # print(bot.active_public_subscriptions)

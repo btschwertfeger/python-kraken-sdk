@@ -143,14 +143,11 @@ class ManagedBot:
         if not self.__check_credentials():
             sys.exit(1)
 
-        loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(loop)
         try:
             asyncio.run(self.__main())
         except KeyboardInterrupt:
             pass
         finally:
-            loop.close()
             if self.__trading_strategy is not None:
                 self.__trading_strategy.save_exit(reason="Asyncio loop left")
 
@@ -210,9 +207,11 @@ class ManagedBot:
             logging.error("Invalid credentials!")
             return False
 
-    def save_exit(self: "ManagedBot", reason: Optional[str] = "") -> None:
+    def save_exit(self: "ManagedBot", reason: str = "") -> None:
         """Invoces the save exit funtion of the trading strategy"""
-        self.__trading_strategy.save_exit(reason=reason)
+        print(f"Save exit triggered - {reason}")
+        if self.__trading_strategy is not None:
+            self.__trading_strategy.save_exit(reason=reason)
 
 
 def main() -> None:
