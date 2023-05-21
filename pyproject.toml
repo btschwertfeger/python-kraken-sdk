@@ -39,6 +39,8 @@ classifiers = [
 
 [project.optional-dependencies]
 dev = [
+  # building
+  "build",
   # testing
   "pytest",
   "pytest-cov",

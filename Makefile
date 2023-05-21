@@ -19,7 +19,7 @@ help:
 ## build		Builds the python-kraken-sdk
 ##
 build:
-	$(PYTHON) -m pip wheel --wheel-dir dist --no-deps .
+	$(PYTHON) -m build .
 
 rebuild: clean build
 
