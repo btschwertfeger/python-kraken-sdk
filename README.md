@@ -105,6 +105,8 @@ If any unexpected behaviour occurs, please check <b style="color: yellow">your A
 
 A template Spot trading bot using both websocket and REST clients can be found in `/examples/spot_trading_bot_template.py`.
 
+For those who need a realtime order book - a script that demonstrates how to maintain a valid order book can be found here: `/examples/spot_orderbook.py`.
+
 <a name="spotrest"></a>
 
 ## Spot REST API
@@ -169,8 +171,6 @@ if __name__ == "__main__":
 ## Websockets
 
 ... can be found in `/examples/spot_ws_examples.py`
-
-For creating a realtime order book that updates it self, please have a look at `/examples/spot_orderbook.py`.
 
 ```python
 import time

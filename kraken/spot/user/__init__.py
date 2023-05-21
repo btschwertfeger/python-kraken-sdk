@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # Copyright (C) 2023 Benjamin Thomas Schwertfeger
-# Github: https://github.com/btschwertfeger
+# GitHub: https://github.com/btschwertfeger
 #
 
 """ Module that implements the Kraken Spot User client"""
@@ -362,7 +362,7 @@ class User(KrakenBaseSpotAPI):
     @ensure_string("txid")
     def get_orders_info(
         self: "User",
-        txid: Union[List[str], str] = None,
+        txid: Union[List[str], str],
         trades: Optional[bool] = False,
         userref: Optional[int] = None,
         consolidate_taker: Optional[bool] = True,
@@ -376,7 +376,7 @@ class User(KrakenBaseSpotAPI):
         - https://docs.kraken.com/rest/#tag/User-Data/operation/getOrdersInfo
 
         :param txid: A transaction id of a specific order, a list of txids or a string containing a comma delimited list of txids
-        :type txid: str | List[str], optional
+        :type txid: str | List[str]
         :param trades: Include trades in the result or not (default: ``False``)
         :type trades: bool, optional
         :param userref: Filter results by user reference id

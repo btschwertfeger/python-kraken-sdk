@@ -138,19 +138,19 @@ class Orderbook(KrakenSpotWSClient):
                 # Price level moved out of range
                 self.__book[pair][side].pop(price)
 
-            if side == "bid":
+            if side == "ask":
+                self.__book["ask"] = dict(
+                    sorted(
+                        self.__book[pair]["ask"].items(), key=self.get_first  # type: ignore[arg-type]
+                    )[: self.__depth]
+                )
+
+            elif side == "bid":
                 self.__book["bid"] = dict(
                     sorted(
                         self.__book[pair]["bid"].items(),
                         key=self.get_first,  # type: ignore[arg-type]
                         reverse=True,
-                    )[: self.__depth]
-                )
-
-            elif side == "ask":
-                self.__book["ask"] = dict(
-                    sorted(
-                        self.__book[pair]["ask"].items(), key=self.get_first  # type: ignore[arg-type]
                     )[: self.__depth]
                 )
 
