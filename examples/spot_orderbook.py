@@ -33,11 +33,13 @@ realtime data and fast price movements are considered.
 
 References
 - https://support.kraken.com/hc/en-us/articles/360027821131-WebSocket-API-v1-How-to-maintain-a-valid-order-book
+- https://docs.kraken.com/websockets/#book-checksum
 """
 
 from __future__ import annotations
 
 import asyncio
+import binascii
 from typing import Dict, List, Optional, Union
 
 from kraken.spot import KrakenSpotWSClient
@@ -77,7 +79,7 @@ class Orderbook(KrakenSpotWSClient):
 
         pair: str = msg[-1]
         if pair not in self.__book:
-            self.__book[pair] = {"bid": {}, "ask": {}}
+            self.__book[pair] = {"bid": {}, "ask": {}, "valid": False}
 
         if "as" in msg[1]:
             # This will be triggered initially when the
@@ -92,6 +94,8 @@ class Orderbook(KrakenSpotWSClient):
                     self.__update_book(pair=pair, side="ask", snapshot=data["a"])
                 elif "b" in data:
                     self.__update_book(pair=pair, side="bid", snapshot=data["b"])
+
+            self.__validate_checksum(pair=pair, checksum=msg[1]["c"])
 
     def get(self: "Orderbook", pair: str) -> Optional[dict]:
         """
@@ -139,20 +143,46 @@ class Orderbook(KrakenSpotWSClient):
                 self.__book[pair][side].pop(price)
 
             if side == "ask":
-                self.__book["ask"] = dict(
+                self.__book[pair]["ask"] = dict(
                     sorted(
                         self.__book[pair]["ask"].items(), key=self.get_first  # type: ignore[arg-type]
                     )[: self.__depth]
                 )
 
             elif side == "bid":
-                self.__book["bid"] = dict(
+                self.__book[pair]["bid"] = dict(
                     sorted(
                         self.__book[pair]["bid"].items(),
                         key=self.get_first,  # type: ignore[arg-type]
                         reverse=True,
                     )[: self.__depth]
                 )
+
+    def __validate_checksum(self: "Orderbook", pair: str, checksum: str) -> None:
+        """
+        Function that validates the checksum of the orderbook as described here
+        https://docs.kraken.com/websockets/#book-checksum.
+
+        :param pair: The pair that's order book checksum should be validated.
+        :type pair: str
+        :param checksum: The checksum sent by the Kraken API
+        :type checksum: str
+        """
+        local_checksum: str = ""
+        for price_level, volume in self.__book[pair]["ask"].items():
+            local_checksum += price_level.replace(".", "").lstrip("0") + volume.replace(
+                ".", ""
+            ).lstrip("0")
+
+        for price_level, volume in self.__book[pair]["bid"].items():
+            local_checksum += price_level.replace(".", "").lstrip("0") + volume.replace(
+                ".", ""
+            ).lstrip("0")
+
+        self.__book[pair]["valid"] = checksum == str(
+            binascii.crc32(local_checksum.encode())
+        )
+        # assert self.__book[pair]["valid"]
 
     @staticmethod
     def get_first(values: List[float]) -> float:
@@ -210,6 +240,7 @@ async def main() -> None:
                 print(
                     f"{bid[level][0]} ({bid[level][1]}) \t {ask[level][0]} ({ask[level][1]})"
                 )
+            assert book["valid"]
 
         # This following sleep statement is very important to not having a million calls a second.
         await asyncio.sleep(0.1)
