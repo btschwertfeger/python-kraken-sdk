@@ -6,10 +6,12 @@
 
 """Module that implements the Kraken Spot market client"""
 
+from binascii import crc32
 from functools import lru_cache
-from typing import List, Optional, Union
+from typing import Dict, List, Optional, Union
 
 from ...base_api import KrakenBaseSpotAPI, defined, ensure_string
+from ..websocket import KrakenSpotWSClient
 
 
 class Market(KrakenBaseSpotAPI):
@@ -423,3 +425,165 @@ class Market(KrakenBaseSpotAPI):
         return self._request(  # type: ignore[return-value]
             method="GET", uri="/public/SystemStatus", auth=False
         )
+
+
+class Orderbook(KrakenSpotWSClient):
+    """
+    The Orderbook class inherts the subscribe function from the
+    KrakenSpotWSClient class. This function is used to subscribe to the
+    order book feed will initially send the current order book
+    and then send updates when anything changes.
+    """
+
+    def __init__(self: "Orderbook", depth: int = 10) -> None:
+        super().__init__()
+        self.__book: Dict[str, dict] = {}
+        self.__depth: int = depth
+
+    async def on_message(self: "Orderbook", msg: Union[list, dict]) -> None:
+        """
+        The on_message function is implemented in the KrakenSpotWSClient
+        class and used as callback to receive all messages sent by the
+        Kraken API.
+        """
+        if "errorMessage" in msg:
+            print(msg)
+            return
+
+        if "event" in msg:
+            # ignore heartbeat / ping - pong messages
+            return
+
+        if not isinstance(msg, list):
+            # The order book feed only sends messages with type list,
+            # so we can ignore anything else.
+            return
+
+        pair: str = msg[-1]
+        if pair not in self.__book:
+            self.__book[pair] = {"bid": {}, "ask": {}, "valid": True}
+
+        if "as" in msg[1]:
+            # This will be triggered initially when the
+            # first message comes in that provides the initial snapshot
+            # of the current order book.
+            self.__update_book(pair=pair, side="ask", snapshot=msg[1]["as"])
+            self.__update_book(pair=pair, side="bid", snapshot=msg[1]["bs"])
+        else:
+            # This is executed every time a new update comes in.
+            for data in msg[1 : len(msg) - 2]:
+                if "a" in data:
+                    self.__update_book(pair=pair, side="ask", snapshot=data["a"])
+                elif "b" in data:
+                    self.__update_book(pair=pair, side="bid", snapshot=data["b"])
+
+            self.__validate_checksum(pair=pair, checksum=msg[1]["c"])
+
+    def get(self: "Orderbook", pair: str) -> Optional[dict]:
+        """
+        Returns the order book for a specific ``pair``.
+
+        :param pair: The pair to get the order book from
+        :type pair: str
+        :return: The order book of that ``pair``.
+        :rtype: dict
+        """
+        return self.__book.get(pair)
+
+    def __update_book(self: "Orderbook", pair: str, side: str, snapshot: list) -> None:
+        """
+        This functions updates the local order book based on the
+        information provided in ``data`` and assigns/update the
+        asks and bids in book.
+
+        The ``data`` here looks like:
+        [
+            ['25026.00000', '2.77183035', '1684658128.013525'],
+            ['25028.50000', '0.04725650', '1684658121.180535'],
+            ['25030.20000', '0.29527502', '1684658128.018182'],
+            ['25030.40000', '2.77134976', '1684658131.751539'],
+            ['25032.20000', '0.13978808', '1684658131.751577']
+        ]
+        ... where the first value is the ask or bid price, the second
+            represents the volume and the last one is the time stamp.
+
+        :param side: The side to assign the data to,
+            either ``ask`` or ``bid``
+        :type side: str
+        :param data: The data that needs to be assigned.
+        :type data: list
+        """
+        for entry in snapshot:
+            price: str = entry[0]
+            volume: str = entry[1]
+
+            if float(volume) > 0.0:
+                # Price level exist or is new
+                self.__book[pair][side][price] = volume
+            else:
+                # Price level moved out of range
+                self.__book[pair][side].pop(price)
+
+            if side == "ask":
+                self.__book[pair]["ask"] = dict(
+                    sorted(self.__book[pair]["ask"].items(), key=self.get_first)[
+                        : self.__depth
+                    ]
+                )
+
+            elif side == "bid":
+                self.__book[pair]["bid"] = dict(
+                    sorted(
+                        self.__book[pair]["bid"].items(),
+                        key=self.get_first,
+                        reverse=True,
+                    )[: self.__depth]
+                )
+
+    def __validate_checksum(self: "Orderbook", pair: str, checksum: str) -> None:
+        """
+        Function that validates the checksum of the orderbook as described here
+        https://docs.kraken.com/websockets/#book-checksum.
+
+        :param pair: The pair that's order book checksum should be validated.
+        :type pair: str
+        :param checksum: The checksum sent by the Kraken API
+        :type checksum: str
+        """
+        book: dict = self.__book[pair]
+
+        # sort ask (desc) and bid (asc)
+        ask: List[tuple] = sorted(book["ask"].items(), key=self.get_first)
+        bid: List[tuple] = sorted(
+            book["bid"].items(),
+            key=self.get_first,
+            reverse=True,
+        )
+
+        local_checksum: str = ""
+        for price_level, volume in ask[:10]:
+            local_checksum += price_level.replace(".", "").lstrip("0") + volume.replace(
+                ".", ""
+            ).lstrip("0")
+
+        for price_level, volume in bid[:10]:
+            local_checksum += price_level.replace(".", "").lstrip("0") + volume.replace(
+                ".", ""
+            ).lstrip("0")
+
+        self.__book[pair]["valid"] = checksum == str(crc32(local_checksum.encode()))
+        # assert self.__book[pair]["valid"]
+
+    @staticmethod
+    def get_first(values: tuple) -> float:
+        """
+        This function is used as callback for the ``sorted`` method
+        to sort a tuple/list by its first value and while ensuring
+        that the values are floats and comparable.
+
+        :param values: A tuple of string values
+        :type values: tuple
+        :return: The first value of ``values`` as float.
+        :rtype: float
+        """
+        return float(values[0])
