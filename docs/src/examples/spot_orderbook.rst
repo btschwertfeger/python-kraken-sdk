@@ -2,7 +2,7 @@
 
 Maintain a valid Spot order book
 
-The following example demonstrats how to use the python-kraken-sdk to
+The following example demonstrate how to use the python-kraken-sdk to
 retrieve a valid realtime order book. Please see the following example
 snippet for more information.
 

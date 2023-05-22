@@ -31,8 +31,8 @@ secret = os.getenv("SECRET_KEY")
 # |  \| | | | || | |  _| (_)
 # | |\  | |_| || | | |___ _
 # |_| \_|\___/ |_| |_____(_)
-# ----> More examples can be found in kraken/tests/*.py, the doc and in the docstrings
-# examples may not be updated regularily
+# ----> More examples can be found in kraken/tests/*.py, the doc and in the doc strings
+# examples may not be updated regularly
 
 
 def user_examples() -> None:
@@ -165,7 +165,7 @@ def funding_examples() -> None:
     )
 
     raise ValueError(
-        "Attention: Please check if you really want to execute funding funtions."
+        "Attention: Please check if you really want to execute funding functions."
     )
     if False:
         time.sleep(2)
@@ -186,7 +186,7 @@ def staking_examples() -> None:
     print(staking.list_staking_transactions())
     print(staking.get_pending_staking_transactions())
     raise ValueError(
-        "Attention: Please check if you really want to execute staking funtions."
+        "Attention: Please check if you really want to execute staking functions."
     )
     if False:
         print(staking.stake_asset(asset="DOT", amount=2000, method="polkadot-staked"))

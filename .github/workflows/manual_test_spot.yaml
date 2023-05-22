@@ -15,7 +15,7 @@
 #         * SPOT_SECRET_KEY
 #
 #       ... see the README for information about how to generate Spot API keys.
-#       Please also make shure to enable the following API permissions:
+#       Please also make sure to enable the following API permissions:
 #         * Query funds
 #         * Deposit funds
 #         * Query open orders & trades

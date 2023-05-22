@@ -163,12 +163,12 @@ def test_check_trading_enabled_on_subaccount(futures_auth_user: User) -> None:
 
     Until now, subaccounts are only available for institutional clients, so this
     execution raises an error. This test will work correctly (hopefully) when
-    Kraken eneables subaccounts for pro trader.
+    Kraken enables subaccounts for pro trader.
     """
     assert {
         "tradingEnabled": False
     } == futures_auth_user.check_trading_enabled_on_subaccount(
-        subaccountUid="778387bh61b-f990-4128-16a7-gasdsdghasd"
+        subaccountUid="778387bh61b-f990-4128-16a7-f819abc8"
     )
 
 
@@ -182,8 +182,8 @@ def test_set_trading_on_subaccount(futures_auth_user: User) -> None:
 
     Until now, subaccounts are only available for institutional clients, so this
     execution raises an error. This test will work correctly (hopefully) when
-    Kraken eneables subaccounts for pro trader.
+    Kraken enables subaccounts for pro trader.
     """
     assert {"tradingEnabled": True} == futures_auth_user.set_trading_on_subaccount(
-        subaccountUid="778387bh61b-f990-4128-16a7-gasdsdghasd", trading_enabled=True
+        subaccountUid="778387bh61b-f990-4128-16a7-f819abc8", trading_enabled=True
     )

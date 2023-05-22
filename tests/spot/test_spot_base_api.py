@@ -19,7 +19,7 @@ def test_KrakenBaseSpotAPI_without_exception() -> None:
     """
     Checks first if the expected error will be raised and than
     creates a new KrakenBaseSpotAPI instance that do not raise
-    the custom Kraken exceptions. This new instance thant executes
+    the custom Kraken exceptions. This new instance than executes
     the same request and the returned response gets evaluated.
     """
     with pytest.raises(KrakenException.KrakenInvalidAPIKeyError):

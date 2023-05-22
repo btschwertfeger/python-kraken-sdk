@@ -43,7 +43,7 @@ General:
 - access both public and private endpoints
 - responsive error handling and custom exceptions
 - extensive example scripts (see `/examples` and `/tests`)
-- tested using the pytest framework
+- tested using the [pytest](https://docs.pytest.org/en/7.3.x/) framework
 - releases are permanently archived at [Zenodo](https://zenodo.org/badge/latestdoi/510751854)
 
 Documentation:
@@ -95,7 +95,7 @@ python3 -m pip install python-kraken-sdk
 
 ### 4. Error handling
 
-If any unexpected behaviour occurs, please check <b style="color: yellow">your API permissions</b>, <b style="color: yellow">rate limits</b>, update the python-kraken-sdk, see the [Troubleshooting](#trouble) section, and if the error persists please open an issue.
+If any unexpected behavior occurs, please check <b style="color: yellow">your API permissions</b>, <b style="color: yellow">rate limits</b>, update the python-kraken-sdk, see the [Troubleshooting](#trouble) section, and if the error persists please open an issue.
 
 ---
 
@@ -149,7 +149,7 @@ def main():
             asset="DOT", key="MyPolkadotWallet", amount=200
         )
     )
-    print(funding.cancel_widthdraw(asset="DOT", refid="<some id>"))
+    print(funding.cancel_withdraw(asset="DOT", refid="<some id>"))
     # ...
 
     # ____STAKING___________________________
@@ -382,7 +382,7 @@ async def main():
     await auth_bot.subscribe(feed="open_orders")
     # ...
 
-    # unsubscribe from a private/authenticaed websocket feed
+    # unsubscribe from a private/authenticated websocket feed
     await auth_bot.unsubscribe(feed="fills")
 
     while True:
@@ -414,7 +414,7 @@ Note: Authenticated Futures websocket clients can also un-/subscribe from/to pub
 
 - Check if you downloaded and installed the **latest version** of the python-kraken-sdk.
 - Check the **permissions of your API keys** and the required permissions on the respective endpoints.
-- If you get some cloudflare or **rate limit errors**, please check your Kraken Tier level and maybe apply for a higher rank if required.
+- If you get some Cloudflare or **rate limit errors**, please check your Kraken Tier level and maybe apply for a higher rank if required.
 - **Use different API keys for different algorithms**, because the nonce calculation is based on timestamps and a sent nonce must always be the highest nonce ever sent of that API key. Having multiple algorithms using the same keys will result in invalid nonce errors.
 
 ---

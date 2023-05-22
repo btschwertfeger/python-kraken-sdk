@@ -114,7 +114,7 @@ def test_create_order(futures_demo_trade) -> None:
         pass
 
     # try:
-    #     # does not work,  400 repsonse "invalid order type"
+    #     # does not work,  400 response "invalid order type"
     #     # but it is documented here: https://docs.futures.kraken.com/#http-api-trading-v3-api-order-management-send-order
     #     # Kraken needs to fix this
     #     futures_demo_trade.create_order(

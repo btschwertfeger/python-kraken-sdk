@@ -48,7 +48,7 @@ from kraken.spot import KrakenSpotWSClient
 
 class Orderbook(KrakenSpotWSClient):
     """
-    The Orderbook class inherts the subscribe function from the
+    The Orderbook class inherit the subscribe function from the
     KrakenSpotWSClient class. This function is used to subscribe to the
     order book feed will initially send the current order book
     and then send updates when anything changes.
@@ -214,7 +214,7 @@ async def main() -> None:
     """
     This is the actual main function where we define the depth of the
     order book and also a pair. We could subscribe to multiple pairs,
-    but for simplicity only XBT/USD is coosen.
+    but for simplicity only XBT/USD is chosen.
 
     After defined some constants, the order book class can be instantiated,
     which receives the order book-related messages, after we subscribed

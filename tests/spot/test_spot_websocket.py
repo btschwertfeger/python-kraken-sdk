@@ -9,7 +9,7 @@ NOTE:
 *   Since there is no sandbox environment for the Spot trading API,
     some tests are adjusted, so that there is a `validate` switch to not risk funds.
 *   Also there is a KrakenPermissionDeniedError class which will be raised when
-    the websocket client receives a message about missing auhtntification. Since the
+    the websocket client receives a message about missing authentication. Since the
     API keys have no trade permission, this will be excepted to exit the asyncio event loop.
     A asyncio.CancelledError will be raised and excepted during this procedure.
 
@@ -22,7 +22,7 @@ import asyncio
 import os
 import time
 import unittest
-from typing import Optional, Union
+from typing import Callable, Optional, Union
 
 import pytest
 
@@ -30,8 +30,9 @@ from kraken.spot import KrakenSpotWSClient
 
 
 class KrakenPermissionDeniedError(Exception):
-    """This Error will cancel the ws connection by closing the event loop
-    asyncio.CancelledError will be raised
+    """
+    This Error will cancel the ws connection by closing the event loop
+    asyncio.CancelledError will be raised.
     """
 
     def __init__(self):
@@ -83,7 +84,7 @@ class WebsocketTests(unittest.TestCase):
         self.__secret: str = os.getenv("SPOT_SECRET_KEY")
         self.__full_ws_access: str = os.getenv("FULLACCESS") == "True"
 
-    def __create_loop(self, coro) -> None:
+    def __create_loop(self: "WebsocketTests", coro: Callable) -> None:
         """Function that creates an event loop."""
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
@@ -104,7 +105,7 @@ class WebsocketTests(unittest.TestCase):
         Checks if the websocket client can be instantiated.
         """
 
-        async def create_bot():
+        async def create_bot() -> None:
             bot: Bot = Bot()
             await self.__wait(seconds=2.5)
 
@@ -241,7 +242,7 @@ class WebsocketTests(unittest.TestCase):
     @pytest.mark.spot_websocket
     def test_public_unsubscribe(self: "WebsocketTests") -> None:
         """
-        Checks if the websocket client can unsubscrube from public feeds.
+        Checks if the websocket client can unsubscribe from public feeds.
         """
 
         async def checkit() -> None:
@@ -262,7 +263,7 @@ class WebsocketTests(unittest.TestCase):
     def test_public_unsubscribe_failure(self: "WebsocketTests") -> None:
         """
         Checks if the websocket client responses with failures
-        when the ``unsubscribe`` funciton receives invalid parameters.
+        when the ``unsubscribe`` function receives invalid parameters.
         """
 
         async def checkit() -> None:

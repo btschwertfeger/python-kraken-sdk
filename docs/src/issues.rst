@@ -13,7 +13,7 @@ Futures Trading
 
     from kraken.futures import Trade
 
-    Trade(key="api-key", secret="secreet-key").create_order(
+    Trade(key="api-key", secret="secret-key").create_order(
         orderType="trailing_stop",
         size=10,
         side="buy",

@@ -93,7 +93,7 @@ class User(KrakenBaseSpotAPI):
         Requires the ``Query funds`` permission in the API key settings.
 
         :return: Dictionary containing the ``currency`` as keys, that
-            hold a dictinoary containing the ``balance`` key
+            hold a dictionary containing the ``balance`` key
             holding the actual balance including the value in orders
             and the ``hold_trade`` key that represents the amount
             held in open orders.
@@ -135,7 +135,7 @@ class User(KrakenBaseSpotAPI):
         :param currency: The currency to get the balances from
         :type currency: str
         :return: Dictionary containing the ``currency`` (currency as string),
-            ``balance`` (inclding value in orders), and ``available_balance``
+            ``balance`` (including value in orders), and ``available_balance``
             (amount that is not in orders)
         :rtype: dict
 
@@ -381,7 +381,7 @@ class User(KrakenBaseSpotAPI):
         :type trades: bool, optional
         :param userref: Filter results by user reference id
         :type userref: int, optional
-        :param consolidate_taker: Consolidate trdes by individual taker trades (default: ``True``)
+        :param consolidate_taker: Consolidate trades by individual taker trades (default: ``True``)
         :type consolidate_taker: bool, optional
 
         .. code-block:: python
@@ -487,7 +487,7 @@ class User(KrakenBaseSpotAPI):
         :type trades: bool, optional
         :param start: Timestamp or txid to start the search
         :type start: int, optional
-        :param end: Timestamp or txid to define the last inluded result
+        :param end: Timestamp or txid to define the last included result
         :type end: int, optional
         :param consolidate_taker: Consolidate trades by individual taker trades (default: ``True``)
         :type consolidate_taker: bool
@@ -557,7 +557,7 @@ class User(KrakenBaseSpotAPI):
 
         .. code-block:: python
             :linenos:
-            :caption: Spot User: Get the historcal trade information
+            :caption: Spot User: Get the historical trade information
 
             >>> from kraken.spot import User
             >>> user = User(key="api-key", secret="secret-key")

@@ -21,7 +21,7 @@ import websockets
 from ...exceptions import KrakenException
 
 if TYPE_CHECKING:
-    # to avaoid circular import for type checking
+    # to avoid circular import for type checking
     from ...futures import KrakenFuturesWSClient
 
 

@@ -31,7 +31,7 @@ def test_get_system_status(spot_market: Market) -> None:
 def test_get_assets(spot_market: Market) -> None:
     """
     Checks the ``get_assets`` endpoint by performing multiple
-    requests with different paramaters and
+    requests with different parameters and
     validating that the response does not contain the error key.
     """
     for params in (
@@ -50,7 +50,7 @@ def test_get_assets(spot_market: Market) -> None:
 def test_get_asset_pairs(spot_market: Market) -> None:
     """
     Checks the ``get_asset_pairs`` endpoint by performing multiple
-    requests with different paramaters and validating that the response
+    requests with different parameters and validating that the response
     does not contain the error key.
     """
     assert is_not_error(spot_market.get_asset_pairs())
@@ -80,7 +80,7 @@ def test_get_ticker(spot_market: Market) -> None:
 def test_get_ohlc(spot_market: Market) -> None:
     """
     Checks the ``get_ohlc`` endpoint by performing multiple
-    requests with different paramaters and validating that the response
+    requests with different parameters and validating that the response
     does not contain the error key.
     """
     assert is_not_error(spot_market.get_ohlc(pair="XBTUSD"))
@@ -94,7 +94,7 @@ def test_get_ohlc(spot_market: Market) -> None:
 def test_get_order_book(spot_market: Market) -> None:
     """
     Checks the ``get_order_book`` endpoint by performing multiple
-    requests with different paramaters and validating that the response
+    requests with different parameters and validating that the response
     does not contain the error key.
     """
     assert is_not_error(spot_market.get_order_book(pair="XBTUSD"))
@@ -108,7 +108,7 @@ def test_get_order_book(spot_market: Market) -> None:
 def test_get_recent_trades(spot_market: Market) -> None:
     """
     Checks the ``get_recent_trades`` endpoint by performing multiple
-    requests with different paramaters and validating that the response
+    requests with different parameters and validating that the response
     does not contain the error key.
     """
     assert is_not_error(spot_market.get_recent_trades(pair="XBTUSD"))
@@ -122,7 +122,7 @@ def test_get_recent_trades(spot_market: Market) -> None:
 def test_get_recent_spreads(spot_market: Market) -> None:
     """
     Checks the ``get_recent_spreads`` endpoint by performing multiple
-    requests with different paramaters and validating that the response
+    requests with different parameters and validating that the response
     does not contain the error key.
     """
     assert is_not_error(spot_market.get_recent_spreads(pair="XBTUSD"))

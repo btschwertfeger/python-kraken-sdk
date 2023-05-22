@@ -182,7 +182,7 @@ class User(KrakenBaseFuturesAPI):
 
         - https://docs.futures.kraken.com/#http-api-trading-v3-api-account-information-get-position-percentile-of-unwind-queue
 
-        :return: Information about unwindqueue
+        :return: Information about unwind queue
         :rtype: dict
 
         .. code-block:: python
@@ -827,7 +827,7 @@ class User(KrakenBaseFuturesAPI):
             >>> from kraken.futures import Trade
             >>> trade = Trade(key="api-key", secret="secret-key")
             >>> trade.set_trading_on_subaccount(
-            ...    subaccountUid="778387bh61b-f990-4128-16a7-gasdsdghasd",
+            ...    subaccountUid="778387bh61b-f990-4128-16a7-f4ab669a9b",
             ... )
             {
                "tradingEnabled": False
@@ -862,7 +862,7 @@ class User(KrakenBaseFuturesAPI):
             >>> from kraken.futures import Trade
             >>> trade = Trade(key="api-key", secret="secret-key")
             >>> trade.set_trading_on_subaccount(
-            ...    subaccountUid="778387bh61b-f990-4128-16a7-gasdsdghasd",
+            ...    subaccountUid="778387bh61b-f990-4128-16a7-f4ab669a9b",
             ...    trading_enabled=True
             ... )
             {

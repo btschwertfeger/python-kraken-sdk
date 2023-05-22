@@ -8,5 +8,5 @@ from typing import Any
 
 
 def is_not_error(value: Any) -> bool:
-    """Returns True if 'error' in dict."""
+    """Returns True if 'error' as key not in dict."""
     return isinstance(value, dict) and "error" not in value

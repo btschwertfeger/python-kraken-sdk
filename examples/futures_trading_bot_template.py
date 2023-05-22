@@ -53,7 +53,7 @@ class TradingBot(KrakenFuturesWSClient):
     def __init__(self: "TradingBot", config: dict) -> None:
         super().__init__(
             key=config["key"], secret=config["secret"]
-        )  # initialize the KakenFuturesWSClient
+        )  # initialize the KrakenFuturesWSClient
         self.__config: dict = config
 
         self.__user: User = User(key=config["key"], secret=config["secret"])
@@ -130,8 +130,8 @@ class ManagedBot:
         Instantiates the trading strategy/algorithm and subscribes to the
         desired websocket feeds. Run the loop while no exception occur.
 
-        Thi variable `exception_occu` which is an attribute of the KrakenFuturesWSClient
-        can be set individually but is also beeing set to `True` if the websocket connection
+        Thi variable `exception_occur` which is an attribute of the KrakenFuturesWSClient
+        can be set individually but is also being set to `True` if the websocket connection
         has some fatal error. This is used to exit the asyncio loop.
         """
         self.__trading_strategy = TradingBot(config=self.__config)
@@ -183,7 +183,7 @@ class ManagedBot:
             return False
 
     def save_exit(self: "ManagedBot", reason: str = "") -> None:
-        """Calls the save exit funtion of the rtading strategy"""
+        """Calls the save exit function of the trading strategy"""
         print(f"Save exit triggered - {reason}")
         if self.__trading_strategy is not None:
             self.__trading_strategy.save_exit(reason=reason)

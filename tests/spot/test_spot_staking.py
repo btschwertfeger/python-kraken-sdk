@@ -61,7 +61,7 @@ def test_unstake_asset(spot_auth_staking: Staking) -> None:
     Checks if the ``unstake_asset`` endpoints returns a response that does
     not contain the error key.
 
-    This test is skipped since unstakign is not wanted in the CI.
+    This test is skipped since unstaking is not wanted in the CI.
     """
     try:
         assert is_not_error(

@@ -86,7 +86,7 @@ def test_withdraw_funds(spot_auth_funding: Funding) -> None:
 @pytest.mark.skip(reason="CI does not have withdraw permission")
 def test_get_withdrawal_info(spot_auth_funding: Funding) -> None:
     """
-    Checks the ``get_withdrawa_info`` endpoint by requesting the data.
+    Checks the ``get_withdraw_info`` endpoint by requesting the data.
 
     This test is disabled, because the API keys for testing are not
     allowed to withdraw or trade or even get withdraw information.
@@ -105,7 +105,7 @@ def test_get_withdrawal_info(spot_auth_funding: Funding) -> None:
 @pytest.mark.skip(reason="CI does not have withdraw permission")
 def test_get_recent_withdraw_status(spot_auth_funding: Funding) -> None:
     """
-    Checks the ``get_recend_withdraw_status`` endpoint using different arguments.
+    Checks the ``get_recent_withdraw_status`` endpoint using different arguments.
 
     This test is disabled, because testing a withdraw and receiving
     withdrawal information cannot be done without a real withdraw which is not what
@@ -125,7 +125,7 @@ def test_get_recent_withdraw_status(spot_auth_funding: Funding) -> None:
 @pytest.mark.skip(reason="CI does not have withdraw permission")
 def test_wallet_transfer(spot_auth_funding: Funding) -> None:
     """
-    Checks the ``get_recend_withdraw_status`` endpoint using different arguments.
+    Checks the ``get_recent_withdraw_status`` endpoint using different arguments.
     (only works if futures wallet exists)
 
     This test is disabled, because testing a withdraw and receiving

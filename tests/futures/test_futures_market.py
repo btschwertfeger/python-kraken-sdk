@@ -35,7 +35,7 @@ def test_get_ohlc(futures_market: Market) -> None:
 @pytest.mark.futures_market
 def test_get_ohlc_failing_wrong_tick_type(futures_market: Market) -> None:
     """
-    Checks the ``get_ohlc`` function by passig an invalid tick type.
+    Checks the ``get_ohlc`` function by passing an invalid tick type.
     """
     with pytest.raises(ValueError):
         futures_market.get_ohlc(symbol="XBTUSDT", resolution="240", tick_type="fail")
