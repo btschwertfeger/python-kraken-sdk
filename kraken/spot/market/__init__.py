@@ -6,9 +6,11 @@
 
 """Module that implements the Kraken Spot market client"""
 
+import logging
 from binascii import crc32
+from collections import OrderedDict
 from functools import lru_cache
-from typing import Dict, List, Optional, Union
+from typing import Any, Coroutine, Dict, List, Optional, Union
 
 from ...base_api import KrakenBaseSpotAPI, defined, ensure_string
 from ..websocket import KrakenSpotWSClient
@@ -427,31 +429,36 @@ class Market(KrakenBaseSpotAPI):
         )
 
 
-class Orderbook(KrakenSpotWSClient):
+class SpotOrderBookClient(KrakenSpotWSClient):
     """
-    The Orderbook class inherts the subscribe function from the
-    KrakenSpotWSClient class. This function is used to subscribe to the
-    order book feed will initially send the current order book
-    and then send updates when anything changes.
+    The SpotOrderBookClient class inherit the subscribe function from the
+    KrakenSpotWSClient class. The subscribe function must be used to
+    subscribe to one or multiple order books. The feed will initially
+    send the current order book and then send updates when anything
+    changes.
+
+    NOTE: This class has a fixed depth.
+
+    References
+    - https://support.kraken.com/hc/en-us/articles/360027821131-WebSocket-API-v1-How-to-maintain-a-valid-order-book
+
+    - https://docs.kraken.com/websockets/#book-checksum
     """
 
-    def __init__(self: "Orderbook", depth: int = 10) -> None:
+    def __init__(self: "SpotOrderBookClient", depth: int = 10) -> None:
         super().__init__()
         self.__book: Dict[str, dict] = {}
         self.__depth: int = depth
 
-    async def on_message(self: "Orderbook", msg: Union[list, dict]) -> None:
+    async def on_message(self: "SpotOrderBookClient", msg: Union[list, dict]) -> None:
         """
         The on_message function is implemented in the KrakenSpotWSClient
         class and used as callback to receive all messages sent by the
         Kraken API.
         """
-        if "errorMessage" in msg:
-            print(msg)
-            return
-
-        if "event" in msg:
-            # ignore heartbeat / ping - pong messages
+        if any(key in msg for key in ("errorMessage", "event")):
+            # ignore heartbeat / ping - pong messages / any event message
+            # ignore errors since they are handled by the parent class
             return
 
         if not isinstance(msg, list):
@@ -461,7 +468,11 @@ class Orderbook(KrakenSpotWSClient):
 
         pair: str = msg[-1]
         if pair not in self.__book:
-            self.__book[pair] = {"bid": {}, "ask": {}, "valid": True}
+            self.__book[pair] = {
+                "bid": {},
+                "ask": {},
+                "valid": True,
+            }
 
         if "as" in msg[1]:
             # This will be triggered initially when the
@@ -479,7 +490,57 @@ class Orderbook(KrakenSpotWSClient):
 
             self.__validate_checksum(pair=pair, checksum=msg[1]["c"])
 
-    def get(self: "Orderbook", pair: str) -> Optional[dict]:
+        await self.on_book_update(pair=pair, message=msg)
+
+    async def on_book_update(
+        self: "SpotOrderBookClient", pair: str, message: list
+    ) -> None:
+        """
+        This function will be called every time the order book gets updated.
+        It needs to be overloaded.
+
+        :param pair: The currency pair of the order book that has
+            been updated.
+        :type pair: str
+        """
+
+    async def add_book(self: "SpotOrderBookClient", pairs: List[str]) -> None:
+        """
+        Add an order book to this client. The feed will be subscribed
+        and updates will be published to the :func:`on_book_update` function.
+
+        :param pairs: The pair(s) to subscribe to
+        :type pairs: List[str]
+        :param depth: The book depth
+        :type depth: int
+        """
+        await self.subscribe(
+            subscription={"name": "book", "depth": self.__depth}, pair=pairs
+        )
+
+    async def remove_book(self: "SpotOrderBookClient", pairs: List[str]) -> None:
+        """
+        Unsubscribe from a subscribed order book.
+
+        :param pairs: The pair(s) to unsubscribe from
+        :type pairs: List[str]
+        :param depth: The book depth
+        :type depth: int
+        """
+        await self.unsubscribe(
+            subscription={"name": "book", "depth": self.__depth}, pair=pairs
+        )
+        for pair in pairs:
+            del self.__book[pair]
+
+    @property
+    def depth(self: "SpotOrderBookClient") -> int:
+        """
+        Return the fixed depth of this order book client.
+        """
+        return self.__depth
+
+    def get(self: "SpotOrderBookClient", pair: str) -> Optional[dict]:
         """
         Returns the order book for a specific ``pair``.
 
@@ -490,7 +551,9 @@ class Orderbook(KrakenSpotWSClient):
         """
         return self.__book.get(pair)
 
-    def __update_book(self: "Orderbook", pair: str, side: str, snapshot: list) -> None:
+    def __update_book(
+        self: "SpotOrderBookClient", pair: str, side: str, snapshot: list
+    ) -> None:
         """
         This functions updates the local order book based on the
         information provided in ``data`` and assigns/update the
@@ -525,14 +588,14 @@ class Orderbook(KrakenSpotWSClient):
                 self.__book[pair][side].pop(price)
 
             if side == "ask":
-                self.__book[pair]["ask"] = dict(
+                self.__book[pair]["ask"] = OrderedDict(
                     sorted(self.__book[pair]["ask"].items(), key=self.get_first)[
                         : self.__depth
                     ]
                 )
 
             elif side == "bid":
-                self.__book[pair]["bid"] = dict(
+                self.__book[pair]["bid"] = OrderedDict(
                     sorted(
                         self.__book[pair]["bid"].items(),
                         key=self.get_first,
@@ -540,9 +603,11 @@ class Orderbook(KrakenSpotWSClient):
                     )[: self.__depth]
                 )
 
-    def __validate_checksum(self: "Orderbook", pair: str, checksum: str) -> None:
+    def __validate_checksum(
+        self: "SpotOrderBookClient", pair: str, checksum: str
+    ) -> None:
         """
-        Function that validates the checksum of the orderbook as described here
+        Function that validates the checksum of the order book as described here
         https://docs.kraken.com/websockets/#book-checksum.
 
         :param pair: The pair that's order book checksum should be validated.

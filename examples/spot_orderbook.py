@@ -7,15 +7,14 @@
 """
 This module provides an example on how to use the Spot websocket
 client of the python-kraken-sdk (https://github.com/btschwertfeger/python-kraken-sdk)
-to retrieve and maintain a valid Spot order book for a specific
-asset pair. It can be run directly without any credentials if the
+to retrieve and maintain a valid Spot order book for (a) specific
+asset pair(s). It can be run directly without any credentials if the
 python-kraken-sdk is installed.
 
     python3 -m pip install python-kraken-sdk
 
 The output when running this snippet looks like the following table and
-updates the book as soon as Kraken sent any order book update. The
-stdout refreshes every 0.1 seconds.
+updates the book as soon as Kraken sent any order book update.
 
 Bid         Volume               Ask         Volume
 27076.00000 (8.28552127)         27076.10000 (2.85897056)
@@ -31,65 +30,72 @@ Bid         Volume               Ask         Volume
 
 This can be the basis of an order book based trading strategy where
 realtime data and fast price movements are considered.
-
-References
-- https://support.kraken.com/hc/en-us/articles/360027821131-WebSocket-API-v1-How-to-maintain-a-valid-order-book
-- https://docs.kraken.com/websockets/#book-checksum
 """
 
 from __future__ import annotations
 
 import asyncio
-from typing import List, Optional
+from typing import Any, Dict, List, Tuple
 
-from kraken.spot import Orderbook
+from kraken.spot import SpotOrderBookClient
+
+
+class OrderBook(SpotOrderBookClient):
+    """
+    This is a wrapper class that is used to overload the :func:`on_book_update`
+    function. It can also be used as a base for trading strategy. Since the
+    :class:`SpotOrderBookClient` is derived from :class:`KrakenWSClient`
+    it can also be used to access the :func:`subscribe` function and any
+    other provided utility.
+    """
+
+    async def on_book_update(self: "OrderBook", pair: str, message: list) -> None:
+        """
+        This function is called every time the order book of ``pair`` gets
+        updated.
+
+        The ``pair`` parameter can be used to access the updated order book
+        as shown in the function body below.
+
+        :param pair: The currency pair of the updated order book
+        :type pair: str
+        :param message: The message sent by Kraken (not needed in most cases)
+        :type message: list
+        """
+        book: Dict[str, Any] = self.get(pair=pair)
+        bid: List[Tuple[str, str]] = list(book["bid"].items())
+        ask: List[Tuple[str, str]] = list(book["ask"].items())
+
+        print("Bid         Volume\t\t Ask         Volume")
+        for level in range(self.depth):
+            print(
+                f"{bid[level][0]} ({bid[level][1]}) \t {ask[level][0]} ({ask[level][1]})"
+            )
+
+        assert book["valid"]  # ensure that the checksum is valid.
 
 
 async def main() -> None:
     """
-    This is the actual main function where we define the depth of the
-    order book and also a pair. We could subscribe to multiple pairs,
-    but for simplicity only XBT/USD is coosen.
+    Here we depth of the order book and also a pair. We could
+    subscribe to multiple pairs, but for simplicity only XBT/USD is chosen.
 
-    After defined some constants, the order book class can be instantiated,
-    which receives the order book-related messages, after we subscribed
-    to the book feed.
+    The OrderBook class can be instantiated, which receives the order
+    book-related messages, after we subscribed to the book feed.
 
     Finally we need some "game loop" - so we create a while loop
-    that runs until the KrakenSpotWSClient class encounters some error
-    which will be indicated by the ``exception_occur`` flag. Within this
-    loop we print out the order book on the console - but this is the place
-    where some could implement or call an order book depending strategy.
+    that runs until the inherited attribute ``exception_occur``
+    is not True.
     """
-    DEPTH: int = 10  # we can also change the depth to 100
-    PAIR: str = "XBT/USD"
+    orderbook: OrderBook = OrderBook()
+    await orderbook.add_book(
+        pairs=["XBT/USD"]
+    )  # we can also subscribe to more currency pairs
 
-    orderbook: Orderbook = Orderbook(depth=DEPTH)
-    await orderbook.subscribe(
-        subscription={"name": "book", "depth": DEPTH},
-        pair=[PAIR],  # we can also subscribe to more currency pairs
-    )
+    await orderbook.add_book(pairs=["XBT/USD"])
 
     while not orderbook.exception_occur:
-        book: Optional[dict] = orderbook.get(PAIR)
-        if not book or len(book["bid"]) < DEPTH or len(book["ask"]) < DEPTH:
-            pass
-        else:
-            bid: List[dict] = sorted(
-                book["bid"].items(),
-                key=orderbook.get_first,  # type: ignore[arg-type]
-                reverse=True,
-            )
-            ask: List[dict] = sorted(book["ask"].items(), key=orderbook.get_first)  # type: ignore[arg-type]
-            print("Bid         Volume\t\t Ask         Volume")
-            for level in range(DEPTH):
-                print(
-                    f"{bid[level][0]} ({bid[level][1]}) \t {ask[level][0]} ({ask[level][1]})"
-                )
-            assert book["valid"]
-
-        # This following sleep statement is very important to not having a million calls a second.
-        await asyncio.sleep(0.1)
+        await asyncio.sleep(10)
 
 
 if __name__ == "__main__":
