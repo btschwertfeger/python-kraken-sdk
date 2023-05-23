@@ -72,7 +72,7 @@ def user_examples() -> None:
     print(user.get_wallets())
 
     print(user.get_subaccounts())
-    print(user.get_unwindqueue())
+    print(user.get_unwind_queue())
     print(user.get_notifications())
 
     print(user.get_open_positions())

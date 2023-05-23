@@ -45,7 +45,7 @@ def test_get_unwindqueue(futures_auth_user: User) -> None:
     """
     Checks the ``get_unwindqueue`` endpoint.
     """
-    assert is_success(futures_auth_user.get_unwindqueue())
+    assert is_success(futures_auth_user.get_unwind_queue())
 
 
 @pytest.mark.futures

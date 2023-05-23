@@ -174,7 +174,7 @@ class User(KrakenBaseFuturesAPI):
             method="GET", uri="/derivatives/api/v3/subaccounts", auth=True
         )
 
-    def get_unwindqueue(self: "User") -> dict:
+    def get_unwind_queue(self: "User") -> dict:
         """
         Retrieve information about the percentile of the open position in case of unwinding.
 
@@ -191,7 +191,7 @@ class User(KrakenBaseFuturesAPI):
 
             >>> from kraken.futures import User
             >>> user = User(key="api-key", secret="secret-key")
-            >>> user.get_unwindqueue()
+            >>> user.get_unwind_queue()
             {
                 'result': 'success',
                 'serverTime': '2023-04-04T18:05:01.328Z',
