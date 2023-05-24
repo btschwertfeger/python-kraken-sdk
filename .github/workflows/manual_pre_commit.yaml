@@ -8,7 +8,7 @@
 #       every PR.
 #
 
-name: Pre-Commit Manual
+name: PR Manual Pre-Commit
 
 on:
   workflow_dispatch:

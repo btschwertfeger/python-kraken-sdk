@@ -1,7 +1,7 @@
 #!make
 # -*- coding: utf-8 -*-
 # Copyright (C) 2023 Benjamin Thomas Schwertfeger
-# Github: https://github.com/btschwertfeger
+# GitHub: https://github.com/btschwertfeger
 
 PYTHON := python
 
@@ -19,7 +19,7 @@ help:
 ## build		Builds the python-kraken-sdk
 ##
 build:
-	$(PYTHON) -m pip wheel -w dist --no-deps .
+	$(PYTHON) -m build .
 
 rebuild: clean build
 
@@ -71,7 +71,8 @@ changelog:
 		--project python-kraken-sdk \
 		--token $(GHTOKEN)  \
 		--breaking-labels Breaking \
-		--enhancement-labels 'Feature,Enhancement' \
+		--enhancement-labels Feature \
+		--release-branch master \
 		--pr-label "Uncategorized merged pull requests:"
 
 ## clean		Clean the workspace

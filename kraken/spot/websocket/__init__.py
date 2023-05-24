@@ -6,7 +6,7 @@
 
 """Module that implements the kraken Spot websocket clients"""
 
-from __future__ import annotations  # to avoid circular import for type checking
+from __future__ import annotations
 
 import asyncio
 import json
@@ -15,7 +15,7 @@ import traceback
 from copy import deepcopy
 from random import random
 from time import time
-from typing import Any, List, Optional, Union
+from typing import Any, Callable, List, Optional, Union
 
 import websockets
 
@@ -248,7 +248,7 @@ class ConnectSpotWebsocket:
         Add a dictionary containing subscription information to list
         This is used to recover when the connection gets interrupted.
 
-        :param msg: The subcription
+        :param msg: The subscription
         :type msg: dict
 
         This function should only be called in
@@ -263,7 +263,7 @@ class ConnectSpotWebsocket:
         """
         Remove a dictionary containing subscription information from list.
 
-        :param msg: The subcription to remove
+        :param msg: The subscription to remove
         :type msg: dict
 
         This function should only be called in
@@ -348,7 +348,7 @@ class KrakenSpotWSClient(SpotWsClientCl):
                 subscription={"name": ticker},
                 pair=["XBTUSD", "DOT/EUR"]
             )
-            # from now on the on_message function receives the ficker feed
+            # from now on the on_message function receives the ticker feed
 
             while True:
                 await asyncio.sleep(6)
@@ -404,11 +404,11 @@ class KrakenSpotWSClient(SpotWsClientCl):
 
     def __init__(
         self: "KrakenSpotWSClient",
-        key: Optional[str] = "",
-        secret: Optional[str] = "",
-        url: Optional[str] = "",
-        callback: Any = None,
-        beta: Optional[bool] = False,
+        key: str = "",
+        secret: str = "",
+        url: str = "",
+        callback: Optional[Callable] = None,
+        beta: bool = False,
     ):
         super().__init__(key=key, secret=secret, url=url, sandbox=beta)
         self.__callback: Any = callback
@@ -458,14 +458,14 @@ class KrakenSpotWSClient(SpotWsClientCl):
         received via the on_message callback function.
 
         When accessing private endpoints and subscription feeds that need authentication
-        make shure, that the ``Access WebSockets API`` API key permission is set
+        make sure, that the ``Access WebSockets API`` API key permission is set
         in the users Kraken account.
 
         - https://docs.kraken.com/websockets-beta/#message-subscribe
 
-        :param subscribtion: The subscription message
+        :param subscription: The subscription message
         :type subscription: dict
-        :param pair: The pair to subcribe to
+        :param pair: The pair to subscribe to
         :type pair: List[str] | None, optional
 
         Initialize your client as described in :class:`kraken.spot.KrakenSpotWSClient` to
@@ -523,12 +523,12 @@ class KrakenSpotWSClient(SpotWsClientCl):
         received via the on_message callback function.
 
         When accessing private endpoints and subscription feeds that need authentication
-        make shure, that the ``Access WebSockets API`` API key permission is set
+        make sure, that the ``Access WebSockets API`` API key permission is set
         in the users Kraken account.
 
         - https://docs.kraken.com/websockets/#message-unsubscribe
 
-        :param subscribtion: The subscription to unsubscribe from
+        :param subscription: The subscription to unsubscribe from
         :type subscription: dict
         :param pair: The pair or list of pairs to unsubscribe
         :type pair: List[str], optional

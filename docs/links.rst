@@ -23,6 +23,10 @@
 .. |CodeQL badge| image:: https://github.com/btschwertfeger/Python-Kraken-SDK/actions/workflows/codeql.yaml/badge.svg?branch=master
    :target: https://github.com/btschwertfeger/Python-Kraken-SDK/actions/workflows/codeql.yaml
 
+.. |Typing badge| image:: https://img.shields.io/badge/typing-mypy-informational
+   :target: https://mypy-lang.org/
+   :alt: Typing: mypy
+
 .. |CI/CD badge| image:: https://github.com/btschwertfeger/Python-Kraken-SDK/actions/workflows/cicd.yaml/badge.svg?branch=master
    :target: https://github.com/btschwertfeger/Python-Kraken-SDK/actions/workflows/cicd.yaml
 
@@ -32,8 +36,8 @@
 .. |Release date badge| image:: https://shields.io/github/release-date/btschwertfeger/python-kraken-sdk
    :target: https://github.com/btschwertfeger/Python-Kraken-SDK
 
-.. |Release version badge| image:: https://shields.io/github/v/release/btschwertfeger/python-kraken-sdk?display_name=tag
-   :target: https://github.com/btschwertfeger/Python-Kraken-SDK
+.. |Release version badge| image:: https://img.shields.io/pypi/v/python-kraken-sdk
+   :target: https://pypi.org/project/python-kraken-sdk/
 
 .. |DOI badge| image:: https://zenodo.org/badge/510751854.svg
    :target: https://zenodo.org/badge/latestdoi/510751854

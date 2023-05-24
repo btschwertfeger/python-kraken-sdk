@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # Copyright (C) 2023 Benjamin Thomas Schwertfeger
-# Github: https://github.com/btschwertfeger
+# GitHub: https://github.com/btschwertfeger
 #
 
-"""Module that provides an excample usage for the Kraken Spot websocket client."""
+"""Module that provides an example usage for the Kraken Spot websocket client."""
 
 from __future__ import annotations
 
@@ -37,16 +37,14 @@ async def main() -> None:
     class Bot(KrakenSpotWSClient):
         """Can be used to create a custom trading strategy/bot"""
 
-        async def on_message(self: "Bot", event: Union[list, dict]) -> None:
-            """receives the websocket events"""
-            if "event" in event:
-                topic = event["event"]
-                if topic == "heartbeat":
-                    return
-                if topic == "pong":
+        async def on_message(self: "Bot", msg: Union[list, dict]) -> None:
+            """Receives the websocket messages"""
+            if isinstance(msg, dict) and "event" in msg:
+                topic = msg["event"]
+                if topic in ("heartbeat", "pong"):
                     return
 
-            print(event)
+            print(msg)
             # if condition:
             #     await self.create_order(
             #         ordertype='limit',
@@ -60,17 +58,17 @@ async def main() -> None:
             # you can also un/subscribe here using self.subscribe/self-unsubscribe
 
     # ___Public_Websocket_Feed_____
-    bot: Bot = Bot()  # only use this one if you dont need private feeds
+    bot: Bot = Bot()  # only use this one if you don't need private feeds
     # print(bot.public_sub_names) # list public subscription names
 
     await bot.subscribe(subscription={"name": "ticker"}, pair=["XBT/EUR", "DOT/EUR"])
     await bot.subscribe(subscription={"name": "spread"}, pair=["XBT/EUR", "DOT/EUR"])
     await bot.subscribe(subscription={"name": "book"}, pair=["BTC/EUR"])
-    # await bot.subscribe(subscription={ 'name': 'book', 'depth': 25}, pair=['BTC/EUR'])
-    # await bot.subscribe(subscription={ 'name': 'ohlc' }, pair=['BTC/EUR'])
-    # await bot.subscribe(subscription={ 'name': 'ohlc', 'interval': 15}, pair=['XBT/EUR', 'DOT/EUR'])
-    # await bot.subscribe(subscription={ 'name': 'trade' }, pair=['BTC/EUR'])
-    # await bot.subscribe(subscription={ 'name': '*' } , pair=['BTC/EUR'])
+    # await bot.subscribe(subscription={ "name": "book", "depth": 25}, pair=["BTC/EUR"])
+    # await bot.subscribe(subscription={ "name": "ohlc" }, pair=["BTC/EUR"])
+    # await bot.subscribe(subscription={ "name": "ohlc", "interval": 15}, pair=["XBT/EUR", "DOT/EUR"])
+    # await bot.subscribe(subscription={ "name": "trade" }, pair=["BTC/EUR"])
+    # await bot.subscribe(subscription={ "name": "*"} , pair=["BTC/EUR"])
 
     time.sleep(2)  # wait because unsubscribing is faster than subscribing ...
     # print(bot.active_public_subscriptions)
@@ -96,16 +94,12 @@ async def main() -> None:
 
 
 if __name__ == "__main__":
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
     try:
         asyncio.run(main())
     except KeyboardInterrupt:
         pass
         # the websocket client will send {'event': 'asyncio.CancelledError'} via on_message
-        # so you can handle the behaviour/next actions individually within you bot
-    finally:
-        loop.close()
+        # so you can handle the behavior/next actions individually within you bot
 
 # ============================================================
 # Alternative - as ContextManager:
@@ -124,8 +118,6 @@ if __name__ == "__main__":
 #         await asyncio.sleep(6)
 
 # if __name__ == "__main__":
-#     loop = asyncio.new_event_loop()
-#     asyncio.set_event_loop(loop)
 #     try:
 #         asyncio.run(main())
 #     except KeyboardInterrupt:

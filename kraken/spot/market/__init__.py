@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # Copyright (C) 2023 Benjamin Thomas Schwertfeger
-# Github: https://github.com/btschwertfeger
+# GitHub: https://github.com/btschwertfeger
 #
 
 """Module that implements the Kraken Spot market client"""
@@ -83,7 +83,7 @@ class Market(KrakenBaseSpotAPI):
 
             >>> from kraken.spot import Market
             >>> market = Market()
-            >>> market.get_assets(asset="DOT")
+            >>> market.get_assets(assets="DOT")
             {
                 'DOT': {
                     'aclass': 'currency',

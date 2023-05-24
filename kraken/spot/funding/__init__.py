@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # Copyright (C) 2023 Benjamin Thomas Schwertfeger
-# Github: https://github.com/btschwertfeger
+# GitHub: https://github.com/btschwertfeger
 #
 
 """Module that implements the Spot Funding client"""
@@ -78,7 +78,7 @@ class Funding(KrakenBaseSpotAPI):
                     'limit': False,
                     'gen-address': True
                 }, {
-                    'method': 'Stellar XLM (muxed)',
+                    'method': 'Stellar XLM Multi',
                     'limit': False,
                     'gen-address': True
                 }
@@ -138,7 +138,7 @@ class Funding(KrakenBaseSpotAPI):
         self: "Funding", asset: Optional[str] = None, method: Optional[str] = None
     ) -> List[dict]:
         """
-        Get information about the recent deposit status. The lookback period is 90 days and
+        Get information about the recent deposit status. The look back period is 90 days and
         only the last 25 deposits will be returned.
 
         Requires the ``Query funds`` and ``Deposit funds`` API key permissions.
@@ -221,7 +221,7 @@ class Funding(KrakenBaseSpotAPI):
         :type asset: str
         :param key: Withdrawal key name as set up in the user account
         :type key: str
-        :param amount: The amont to withdraw
+        :param amount: The amount to withdraw
         :type amount: str | int | float
 
         :return: Information about a possible withdraw including the fee and amount.
@@ -266,7 +266,7 @@ class Funding(KrakenBaseSpotAPI):
         :type asset: str
         :param key: Withdrawal key name as set up in the account
         :type key: str
-        :param amount: The amont to withdraw
+        :param amount: The amount to withdraw
         :type amount: str | int | float
         :return: The reference id of the withdraw
         :rtype: dict
@@ -340,7 +340,7 @@ class Funding(KrakenBaseSpotAPI):
     def cancel_withdraw(self: "Funding", asset: str, refid: str) -> dict:
         """
         Cancel a requested withdraw. This will only be successful if the withdraw
-        is not beeing processed so far.
+        is not being processed so far.
 
         Requires the ``Withdraw funds`` API key permissions.
 
@@ -388,7 +388,7 @@ class Funding(KrakenBaseSpotAPI):
         :type from_: str
         :param to_: The wallet to deposit to
         :type to_: str
-        :param amount: The amont to transfer
+        :param amount: The amount to transfer
         :type amount: str | int | float
         :return: The reference id
         :rtype: dict

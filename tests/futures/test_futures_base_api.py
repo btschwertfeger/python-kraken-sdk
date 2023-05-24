@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # Copyright (C) 2023 Benjamin Thomas Schwertfeger
-# Github: https://github.com/btschwertfeger
+# GitHub: https://github.com/btschwertfeger
 #
 
 """Module that checks the general Futures Base API class."""
@@ -20,7 +20,7 @@ def test_KrakenBaseFuturesAPI_without_exception() -> None:
     """
     Checks first if the expected error will be raised and than
     creates a new KrakenBaseFuturesAPI instance that do not raise
-    the custom Kraken exceptions. This new instance thant executes
+    the custom Kraken exceptions. This new instance than executes
     the same request and the returned response gets evaluated.
     """
     with pytest.raises(KrakenException.KrakenRequiredArgumentMissingError):

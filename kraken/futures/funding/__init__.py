@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # Copyright (C) 2023 Benjamin Thomas Schwertfeger
-# Github: https://github.com/btschwertfeger
+# GitHub: https://github.com/btschwertfeger
 
 """Module that implements the Kraken Futures Funding client"""
 
@@ -58,7 +58,7 @@ class Funding(KrakenBaseFuturesAPI):
 
     def get_historical_funding_rates(self, symbol: str) -> dict:
         """
-        Retrieve information about the histrical funding rates of a specific ``symbol``
+        Retrieve information about the historical funding rates of a specific ``symbol``
 
         - https://docs.futures.kraken.com/#http-api-trading-v3-api-historical-funding-rates-historicalfundingrates
 
@@ -72,7 +72,7 @@ class Funding(KrakenBaseFuturesAPI):
             :caption: Futures Funding: Get the historical funding rates
 
             >>> from kraken.futures import Funding
-            >>> Fnding().get_historical_funding_rates(symbol="PI_XBTUSD")
+            >>> Funding().get_historical_funding_rates(symbol="PI_XBTUSD")
             {
                 'rates': [
                     {
@@ -147,7 +147,7 @@ class Funding(KrakenBaseFuturesAPI):
             auth=True,
         )
 
-    def initiate_subccount_transfer(
+    def initiate_subaccount_transfer(
         self,
         amount: Union[str, int, float],
         fromAccount: str,
@@ -181,7 +181,7 @@ class Funding(KrakenBaseFuturesAPI):
 
             >>> from kraken.futures import Funding
             >>> funding = Funding(key="api-key", secret="secret-key")
-            >>> funding.initiate_subccount_transfer(
+            >>> funding.initiate_subaccount_transfer(
             ...     amount='2',
             ...     fromAccount='MyCashWallet',
             ...     fromUser='Subaccount1',

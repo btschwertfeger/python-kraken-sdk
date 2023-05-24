@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # Copyright (C) 2023 Benjamin Thomas Schwertfeger
-# Github: https://github.com/btschwertfeger
+# GitHub: https://github.com/btschwertfeger
 #
 
 """Module that implements the Kraken Futures websocket client"""
@@ -21,7 +21,7 @@ import websockets
 from ...exceptions import KrakenException
 
 if TYPE_CHECKING:
-    # to avaoid circular import for type checking
+    # to avoid circular import for type checking
     from ...futures import KrakenFuturesWSClient
 
 

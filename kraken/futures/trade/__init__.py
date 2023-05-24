@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # Copyright (C) 2023 Benjamin Thomas Schwertfeger
-# Github: https://github.com/btschwertfeger
+# GitHub: https://github.com/btschwertfeger
 #
 
 """Module that implements the Kraken Futures trade client"""
@@ -104,7 +104,7 @@ class Trade(KrakenBaseFuturesAPI):
 
     def create_batch_order(self: "Trade", batchorder_list: List[dict]) -> dict:
         """
-        Create multiple orders at once using the batch order endpoit.
+        Create multiple orders at once using the batch order endpoint.
 
         Requires the ``General API - Full Access`` permission in the API key settings.
 
@@ -201,7 +201,7 @@ class Trade(KrakenBaseFuturesAPI):
                 ]
             }
         """
-        batchorder = {"batchOrder": batchorder_list}
+        batchorder: dict = {"batchOrder": batchorder_list}
         return self._request(  # type: ignore[return-value]
             method="POST",
             uri="/derivatives/api/v3/batchorder",
@@ -224,7 +224,7 @@ class Trade(KrakenBaseFuturesAPI):
 
         .. code-block:: python
             :linenos:
-            :caption: Futures Trade: Cancell all open orders
+            :caption: Futures Trade: Cancel all open orders
 
             >>> from kraken.futures import Trade
             >>> trade = Trade(key="api-key", secret="secret-key")
@@ -364,7 +364,7 @@ class Trade(KrakenBaseFuturesAPI):
         :type orderId: str, optional
         :param cliOrdId: The client defined order id
         :type cliOrdId: str, optional
-        :param limitPrice: The new limitprice
+        :param limitPrice: The new limit price
         :type limitPrice: str | int | float None
         :param size: The new size of the position
         :type size: str | int | float, optional
@@ -496,7 +496,7 @@ class Trade(KrakenBaseFuturesAPI):
         :type limitPrice: str | int | float
         :param reduceOnly: Reduces existing positions if set to ``True``
         :type reduceOnly: bool, optional
-        :param stopPrice: Define a price when to exit the order. Required for specific ordertypes
+        :param stopPrice: Define a price when to exit the order. Required for specific order types
         :type stopPrice: str, optional
         :param triggerSignal: Define a trigger for specific orders (must be one of ``mark``, ``index``, ``last``)
         :type triggerSignal: str, optional

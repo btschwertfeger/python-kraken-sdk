@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # Copyright (C) 2023 Benjamin Thomas Schwertfeger
-# Github: https://github.com/btschwertfeger
+# GitHub: https://github.com/btschwertfeger
 #
 
 """Module that implements the Kraken Trade Spot client"""
@@ -110,7 +110,7 @@ class Trade(KrakenBaseSpotAPI):
             The price2 can also be set to absolut or relative changes.
                 * Prefixed using ``+`` or ``-`` defines the change in the quote asset
                 * Prefixed by # is the same as ``+`` and ``-`` but the sign is set automatically
-                * The percentate sign ``%`` can be used to define relative changes.
+                * The percentage sign ``%`` can be used to define relative changes.
         :type price2: str | int | float, optional
         :param truncate: If enabled: round the ``price`` and ``volume`` to Kraken's
             maximum allowed decimal places. See https://support.kraken.com/hc/en-us/articles/4521313131540
@@ -124,14 +124,14 @@ class Trade(KrakenBaseSpotAPI):
         :type leverage: str | int | float, optional
         :param reduce_only: Reduce existing orders (default: ``False``)
         :type reduce_only: bool, optional
-        :param stptype: Define what cancells the order, one of ``cancel-newest``,
+        :param stptype: Define what cancels the order, one of ``cancel-newest``,
             ``cancel-oldest``, ``cancel-both`` (default: ``cancel-newest``)
         :type stptype: str, optional
         :param oflags: Order flags like ``post``, ``fcib``, ``fciq``, ``nomp``,
-            ``viqc`` (see the referenced Kraken documentaion for more information)
+            ``viqc`` (see the referenced Kraken documentation for more information)
         :type oflags: str | List[str], optional
-        :param timeinforce: how long the order raimains in the orderbook, one of:
-            ``GTC``, ``IOC``, ``GTD`` (see the referenced Kraken documentaion for more information)
+        :param timeinforce: how long the order remains in the orderbook, one of:
+            ``GTC``, ``IOC``, ``GTD`` (see the referenced Kraken documentation for more information)
         :type timeinforce: str, optional
         :param displayvol: Define how much of the volume is visible in the order book (iceberg)
         :type displayvol: str | int | float, optional
@@ -142,7 +142,7 @@ class Trade(KrakenBaseSpotAPI):
         :type expiretm: str, optional
         :param close_ordertype: Conditional close order type, one of: ``limit``, ``stop-loss``,
             ``take-profit``, ``stop-loss-limit``, ``take-profit-limit``
-            (see the referenced Kraken documentaion for more information)
+            (see the referenced Kraken documentation for more information)
         :type close_ordertype: str, optional
         :param close_price: Conditional close price
         :type close_price: str | int | float, optional
@@ -268,7 +268,7 @@ class Trade(KrakenBaseSpotAPI):
             The price2 and close_price2 can also be set to absolut or relative changes.
                 * Prefixed using "+" or "-" defines the change in the quote asset
                 * Prefixed by # is the same as "+" and "-" but the sign is set automatically
-                * The the percentate sign "%" can be used to define relative changes.
+                * The the percentage sign "%" can be used to define relative changes.
             '''
             >>> trade.create_order(
             ...     ordertype="stop-loss-limit",
@@ -368,14 +368,14 @@ class Trade(KrakenBaseSpotAPI):
         validate: bool = False,
     ) -> dict:
         """
-        Create a batch of max 15 orders for a specifc asset pair.
+        Create a batch of max 15 orders for a specific asset pair.
 
         Requires the ``Create and modify orders`` permission in
         the API key settings.
 
         - https://docs.kraken.com/rest/#operation/addOrderBatch
 
-        :param orders: Dictionary of order objects (see the referenced Kraken documentaion for more information)
+        :param orders: Dictionary of order objects (see the referenced Kraken documentation for more information)
         :type orders: List[dict]
         :param pair: Asset pair to place the orders for
         :type pair: str
@@ -467,11 +467,11 @@ class Trade(KrakenBaseSpotAPI):
         :type price: str | int | float, optional
         :param price2: Set a new second price
         :type price2: str | int | float, optional
-        :param oflags: Order flags like ``post``, ``fcib``, ``fciq``, ``nomp``, ``viqc`` (see the referenced Kraken documentaion for more information)
+        :param oflags: Order flags like ``post``, ``fcib``, ``fciq``, ``nomp``, ``viqc`` (see the referenced Kraken documentation for more information)
         :type oflags: str | List[str], optional
-        :param deadline: (see the referenced Kraken documentaion for more information)
+        :param deadline: (see the referenced Kraken documentation for more information)
         :type deadline: string
-        :param cancel_response: See the referenced Kraken documentaion for more information
+        :param cancel_response: See the referenced Kraken documentation for more information
         :type cancel_response: bool, optional
         :param validate: Validate the order without placing on the market (default: ``False``)
         :type validate: bool, optional
@@ -587,7 +587,7 @@ class Trade(KrakenBaseSpotAPI):
 
         - https://docs.kraken.com/rest/#operation/cancelAllOrdersAfter
 
-        :param timeout: Optional The timeout in seconds, decativate by passing the default: ``0``
+        :param timeout: Optional The timeout in seconds, deactivate by passing the default: ``0``
         :type timeout: int, optional
         :return: Current time and trigger time
         :rtype: dict
@@ -651,7 +651,7 @@ class Trade(KrakenBaseSpotAPI):
     ) -> str:
         """
         Kraken only allows volume and price amounts to be specified with a specific number of
-        decimal places, and these varry depending on the currency pair used.
+        decimal places, and these vary depending on the currency pair used.
 
         This function converts an amount of a specific type and pair to a string that uses
         the correct number of decimal places.

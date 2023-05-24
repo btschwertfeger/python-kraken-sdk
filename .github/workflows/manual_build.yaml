@@ -7,7 +7,7 @@
 #       runs through. These is a requirement for a successfully PR.
 #
 
-name: Build Manual
+name: PR Manual Build
 
 on:
   workflow_dispatch:

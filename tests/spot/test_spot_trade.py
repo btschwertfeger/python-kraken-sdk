@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # Copyright (C) 2023 Benjamin Thomas Schwertfeger
-# Github: https://github.com/btschwertfeger
+# GitHub: https://github.com/btschwertfeger
 #
 
 """Module that implements the unit tests for the Spot trade client."""
@@ -102,7 +102,7 @@ def test_create_order(spot_auth_trade: Trade) -> None:
 def test_failing_create_order(spot_auth_trade: Trade) -> None:
     """
     Test that checks if the ``create_order`` function raises a ValueError
-    bevause of missing or invalid parameters.
+    because of missing or invalid parameters.
     > stop-loss-limit (and take-profit-limit) require a second price ``price2``)
     """
     with pytest.raises(ValueError):
@@ -190,7 +190,7 @@ def test_cancel_order(spot_auth_trade: Trade) -> None:
     Checks the ``cancel_order`` function by canceling an order.
 
     A KrakenException.KrakenPermissionDeniedError is expected since CI keys are
-    not allowd to trade/cancel/withdraw/stake.
+    not allowed to trade/cancel/withdraw/stake.
     """
     with pytest.raises(KrakenException.KrakenPermissionDeniedError):
         spot_auth_trade.cancel_order(txid="OB6JJR-7NZ5P-N5SKCB")
@@ -219,7 +219,7 @@ def test_cancel_all_orders_after_x(spot_auth_trade: Trade) -> None:
     Checks the ``cancel_all_orders_after_x`` function by validating its response data
     type.
 
-    THe KrakenException.KrakenPermissionDeniedError will be catched since the CI API keys are not
+    THe KrakenException.KrakenPermissionDeniedError will be caught since the CI API keys are not
     allowed to cancel orders.
     """
     with pytest.raises(KrakenException.KrakenPermissionDeniedError):

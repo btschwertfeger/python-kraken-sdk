@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # Copyright (C) 2023 Benjamin Thomas Schwertfeger
-# Github: https://github.com/btschwertfeger
+# GitHub: https://github.com/btschwertfeger
 #
 
 """Module that implements the Kraken Futures user client"""
@@ -174,7 +174,7 @@ class User(KrakenBaseFuturesAPI):
             method="GET", uri="/derivatives/api/v3/subaccounts", auth=True
         )
 
-    def get_unwindqueue(self: "User") -> dict:
+    def get_unwind_queue(self: "User") -> dict:
         """
         Retrieve information about the percentile of the open position in case of unwinding.
 
@@ -182,7 +182,7 @@ class User(KrakenBaseFuturesAPI):
 
         - https://docs.futures.kraken.com/#http-api-trading-v3-api-account-information-get-position-percentile-of-unwind-queue
 
-        :return: Information about unwindqueue
+        :return: Information about unwind queue
         :rtype: dict
 
         .. code-block:: python
@@ -191,7 +191,7 @@ class User(KrakenBaseFuturesAPI):
 
             >>> from kraken.futures import User
             >>> user = User(key="api-key", secret="secret-key")
-            >>> user.get_unwindqueue()
+            >>> user.get_unwind_queue()
             {
                 'result': 'success',
                 'serverTime': '2023-04-04T18:05:01.328Z',
@@ -827,7 +827,7 @@ class User(KrakenBaseFuturesAPI):
             >>> from kraken.futures import Trade
             >>> trade = Trade(key="api-key", secret="secret-key")
             >>> trade.set_trading_on_subaccount(
-            ...    subaccountUid="778387bh61b-f990-4128-16a7-gasdsdghasd",
+            ...    subaccountUid="778387bh61b-f990-4128-16a7-f4ab669a9b",
             ... )
             {
                "tradingEnabled": False
@@ -862,7 +862,7 @@ class User(KrakenBaseFuturesAPI):
             >>> from kraken.futures import Trade
             >>> trade = Trade(key="api-key", secret="secret-key")
             >>> trade.set_trading_on_subaccount(
-            ...    subaccountUid="778387bh61b-f990-4128-16a7-gasdsdghasd",
+            ...    subaccountUid="778387bh61b-f990-4128-16a7-f4ab669a9b",
             ...    trading_enabled=True
             ... )
             {
