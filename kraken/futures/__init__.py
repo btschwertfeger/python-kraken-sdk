@@ -5,8 +5,8 @@
 
 """This module provides the Kraken Futures clients"""
 # pylint: disable=unused-import
-from kraken.futures.funding import Funding
-from kraken.futures.market import Market
-from kraken.futures.trade import Trade
-from kraken.futures.user import User
-from kraken.futures.ws_client import KrakenFuturesWSClient
+from .funding import Funding
+from .market import Market
+from .trade import Trade
+from .user import User
+from .ws_client import KrakenFuturesWSClient

@@ -22,15 +22,6 @@ import urllib3
 from kraken.exceptions import KrakenException
 from kraken.spot import Funding, KrakenSpotWSClient, Market, Staking, Trade, User
 
-logging.basicConfig(
-    format="%(asctime)s %(module)s,line: %(lineno)d %(levelname)8s | %(message)s",
-    datefmt="%Y/%m/%d %H:%M:%S",
-    level=logging.INFO,
-)
-logging.getLogger().setLevel(logging.INFO)
-logging.getLogger("requests").setLevel(logging.WARNING)
-logging.getLogger("urllib3").setLevel(logging.WARNING)
-
 
 class TradingBot(KrakenSpotWSClient):
     """

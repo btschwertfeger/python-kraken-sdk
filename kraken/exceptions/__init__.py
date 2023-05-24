@@ -55,6 +55,7 @@ class KrakenException(Exception):
             "EGeneral:Invalid arguments:Index unavailable": self.KrakenInvalidArgumentsIndexUnavailableError,
             "EGeneral:Permission denied": self.KrakenPermissionDeniedError,
             "EGeneral:Unknown method": self.KrakenUnknownMethodError,
+            "EGeneral:Temporary lockout": self.KrakenTemporaryLockoutError,
             "EService:Unavailable": self.KrakenServiceUnavailableError,
             "EService:Market in cancel_only mode": self.KrakenMarketInOnlyCancelModeError,
             "EService:Market in post_only mode": self.KrakenMarketInOnlyPostModeError,
@@ -298,6 +299,10 @@ class KrakenException(Exception):
     @docstring_message
     class KrakenUnknownMethodError(Exception):
         """The endpoint or method is not known."""
+
+    @docstring_message
+    class KrakenTemporaryLockoutError(Exception):
+        """The account was temporary locked out."""
 
     # ? ____CUSTOM_EXCEPTIONS_________
     @docstring_message

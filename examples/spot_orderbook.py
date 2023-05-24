@@ -72,7 +72,7 @@ class OrderBook(SpotOrderBookClient):
                 f"{bid[level][0]} ({bid[level][1]}) \t {ask[level][0]} ({ask[level][1]})"
             )
 
-        assert book["valid"]  # ensure that the checksum is valid.
+        assert book["valid"]  # ensure that the checksum is valid
 
 
 async def main() -> None:
@@ -84,18 +84,19 @@ async def main() -> None:
     book-related messages, after we subscribed to the book feed.
 
     Finally we need some "game loop" - so we create a while loop
-    that runs until the inherited attribute ``exception_occur``
-    is not True.
+    that runs as long as there is no error.
     """
     orderbook: OrderBook = OrderBook()
-    await orderbook.add_book(
-        pairs=["XBT/USD"]
-    )  # we can also subscribe to more currency pairs
 
-    await orderbook.add_book(pairs=["XBT/USD"])
+    await orderbook.add_book(
+        pairs=["XBT/USD"]  # we can also subscribe to more currency pairs
+    )
 
     while not orderbook.exception_occur:
         await asyncio.sleep(10)
+
+    # If this here gets executed, the Websocket connection had some
+    # serious troubles.
 
 
 if __name__ == "__main__":

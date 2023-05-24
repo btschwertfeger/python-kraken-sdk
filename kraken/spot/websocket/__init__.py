@@ -39,7 +39,8 @@ class ConnectSpotWebsocket:
     :type private: bool, optional
     """
 
-    MAX_RECONNECT_NUM: int = 10
+    MAX_RECONNECT_NUM: int = 7
+    LOG: logging.Logger = logging.getLogger(__name__)
 
     def __init__(
         self: "ConnectSpotWebsocket",
@@ -61,7 +62,7 @@ class ConnectSpotWebsocket:
         self.__socket: Optional[Any] = None
         self.__subscriptions: List[dict] = []
 
-        asyncio.ensure_future(self.__run_forever(), loop=asyncio.get_running_loop())
+        self.task: asyncio.Task = asyncio.create_task(self.__run_forever())
 
     @property
     def subscriptions(self: "ConnectSpotWebsocket") -> list:
@@ -79,12 +80,12 @@ class ConnectSpotWebsocket:
         self.__ws_conn_details = (
             None if not self.__is_auth else self.__client.get_ws_token()
         )
-        logging.debug(f"Websocket token: {self.__ws_conn_details}")
+        self.LOG.debug(f"Websocket token: {self.__ws_conn_details}")
 
         async with websockets.connect(  # pylint: disable=no-member
             f"wss://{self.__ws_endpoint}", ping_interval=30
         ) as socket:
-            logging.info("Websocket connected!")
+            self.LOG.info("Websocket connected!")
             self.__socket = socket
 
             if not event.is_set():
@@ -100,14 +101,14 @@ class ConnectSpotWebsocket:
                 except asyncio.TimeoutError:  # important
                     await self.send_ping()
                 except asyncio.CancelledError:
-                    logging.exception("asyncio.CancelledError")
+                    self.LOG.exception("asyncio.CancelledError")
                     keep_alive = False
                     await self.__callback({"error": "asyncio.CancelledError"})
                 else:
                     try:
                         msg: dict = json.loads(_msg)
                     except ValueError:
-                        logging.warning(_msg)
+                        self.LOG.warning(_msg)
                     else:
                         if "event" in msg:
                             if msg["event"] == "subscriptionStatus" and "status" in msg:
@@ -119,12 +120,20 @@ class ConnectSpotWebsocket:
                                     elif msg["status"] == "unsubscribed":
                                         self.__remove_subscription(msg)
                                     elif msg["status"] == "error":
-                                        logging.warning(msg)
+                                        self.LOG.warning(msg)
                                 except AttributeError:
                                     pass
+
                         await self.__callback(msg)
 
     async def __run_forever(self: "ConnectSpotWebsocket") -> None:
+        """
+        This function ensures the reconnects.
+
+        todo: This is stupid. There must be a better way for passing
+              the raised exception to the client class - not
+              through this ``exception_occur`` flag
+        """
         try:
             while True:
                 await self.__reconnect()
@@ -133,35 +142,37 @@ class ConnectSpotWebsocket:
                 {"error": "kraken.exceptions.KrakenException.MaxReconnectError"}
             )
         except Exception as exc:
-            logging.error(f"{exc}: {traceback.format_exc()}")
+            traceback_: str = traceback.format_exc()
+            logging.error(f"{exc}: {traceback_}")
+            await self.__callback({"error": traceback_})
         finally:
             self.__client.exception_occur = True
 
     async def __reconnect(self: "ConnectSpotWebsocket") -> None:
-        logging.info("Websocket start connect/reconnect")
+        self.LOG.info("Websocket start connect/reconnect")
 
         self.__reconnect_num += 1
         if self.__reconnect_num >= self.MAX_RECONNECT_NUM:
+            self.LOG.error(
+                "The KrakenSpotWebsocketClient encountered to many reconnects!"
+            )
             raise KrakenException.MaxReconnectError()
 
         reconnect_wait: float = self.__get_reconnect_wait(self.__reconnect_num)
-        logging.debug(
-            f"asyncio sleep reconnect_wait={reconnect_wait} s reconnect_num={self.__reconnect_num}"
+        self.LOG.debug(
+            "asyncio sleep reconnect_wait={reconnect_wait} s reconnect_num={self.__reconnect_num}"
         )
         await asyncio.sleep(reconnect_wait)
-        logging.debug("asyncio sleep done")
+
         event: asyncio.Event = asyncio.Event()
+        tasks: List[asyncio.Task] = [
+            asyncio.create_task(self.__recover_subscriptions(event)),
+            asyncio.create_task(self.__run(event)),
+        ]
 
-        tasks: dict = {
-            asyncio.ensure_future(
-                self.__recover_subscriptions(event)
-            ): self.__recover_subscriptions,
-            asyncio.ensure_future(self.__run(event)): self.__run,
-        }
-
-        while set(tasks.keys()):
+        while True:
             finished, pending = await asyncio.wait(
-                tasks.keys(), return_when=asyncio.FIRST_EXCEPTION
+                tasks, return_when=asyncio.FIRST_EXCEPTION
             )
             exception_occur: bool = False
             for task in finished:
@@ -169,23 +180,23 @@ class ConnectSpotWebsocket:
                     exception_occur = True
                     traceback.print_stack()
                     message: str = f"{task} got an exception {task.exception()}\n {task.get_stack()}"
-                    logging.warning(message)
+                    self.LOG.warning(message)
                     for process in pending:
-                        logging.warning(f"pending {process}")
+                        self.LOG.warning(f"pending {process}")
                         try:
                             process.cancel()
                         except asyncio.CancelledError:
-                            logging.exception("asyncio.CancelledError")
-                        logging.warning("Cancel OK")
+                            self.LOG.exception("asyncio.CancelledError")
+                        # self.LOG.warning("Cancel OK")
                     await self.__callback({"error": message})
             if exception_occur:
                 break
-        logging.warning("reconnect over")
+        self.LOG.warning("reconnect over")
 
     async def __recover_subscriptions(
         self: "ConnectSpotWebsocket", event: asyncio.Event
     ) -> None:
-        logging.info(
+        self.LOG.info(
             f'Recover {"auth" if self.__is_auth else "public"} subscriptions {self.__subscriptions} waiting.'
         )
         await event.wait()
@@ -201,9 +212,9 @@ class ConnectSpotWebsocket:
                 cpy["subscription"]["token"] = self.__ws_conn_details["token"]
                 private = True
             await self.send_message(cpy, private=private)
-            logging.info(f"{sub} OK")
+            self.LOG.info(f"{sub} OK")
 
-        logging.info(
+        self.LOG.info(
             f'Recovering {"auth" if self.__is_auth else "public"} subscriptions {self.__subscriptions} done.'
         )
 
@@ -292,7 +303,7 @@ class ConnectSpotWebsocket:
         ):  # private endpoint
             sub["subscription"] = {"name": msg["subscription"]["name"]}
         else:
-            logging.warning(
+            self.LOG.warning(
                 "Feed not implemented. Please contact the python-kraken-sdk package author."
             )
         return sub
@@ -354,12 +365,10 @@ class KrakenSpotWSClient(SpotWsClientCl):
                 await asyncio.sleep(6)
 
         if __name__ == '__main__':
-            loop = asyncio.new_event_loop()
-            asyncio.set_event_loop(loop)
             try:
                 asyncio.run(main())
             except KeyboardInterrupt:
-                loop.close()
+                pass
 
     .. code-block:: python
         :linenos:
@@ -387,15 +396,13 @@ class KrakenSpotWSClient(SpotWsClientCl):
 
 
         if __name__ == "__main__":
-            loop = asyncio.new_event_loop()
-            asyncio.set_event_loop(loop)
             try:
                 asyncio.run(main())
             except KeyboardInterrupt:
                 pass
-            finally:
-                loop.close()
     """
+
+    LOG: logging.Logger = logging.getLogger(__name__)
 
     PROD_ENV_URL: str = "ws.kraken.com"
     AUTH_PROD_ENV_URL: str = "ws-auth.kraken.com"
@@ -445,7 +452,7 @@ class KrakenSpotWSClient(SpotWsClientCl):
         if self.__callback is not None:
             await self.__callback(msg)
         else:
-            logging.warning("Received event but no callback is defined.")
+            self.LOG.warning("Received event but no callback is defined.")
             print(msg)
 
     async def subscribe(

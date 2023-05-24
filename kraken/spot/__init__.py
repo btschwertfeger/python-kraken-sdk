@@ -6,9 +6,9 @@
 """Module that provides the Spot REST clients and utility functions."""
 
 # pylint: disable=unused-import
-from kraken.spot.funding import Funding
-from kraken.spot.market import Market, SpotOrderBookClient
-from kraken.spot.staking import Staking
-from kraken.spot.trade import Trade
-from kraken.spot.user import User
-from kraken.spot.websocket import KrakenSpotWSClient
+from .funding import Funding
+from .market import Market, SpotOrderBookClient
+from .staking import Staking
+from .trade import Trade
+from .user import User
+from .websocket import KrakenSpotWSClient
