@@ -35,21 +35,20 @@ class KrakenPermissionDeniedError(Exception):
     asyncio.CancelledError will be raised.
     """
 
-    def __init__(self):
+    def __init__(self: "KrakenPermissionDeniedError") -> None:
         try:
-            pending = asyncio.all_tasks()
+            pending: set = asyncio.all_tasks()
             for task in pending:
                 task.cancel()
 
-            loop = asyncio.get_event_loop()
-            loop.run(self.kill_pending_tasks(pending))
+            asyncio.run(self.kill_pending_tasks(pending))
         except AttributeError:
             # AttributeError: '_UnixSelectorEventLoop' object has no attribute 'run'
             # when there is no event loop
             pass
 
     @classmethod
-    async def kill_pending_tasks(cls, tasks) -> None:
+    async def kill_pending_tasks(cls, tasks: set) -> None:
         await asyncio.gather(tasks, return_exceptions=True)
 
 
@@ -63,15 +62,15 @@ class Bot(KrakenSpotWSClient):
         """
         # The following comments are only used for debugging while
         # implementing tests.
-        # log = ""
-        # try:
-        #     with open("spot_ws_log.log", "r", encoding="utf-8") as f:
-        #         log = f.read()
-        # except FileNotFoundError:
-        #     pass
+        log = ""
+        try:
+            with open("spot_ws_log.log", "r", encoding="utf-8") as f:
+                log = f.read()
+        except FileNotFoundError:
+            pass
 
-        # with open("spot_ws_log.log", "w", encoding="utf-8") as f:
-        #     f.write(log + "\n" + str(event))
+        with open("spot_ws_log.log", "w", encoding="utf-8") as f:
+            f.write(log + "\n" + str(event))
 
         if isinstance(event, dict) and "error" in event.keys():
             if "KrakenPermissionDeniedError" in event["error"]:
@@ -82,7 +81,7 @@ class WebsocketTests(unittest.TestCase):
     def setUp(self: "WebsocketTests") -> None:
         self.__key: str = os.getenv("SPOT_API_KEY")
         self.__secret: str = os.getenv("SPOT_SECRET_KEY")
-        self.__full_ws_access: str = os.getenv("FULLACCESS") == "True"
+        self.__full_ws_access: str = str(os.getenv("FULLACCESS", False))
 
     def __create_loop(self: "WebsocketTests", coro: Callable) -> None:
         """Function that creates an event loop."""
@@ -91,15 +90,16 @@ class WebsocketTests(unittest.TestCase):
         asyncio.run(coro())
         loop.close()
 
-    async def __wait(self: "WebsocketTests", seconds: Optional[float] = 1.0) -> None:
+    async def __wait(self: "WebsocketTests", seconds: float = 1.0) -> None:
         """Function that realizes the wait for ``seconds``."""
-        start: int = time.time()
+        start: float = time.time()
         while time.time() - seconds < start:
             await asyncio.sleep(0.2)
         return
 
     @pytest.mark.spot
     @pytest.mark.spot_websocket
+    @pytest.mark.selection
     def test_create_public_bot(self: "WebsocketTests") -> None:
         """
         Checks if the websocket client can be instantiated.
@@ -107,7 +107,7 @@ class WebsocketTests(unittest.TestCase):
 
         async def create_bot() -> None:
             bot: Bot = Bot()
-            await self.__wait(seconds=2.5)
+            await self.__wait(seconds=5)
 
         self.__create_loop(coro=create_bot)
 
@@ -119,7 +119,7 @@ class WebsocketTests(unittest.TestCase):
         Checks if the authenticated websocket client can be instantiated.
         """
 
-        async def create_bot():
+        async def create_bot() -> None:
             if self.__full_ws_access:
                 Bot(key=self.__key, secret=self.__secret)
                 await self.__wait(seconds=2.5)

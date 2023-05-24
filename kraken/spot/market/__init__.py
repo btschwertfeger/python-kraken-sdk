@@ -489,7 +489,7 @@ class SpotOrderBookClient(KrakenSpotWSClient):
                 elif "b" in data:
                     self.__update_book(pair=pair, side="bid", snapshot=data["b"])
                 if "c" in data:
-                    checksum = msg[1]["c"]
+                    checksum = data["c"]
 
             self.__validate_checksum(pair=pair, checksum=checksum)
 
