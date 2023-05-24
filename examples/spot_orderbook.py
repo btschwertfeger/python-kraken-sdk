@@ -90,7 +90,7 @@ class Orderbook(KrakenSpotWSClient):
             self.__update_book(pair=pair, side="bid", snapshot=msg[1]["bs"])
         else:
             checksum: Optional[str] = None
-                
+
             # This is executed every time a new update comes in.
             for data in msg[1 : len(msg) - 2]:
                 if "a" in data:
@@ -99,7 +99,7 @@ class Orderbook(KrakenSpotWSClient):
                     self.__update_book(pair=pair, side="bid", snapshot=data["b"])
                 if "c" in data:
                     checksum = data["c"]
-                    
+
             self.__validate_checksum(pair=pair, checksum=checksum)
 
     def get(self: "Orderbook", pair: str) -> Optional[dict]:
