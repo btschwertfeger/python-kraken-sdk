@@ -3,4 +3,7 @@
 # Copyright (C) 2023 Benjamin Thomas Schwertfeger
 # GitHub: https://github.com/btschwertfeger
 #
-# This file is required for the CI/CD codecov workflow.
+
+"""
+Module that implements the unit tests regarding the Spot Orderbook client.
+"""

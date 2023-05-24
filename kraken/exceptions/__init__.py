@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # Copyright (C) 2023 Benjamin Thomas Schwertfeger
-# Github: https://github.com/btschwertfeger
+# GitHub: https://github.com/btschwertfeger
 
 
 """Module that provides custom exceptions for the python-kraken-sdk"""
@@ -85,7 +85,7 @@ class KrakenException(Exception):
             "EFunding:Unknown withdraw key": self.KrakenUnknownWithdrawKeyError,
             "EFunding:Invalid amount": self.KrakenInvalidAmountError,
             "EFunding:Invalid staking method": self.KrakenInvalidStakingMethodError,
-            "EFunding:Too many addresses": self.KrakenToManyAdressesError,
+            "EFunding:Too many addresses": self.KrakenToManyAddressesError,
             "EFunding:Unknown asset": self.KrakenUnknownAssetError,
             "EQuery:Unknown asset": self.KrakenUnknownAssetError,
             "EQuery:Unknown asset pair": self.KrakenUnknownAssetPairError,
@@ -292,8 +292,8 @@ class KrakenException(Exception):
         """The order for edit could not be found."""
 
     @docstring_message
-    class KrakenToManyAdressesError(Exception):
-        """To many adresses specified."""
+    class KrakenToManyAddressesError(Exception):
+        """To many addresses specified."""
 
     @docstring_message
     class KrakenUnknownMethodError(Exception):

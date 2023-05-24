@@ -103,12 +103,12 @@ class SpotWsClientCl(KrakenBaseSpotAPI):
             ``ordertype`` one of ``stop-loss``, ``stop-loss-limit``, ``take-profit``, and ``take-profit-limit``
         :type price: str | int | float, optional
         :param price2: The second price for ``stop-loss-limit`` and ``take-profit-limit``
-            orders (see the referenced Kraken documentaion for more information)
+            orders (see the referenced Kraken documentation for more information)
         :type price2: str | int | float, optional
         :param leverage: The leverage
         :type leverage: str | int | float, optional
         :param oflags: Order flags like ``post``, ``fcib``, ``fciq``, ``nomp``, ``viqc``
-            (see the referenced Kraken documentaion for more information)
+            (see the referenced Kraken documentation for more information)
         :type oflags: str | List[str], optional
         :param starttm: Unix timestamp or seconds defining the start time (default: ``"0"``)
         :type starttm: str | int, optional
@@ -129,8 +129,8 @@ class SpotWsClientCl(KrakenBaseSpotAPI):
         :type close_price: str | int | float, optional
         :param close_price2: Second conditional close price
         :type close_price2: str | int | float, optional
-        :param timeinforce: How long the order raimains in the orderbook, one of: ``GTC``, ``IOC``,
-            ``GTD`` (see the referenced Kraken documentaion for more information)
+        :param timeinforce: How long the order remains in the orderbook, one of: ``GTC``, ``IOC``,
+            ``GTD`` (see the referenced Kraken documentation for more information)
         :type timeinforce: str, optional
         :raises ValueError: If input is not correct
         :rtype: None
@@ -296,7 +296,7 @@ class SpotWsClientCl(KrakenBaseSpotAPI):
 
         - https://docs.kraken.com/websockets/#message-cancelOrder
 
-        :param txid: Transaction id or list of txids or comma delimted list as string
+        :param txid: Transaction id or list of txids or comma delimited list as string
         :type txid: str | List[str]
         :raises ValueError: If the websocket is not connected or the connection is not authenticated
         :return: None

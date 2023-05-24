@@ -4,10 +4,9 @@ Introduction
 =============
 
 |GitHub badge| |License badge| |PyVersions badge| |Downloads badge|
-|CodeQL badge| |CI/CD badge| |codecov badge|
+|CodeQL badge| |CI/CD badge| |codecov badge| |Typing badge|
 |Release date badge| |Release version badge| |DOI badge|
 
-|Docs stable| |Docs latest|
 
 **This is the documentation of the unofficial Python SDK to interact with the Kraken cryptocurrency exchange. Payward Ltd. and Kraken are in
 no way associated with the authors of this module and documentation.**
@@ -47,7 +46,6 @@ General:
 - responsive error handling, custom exceptions and logging
 - extensive examples
 - all clients can be used as context manager
-- coding standards like snake case are not always followed to maintain the parameter naming convention of the Kraken API
 
 Important Notice
 -----------------
@@ -59,13 +57,14 @@ Troubleshooting
 ---------------
 - Check if you downloaded and installed the **latest version** of the python-kraken-sdk.
 - Check the **permissions of your API keys** and the required permissions on the respective endpoints.
-- If you get some cloudflare or **rate limit errors**, please check your Kraken Tier level and maybe apply for a higher rank if required.
+- If you get some Cloudflare or **rate limit errors**, please check your Kraken Tier level and maybe apply for a higher rank if required.
 - **Use different API keys for different algorithms**, because the nonce calculation is based on timestamps and a sent nonce must always be the highest nonce ever sent of that API key. Having multiple algorithms using the same keys will result in invalid nonce errors.
 - Feel free to open an issue at `python-kraken-sdk/issues`_.
 
 
 References
 ----------
+- https://python-kraken-sdk.readthedocs.io/en/stable
 - https://docs.kraken.com/rest
 - https://docs.kraken.com/websockets
 - https://docs.futures.kraken.com

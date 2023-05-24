@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # Copyright (C) 2023 Benjamin Thomas Schwertfeger
-# Github: https://github.com/btschwertfeger
+# GitHub: https://github.com/btschwertfeger
 #
 
 """Module that implements the unit tests for the Spot staking client."""
@@ -61,7 +61,7 @@ def test_unstake_asset(spot_auth_staking: Staking) -> None:
     Checks if the ``unstake_asset`` endpoints returns a response that does
     not contain the error key.
 
-    This test is skipped since unstakign is not wanted in the CI.
+    This test is skipped since unstaking is not wanted in the CI.
     """
     try:
         assert is_not_error(

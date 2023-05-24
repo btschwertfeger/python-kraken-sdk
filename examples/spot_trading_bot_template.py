@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # Copyright (C) 2023 Benjamin Thomas Schwertfeger
-# Github: https://github.com/btschwertfeger
+# GitHub: https://github.com/btschwertfeger
 
 
 """Module that provides an example Futures trading bot data structure."""
@@ -106,7 +106,7 @@ class TradingBot(KrakenSpotWSClient):
 
         # more can be found in the documentation
 
-    # add more functions to customize the strading strategy
+    # add more functions to customize the trading strategy
     # ...
 
     def save_exit(self: "TradingBot", reason: Optional[str] = "") -> None:
@@ -143,14 +143,11 @@ class ManagedBot:
         if not self.__check_credentials():
             sys.exit(1)
 
-        loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(loop)
         try:
             asyncio.run(self.__main())
         except KeyboardInterrupt:
             pass
         finally:
-            loop.close()
             if self.__trading_strategy is not None:
                 self.__trading_strategy.save_exit(reason="Asyncio loop left")
 
@@ -161,7 +158,7 @@ class ManagedBot:
         run the loop.
 
         This variable `exception_occur` which is an attribute of the KrakenSpotWSClient
-        can be set individually but is also beeing set to True if the websocket connection
+        can be set individually but is also being set to True if the websocket connection
         has some fatal error. This is used to exit the asyncio loop.
         """
         self.__trading_strategy = TradingBot(config=self.__config)
@@ -210,9 +207,11 @@ class ManagedBot:
             logging.error("Invalid credentials!")
             return False
 
-    def save_exit(self: "ManagedBot", reason: Optional[str] = "") -> None:
-        """Invoces the save exit funtion of the trading strategy"""
-        self.__trading_strategy.save_exit(reason=reason)
+    def save_exit(self: "ManagedBot", reason: str = "") -> None:
+        """Invoke the save exit function of the trading strategy"""
+        print(f"Save exit triggered - {reason}")
+        if self.__trading_strategy is not None:
+            self.__trading_strategy.save_exit(reason=reason)
 
 
 def main() -> None:

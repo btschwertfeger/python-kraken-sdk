@@ -33,9 +33,10 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
+          python -m pip install build
 
       - name: Build the package
-        run: python -m pip wheel --no-deps .
+        run: python -m build --outdir .
 
       - name: Install the package
         run: python -m pip install python_kraken_sdk*.whl

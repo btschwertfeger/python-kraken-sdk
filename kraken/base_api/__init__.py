@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # Copyright (C) 2023 Benjamin Thomas Schwertfeger
-# Github: https://github.com/btschwertfeger
+# GitHub: https://github.com/btschwertfeger
 
 """Module that implements the base classes for all Spot and Futures clients"""
 
@@ -217,7 +217,7 @@ class KrakenBaseSpotAPI:
         :type timeout: int
         :param auth: If the requests needs authentication (default: ``True``)
         :type auth: bool
-        :param params: The query or post prameter of the request (default: ``None``)
+        :param params: The query or post parameter of the request (default: ``None``)
         :type params: Optional[dict]
         :param do_json: If the ``params`` must be "jsonified" - in case of nested dict style
         :type do_json: bool
@@ -235,8 +235,7 @@ class KrakenBaseSpotAPI:
         data_json: str = ""
         if method in ("GET", "DELETE"):
             if params:
-                strl: List[str] = [f"{key}={params[key]}" for key in sorted(params)]
-                data_json = "&".join(strl)
+                data_json = "&".join([f"{key}={params[key]}" for key in sorted(params)])
                 uri += f"?{data_json}".replace(" ", "%20")
 
         headers: dict = {}
@@ -266,7 +265,7 @@ class KrakenBaseSpotAPI:
                     "Content-Type": content_type,
                     "API-Key": self.__key,
                     "API-Sign": self._get_kraken_signature(
-                        urlpath=f"{self.API_V}{uri}",
+                        url_path=f"{self.API_V}{uri}",
                         data=sign_data,
                         nonce=params["nonce"],
                     ),
@@ -302,14 +301,14 @@ class KrakenBaseSpotAPI:
         )
 
     def _get_kraken_signature(
-        self: "KrakenBaseSpotAPI", urlpath: str, data: str, nonce: int
+        self: "KrakenBaseSpotAPI", url_path: str, data: str, nonce: int
     ) -> str:
         """
-        Creates the signature of the data. This is requred for authenticated requests
+        Creates the signature of the data. This is required for authenticated requests
         to verify the user.
 
-        :param urlpath: The endpont including the api version
-        :type urlpath: str
+        :param url_path: The endpoint including the api version
+        :type url_path: str
         :param data: Data of the request to sign, including the nonce.
         :type data: str
         :param nonce: The nonce to sign with
@@ -320,7 +319,7 @@ class KrakenBaseSpotAPI:
         return base64.b64encode(
             hmac.new(
                 base64.b64decode(self.__secret),
-                urlpath.encode()
+                url_path.encode()
                 + hashlib.sha256((str(nonce) + data).encode()).digest(),
                 hashlib.sha512,
             ).digest()
@@ -330,13 +329,13 @@ class KrakenBaseSpotAPI:
         self: "KrakenBaseSpotAPI", response: requests.Response, return_raw: bool = False
     ) -> Union[dict, list, requests.Response]:
         """
-        Checkes the response, handles the error (if exists) and returns the response data.
+        Checks the response, handles the error (if exists) and returns the response data.
 
         :param response: The response of a request, requested by the requests module
         :type response: requests.Response
         :param return_raw: Defines if the return should be the raw response if there is no error
         :type data: bool
-        :return: The reponse in raw or parsed to dict
+        :return: The response in raw or parsed to dict
         :rtype: Union[dict, list, requests.Response]
         """
         if not self.__use_custom_exceptions:
@@ -444,9 +443,9 @@ class KrakenBaseFuturesAPI:
         :type timeout: int
         :param auth: If the request needs authentication (default: ``True``)
         :type auth: bool
-        :param post_params: The query prameter of the request (default: ``None``)
+        :param post_params: The query parameter of the request (default: ``None``)
         :type post_params: Optional[dict]
-        :param query_params: The query prameter of the request (default: ``None``)
+        :param query_params: The query parameter of the request (default: ``None``)
         :type query_params: Optional[dict]
         :param do_json: If the ``post_params`` must be "jsonified" - in case of nested dict style
         :type do_json: bool
@@ -536,10 +535,10 @@ class KrakenBaseFuturesAPI:
         self: "KrakenBaseFuturesAPI", endpoint: str, data: str, nonce: str
     ) -> str:
         """
-        Creates the signature of the data. This is requred for authenticated requests
+        Creates the signature of the data. This is required for authenticated requests
         to verify the user.
 
-        :param endpoint: The endpont including the api version
+        :param endpoint: The endpoint including the api version
         :type endpoint: str
         :param data: Data of the request to sign, including the nonce.
         :type data: dict
@@ -565,7 +564,7 @@ class KrakenBaseFuturesAPI:
         return_raw: bool = False,
     ) -> Union[dict, requests.Response]:
         """
-        Checkes the response, handles the error (if exists) and returns the response data.
+        Checks the response, handles the error (if exists) and returns the response data.
 
         :param response: The response of a request, requested by the requests module
         :type response: requests.Response

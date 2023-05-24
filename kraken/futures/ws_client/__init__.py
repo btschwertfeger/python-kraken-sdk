@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # Copyright (C) 2023 Benjamin Thomas Schwertfeger
-# Github: https://github.com/btschwertfeger
+# GitHub: https://github.com/btschwertfeger
 #
 
 """Provides the KrakenWsClientCl class to use the Kraken Futures websockets."""
@@ -33,9 +33,9 @@ class KrakenFuturesWSClient(KrakenBaseFuturesAPI):
     :type key: str, optional
     :param secret: The Kraken Futures Secret key to access private endpoints
     :type secret: str, optional
-    :param url: Set a custum URL (default: ``futures.kraken.com/ws/v1``)
+    :param url: Set a custom URL (default: ``futures.kraken.com/ws/v1``)
     :type url: str, optional
-    :param sanbox: Use the Kraken Futures demo environment
+    :param sandbox: Use the Kraken Futures demo environment
         (URL will switch to ``demo-futures.kraken.com/ws/v1``, default: ``False``)
     :type sandbox: bool, optional
 
@@ -59,7 +59,7 @@ class KrakenFuturesWSClient(KrakenBaseFuturesAPI):
                 secret="secret-key"
             )
 
-            # now you can subsribe to channels using
+            # now you can subscribe to channels using
             await bot.subscribe(
                 feed='ticker',
                 products=["XBTUSD", "DOT/EUR"]
@@ -179,7 +179,7 @@ class KrakenFuturesWSClient(KrakenBaseFuturesAPI):
         self: "KrakenFuturesWSClient", feed: str, products: Optional[List[str]] = None
     ) -> None:
         """
-        Subscribe to a Futures websocket channel/feed. For some feeds authentication is requried.
+        Subscribe to a Futures websocket channel/feed. For some feeds authentication is required.
 
         - https://docs.futures.kraken.com/#websocket-api-websocket-api-introduction-subscriptions
 
@@ -187,7 +187,7 @@ class KrakenFuturesWSClient(KrakenBaseFuturesAPI):
         :type feed: str
         :param products: The products/futures contracts to subscribe to
         :type products: List[str], optional
-        :raises ValueError: If the parameters dont match the requirements set by the Kraken API
+        :raises ValueError: If the parameters don't match the requirements set by the Kraken API
 
         Initialize your client as described in :class:`kraken.futures.KrakenFuturesWSClient` to
         run the following example:
@@ -231,7 +231,7 @@ class KrakenFuturesWSClient(KrakenBaseFuturesAPI):
         self: "KrakenFuturesWSClient", feed: str, products: Optional[List[str]] = None
     ) -> None:
         """
-        Subscribe to a Futures websocket channel/feed. For some feeds authentication is requried.
+        Subscribe to a Futures websocket channel/feed. For some feeds authentication is required.
 
         - https://docs.futures.kraken.com/#websocket-api-websocket-api-introduction-subscriptions
 
@@ -239,19 +239,19 @@ class KrakenFuturesWSClient(KrakenBaseFuturesAPI):
         :type feed: str
         :param products: The products/futures contracts to unsubscribe from
         :type products: List[str], optional
-        :raises ValueError: If the parameters dont match the requirements set by the Kraken API
+        :raises ValueError: If the parameters don't match the requirements set by the Kraken API
 
         Initialize your client as described in :class:`kraken.futures.KrakenFuturesWSClient` to
         run the following example:
 
         .. code-block:: python
             :linenos:
-            :caption: Futures Webocket: Unsubscribe from a feed
+            :caption: Futures Websocket: Unsubscribe from a feed
 
             >>> await bot.unsubscribe(feed='ticker', products=["XBTUSD", "DOT/EUR"])
 
         Success or failures are sent over the websocket connection and can be
-        received via the defailt :func:`kraken.futures.KrakenFuturesWSClient.on_message``
+        received via the default :func:`kraken.futures.KrakenFuturesWSClient.on_message``
         or a custom callback function.
         """
 
@@ -360,7 +360,7 @@ class KrakenFuturesWSClient(KrakenBaseFuturesAPI):
 
     def get_active_subscriptions(self: "KrakenFuturesWSClient") -> List[dict]:
         """
-        Returns the list of acitve subscriptions.
+        Returns the list of active subscriptions.
 
         :return: List of active subscriptions including the feed names, products and additional information.
         :rtype: List[dict]

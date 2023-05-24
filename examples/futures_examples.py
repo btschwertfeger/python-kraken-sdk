@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # Copyright (C) 2023 Benjamin Thomas Schwertfeger
-# Github: https://github.com/btschwertfeger
+# GitHub: https://github.com/btschwertfeger
 #
 
 """Module that implements some example usage for the Kraken Futures REST clients."""
@@ -30,7 +30,7 @@ secret = os.getenv("Futures_SANDBOX_SECRET")
 # | |\  | |_| || | | |___ _
 # |_| \_|\___/ |_| |_____(_)
 # ----> More examples can be found in kraken/tests/*.py
-# examples may not be updated regularily
+# examples may not be updated regularly
 
 
 def market_examples() -> None:
@@ -72,7 +72,7 @@ def user_examples() -> None:
     print(user.get_wallets())
 
     print(user.get_subaccounts())
-    print(user.get_unwindqueue())
+    print(user.get_unwind_queue())
     print(user.get_notifications())
 
     print(user.get_open_positions())

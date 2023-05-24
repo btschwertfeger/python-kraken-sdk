@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # Copyright (C) 2023 Benjamin Thomas Schwertfeger
-# Github: https://github.com/btschwertfeger
+# GitHub: https://github.com/btschwertfeger
 #
 
 """Module that implements the unit tests for the Spot user client."""
@@ -79,7 +79,7 @@ def test_get_trade_balance(spot_auth_user: User) -> None:
     Checks the ``get_trade_balances`` function by validating that
     the response do not contain the error key.
 
-    (sleep since we dont want API rate limit error...)
+    (sleep since we don't want API rate limit error...)
     """
     sleep(3)
     assert is_not_error(spot_auth_user.get_trade_balance())

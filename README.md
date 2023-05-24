@@ -13,7 +13,7 @@
 [![codecov](https://codecov.io/gh/btschwertfeger/python-kraken-sdk/branch/master/badge.svg)](https://app.codecov.io/gh/btschwertfeger/python-kraken-sdk)
 
 ![release](https://shields.io/github/release-date/btschwertfeger/python-kraken-sdk)
-![release](https://shields.io/github/v/release/btschwertfeger/python-kraken-sdk?display_name=tag)
+[![release](https://img.shields.io/pypi/v/python-kraken-sdk)](https://pypi.org/project/python-kraken-sdk/)
 [![DOI](https://zenodo.org/badge/510751854.svg)](https://zenodo.org/badge/latestdoi/510751854)
 [![Documentation Status stable](https://readthedocs.org/projects/python-kraken-sdk/badge/?version=stable)](https://python-kraken-sdk.readthedocs.io/en/stable)
 
@@ -43,9 +43,8 @@ General:
 - access both public and private endpoints
 - responsive error handling and custom exceptions
 - extensive example scripts (see `/examples` and `/tests`)
-- tested using the pytest framework
+- tested using the [pytest](https://docs.pytest.org/en/7.3.x/) framework
 - releases are permanently archived at [Zenodo](https://zenodo.org/badge/latestdoi/510751854)
-- coding standards are not always followed to maintain the parameter naming convention of the Kraken API
 
 Documentation:
 
@@ -70,6 +69,7 @@ Documentation:
   - [REST API](#futuresrest)
   - [Websockets](#futuresws)
 - [ Troubleshooting ](#trouble)
+- [ Contributions ](#contribution)
 - [ Notes ](#notes)
 - [ References ](#references)
 
@@ -95,7 +95,7 @@ python3 -m pip install python-kraken-sdk
 
 ### 4. Error handling
 
-If any unexpected behaviour occurs, please check <b style="color: yellow">your API permissions</b>, <b style="color: yellow">rate limits</b>, update the python-kraken-sdk, see the [Troubleshooting](#trouble) section, and if the error persists please open an issue.
+If any unexpected behavior occurs, please check <b style="color: yellow">your API permissions</b>, <b style="color: yellow">rate limits</b>, update the python-kraken-sdk, see the [Troubleshooting](#trouble) section, and if the error persists please open an issue.
 
 ---
 
@@ -104,6 +104,8 @@ If any unexpected behaviour occurs, please check <b style="color: yellow">your A
 # 📍 Spot Client Example Usage
 
 A template Spot trading bot using both websocket and REST clients can be found in `/examples/spot_trading_bot_template.py`.
+
+For those who need a realtime order book - a script that demonstrates how to maintain a valid order book can be found here: `/examples/spot_orderbook.py`.
 
 <a name="spotrest"></a>
 
@@ -114,40 +116,54 @@ A template Spot trading bot using both websocket and REST clients can be found i
 ```python
 from kraken.spot import User, Market, Trade, Funding, Staking
 
-def main() -> None:
-    key = 'Kraken-public-key'
-    secret = 'Kraken-secret-key'
+def main():
+    key = "kraken-public-key"
+    secret = "kraken-secret-key"
 
-    # ____USER________
+    # ____USER________________________
     user = User(key=key, secret=secret)
     print(user.get_account_balance())
     print(user.get_open_orders())
+    # ...
 
-    # ____MARKET_______
+    # ____MARKET____
     market = Market()
-    print(market.get_ticker(pair='BTCUSD'))
+    print(market.get_ticker(pair="BTCUSD"))
+    # ...
 
-    # ____TRADE________
+    # ____TRADE_________________________
     trade = Trade(key=key, secret=secret)
     print(trade.create_order(
-         ordertype='limit',
-         side='buy',
+         ordertype="limit",
+         side="buy",
          volume=1,
-         pair='BTC/EUR',
+         pair="BTC/EUR",
          price=20000
     ))
+    # ...
 
-    # ____FUNDING______
+    # ____FUNDING___________________________
     funding = Funding(key=key, secret=secret)
-    print(funding.withdraw_funds(asset='DOT', key='MyPolkadotWallet', amount=200))
-    print(funding.cancel_widthdraw(asset='DOT', refid='<some id>'))
+    print(
+        funding.withdraw_funds(
+            asset="DOT", key="MyPolkadotWallet", amount=200
+        )
+    )
+    print(funding.cancel_withdraw(asset="DOT", refid="<some id>"))
+    # ...
 
-    # ____STAKING______
+    # ____STAKING___________________________
     staking = Staking(key=key, secret=secret)
     print(staking.list_stakeable_assets())
-    print(staking.stake_asset(asset='DOT', amount=20, method='polkadot-staked'))
+    print(
+        staking.stake_asset(
+            asset="DOT", amount=20, method="polkadot-staked"
+        )
+    )
+    # ...
 
-if __name__ == '__main__': main()
+if __name__ == "__main__":
+    main()
 ```
 
 <a name="spotws"></a>
@@ -157,25 +173,27 @@ if __name__ == '__main__': main()
 ... can be found in `/examples/spot_ws_examples.py`
 
 ```python
-import asyncio, time
+import time
+import asyncio
 from kraken.spot import KrakenSpotWSClient
 
 async def main() -> None:
 
-    key = 'Kraken-public-key'
-    secret = 'Kraken-secret-key'
+    key = "kraken-public-key"
+    secret = "kraken-secret-key"
 
     class Bot(KrakenSpotWSClient):
-        async def on_message(self, msg) -> None:
-            if 'event' in msg:
-                if msg['event'] in ['pong', 'heartbeat']: return
+        async def on_message(self, msg):
+            if isinstance(msg, dict) and "event" in msg:
+                if msg["event"] in ("pong", "heartbeat"):
+                    return
 
             print(msg)
             # if condition:
             #     await self.create_order(
-            #         ordertype='limit',
-            #         side='buy',
-            #         pair='BTC/EUR',
+            #         ordertype="limit",
+            #         side="buy",
+            #         pair="BTC/EUR",
             #         price=20000,
             #         volume=1
             #     )
@@ -183,43 +201,45 @@ async def main() -> None:
             # but using the WsClient's functions is more efficient
             # because the requests will be sent via the ws connection
 
-    # ___Public_Websocket_Feeds_______
-    bot = Bot() # only use this one if you dont need private feeds
+    # ___Public_Websocket_Feeds__
+    bot = Bot() # only use the unauthenticated client if you don't need private feeds
     print(bot.public_sub_names) # list public subscription names
 
-    await bot.subscribe(subscription={ 'name': 'ticker' }, pair=['XBT/EUR', 'DOT/EUR'])
-    await bot.subscribe(subscription={ 'name': 'spread' }, pair=['XBT/EUR', 'DOT/EUR'])
-    # await bot.subscribe(subscription={ 'name': 'book' }, pair=['BTC/EUR'])
-    # await bot.subscribe(subscription={ 'name': 'book', 'depth': 25}, pair=['BTC/EUR'])
-    # await bot.subscribe(subscription={ 'name': 'ohlc' }, pair=['BTC/EUR'])
-    # await bot.subscribe(subscription={ 'name': 'ohlc', 'interval': 15}, pair=['XBT/EUR', 'DOT/EUR'])
-    # await bot.subscribe(subscription={ 'name': 'trade' }, pair=['BTC/EUR'])
-    # await bot.subscribe(subscription={ 'name': '*' } , pair=['BTC/EUR'])
+    await bot.subscribe(subscription={ "name": "ticker" }, pair=["XBT/EUR", "DOT/EUR"])
+    await bot.subscribe(subscription={ "name": "spread" }, pair=["XBT/EUR", "DOT/EUR"])
+    # await bot.subscribe(subscription={ "name": "book" }, pair=["BTC/EUR"])
+    # await bot.subscribe(subscription={ "name": "book", "depth": 25}, pair=["BTC/EUR"])
+    # await bot.subscribe(subscription={ "name": "ohlc" }, pair=["BTC/EUR"])
+    # await bot.subscribe(subscription={ "name": "ohlc", "interval": 15}, pair=["XBT/EUR", "DOT/EUR"])
+    # await bot.subscribe(subscription={ "name": "trade" }, pair=["BTC/EUR"])
+    # await bot.subscribe(subscription={ "name": "*" } , pair=["BTC/EUR"])
 
     time.sleep(2) # wait because unsubscribing is faster than subscribing ...
-    await bot.unsubscribe(subscription={ 'name': 'ticker' }, pair=['XBT/EUR','DOT/EUR'])
-    await bot.unsubscribe(subscription={ 'name': 'spread' }, pair=['XBT/EUR'])
-    await bot.unsubscribe(subscription={ 'name': 'spread' }, pair=['DOT/EUR'])
-    # ....
+    await bot.unsubscribe(subscription={ "name": "ticker" }, pair=["XBT/EUR","DOT/EUR"])
+    await bot.unsubscribe(subscription={ "name": "spread" }, pair=["XBT/EUR"])
+    await bot.unsubscribe(subscription={ "name": "spread" }, pair=["DOT/EUR"])
+    # ...
 
-    # ___Authenticated_Websocket_____
-    # when using the authenticated bot, you can also subscribe to public feeds
+    # ___Authenticated_Websocket_________
+    # when using the authenticated client, you can also subscribe to public feeds
     auth_bot = Bot(key=key, secret=secret)
     print(auth_bot.private_sub_names) # list private subscription names
-    await auth_bot.subscribe(subscription={ 'name': 'ownTrades' })
-    await auth_bot.subscribe(subscription={ 'name': 'openOrders' })
+    await auth_bot.subscribe(subscription={ "name": "ownTrades" })
+    await auth_bot.subscribe(subscription={ "name": "openOrders" })
 
     time.sleep(2)
-    await auth_bot.unsubscribe(subscription={ 'name': 'ownTrades' })
-    await auth_bot.unsubscribe(subscription={ 'name': 'openOrders' })
+    await auth_bot.unsubscribe(subscription={ "name": "ownTrades" })
+    await auth_bot.unsubscribe(subscription={ "name": "openOrders" })
 
-    while True: await asyncio.sleep(6)
+    while True:
+        await asyncio.sleep(6)
 
-if __name__ == '__main__':
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
-    try: asyncio.run(main())
-    except KeyboardInterrupt: loop.close()
+if __name__ == "__main__":
+    try:
+        asyncio.run(main())
+    except KeyboardInterrupt:
+        # do some exception handling ...
+        pass
 ```
 
 Note: Authenticated Spot websocket clients can also un/subscribe from/to public feeds.
@@ -243,67 +263,76 @@ The following example can be found in `/examples/futures_examples.py`.
 ```python
 from kraken.futures import Market, User, Trade, Funding
 
-def main() -> None:
+def main():
 
-    key = 'futures-api-key'
-    secret = 'futures-secret-key'
+    key = "futures-api-key"
+    secret = "futures-secret-key"
 
-    # ____USER__________
+    # ____USER________________________
     user = User(key=key, secret=secret) # optional: sandbox=True
     print(user.get_wallets())
     print(user.get_open_orders())
     print(user.get_open_positions())
     print(user.get_subaccounts())
-    # ....
+    # ...
 
-    # ____MARKET_________
+    # ____MARKET____
     market = Market()
-    print(market.get_ohlc(tick_type='trade', symbol='PI_XBTUSD', resolution='5m'))
+    print(market.get_ohlc(tick_type="trade", symbol="PI_XBTUSD", resolution="5m"))
 
     priv_market = Market(key=key, secret=secret)
     print(priv_market.get_fee_schedules_vol())
     print(priv_market.get_execution_events())
-    # ....
+    # ...
 
-    # ____TRADE_________
+    # ____TRADE_________________________
     trade = Trade(key=key, secret=secret)
     print(trade.get_fills())
     print(trade.create_batch_order(
         batchorder_list = [{
-            'order': 'send',
-            'order_tag': '1',
-            'orderType': 'lmt',
-            'symbol': 'PI_XBTUSD',
-            'side': 'buy',
-            'size': 1,
-            'limitPrice': 12000,
-            'cliOrdId': 'some-client-id'
+            "order": "send",
+            "order_tag": "1",
+            "orderType": "lmt",
+            "symbol": "PI_XBTUSD",
+            "side": "buy",
+            "size": 1,
+            "limitPrice": 12000,
+            "cliOrdId": "some-client-id"
         }, {
-            'order': 'send',
-            'order_tag': '2',
-            'orderType': 'stp',
-            'symbol': 'PI_XBTUSD',
-            'side': 'buy',
-            'size': 1,
-            'limitPrice': 10000,
-            'stopPrice': 11000,
+            "order": "send",
+            "order_tag": "2",
+            "orderType": "stp",
+            "symbol": "PI_XBTUSD",
+            "side": "buy",
+            "size": 1,
+            "limitPrice": 10000,
+            "stopPrice": 11000,
         }, {
-            'order': 'cancel',
-            'order_id': 'e35dsdfsdfsddd-8a30-4d5f-a574-b5593esdf0',
+            "order": "cancel",
+            "order_id": "e35dsdfsdfsddd-8a30-4d5f-a574-b5593esdf0",
         }, {
-            'order': 'cancel',
-            'cliOrdId': 'another-client-id',
+            "order": "cancel",
+            "cliOrdId": "another-client-id",
         }],
     ))
     print(trade.cancel_all_orders())
-    print(trade.create_order(orderType='lmt', side='buy', size=1, limitPrice=4, symbol='pf_bchusd'))
-    # ....
+    print(
+        trade.create_order(
+            orderType="lmt",
+            side="buy",
+            size=1,
+            limitPrice=4,
+            symbol="pf_bchusd"
+        )
+    )
+    # ...
 
-    # ____FUNDING_______
+    # ____FUNDING___________________________
     funding = Funding(key=key, secret=secret)
-    # ....
+    # ...
 
-if __name__ == '__main__': main()
+if __name__ == "__main__":
+    main()
 ```
 
 <a name="futuresws"></a>
@@ -316,54 +345,55 @@ The following example can be found in `/examples/futures_ws_examples.py`.
 import asyncio
 from kraken.futures import KrakenFuturesWSClient
 
-async def main() -> None:
+async def main():
 
-    key = 'futures-api-key'
-    secret = 'futures-secret-key'
+    key = "futures-api-key"
+    secret = "futures-secret-key"
 
-    # ___Custom_Trading_Bot__________
+    # ___Custom_Trading_Bot________
     class Bot(KrakenFuturesWSClient):
 
-        async def on_message(self, event) -> None:
+        async def on_message(self, event):
             print(event)
             # >> apply your trading strategy here <<
             # you can also combine this with the Futures REST clients
 
-    # _____Public_Websocket_Feeds___________________
+    # ___Public_Websocket_Feeds____
     bot = Bot()
     # print(bot.get_available_public_subscription_feeds())
 
-    products = ['PI_XBTUSD', 'PF_ETHUSD']
+    products = ["PI_XBTUSD", "PF_ETHUSD"]
 
     # subscribe to a public websocket feed
-    await bot.subscribe(feed='ticker', products=products)
-    # await bot.subscribe(feed='book', products=products)
+    await bot.subscribe(feed="ticker", products=products)
+    # await bot.subscribe(feed="book", products=products)
     # ...
 
     # unsubscribe from a public websocket feed
-    # await bot.unsubscribe(feed='ticker', products=products)
+    # await bot.unsubscribe(feed="ticker", products=products)
 
-    # _____Authenticated_Websocket__________________
+    # ___Authenticated_Websocket_________
     auth_bot = Bot(key=key, secret=secret)
     # print(auth_bot.get_available_private_subscription_feeds())
 
     # subscribe to a private/authenticated websocket feed
-    await auth_bot.subscribe(feed='fills')
-    await auth_bot.subscribe(feed='open_positions')
-    await auth_bot.subscribe(feed='open_orders')
+    await auth_bot.subscribe(feed="fills")
+    await auth_bot.subscribe(feed="open_positions")
+    await auth_bot.subscribe(feed="open_orders")
     # ...
 
-    # unsubscribe from a private/authenticaed websocket feed
-    await auth_bot.unsubscribe(feed='fills')
+    # unsubscribe from a private/authenticated websocket feed
+    await auth_bot.unsubscribe(feed="fills")
 
-    while True: await asyncio.sleep(6)
+    while True:
+        await asyncio.sleep(6)
 
-if __name__ == '__main__':
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
-    try: asyncio.run(main())
-    except KeyboardInterrupt: loop.close()
-
+if __name__ == "__main__":
+    try:
+        asyncio.run(main())
+    except KeyboardInterrupt:
+        # do some exception handling ...
+        pass
 ```
 
 Note: Authenticated Futures websocket clients can also un-/subscribe from/to public feeds.
@@ -384,7 +414,7 @@ Note: Authenticated Futures websocket clients can also un-/subscribe from/to pub
 
 - Check if you downloaded and installed the **latest version** of the python-kraken-sdk.
 - Check the **permissions of your API keys** and the required permissions on the respective endpoints.
-- If you get some cloudflare or **rate limit errors**, please check your Kraken Tier level and maybe apply for a higher rank if required.
+- If you get some Cloudflare or **rate limit errors**, please check your Kraken Tier level and maybe apply for a higher rank if required.
 - **Use different API keys for different algorithms**, because the nonce calculation is based on timestamps and a sent nonce must always be the highest nonce ever sent of that API key. Having multiple algorithms using the same keys will result in invalid nonce errors.
 
 ---

@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # Copyright (C) 2023 Benjamin Thomas Schwertfeger
-# Github: https://github.com/btschwertfeger
+# GitHub: https://github.com/btschwertfeger
 #
 
-"""Module that provides an excample usage for the Kraken Futures websocket client"""
+"""Module that provides an example usage for the Kraken Futures websocket client"""
 
 from __future__ import annotations
 
@@ -37,9 +37,9 @@ async def main() -> None:
     class Bot(KrakenFuturesWSClient):
         """Can be used to create a custom trading strategy/bot"""
 
-        async def on_message(self: "Bot", event: Union[list, dict]) -> None:
-            """receives the websocket events"""
-            logging.info(event)
+        async def on_message(self: "Bot", msg: Union[list, dict]) -> None:
+            """receives the websocket messages"""
+            logging.info(msg)
             # ... apply your trading strategy here
             # you can also combine this with the Futures REST clients
 
@@ -61,7 +61,7 @@ async def main() -> None:
     # await bot.unsubscribe(feed='ticker', products=['PI_XBTUSD'])
     await bot.unsubscribe(feed="ticker", products=["PF_XBTUSD"])
     await bot.unsubscribe(feed="book", products=products)
-    # ....
+    # ...
 
     # _____Private_Websocket_Feeds_________________
     auth_bot = Bot(key=key, secret=secret)
@@ -78,14 +78,14 @@ async def main() -> None:
     # await auth_bot.subscribe(feed='account_log')
     # await auth_bot.subscribe(feed='notifications_auth')
 
-    # authenticaed clients can also subscribe to public feeds
+    # authenticated clients can also subscribe to public feeds
     # await auth_bot.subscribe(feed='ticker', products=['PI_XBTUSD', 'PF_ETHUSD'])
 
     # time.sleep(1)
     # unsubscribe from a private/authenticaed websocket feed
     await auth_bot.unsubscribe(feed="fills")
     await auth_bot.unsubscribe(feed="open_positions")
-    # ....
+    # ...
 
     while not bot.exception_occur and not auth_bot.exception_occur:
         await asyncio.sleep(6)
@@ -99,7 +99,7 @@ if __name__ == "__main__":
         asyncio.run(main())
     except KeyboardInterrupt:
         # the websocket client will send {'event': 'asyncio.CancelledError'} via on_message
-        # so you can handle the behaviour/next actions individually within you bot
+        # so you can handle the behavior/next actions individually within you bot
         pass
     finally:
         loop.close()
@@ -120,8 +120,6 @@ if __name__ == "__main__":
 #         await asyncio.sleep(6)
 
 # if __name__ == "__main__":
-#     loop = asyncio.new_event_loop()
-#     asyncio.set_event_loop(loop)
 #     try:
 #         asyncio.run(main())
 #     except KeyboardInterrupt:

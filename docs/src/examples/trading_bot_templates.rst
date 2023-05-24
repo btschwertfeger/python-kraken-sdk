@@ -16,4 +16,5 @@ For questions, feedback, suggestions for improvement or problems `python-kraken-
     :maxdepth: 2
 
     spot_bot_template.rst
+    spot_orderbook.rst
     futures_bot_template.rst

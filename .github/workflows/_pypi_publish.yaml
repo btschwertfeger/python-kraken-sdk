@@ -40,9 +40,10 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
+          python -m pip install build
 
       - name: Build the package
-        run: python -m pip wheel -w dist --no-deps .
+        run: python -m build .
 
       - name: Publish package distributions to PyPI (optional - testpypi)
         uses: pypa/gh-action-pypi-publish@release/v1

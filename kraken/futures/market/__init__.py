@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # Copyright (C) 2023 Benjamin Thomas Schwertfeger
-# Github: https://github.com/btschwertfeger
+# GitHub: https://github.com/btschwertfeger
 
 """Module that implements the Kraken Futures market client"""
 
@@ -77,7 +77,8 @@ class Market(KrakenBaseFuturesAPI):
         :type tick_type: str
         :param symbol: The asset pair to get the ohlc from
         :type symbol: str
-        :param resolution: The tick resolution, one of ``1m``. ``5m``, ``15m``, ``1h``, ``4h``, ``12h``, ``1d``, ``1w``
+        :param resolution: The tick resolution, one of ``1m``. ``5m``, ``15m``,
+            ``1h``, ``4h``, ``12h``, ``1d``, ``1w``
         :type resolution: str
         :param from_: From date in epoch seconds
         :type from_: int, optional
@@ -274,9 +275,9 @@ class Market(KrakenBaseFuturesAPI):
 
     def get_orderbook(self: "Market", symbol: Optional[str] = None) -> dict:
         """
-        Get the orderboook of a specific asset/symbol. Even if the official kraken documentation
+        Get the orderbook of a specific asset/symbol. Even if the official kraken documentation
         states that the parameter ``symbol`` is not required, they will always respond with an error
-        message, so it is recommanded to use the ``symbol`` parameter until they dont fix this issue.
+        message, so it is recommended to use the ``symbol`` parameter until they don't fix this issue.
 
         - https://docs.futures.kraken.com/#http-api-trading-v3-api-market-data-get-orderbook
 
@@ -333,6 +334,7 @@ class Market(KrakenBaseFuturesAPI):
 
         :return: The current tickers
         :rtype: dict
+
         .. code-block:: python
             :linenos:
             :caption: Futures Market: Get the available tickers
@@ -467,7 +469,7 @@ class Market(KrakenBaseFuturesAPI):
 
         .. code-block:: python
             :linenos:
-            :caption: Futures Market: Retrive information about a specific asset/contract/instrument
+            :caption: Futures Market: Retrieve information about a specific asset/contract/instrument
 
             >>> from kraken.futures import Market
             >>> Market().get_instruments_status(instrument="PI_XBTUSD")
@@ -631,7 +633,7 @@ class Market(KrakenBaseFuturesAPI):
 
         :param symbol: The symbol to set the preference
         :type symbol: str, optional
-        :param maxLeverage: The maximum allowd leverage for a futures contract
+        :param maxLeverage: The maximum allowed leverage for a futures contract
         :type maxLeverage: str | int | float, optional
         :return: Information about the success or fail
         :rtype: dict
@@ -683,7 +685,7 @@ class Market(KrakenBaseFuturesAPI):
 
     def set_pnl_preference(self: "Market", symbol: str, pnlPreference: str) -> dict:
         """
-        Modify or set the currenct PNL preference of the user. This can be used to define a
+        Modify or set the current PNL preference of the user. This can be used to define a
         specific currency that should be used to realize profits and losses. The default is
         the quote currency of the futures contract.
 
@@ -769,7 +771,7 @@ class Market(KrakenBaseFuturesAPI):
         sort: Optional[str] = None,
     ) -> dict:
         """
-        Retrieve information about the public execition events. The returned ``continuation_token``
+        Retrieve information about the public execution events. The returned ``continuation_token``
         can be used to request more data.
 
         - https://docs.futures.kraken.com/#http-api-history-market-history-get-public-execution-events
@@ -859,7 +861,7 @@ class Market(KrakenBaseFuturesAPI):
         sort: Optional[str] = None,
     ) -> dict:
         """
-        Retrive information about the oublic order events - filled, closed, opened, etc, for
+        Retrieve information about the public order events - filled, closed, opened, etc, for
         a specific contract.The returned ``continuation_token`` can be used to request more data.
 
         - https://docs.futures.kraken.com/#http-api-history-market-history-get-public-order-events
@@ -930,7 +932,7 @@ class Market(KrakenBaseFuturesAPI):
         sort: Optional[str] = None,
     ) -> dict:
         """
-        Retrive information about public mark price events. The returned ``continuation_token``
+        Retrieve information about public mark price events. The returned ``continuation_token``
         can be used to request more data.
 
         - https://docs.futures.kraken.com/#http-api-history-market-history-get-public-mark-price-events

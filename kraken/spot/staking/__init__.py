@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # Copyright (C) 2023 Benjamin Thomas Schwertfeger
-# Github: https://github.com/btschwertfeger
+# GitHub: https://github.com/btschwertfeger
 #
 
 """Module that implements the Kraken Spot Stakung client"""
@@ -13,7 +13,7 @@ from ...base_api import KrakenBaseSpotAPI, defined
 
 class Staking(KrakenBaseSpotAPI):
     """
-    Class that implements the Kraken Spot Stakung client.Currently there
+    Class that implements the Kraken Spot Staking client. Currently there
     are no staking endpoints that could be accesses without authentication.
 
     :param key: Spot API public key (default: ``""``)
@@ -63,7 +63,7 @@ class Staking(KrakenBaseSpotAPI):
         Requires the ``Withdraw funds`` permission in the API key settings.
 
         Have a look at :func:`kraken.spot.Staking.list_stakeable_assets` to get
-        information about the stakable assets and methods.
+        information about the stakeable assets and methods.
 
         - https://docs.kraken.com/rest/#operation/stake
 
@@ -108,7 +108,7 @@ class Staking(KrakenBaseSpotAPI):
         Requires the ``Withdraw funds`` permission in the API key settings.
 
         Have a look at :func:`kraken.spot.Staking.list_stakeable_assets` to get
-        information about the stakable assets and methods.
+        information about the stakeable assets and methods.
 
         - https://docs.kraken.com/rest/#operation/unstake
 
@@ -144,7 +144,7 @@ class Staking(KrakenBaseSpotAPI):
 
     def list_stakeable_assets(self: "Staking") -> List[dict]:
         """
-        Get a list of stakable assets. Only assets that the user is able to stake
+        Get a list of stakeable assets. Only assets that the user is able to stake
         will be shown.
 
         Requires the ``Withdraw funds`` and ``Query funds`` API key permissions.
@@ -201,7 +201,7 @@ class Staking(KrakenBaseSpotAPI):
 
     def get_pending_staking_transactions(self: "Staking") -> List[dict]:
         """
-        Get the list of pendin staking transactions of the user.
+        Get the list of pending staking transactions of the user.
 
         Requires the ``Withdraw funds`` and ``Query funds`` API key permissions.
 
