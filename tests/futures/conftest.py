@@ -8,7 +8,19 @@ import os
 
 import pytest
 
-from kraken.futures import Funding, Market, Trade, User
+from kraken.futures import Funding, KrakenFuturesWSClient, Market, Trade, User
+
+
+@pytest.fixture
+def futures_api_key() -> str:
+    """Returns the Futures API key"""
+    return os.getenv("FUTURES_API_KEY")
+
+
+@pytest.fixture
+def futures_secret_key() -> str:
+    """Returns the Futures API secret key"""
+    return os.getenv("FUTURES_SECRET_KEY")
 
 
 @pytest.fixture

@@ -287,8 +287,7 @@ class SpotWsClientCl(KrakenBaseSpotAPI):
 
         await self._priv_conn.send_message(msg=payload, private=True)
 
-    @ensure_string("txid")
-    async def cancel_order(self: "SpotWsClientCl", txid: Union[str, List[str]]) -> None:
+    async def cancel_order(self: "SpotWsClientCl", txid: List[str]) -> None:
         """
         Cancel a specific order or a list of orders.
 
@@ -296,8 +295,8 @@ class SpotWsClientCl(KrakenBaseSpotAPI):
 
         - https://docs.kraken.com/websockets/#message-cancelOrder
 
-        :param txid: Transaction id or list of txids or comma delimited list as string
-        :type txid: str | List[str]
+        :param txid: A single or multiple transaction ids as list
+        :type txid: List[str]
         :raises ValueError: If the websocket is not connected or the connection is not authenticated
         :return: None
 
@@ -308,7 +307,7 @@ class SpotWsClientCl(KrakenBaseSpotAPI):
             :linenos:
             :caption: Spot Websocket: Cancel an order
 
-            >>> await auth_bot.cancel_order(txid="OBGFYP-XVQNL-P4GMWF")
+            >>> await auth_bot.cancel_order(txid=["OBGFYP-XVQNL-P4GMWF"])
         """
         if not self._priv_conn:
             logging.warning("Websocket not connected!")
