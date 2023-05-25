@@ -14,7 +14,7 @@ from typing import TYPE_CHECKING, List, Optional, Union
 from ...base_api import KrakenBaseSpotAPI, defined, ensure_string
 
 if TYPE_CHECKING:
-    # to avaoid circular import for type checking
+    # to avoid circular import for type checking
     from ...spot.websocket import ConnectSpotWebsocket
 
 
