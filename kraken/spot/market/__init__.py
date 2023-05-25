@@ -6,11 +6,10 @@
 
 """Module that implements the Kraken Spot market client"""
 
-import logging
 from binascii import crc32
 from collections import OrderedDict
 from functools import lru_cache
-from typing import Any, Coroutine, Dict, List, Optional, Union
+from typing import Dict, List, Optional, Union
 
 from ...base_api import KrakenBaseSpotAPI, defined, ensure_string
 from ..websocket import KrakenSpotWSClient
@@ -440,6 +439,7 @@ class SpotOrderBookClient(KrakenSpotWSClient):
     NOTE: This class has a fixed depth.
 
     References
+
     - https://support.kraken.com/hc/en-us/articles/360027821131-WebSocket-API-v1-How-to-maintain-a-valid-order-book
 
     - https://docs.kraken.com/websockets/#book-checksum
@@ -456,10 +456,22 @@ class SpotOrderBookClient(KrakenSpotWSClient):
         class and used as callback to receive all messages sent by the
         Kraken API.
         """
-        if any(key in msg for key in ("errorMessage", "event")):
+        if "errorMessage" in msg:
+            self.LOG.warning(msg)
+
+        if "event" in msg and isinstance(msg, dict):
             # ignore heartbeat / ping - pong messages / any event message
             # ignore errors since they are handled by the parent class
-            return
+            # just handle the removal of an order book
+            if (
+                msg["event"] == "subscriptionStatus"
+                and "status" in msg
+                and "pair" in msg
+                and msg["status"] == "unsubscribed"
+                and msg["pair"] in self.__book
+            ):
+                del self.__book[msg["pair"]]
+                return
 
         if not isinstance(msg, list):
             # The order book feed only sends messages with type list,
@@ -506,6 +518,10 @@ class SpotOrderBookClient(KrakenSpotWSClient):
             been updated.
         :type pair: str
         """
+        print(
+            "Please overload this function to receive the information"
+            " about updated entries within the order book."
+        )
 
     async def add_book(self: "SpotOrderBookClient", pairs: List[str]) -> None:
         """
@@ -533,8 +549,6 @@ class SpotOrderBookClient(KrakenSpotWSClient):
         await self.unsubscribe(
             subscription={"name": "book", "depth": self.__depth}, pair=pairs
         )
-        for pair in pairs:
-            del self.__book[pair]
 
     @property
     def depth(self: "SpotOrderBookClient") -> int:

@@ -81,7 +81,7 @@ testpaths = ["tests"]
 
 [tool.pytest.ini_options]
 markers = [
-    "selection: Used to run a specific test by hand.",
+    "select: Used to run a specific test by hand.",
     "spot: mark a test that tests a Spot endpoint.",
     "spot_auth: mark a test that tests a authenticaed Spot endpoint.",
     "spot_trade: mark a test that tests a Spot Trade endpoint.",
@@ -89,7 +89,8 @@ markers = [
     "spot_market: mark a test that tests a Spot Market endpoint.",
     "spot_funding: mark a test that tests a Spot Funding endpoint.",
     "spot_staking: mark a test that tests a Spot Staking endpoint.",
-    "spot_websocket: mark a test that tests a Spot Websocket endpoint.",
+    "spot_websocket: mark a test that tests the Spot Websocket client.",
+    "spot_orderbook: mark a test that tests the Spot Orderbook client.",
     "futures: mark a test that tests a Futures endpoint.",
     "futures_auth: mark a test that tests a authenticated Futures endpoint.",
     "futures_market: mark a test that tests a Futures Market endpoint.",

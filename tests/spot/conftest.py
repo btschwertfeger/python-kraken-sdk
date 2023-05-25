@@ -14,6 +14,18 @@ from kraken.spot import Funding, Market, Staking, Trade, User
 
 
 @pytest.fixture
+def spot_api_key() -> str:
+    """Returns the Kraken Spot API Key for testing."""
+    return os.getenv("SPOT_API_KEY")
+
+
+@pytest.fixture
+def spot_secret_key() -> str:
+    """Returns the Kraken Spot API secret for testing."""
+    return os.getenv("SPOT_SECRET_KEY")
+
+
+@pytest.fixture
 def spot_auth_user() -> User:
     """
     Fixture providing an authenticated Spot user client.
