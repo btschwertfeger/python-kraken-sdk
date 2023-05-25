@@ -26,7 +26,7 @@ def test_create_public_bot(caplog: Any) -> None:
 
     async def instantiate_client() -> None:
         client: FuturesWebsocketClientTestWrapper = FuturesWebsocketClientTestWrapper()
-        await async_wait(2)
+        await async_wait(4)
 
         assert not client.is_auth
 
@@ -62,7 +62,7 @@ def test_create_private_bot(
 @pytest.mark.futures_websocket
 def test_get_available_public_subscriptions() -> None:
     """
-    Checks the ``get_available_public_subscriptions`` function.
+    Checks the ``get_available_public_subscription_feeds`` function.
     """
 
     expected: List[str] = [
@@ -82,7 +82,7 @@ def test_get_available_public_subscriptions() -> None:
 @pytest.mark.futures_websocket
 def test_get_available_private_subscriptions() -> None:
     """
-    Checks the ``get_available_private_subscriptions`` function.
+    Checks the ``get_available_private_subscription_feeds`` function.
     """
 
     expected: List[str] = [
@@ -106,7 +106,7 @@ def test_get_available_private_subscriptions() -> None:
 @pytest.mark.futures_websocket
 def test_subscribe_public(caplog: Any) -> None:
     """
-    Checks the ``get_subscriptions`` function.
+    Checks if the client is able to subscribe to a public feed.
     """
 
     async def check_subscription() -> None:
