@@ -10,7 +10,7 @@ snippet for more information.
 References:
 - https://gist.github.com/btschwertfeger/6eea0eeff193f7cd1b262cfce4f0eb51
 
---------------------------------
+
 .. literalinclude:: ../../../examples/spot_orderbook.py
    :language: python
    :linenos:

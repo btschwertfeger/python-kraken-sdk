@@ -12,18 +12,15 @@ Welcome to Python Kraken SDK's documentation!
 |Release date badge| |Release version badge| |DOI badge|
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 3
    :caption: Contents:
 
    src/introduction.rst
    src/getting_started/getting_started.rst
    src/examples/trading_bot_templates.rst
    src/issues.rst
-   src/spot/spot_rest.rst
-   src/spot/spot_websocket.rst
-   src/spot/spot_orderbook.rst
-   src/futures/futures_rest.rst
-   src/futures/futures_websocket.rst
+   src/spot/index.rst
+   src/futures/index.rst
    src/base_api/base_api.rst
    src/krakenexceptions/krakenexceptions.rst
    src/about/license.rst
