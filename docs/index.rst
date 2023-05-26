@@ -21,6 +21,7 @@ Welcome to Python Kraken SDK's documentation!
    src/issues.rst
    src/spot/spot_rest.rst
    src/spot/spot_websocket.rst
+   src/spot/spot_orderbook.rst
    src/futures/futures_rest.rst
    src/futures/futures_websocket.rst
    src/base_api/base_api.rst

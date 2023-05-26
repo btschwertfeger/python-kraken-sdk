@@ -32,7 +32,7 @@ class OrderbookClient(KrakenSpotWSClient):
     - https://docs.kraken.com/websockets/#book-checksum
 
 
-    .. code-block::python
+    .. code-block:: python
         :linenos:
         :caption: Example: Create and maintain a Spot orderbook as custom class
 
@@ -69,7 +69,7 @@ class OrderbookClient(KrakenSpotWSClient):
                 pass
 
 
-    .. code-block::python
+    .. code-block:: python
         :linenos:
         :caption: Example: Create and maintain a Spot orderbook using a callback
 
