@@ -8,7 +8,7 @@
 
 from typing import List, Optional, Tuple, Union
 
-from ...base_api import KrakenBaseFuturesAPI, defined
+from ..base_api import KrakenBaseFuturesAPI, defined
 
 
 class Trade(KrakenBaseFuturesAPI):

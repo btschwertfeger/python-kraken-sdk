@@ -8,7 +8,7 @@
 
 from typing import List, Optional, Union
 
-from ...base_api import KrakenBaseSpotAPI, defined
+from ..base_api import KrakenBaseSpotAPI, defined
 
 
 class Funding(KrakenBaseSpotAPI):

@@ -4,7 +4,7 @@
 # GitHub: https://github.com/btschwertfeger
 #
 
-"""Provides the KrakenWsClientCl class to use the Kraken Futures websockets."""
+"""Provides the websocket client for Kraken Futures"""
 
 import base64
 import hashlib
@@ -13,9 +13,9 @@ import logging
 from copy import deepcopy
 from typing import Any, Dict, List, Optional
 
-from ...base_api import KrakenBaseFuturesAPI
-from ...exceptions import KrakenException
-from ...futures.websocket import ConnectFuturesWebsocket
+from ..base_api import KrakenBaseFuturesAPI
+from ..exceptions import KrakenException
+from .websocket import ConnectFuturesWebsocket
 
 
 class KrakenFuturesWSClient(KrakenBaseFuturesAPI):

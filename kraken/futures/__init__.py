@@ -4,6 +4,7 @@
 # GitHub: https://github.com/btschwertfeger
 
 """This module provides the Kraken Futures clients"""
+
 # pylint: disable=unused-import
 from .funding import Funding
 from .market import Market

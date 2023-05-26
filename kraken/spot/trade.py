@@ -11,8 +11,8 @@ from functools import lru_cache
 from math import floor
 from typing import List, Optional, Union
 
-from ...base_api import KrakenBaseSpotAPI, defined, ensure_string
-from ...spot import Market
+from ..base_api import KrakenBaseSpotAPI, defined, ensure_string
+from ..spot import Market
 
 
 class Trade(KrakenBaseSpotAPI):
@@ -133,7 +133,7 @@ class Trade(KrakenBaseSpotAPI):
         :param timeinforce: how long the order remains in the orderbook, one of:
             ``GTC``, ``IOC``, ``GTD`` (see the referenced Kraken documentation for more information)
         :type timeinforce: str, optional
-        :param displayvol: Define how much of the volume is visible in the order book (iceberg)
+        :param displayvol: Define how much of the volume is visible in the orderbook (iceberg)
         :type displayvol: str | int | float, optional
         :param starttim: Unix timestamp or seconds defining the start time (default: ``"0"``)
         :type starttim: str, optional

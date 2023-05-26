@@ -10,7 +10,7 @@ from typing import Optional, Union
 
 import requests
 
-from ...base_api import KrakenBaseFuturesAPI, defined
+from ..base_api import KrakenBaseFuturesAPI, defined
 
 
 class User(KrakenBaseFuturesAPI):
