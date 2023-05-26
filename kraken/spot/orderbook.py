@@ -6,6 +6,7 @@
 
 """Module that implements the Kraken Spot Orderbook client"""
 
+import logging
 from asyncio import sleep as asyncio_sleep
 from binascii import crc32
 from collections import OrderedDict
@@ -15,13 +16,9 @@ from typing import Callable, Dict, List, Optional, Union
 from .ws_client import KrakenSpotWSClient
 
 
-class OrderbookClient(KrakenSpotWSClient):
+class OrderbookClient:
     """
-    The OrderbookClient class inherit the subscribe function from the
-    KrakenSpotWSClient class. The subscribe function must be used to
-    subscribe to one or multiple orderbooks. The feed will initially
-    send the current orderbook and then send updates when anything
-    changes.
+    todo: write doc
 
     NOTE: This class has a fixed depth.
 
@@ -105,6 +102,8 @@ class OrderbookClient(KrakenSpotWSClient):
                 pass
     """
 
+    LOG: logging.Logger = logging.getLogger(__name__)
+
     def __init__(
         self: "OrderbookClient",
         depth: int = 10,
@@ -114,6 +113,10 @@ class OrderbookClient(KrakenSpotWSClient):
         self.__book: Dict[str, dict] = {}
         self.__depth: int = depth
         self.__callback: Optional[Callable] = callback
+
+        self.ws_client: KrakenSpotWSClient = KrakenSpotWSClient(
+            callback=self.on_message
+        )
 
     async def on_message(self: "OrderbookClient", msg: Union[list, dict]) -> None:
         """
@@ -219,7 +222,7 @@ class OrderbookClient(KrakenSpotWSClient):
         :param depth: The book depth
         :type depth: int
         """
-        await self.subscribe(
+        await self.ws_client.subscribe(
             subscription={"name": "book", "depth": self.__depth}, pair=pairs
         )
 
@@ -232,7 +235,7 @@ class OrderbookClient(KrakenSpotWSClient):
         :param depth: The book depth
         :type depth: int
         """
-        await self.unsubscribe(
+        await self.ws_client.unsubscribe(
             subscription={"name": "book", "depth": self.__depth}, pair=pairs
         )
 
