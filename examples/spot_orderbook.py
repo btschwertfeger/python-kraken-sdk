@@ -5,7 +5,12 @@
 #
 
 """
-This module provides an example on how to use the Spot websocket
+NOTE: * The Spot Orderbook client is not released yet. It will be released
+        in python-kraken-sdk=v1.4.0.
+      * See https://gist.github.com/btschwertfeger/6eea0eeff193f7cd1b262cfce4f0eb51
+        for to see an example that works now.
+
+This module provides an example on how to use the Spot Orderbook
 client of the python-kraken-sdk (https://github.com/btschwertfeger/python-kraken-sdk)
 to retrieve and maintain a valid Spot order book for (a) specific
 asset pair(s). It can be run directly without any credentials if the
@@ -37,19 +42,19 @@ from __future__ import annotations
 import asyncio
 from typing import Any, Dict, List, Tuple
 
-from kraken.spot import SpotOrderBookClient
+from kraken.spot import OrderbookClient
 
 
-class OrderBook(SpotOrderBookClient):
+class Orderbook(OrderbookClient):
     """
     This is a wrapper class that is used to overload the :func:`on_book_update`
     function. It can also be used as a base for trading strategy. Since the
-    :class:`SpotOrderBookClient` is derived from :class:`KrakenWSClient`
+    :class:`OrderbookClient` is derived from :class:`KrakenSpotWSClient`
     it can also be used to access the :func:`subscribe` function and any
     other provided utility.
     """
 
-    async def on_book_update(self: "OrderBook", pair: str, message: list) -> None:
+    async def on_book_update(self: "Orderbook", pair: str, message: list) -> None:
         """
         This function is called every time the order book of ``pair`` gets
         updated.
@@ -86,7 +91,7 @@ async def main() -> None:
     Finally we need some "game loop" - so we create a while loop
     that runs as long as there is no error.
     """
-    orderbook: OrderBook = OrderBook()
+    orderbook: Orderbook = Orderbook()
 
     await orderbook.add_book(
         pairs=["XBT/USD"]  # we can also subscribe to more currency pairs
