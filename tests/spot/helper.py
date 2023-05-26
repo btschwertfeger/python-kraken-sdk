@@ -9,7 +9,7 @@ from asyncio import sleep
 from time import time
 from typing import Any, Union
 
-from kraken.spot import KrakenSpotWSClient, SpotOrderBookClient
+from kraken.spot import KrakenSpotWSClient, OrderbookClient
 
 
 def is_not_error(value: Any) -> bool:
@@ -40,6 +40,9 @@ class SpotWebsocketClientTestWrapper(KrakenSpotWSClient):
     ) -> None:
         super().__init__(key=key, secret=secret, callback=self.on_message)
         self.LOG.setLevel(logging.INFO)
+        fh = logging.FileHandler("spot_ws.log", mode="a")
+        fh.setLevel(logging.INFO)
+        self.LOG.addHandler(fh)
 
     async def on_message(
         self: "SpotWebsocketClientTestWrapper", msg: Union[list, dict]
@@ -50,18 +53,8 @@ class SpotWebsocketClientTestWrapper(KrakenSpotWSClient):
         """
         self.LOG.info(msg)  # the log is read within the tests
 
-        log: str = ""
-        try:
-            with open("spot_ws.log", "r", encoding="utf-8") as logfile:
-                log = logfile.read()
-        except FileNotFoundError:
-            pass
 
-        with open("spot_ws.log", "w", encoding="utf-8") as logfile:
-            logfile.write(f"{log}\n{msg}")
-
-
-class SpotOrderBookClientWrapper(SpotOrderBookClient):
+class OrderbookClientWrapper(OrderbookClient):
     """
     This class is used for testing the Spot Orderbook client.
 
@@ -71,18 +64,18 @@ class SpotOrderBookClientWrapper(SpotOrderBookClient):
 
     LOG: logging.Logger = logging.getLogger(__name__)
 
-    def __init__(self: "SpotOrderBookClientWrapper") -> None:
+    def __init__(self: "OrderbookClientWrapper") -> None:
         super().__init__()
         self.LOG.setLevel(logging.INFO)
 
     async def on_message(
-        self: "SpotOrderBookClientWrapper", msg: Union[list, dict]
+        self: "OrderbookClientWrapper", msg: Union[list, dict]
     ) -> None:
         self.ensure_log(msg)
         await super().on_message(msg=msg)
 
     async def on_book_update(
-        self: "SpotOrderBookClientWrapper", pair: str, message: list
+        self: "OrderbookClientWrapper", pair: str, message: list
     ) -> None:
         """
         This is the callback function that must be implemented

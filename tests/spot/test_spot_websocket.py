@@ -15,6 +15,7 @@ NOTE:
 
 from __future__ import annotations
 
+from asyncio import CancelledError
 from asyncio import run as asyncio_run
 from typing import Any, Dict, List
 
@@ -47,6 +48,7 @@ def test_create_public_bot(caplog: Any) -> None:
 @pytest.mark.spot
 @pytest.mark.spot_auth
 @pytest.mark.spot_websocket
+@pytest.mark.select
 def test_create_private_bot(
     spot_api_key: str, spot_secret_key: str, caplog: Any
 ) -> None:
@@ -508,3 +510,29 @@ def test_cancel_all_orders_after(
         in caplog.text
     )
     assert "'errorMessage': 'EGeneral:Invalid" not in caplog.text in caplog.text
+
+
+# todo: Create a test that kills the websocket connection
+#       to test the reconnect.
+# from unittest import mock
+# import json
+# @pytest.mark.spot
+# @pytest.mark.spot_websocket
+# @pytest.mark.select
+# @mock.patch(
+#     "kraken.spot.websocket.json.loads",
+# )
+# def test_reconnect(mock_json_loads: mock.MagicMock, caplog: Any) -> None:
+#     mock_json_loads.side_effect = (
+#         [json.dumps({"valid": "message"})]
+#         + [AttributeError("Test Error")]
+#         + [json.dumps({"valid": "message"})] * 10000
+#     )
+
+#     async def check_reconnect() -> None:
+#         client: SpotWebsocketClientTestWrapper = SpotWebsocketClientTestWrapper()
+#         await async_wait(seconds=60)
+
+#     asyncio_run(check_reconnect())
+#     # with open("x.log", "w") as f:
+#     #     f.write(caplog.text)

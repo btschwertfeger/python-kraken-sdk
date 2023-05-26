@@ -14,7 +14,7 @@ from typing import Any, Optional
 
 import pytest
 
-from .helper import SpotOrderBookClientWrapper, async_wait
+from .helper import OrderbookClientWrapper, async_wait
 
 
 @pytest.mark.spot
@@ -26,7 +26,7 @@ def test_create_public_bot(caplog: Any) -> None:
     """
 
     async def create_bot() -> None:
-        orderbook: SpotOrderBookClientWrapper = SpotOrderBookClientWrapper()
+        orderbook: OrderbookClientWrapper = OrderbookClientWrapper()
         await async_wait(seconds=4)
 
         assert orderbook.depth == 10
@@ -52,8 +52,8 @@ def test_get_first() -> None:
 
     assert (
         float(10)
-        == SpotOrderBookClientWrapper.get_first(("10", "5"))
-        == SpotOrderBookClientWrapper.get_first((10, 5))
+        == OrderbookClientWrapper.get_first(("10", "5"))
+        == OrderbookClientWrapper.get_first((10, 5))
     )
 
 
@@ -62,12 +62,12 @@ def test_get_first() -> None:
 @pytest.mark.spot_orderbook
 def test_add_book(caplog: Any) -> None:
     """
-    Checks if the order book client is able to add a book by subscribing.
+    Checks if the orderbook client is able to add a book by subscribing.
     The logs are then checked for the expected results.
     """
 
     async def execute_add_book() -> None:
-        orderbook: SpotOrderBookClientWrapper = SpotOrderBookClientWrapper()
+        orderbook: OrderbookClientWrapper = OrderbookClientWrapper()
 
         await orderbook.add_book(pairs=["XBT/USD"])
         await async_wait(seconds=2)
@@ -98,12 +98,12 @@ def test_add_book(caplog: Any) -> None:
 @pytest.mark.spot_orderbook
 def test_remove_book(caplog: Any) -> None:
     """
-    Checks if the order book client is able to add a book by subscribing to a book
+    Checks if the orderbook client is able to add a book by subscribing to a book
     and unsubscribing right after + validating using the logs.
     """
 
     async def execute_remove_book() -> None:
-        orderbook: SpotOrderBookClientWrapper = SpotOrderBookClientWrapper()
+        orderbook: OrderbookClientWrapper = OrderbookClientWrapper()
 
         await orderbook.add_book(pairs=["XBT/USD"])
         await async_wait(seconds=2)
