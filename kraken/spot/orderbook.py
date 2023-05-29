@@ -33,8 +33,6 @@ class OrderbookClient:
 
     This class has a fixed book depth. Available depths are: {10, 25, 50, 100}
 
-    References
-
     - https://support.kraken.com/hc/en-us/articles/360027821131-WebSocket-API-v1-How-to-maintain-a-valid-order-book
 
     - https://docs.kraken.com/websockets/#book-checksum
@@ -61,7 +59,7 @@ class OrderbookClient:
                     )
 
         async def main() -> None:
-            orderbook: OrderBook = OrderBook()
+            orderbook: OrderBook = OrderBook(depth=10)
             await orderbook.add_book(
                 pairs=["XBT/USD"]  # we can also subscribe to more currency pairs
             )
@@ -86,18 +84,10 @@ class OrderbookClient:
 
         async def my_callback(self: "OrderBook", pair: str, message: list) -> None:
             '''This function do not need to be async.'''
-            book: Dict[str, Any] = self.get(pair=pair)
-            bid: List[Tuple[str, str]] = list(book["bid"].items())
-            ask: List[Tuple[str, str]] = list(book["ask"].items())
-
-            print("Bid         Volume\t\t Ask         Volume")
-            for level in range(self.depth):
-                print(
-                    f"{bid[level][0]} ({bid[level][1]}) \t {ask[level][0]} ({ask[level][1]})"
-                )
+            print(message)
 
         async def main() -> None:
-            orderbook: OrderBook = OrderBook(callback=my_callback)
+            orderbook: OrderBook = OrderBook(depth=100, callback=my_callback)
             await orderbook.add_book(
                 pairs=["XBT/USD"]  # we can also subscribe to more currency pairs
             )
@@ -219,10 +209,7 @@ class OrderbookClient:
             else:
                 self.__callback(pair=pair, message=message)
         else:
-            print(
-                "Please overload this function to receive the information"
-                " about updated entries within the orderbook."
-            )
+            logging.info(message)
 
     async def add_book(self: "OrderbookClient", pairs: List[str]) -> None:
         """

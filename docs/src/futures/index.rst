@@ -1,5 +1,5 @@
 Futures
-=======
+==========
 
 .. toctree::
    :maxdepth: 3

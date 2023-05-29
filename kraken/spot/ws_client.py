@@ -13,6 +13,7 @@ from copy import deepcopy
 from typing import Any, Callable, List, Optional, Union
 
 from ..base_api import KrakenBaseSpotAPI, defined, ensure_string
+from .trade import Trade
 from .websocket import ConnectSpotWebsocket
 
 
@@ -369,6 +370,7 @@ class KrakenSpotWSClient(KrakenBaseSpotAPI):
         volume: Union[str, int, float],
         price: Optional[Union[str, int, float]] = None,
         price2: Optional[Union[str, int, float]] = None,
+        truncate: bool = False,
         leverage: Optional[Union[str, int, float]] = None,
         oflags: Optional[Union[str, List[str]]] = None,
         starttm: Optional[Union[str, int]] = None,
@@ -404,6 +406,10 @@ class KrakenSpotWSClient(KrakenBaseSpotAPI):
         :param price2: The second price for ``stop-loss-limit`` and ``take-profit-limit``
             orders (see the referenced Kraken documentation for more information)
         :type price2: str | int | float, optional
+        :param truncate: If enabled: round the ``price`` and ``volume`` to Kraken's
+            maximum allowed decimal places. See https://support.kraken.com/hc/en-us/articles/4521313131540
+            fore more information about decimals.
+        :type truncate: bool, optional
         :param leverage: The leverage
         :type leverage: str | int | float, optional
         :param oflags: Order flags like ``post``, ``fcib``, ``fciq``, ``nomp``, ``viqc``
@@ -469,19 +475,25 @@ class KrakenSpotWSClient(KrakenBaseSpotAPI):
             "ordertype": str(ordertype),
             "type": str(side),
             "pair": str(pair),
-            "price": str(price),
-            "volume": str(volume),
+            "volume": str(volume)
+            if not truncate
+            else Trade().truncate(amount=volume, amount_type="volume", pair=pair),
             "validate": str(validate),
         }
+        if defined(price):
+            payload["price"] = (
+                str(price)
+                if not truncate
+                else Trade().truncate(amount=price, amount_type="price", pair=pair)
+            )
         if defined(price2):
             payload["price2"] = str(price2)
         if defined(oflags):
-            if isinstance(oflags, str):
-                payload["oflags"] = oflags
-            else:
+            if not isinstance(oflags, str):
                 raise ValueError(
-                    "oflags must be a comma delimited list of order flags as str. Available flags: viqc, fcib, fciq, nompp, post"
+                    "oflags must be a comma delimited list of order flags as str. Available flags: {viqc, fcib, fciq, nompp, post}"
                 )
+            payload["oflags"] = oflags
         if defined(starttm):
             payload["starttm"] = str(starttm)
         if defined(expiretm):
@@ -511,6 +523,7 @@ class KrakenSpotWSClient(KrakenBaseSpotAPI):
         pair: Optional[str] = None,
         price: Optional[Union[str, int, float]] = None,
         price2: Optional[Union[str, int, float]] = None,
+        truncate: bool = False,
         volume: Optional[Union[str, int, float]] = None,
         oflags: Optional[Union[str, List[str]]] = None,
         newuserref: Optional[Union[str, int]] = None,
@@ -533,6 +546,10 @@ class KrakenSpotWSClient(KrakenBaseSpotAPI):
         :type price: str | int | float, optional
         :param price2: Set a new second price
         :type price2: str | int | float, optional
+        :param truncate: If enabled: round the ``price`` and ``volume`` to Kraken's
+            maximum allowed decimal places. See https://support.kraken.com/hc/en-us/articles/4521313131540
+            fore more information about decimals.
+        :type truncate: bool, optional
         :param volume: Set a new volume
         :type volume: str | int | float, optional
         :param oflags: Set new oflags (overwrite old ones)
@@ -574,11 +591,19 @@ class KrakenSpotWSClient(KrakenBaseSpotAPI):
         if defined(pair):
             payload["pair"] = pair
         if defined(price):
-            payload["price"] = str(price)
+            payload["price"] = (
+                str(price)
+                if not truncate
+                else Trade().truncate(amount=price, amount_type="price", pair=pair)
+            )
         if defined(price2):
             payload["price2"] = str(price2)
         if defined(volume):
-            payload["volume"] = str(volume)
+            payload["volume"] = (
+                str(volume)
+                if not truncate
+                else Trade().truncate(amount=volume, amount_type="volume", pair=pair)
+            )
         if defined(oflags):
             payload["oflags"] = oflags
         if defined(newuserref):

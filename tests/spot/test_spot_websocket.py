@@ -48,7 +48,6 @@ def test_create_public_bot(caplog: Any) -> None:
 @pytest.mark.spot
 @pytest.mark.spot_auth
 @pytest.mark.spot_websocket
-@pytest.mark.select
 def test_create_private_bot(
     spot_api_key: str, spot_secret_key: str, caplog: Any
 ) -> None:

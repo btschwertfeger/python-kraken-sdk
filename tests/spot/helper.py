@@ -5,11 +5,14 @@
 #
 
 import logging
+import os
 from asyncio import sleep
 from time import time
 from typing import Any, Union
 
 from kraken.spot import KrakenSpotWSClient, OrderbookClient
+
+FIXTURE_DIR: str = os.path.join(os.path.dirname(__file__), "fixture")
 
 
 def is_not_error(value: Any) -> bool:

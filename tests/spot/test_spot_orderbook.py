@@ -9,12 +9,17 @@ Module that implements the unit tests regarding the Spot Orderbook client.
 """
 
 import asyncio
+import json
+import os
 from collections import OrderedDict
 from typing import Any, Optional
+from unittest import mock
 
 import pytest
 
-from .helper import OrderbookClientWrapper, async_wait
+from kraken.spot import OrderbookClient
+
+from .helper import FIXTURE_DIR, OrderbookClientWrapper, async_wait
 
 
 @pytest.mark.spot
@@ -55,6 +60,33 @@ def test_get_first() -> None:
         == OrderbookClientWrapper.get_first(("10", "5"))
         == OrderbookClientWrapper.get_first((10, 5))
     )
+
+
+@mock.patch("kraken.spot.orderbook.KrakenSpotWSClient", return_value=None)
+@pytest.mark.spot
+@pytest.mark.spot_orderbook
+def test_assing_msg_and_validate_checksum(mock_ws_client: mock.MagicMock) -> None:
+    """
+    This function checks if the initial snapshot and the book updates are
+    assigned correctly so that the checksum calculation can validate the
+    assigned book updates and values.
+    """
+    with open(
+        os.path.join(FIXTURE_DIR, "orderbook.json"), "r", encoding="utf-8"
+    ) as json_file:
+        orderbook: dict = json.load(json_file)
+
+    async def assign() -> None:
+        client: OrderbookClient = OrderbookClient(depth=10)
+
+        await client.on_message(msg=orderbook["init"])
+        assert client.get(pair="XBT/USD")["valid"]
+
+        for update in orderbook["updates"]:
+            await client.on_message(msg=update)
+            assert client.get(pair="XBT/USD")["valid"]
+
+    asyncio.run(assign())
 
 
 @pytest.mark.spot

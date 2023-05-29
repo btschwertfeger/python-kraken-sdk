@@ -26,7 +26,7 @@ def test_create_public_bot(caplog: Any) -> None:
 
     async def instantiate_client() -> None:
         client: FuturesWebsocketClientTestWrapper = FuturesWebsocketClientTestWrapper()
-        await async_wait(4)
+        await async_wait(5)
 
         assert not client.is_auth
 
@@ -51,7 +51,7 @@ def test_create_private_bot(
             key=futures_api_key, secret=futures_secret_key
         )
         assert client.is_auth
-        await async_wait(2)
+        await async_wait(5)
 
     asyncio.run(instantiate_client())
 
