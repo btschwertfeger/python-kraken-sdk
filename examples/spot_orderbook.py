@@ -7,8 +7,8 @@
 """
 NOTE: * The Spot Orderbook client is not released yet. It will be released
         in python-kraken-sdk=v1.4.0.
-      * See https://gist.github.com/btschwertfeger/6eea0eeff193f7cd1b262cfce4f0eb51
-        for to see an example that works now.
+      * Have a look at https://gist.github.com/btschwertfeger/6eea0eeff193f7cd1b262cfce4f0eb51
+        for an example that works now.
 
 This module provides an example on how to use the Spot Orderbook
 client of the python-kraken-sdk (https://github.com/btschwertfeger/python-kraken-sdk)
@@ -85,7 +85,7 @@ async def main() -> None:
     Here we depth of the order book and also a pair. We could
     subscribe to multiple pairs, but for simplicity only XBT/USD is chosen.
 
-    The OrderBook class can be instantiated, which receives the order
+    The Orderbook class can be instantiated, which receives the order
     book-related messages, after we subscribed to the book feed.
 
     Finally we need some "game loop" - so we create a while loop
@@ -99,9 +99,6 @@ async def main() -> None:
 
     while not orderbook.exception_occur:
         await asyncio.sleep(10)
-
-    # If this here gets executed, the Websocket connection had some
-    # serious troubles.
 
 
 if __name__ == "__main__":

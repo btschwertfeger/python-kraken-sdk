@@ -18,16 +18,26 @@ from .ws_client import KrakenSpotWSClient
 
 class OrderbookClient:
     """
-    todo: write doc
+    The orderbook client can be used for instantiation and maintaining
+    one or multiple orderbooks for Spot trading on the Kraken cryptocurrency
+    exchange. It connects to the websocket feed(s) and receives the book
+    updates, calculates the checksum and will publish the changes to the
+    :func:`OrderbookClient.on_book_update` function or to the specified
+    callback function.
 
-    NOTE: This class has a fixed depth.
+    The :func:`OrderbookClient.get` function can be used to access a specific
+    book of this client.
+
+    The client will resubscribe to the book feed(s) if any errors occur and
+    publish the changes to the mentioned function(s).
+
+    This class has a fixed book depth. Available depths are: {10, 25, 50, 100}
 
     References
 
     - https://support.kraken.com/hc/en-us/articles/360027821131-WebSocket-API-v1-How-to-maintain-a-valid-order-book
 
     - https://docs.kraken.com/websockets/#book-checksum
-
 
     .. code-block:: python
         :linenos:
@@ -123,6 +133,8 @@ class OrderbookClient:
         The on_message function is implemented in the KrakenSpotWSClient
         class and used as callback to receive all messages sent by the
         Kraken API.
+
+        *This function should not be overloaded - this would break this client!*
         """
         if "errorMessage" in msg:
             self.LOG.warning(msg)
@@ -245,6 +257,20 @@ class OrderbookClient:
         Return the fixed depth of this orderbook client.
         """
         return self.__depth
+
+    @property
+    def exception_occur(self: "OrderbookClient") -> bool:
+        """
+        Can be used to determine if any critical error occurred within the
+        websocket connection. If so, the function will return ``True``
+        and the client instance is most likely not useable anymore. So this
+        is the switch lets the user know, when to delete the current one and
+        create a new one.
+
+        :return: ``True`` if any critical error occurred else ``False``
+        :rtype: bool
+        """
+        return self.ws_client.exception_occur
 
     def get(self: "OrderbookClient", pair: str) -> Optional[dict]:
         """

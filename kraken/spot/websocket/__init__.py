@@ -148,6 +148,7 @@ class ConnectSpotWebsocket:
             logging.error(f"{exc}: {traceback_}")
             await self.__callback({"error": traceback_})
         finally:
+            await self.__callback({"error": "KrakenSpotWSClient: exception_occur"})
             self.__client.exception_occur = True
 
     async def __reconnect(self: "ConnectSpotWebsocket") -> None:
