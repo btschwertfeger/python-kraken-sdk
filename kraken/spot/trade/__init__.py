@@ -315,19 +315,16 @@ class Trade(KrakenBaseSpotAPI):
             if ordertype not in trigger_ordertypes:
                 raise ValueError(f"Cannot use trigger on ordertype {ordertype}!")
             params["trigger"] = trigger
-
         if defined(timeinforce):
             params["timeinforce"] = timeinforce
         if defined(expiretm):
             params["expiretm"] = str(expiretm)
-
         if defined(price):
             params["price"] = (
                 price
                 if not truncate
                 else self.truncate(amount=price, amount_type="price", pair=pair)
             )
-
         if ordertype in ("stop-loss-limit", "take-profit-limit"):
             if not defined(price2):
                 raise ValueError(
@@ -338,7 +335,6 @@ class Trade(KrakenBaseSpotAPI):
             raise ValueError(
                 f"Ordertype {ordertype} dos not allow a second price (price2)!"
             )
-
         if defined(leverage):
             params["leverage"] = str(leverage)
         if defined(oflags):
@@ -443,6 +439,7 @@ class Trade(KrakenBaseSpotAPI):
         volume: Optional[Union[str, int, float]] = None,
         price: Optional[Union[str, int, float]] = None,
         price2: Optional[Union[str, int, float]] = None,
+        truncate: bool = False,
         oflags: Optional[str] = None,
         deadline: Optional[str] = None,
         cancel_response: Optional[bool] = None,
@@ -467,6 +464,10 @@ class Trade(KrakenBaseSpotAPI):
         :type price: str | int | float, optional
         :param price2: Set a new second price
         :type price2: str | int | float, optional
+        :param truncate: If enabled: round the ``price`` and ``volume`` to Kraken's
+            maximum allowed decimal places. See https://support.kraken.com/hc/en-us/articles/4521313131540
+            fore more information about decimals.
+        :type truncate: bool, optional
         :param oflags: Order flags like ``post``, ``fcib``, ``fciq``, ``nomp``, ``viqc`` (see the referenced Kraken documentation for more information)
         :type oflags: str | List[str], optional
         :param deadline: (see the referenced Kraken documentation for more information)
@@ -507,9 +508,17 @@ class Trade(KrakenBaseSpotAPI):
         if defined(userref):
             params["userref"] = userref
         if defined(volume):
-            params["volume"] = volume
+            params["volume"] = (
+                str(volume)
+                if not truncate
+                else Trade().truncate(amount=volume, amount_type="volume", pair=pair),
+            )
         if defined(price):
-            params["price"] = price
+            params["price"] = (
+                str(price)
+                if not truncate
+                else Trade().truncate(amount=price, amount_type="price", pair=pair)
+            )
         if defined(price2):
             params["price2"] = price2
         if defined(oflags):
