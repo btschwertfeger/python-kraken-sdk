@@ -511,13 +511,13 @@ class Trade(KrakenBaseSpotAPI):
             params["volume"] = (
                 str(volume)
                 if not truncate
-                else Trade().truncate(amount=volume, amount_type="volume", pair=pair),
+                else self.truncate(amount=volume, amount_type="volume", pair=pair)
             )
         if defined(price):
             params["price"] = (
                 str(price)
                 if not truncate
-                else Trade().truncate(amount=price, amount_type="price", pair=pair)
+                else self.truncate(amount=price, amount_type="price", pair=pair)
             )
         if defined(price2):
             params["price2"] = price2
