@@ -145,7 +145,7 @@ class KrakenSpotWSClient(KrakenBaseSpotAPI):
             else None
         )
 
-    async def on_message(self: "KrakenSpotWSClient", msg: dict) -> None:
+    async def on_message(self: "KrakenSpotWSClient", msg: Union[dict, list]) -> None:
         """
         Calls the defined callback function (if defined)
         or overload this function.
@@ -153,7 +153,7 @@ class KrakenSpotWSClient(KrakenBaseSpotAPI):
         Can be overloaded as described in :class:`kraken.spot.KrakenSpotWSClient`
 
         :param msg: The message received sent by Kraken via the websocket connection
-        :type msg: dict
+        :type msg: dict | list
         """
         if self.__callback is not None:
             await self.__callback(msg)
@@ -174,7 +174,7 @@ class KrakenSpotWSClient(KrakenBaseSpotAPI):
         make sure, that the ``Access WebSockets API`` API key permission is set
         in the users Kraken account.
 
-        - https://docs.kraken.com/websockets-beta/#message-subscribe
+        - https://docs.kraken.com/websockets/#message-subscribe
 
         :param subscription: The subscription message
         :type subscription: dict
