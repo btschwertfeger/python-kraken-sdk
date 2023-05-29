@@ -30,8 +30,8 @@ logging.getLogger("urllib3").setLevel(logging.WARNING)
 async def main() -> None:
     """Create bot and subscribe to topics/feeds"""
 
-    key: str = os.getenv("API_KEY")
-    secret: str = os.getenv("SECRET_KEY")
+    key: str = os.getenv("SPOT_API_KEY")
+    secret: str = os.getenv("SPOT_SECRET_KEY")
 
     # ___Custom_Trading_Bot______________
     class Bot(KrakenSpotWSClient):
@@ -47,9 +47,9 @@ async def main() -> None:
             print(msg)
             # if condition:
             #     await self.create_order(
-            #         ordertype='limit',
-            #         side='buy',
-            #         pair='BTC/EUR',
+            #         ordertype="limit",
+            #         side="buy",
+            #         pair="BTC/EUR",
             #         price=20000,
             #         volume=200
             #     )

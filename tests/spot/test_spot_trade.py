@@ -166,7 +166,8 @@ def test_edit_order(spot_auth_trade: Trade) -> None:
     Test the ``edit_order`` function by editing an order.
 
     KrakenException.KrakenPermissionDeniedError: since CI does not have
-    trade permissions.
+    trade permissions. If the request would be malformed, another
+    exception could be observed.
     """
     with pytest.raises(KrakenException.KrakenPermissionDeniedError):
         spot_auth_trade.edit_order(
@@ -177,6 +178,7 @@ def test_edit_order(spot_auth_trade: Trade) -> None:
             price=27500,
             price2=26500,
             cancel_response=False,
+            truncate=True,
             oflags=["post"],
             validate=True,
         )
