@@ -682,6 +682,7 @@ class Trade(KrakenBaseSpotAPI):
         :raises ValueError: If no valid ``amount_type`` was passed.
         :return: A string representation of the amount.
         :rtype: str
+        # todo: create an example in the doc string
         """
         if amount_type not in ("price", "volume"):
             raise ValueError("Amount type must be 'volume' or 'price'!")
