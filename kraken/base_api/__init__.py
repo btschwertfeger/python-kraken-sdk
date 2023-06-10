@@ -188,7 +188,6 @@ class KrakenBaseSpotAPI:
         else:
             self.url = urljoin(self.URL, self.API_V)
 
-        self.__nonce: int = 0
         self.__key: str = key
         self.__secret: str = secret
         self.__use_custom_exceptions: bool = use_custom_exceptions
@@ -249,9 +248,8 @@ class KrakenBaseSpotAPI:
                 or self.__secret == ""
             ):
                 raise ValueError("Missing credentials.")
-            self.__nonce = (self.__nonce + 1) % 1
-            params["nonce"] = str(int(time.time() * 1000)) + str(self.__nonce).zfill(4)
 
+            params["nonce"] = str(int(time.time() * 100_000_000))
             content_type: str
             sign_data: str
 
@@ -416,7 +414,6 @@ class KrakenBaseFuturesAPI:
 
         self.__key: str = key
         self.__secret: str = secret
-        self.__nonce: int = 0
         self.__use_custom_exceptions: bool = use_custom_exceptions
 
         self.__err_handler: KrakenErrorHandler = KrakenErrorHandler()
@@ -484,8 +481,7 @@ class KrakenBaseFuturesAPI:
                 or self.__secret == ""
             ):
                 raise ValueError("Missing credentials")
-            self.__nonce = (self.__nonce + 1) % 1
-            nonce: str = str(int(time.time() * 1000)) + str(self.__nonce).zfill(4)
+            nonce: str = str(int(time.time() * 100_000_000))
             headers.update(
                 {
                     "Content-Type": "application/x-www-form-urlencoded; charset=utf-8",
