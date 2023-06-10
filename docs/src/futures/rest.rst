@@ -1,5 +1,5 @@
-Futures REST Clients
-=====================
+Futures REST
+============
 
 .. autoclass:: kraken.futures.User
    :members:

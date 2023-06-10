@@ -11,6 +11,7 @@ import hmac
 import json
 import time
 import urllib.parse
+from functools import wraps
 from typing import Any, Callable, Dict, List, Optional, Type, Union
 from urllib.parse import urljoin
 from uuid import uuid1
@@ -54,6 +55,7 @@ def ensure_string(parameter_name: str) -> Callable:
     """
 
     def decorator(func: Callable) -> Callable:
+        @wraps(func)  # required for sphinx to discover the func
         def wrapper(*args: Any, **kwargs: Any) -> Any:
             if parameter_name in kwargs:
                 value: Any = kwargs[parameter_name]

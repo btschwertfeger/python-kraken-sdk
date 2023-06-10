@@ -1,5 +1,5 @@
 Spot REST Clients
-==================
+=================
 
 .. autoclass:: kraken.spot.User
    :members:
