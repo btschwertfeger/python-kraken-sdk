@@ -2,10 +2,25 @@
 
 ## [Unreleased](https://github.com/btschwertfeger/python-kraken-sdk/tree/HEAD)
 
-[Full Changelog](https://github.com/btschwertfeger/python-kraken-sdk/compare/v1.2.0...HEAD)
+[Full Changelog](https://github.com/btschwertfeger/python-kraken-sdk/compare/v1.3.0...HEAD)
+
+**Implemented enhancements:**
+
+- Add the `truncate` parameter to `create_order` of the Spot websocket client [\#111](https://github.com/btschwertfeger/python-kraken-sdk/issues/111)
+- Add the `truncate` parameter to create_order of the Spot websocket clients' `create_order` and `cancel_order`+ `kraken.spot.Trade.edit_order` [\#113](https://github.com/btschwertfeger/python-kraken-sdk/pull/113) ([btschwertfeger](https://github.com/btschwertfeger))
+
+Uncategorized merged pull requests:
+
+- Update `/examples/spot_orderbook.py` [\#110](https://github.com/btschwertfeger/python-kraken-sdk/pull/110) ([btschwertfeger](https://github.com/btschwertfeger))
+
+## [v1.3.0](https://github.com/btschwertfeger/python-kraken-sdk/tree/v1.3.0) (2023-05-24)
+
+[Full Changelog](https://github.com/btschwertfeger/python-kraken-sdk/compare/v1.2.0...v1.3.0)
 
 **Breaking changes:**
 
+- Rename `kraken.futures.User.get_unwindqueue` to `kraken.futures.User.get_unwind_queue` [\#107](https://github.com/btschwertfeger/python-kraken-sdk/issues/107)
+- Prepare release v1.3.0 [\#99](https://github.com/btschwertfeger/python-kraken-sdk/pull/99) ([btschwertfeger](https://github.com/btschwertfeger))
 - Change `kraken.spot.User.get_balances` and add `kraken.spot.User.get_balance` [\#98](https://github.com/btschwertfeger/python-kraken-sdk/pull/98) ([btschwertfeger](https://github.com/btschwertfeger))
 - Rename `get_tradeable_asset_pair` to `get_asset_pairs` and make the `pair` parameter optional [\#93](https://github.com/btschwertfeger/python-kraken-sdk/pull/93) ([btschwertfeger](https://github.com/btschwertfeger))
 - Extend typing + add `KrakenUnknownMethodError` and `KrakenBadRequestError` + Fix \#65 [\#87](https://github.com/btschwertfeger/python-kraken-sdk/pull/87) ([btschwertfeger](https://github.com/btschwertfeger))
@@ -24,6 +39,7 @@
 
 **Closed issues:**
 
+- Add a realtime Spot order book example [\#103](https://github.com/btschwertfeger/python-kraken-sdk/issues/103)
 - `kraken.spot.Trade.create_order`: documentatoin for txid outdated. [\#96](https://github.com/btschwertfeger/python-kraken-sdk/issues/96)
 - Create `CONTRIBUTING.md` [\#91](https://github.com/btschwertfeger/python-kraken-sdk/issues/91)
 - Extend the typing - using mypy [\#84](https://github.com/btschwertfeger/python-kraken-sdk/issues/84)
