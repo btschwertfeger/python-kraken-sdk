@@ -1,6 +1,8 @@
 Known Issues
 ============
 
+Issues listed here: `python-kraken-sdk/issues`_
+
 Futures Trading
 ---------------
 
