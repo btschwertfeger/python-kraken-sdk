@@ -682,7 +682,38 @@ class Trade(KrakenBaseSpotAPI):
         :raises ValueError: If no valid ``amount_type`` was passed.
         :return: A string representation of the amount.
         :rtype: str
-        # todo: create an example in the doc string
+
+        .. code-block:: python
+            :linenos:
+            :caption: Spot Trade: Truncate
+
+            >>> print(trade.truncate(
+            ...     amount=0.123456789,
+            ...     amount_type="volume",
+            ...     pair="XBTUSD"
+            ... ))
+            0.12345678
+
+            >>> print(trade.truncate(
+            ...     amount=21123.12849829993,
+            ...     amount_type="price",
+            ...     pair="XBTUSD")
+            ... ))
+            21123.1
+
+            >>> print(trade.truncate(
+            ...     amount=0.1,
+            ...     amount_type="volume",
+            ...     pair="XBTUSD"
+            ... ))
+            0.10000000
+
+            >>> print(trade.truncate(
+            ...     amount=21123,
+            ...     amount_type="price",
+            ...     pair="XBTUSD"
+            ... ))
+            21123.0
         """
         if amount_type not in ("price", "volume"):
             raise ValueError("Amount type must be 'volume' or 'price'!")

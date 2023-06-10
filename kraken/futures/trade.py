@@ -24,7 +24,7 @@ class Trade(KrakenBaseFuturesAPI):
     :type secret: str, optional
     :param url: Alternative URL to access the Futures Kraken API (default: https://futures.kraken.com)
     :type url: str, optional
-    :param sandbox: If set to ``True`` the URL will be https://demo-futures.kraken.com
+    :param sandbox: If set to ``True`` the URL will be https://demo-futures.kraken.com (default: ``False``)
     :type sandbox: bool, optional
 
     .. code-block:: python
