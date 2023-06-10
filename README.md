@@ -35,6 +35,7 @@ Clients:
 
 - Spot REST Clients
 - Spot Websocket Client
+- Spot Orderbook Client
 - Futures REST Clients
 - Futures Websocket Client
 
