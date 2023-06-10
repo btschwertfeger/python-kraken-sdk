@@ -4,12 +4,12 @@
 # GitHub: https://github.com/btschwertfeger
 #
 
-"""Module that implements the Kraken Spot market client"""
+"""Module that implements the Kraken Spot Market client"""
 
 from functools import lru_cache
 from typing import List, Optional, Union
 
-from ...base_api import KrakenBaseSpotAPI, defined, ensure_string
+from ..base_api import KrakenBaseSpotAPI, defined, ensure_string
 
 
 class Market(KrakenBaseSpotAPI):
@@ -304,7 +304,7 @@ class Market(KrakenBaseSpotAPI):
 
         .. code-block:: python
             :linenos:
-            :caption: Spot Market: Get the order book
+            :caption: Spot Market: Get the orderbook
 
             >>> from kraken.spot import Market
             >>> Market().get_order_book(pair="XBTUSD", count=2)

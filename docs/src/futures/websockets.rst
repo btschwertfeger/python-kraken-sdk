@@ -1,5 +1,5 @@
-Futures Websocket Client
-========================
+Futures Websockets
+==================
 
 .. autoclass:: kraken.futures.KrakenFuturesWSClient
    :members:

@@ -9,267 +9,258 @@
 from __future__ import annotations
 
 import asyncio
-import os
-import time
-import unittest
-from typing import Any, List, Union
+from typing import Any, List
 
 import pytest
 
-from kraken.futures import KrakenFuturesWSClient
+from .helper import FuturesWebsocketClientTestWrapper, async_wait
 
 
-class Bot(KrakenFuturesWSClient):
-    """Class to create a websocket bot"""
+@pytest.mark.futures
+@pytest.mark.futures_websocket
+def test_create_public_bot(caplog: Any) -> None:
+    """
+    Checks if the unauthenticated websocket client
+    can be instantiated.
+    """
 
-    async def on_message(self: "Bot", event: Union[list, dict]) -> None:
-        # The following comments are only for debugging.
-        # log = ""
-        # try:
-        #     with open("futures_ws_log.log", "r", encoding="utf-8") as f:
-        #         log = f.read()
-        # except FileNotFoundError:
-        #     pass
+    async def instantiate_client() -> None:
+        client: FuturesWebsocketClientTestWrapper = FuturesWebsocketClientTestWrapper()
+        await async_wait(5)
 
-        # with open("futures_ws_log.log", "w", encoding="utf-8") as f:
-        #     f.write(f"{log}\n{event}")
-        pass
+        assert not client.is_auth
 
+    asyncio.run(instantiate_client())
 
-class WebsocketTests(unittest.TestCase):
-    def setUp(self: "WebsocketTests") -> None:
-        self.__key: str = os.getenv("FUTURES_API_KEY")
-        self.__secret: str = os.getenv("FUTURES_SECRET_KEY")
-        self.__full_ws_access: str = os.getenv("FULLACCESS") is not None
-
-    def __create_loop(self: "WebsocketTests", coro: Any) -> None:
-        """Function that creates an event loop."""
-        loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(loop)
-        asyncio.run(coro())
-        loop.close()
-
-    async def __wait(self: "WebsocketTests", seconds: float = 1.0) -> None:
-        """Function that realizes the wait for ``seconds``."""
-        start: int = time.time()
-        while time.time() - seconds < start:
-            await asyncio.sleep(0.2)
-        return
-
-    @pytest.mark.futures
-    @pytest.mark.futures_websocket
-    def test_create_public_bot(self: "WebsocketTests") -> None:
-        """
-        Checks if the unauthenticated websocket client
-        can be instantiated.
-        """
-
-        async def create_bot() -> None:
-            bot: Bot = Bot()
-            await self.__wait(1.5)
-
-        self.__create_loop(coro=create_bot)
-
-    @pytest.mark.futures
-    @pytest.mark.futures_auth
-    @pytest.mark.futures_websocket
-    def test_create_private_bot(self: "WebsocketTests") -> None:
-        """
-        Checks if the authenticated websocket client
-        can be instantiated.
-        """
-
-        async def create_bot() -> None:
-            Bot(key=self.__key, secret=self.__secret)
-            await self.__wait(1.5)
-
-        self.__create_loop(coro=create_bot)
-
-    @pytest.mark.futures
-    @pytest.mark.futures_websocket
-    def test_get_subscriptions(self: "WebsocketTests") -> None:
-        """
-        Checks the ``get_subscriptions`` function.
-        """
-
-        async def create_bot() -> None:
-            bot: Bot = Bot()
-            bot.get_active_subscriptions()
-            await self.__wait(1.5)
-
-        self.__create_loop(coro=create_bot)
-
-    @pytest.mark.futures
-    @pytest.mark.futures_websocket
-    def test_get_available_public_subscriptions(self) -> None:
-        """
-        Checks the ``get_available_public_subscriptions`` function.
-        """
-
-        async def create_bot() -> None:
-            bot: Bot = Bot()
-            assert bot.get_available_public_subscription_feeds() == [
-                "trade",
-                "book",
-                "ticker",
-                "ticker_lite",
-                "heartbeat",
-            ]
-            await self.__wait(2)
-
-        self.__create_loop(coro=create_bot)
-
-    @pytest.mark.futures
-    @pytest.mark.futures_websocket
-    def test_get_available_private_subscriptions(self: "WebsocketTests") -> None:
-        """
-        Checks the ``get_available_private_subscriptions`` function.
-        """
-
-        async def create_bot() -> None:
-            bot: Bot = Bot()
-            assert bot.get_available_private_subscription_feeds() == [
-                "fills",
-                "open_positions",
-                "open_orders",
-                "open_orders_verbose",
-                "balances",
-                "deposits_withdrawals",
-                "account_balances_and_margins",
-                "account_log",
-                "notifications_auth",
-            ]
-            await self.__wait(2)
-
-        self.__create_loop(coro=create_bot)
-
-    @pytest.mark.futures
-    @pytest.mark.futures_auth
-    @pytest.mark.futures_websocket
-    def test_get_auth_state(self: "WebsocketTests") -> None:
-        """
-        Checks if the ``is_auth`` attribute is set correctly.
-        """
-
-        async def create_bot() -> None:
-            bot: Bot = Bot()
-            assert not bot.is_auth
-
-            auth_bot: Bot = Bot(key=self.__key, secret=self.__secret)
-            assert auth_bot.is_auth
-
-            await self.__wait(2)
-
-        self.__create_loop(coro=create_bot)
-
-    @pytest.mark.futures
-    @pytest.mark.futures_websocket
-    def test_subscribe_public(self: "WebsocketTests") -> None:
-        """
-        Checks if the unauthenticated websocket client is able to subscribe
-        to public feeds.
-        """
-
-        async def create_bot() -> None:
-            bot: Bot = Bot()
-            products = ["PI_XBTUSD", "PF_SOLUSD"]
-
-            with pytest.raises(ValueError):  # products must be List[str]
-                await bot.subscribe(feed="ticker", products="PI_XBTUSD")
-
-            await bot.subscribe(feed="heartbeat")
-            await bot.subscribe(feed="ticker", products=products)
-            await self.__wait(2)
-
-        self.__create_loop(coro=create_bot)
-
-    @pytest.mark.futures
-    @pytest.mark.futures_auth
-    @pytest.mark.futures_websocket
-    def test_subscribe_private(self: "WebsocketTests") -> None:
-        """
-        Checks if the authenticated websocket client is able to subscribe
-        to private feeds.
-        """
-
-        async def create_bot() -> None:
-            auth_bot: Bot = Bot(key=self.__key, secret=self.__secret)
-
-            with pytest.raises(
-                ValueError
-            ):  # private subscriptions does not use products
-                await auth_bot.subscribe(feed="fills", products=["PI_XBTUSD"])
-
-            await auth_bot.subscribe(feed="open_orders")
-            await self.__wait(2)
-
-        self.__create_loop(coro=create_bot)
-
-    @pytest.mark.futures
-    @pytest.mark.futures_websocket
-    def test_unsubsribe_public(self: "WebsocketTests") -> None:
-        """
-        Checks if the unauthenticated websocket client is able to unsubscribe
-        from public feeds.
-        """
-
-        async def create_bot() -> None:
-            bot: Bot = Bot()
-            products: List[str] = ["PI_XBTUSD", "PF_SOLUSD"]
-
-            with pytest.raises(ValueError):  # products must be type List[str]
-                await bot.unsubscribe(feed="ticker", products="PI_XBTUSD")
-
-            await bot.subscribe(feed="ticker", products=products)
-            await self.__wait(2)
-
-        self.__create_loop(coro=create_bot)
-
-    @pytest.mark.futures
-    @pytest.mark.futures_auth
-    @pytest.mark.futures_websocket
-    def test_unsubscribe_private(self) -> None:
-        """
-        Checks if the authenticated websocket client is able to unsubscribe
-        from private feeds.
-        """
-
-        async def create_bot() -> None:
-            auth_bot: Bot = Bot(key=self.__key, secret=self.__secret)
-
-            with pytest.raises(
-                ValueError
-            ):  # private un/-subscriptions does not accept a product
-                await auth_bot.unsubscribe(feed="open_orders", products=["PI_XBTUSD"])
-
-            await auth_bot.unsubscribe(feed="open_orders")
-            await self.__wait(2)
-
-        self.__create_loop(coro=create_bot)
-
-    @pytest.mark.futures
-    @pytest.mark.futures_websocket
-    def test_get_active_subscriptions(self: "WebsocketTests") -> None:
-        """
-        Checks the ``get_active_subscriptions`` function.
-        """
-
-        async def create_bot() -> None:
-            bot: Bot = Bot()
-            assert bot.get_active_subscriptions() == []
-            await self.__wait(2)
-            await bot.subscribe(feed="ticker", products=["PI_XBTUSD"])
-            await self.__wait(5)
-            assert len(bot.get_active_subscriptions()) == 1
-            await bot.unsubscribe(feed="ticker", products=["PI_XBTUSD"])
-            await self.__wait(5)
-            assert bot.get_active_subscriptions() == []
-
-        self.__create_loop(coro=create_bot)
-
-    def tearDown(self: "WebsocketTests") -> None:
-        return super().tearDown()
+    assert "{'event': 'info', 'version': 1}" in caplog.text
 
 
-if __name__ == "__main__":
-    unittest.main()
+@pytest.mark.futures
+@pytest.mark.futures_auth
+@pytest.mark.futures_websocket
+def test_create_private_bot(
+    futures_api_key: str, futures_secret_key: str, caplog: Any
+) -> None:
+    """
+    Checks if the authenticated websocket client
+    can be instantiated.
+    """
+
+    async def instantiate_client() -> None:
+        client: FuturesWebsocketClientTestWrapper = FuturesWebsocketClientTestWrapper(
+            key=futures_api_key, secret=futures_secret_key
+        )
+        assert client.is_auth
+        await async_wait(5)
+
+    asyncio.run(instantiate_client())
+
+    assert "{'event': 'info', 'version': 1}" in caplog.text
+
+
+@pytest.mark.futures
+@pytest.mark.futures_websocket
+def test_get_available_public_subscriptions() -> None:
+    """
+    Checks the ``get_available_public_subscription_feeds`` function.
+    """
+
+    expected: List[str] = [
+        "trade",
+        "book",
+        "ticker",
+        "ticker_lite",
+        "heartbeat",
+    ]
+    assert all(
+        feed in expected
+        for feed in FuturesWebsocketClientTestWrapper.get_available_public_subscription_feeds()
+    )
+
+
+@pytest.mark.futures
+@pytest.mark.futures_websocket
+def test_get_available_private_subscriptions() -> None:
+    """
+    Checks the ``get_available_private_subscription_feeds`` function.
+    """
+
+    expected: List[str] = [
+        "fills",
+        "open_positions",
+        "open_orders",
+        "open_orders_verbose",
+        "balances",
+        "deposits_withdrawals",
+        "account_balances_and_margins",
+        "account_log",
+        "notifications_auth",
+    ]
+    assert all(
+        feed in expected
+        for feed in FuturesWebsocketClientTestWrapper.get_available_private_subscription_feeds()
+    )
+
+
+@pytest.mark.futures
+@pytest.mark.futures_websocket
+def test_subscribe_public(caplog: Any) -> None:
+    """
+    Checks if the client is able to subscribe to a public feed.
+    """
+
+    async def check_subscription() -> None:
+        client: FuturesWebsocketClientTestWrapper = FuturesWebsocketClientTestWrapper()
+        await async_wait(2)
+
+        with pytest.raises(ValueError):
+            # products must be List[str]
+            await client.subscribe(feed="ticker", products="PI_XBTUSD")  # type: ignore[arg-type]
+
+        await client.subscribe(feed="ticker", products=["PI_XBTUSD", "PF_SOLUSD"])
+        await async_wait(seconds=2)
+
+        subs: List[dict] = client.get_active_subscriptions()
+        assert isinstance(subs, list)
+
+        expected_subscriptions: List[dict] = [
+            {"event": "subscribe", "feed": "ticker", "product_ids": ["PI_XBTUSD"]},
+            {"event": "subscribe", "feed": "ticker", "product_ids": ["PF_SOLUSD"]},
+        ]
+        assert all(sub in subs for sub in expected_subscriptions)
+
+    asyncio.run(check_subscription())
+
+    for expected in (
+        "{'event': 'subscribed', 'feed': 'ticker', 'product_ids': ['PI_XBTUSD']}",
+        "{'event': 'subscribed', 'feed': 'ticker', 'product_ids': ['PF_SOLUSD']}",
+    ):
+        assert expected in caplog.text
+
+
+@pytest.mark.futures
+@pytest.mark.futures_auth
+@pytest.mark.futures_websocket
+def test_subscribe_private(
+    futures_api_key: str, futures_secret_key: str, caplog: Any
+) -> None:
+    """
+    Checks if the authenticated websocket client is able to subscribe
+    to private feeds.
+    """
+
+    async def submit_subscription() -> None:
+        client: FuturesWebsocketClientTestWrapper = FuturesWebsocketClientTestWrapper(
+            key=futures_api_key, secret=futures_secret_key
+        )
+
+        with pytest.raises(ValueError):
+            # private subscriptions does not use products
+            await client.subscribe(feed="fills", products=["PI_XBTUSD"])
+
+        await client.subscribe(feed="open_orders")
+        await async_wait(2)
+
+    asyncio.run(submit_subscription())
+
+    for expected in (
+        "{'event': 'subscribed', 'feed': 'open_orders'}",
+        "{'feed': 'open_orders_snapshot', 'account':",
+    ):
+        assert expected in caplog.text
+
+
+@pytest.mark.futures
+@pytest.mark.futures_websocket
+def test_unsubscribe_public(caplog: Any) -> None:
+    """
+    Checks if the unauthenticated websocket client is able to unsubscribe
+    from public feeds.
+    """
+
+    async def execute_unsubscribe() -> None:
+        client: FuturesWebsocketClientTestWrapper = FuturesWebsocketClientTestWrapper()
+        products: List[str] = ["PI_XBTUSD", "PF_SOLUSD"]
+
+        await client.subscribe(feed="ticker", products=products)
+        await async_wait(seconds=2)
+
+        with pytest.raises(ValueError):
+            # products must be type List[str]
+            await client.unsubscribe(feed="ticker", products="PI_XBTUSD")  # type: ignore[arg-type]
+
+        await client.unsubscribe(feed="ticker", products=products)
+        await async_wait(seconds=2)
+
+    asyncio.run(execute_unsubscribe())
+
+    for expected in (
+        "{'event': 'subscribed', 'feed': 'ticker', 'product_ids': ['PI_XBTUSD']}",
+        "{'event': 'subscribed', 'feed': 'ticker', 'product_ids': ['PF_SOLUSD']}",
+        "{'event': 'unsubscribed', 'feed': 'ticker', 'product_ids': ['PI_XBTUSD']}",
+        "{'event': 'unsubscribed', 'feed': 'ticker', 'product_ids': ['PF_SOLUSD']}",
+    ):
+        assert expected in caplog.text
+
+
+@pytest.mark.futures
+@pytest.mark.futures_auth
+@pytest.mark.futures_websocket
+def test_unsubscribe_private(
+    futures_api_key: str, futures_secret_key: str, caplog: Any
+) -> None:
+    """
+    Checks if the authenticated websocket client is able to unsubscribe
+    from private feeds.
+    """
+
+    async def execute_unsubscribe() -> None:
+        client: FuturesWebsocketClientTestWrapper = FuturesWebsocketClientTestWrapper(
+            key=futures_api_key, secret=futures_secret_key
+        )
+        await client.subscribe(feed="open_orders")
+
+        await async_wait(seconds=2)
+        with pytest.raises(ValueError):
+            # private un/-subscriptions does not accept a product
+            await client.unsubscribe(feed="open_orders", products=["PI_XBTUSD"])
+
+        await client.unsubscribe(feed="open_orders")
+        await async_wait(seconds=2)
+
+    asyncio.run(execute_unsubscribe())
+
+    for expected in (
+        "{'event': 'subscribed', 'feed': 'open_orders'}",
+        "{'event': 'unsubscribed', 'feed': 'open_orders'}",
+    ):
+        assert expected in caplog.text
+
+
+@pytest.mark.futures
+@pytest.mark.futures_websocket
+def test_get_active_subscriptions(caplog: Any) -> None:
+    """
+    Checks the ``get_active_subscriptions`` function.
+    """
+
+    async def check_subscriptions() -> None:
+        client: FuturesWebsocketClientTestWrapper = FuturesWebsocketClientTestWrapper()
+        assert client.get_active_subscriptions() == []
+        await async_wait(seconds=1)
+
+        await client.subscribe(feed="ticker", products=["PI_XBTUSD"])
+        await async_wait(seconds=1)
+        assert len(client.get_active_subscriptions()) == 1
+
+        await client.unsubscribe(feed="ticker", products=["PI_XBTUSD"])
+        await async_wait(seconds=1)
+        assert client.get_active_subscriptions() == []
+
+    asyncio.run(check_subscriptions())
+
+    for expected in (
+        "{'event': 'subscribed', 'feed': 'ticker', 'product_ids': ['PI_XBTUSD']}",
+        "{'event': 'unsubscribed', 'feed': 'ticker', 'product_ids': ['PI_XBTUSD']}",
+    ):
+        assert expected in caplog.text

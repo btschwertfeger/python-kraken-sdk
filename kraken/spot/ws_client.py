@@ -4,51 +4,350 @@
 # GitHub: https://github.com/btschwertfeger
 #
 
-"""Module that implements the Spot Kraken Websocket client"""
+"""This module provides the Spot websocket client. """
 
 from __future__ import annotations
 
 import logging
-from typing import TYPE_CHECKING, List, Optional, Union
+from copy import deepcopy
+from typing import Any, Callable, List, Optional, Union
 
-from ...base_api import KrakenBaseSpotAPI, defined, ensure_string
-from ..trade import Trade
-
-if TYPE_CHECKING:
-    # to avaoid circular import for type checking
-    from ...spot.websocket import ConnectSpotWebsocket
+from ..base_api import KrakenBaseSpotAPI, defined, ensure_string
+from .trade import Trade
+from .websocket import ConnectSpotWebsocket
 
 
-class SpotWsClientCl(KrakenBaseSpotAPI):
+class KrakenSpotWSClient(KrakenBaseSpotAPI):
     """
-    Class that implements the Spot Kraken Websocket client
+    Class to access public and (optional)
+    private/authenticated websocket connection.
 
-    :param key: Spot API public key (default: ``""``)
+    - https://docs.kraken.com/websockets/#overview
+
+    This class holds up to two websocket connections, one private
+    and one public.
+
+    When accessing private endpoints that need authentication make sure,
+    that the ``Access WebSockets API`` API key permission is set in the user's
+    account.
+
+    :param key: API Key for the Kraken Spot API (default: ``""``)
     :type key: str, optional
-    :param secret: Spot API secret key (default: ``""``)
+    :param secret: Secret API Key for the Kraken Spot API (default: ``""``)
     :type secret: str, optional
-    :param url: url to access the Kraken API (default: "https://api.kraken.com")
+    :param url: Set a specific/custom url to access the Kraken API
     :type url: str, optional
-    :param sandbox: Use the sandbox (not supported for Spot trading so far, default: ``False``)
-    :type sandbox: bool, optional
+    :param beta: Use the beta websocket channels (maybe not supported anymore, default: ``False``)
+    :type beta: bool
 
-    This is just the class in which the Spot websocket methods are defined. It is derived
-    in :func:`kraken.spot.KrakenSpotWSClient`.
+    .. code-block:: python
+        :linenos:
+        :caption: HowTo: Create a Bot and integrate the python-kraken-sdk Spot Websocket Client
+
+        import asyncio
+        from kraken.spot import KrakenSpotWSClient
+
+        async def main() -> None:
+            class Bot(KrakenSpotWSClient):
+
+                async def on_message(self, event: dict) -> None:
+                    print(event)
+
+            bot = Bot()         # unauthenticated
+            auth_bot = Bot(     # authenticated
+                key='kraken-api-key',
+                secret='kraken-secret-key'
+            )
+
+            # subscribe to the desired feeds:
+            await bot.subscribe(
+                subscription={"name": ticker},
+                pair=["XBTUSD", "DOT/EUR"]
+            )
+            # from now on the on_message function receives the ticker feed
+
+            while not bot.exception_occur:
+                await asyncio.sleep(6)
+
+        if __name__ == '__main__':
+            try:
+                asyncio.run(main())
+            except KeyboardInterrupt:
+                pass
+
+    .. code-block:: python
+        :linenos:
+        :caption: HowTo: Use the websocket client as context manager
+
+        import asyncio
+        from kraken.spot import KrakenSpotWSClient
+
+        async def on_message(msg):
+            print(msg)
+
+        async def main() -> None:
+            async with KrakenSpotWSClient(
+                key="api-key",
+                secret="secret-key",
+                callback=on_message
+            ) as session:
+                await session.subscribe(
+                    subscription={"name": "ticker"},
+                    pair=["XBT/USD"]
+                )
+
+            while not bot.exception_occur::
+                await asyncio.sleep(6)
+
+
+        if __name__ == "__main__":
+            try:
+                asyncio.run(main())
+            except KeyboardInterrupt:
+                pass
     """
+
+    LOG: logging.Logger = logging.getLogger(__name__)
+
+    PROD_ENV_URL: str = "ws.kraken.com"
+    AUTH_PROD_ENV_URL: str = "ws-auth.kraken.com"
+    BETA_ENV_URL: str = "beta-ws.kraken.com"
+    AUTH_BETA_ENV_URL: str = "beta-ws-auth.kraken.com"
 
     def __init__(
-        self: "SpotWsClientCl",
+        self: "KrakenSpotWSClient",
         key: str = "",
         secret: str = "",
         url: str = "",
-        sandbox: bool = False,
+        callback: Optional[Callable] = None,
+        beta: bool = False,
     ):
-        super().__init__(key=key, secret=secret, url=url, sandbox=sandbox)
+        super().__init__(key=key, secret=secret, url=url, sandbox=beta)
+        self.__callback: Any = callback
+        self.__is_auth: bool = bool(key and secret)
+        self.exception_occur: bool = False
 
-        self._pub_conn: Optional[ConnectSpotWebsocket] = None
-        self._priv_conn: Optional[ConnectSpotWebsocket] = None
+        self._pub_conn: ConnectSpotWebsocket = ConnectSpotWebsocket(
+            client=self,
+            endpoint=self.PROD_ENV_URL if not beta else self.BETA_ENV_URL,
+            is_auth=False,
+            callback=self.on_message,
+        )
 
-    def get_ws_token(self: "SpotWsClientCl") -> dict:
+        self._priv_conn: Optional[ConnectSpotWebsocket] = (
+            ConnectSpotWebsocket(
+                client=self,
+                endpoint=self.AUTH_PROD_ENV_URL if not beta else self.AUTH_BETA_ENV_URL,
+                is_auth=True,
+                callback=self.on_message,
+            )
+            if self.__is_auth
+            else None
+        )
+
+    async def on_message(self: "KrakenSpotWSClient", msg: Union[dict, list]) -> None:
+        """
+        Calls the defined callback function (if defined)
+        or overload this function.
+
+        Can be overloaded as described in :class:`kraken.spot.KrakenSpotWSClient`
+
+        :param msg: The message received sent by Kraken via the websocket connection
+        :type msg: dict | list
+        """
+        if self.__callback is not None:
+            await self.__callback(msg)
+        else:
+            self.LOG.warning("Received event but no callback is defined.")
+            print(msg)
+
+    async def subscribe(
+        self: "KrakenSpotWSClient", subscription: dict, pair: List[str] = None
+    ) -> None:
+        """
+        Subscribe to a channel
+
+        Success or failures are sent over the websocket connection and can be
+        received via the on_message callback function.
+
+        When accessing private endpoints and subscription feeds that need authentication
+        make sure, that the ``Access WebSockets API`` API key permission is set
+        in the users Kraken account.
+
+        - https://docs.kraken.com/websockets/#message-subscribe
+
+        :param subscription: The subscription message
+        :type subscription: dict
+        :param pair: The pair to subscribe to
+        :type pair: List[str] | None, optional
+
+        Initialize your client as described in :class:`kraken.spot.KrakenSpotWSClient` to
+        run the following example:
+
+        .. code-block:: python
+            :linenos:
+            :caption: Spot Websocket: Subscribe to a websocket feed
+
+            >>> await bot.subscribe(
+            ...     subscription={"name": ticker},
+            ...     pair=["XBTUSD", "DOT/EUR"]
+            ... )
+        """
+
+        if "name" not in subscription:
+            raise AttributeError('Subscription requires a "name" key."')
+        private: bool = bool(subscription["name"] in self.private_sub_names)
+
+        payload: dict = {"event": "subscribe", "subscription": subscription}
+        if pair is not None:
+            if not isinstance(pair, list):
+                raise ValueError(
+                    'Parameter pair must be type of List[str] (e.g. pair=["XBTUSD"])'
+                )
+            payload["pair"] = pair
+
+        if private:  # private == without pair
+            if not self.__is_auth:
+                raise ValueError(
+                    "Cannot subscribe to private feeds without valid credentials!"
+                )
+            if pair is not None:
+                raise ValueError(
+                    "Cannot subscribe to private endpoint with specific pair!"
+                )
+            await self._priv_conn.send_message(payload, private=True)
+
+        elif pair is not None:  # public with pair
+            for symbol in pair:
+                sub = deepcopy(payload)
+                sub["pair"] = [symbol]
+                await self._pub_conn.send_message(sub, private=False)
+
+        else:
+            await self._pub_conn.send_message(payload, private=False)
+
+    async def unsubscribe(
+        self: "KrakenSpotWSClient", subscription: dict, pair: Optional[List[str]] = None
+    ) -> None:
+        """
+        Unsubscribe from a topic
+
+        Success or failures are sent over the websocket connection and can be
+        received via the on_message callback function.
+
+        When accessing private endpoints and subscription feeds that need authentication
+        make sure, that the ``Access WebSockets API`` API key permission is set
+        in the users Kraken account.
+
+        - https://docs.kraken.com/websockets/#message-unsubscribe
+
+        :param subscription: The subscription to unsubscribe from
+        :type subscription: dict
+        :param pair: The pair or list of pairs to unsubscribe
+        :type pair: List[str], optional
+
+        Initialize your client as described in :class:`kraken.spot.KrakenSpotWSClient` to
+        run the following example:
+
+        .. code-block:: python
+            :linenos:
+            :caption: Spot Websocket: Unsubscribe from a websocket feed
+
+            >>> await bot.unsubscribe(
+            ...     subscription={"name": ticker},
+            ...     pair=["XBTUSD", "DOT/EUR"]
+            ... )
+        """
+        if "name" not in subscription:
+            raise AttributeError('Subscription requires a "name" key."')
+        private: bool = bool(subscription["name"] in self.private_sub_names)
+
+        payload: dict = {"event": "unsubscribe", "subscription": subscription}
+        if pair is not None:
+            if not isinstance(pair, list):
+                raise ValueError(
+                    'Parameter pair must be type of List[str] (e.g. pair=["XBTUSD"])'
+                )
+            payload["pair"] = pair
+
+        if private:  # private == without pair
+            if not self.__is_auth:
+                raise ValueError(
+                    "Cannot unsubscribe from private feeds without valid credentials!"
+                )
+            if pair is not None:
+                raise ValueError(
+                    "Cannot unsubscribe from private endpoint with specific pair!"
+                )
+            await self._priv_conn.send_message(payload, private=True)
+
+        elif pair is not None:  # public with pair
+            for symbol in pair:
+                sub = deepcopy(payload)
+                sub["pair"] = [symbol]
+                await self._pub_conn.send_message(sub, private=False)
+
+        else:
+            await self._pub_conn.send_message(payload, private=False)
+
+    @property
+    def private_sub_names(self: "KrakenSpotWSClient") -> List[str]:
+        """
+        Returns the private subscription names
+
+        :return: List of private subscription names (``ownTrades``, ``openOrders``)
+        :rtype: List[str]
+        """
+        return ["ownTrades", "openOrders"]
+
+    @property
+    def public_sub_names(self: "KrakenSpotWSClient") -> List[str]:
+        """
+        Returns the public subscription names
+
+        :return: List of public subscription names (``ticker``,
+         ``spread``, ``book``, ``ohlc``, ``trade``, ``*``)
+        :rtype: List[str]
+        """
+        return ["ticker", "spread", "book", "ohlc", "trade", "*"]
+
+    @property
+    def active_public_subscriptions(
+        self: "KrakenSpotWSClient",
+    ) -> Union[List[dict], Any]:
+        """
+        Returns the active public subscriptions
+
+        :return: List of active public subscriptions
+        :rtype: Union[List[dict], Any]
+        :raises ConnectionError: If there is no public connection.
+        """
+        if self._pub_conn is not None:
+            return self._pub_conn.subscriptions
+        raise ConnectionError("Public connection does not exist!")
+
+    @property
+    def active_private_subscriptions(
+        self: "KrakenSpotWSClient",
+    ) -> Union[List[dict], Any]:
+        """
+        Returns the active private subscriptions
+
+        :return: List of active private subscriptions
+        :rtype: Union[List[dict], Any]
+        :raises ConnectionError: If there is no private connection
+        """
+        if self._priv_conn is not None:
+            return self._priv_conn.subscriptions
+        raise ConnectionError("Private connection does not exist!")
+
+    async def __aenter__(self: "KrakenSpotWSClient") -> "KrakenSpotWSClient":
+        return self
+
+    async def __aexit__(self, *exc: tuple, **kwargs: dict) -> None:
+        pass
+
+    def get_ws_token(self: "KrakenSpotWSClient") -> dict:
         """
         Get the authentication token to establish the authenticated
         websocket connection.
@@ -64,7 +363,7 @@ class SpotWsClientCl(KrakenBaseSpotAPI):
 
     @ensure_string("oflags")
     async def create_order(
-        self: "SpotWsClientCl",
+        self: "KrakenSpotWSClient",
         ordertype: str,
         side: str,
         pair: str,
@@ -218,7 +517,7 @@ class SpotWsClientCl(KrakenBaseSpotAPI):
 
     @ensure_string("oflags")
     async def edit_order(
-        self: "SpotWsClientCl",
+        self: "KrakenSpotWSClient",
         orderid: str,
         reqid: Optional[Union[str, int]] = None,
         pair: Optional[str] = None,
@@ -312,8 +611,7 @@ class SpotWsClientCl(KrakenBaseSpotAPI):
 
         await self._priv_conn.send_message(msg=payload, private=True)
 
-    @ensure_string("txid")
-    async def cancel_order(self: "SpotWsClientCl", txid: Union[str, List[str]]) -> None:
+    async def cancel_order(self: "KrakenSpotWSClient", txid: List[str]) -> None:
         """
         Cancel a specific order or a list of orders.
 
@@ -321,8 +619,8 @@ class SpotWsClientCl(KrakenBaseSpotAPI):
 
         - https://docs.kraken.com/websockets/#message-cancelOrder
 
-        :param txid: Transaction id or list of txids or comma delimited list as string
-        :type txid: str | List[str]
+        :param txid: A single or multiple transaction ids as list
+        :type txid: List[str]
         :raises ValueError: If the websocket is not connected or the connection is not authenticated
         :return: None
 
@@ -333,7 +631,7 @@ class SpotWsClientCl(KrakenBaseSpotAPI):
             :linenos:
             :caption: Spot Websocket: Cancel an order
 
-            >>> await auth_bot.cancel_order(txid="OBGFYP-XVQNL-P4GMWF")
+            >>> await auth_bot.cancel_order(txid=["OBGFYP-XVQNL-P4GMWF"])
         """
         if not self._priv_conn:
             logging.warning("Websocket not connected!")
@@ -344,7 +642,7 @@ class SpotWsClientCl(KrakenBaseSpotAPI):
             msg={"event": "cancelOrder", "txid": txid}, private=True
         )
 
-    async def cancel_all_orders(self: "SpotWsClientCl") -> None:
+    async def cancel_all_orders(self: "KrakenSpotWSClient") -> None:
         """
         Cancel all open Spot orders.
 
@@ -372,7 +670,9 @@ class SpotWsClientCl(KrakenBaseSpotAPI):
             raise ValueError("Cannot use cancel_all_orders on public websocket client!")
         await self._priv_conn.send_message(msg={"event": "cancelAll"}, private=True)
 
-    async def cancel_all_orders_after(self: "SpotWsClientCl", timeout: int = 0) -> None:
+    async def cancel_all_orders_after(
+        self: "KrakenSpotWSClient", timeout: int = 0
+    ) -> None:
         """
         Set a Death Man's Switch
 

@@ -8,7 +8,7 @@
 from functools import lru_cache
 from typing import List, Optional, Union
 
-from ...base_api import KrakenBaseFuturesAPI, defined
+from ..base_api import KrakenBaseFuturesAPI, defined
 
 
 class Market(KrakenBaseFuturesAPI):
@@ -290,7 +290,7 @@ class Market(KrakenBaseFuturesAPI):
 
         .. code-block:: python
             :linenos:
-            :caption: Futures Market: Get the assets order book
+            :caption: Futures Market: Get the assets orderbook
 
             >>> from kraken.futures import Market
             >>> Market().get_orderbook(symbol="PI_XBTUSD")

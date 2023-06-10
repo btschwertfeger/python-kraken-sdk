@@ -11,8 +11,8 @@ from functools import lru_cache
 from math import floor
 from typing import List, Optional, Union
 
-from ...base_api import KrakenBaseSpotAPI, defined, ensure_string
-from ...spot import Market
+from ..base_api import KrakenBaseSpotAPI, defined, ensure_string
+from .market import Market
 
 
 class Trade(KrakenBaseSpotAPI):
@@ -133,7 +133,7 @@ class Trade(KrakenBaseSpotAPI):
         :param timeinforce: how long the order remains in the orderbook, one of:
             ``GTC``, ``IOC``, ``GTD`` (see the referenced Kraken documentation for more information)
         :type timeinforce: str, optional
-        :param displayvol: Define how much of the volume is visible in the order book (iceberg)
+        :param displayvol: Define how much of the volume is visible in the orderbook (iceberg)
         :type displayvol: str | int | float, optional
         :param starttim: Unix timestamp or seconds defining the start time (default: ``"0"``)
         :type starttim: str, optional
@@ -682,6 +682,38 @@ class Trade(KrakenBaseSpotAPI):
         :raises ValueError: If no valid ``amount_type`` was passed.
         :return: A string representation of the amount.
         :rtype: str
+
+        .. code-block:: python
+            :linenos:
+            :caption: Spot Trade: Truncate
+
+            >>> print(trade.truncate(
+            ...     amount=0.123456789,
+            ...     amount_type="volume",
+            ...     pair="XBTUSD"
+            ... ))
+            0.12345678
+
+            >>> print(trade.truncate(
+            ...     amount=21123.12849829993,
+            ...     amount_type="price",
+            ...     pair="XBTUSD")
+            ... ))
+            21123.1
+
+            >>> print(trade.truncate(
+            ...     amount=0.1,
+            ...     amount_type="volume",
+            ...     pair="XBTUSD"
+            ... ))
+            0.10000000
+
+            >>> print(trade.truncate(
+            ...     amount=21123,
+            ...     amount_type="price",
+            ...     pair="XBTUSD"
+            ... ))
+            21123.0
         """
         if amount_type not in ("price", "volume"):
             raise ValueError("Amount type must be 'volume' or 'price'!")

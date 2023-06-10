@@ -8,7 +8,7 @@
 from decimal import Decimal
 from typing import List, Optional, Union
 
-from ...base_api import KrakenBaseSpotAPI, defined, ensure_string
+from ..base_api import KrakenBaseSpotAPI, defined, ensure_string
 
 
 class User(KrakenBaseSpotAPI):
@@ -767,7 +767,7 @@ class User(KrakenBaseSpotAPI):
     def get_trade_volume(
         self: "User",
         pair: Optional[Union[str, List[str]]] = None,
-        fee_info: Optional[bool] = True,
+        fee_info: bool = True,
     ) -> dict:
         """
         Get the 30-day user specific trading volume in USD.

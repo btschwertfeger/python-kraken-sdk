@@ -15,12 +15,14 @@ import traceback
 from copy import deepcopy
 from random import random
 from time import time
-from typing import Any, Callable, List, Optional, Union
+from typing import TYPE_CHECKING, Any, List, Optional, Union
 
 import websockets
 
-from ...exceptions import KrakenException
-from ...spot.ws_client import SpotWsClientCl
+from kraken.exceptions import KrakenException
+
+if TYPE_CHECKING:
+    from kraken.spot import KrakenSpotWSClient
 
 
 class ConnectSpotWebsocket:
@@ -39,7 +41,8 @@ class ConnectSpotWebsocket:
     :type private: bool, optional
     """
 
-    MAX_RECONNECT_NUM: int = 10
+    MAX_RECONNECT_NUM: int = 7
+    LOG: logging.Logger = logging.getLogger(__name__)
 
     def __init__(
         self: "ConnectSpotWebsocket",
@@ -61,7 +64,7 @@ class ConnectSpotWebsocket:
         self.__socket: Optional[Any] = None
         self.__subscriptions: List[dict] = []
 
-        asyncio.ensure_future(self.__run_forever(), loop=asyncio.get_running_loop())
+        self.task: asyncio.Task = asyncio.create_task(self.__run_forever())
 
     @property
     def subscriptions(self: "ConnectSpotWebsocket") -> list:
@@ -79,12 +82,12 @@ class ConnectSpotWebsocket:
         self.__ws_conn_details = (
             None if not self.__is_auth else self.__client.get_ws_token()
         )
-        logging.debug(f"Websocket token: {self.__ws_conn_details}")
+        self.LOG.debug(f"Websocket token: {self.__ws_conn_details}")
 
         async with websockets.connect(  # pylint: disable=no-member
             f"wss://{self.__ws_endpoint}", ping_interval=30
         ) as socket:
-            logging.info("Websocket connected!")
+            self.LOG.info("Websocket connected!")
             self.__socket = socket
 
             if not event.is_set():
@@ -100,14 +103,14 @@ class ConnectSpotWebsocket:
                 except asyncio.TimeoutError:  # important
                     await self.send_ping()
                 except asyncio.CancelledError:
-                    logging.exception("asyncio.CancelledError")
+                    self.LOG.exception("asyncio.CancelledError")
                     keep_alive = False
                     await self.__callback({"error": "asyncio.CancelledError"})
                 else:
                     try:
                         msg: dict = json.loads(_msg)
                     except ValueError:
-                        logging.warning(_msg)
+                        self.LOG.warning(_msg)
                     else:
                         if "event" in msg:
                             if msg["event"] == "subscriptionStatus" and "status" in msg:
@@ -119,12 +122,20 @@ class ConnectSpotWebsocket:
                                     elif msg["status"] == "unsubscribed":
                                         self.__remove_subscription(msg)
                                     elif msg["status"] == "error":
-                                        logging.warning(msg)
+                                        self.LOG.warning(msg)
                                 except AttributeError:
                                     pass
+
                         await self.__callback(msg)
 
     async def __run_forever(self: "ConnectSpotWebsocket") -> None:
+        """
+        This function ensures the reconnects.
+
+        todo: This is stupid. There must be a better way for passing
+              the raised exception to the client class - not
+              through this ``exception_occur`` flag
+        """
         try:
             while True:
                 await self.__reconnect()
@@ -133,35 +144,38 @@ class ConnectSpotWebsocket:
                 {"error": "kraken.exceptions.KrakenException.MaxReconnectError"}
             )
         except Exception as exc:
-            logging.error(f"{exc}: {traceback.format_exc()}")
+            traceback_: str = traceback.format_exc()
+            logging.error(f"{exc}: {traceback_}")
+            await self.__callback({"error": traceback_})
         finally:
+            await self.__callback({"error": "KrakenSpotWSClient: exception_occur"})
             self.__client.exception_occur = True
 
     async def __reconnect(self: "ConnectSpotWebsocket") -> None:
-        logging.info("Websocket start connect/reconnect")
+        self.LOG.info("Websocket start connect/reconnect")
 
         self.__reconnect_num += 1
         if self.__reconnect_num >= self.MAX_RECONNECT_NUM:
+            self.LOG.error(
+                "The KrakenSpotWebsocketClient encountered to many reconnects!"
+            )
             raise KrakenException.MaxReconnectError()
 
         reconnect_wait: float = self.__get_reconnect_wait(self.__reconnect_num)
-        logging.debug(
-            f"asyncio sleep reconnect_wait={reconnect_wait} s reconnect_num={self.__reconnect_num}"
+        self.LOG.debug(
+            "asyncio sleep reconnect_wait={reconnect_wait} s reconnect_num={self.__reconnect_num}"
         )
         await asyncio.sleep(reconnect_wait)
-        logging.debug("asyncio sleep done")
+
         event: asyncio.Event = asyncio.Event()
+        tasks: List[asyncio.Task] = [
+            asyncio.create_task(self.__recover_subscriptions(event)),
+            asyncio.create_task(self.__run(event)),
+        ]
 
-        tasks: dict = {
-            asyncio.ensure_future(
-                self.__recover_subscriptions(event)
-            ): self.__recover_subscriptions,
-            asyncio.ensure_future(self.__run(event)): self.__run,
-        }
-
-        while set(tasks.keys()):
+        while True:
             finished, pending = await asyncio.wait(
-                tasks.keys(), return_when=asyncio.FIRST_EXCEPTION
+                tasks, return_when=asyncio.FIRST_EXCEPTION
             )
             exception_occur: bool = False
             for task in finished:
@@ -169,23 +183,22 @@ class ConnectSpotWebsocket:
                     exception_occur = True
                     traceback.print_stack()
                     message: str = f"{task} got an exception {task.exception()}\n {task.get_stack()}"
-                    logging.warning(message)
+                    self.LOG.warning(message)
                     for process in pending:
-                        logging.warning(f"pending {process}")
+                        self.LOG.warning(f"pending {process}")
                         try:
                             process.cancel()
                         except asyncio.CancelledError:
-                            logging.exception("asyncio.CancelledError")
-                        logging.warning("Cancel OK")
+                            self.LOG.exception("asyncio.CancelledError")
                     await self.__callback({"error": message})
             if exception_occur:
                 break
-        logging.warning("reconnect over")
+        self.LOG.warning("reconnect over")
 
     async def __recover_subscriptions(
         self: "ConnectSpotWebsocket", event: asyncio.Event
     ) -> None:
-        logging.info(
+        self.LOG.info(
             f'Recover {"auth" if self.__is_auth else "public"} subscriptions {self.__subscriptions} waiting.'
         )
         await event.wait()
@@ -201,9 +214,9 @@ class ConnectSpotWebsocket:
                 cpy["subscription"]["token"] = self.__ws_conn_details["token"]
                 private = True
             await self.send_message(cpy, private=private)
-            logging.info(f"{sub} OK")
+            self.LOG.info(f"{sub} OK")
 
-        logging.info(
+        self.LOG.info(
             f'Recovering {"auth" if self.__is_auth else "public"} subscriptions {self.__subscriptions} done.'
         )
 
@@ -292,344 +305,10 @@ class ConnectSpotWebsocket:
         ):  # private endpoint
             sub["subscription"] = {"name": msg["subscription"]["name"]}
         else:
-            logging.warning(
+            self.LOG.warning(
                 "Feed not implemented. Please contact the python-kraken-sdk package author."
             )
         return sub
 
     def __get_reconnect_wait(self, attempts: int) -> Union[float, Any]:
         return round(random() * min(60 * 3, (2**attempts) - 1) + 1)
-
-
-class KrakenSpotWSClient(SpotWsClientCl):
-    """
-    Class to access public and (optional)
-    private/authenticated websocket connection.
-
-    - https://docs.kraken.com/websockets/#overview
-
-    This class holds up to two websocket connections, one private
-    and one public.
-
-    When accessing private endpoints that need authentication make sure,
-    that the ``Access WebSockets API`` API key permission is set in the user's
-    account.
-
-    :param key: API Key for the Kraken Spot API (default: ``""``)
-    :type key: str, optional
-    :param secret: Secret API Key for the Kraken Spot API (default: ``""``)
-    :type secret: str, optional
-    :param url: Set a specific/custom url to access the Kraken API
-    :type url: str, optional
-    :param beta: Use the beta websocket channels (maybe not supported anymore, default: ``False``)
-    :type beta: bool
-
-    .. code-block:: python
-        :linenos:
-        :caption: HowTo: Create a Bot and integrate the python-kraken-sdk Spot Websocket Client
-
-        import asyncio
-        from kraken.spot import KrakenSpotWSClient
-
-        async def main() -> None:
-            class Bot(KrakenSpotWSClient):
-
-                async def on_message(self, event: dict) -> None:
-                    print(event)
-
-            bot = Bot()         # unauthenticated
-            auth_bot = Bot(     # authenticated
-                key='kraken-api-key',
-                secret='kraken-secret-key'
-            )
-
-            # subscribe to the desired feeds:
-            await bot.subscribe(
-                subscription={"name": ticker},
-                pair=["XBTUSD", "DOT/EUR"]
-            )
-            # from now on the on_message function receives the ticker feed
-
-            while True:
-                await asyncio.sleep(6)
-
-        if __name__ == '__main__':
-            loop = asyncio.new_event_loop()
-            asyncio.set_event_loop(loop)
-            try:
-                asyncio.run(main())
-            except KeyboardInterrupt:
-                loop.close()
-
-    .. code-block:: python
-        :linenos:
-        :caption: HowTo: Use the websocket client as context manager
-
-        import asyncio
-        from kraken.spot import KrakenSpotWSClient
-
-        async def on_message(msg):
-            print(msg)
-
-        async def main() -> None:
-            async with KrakenSpotWSClient(
-                key="api-key",
-                secret="secret-key",
-                callback=on_message
-            ) as session:
-                await session.subscribe(
-                    subscription={"name": "ticker"},
-                    pair=["XBT/USD"]
-                )
-
-            while True:
-                await asyncio.sleep(6)
-
-
-        if __name__ == "__main__":
-            loop = asyncio.new_event_loop()
-            asyncio.set_event_loop(loop)
-            try:
-                asyncio.run(main())
-            except KeyboardInterrupt:
-                pass
-            finally:
-                loop.close()
-    """
-
-    PROD_ENV_URL: str = "ws.kraken.com"
-    AUTH_PROD_ENV_URL: str = "ws-auth.kraken.com"
-    BETA_ENV_URL: str = "beta-ws.kraken.com"
-    AUTH_BETA_ENV_URL: str = "beta-ws-auth.kraken.com"
-
-    def __init__(
-        self: "KrakenSpotWSClient",
-        key: str = "",
-        secret: str = "",
-        url: str = "",
-        callback: Optional[Callable] = None,
-        beta: bool = False,
-    ):
-        super().__init__(key=key, secret=secret, url=url, sandbox=beta)
-        self.__callback: Any = callback
-        self.__is_auth: bool = bool(key and secret)
-        self.exception_occur: bool = False
-        self._pub_conn: ConnectSpotWebsocket = ConnectSpotWebsocket(
-            client=self,
-            endpoint=self.PROD_ENV_URL if not beta else self.BETA_ENV_URL,
-            is_auth=False,
-            callback=self.on_message,
-        )
-
-        self._priv_conn: Optional[ConnectSpotWebsocket] = (
-            ConnectSpotWebsocket(
-                client=self,
-                endpoint=self.AUTH_PROD_ENV_URL if not beta else self.AUTH_BETA_ENV_URL,
-                is_auth=True,
-                callback=self.on_message,
-            )
-            if self.__is_auth
-            else None
-        )
-
-    async def on_message(self: "KrakenSpotWSClient", msg: dict) -> None:
-        """
-        Calls the defined callback function (if defined)
-        or overload this function.
-
-        Can be overloaded as described in :class:`kraken.spot.KrakenSpotWSClient`
-
-        :param msg: The message received sent by Kraken via the websocket connection
-        :type msg: dict
-        """
-        if self.__callback is not None:
-            await self.__callback(msg)
-        else:
-            logging.warning("Received event but no callback is defined.")
-            print(msg)
-
-    async def subscribe(
-        self: "KrakenSpotWSClient", subscription: dict, pair: List[str] = None
-    ) -> None:
-        """
-        Subscribe to a channel
-
-        Success or failures are sent over the websocket connection and can be
-        received via the on_message callback function.
-
-        When accessing private endpoints and subscription feeds that need authentication
-        make sure, that the ``Access WebSockets API`` API key permission is set
-        in the users Kraken account.
-
-        - https://docs.kraken.com/websockets-beta/#message-subscribe
-
-        :param subscription: The subscription message
-        :type subscription: dict
-        :param pair: The pair to subscribe to
-        :type pair: List[str] | None, optional
-
-        Initialize your client as described in :class:`kraken.spot.KrakenSpotWSClient` to
-        run the following example:
-
-        .. code-block:: python
-            :linenos:
-            :caption: Spot Websocket: Subscribe to a websocket feed
-
-            >>> await bot.subscribe(
-            ...     subscription={"name": ticker},
-            ...     pair=["XBTUSD", "DOT/EUR"]
-            ... )
-        """
-
-        if "name" not in subscription:
-            raise AttributeError('Subscription requires a "name" key."')
-        private: bool = bool(subscription["name"] in self.private_sub_names)
-
-        payload: dict = {"event": "subscribe", "subscription": subscription}
-        if pair is not None:
-            if not isinstance(pair, list):
-                raise ValueError(
-                    'Parameter pair must be type of List[str] (e.g. pair=["XBTUSD"])'
-                )
-            payload["pair"] = pair
-
-        if private:  # private == without pair
-            if not self.__is_auth:
-                raise ValueError(
-                    "Cannot subscribe to private feeds without valid credentials!"
-                )
-            if pair is not None:
-                raise ValueError(
-                    "Cannot subscribe to private endpoint with specific pair!"
-                )
-            await self._priv_conn.send_message(payload, private=True)
-
-        elif pair is not None:  # public with pair
-            for symbol in pair:
-                sub = deepcopy(payload)
-                sub["pair"] = [symbol]
-                await self._pub_conn.send_message(sub, private=False)
-
-        else:
-            await self._pub_conn.send_message(payload, private=False)
-
-    async def unsubscribe(
-        self: "KrakenSpotWSClient", subscription: dict, pair: Optional[List[str]] = None
-    ) -> None:
-        """
-        Unsubscribe from a topic
-
-        Success or failures are sent over the websocket connection and can be
-        received via the on_message callback function.
-
-        When accessing private endpoints and subscription feeds that need authentication
-        make sure, that the ``Access WebSockets API`` API key permission is set
-        in the users Kraken account.
-
-        - https://docs.kraken.com/websockets/#message-unsubscribe
-
-        :param subscription: The subscription to unsubscribe from
-        :type subscription: dict
-        :param pair: The pair or list of pairs to unsubscribe
-        :type pair: List[str], optional
-
-        Initialize your client as described in :class:`kraken.spot.KrakenSpotWSClient` to
-        run the following example:
-
-        .. code-block:: python
-            :linenos:
-            :caption: Spot Websocket: Unsubscribe from a websocket feed
-
-            >>> await bot.unsubscribe(
-            ...     subscription={"name": ticker},
-            ...     pair=["XBTUSD", "DOT/EUR"]
-            ... )
-        """
-        if "name" not in subscription:
-            raise AttributeError('Subscription requires a "name" key."')
-        private: bool = bool(subscription["name"] in self.private_sub_names)
-
-        payload: dict = {"event": "unsubscribe", "subscription": subscription}
-        if pair is not None:
-            if not isinstance(pair, list):
-                raise ValueError(
-                    'Parameter pair must be type of List[str] (e.g. pair=["XBTUSD"])'
-                )
-            payload["pair"] = pair
-
-        if private:  # private == without pair
-            if not self.__is_auth:
-                raise ValueError(
-                    "Cannot unsubscribe from private feeds without valid credentials!"
-                )
-            if pair is not None:
-                raise ValueError(
-                    "Cannot unsubscribe from private endpoint with specific pair!"
-                )
-            await self._priv_conn.send_message(payload, private=True)
-
-        elif pair is not None:  # public with pair
-            for symbol in pair:
-                sub = deepcopy(payload)
-                sub["pair"] = [symbol]
-                await self._pub_conn.send_message(sub, private=False)
-
-        else:
-            await self._pub_conn.send_message(payload, private=False)
-
-    @property
-    def private_sub_names(self: "KrakenSpotWSClient") -> List[str]:
-        """
-        Returns the private subscription names
-
-        :return: List of private subscription names (``ownTrades``, ``openOrders``)
-        :rtype: List[str]
-        """
-        return ["ownTrades", "openOrders"]
-
-    @property
-    def public_sub_names(self: "KrakenSpotWSClient") -> List[str]:
-        """
-        Returns the public subscription names
-
-        :return: List of public subscription names (``ticker``,
-         ``spread``, ``book``, ``ohlc``, ``trade``, ``*``)
-        :rtype: List[str]
-        """
-        return ["ticker", "spread", "book", "ohlc", "trade", "*"]
-
-    @property
-    def active_public_subscriptions(
-        self: "KrakenSpotWSClient",
-    ) -> Union[List[dict], Any]:
-        """
-        Returns the active public subscriptions
-
-        :return: List of active public subscriptions
-        :rtype: Union[List[dict], Any]
-        :raises ConnectionError: If there is no public connection.
-        """
-        if self._pub_conn is not None:
-            return self._pub_conn.subscriptions
-        raise ConnectionError("Public connection does not exist!")
-
-    @property
-    def active_private_subscriptions(
-        self: "KrakenSpotWSClient",
-    ) -> Union[List[dict], Any]:
-        """
-        Returns the active private subscriptions
-
-        :return: List of active private subscriptions
-        :rtype: Union[List[dict], Any]
-        :raises ConnectionError: If there is no private connection
-        """
-        if self._priv_conn is not None:
-            return self._priv_conn.subscriptions
-        raise ConnectionError("Private connection does not exist!")
-
-    async def __aenter__(self: "KrakenSpotWSClient") -> "KrakenSpotWSClient":
-        return self
-
-    async def __aexit__(self, *exc: tuple, **kwargs: dict) -> None:
-        pass

@@ -7,7 +7,7 @@
 
 from typing import Optional, Union
 
-from ...base_api import KrakenBaseFuturesAPI
+from ..base_api import KrakenBaseFuturesAPI
 
 
 class Funding(KrakenBaseFuturesAPI):

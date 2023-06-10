@@ -88,7 +88,7 @@ python3 -m pip install python-kraken-sdk
 ### 2. Register at Kraken and generate API Keys:
 
 - Spot Trading: https://www.kraken.com/u/security/api
-- Futures Trading: https://futures.kraken.com/trade/settings/api
+- Futures Trading: https://futures.kraken.com/trade/settings/api (see _[help](https://docs.futures.kraken.com/#introduction-generate-api-keys)_)
 - Futures Sandbox: https://demo-futures.kraken.com/settings/api
 
 ### 3. Start using the provided example scripts
@@ -177,7 +177,7 @@ import time
 import asyncio
 from kraken.spot import KrakenSpotWSClient
 
-async def main() -> None:
+async def main()
 
     key = "kraken-public-key"
     secret = "kraken-secret-key"

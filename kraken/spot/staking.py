@@ -4,11 +4,11 @@
 # GitHub: https://github.com/btschwertfeger
 #
 
-"""Module that implements the Kraken Spot Stakung client"""
+"""Module that implements the Kraken Spot Staking client"""
 
 from typing import List, Optional, Union
 
-from ...base_api import KrakenBaseSpotAPI, defined
+from ..base_api import KrakenBaseSpotAPI, defined
 
 
 class Staking(KrakenBaseSpotAPI):

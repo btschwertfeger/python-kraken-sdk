@@ -8,7 +8,8 @@
 # pylint: disable=unused-import
 from kraken.spot.funding import Funding
 from kraken.spot.market import Market
+from kraken.spot.orderbook import OrderbookClient
 from kraken.spot.staking import Staking
 from kraken.spot.trade import Trade
 from kraken.spot.user import User
-from kraken.spot.websocket import KrakenSpotWSClient
+from kraken.spot.ws_client import KrakenSpotWSClient
