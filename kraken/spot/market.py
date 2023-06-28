@@ -329,7 +329,10 @@ class Market(KrakenBaseSpotAPI):
         )
 
     def get_recent_trades(
-        self: "Market", pair: str, since: Optional[Union[str, int]] = None
+        self: "Market",
+        pair: str,
+        since: Optional[Union[str, int]] = None,
+        count: Optional[int] = None,
     ) -> dict:
         """
         Get the latest trades for a specific trading pair (up to 1000).
@@ -340,6 +343,8 @@ class Market(KrakenBaseSpotAPI):
         :type pair: str
         :param since: Filter trades since given timestamp (default: ``None``)
         :type since: str | int, optional
+        :param count: The max number of results
+        :type count: int, optional
         :return: The last public trades (up to 1000 results)
         :rtype: dict
 
@@ -361,7 +366,9 @@ class Market(KrakenBaseSpotAPI):
         """
         params: dict = {"pair": pair}
         if defined(since):
-            params["since"] = None
+            params["since"] = since
+        if defined(count):
+            params["count"] = count
         return self._request(  # type: ignore[return-value]
             method="GET", uri="/public/Trades", params=params, auth=False
         )
