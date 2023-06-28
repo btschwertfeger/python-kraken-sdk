@@ -405,7 +405,7 @@ Note: Authenticated Futures websocket clients can also un-/subscribe from/to pub
 
 # 🆕 Contributions
 
-... are welcome! - Please have a look at [CONTRIBUTION.md](./CONTRIBUTING.md).
+… are welcome! - Please have a look at [CONTRIBUTION.md](./CONTRIBUTING.md).
 
 ---
 
@@ -422,7 +422,7 @@ Note: Authenticated Futures websocket clients can also un-/subscribe from/to pub
 
 <a name="notes"></a>
 
-# 📝 Notes:
+# 📝 Notes
 
 - Coding standards are not always followed to make arguments and function names as similar as possible to those in the Kraken API documentations.
 
