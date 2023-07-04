@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools>=45", "setuptools_scm[toml]>=6.2", "wheel"]
+requires = ["setuptools>=65.5.1", "setuptools_scm[toml]>=6.2", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -65,8 +65,15 @@ examples = ["matplotlib"]
 include-package-data = false
 
 [tool.setuptools.packages.find]
-include = ["kraken*"]
-exclude = ["docs*", "tests*", "examples*", ".env"]
+include = [
+  "kraken*"
+]
+exclude = [
+  "docs*",
+  "tests*",
+  "examples*",
+  ".env"
+]
 
 [tool.setuptools_scm]
 write_to = "kraken/_version.py"
@@ -81,7 +88,7 @@ testpaths = ["tests"]
 
 [tool.pytest.ini_options]
 markers = [
-    "select: Used to run a specific test by hand.",
+    "wip: Used to run a specific test by hand.",
     "spot: mark a test that tests a Spot endpoint.",
     "spot_auth: mark a test that tests a authenticaed Spot endpoint.",
     "spot_trade: mark a test that tests a Spot Trade endpoint.",
