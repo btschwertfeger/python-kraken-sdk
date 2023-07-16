@@ -5,11 +5,6 @@
 #
 
 """
-NOTE: * The Spot Orderbook client is not released yet. It will be released
-        in python-kraken-sdk=v1.4.0.
-      * Have a look at https://gist.github.com/btschwertfeger/6eea0eeff193f7cd1b262cfce4f0eb51
-        for an example that works now.
-
 This module provides an example on how to use the Spot Orderbook
 client of the python-kraken-sdk (https://github.com/btschwertfeger/python-kraken-sdk)
 to retrieve and maintain a valid Spot order book for (a) specific
@@ -74,7 +69,7 @@ class Orderbook(OrderbookClient):
         print("Bid         Volume\t\t Ask         Volume")
         for level in range(self.depth):
             print(
-                f"{bid[level][0]} ({bid[level][1]}) \t {ask[level][0]} ({ask[level][1]})"
+                f"{bid[level][0]} ({bid[level][1][0]}) \t {ask[level][0]} ({ask[level][1][0]})"
             )
 
         assert book["valid"]  # ensure that the checksum is valid
