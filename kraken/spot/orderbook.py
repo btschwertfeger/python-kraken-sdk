@@ -10,7 +10,6 @@ import logging
 from asyncio import sleep as asyncio_sleep
 from binascii import crc32
 from collections import OrderedDict
-from datetime import datetime, timezone
 from inspect import iscoroutinefunction
 from typing import Callable, Dict, List, Optional, Union
 
@@ -317,9 +316,7 @@ class OrderbookClient:
         for entry in snapshot:
             price: str = entry[0]
             volume: str = entry[1]
-            timestamp: datetime = datetime.fromtimestamp(
-                float(entry[2]), timezone.utc
-            ).replace(tzinfo=None)
+            timestamp: str = entry[2]
 
             if float(volume) > 0.0:
                 # Price level exist or is new
