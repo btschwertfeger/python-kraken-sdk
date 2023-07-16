@@ -2,16 +2,45 @@
 
 ## [Unreleased](https://github.com/btschwertfeger/python-kraken-sdk/tree/HEAD)
 
-[Full Changelog](https://github.com/btschwertfeger/python-kraken-sdk/compare/v1.3.0...HEAD)
+[Full Changelog](https://github.com/btschwertfeger/python-kraken-sdk/compare/v1.4.1...HEAD)
+
+Uncategorized merged pull requests:
+
+- Add "Question" issue template [\#122](https://github.com/btschwertfeger/python-kraken-sdk/pull/122) ([btschwertfeger](https://github.com/btschwertfeger))
+
+## [v1.4.1](https://github.com/btschwertfeger/python-kraken-sdk/tree/v1.4.1) (2023-06-28)
+
+[Full Changelog](https://github.com/btschwertfeger/python-kraken-sdk/compare/v1.4.0...v1.4.1)
+
+**Fixed bugs:**
+
+- `kraken.spot.Market.get_recent_trades`: 'since' parameter does not work [\#119](https://github.com/btschwertfeger/python-kraken-sdk/issues/119)
+- Fix `kraken.spot.Market.get_recent_trades` parameter 'since' [\#120](https://github.com/btschwertfeger/python-kraken-sdk/pull/120) ([btschwertfeger](https://github.com/btschwertfeger))
+
+**Closed issues:**
+
+- Create `.github/release.yaml` [\#108](https://github.com/btschwertfeger/python-kraken-sdk/issues/108)
+
+## [v1.4.0](https://github.com/btschwertfeger/python-kraken-sdk/tree/v1.4.0) (2023-06-16)
+
+[Full Changelog](https://github.com/btschwertfeger/python-kraken-sdk/compare/v1.3.0...v1.4.0)
 
 **Implemented enhancements:**
 
 - Add the `truncate` parameter to `create_order` of the Spot websocket client [\#111](https://github.com/btschwertfeger/python-kraken-sdk/issues/111)
-- Add the `truncate` parameter to create_order of the Spot websocket clients' `create_order` and `cancel_order`+ `kraken.spot.Trade.edit_order` [\#113](https://github.com/btschwertfeger/python-kraken-sdk/pull/113) ([btschwertfeger](https://github.com/btschwertfeger))
+- Add a Spot Orderbook client that handles a realtime order book [\#104](https://github.com/btschwertfeger/python-kraken-sdk/issues/104)
+- A the Spot order book client \(`kraken.spot.OrderbookClient`\) [\#106](https://github.com/btschwertfeger/python-kraken-sdk/pull/106) ([btschwertfeger](https://github.com/btschwertfeger))
+- Add the `truncate` parameter to the Spot websocket clients' `create_order` and `cancel_order`+ `kraken.spot.Trade.edit_order` [\#113](https://github.com/btschwertfeger/python-kraken-sdk/pull/113) ([btschwertfeger](https://github.com/btschwertfeger))
+
+**Fixed bugs:**
+
+- user.get_trade_volume\(\) says it supports multiple currencies as a list, but it does not seem to. [\#115](https://github.com/btschwertfeger/python-kraken-sdk/issues/115)
+- kraken.exceptions.KrakenException.KrakenInvalidNonceError: An invalid nonce was supplied. [\#114](https://github.com/btschwertfeger/python-kraken-sdk/issues/114)
 
 Uncategorized merged pull requests:
 
 - Update `/examples/spot_orderbook.py` [\#110](https://github.com/btschwertfeger/python-kraken-sdk/pull/110) ([btschwertfeger](https://github.com/btschwertfeger))
+- Create `release.yaml` [\#116](https://github.com/btschwertfeger/python-kraken-sdk/pull/116) ([btschwertfeger](https://github.com/btschwertfeger))
 
 ## [v1.3.0](https://github.com/btschwertfeger/python-kraken-sdk/tree/v1.3.0) (2023-05-24)
 

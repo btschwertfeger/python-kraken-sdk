@@ -257,7 +257,7 @@ class OrderbookClient:
         :return: ``True`` if any critical error occurred else ``False``
         :rtype: bool
         """
-        return self.ws_client.exception_occur
+        return bool(self.ws_client.exception_occur)
 
     def get(self: "OrderbookClient", pair: str) -> Optional[dict]:
         """
@@ -267,6 +267,24 @@ class OrderbookClient:
         :type pair: str
         :return: The orderbook of that ``pair``.
         :rtype: dict
+
+        .. code-block::python
+            :linenos:
+            :caption: Orderbook: Get ask and bid
+
+            …
+            class Orderbook(OrderbookClient):
+
+                async def on_book_update(
+                    self: "Orderbook",
+                    pair: str,
+                    message: list
+                ) -> None:
+                    book: Dict[str, Any] = self.get(pair="XBT/USD")
+                    ask: List[Tuple[str, str]] = list(book["ask"].items())
+                    bid: List[Tuple[str, str]] = list(book["bid"].items())
+                    # ask and bid are now in format [price, (volume, timestamp)]
+                    # … and include the whole orderbook
         """
         return self.__book.get(pair)
 
@@ -286,8 +304,8 @@ class OrderbookClient:
             ['25030.40000', '2.77134976', '1684658131.751539'],
             ['25032.20000', '0.13978808', '1684658131.751577']
         ]
-        ... where the first value is the ask or bid price, the second
-            represents the volume and the last one is the time stamp.
+        … where the first value is the ask or bid price, the second
+          represents the volume and the last one is the timestamp.
 
         :param side: The side to assign the data to,
             either ``ask`` or ``bid``
@@ -298,10 +316,11 @@ class OrderbookClient:
         for entry in snapshot:
             price: str = entry[0]
             volume: str = entry[1]
+            timestamp: str = entry[2]
 
             if float(volume) > 0.0:
                 # Price level exist or is new
-                self.__book[pair][side][price] = volume
+                self.__book[pair][side][price] = (volume, timestamp)
             else:
                 # Price level moved out of range
                 self.__book[pair][side].pop(price)
@@ -333,28 +352,21 @@ class OrderbookClient:
         :type checksum: str
         """
         book: dict = self.__book[pair]
-
-        # sort ask (desc) and bid (asc)
-        ask: List[tuple] = sorted(book["ask"].items(), key=self.get_first)
-        bid: List[tuple] = sorted(
-            book["bid"].items(),
-            key=self.get_first,
-            reverse=True,
-        )
+        ask = list(book["ask"].items())
+        bid = list(book["bid"].items())
 
         local_checksum: str = ""
-        for price_level, volume in ask[:10]:
+        for price_level, (volume, _) in ask[:10]:
             local_checksum += price_level.replace(".", "").lstrip("0") + volume.replace(
                 ".", ""
             ).lstrip("0")
 
-        for price_level, volume in bid[:10]:
+        for price_level, (volume, _) in bid[:10]:
             local_checksum += price_level.replace(".", "").lstrip("0") + volume.replace(
                 ".", ""
             ).lstrip("0")
 
         self.__book[pair]["valid"] = checksum == str(crc32(local_checksum.encode()))
-        # assert self.__book[pair]["valid"]
 
     @staticmethod
     def get_first(values: tuple) -> float:
