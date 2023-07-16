@@ -40,12 +40,15 @@ install:
 	$(PYTHON) -m pip install .
 
 ## ======= T E S T I N G =======
-## test		Run the unittests
+## test		Run the unit tests
 ##
 test:
 	$(PYTEST) $(PYTEST_OPTS) $(TEST_DIR)
 
 tests: test
+
+test-wip:
+	$(PYTEST) -m "wip" $(PYTEST_OPTS) $(TEST_DIR)
 
 coverage:
 	$(PYTEST) $(PYTEST_COV_OPTS) $(TEST_DIR)

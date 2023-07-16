@@ -116,6 +116,10 @@ def test_get_recent_trades(spot_market: Market) -> None:
         spot_market.get_recent_trades(pair="XBTUSD", since="1616663618")
     )
 
+    count10 = spot_market.get_recent_trades(pair="XBTUSD", count=10)
+    assert is_not_error(count10)
+    assert len(count10["XXBTZUSD"]) == 10
+
 
 @pytest.mark.spot
 @pytest.mark.spot_market
