@@ -4,7 +4,10 @@
 # GitHub: https://github.com/btschwertfeger
 #
 
-"""Module that provides an example usage for the Kraken Spot websocket client."""
+"""
+Module that provides an example usage for the KrakenSpotWebsocketClient.
+It uses the Kraken Websocket API v1.
+"""
 
 from __future__ import annotations
 

@@ -4,7 +4,10 @@
 # GitHub: https://github.com/btschwertfeger
 
 
-"""Module that provides an example Futures trading bot data structure."""
+"""
+Module that provides an example Futures trading bot data structure.
+It uses the Kraken Websocket API v1.
+"""
 
 from __future__ import annotations
 
