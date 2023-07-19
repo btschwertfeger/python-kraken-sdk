@@ -4,7 +4,10 @@
 # GitHub: https://github.com/btschwertfeger
 #
 
-"""This module provides the Spot websocket client (Websocket API v1.*). """
+"""
+This module provides the Spot websocket client (Websocket API V1 as
+documented in https://docs.kraken.com/websockets).
+"""
 
 from __future__ import annotations
 
@@ -29,7 +32,7 @@ class KrakenSpotWSClient(KrakenSpotWSClientBase):
 
     - https://docs.kraken.com/websockets
 
-    … please use :class:`KrakenSpotWSClientv2` for accessing the Kraken
+    … please use :class:`KrakenSpotWSClientV2` for accessing the Kraken
     Websockets API v2.
 
     This class holds up to two websocket connections, one private

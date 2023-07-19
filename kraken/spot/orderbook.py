@@ -13,7 +13,7 @@ from collections import OrderedDict
 from inspect import iscoroutinefunction
 from typing import Callable, Dict, List, Optional, Union
 
-from .ws_client import KrakenSpotWSClient
+from .websocket_v1 import KrakenSpotWSClient
 
 
 class OrderbookClient:

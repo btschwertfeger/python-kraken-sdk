@@ -12,4 +12,5 @@ from kraken.spot.orderbook import OrderbookClient
 from kraken.spot.staking import Staking
 from kraken.spot.trade import Trade
 from kraken.spot.user import User
-from kraken.spot.ws_client import KrakenSpotWSClient
+from kraken.spot.websocket_v1 import KrakenSpotWSClient
+from kraken.spot.websocket_v2 import KrakenSpotWSClientV2

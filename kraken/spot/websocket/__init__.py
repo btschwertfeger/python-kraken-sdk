@@ -15,20 +15,17 @@ import traceback
 from copy import deepcopy
 from random import random
 from time import time
-from typing import TYPE_CHECKING, Any, Callable, List, Optional, Union
+from typing import Any, Callable, List, Optional, Union
 
 import websockets
 
 from kraken.base_api import KrakenBaseSpotAPI
 from kraken.exceptions import KrakenException
 
-if TYPE_CHECKING:
-    from kraken.spot import KrakenSpotWSClient
-
 
 class KrakenSpotWSClientBase(KrakenBaseSpotAPI):
     """
-    todo:
+    todo: write doc
     """
 
     LOG: logging.Logger = logging.getLogger(__name__)
@@ -48,19 +45,22 @@ class KrakenSpotWSClientBase(KrakenBaseSpotAPI):
         api_version: str = "v2",
     ) -> None:
         super().__init__(key=key, secret=secret, sandbox=beta)
-
         self.__setup_api_version(version=api_version)
+
         self._is_auth: bool = bool(key and secret)
         self.__callback: Optional[Callable] = callback
         self.exception_occur: bool = False
 
-        if not no_public:
-            self._pub_conn: ConnectSpotWebsocket = ConnectSpotWebsocket(
+        self._pub_conn: Optional[ConnectSpotWebsocket] = (
+            ConnectSpotWebsocket(
                 client=self,
                 endpoint=self.PROD_ENV_URL if not beta else self.BETA_ENV_URL,
                 is_auth=False,
                 callback=self.on_message,
             )
+            if not no_public
+            else None
+        )
 
         self._priv_conn: Optional[ConnectSpotWebsocket] = (
             ConnectSpotWebsocket(
@@ -79,9 +79,21 @@ class KrakenSpotWSClientBase(KrakenBaseSpotAPI):
         """
         Set up functions and attributes based on the API version.
 
-        :param version: The Websocket API version to use.
+        :param version: The Websocket API version to use (one of ``v1``, ``v2``)
         :type version: str
         """
+        if version == "v1":
+            return
+
+        if version == "v2":
+            # pylint: disable=invalid-name
+            self.PROD_ENV_URL += "/v2"
+            self.AUTH_PROD_ENV_URL += "/v2"
+            self.BETA_ENV_URL += "/v2"
+            self.AUTH_BETA_ENV_URL += "/v2"
+            return
+
+        raise ValueError("Version must be one of ``v1``, ``v2``")
 
     async def on_message(
         self: "KrakenSpotWSClientBase", msg: Union[dict, list]
@@ -91,7 +103,7 @@ class KrakenSpotWSClientBase(KrakenBaseSpotAPI):
         function.
 
         Can be overloaded as described in :class:`kraken.spot.KrakenSpotWSClient`
-        and :class:`kraken.spot.KrakenSpotWSClientv2`.
+        and :class:`kraken.spot.KrakenSpotWSClientV2`.
 
         :param msg: The message received sent by Kraken via the websocket connection
         :type msg: dict | list
@@ -109,10 +121,13 @@ class KrakenSpotWSClientBase(KrakenBaseSpotAPI):
             print(msg)
 
     async def __aenter__(self: "KrakenSpotWSClientBase") -> "KrakenSpotWSClientBase":
+        """Entrypoint for use as context manager"""
         return self
 
-    async def __aexit__(self, *exc: tuple, **kwargs: dict) -> None:
-        pass
+    async def __aexit__(
+        self: "KrakenSpotWSClientBase", *exc: tuple, **kwargs: dict
+    ) -> None:
+        """Exit if used as context manager"""
 
     def get_ws_token(self: "KrakenSpotWSClientBase") -> dict:
         """
@@ -149,7 +164,7 @@ class KrakenSpotWSClientBase(KrakenBaseSpotAPI):
         Returns the active public subscriptions
 
         :return: List of active public subscriptions
-        :rtype: Union[List[dict], Any]
+        :rtype: list[dict] | Any
         :raises ConnectionError: If there is no active public connection.
         """
         if self._pub_conn is not None:
@@ -164,7 +179,7 @@ class KrakenSpotWSClientBase(KrakenBaseSpotAPI):
         Returns the active private subscriptions
 
         :return: List of active private subscriptions
-        :rtype: Union[List[dict], Any]
+        :rtype: list[dict] | Any
         :raises ConnectionError: If there is no active private connection
         """
         if self._priv_conn is not None:
@@ -172,7 +187,7 @@ class KrakenSpotWSClientBase(KrakenBaseSpotAPI):
         raise ConnectionError("Private connection does not exist!")
 
     # --------------------------------------------------------------------------
-    # Functions to overload
+    # Functions and attributes to overload
 
     async def send_message(
         self: "KrakenSpotWSClientBase", *args: Any, **kwargs: Any
