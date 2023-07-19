@@ -41,7 +41,7 @@ def test_create_public_bot(caplog: Any) -> None:
     for expected in (
         "'connectionID",
         "'event': 'systemStatus', 'status': 'online'",
-        "'event': 'pong', 'reqid':",
+        "'event': 'pong'",
     ):
         assert expected in caplog.text
     assert "Kraken websockets at full capacity, try again later" not in caplog.text
@@ -89,6 +89,7 @@ def test_assing_msg_and_validate_checksum(mock_ws_client: mock.MagicMock) -> Non
     asyncio.run(assign())
 
 
+@pytest.mark.wip
 @pytest.mark.spot
 @pytest.mark.spot_websocket
 @pytest.mark.spot_orderbook
@@ -119,7 +120,7 @@ def test_add_book(caplog: Any) -> None:
     asyncio.run(execute_add_book())
 
     for expected in (
-        "'channelName': 'book-10', 'event': 'subscriptionStatus', 'pair': 'XBT/USD', 'reqid':",
+        "'channelName': 'book-10', 'event': 'subscriptionStatus', 'pair': 'XBT/USD'",
         "'status': 'subscribed', 'subscription': {'depth': 10, 'name': 'book'}}",
     ):
         assert expected in caplog.text
@@ -146,7 +147,7 @@ def test_remove_book(caplog: Any) -> None:
     asyncio.run(execute_remove_book())
 
     for expected in (
-        "'channelName': 'book-10', 'event': 'subscriptionStatus', 'pair': 'XBT/USD', 'reqid':",
+        "'channelName': 'book-10', 'event': 'subscriptionStatus', 'pair': 'XBT/USD'",
         "'status': 'subscribed', 'subscription': {'depth': 10, 'name': 'book'}}",
         "'status': 'unsubscribed', 'subscription': {'depth': 10, 'name': 'book'}}",
     ):

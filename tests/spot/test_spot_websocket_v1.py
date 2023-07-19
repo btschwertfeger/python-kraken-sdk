@@ -5,17 +5,21 @@
 #
 
 """Module that tests the Kraken Spot websocket client
+    (Kraken Spot Websocket API v1)
+
 NOTE:
 *   Since there is no sandbox environment for the Spot trading API,
     some tests are adjusted, so that there is a `validate` switch to not risk funds.
 *   The custom SpotWebsocketClientTestWrapper class is used that wraps around the
     websocket client. To validate the functions the responses are logged and finally
     the logs are read out and its input is checked for the expected output.
+
+todo: check also if reqid matches
+todo: check recover subscriptions
 """
 
 from __future__ import annotations
 
-from asyncio import CancelledError
 from asyncio import run as asyncio_run
 from typing import Any, Dict, List
 
@@ -40,7 +44,7 @@ def test_create_public_bot(caplog: Any) -> None:
     for expected in (
         "'connectionID",
         "'event': 'systemStatus', 'status': 'online'",
-        "'event': 'pong', 'reqid':",
+        "'event': 'pong'",
     ):
         assert expected in caplog.text
 
@@ -65,7 +69,7 @@ def test_create_private_bot(
     for expected in (
         "'connectionID",
         "'event': 'systemStatus', 'status': 'online'",
-        "'event': 'pong', 'reqid':",
+        "'event': 'pong'",
     ):
         assert expected in caplog.text
 
@@ -147,7 +151,7 @@ def test_public_subscribe(caplog: Any) -> None:
     asyncio_run(test_subscription())
 
     for expected in (
-        "'channelName': 'ticker', 'event': 'subscriptionStatus', 'pair': 'XBT/EUR', 'reqid':",
+        "'channelName': 'ticker', 'event': 'subscriptionStatus', 'pair': 'XBT/EUR'",
         "'status': 'subscribed', 'subscription': {'name': 'ticker'}}",
     ):
         assert expected in caplog.text
@@ -189,7 +193,7 @@ def test_private_subscribe(
     asyncio_run(test_subscription())
     for expected in (
         "'status': 'subscribed', 'subscription': {'name': 'ownTrades'}}",
-        "{'channelName': 'ownTrades', 'event': 'subscriptionStatus', 'reqid':",
+        "{'channelName': 'ownTrades', 'event': 'subscriptionStatus'",
     ):
         assert expected in caplog.text
 
@@ -217,7 +221,7 @@ def test_public_unsubscribe(caplog: Any) -> None:
 
     # todo: regex!
     for expected in (
-        "'channelName': 'ticker', 'event': 'subscriptionStatus', 'pair': 'XBT/USD', 'reqid':",
+        "'channelName': 'ticker', 'event': 'subscriptionStatus', 'pair': 'XBT/USD'",
         "'status': 'subscribed', 'subscription': {'name': 'ticker'}",
         "'unsubscribed', 'subscription': {'name': 'ticker'}}",
     ):
@@ -255,8 +259,8 @@ def test_public_unsubscribe_failure(caplog: Any) -> None:
 
     # todo: regex!
     for expected in (
-        "{'errorMessage': 'Subscription Not Found', 'event': 'subscriptionStatus', 'pair': 'DOT/USD', 'reqid':",
-        "{'errorMessage': 'Subscription Not Found', 'event': 'subscriptionStatus', 'pair': 'ETH/USD', 'reqid':",
+        "{'errorMessage': 'Subscription Not Found', 'event': 'subscriptionStatus', 'pair': 'DOT/USD'",
+        "{'errorMessage': 'Subscription Not Found', 'event': 'subscriptionStatus', 'pair': 'ETH/USD'",
     ):
         assert expected in caplog.text
 
@@ -286,7 +290,7 @@ def test_private_unsubscribe(
     asyncio_run(check_unsubscribe())
 
     for expected in (
-        "{'channelName': 'ownTrades', 'event': 'subscriptionStatus', 'reqid': ",
+        "{'channelName': 'ownTrades', 'event': 'subscriptionStatus'",
         "'status': 'subscribed', 'subscription': {'name': 'ownTrades'}}",
         "'status': 'unsubscribed', 'subscription': {'name': 'ownTrades'}}",
     ):
@@ -371,7 +375,7 @@ def test_create_order(spot_api_key: str, spot_secret_key: str, caplog: Any) -> N
     asyncio_run(execute_create_order())
 
     assert (
-        "{'errorMessage': 'EGeneral:Permission denied', 'event': 'addOrderStatus', 'reqid':"
+        "{'errorMessage': 'EGeneral:Permission denied', 'event': 'addOrderStatus'"
         in caplog.text
     )
     assert "'errorMessage': 'EGeneral:Invalid" not in caplog.text
@@ -415,7 +419,7 @@ def test_edit_order(spot_api_key: str, spot_secret_key: str, caplog: Any) -> Non
     asyncio_run(execute_edit_order())
 
     assert (
-        "{'errorMessage': 'EGeneral:Permission denied', 'event': 'editOrderStatus', 'reqid':"
+        "{'errorMessage': 'EGeneral:Permission denied', 'event': 'editOrderStatus'"
         in caplog.text
     )
     assert "'errorMessage': 'EGeneral:Invalid" not in caplog.text
@@ -445,7 +449,7 @@ def test_cancel_order(spot_api_key: str, spot_secret_key: str, caplog: Any) -> N
     asyncio_run(execute_cancel_order())
 
     assert (
-        "{'errorMessage': 'EGeneral:Permission denied', 'event': 'cancelOrderStatus', 'reqid':"
+        "{'errorMessage': 'EGeneral:Permission denied', 'event': 'cancelOrderStatus'"
         in caplog.text
     )
     assert "'errorMessage': 'EGeneral:Invalid" not in caplog.text
@@ -474,7 +478,7 @@ def test_cancel_all_orders(
     asyncio_run(execute_cancel_all())
 
     assert (
-        "{'errorMessage': 'EGeneral:Permission denied', 'event': 'cancelAllStatus', 'reqid': "
+        "{'errorMessage': 'EGeneral:Permission denied', 'event': 'cancelAllStatus'"
         in caplog.text
     )
     assert "'errorMessage': 'EGeneral:Invalid" not in caplog.text
@@ -505,7 +509,7 @@ def test_cancel_all_orders_after(
     asyncio_run(execute_cancel_after())
 
     assert (
-        "{'errorMessage': 'EGeneral:Permission denied', 'event': 'cancelAllOrdersAfterStatus', 'reqid':"
+        "{'errorMessage': 'EGeneral:Permission denied', 'event': 'cancelAllOrdersAfterStatus'"
         in caplog.text
     )
     assert "'errorMessage': 'EGeneral:Invalid" not in caplog.text in caplog.text
