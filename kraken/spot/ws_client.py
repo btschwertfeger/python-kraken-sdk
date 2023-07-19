@@ -4,27 +4,33 @@
 # GitHub: https://github.com/btschwertfeger
 #
 
-"""This module provides the Spot websocket client. """
+"""This module provides the Spot websocket client (Websocket API v1.*). """
 
 from __future__ import annotations
 
+import asyncio
+import json
 import logging
 from copy import deepcopy
 from typing import Any, Callable, List, Optional, Union
 
-from ..base_api import KrakenBaseSpotAPI, defined, ensure_string
-from .trade import Trade
-from .websocket import ConnectSpotWebsocket
+from kraken.base_api import defined, ensure_string
+from kraken.exceptions import KrakenException
+from kraken.spot.trade import Trade
+from kraken.spot.websocket import KrakenSpotWSClientBase
 
 
-class KrakenSpotWSClient(KrakenBaseSpotAPI):
+class KrakenSpotWSClient(KrakenSpotWSClientBase):
     """
     Class to access public and (optional)
     private/authenticated websocket connection.
 
-    This client uses API v1.9.1
+    **This client only supports the Kraken Websocket API v1.**
 
-    - https://docs.kraken.com/websockets/#overview
+    - https://docs.kraken.com/websockets
+
+    … please use :class:`KrakenSpotWSClientv2` for accessing the Kraken
+    Websockets API v2.
 
     This class holds up to two websocket connections, one private
     and one public.
@@ -37,7 +43,7 @@ class KrakenSpotWSClient(KrakenBaseSpotAPI):
     :type key: str, optional
     :param secret: Secret API Key for the Kraken Spot API (default: ``""``)
     :type secret: str, optional
-    :param url: Set a specific/custom url to access the Kraken API
+    :param url: Set a specific URL to access the Kraken REST API
     :type url: str, optional
     :param no_public: Don't use the public connection. (default: ``False``).
         If not set or set to ``False``, the client will create a public and
@@ -45,7 +51,6 @@ class KrakenSpotWSClient(KrakenBaseSpotAPI):
         required, this parameter should be set to ``True``.
     :param beta: Use the beta websocket channels (maybe not supported anymore, default: ``False``)
     :type beta: bool
-
 
     .. code-block:: python
         :linenos:
@@ -114,87 +119,63 @@ class KrakenSpotWSClient(KrakenBaseSpotAPI):
                 pass
     """
 
-    LOG: logging.Logger = logging.getLogger(__name__)
-
-    PROD_ENV_URL: str = "ws.kraken.com"
-    AUTH_PROD_ENV_URL: str = "ws-auth.kraken.com"
-    BETA_ENV_URL: str = "beta-ws.kraken.com"
-    AUTH_BETA_ENV_URL: str = "beta-ws-auth.kraken.com"
-
     def __init__(
         self: "KrakenSpotWSClient",
         key: str = "",
         secret: str = "",
-        url: str = "",
         callback: Optional[Callable] = None,
         no_public: bool = False,
         beta: bool = False,
     ):
-        super().__init__(key=key, secret=secret, url=url, sandbox=beta)
-        self.__callback: Any = callback
-        self.__is_auth: bool = bool(key and secret)
-        self.exception_occur: bool = False
-
-        if not no_public:
-            self._pub_conn: ConnectSpotWebsocket = ConnectSpotWebsocket(
-                client=self,
-                endpoint=self.PROD_ENV_URL if not beta else self.BETA_ENV_URL,
-                is_auth=False,
-                callback=self.on_message,
-            )
-
-        self._priv_conn: Optional[ConnectSpotWebsocket] = (
-            ConnectSpotWebsocket(
-                client=self,
-                endpoint=self.AUTH_PROD_ENV_URL if not beta else self.AUTH_BETA_ENV_URL,
-                is_auth=True,
-                callback=self.on_message,
-            )
-            if self.__is_auth
-            else None
+        super().__init__(
+            key=key,
+            secret=secret,
+            callback=callback,
+            no_public=no_public,
+            beta=beta,
+            api_version="v1",
         )
 
-    # --------------------------------------------------------------------------
-    # Internals
-    async def on_message(self: "KrakenSpotWSClient", msg: Union[dict, list]) -> None:
+    async def send_message(  # pylint: disable=arguments-differ
+        self: "KrakenSpotWSClient",
+        msg: dict,
+        private: bool = False,
+        raw: bool = False,
+    ) -> None:
         """
-        Calls the defined callback function (if defined)
-        or overload this function.
+        Sends a message via websocket. For private subscriptions the
+        authentication token will be assigned automatically if ``raw=False``.
 
-        Can be overloaded as described in :class:`kraken.spot.KrakenSpotWSClient`
+        The user can specify a ``reqid`` within the msg to identify
+        corresponding responses via websocket feed.
 
-        :param msg: The message received sent by Kraken via the websocket connection
-        :type msg: dict | list
+        :param msg: The content to send
+        :type msg: dict
+        :param private: Use authentication (default: ``False``)
+        :type private: bool, optional
+        :param raw: If set to ``True`` the ``msg`` will be sent directly.
+        :type raw: bool, optional
         """
-        if self.__callback is not None:
-            await self.__callback(msg)
-        else:
-            self.LOG.warning("Received event but no callback is defined.")
-            print(msg)
 
-    async def __aenter__(self: "KrakenSpotWSClient") -> "KrakenSpotWSClient":
-        return self
+        if private and not self._is_auth:
+            raise KrakenException.KrakenAuthenticationError()
 
-    async def __aexit__(self, *exc: tuple, **kwargs: dict) -> None:
-        pass
+        socket: Any = self._get_socket(private=private)
+        while not socket:
+            socket = self._get_socket(private=private)
+            await asyncio.sleep(0.4)
 
-    def get_ws_token(self: "KrakenSpotWSClient") -> dict:
-        """
-        Get the authentication token to establish the authenticated
-        websocket connection.
+        if raw:
+            socket.send(json.dumps(msg))
+            return
 
-        - https://docs.kraken.com/rest/#tag/Websockets-Authentication
+        if private and "subscription" in msg:
+            msg["subscription"]["token"] = self._priv_conn.ws_conn_details["token"]
+        elif private:
+            msg["token"] = self._priv_conn.ws_conn_details["token"]
+        await socket.send(json.dumps(msg))
 
-        :returns: The authentication token
-        :rtype: dict
-        """
-        return self._request(  # type: ignore[return-value]
-            "POST", "/private/GetWebSocketsToken"
-        )
-
-    # --------------------------------------------------------------------------
-    # Subscriptions
-    async def subscribe(
+    async def subscribe(  # pylint: disable=arguments-differ
         self: "KrakenSpotWSClient", subscription: dict, pair: List[str] = None
     ) -> None:
         """
@@ -203,9 +184,9 @@ class KrakenSpotWSClient(KrakenBaseSpotAPI):
         Success or failures are sent over the websocket connection and can be
         received via the on_message callback function.
 
-        When accessing private endpoints and subscription feeds that need authentication
-        make sure, that the ``Access WebSockets API`` API key permission is set
-        in the users Kraken account.
+        When accessing private endpoints and subscription feeds that need
+        authentication make sure, that the ``Access WebSockets API`` API key
+        permission is set in the users Kraken account.
 
         - https://docs.kraken.com/websockets/#message-subscribe
 
@@ -214,8 +195,8 @@ class KrakenSpotWSClient(KrakenBaseSpotAPI):
         :param pair: The pair to subscribe to
         :type pair: List[str] | None, optional
 
-        Initialize your client as described in :class:`kraken.spot.KrakenSpotWSClient` to
-        run the following example:
+        Initialize your client as described in
+        :class:`kraken.spot.KrakenSpotWSClient` to run the following example:
 
         .. code-block:: python
             :linenos:
@@ -240,7 +221,7 @@ class KrakenSpotWSClient(KrakenBaseSpotAPI):
             payload["pair"] = pair
 
         if private:  # private == without pair
-            if not self.__is_auth:
+            if not self._is_auth:
                 raise ValueError(
                     "Cannot subscribe to private feeds without valid credentials!"
                 )
@@ -248,18 +229,18 @@ class KrakenSpotWSClient(KrakenBaseSpotAPI):
                 raise ValueError(
                     "Cannot subscribe to private endpoint with specific pair!"
                 )
-            await self._priv_conn.send_message(payload, private=True)
+            await self.send_message(payload, private=True)
 
         elif pair is not None:  # public with pair
             for symbol in pair:
                 sub = deepcopy(payload)
                 sub["pair"] = [symbol]
-                await self._pub_conn.send_message(sub, private=False)
+                await self.send_message(sub, private=False)
 
         else:
-            await self._pub_conn.send_message(payload, private=False)
+            await self.send_message(payload, private=False)
 
-    async def unsubscribe(
+    async def unsubscribe(  # pylint: disable=arguments-differ
         self: "KrakenSpotWSClient", subscription: dict, pair: Optional[List[str]] = None
     ) -> None:
         """
@@ -304,7 +285,7 @@ class KrakenSpotWSClient(KrakenBaseSpotAPI):
             payload["pair"] = pair
 
         if private:  # private == without pair
-            if not self.__is_auth:
+            if not self._is_auth:
                 raise ValueError(
                     "Cannot unsubscribe from private feeds without valid credentials!"
                 )
@@ -312,19 +293,17 @@ class KrakenSpotWSClient(KrakenBaseSpotAPI):
                 raise ValueError(
                     "Cannot unsubscribe from private endpoint with specific pair!"
                 )
-            await self._priv_conn.send_message(payload, private=True)
+            await self.send_message(payload, private=True)
 
         elif pair is not None:  # public with pair
             for symbol in pair:
                 sub = deepcopy(payload)
                 sub["pair"] = [symbol]
-                await self._pub_conn.send_message(sub, private=False)
+                await self.send_message(sub, private=False)
 
         else:
-            await self._pub_conn.send_message(payload, private=False)
+            await self.send_message(payload, private=False)
 
-    # --------------------------------------------------------------------------
-    # Attributes
     @property
     def private_sub_names(self: "KrakenSpotWSClient") -> List[str]:
         """
@@ -346,38 +325,6 @@ class KrakenSpotWSClient(KrakenBaseSpotAPI):
         """
         return ["ticker", "spread", "book", "ohlc", "trade", "*"]
 
-    @property
-    def active_public_subscriptions(
-        self: "KrakenSpotWSClient",
-    ) -> Union[List[dict], Any]:
-        """
-        Returns the active public subscriptions
-
-        :return: List of active public subscriptions
-        :rtype: Union[List[dict], Any]
-        :raises ConnectionError: If there is no public connection.
-        """
-        if self._pub_conn is not None:
-            return self._pub_conn.subscriptions
-        raise ConnectionError("Public connection does not exist!")
-
-    @property
-    def active_private_subscriptions(
-        self: "KrakenSpotWSClient",
-    ) -> Union[List[dict], Any]:
-        """
-        Returns the active private subscriptions
-
-        :return: List of active private subscriptions
-        :rtype: Union[List[dict], Any]
-        :raises ConnectionError: If there is no private connection
-        """
-        if self._priv_conn is not None:
-            return self._priv_conn.subscriptions
-        raise ConnectionError("Private connection does not exist!")
-
-    # --------------------------------------------------------------------------
-    # On Demand
     @ensure_string("oflags")
     async def create_order(
         self: "KrakenSpotWSClient",
@@ -530,7 +477,7 @@ class KrakenSpotWSClient(KrakenBaseSpotAPI):
         if defined(timeinforce):
             payload["timeinforce"] = timeinforce
 
-        await self._priv_conn.send_message(msg=payload, private=True)
+        await self.send_message(msg=payload, private=True)
 
     @ensure_string("oflags")
     async def edit_order(
@@ -626,7 +573,7 @@ class KrakenSpotWSClient(KrakenBaseSpotAPI):
         if defined(newuserref):
             payload["newuserref"] = str(newuserref)
 
-        await self._priv_conn.send_message(msg=payload, private=True)
+        await self.send_message(msg=payload, private=True)
 
     async def cancel_order(self: "KrakenSpotWSClient", txid: List[str]) -> None:
         """
@@ -655,7 +602,7 @@ class KrakenSpotWSClient(KrakenBaseSpotAPI):
             return
         if not self._priv_conn.is_auth:
             raise ValueError("Cannot cancel_order on public websocket client!")
-        await self._priv_conn.send_message(
+        await self.send_message(
             msg={"event": "cancelOrder", "txid": txid}, private=True
         )
 
@@ -685,7 +632,7 @@ class KrakenSpotWSClient(KrakenBaseSpotAPI):
             return
         if not self._priv_conn.is_auth:
             raise ValueError("Cannot use cancel_all_orders on public websocket client!")
-        await self._priv_conn.send_message(msg={"event": "cancelAll"}, private=True)
+        await self.send_message(msg={"event": "cancelAll"}, private=True)
 
     async def cancel_all_orders_after(
         self: "KrakenSpotWSClient", timeout: int = 0
@@ -718,6 +665,6 @@ class KrakenSpotWSClient(KrakenBaseSpotAPI):
             raise ValueError(
                 "Cannot use cancel_all_orders_after on public websocket client!"
             )
-        await self._priv_conn.send_message(
+        await self.send_message(
             msg={"event": "cancelAllOrdersAfter", "timeout": timeout}, private=True
         )
