@@ -195,30 +195,44 @@ class ConnectSpotWebsocket:
                 break
         self.LOG.warning("reconnect over")
 
-    async def __recover_subscriptions(
-        self: "ConnectSpotWebsocket", event: asyncio.Event
+    def __get_reconnect_wait(
+        self: "ConnectSpotWebsocket", attempts: int
+    ) -> Union[float, Any]:
+        return round(random() * min(60 * 3, (2**attempts) - 1) + 1)
+
+    # --------------------------------------------------------------------------
+
+    async def send_message(
+        self: "ConnectSpotWebsocket",
+        msg: dict,
+        private: bool = False,
+        raw: bool = False,
     ) -> None:
-        self.LOG.info(
-            f'Recover {"auth" if self.__is_auth else "public"} subscriptions {self.__subscriptions} waiting.'
-        )
-        await event.wait()
+        """
+        Sends a message via websocket
 
-        for sub in self.__subscriptions:
-            cpy = deepcopy(sub)
-            private = False
-            if (
-                "subscription" in sub
-                and "name" in sub["subscription"]
-                and sub["subscription"]["name"] in self.__client.private_sub_names
-            ):
-                cpy["subscription"]["token"] = self.__ws_conn_details["token"]
-                private = True
-            await self.send_message(cpy, private=private)
-            self.LOG.info(f"{sub} OK")
+        :param msg: The content to send
+        :type msg: dict
+        :param private: Use authentication (default: ``False``)
+        :type private: bool, optional
+        :param raw: If set to ``True`` the ``msg`` will be sent directly.
+        :type raw: bool, optional
+        """
+        if raw:
+            self.__socket.send(json.dumps(msg))
 
-        self.LOG.info(
-            f'Recovering {"auth" if self.__is_auth else "public"} subscriptions {self.__subscriptions} done.'
-        )
+        if private and not self.__is_auth:
+            raise ValueError("Can't send private message with public websocket.")
+
+        while not self.__socket:
+            await asyncio.sleep(0.4)
+
+        msg["reqid"] = int(time() * 1000)
+        if private and "subscription" in msg:
+            msg["subscription"]["token"] = self.__ws_conn_details["token"]
+        elif private:
+            msg["token"] = self.__ws_conn_details["token"]
+        await self.__socket.send(json.dumps(msg))
 
     async def send_ping(self: "ConnectSpotWebsocket") -> None:
         """Sends ping to Kraken"""
@@ -231,30 +245,6 @@ class ConnectSpotWebsocket:
             )
         )
         self.__last_ping = time()
-
-    async def send_message(
-        self: "ConnectSpotWebsocket", msg: dict, private: Optional[bool] = False
-    ) -> None:
-        """
-        Sends a message via websocket
-
-        :param msg: The content to send
-        :type msg: dict
-        :param private: Use authentication (default: ``False``)
-        :type private: bool, optional
-        """
-        if private and not self.__is_auth:
-            raise ValueError("Cannot send private message with public websocket.")
-
-        while not self.__socket:
-            await asyncio.sleep(0.4)
-
-        msg["reqid"] = int(time() * 1000)
-        if private and "subscription" in msg:
-            msg["subscription"]["token"] = self.__ws_conn_details["token"]
-        elif private:
-            msg["token"] = self.__ws_conn_details["token"]
-        await self.__socket.send(json.dumps(msg))
 
     def __append_subscription(self: "ConnectSpotWebsocket", msg: dict) -> None:
         """
@@ -287,6 +277,31 @@ class ConnectSpotWebsocket:
         sub: dict = self.__build_subscription(msg)
         self.__subscriptions = [x for x in self.__subscriptions if x != sub]
 
+    async def __recover_subscriptions(
+        self: "ConnectSpotWebsocket", event: asyncio.Event
+    ) -> None:
+        self.LOG.info(
+            f'Recover {"auth" if self.__is_auth else "public"} subscriptions {self.__subscriptions} waiting.'
+        )
+        await event.wait()
+
+        for sub in self.__subscriptions:
+            cpy = deepcopy(sub)
+            private = False
+            if (
+                "subscription" in sub
+                and "name" in sub["subscription"]
+                and sub["subscription"]["name"] in self.__client.private_sub_names
+            ):
+                cpy["subscription"]["token"] = self.__ws_conn_details["token"]
+                private = True
+            await self.send_message(cpy, private=private)
+            self.LOG.info(f"{sub} OK")
+
+        self.LOG.info(
+            f'Recovering {"auth" if self.__is_auth else "public"} subscriptions {self.__subscriptions} done.'
+        )
+
     def __build_subscription(self: "ConnectSpotWebsocket", msg: dict) -> dict:
         sub: dict = {"event": "subscribe"}
 
@@ -309,6 +324,3 @@ class ConnectSpotWebsocket:
                 "Feed not implemented. Please contact the python-kraken-sdk package author."
             )
         return sub
-
-    def __get_reconnect_wait(self, attempts: int) -> Union[float, Any]:
-        return round(random() * min(60 * 3, (2**attempts) - 1) + 1)

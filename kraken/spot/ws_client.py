@@ -22,6 +22,8 @@ class KrakenSpotWSClient(KrakenBaseSpotAPI):
     Class to access public and (optional)
     private/authenticated websocket connection.
 
+    This client uses API v1.9.1
+
     - https://docs.kraken.com/websockets/#overview
 
     This class holds up to two websocket connections, one private
@@ -37,8 +39,13 @@ class KrakenSpotWSClient(KrakenBaseSpotAPI):
     :type secret: str, optional
     :param url: Set a specific/custom url to access the Kraken API
     :type url: str, optional
+    :param no_public: Don't use the public connection. (default: ``False``).
+        If not set or set to ``False``, the client will create a public and
+        a private connection per default. If only a private connection is
+        required, this parameter should be set to ``True``.
     :param beta: Use the beta websocket channels (maybe not supported anymore, default: ``False``)
     :type beta: bool
+
 
     .. code-block:: python
         :linenos:
@@ -120,6 +127,7 @@ class KrakenSpotWSClient(KrakenBaseSpotAPI):
         secret: str = "",
         url: str = "",
         callback: Optional[Callable] = None,
+        no_public: bool = False,
         beta: bool = False,
     ):
         super().__init__(key=key, secret=secret, url=url, sandbox=beta)
@@ -127,12 +135,13 @@ class KrakenSpotWSClient(KrakenBaseSpotAPI):
         self.__is_auth: bool = bool(key and secret)
         self.exception_occur: bool = False
 
-        self._pub_conn: ConnectSpotWebsocket = ConnectSpotWebsocket(
-            client=self,
-            endpoint=self.PROD_ENV_URL if not beta else self.BETA_ENV_URL,
-            is_auth=False,
-            callback=self.on_message,
-        )
+        if not no_public:
+            self._pub_conn: ConnectSpotWebsocket = ConnectSpotWebsocket(
+                client=self,
+                endpoint=self.PROD_ENV_URL if not beta else self.BETA_ENV_URL,
+                is_auth=False,
+                callback=self.on_message,
+            )
 
         self._priv_conn: Optional[ConnectSpotWebsocket] = (
             ConnectSpotWebsocket(
@@ -145,6 +154,8 @@ class KrakenSpotWSClient(KrakenBaseSpotAPI):
             else None
         )
 
+    # --------------------------------------------------------------------------
+    # Internals
     async def on_message(self: "KrakenSpotWSClient", msg: Union[dict, list]) -> None:
         """
         Calls the defined callback function (if defined)
@@ -161,6 +172,28 @@ class KrakenSpotWSClient(KrakenBaseSpotAPI):
             self.LOG.warning("Received event but no callback is defined.")
             print(msg)
 
+    async def __aenter__(self: "KrakenSpotWSClient") -> "KrakenSpotWSClient":
+        return self
+
+    async def __aexit__(self, *exc: tuple, **kwargs: dict) -> None:
+        pass
+
+    def get_ws_token(self: "KrakenSpotWSClient") -> dict:
+        """
+        Get the authentication token to establish the authenticated
+        websocket connection.
+
+        - https://docs.kraken.com/rest/#tag/Websockets-Authentication
+
+        :returns: The authentication token
+        :rtype: dict
+        """
+        return self._request(  # type: ignore[return-value]
+            "POST", "/private/GetWebSocketsToken"
+        )
+
+    # --------------------------------------------------------------------------
+    # Subscriptions
     async def subscribe(
         self: "KrakenSpotWSClient", subscription: dict, pair: List[str] = None
     ) -> None:
@@ -290,6 +323,8 @@ class KrakenSpotWSClient(KrakenBaseSpotAPI):
         else:
             await self._pub_conn.send_message(payload, private=False)
 
+    # --------------------------------------------------------------------------
+    # Attributes
     @property
     def private_sub_names(self: "KrakenSpotWSClient") -> List[str]:
         """
@@ -341,26 +376,8 @@ class KrakenSpotWSClient(KrakenBaseSpotAPI):
             return self._priv_conn.subscriptions
         raise ConnectionError("Private connection does not exist!")
 
-    async def __aenter__(self: "KrakenSpotWSClient") -> "KrakenSpotWSClient":
-        return self
-
-    async def __aexit__(self, *exc: tuple, **kwargs: dict) -> None:
-        pass
-
-    def get_ws_token(self: "KrakenSpotWSClient") -> dict:
-        """
-        Get the authentication token to establish the authenticated
-        websocket connection.
-
-        - https://docs.kraken.com/rest/#tag/Websockets-Authentication
-
-        :returns: The authentication token
-        :rtype: dict
-        """
-        return self._request(  # type: ignore[return-value]
-            "POST", "/private/GetWebSocketsToken"
-        )
-
+    # --------------------------------------------------------------------------
+    # On Demand
     @ensure_string("oflags")
     async def create_order(
         self: "KrakenSpotWSClient",
