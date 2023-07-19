@@ -36,7 +36,7 @@ Features
 Clients:
 
 - Spot REST Clients
-- Spot Websocket Client
+- Spot Websocket Clients (Websocket API v1 and v2)
 - Futures REST Clients
 - Futures Websocket Client
 
@@ -49,7 +49,7 @@ General:
 
 Important Notice
 -----------------
-**ONLY tagged releases are available at PyPI**. The content of the master branch may not match with the content of the latest release.  - Please have a look at the release specific READMEs and changelogs.
+**ONLY tagged releases are available at PyPI**. The content of the master branch may not match with the content of the latest release. - Please have a look at the release specific READMEs and changelogs.
 
 .. _section-troubleshooting:
 
@@ -67,5 +67,6 @@ References
 - https://python-kraken-sdk.readthedocs.io/en/stable
 - https://docs.kraken.com/rest
 - https://docs.kraken.com/websockets
+- https://docs.kraken.com/websockets-v2
 - https://docs.futures.kraken.com
 - https://support.kraken.com/hc/en-us/sections/360012894412-Futures-API

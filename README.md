@@ -34,7 +34,7 @@ There is no guarantee that this software will work flawlessly at this or later t
 Clients:
 
 - Spot REST Clients
-- Spot Websocket Client
+- Spot Websocket Clients (Websocket API v1 and v2)
 - Spot Orderbook Client
 - Futures REST Clients
 - Futures Websocket Client
@@ -171,7 +171,23 @@ if __name__ == "__main__":
 
 ## Websockets
 
-... can be found in `/examples/spot_ws_examples.py`
+Kraken offers two versions of their websocket API (V1 and V2).
+
+The documentation can be found here:
+
+- https://docs.kraken.com/websockets
+- https://docs.kraken.com/websockets-v2
+
+Note that authenticated Spot websocket clients can also un/subscribe from/to
+public feeds.
+
+### Websocket API V2
+
+todo: TBD
+
+### Websocket API V1
+
+The following example can be found in `/examples/spot_ws_examples_v1.py`.
 
 ```python
 import time
@@ -242,8 +258,6 @@ if __name__ == "__main__":
         # do some exception handling ...
         pass
 ```
-
-Note: Authenticated Spot websocket clients can also un/subscribe from/to public feeds.
 
 ---
 
@@ -433,6 +447,7 @@ Note: Authenticated Futures websocket clients can also un-/subscribe from/to pub
 - https://python-kraken-sdk.readthedocs.io/en/stable
 - https://docs.kraken.com/rest
 - https://docs.kraken.com/websockets
+- https://docs.kraken.com/websockets-v2
 - https://docs.futures.kraken.com
 - https://support.kraken.com/hc/en-us/sections/360012894412-Futures-API
 

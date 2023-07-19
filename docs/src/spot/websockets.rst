@@ -1,6 +1,8 @@
 Spot Websockets
 ===============
 
+todo: add V2 client
+
 .. autoclass:: kraken.spot.KrakenSpotWSClient
    :members:
    :show-inheritance:
