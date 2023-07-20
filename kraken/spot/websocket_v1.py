@@ -213,7 +213,7 @@ class KrakenSpotWSClient(KrakenSpotWSClientBase):
 
         if "name" not in subscription:
             raise AttributeError('Subscription requires a "name" key."')
-        private: bool = bool(subscription["name"] in self.private_sub_names)
+        private: bool = bool(subscription["name"] in self.private_channel_names)
 
         payload: dict = {"event": "subscribe", "subscription": subscription}
         if pair is not None:
@@ -277,7 +277,7 @@ class KrakenSpotWSClient(KrakenSpotWSClientBase):
         """
         if "name" not in subscription:
             raise AttributeError('Subscription requires a "name" key."')
-        private: bool = bool(subscription["name"] in self.private_sub_names)
+        private: bool = bool(subscription["name"] in self.private_channel_names)
 
         payload: dict = {"event": "unsubscribe", "subscription": subscription}
         if pair is not None:
@@ -308,17 +308,7 @@ class KrakenSpotWSClient(KrakenSpotWSClientBase):
             await self.send_message(payload, private=False)
 
     @property
-    def private_sub_names(self: "KrakenSpotWSClient") -> List[str]:
-        """
-        Returns the private subscription names
-
-        :return: List of private subscription names (``ownTrades``, ``openOrders``)
-        :rtype: List[str]
-        """
-        return ["ownTrades", "openOrders"]
-
-    @property
-    def public_sub_names(self: "KrakenSpotWSClient") -> List[str]:
+    def public_channel_names(self: "KrakenSpotWSClient") -> List[str]:
         """
         Returns the public subscription names
 
@@ -327,6 +317,16 @@ class KrakenSpotWSClient(KrakenSpotWSClientBase):
         :rtype: List[str]
         """
         return ["ticker", "spread", "book", "ohlc", "trade", "*"]
+
+    @property
+    def private_channel_names(self: "KrakenSpotWSClient") -> List[str]:
+        """
+        Returns the private subscription names
+
+        :return: List of private subscription names (``ownTrades``, ``openOrders``)
+        :rtype: List[str]
+        """
+        return ["ownTrades", "openOrders"]
 
     @ensure_string("oflags")
     async def create_order(

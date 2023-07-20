@@ -217,18 +217,18 @@ class KrakenSpotWSClientBase(KrakenBaseSpotAPI):
         raise NotImplementedError("Must be overloaded!")
 
     @property
-    def private_sub_names(self: "KrakenSpotWSClientBase") -> List[str]:
+    def public_channel_names(self: "KrakenSpotWSClientBase") -> List[str]:
         """
         This function must be overloaded and return a list of names that can be
-        subscribed to (for authenticated connections).
+        subscribed to (for unauthenticated connections).
         """
         raise NotImplementedError("Must be overloaded!")
 
     @property
-    def public_sub_names(self: "KrakenSpotWSClientBase") -> List[str]:
+    def private_channel_names(self: "KrakenSpotWSClientBase") -> List[str]:
         """
         This function must be overloaded and return a list of names that can be
-        subscribed to (for unauthenticated connections).
+        subscribed to (for authenticated connections).
         """
         raise NotImplementedError("Must be overloaded!")
 
@@ -467,7 +467,7 @@ class ConnectSpotWebsocket:
             if (
                 "subscription" in sub
                 and "name" in sub["subscription"]
-                and sub["subscription"]["name"] in self.__client.private_sub_names
+                and sub["subscription"]["name"] in self.__client.private_channel_names
             ):
                 cpy["subscription"]["token"] = self.ws_conn_details["token"]
                 private = True
@@ -484,7 +484,7 @@ class ConnectSpotWebsocket:
         if not "subscription" in msg or "name" not in msg["subscription"]:
             raise ValueError("Cannot remove subscription with missing attributes.")
         if (
-            msg["subscription"]["name"] in self.__client.public_sub_names
+            msg["subscription"]["name"] in self.__client.public_channel_names
         ):  # public endpoint
             if "pair" in msg:
                 sub["pair"] = (
@@ -492,7 +492,7 @@ class ConnectSpotWebsocket:
                 )
             sub["subscription"] = msg["subscription"]
         elif (
-            msg["subscription"]["name"] in self.__client.private_sub_names
+            msg["subscription"]["name"] in self.__client.private_channel_names
         ):  # private endpoint
             sub["subscription"] = {"name": msg["subscription"]["name"]}
         else:

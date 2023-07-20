@@ -85,8 +85,8 @@ def test_access_public_bot_attributes() -> None:
     async def check_access() -> None:
         client: SpotWebsocketClientTestWrapper = SpotWebsocketClientTestWrapper()
 
-        assert client.private_sub_names == ["ownTrades", "openOrders"]
-        assert client.public_sub_names == [
+        assert client.private_channel_names == ["ownTrades", "openOrders"]
+        assert client.public_channel_names == [
             "ticker",
             "spread",
             "book",
