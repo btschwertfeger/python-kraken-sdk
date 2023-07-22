@@ -7,6 +7,8 @@
 """
 Module that provides an example Futures trading bot data structure.
 It uses the Kraken Websocket API v1.
+
+todo: test this out
 """
 
 from __future__ import annotations
@@ -59,9 +61,7 @@ class TradingBot(KrakenSpotWSClient):
     async def on_message(self: TradingBot, message: Union[dict, list]) -> None:
         """Receives all messages that came form the websocket connection"""
         if isinstance(message, dict) and "event" in message:
-            if message["event"] == "heartbeat":
-                return
-            if message["event"] == "pong":
+            if message["event"] in ("heartbeat", "pong"):
                 return
             if "error" in message:
                 # handle exceptions/errors sent by websocket connection ...
