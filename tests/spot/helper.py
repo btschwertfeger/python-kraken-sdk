@@ -55,13 +55,13 @@ class SpotWebsocketClientV1TestWrapper(KrakenSpotWSClient):
         self.LOG.addHandler(fh)
 
     async def on_message(
-        self: SpotWebsocketClientV1TestWrapper, msg: Union[list, dict]
+        self: SpotWebsocketClientV1TestWrapper, message: Union[list, dict]
     ) -> None:
         """
         This is the callback function that must be implemented
         to handle custom websocket messages.
         """
-        self.LOG.info(msg)  # the log is read within the tests
+        self.LOG.info(message)  # the log is read within the tests
 
 
 class OrderbookClientWrapper(OrderbookClient):
@@ -79,10 +79,10 @@ class OrderbookClientWrapper(OrderbookClient):
         self.LOG.setLevel(logging.INFO)
 
     async def on_message(
-        self: "OrderbookClientWrapper", msg: Union[list, dict]
+        self: "OrderbookClientWrapper", message: Union[list, dict]
     ) -> None:
-        self.ensure_log(msg)
-        await super().on_message(msg=msg)
+        self.ensure_log(message)
+        await super().on_message(message=message)
 
     async def on_book_update(
         self: "OrderbookClientWrapper", pair: str, message: list

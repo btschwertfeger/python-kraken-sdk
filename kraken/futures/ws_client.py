@@ -169,6 +169,7 @@ class KrakenFuturesWSClient(KrakenBaseFuturesAPI):
         :type msg: dict
         :rtype: NOne
         """
+        # todo: rename the msg parameter to message
         if self.__callback is not None:
             await self.__callback(msg)
         else:

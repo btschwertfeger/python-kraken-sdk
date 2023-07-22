@@ -66,11 +66,11 @@ class KrakenSpotWSClientV2(KrakenSpotWSClientBase):
 
         class Client(KrakenSpotWSClientV2):
 
-            async def on_message(self, event: dict) -> None:
-                print(event)
+            async def on_message(self, message):
+                print(message)
 
 
-        async def main() -> None:
+        async def main():
 
             client = Client()         # unauthenticated
             client_auth = Client(     # authenticated
@@ -101,8 +101,8 @@ class KrakenSpotWSClientV2(KrakenSpotWSClientBase):
         from kraken.spot import KrakenSpotWSClientV2
 
 
-        async def main() -> None:
-            async def on_message(message) -> None:
+        async def main():
+            async def on_message(message):
                 print(message)
 
             client = KrakenSpotWSClientV2(callback=on_message)
@@ -128,10 +128,10 @@ class KrakenSpotWSClientV2(KrakenSpotWSClientBase):
         import asyncio
         from kraken.spot import KrakenSpotWSClientV2
 
-        async def on_message(msg):
-            print(msg)
+        async def on_message(message):
+            print(message)
 
-        async def main() -> None:
+        async def main():
             async with KrakenSpotWSClientV2(
                 key="api-key",
                 secret="secret-key",

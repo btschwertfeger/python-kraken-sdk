@@ -65,11 +65,11 @@ class KrakenSpotWSClient(KrakenSpotWSClientBase):
 
         class Client(KrakenSpotWSClient):
 
-            async def on_message(self, event: dict) -> None:
-                print(event)
+            async def on_message(self, message):
+                print(message)
 
 
-        async def main() -> None:
+        async def main():
 
             client = Client()         # unauthenticated
             client_auth = Client(     # authenticated
@@ -129,8 +129,8 @@ class KrakenSpotWSClient(KrakenSpotWSClientBase):
         import asyncio
         from kraken.spot import KrakenSpotWSClient
 
-        async def on_message(msg):
-            print(msg)
+        async def on_message(message):
+            print(message)
 
         async def main() -> None:
             async with KrakenSpotWSClient(
@@ -173,7 +173,7 @@ class KrakenSpotWSClient(KrakenSpotWSClientBase):
 
     async def send_message(  # pylint: disable=arguments-differ
         self: KrakenSpotWSClient,
-        msg: dict,
+        message: dict,
         private: bool = False,
         raw: bool = False,
     ) -> None:
@@ -182,14 +182,14 @@ class KrakenSpotWSClient(KrakenSpotWSClientBase):
         the authentication token will be assigned automatically if
         ``raw=False``.
 
-        The user can specify a ``reqid`` within the msg to identify
+        The user can specify a ``reqid`` within the message to identify
         corresponding responses via websocket feed.
 
-        :param msg: The content to send
-        :type msg: dict
+        :param message: The content to send
+        :type message: dict
         :param private: Use authentication (default: ``False``)
         :type private: bool, optional
-        :param raw: If set to ``True`` the ``msg`` will be sent directly.
+        :param raw: If set to ``True`` the ``message`` will be sent directly.
         :type raw: bool, optional
         """
 
@@ -202,14 +202,14 @@ class KrakenSpotWSClient(KrakenSpotWSClientBase):
             await asyncio.sleep(0.4)
 
         if raw:
-            socket.send(json.dumps(msg))
+            socket.send(json.dumps(message))
             return
 
-        if private and "subscription" in msg:
-            msg["subscription"]["token"] = self._priv_conn.ws_conn_details["token"]
+        if private and "subscription" in message:
+            message["subscription"]["token"] = self._priv_conn.ws_conn_details["token"]
         elif private:
-            msg["token"] = self._priv_conn.ws_conn_details["token"]
-        await socket.send(json.dumps(msg))
+            message["token"] = self._priv_conn.ws_conn_details["token"]
+        await socket.send(json.dumps(message))
 
     async def subscribe(  # pylint: disable=arguments-differ
         self: KrakenSpotWSClient, subscription: dict, pair: List[str] = None
@@ -525,7 +525,7 @@ class KrakenSpotWSClient(KrakenSpotWSClientBase):
         if defined(timeinforce):
             payload["timeinforce"] = timeinforce
 
-        await self.send_message(msg=payload, private=True)
+        await self.send_message(message=payload, private=True)
 
     @ensure_string("oflags")
     async def edit_order(
@@ -624,7 +624,7 @@ class KrakenSpotWSClient(KrakenSpotWSClientBase):
         if defined(newuserref):
             payload["newuserref"] = str(newuserref)
 
-        await self.send_message(msg=payload, private=True)
+        await self.send_message(message=payload, private=True)
 
     async def cancel_order(self: KrakenSpotWSClient, txid: List[str]) -> None:
         """
@@ -656,7 +656,7 @@ class KrakenSpotWSClient(KrakenSpotWSClientBase):
         if not self._priv_conn.is_auth:
             raise ValueError("Cannot cancel_order on public websocket client!")
         await self.send_message(
-            msg={"event": "cancelOrder", "txid": txid}, private=True
+            message={"event": "cancelOrder", "txid": txid}, private=True
         )
 
     async def cancel_all_orders(self: KrakenSpotWSClient) -> None:
@@ -687,7 +687,7 @@ class KrakenSpotWSClient(KrakenSpotWSClientBase):
             return
         if not self._priv_conn.is_auth:
             raise ValueError("Cannot use cancel_all_orders on public websocket client!")
-        await self.send_message(msg={"event": "cancelAll"}, private=True)
+        await self.send_message(message={"event": "cancelAll"}, private=True)
 
     async def cancel_all_orders_after(
         self: KrakenSpotWSClient, timeout: int = 0
@@ -724,5 +724,5 @@ class KrakenSpotWSClient(KrakenSpotWSClientBase):
                 "Cannot use cancel_all_orders_after on public websocket client!"
             )
         await self.send_message(
-            msg={"event": "cancelAllOrdersAfter", "timeout": timeout}, private=True
+            message={"event": "cancelAllOrdersAfter", "timeout": timeout}, private=True
         )

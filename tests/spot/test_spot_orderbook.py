@@ -79,11 +79,11 @@ def test_assing_msg_and_validate_checksum(mock_ws_client: mock.MagicMock) -> Non
     async def assign() -> None:
         client: OrderbookClient = OrderbookClient(depth=10)
 
-        await client.on_message(msg=orderbook["init"])
+        await client.on_message(message=orderbook["init"])
         assert client.get(pair="XBT/USD")["valid"]
 
         for update in orderbook["updates"]:
-            await client.on_message(msg=update)
+            await client.on_message(message=update)
             assert client.get(pair="XBT/USD")["valid"]
 
     asyncio.run(assign())

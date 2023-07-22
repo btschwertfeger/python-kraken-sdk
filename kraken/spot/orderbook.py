@@ -118,7 +118,7 @@ class OrderbookClient:
             callback=self.on_message
         )
 
-    async def on_message(self: "OrderbookClient", msg: Union[list, dict]) -> None:
+    async def on_message(self: "OrderbookClient", message: Union[list, dict]) -> None:
         """
         The on_message function is implemented in the KrakenSpotWSClient
         class and used as callback to receive all messages sent by the
@@ -126,29 +126,29 @@ class OrderbookClient:
 
         *This function should not be overloaded - this would break this client!*
         """
-        if "errorMessage" in msg:
-            self.LOG.warning(msg)
+        if "errorMessage" in message:
+            self.LOG.warning(message)
 
-        if "event" in msg and isinstance(msg, dict):
+        if "event" in message and isinstance(message, dict):
             # ignore heartbeat / ping - pong messages / any event message
             # ignore errors since they are handled by the parent class
             # just handle the removal of an orderbook
             if (
-                msg["event"] == "subscriptionStatus"
-                and "status" in msg
-                and "pair" in msg
-                and msg["status"] == "unsubscribed"
-                and msg["pair"] in self.__book
+                message["event"] == "subscriptionStatus"
+                and "status" in message
+                and "pair" in message
+                and message["status"] == "unsubscribed"
+                and message["pair"] in self.__book
             ):
-                del self.__book[msg["pair"]]
+                del self.__book[message["pair"]]
                 return
 
-        if not isinstance(msg, list):
+        if not isinstance(message, list):
             # The orderbook feed only sends messages with type list,
             # so we can ignore anything else.
             return
 
-        pair: str = msg[-1]
+        pair: str = message[-1]
         if pair not in self.__book:
             self.__book[pair] = {
                 "bid": {},
@@ -156,16 +156,16 @@ class OrderbookClient:
                 "valid": True,
             }
 
-        if "as" in msg[1]:
+        if "as" in message[1]:
             # This will be triggered initially when the
             # first message comes in that provides the initial snapshot
             # of the current orderbook.
-            self.__update_book(pair=pair, side="ask", snapshot=msg[1]["as"])
-            self.__update_book(pair=pair, side="bid", snapshot=msg[1]["bs"])
+            self.__update_book(pair=pair, side="ask", snapshot=message[1]["as"])
+            self.__update_book(pair=pair, side="bid", snapshot=message[1]["bs"])
         else:
             checksum: Optional[str] = None
             # This is executed every time a new update comes in.
-            for data in msg[1 : len(msg) - 2]:
+            for data in message[1 : len(message) - 2]:
                 if "a" in data:
                     self.__update_book(pair=pair, side="ask", snapshot=data["a"])
                 elif "b" in data:
@@ -190,7 +190,7 @@ class OrderbookClient:
             await asyncio_sleep(3)
             await self.add_book(pairs=[pair])
         else:
-            await self.on_book_update(pair=pair, message=msg)
+            await self.on_book_update(pair=pair, message=message)
 
     async def on_book_update(self: "OrderbookClient", pair: str, message: list) -> None:
         """

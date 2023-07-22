@@ -124,7 +124,9 @@ class KrakenSpotWSClientBase(KrakenBaseSpotAPI):
             else None
         )
 
-    async def on_message(self: KrakenSpotWSClientBase, msg: Union[dict, list]) -> None:
+    async def on_message(
+        self: KrakenSpotWSClientBase, message: Union[dict, list]
+    ) -> None:
         """
         Calls the defined callback function (if defined) or overload this
         function.
@@ -132,11 +134,11 @@ class KrakenSpotWSClientBase(KrakenBaseSpotAPI):
         Can be overloaded as described in :class:`kraken.spot.KrakenSpotWSClient`
         and :class:`kraken.spot.KrakenSpotWSClientV2`.
 
-        :param msg: The message received sent by Kraken via the websocket connection
-        :type msg: dict | list
+        :param message: The message received sent by Kraken via the websocket connection
+        :type message: dict | list
         """
         if self.__callback is not None:
-            await self.__callback(msg)
+            await self.__callback(message)
         else:
             self.LOG.warning(
                 """
@@ -145,7 +147,7 @@ class KrakenSpotWSClientBase(KrakenBaseSpotAPI):
                 its ``on_message`` function.
             """
             )
-            print(msg)
+            print(message)
 
     async def __aenter__(self: KrakenSpotWSClientBase) -> KrakenSpotWSClientBase:
         """Entrypoint for use as context manager"""
