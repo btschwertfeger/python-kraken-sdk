@@ -14,14 +14,13 @@ NOTE:
     finally the logs are read out and its input is checked for the expected
     output.
 
-todo: check also if req_id matches
 todo: check recover subscriptions
 """
 
 from __future__ import annotations
 
 from asyncio import run as asyncio_run
-from typing import Any, Dict
+from typing import Any
 
 import pytest
 
@@ -56,6 +55,29 @@ def test_create_public_client(caplog: Any) -> None:
 @pytest.mark.spot
 @pytest.mark.spot_websocket
 @pytest.mark.spot_websocket_v2
+def test_create_public_client_as_context_manager(caplog: Any) -> None:
+    """
+    Checks if the websocket client can be instantiated as context manager.
+    """
+
+    async def create_client_as_context_manager() -> None:
+        with SpotWebsocketClientV2TestWrapper() as client:
+            await async_wait(seconds=5)
+
+    asyncio_run(create_client_as_context_manager())
+
+    for expected in (
+        'channel": "status"',
+        '"api_version": "v2"',
+        '"system": "online", "version": "2.',
+        '"type": "update"',
+    ):
+        assert expected in caplog.text
+
+
+@pytest.mark.spot
+@pytest.mark.spot_websocket
+@pytest.mark.spot_websocket_v2
 def test_access_public_client_attributes() -> None:
     """
     Checks the ``access_public_client_attributes`` function
@@ -75,8 +97,29 @@ def test_access_public_client_attributes() -> None:
         assert client.active_public_subscriptions == []
         await async_wait(seconds=1)
         with pytest.raises(ConnectionError):
-            # cannot access private subscriptions on unauthenticated client
+            # can't access private subscriptions on unauthenticated client
             assert isinstance(client.active_private_subscriptions, list)
+
+        await async_wait(seconds=1.5)
+
+    asyncio_run(check_access())
+
+
+@pytest.mark.spot
+@pytest.mark.spot_websocket
+@pytest.mark.spot_websocket_v2
+def test_access_public_subscriptions_no_conn_failing() -> None:
+    """
+    Checks if ``active_public_subscriptions`` fails, because there is no
+    public connection
+    """
+
+    async def check_access() -> None:
+        client: SpotWebsocketClientV2TestWrapper = SpotWebsocketClientV2TestWrapper(
+            no_public=True
+        )
+        with pytest.raises(ConnectionError):
+            assert isinstance(client.active_public_subscriptions, list)
 
         await async_wait(seconds=1.5)
 
@@ -118,6 +161,43 @@ def test_access_private_client_attributes(
 @pytest.mark.spot
 @pytest.mark.spot_websocket
 @pytest.mark.spot_websocket_v2
+def test_send_message_missing_method_failing() -> None:
+    """
+    Checks if the send_message function fails when not method was defined.
+    """
+
+    async def create_client() -> None:
+        client: SpotWebsocketClientV2TestWrapper = SpotWebsocketClientV2TestWrapper()
+        with pytest.raises(ValueError):
+            await client.send_message(message={})
+        await async_wait(seconds=1)
+
+    asyncio_run(create_client())
+
+
+@pytest.mark.spot
+@pytest.mark.spot_websocket
+@pytest.mark.spot_websocket_v2
+def test_send_message_raw(caplog: Any) -> None:
+    """
+    Checks if the send_message function fails when the socket is not available.
+    """
+
+    async def create_client() -> None:
+        client: SpotWebsocketClientV2TestWrapper = SpotWebsocketClientV2TestWrapper()
+        await client.send_message(
+            message={"method": "ping", "req_id": 123456789}, raw=True
+        )
+        await async_wait(seconds=1)
+
+    asyncio_run(create_client())
+
+    assert '{"method": "pong", "req_id": 123456789, "time_in":' in caplog.text
+
+
+@pytest.mark.spot
+@pytest.mark.spot_websocket
+@pytest.mark.spot_websocket_v2
 def test_public_subscribe(caplog: Any) -> None:
     """
     Function that checks if the websocket client is able to subscribe to public
@@ -126,8 +206,6 @@ def test_public_subscribe(caplog: Any) -> None:
 
     async def test_subscription() -> None:
         client: SpotWebsocketClientV2TestWrapper = SpotWebsocketClientV2TestWrapper()
-        subscription: Dict[str, str] = {"name": "ticker"}
-
         await client.subscribe(
             params={"channel": "ticker", "symbol": ["BTC/USD"]}, req_id=12345678
         )
@@ -145,7 +223,7 @@ def test_public_subscribe(caplog: Any) -> None:
 @pytest.mark.spot_auth
 @pytest.mark.spot_websocket
 @pytest.mark.spot_websocket_v2
-def test_private_subscribe_failing_on_public_connection(caplog: Any) -> None:
+def test_private_subscribe_failing_on_public_connection() -> None:
     """
     Ensures that the public websocket connection can't subscribe to private
     feeds.

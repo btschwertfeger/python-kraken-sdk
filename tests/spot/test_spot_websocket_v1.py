@@ -57,6 +57,29 @@ def test_create_public_client(caplog: Any) -> None:
 
 
 @pytest.mark.spot
+@pytest.mark.spot_websocket
+@pytest.mark.spot_websocket_v2
+def test_create_public_client_as_context_manager(caplog: Any) -> None:
+    """
+    Checks if the websocket client can be instantiated as context manager.
+    """
+
+    async def create_client_as_context_manager() -> None:
+        with SpotWebsocketClientV1TestWrapper() as client:
+            await async_wait(seconds=5)
+
+    asyncio_run(create_client_as_context_manager())
+
+    for expected in (
+        "'connectionID",
+        "'event': 'systemStatus', 'status': 'online'",
+        "'version': '1.",
+        "'event': 'pong'",
+    ):
+        assert expected in caplog.text
+
+
+@pytest.mark.spot
 @pytest.mark.spot_auth
 @pytest.mark.spot_websocket
 @pytest.mark.spot_websocket_v1
@@ -783,7 +806,6 @@ def test_cancel_all_orders_after(
     assert "'errorMessage': 'EGeneral:Invalid" not in caplog.text in caplog.text
 
 
-@pytest.mark.wip
 @pytest.mark.spot
 @pytest.mark.spot_auth
 @pytest.mark.spot_websocket

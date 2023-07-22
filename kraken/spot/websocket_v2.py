@@ -188,11 +188,12 @@ class KrakenSpotWSClientV2(KrakenSpotWSClientBase):
 
         todo: add a lot of examples on how to create orders and so on
         """
-        if not message.get("method", False):
+        if not isinstance(message, dict) or not message.get("method", False):
             raise ValueError(
                 """
-                The ``message`` must contain the 'method' key with a proper value.
-            """
+                The ``message`` must be a dict containing at least the 'method'
+                key with a proper value.
+                """
             )
         private: bool = (message["method"] in self.private_methods) or (
             message.get("method") in ("subscribe", "unsubscribe")

@@ -183,7 +183,9 @@ class KrakenSpotWSClientBase(KrakenBaseSpotAPI):
         """
         if private:
             return self._priv_conn.socket
-        return self._pub_conn.socket
+        if self._pub_conn is not None:
+            return self._pub_conn.socket
+        raise AttributeError("Could not found any connected websocket!")
 
     @property
     def active_public_subscriptions(
@@ -225,7 +227,7 @@ class KrakenSpotWSClientBase(KrakenBaseSpotAPI):
         This functions must be overloaded and should be used to send messages
         via the websocket connection(s).
         """
-        raise NotImplementedError("Must be overloaded!")
+        raise NotImplementedError("Must be overloaded!")  # coverage: disable
 
     async def subscribe(
         self: KrakenSpotWSClientBase, *args: Any, **kwargs: Any
@@ -234,7 +236,7 @@ class KrakenSpotWSClientBase(KrakenBaseSpotAPI):
         This function must be overloaded and should be used to subscribe
         to websocket channels/feeds.
         """
-        raise NotImplementedError("Must be overloaded!")
+        raise NotImplementedError("Must be overloaded!")  # coverage: disable
 
     async def unsubscribe(
         self: KrakenSpotWSClientBase, *args: Any, **kwargs: Any
@@ -243,7 +245,7 @@ class KrakenSpotWSClientBase(KrakenBaseSpotAPI):
         This function must be overloaded and should be used to unsubscribe
         from websocket channels/feeds.
         """
-        raise NotImplementedError("Must be overloaded!")
+        raise NotImplementedError("Must be overloaded!")  # coverage: disable
 
     @property
     def public_channel_names(self: KrakenSpotWSClientBase) -> List[str]:
@@ -251,7 +253,7 @@ class KrakenSpotWSClientBase(KrakenBaseSpotAPI):
         This function must be overloaded and return a list of names that can be
         subscribed to (for unauthenticated connections).
         """
-        raise NotImplementedError("Must be overloaded!")
+        raise NotImplementedError("Must be overloaded!")  # codecov: disable
 
     @property
     def private_channel_names(self: KrakenSpotWSClientBase) -> List[str]:
@@ -259,4 +261,4 @@ class KrakenSpotWSClientBase(KrakenBaseSpotAPI):
         This function must be overloaded and return a list of names that can be
         subscribed to (for authenticated connections).
         """
-        raise NotImplementedError("Must be overloaded!")
+        raise NotImplementedError("Must be overloaded!")  # codecov: disable

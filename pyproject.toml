@@ -87,6 +87,7 @@ local_scheme = "no-local-version"
 
 # ========= T E S T I N G =====================================================
 #
+
 [tool.pytest]
 junit_family = "xunit2"
 testpaths = ["tests"]
@@ -117,6 +118,13 @@ markers = [
 [tool.coverage.run]
 source = ["kraken"]
 omit = ["*tests*"]
+
+[tool.coverage.report]
+exclude_lines = [
+  "pragma: coverage: disable",
+  "if TYPE_CHECKING:"
+]
+skip_empty = true
 
 # ========= T Y P I N G =======================================================
 #

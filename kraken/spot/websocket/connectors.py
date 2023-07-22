@@ -88,13 +88,6 @@ class ConnectSpotWebsocketBase:
         """Return the websocket client"""
         return self.__client
 
-    @property
-    def subscriptions(self: ConnectSpotWebsocketBase) -> List[dict]:
-        """
-        Return the list of current subscriptions
-        """
-        return deepcopy(self._subscriptions)
-
     async def __run(self: ConnectSpotWebsocketBase, event: asyncio.Event) -> None:
         """
         This function establishes the websocket connection and runs until
@@ -161,7 +154,7 @@ class ConnectSpotWebsocketBase:
             logging.error(f"{exc}: {traceback_}")
             await self.__callback({"error": traceback_})
         finally:
-            await self.__callback({"error": "KrakenSpotWSClient: exception_occur"})
+            await self.__callback({"error": "KrakenSpotWSClient*: exception_occur"})
             self.__client.exception_occur = True
 
     async def __reconnect(self: ConnectSpotWebsocketBase) -> None:
@@ -176,14 +169,13 @@ class ConnectSpotWebsocketBase:
 
         self.__reconnect_num += 1
         if self.__reconnect_num >= self.MAX_RECONNECT_NUM:
-            self.LOG.error(
+            raise KrakenException.MaxReconnectError(
                 "The KrakenSpotWebsocketClient encountered to many reconnects!"
             )
-            raise KrakenException.MaxReconnectError()
 
         reconnect_wait: float = self.__get_reconnect_wait(self.__reconnect_num)
         self.LOG.debug(
-            "asyncio sleep reconnect_wait={reconnect_wait} s reconnect_num={self.__reconnect_num}"
+            f"asyncio sleep reconnect_wait={reconnect_wait} s reconnect_num={self.__reconnect_num}"
         )
         await asyncio.sleep(reconnect_wait)
 
@@ -232,31 +224,37 @@ class ConnectSpotWebsocketBase:
     # Functions to overload
 
     async def send_ping(self: ConnectSpotWebsocketBase) -> None:
-        """Overload this function
+        """Function that is to be overloaded.
 
         Has to implement the ping to Kraken.
         """
-        raise NotImplementedError("This function must be overloaded.")
+        raise NotImplementedError(  # coverage: disable
+            "This function must be overloaded."
+        )
 
     def _manage_subscriptions(
         self: ConnectSpotWebsocketBase, message: Union[dict, list]
     ) -> None:
-        """Overload this function
+        """Function that is to be overloaded.
 
         Has to manage incoming messages about subscriptions - and then trigger
         the local management of new un-/subscriptions.
         """
-        raise NotImplementedError("This function must be overloaded.")
+        raise NotImplementedError(  # coverage: disable
+            "This function must be overloaded."
+        )
 
     async def _recover_subscriptions(
         self: ConnectSpotWebsocketBase, event: asyncio.Event
     ) -> None:
-        """Overload this function
+        """Function that is to be overloaded.
 
         Is responsible for recovering subscriptions if the connection was
         closed.
         """
-        raise NotImplementedError("This function must be overloaded.")
+        raise NotImplementedError(  # coverage: disable
+            "This function must be overloaded."
+        )
 
 
 class ConnectSpotWebsocketV2(ConnectSpotWebsocketBase):
