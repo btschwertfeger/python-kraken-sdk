@@ -1,3 +1,7 @@
+# -*- coding: utf-8 -*-
+# Copyright (C) 2023 Benjamin Thomas Schwertfeger
+# GitHub: https://github.com/btschwertfeger
+#
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.4.0
@@ -35,12 +39,16 @@ repos:
     rev: 5.12.0
     hooks:
       - id: isort
-        args: ["--profile", "black"] # solves conflicts between black and isort
+        args:
+          - --profile=black # solves conflicts between black and isort
   - repo: https://github.com/pycqa/flake8
     rev: 6.0.0
     hooks:
       - id: flake8
-        args: ["--select=E9,F63,F7,F82", "--show-source", "--statistics"]
+        args:
+          - --select=E9,F63,F7,F82
+          - --show-source
+          - --statistics
   - repo: https://github.com/pycqa/pylint
     rev: v2.17.0
     hooks:
@@ -48,19 +56,19 @@ repos:
         name: pylint
         types: [python]
         exclude: ^examples/|^tests/|^setup.py$
-        args: ["--rcfile=.pylintrc", "-d", "R0801"] # ignore duplicate code
+        args:
+          - --rcfile=pyproject.toml
+          - -d=R0801 # ignore duplicate code
   - repo: https://github.com/pre-commit/mirrors-mypy
     rev: v1.2.0
     hooks:
       - id: mypy
         name: mypy
         args:
-          [
-            --config-file=pyproject.toml,
-            --install-types,
-            --non-interactive,
-            kraken,
-          ]
+          - --config-file=pyproject.toml
+          - --install-types
+          - --non-interactive
+          - kraken
         pass_filenames: false
   - repo: https://github.com/pre-commit/mirrors-prettier
     rev: v2.7.1
