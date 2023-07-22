@@ -19,13 +19,21 @@
 
 </div>
 
-> ⚠️ This is an unofficial collection of REST and websocket clients for Spot and Futures trading on the Kraken cryptocurrency exchange using Python. Payward Ltd. and Kraken are in no way associated with the authors of this module and documentation.
+> ⚠️ This is an unofficial collection of REST and websocket clients for Spot and
+> Futures trading on the Kraken cryptocurrency exchange using Python. Payward
+> Ltd. and Kraken are in no way associated with the authors of this module and
+> documentation.
 
 ---
 
 ## 📌 Disclaimer
 
-There is no guarantee that this software will work flawlessly at this or later times. Of course, no responsibility is taken for possible profits or losses. This software probably has some errors in it, so use it at your own risk. Also no one should be motivated or tempted to invest assets in speculative forms of investment. By using this software you release the authors from any liability regarding the use of this software.
+There is no guarantee that this software will work flawlessly at this or later
+times. Of course, no responsibility is taken for possible profits or losses.
+This software probably has some errors in it, so use it at your own risk. Also
+no one should be motivated or tempted to invest assets in speculative forms of
+investment. By using this software you release the authors from any liability
+regarding the use of this software.
 
 ---
 
@@ -56,7 +64,9 @@ Documentation:
 
 ## ❗️ Attention
 
-**ONLY** tagged releases are available at PyPI. So the content of the master may not match with the content of the latest release. - Please have a look at the release specific READMEs and changelogs.
+**ONLY** tagged releases are available at PyPI. So the content of the master may
+not match with the content of the latest release. - Please have a look at the
+release specific READMEs and changelogs.
 
 ---
 
@@ -96,7 +106,10 @@ python3 -m pip install python-kraken-sdk
 
 ### 4. Error handling
 
-If any unexpected behavior occurs, please check <b style="color: yellow">your API permissions</b>, <b style="color: yellow">rate limits</b>, update the python-kraken-sdk, see the [Troubleshooting](#trouble) section, and if the error persists please open an issue.
+If any unexpected behavior occurs, please check <b style="color: yellow">your
+API permissions</b>, <b style="color: yellow">rate limits</b>, update the
+python-kraken-sdk, see the [Troubleshooting](#trouble) section, and if the error
+persists please open an issue.
 
 ---
 
@@ -104,9 +117,11 @@ If any unexpected behavior occurs, please check <b style="color: yellow">your AP
 
 # 📍 Spot Client Example Usage
 
-A template Spot trading bot using both websocket and REST clients can be found in `/examples/spot_trading_bot_template.py`.
+A template Spot trading bot using both websocket and REST clients can be found
+in `/examples/spot_trading_bot_template.py`.
 
-For those who need a realtime order book - a script that demonstrates how to maintain a valid order book can be found here: `/examples/spot_orderbook.py`.
+For those who need a realtime order book - a script that demonstrates how to
+maintain a valid order book can be found here: `/examples/spot_orderbook.py`.
 
 <a name="spotrest"></a>
 
@@ -265,9 +280,12 @@ if __name__ == "__main__":
 
 # 📍 Futures Client Example Usage
 
-Kraken provides a sandbox environment at https://demo-futures.kraken.com for paper trading. When using this API keys you have to set the `sandbox` parameter to `True` when instantiating the respective client.
+Kraken provides a sandbox environment at https://demo-futures.kraken.com for
+paper trading. When using this API keys you have to set the `sandbox` parameter
+to `True` when instantiating the respective client.
 
-A template Futures trading bot using both websocket and REST clients can be found in `/examples/futures_trading_bot_template.py`.
+A template Futures trading bot using both websocket and REST clients can be
+found in `/examples/futures_trading_bot_template.py`.
 
 <a name="futuresrest"></a>
 
@@ -438,7 +456,19 @@ Note: Authenticated Futures websocket clients can also un-/subscribe from/to pub
 
 # 📝 Notes
 
-- Coding standards are not always followed to make arguments and function names as similar as possible to those in the Kraken API documentations.
+- The version scheme is `<Major>.<Minor>.<Service Level>` where:
+
+  - **Major** will affect everything and there will be breaking changes
+    in any case. This could be for example a change to Python 3.11+ only
+
+  - **Minor** introduces features and enhancements which may bring breaking
+    changes in some cases. These breaking changes could be renaming or
+    addition of parameters, change in order of parameters or even renaming
+    a function.
+  - **Service Level** includes bug fixes, documentation or CI related changes.
+
+- Coding standards are not always followed to make arguments and function names
+  as similar as possible to those of the Kraken API documentations.
 
 <a name="references"></a>
 
