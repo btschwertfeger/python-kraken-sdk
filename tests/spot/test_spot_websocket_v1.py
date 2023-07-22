@@ -28,6 +28,8 @@ from typing import Any, Dict, List
 
 import pytest
 
+from kraken.exceptions import KrakenException
+
 from .helper import SpotWebsocketClientV1TestWrapper, async_wait
 
 
@@ -151,8 +153,8 @@ def test_public_subscribe(caplog: Any) -> None:
             # Invalid subscription format
             await client.subscribe(subscription={})
 
-        with pytest.raises(ValueError):
-            # Pair must be type List[str]
+        with pytest.raises(TypeError):
+            # Pair must be type list[str]
             await client.subscribe(subscription=subscription, pair="XBT/USD")  # type: ignore[arg-type]
 
         await client.subscribe(subscription=subscription, pair=["XBT/EUR"])
@@ -165,6 +167,24 @@ def test_public_subscribe(caplog: Any) -> None:
         "'status': 'subscribed', 'subscription': {'name': 'ticker'}}",
     ):
         assert expected in caplog.text
+
+
+@pytest.mark.spot
+@pytest.mark.spot_websocket
+@pytest.mark.spot_websocket_v1
+def test_public_subscribe_without_pair_failing() -> None:
+    """
+    Checks that subscribing without specifying a pair fails.
+    """
+
+    async def test_subscription() -> None:
+        client: SpotWebsocketClientV1TestWrapper = SpotWebsocketClientV1TestWrapper()
+
+        with pytest.raises(ValueError):
+            await client.subscribe(subscription={"name": "ticker"})
+        await async_wait(seconds=2)
+
+    asyncio_run(test_subscription())
 
 
 @pytest.mark.spot
@@ -182,11 +202,11 @@ def test_private_subscribe(
         subscription: Dict[str, str] = {"name": "ownTrades"}
 
         client: SpotWebsocketClientV1TestWrapper = SpotWebsocketClientV1TestWrapper()
-        with pytest.raises(ValueError):
+        with pytest.raises(KrakenException.KrakenAuthenticationError):
             # unauthenticated
             await client.subscribe(subscription=subscription)
 
-        with pytest.raises(ValueError):
+        with pytest.raises(KrakenException.KrakenAuthenticationError):
             # same here also using a pair for coverage ...
             await client.subscribe(subscription=subscription, pair=["XBT/EUR"])
 
@@ -262,8 +282,8 @@ def test_public_unsubscribe_failure(caplog: Any) -> None:
             # invalid subscription
             await client.unsubscribe(subscription={})
 
-        with pytest.raises(ValueError):
-            # pair must be List[str]
+        with pytest.raises(TypeError):
+            # pair must be list[str]
             await client.unsubscribe(subscription={"name": "ticker"}, pair="XBT/USD")  # type: ignore[arg-type]
 
         await async_wait(seconds=2)
@@ -276,6 +296,24 @@ def test_public_unsubscribe_failure(caplog: Any) -> None:
         "{'errorMessage': 'Subscription Not Found', 'event': 'subscriptionStatus', 'pair': 'ETH/USD'",
     ):
         assert expected in caplog.text
+
+
+@pytest.mark.spot
+@pytest.mark.spot_websocket
+@pytest.mark.spot_websocket_v1
+def test_public_unsubscribe_without_pair_failing() -> None:
+    """
+    Checks that subscribing without specifying a pair fails.
+    """
+
+    async def test_subscription() -> None:
+        client: SpotWebsocketClientV1TestWrapper = SpotWebsocketClientV1TestWrapper()
+
+        with pytest.raises(ValueError):
+            await client.unsubscribe(subscription={"name": "ticker"})
+        await async_wait(seconds=2)
+
+    asyncio_run(test_subscription())
 
 
 @pytest.mark.spot
@@ -315,9 +353,7 @@ def test_private_unsubscribe(
 @pytest.mark.spot_auth
 @pytest.mark.spot_websocket
 @pytest.mark.spot_websocket_v1
-def test_private_unsubscribe_failing(
-    spot_api_key: str, spot_secret_key: str, caplog: Any
-) -> None:
+def test_private_unsubscribe_failing(spot_api_key: str, spot_secret_key: str) -> None:
     """
     Checks if the ``unsubscribe`` function fails when invalid
     parameters are passed.
@@ -329,7 +365,7 @@ def test_private_unsubscribe_failing(
             SpotWebsocketClientV1TestWrapper(key=spot_api_key, secret=spot_secret_key)
         )
 
-        with pytest.raises(ValueError):
+        with pytest.raises(KrakenException.KrakenAuthenticationError):
             # private feed on unauthenticated client
             await client.unsubscribe(subscription={"name": "ownTrades"})
 
@@ -342,6 +378,86 @@ def test_private_unsubscribe_failing(
         await async_wait(seconds=2)
 
     asyncio_run(check_unsubscribe_failing())
+
+
+@pytest.mark.spot
+@pytest.mark.spot_auth
+@pytest.mark.spot_websocket
+@pytest.mark.spot_websocket_v1
+def test_send_private_message_raw(caplog: Any) -> None:
+    """
+    Checks that the send_message function is able to send raw messages.
+    """
+
+    async def test_send_message() -> None:
+        client: SpotWebsocketClientV1TestWrapper = SpotWebsocketClientV1TestWrapper()
+        await client.send_message(
+            message={
+                "event": "subscribe",
+                "pair": ["XBT/USD"],
+                "subscription": {"name": "ticker"},
+            },
+            private=False,
+            raw=True,
+        )
+
+        await async_wait(seconds=2)
+
+    asyncio_run(test_send_message())
+
+    assert (
+        "'channelName': 'ticker', 'event': 'subscriptionStatus', 'pair': 'XBT/USD', 'status': 'subscribed', 'subscription': {'name': 'ticker'}"
+        in caplog.text
+    )
+
+
+@pytest.mark.spot
+@pytest.mark.spot_auth
+@pytest.mark.spot_websocket
+@pytest.mark.spot_websocket_v1
+def test_send_private_message_from_public_connection_failing() -> None:
+    """
+    Ensures that the public websocket connection can't send messages that
+    need authentication.
+    """
+
+    async def test_send_message() -> None:
+        client: SpotWebsocketClientV1TestWrapper = SpotWebsocketClientV1TestWrapper()
+        with pytest.raises(KrakenException.KrakenAuthenticationError):
+            await client.send_message(message={}, private=True)
+
+        await async_wait(seconds=2)
+
+    asyncio_run(test_send_message())
+
+
+# todo: Create a test that kills the websocket connection to test the reconnect.
+# from unittest import mock
+# import json
+# @pytest.mark.spot
+# @pytest.mark.spot_websocket
+# @pytest.mark.spot_websocket_v1
+# @mock.patch(
+#     "kraken.spot.websocket.json.loads",
+# )
+# def test_reconnect(mock_json_loads: mock.MagicMock, caplog: Any) -> None:
+#     mock_json_loads.side_effect = (
+#         [json.dumps({"valid": "message"})]
+#         + [AttributeError("Test Error")]
+#         + [json.dumps({"valid": "message"})] * 10000
+#     )
+
+#     async def check_reconnect() -> None:
+#         client: SpotWebsocketClientV1TestWrapper = SpotWebsocketClientV1TestWrapper()
+#         await async_wait(seconds=60)
+
+#     asyncio_run(check_reconnect())
+#     # with open("x.log", "w") as f:
+#     #     f.write(caplog.text)
+
+
+# ------------------------------------------------------------------------------
+# Executables
 
 
 @pytest.mark.spot
@@ -401,6 +517,46 @@ def test_create_order(spot_api_key: str, spot_secret_key: str, caplog: Any) -> N
 @pytest.mark.spot_auth
 @pytest.mark.spot_websocket
 @pytest.mark.spot_websocket_v1
+def test_create_order_failing_no_connection(caplog: Any) -> None:
+    """
+    Checks the ``create_order`` function by submitting a
+    new order - it is intended to check what happens when there is no open
+    authenticated connection - it should fail.
+
+    The order submission will fail, because the testing API keys do not have
+    trade permission - but it is also checked that error messages
+    starting with "EGeneral:Invalid" are not included in the received
+    messages. This ensures that the Kraken API received the message and the only
+    problem is the permission.
+
+    NOTE: This function is not disabled, since the function is executed in
+          validate mode.
+    """
+
+    async def execute_create_order() -> None:
+        client: SpotWebsocketClientV1TestWrapper = SpotWebsocketClientV1TestWrapper()
+        with pytest.raises(KrakenException.KrakenAuthenticationError):
+            await client.create_order(
+                ordertype="limit",
+                side="buy",
+                pair="XBT/USD",
+                volume="2",
+                price="1000",
+                validate=True,
+            )
+        await async_wait(seconds=2)
+
+    asyncio_run(execute_create_order())
+
+    assert (
+        "Can't place order - Authenticated websocket not connected!" not in caplog.text
+    )
+
+
+@pytest.mark.spot
+@pytest.mark.spot_auth
+@pytest.mark.spot_websocket
+@pytest.mark.spot_websocket_v1
 def test_edit_order(spot_api_key: str, spot_secret_key: str, caplog: Any) -> None:
     """
     Checks the edit order function by editing an order in validate mode.
@@ -419,7 +575,7 @@ def test_edit_order(spot_api_key: str, spot_secret_key: str, caplog: Any) -> Non
             key=spot_api_key, secret=spot_secret_key
         )
 
-        params: dict = dict(
+        await client.edit_order(
             orderid="OHSAUDZ-ASJKGD-EPAFUIH",
             reqid=1244,
             pair="XBT/USD",
@@ -429,8 +585,6 @@ def test_edit_order(spot_api_key: str, spot_secret_key: str, caplog: Any) -> Non
             newuserref="833773",
             validate=True,
         )
-
-        await client.edit_order(**params)
         await async_wait(seconds=2)
 
     asyncio_run(execute_edit_order())
@@ -440,6 +594,44 @@ def test_edit_order(spot_api_key: str, spot_secret_key: str, caplog: Any) -> Non
         in caplog.text
     )
     assert "'errorMessage': 'EGeneral:Invalid" not in caplog.text
+
+
+@pytest.mark.spot
+@pytest.mark.spot_auth
+@pytest.mark.spot_websocket
+@pytest.mark.spot_websocket_v1
+def test_edit_order_failing_no_connection(caplog: Any) -> None:
+    """
+    Checks the ``edit_order`` function by editing an order - it is intended to
+    check what happens when there is no open authenticated connection - it
+    should fail.
+
+    Same as with the trade endpoint - the response will include
+    a permission denied error - but it is also checked that no other
+    error includes the "invalid" string which means that the only problem
+    is the permission.
+    """
+
+    async def execute_edit_order() -> None:
+        client: SpotWebsocketClientV1TestWrapper = SpotWebsocketClientV1TestWrapper()
+        with pytest.raises(KrakenException.KrakenAuthenticationError):
+            await client.edit_order(
+                orderid="OHSAUDZ-ASJKGD-EPAFUIH",
+                reqid=1244,
+                pair="XBT/USD",
+                price="120",
+                price2="1300",
+                oflags="fok",
+                newuserref="833773",
+                validate=True,
+            )
+        await async_wait(seconds=2)
+
+    asyncio_run(execute_edit_order())
+
+    assert (
+        "Can't edit order - Authenticated websocket not connected!" not in caplog.text
+    )
 
 
 # @pytest.mark.skip("CI does not have trade/cancel permission")
@@ -471,6 +663,36 @@ def test_cancel_order(spot_api_key: str, spot_secret_key: str, caplog: Any) -> N
         in caplog.text
     )
     assert "'errorMessage': 'EGeneral:Invalid" not in caplog.text
+
+
+# @pytest.mark.skip("CI does not have trade/cancel permission")
+@pytest.mark.spot
+@pytest.mark.spot_auth
+@pytest.mark.spot_websocket
+@pytest.mark.spot_websocket_v1
+def test_cancel_order_failing_no_connection(caplog: Any) -> None:
+    """
+    Checks the ``cancel_order`` function - it is intended to check what happens
+    when there is no open authenticated connection - it should fail.
+
+
+    Same permission denied reason as for create and edit error.
+
+    NOTE: This function is not disabled, since the txid does not
+          exist and would not cause any problems.
+    """
+
+    async def execute_cancel_order() -> None:
+        client: SpotWebsocketClientV1TestWrapper = SpotWebsocketClientV1TestWrapper()
+        with pytest.raises(KrakenException.KrakenAuthenticationError):
+            await client.cancel_order(txid=["AOUEHF-ASLBD-A6B4A"])
+        await async_wait(seconds=2)
+
+    asyncio_run(execute_cancel_order())
+
+    assert (
+        "Can't cancel order - Authenticated websocket not connected!" not in caplog.text
+    )
 
 
 @pytest.mark.spot
@@ -507,6 +729,32 @@ def test_cancel_all_orders(
 @pytest.mark.spot_auth
 @pytest.mark.spot_websocket
 @pytest.mark.spot_websocket_v1
+def test_cancel_all_orders_failing_no_connection(caplog: Any) -> None:
+    """
+    Checks the ``cancel_all_orders`` function - it is intended to check what
+    happens when there is no open authenticated connection - it should fail.
+
+    Same permission denied reason as for create, edit and cancel error.
+    """
+
+    async def execute_cancel_all_orders() -> None:
+        client: SpotWebsocketClientV1TestWrapper = SpotWebsocketClientV1TestWrapper()
+        with pytest.raises(KrakenException.KrakenAuthenticationError):
+            await client.cancel_all_orders()
+        await async_wait(seconds=2)
+
+    asyncio_run(execute_cancel_all_orders())
+
+    assert (
+        "Can't cancel all orders - Authenticated websocket not connected!"
+        not in caplog.text
+    )
+
+
+@pytest.mark.spot
+@pytest.mark.spot_auth
+@pytest.mark.spot_websocket
+@pytest.mark.spot_websocket_v1
 def test_cancel_all_orders_after(
     spot_api_key: str, spot_secret_key: str, caplog: Any
 ) -> None:
@@ -535,28 +783,31 @@ def test_cancel_all_orders_after(
     assert "'errorMessage': 'EGeneral:Invalid" not in caplog.text in caplog.text
 
 
-# todo: Create a test that kills the websocket connection
-#       to test the reconnect.
-# from unittest import mock
-# import json
-# @pytest.mark.spot
-# @pytest.mark.spot_websocket
-# @pytest.mark.spot_websocket_v1
-# @pytest.mark.wip
-# @mock.patch(
-#     "kraken.spot.websocket.json.loads",
-# )
-# def test_reconnect(mock_json_loads: mock.MagicMock, caplog: Any) -> None:
-#     mock_json_loads.side_effect = (
-#         [json.dumps({"valid": "message"})]
-#         + [AttributeError("Test Error")]
-#         + [json.dumps({"valid": "message"})] * 10000
-#     )
+@pytest.mark.wip
+@pytest.mark.spot
+@pytest.mark.spot_auth
+@pytest.mark.spot_websocket
+@pytest.mark.spot_websocket_v1
+def test_cancel_all_orders_after_failing_no_connection(caplog: Any) -> None:
+    """
+    Checks the ``cancel_all_orders_after`` function - it is intended to check
+    what happens when there is no open authenticated connection - it should
+    fail.
 
-#     async def check_reconnect() -> None:
-#         client: SpotWebsocketClientV1TestWrapper = SpotWebsocketClientV1TestWrapper()
-#         await async_wait(seconds=60)
+    NOTE: This function is not disabled, since the value 0 is
+          submitted which would reset the timer and would not cause
+          any problems.
+    """
 
-#     asyncio_run(check_reconnect())
-#     # with open("x.log", "w") as f:
-#     #     f.write(caplog.text)
+    async def execute_cancel_all_orders() -> None:
+        client: SpotWebsocketClientV1TestWrapper = SpotWebsocketClientV1TestWrapper()
+        with pytest.raises(KrakenException.KrakenAuthenticationError):
+            await client.cancel_all_orders_after()
+        await async_wait(seconds=2)
+
+    asyncio_run(execute_cancel_all_orders())
+
+    assert (
+        "Can't cancel all orders after - Authenticated websocket not connected!"
+        not in caplog.text
+    )
