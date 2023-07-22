@@ -4,6 +4,13 @@
 # GitHub: https://github.com/btschwertfeger
 #
 
+"""
+Module that implenents the unit tests for the Kraken Spot Websocket API v1
+client.
+"""
+
+from __future__ import annotations
+
 import logging
 import os
 from asyncio import sleep
@@ -28,7 +35,7 @@ async def async_wait(seconds: float = 1.0) -> None:
     return
 
 
-class SpotWebsocketClientTestWrapper(KrakenSpotWSClient):
+class SpotWebsocketClientV1TestWrapper(KrakenSpotWSClient):
     """
     Class that creates an instance to test the KrakenSpotWSClient.
 
@@ -39,7 +46,7 @@ class SpotWebsocketClientTestWrapper(KrakenSpotWSClient):
     LOG: logging.Logger = logging.getLogger(__name__)
 
     def __init__(
-        self: "SpotWebsocketClientTestWrapper", key: str = "", secret: str = ""
+        self: SpotWebsocketClientV1TestWrapper, key: str = "", secret: str = ""
     ) -> None:
         super().__init__(key=key, secret=secret, callback=self.on_message)
         self.LOG.setLevel(logging.INFO)
@@ -48,7 +55,7 @@ class SpotWebsocketClientTestWrapper(KrakenSpotWSClient):
         self.LOG.addHandler(fh)
 
     async def on_message(
-        self: "SpotWebsocketClientTestWrapper", msg: Union[list, dict]
+        self: SpotWebsocketClientV1TestWrapper, msg: Union[list, dict]
     ) -> None:
         """
         This is the callback function that must be implemented

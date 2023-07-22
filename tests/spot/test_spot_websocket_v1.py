@@ -4,13 +4,14 @@
 # GitHub: https://github.com/btschwertfeger
 #
 
-"""Module that tests the Kraken Spot websocket client
-    (Kraken Spot Websocket API v1)
+"""
+Module that tests the Kraken Spot websocket client
+(Kraken Spot Websocket API v1)
 
 NOTE:
 *   Since there is no sandbox environment for the Spot trading API,
     some tests are adjusted, so that there is a `validate` switch to not risk funds.
-*   The custom SpotWebsocketClientTestWrapper class is used that wraps around the
+*   The custom SpotWebsocketClientV1TestWrapper class is used that wraps around the
     websocket client. To validate the functions the responses are logged and finally
     the logs are read out and its input is checked for the expected output.
 
@@ -25,7 +26,7 @@ from typing import Any, Dict, List
 
 import pytest
 
-from .helper import SpotWebsocketClientTestWrapper, async_wait
+from .helper import SpotWebsocketClientV1TestWrapper, async_wait
 
 
 @pytest.mark.spot
@@ -36,7 +37,7 @@ def test_create_public_bot(caplog: Any) -> None:
     """
 
     async def create_bot() -> None:
-        client: SpotWebsocketClientTestWrapper = SpotWebsocketClientTestWrapper()
+        client: SpotWebsocketClientV1TestWrapper = SpotWebsocketClientV1TestWrapper()
         await async_wait(seconds=5)
 
     asyncio_run(create_bot())
@@ -60,8 +61,8 @@ def test_create_private_bot(
     """
 
     async def create_bot() -> None:
-        auth_client: SpotWebsocketClientTestWrapper = SpotWebsocketClientTestWrapper(
-            key=spot_api_key, secret=spot_secret_key
+        auth_client: SpotWebsocketClientV1TestWrapper = (
+            SpotWebsocketClientV1TestWrapper(key=spot_api_key, secret=spot_secret_key)
         )
         await async_wait(seconds=5)
 
@@ -83,7 +84,7 @@ def test_access_public_bot_attributes() -> None:
     """
 
     async def check_access() -> None:
-        client: SpotWebsocketClientTestWrapper = SpotWebsocketClientTestWrapper()
+        client: SpotWebsocketClientV1TestWrapper = SpotWebsocketClientV1TestWrapper()
 
         assert client.private_channel_names == ["ownTrades", "openOrders"]
         assert client.public_channel_names == [
@@ -115,8 +116,8 @@ def test_access_private_bot_attributes(spot_api_key: str, spot_secret_key: str) 
     """
 
     async def check_access() -> None:
-        auth_client: SpotWebsocketClientTestWrapper = SpotWebsocketClientTestWrapper(
-            key=spot_api_key, secret=spot_secret_key
+        auth_client: SpotWebsocketClientV1TestWrapper = (
+            SpotWebsocketClientV1TestWrapper(key=spot_api_key, secret=spot_secret_key)
         )
 
         assert auth_client.active_private_subscriptions == []
@@ -134,7 +135,7 @@ def test_public_subscribe(caplog: Any) -> None:
     """
 
     async def test_subscription() -> None:
-        client: SpotWebsocketClientTestWrapper = SpotWebsocketClientTestWrapper()
+        client: SpotWebsocketClientV1TestWrapper = SpotWebsocketClientV1TestWrapper()
         subscription: Dict[str, str] = {"name": "ticker"}
 
         with pytest.raises(AttributeError):
@@ -170,7 +171,7 @@ def test_private_subscribe(
     async def test_subscription() -> None:
         subscription: Dict[str, str] = {"name": "ownTrades"}
 
-        client: SpotWebsocketClientTestWrapper = SpotWebsocketClientTestWrapper()
+        client: SpotWebsocketClientV1TestWrapper = SpotWebsocketClientV1TestWrapper()
         with pytest.raises(ValueError):
             # unauthenticated
             await client.subscribe(subscription=subscription)
@@ -179,8 +180,8 @@ def test_private_subscribe(
             # same here also using a pair for coverage ...
             await client.subscribe(subscription=subscription, pair=["XBT/EUR"])
 
-        auth_client: SpotWebsocketClientTestWrapper = SpotWebsocketClientTestWrapper(
-            key=spot_api_key, secret=spot_secret_key
+        auth_client: SpotWebsocketClientV1TestWrapper = (
+            SpotWebsocketClientV1TestWrapper(key=spot_api_key, secret=spot_secret_key)
         )
         with pytest.raises(ValueError):
             # private conns does not accept pairs
@@ -206,7 +207,7 @@ def test_public_unsubscribe(caplog: Any) -> None:
     """
 
     async def test_unsubscribe() -> None:
-        client: SpotWebsocketClientTestWrapper = SpotWebsocketClientTestWrapper()
+        client: SpotWebsocketClientV1TestWrapper = SpotWebsocketClientV1TestWrapper()
 
         subscription: Dict[str, str] = {"name": "ticker"}
         pair: List[str] = ["XBT/USD"]
@@ -237,7 +238,7 @@ def test_public_unsubscribe_failure(caplog: Any) -> None:
     """
 
     async def check_unsubscribe_fail() -> None:
-        client: SpotWebsocketClientTestWrapper = SpotWebsocketClientTestWrapper()
+        client: SpotWebsocketClientV1TestWrapper = SpotWebsocketClientV1TestWrapper()
 
         # We did not subscribed to this tickers but it will work,
         # and the response will inform us that there are no subscriptions.
@@ -276,8 +277,8 @@ def test_private_unsubscribe(
     """
 
     async def check_unsubscribe() -> None:
-        auth_client: SpotWebsocketClientTestWrapper = SpotWebsocketClientTestWrapper(
-            key=spot_api_key, secret=spot_secret_key
+        auth_client: SpotWebsocketClientV1TestWrapper = (
+            SpotWebsocketClientV1TestWrapper(key=spot_api_key, secret=spot_secret_key)
         )
 
         await auth_client.subscribe(subscription={"name": "ownTrades"})
@@ -309,9 +310,9 @@ def test_private_unsubscribe_failing(
     """
 
     async def check_unsubscribe_failing() -> None:
-        client: SpotWebsocketClientTestWrapper = SpotWebsocketClientTestWrapper()
-        auth_client: SpotWebsocketClientTestWrapper = SpotWebsocketClientTestWrapper(
-            key=spot_api_key, secret=spot_secret_key
+        client: SpotWebsocketClientV1TestWrapper = SpotWebsocketClientV1TestWrapper()
+        auth_client: SpotWebsocketClientV1TestWrapper = (
+            SpotWebsocketClientV1TestWrapper(key=spot_api_key, secret=spot_secret_key)
         )
 
         with pytest.raises(ValueError):
@@ -348,8 +349,8 @@ def test_create_order(spot_api_key: str, spot_secret_key: str, caplog: Any) -> N
     """
 
     async def execute_create_order() -> None:
-        auth_client: SpotWebsocketClientTestWrapper = SpotWebsocketClientTestWrapper(
-            key=spot_api_key, secret=spot_secret_key
+        auth_client: SpotWebsocketClientV1TestWrapper = (
+            SpotWebsocketClientV1TestWrapper(key=spot_api_key, secret=spot_secret_key)
         )
         params: dict = dict(
             ordertype="limit",
@@ -398,8 +399,8 @@ def test_edit_order(spot_api_key: str, spot_secret_key: str, caplog: Any) -> Non
     """
 
     async def execute_edit_order() -> None:
-        auth_client: SpotWebsocketClientTestWrapper = SpotWebsocketClientTestWrapper(
-            key=spot_api_key, secret=spot_secret_key
+        auth_client: SpotWebsocketClientV1TestWrapper = (
+            SpotWebsocketClientV1TestWrapper(key=spot_api_key, secret=spot_secret_key)
         )
 
         params: dict = dict(
@@ -440,8 +441,8 @@ def test_cancel_order(spot_api_key: str, spot_secret_key: str, caplog: Any) -> N
     """
 
     async def execute_cancel_order() -> None:
-        auth_client: SpotWebsocketClientTestWrapper = SpotWebsocketClientTestWrapper(
-            key=spot_api_key, secret=spot_secret_key
+        auth_client: SpotWebsocketClientV1TestWrapper = (
+            SpotWebsocketClientV1TestWrapper(key=spot_api_key, secret=spot_secret_key)
         )
         await auth_client.cancel_order(txid=["AOUEHF-ASLBD-A6B4A"])
         await async_wait(seconds=2)
@@ -469,8 +470,8 @@ def test_cancel_all_orders(
     """
 
     async def execute_cancel_all() -> None:
-        auth_client: SpotWebsocketClientTestWrapper = SpotWebsocketClientTestWrapper(
-            key=spot_api_key, secret=spot_secret_key
+        auth_client: SpotWebsocketClientV1TestWrapper = (
+            SpotWebsocketClientV1TestWrapper(key=spot_api_key, secret=spot_secret_key)
         )
         await auth_client.cancel_all_orders()
         await async_wait(seconds=2)
@@ -500,8 +501,8 @@ def test_cancel_all_orders_after(
     """
 
     async def execute_cancel_after() -> None:
-        auth_client: SpotWebsocketClientTestWrapper = SpotWebsocketClientTestWrapper(
-            key=spot_api_key, secret=spot_secret_key
+        auth_client: SpotWebsocketClientV1TestWrapper = (
+            SpotWebsocketClientV1TestWrapper(key=spot_api_key, secret=spot_secret_key)
         )
         await auth_client.cancel_all_orders_after(0)
         await async_wait(seconds=3)
@@ -533,7 +534,7 @@ def test_cancel_all_orders_after(
 #     )
 
 #     async def check_reconnect() -> None:
-#         client: SpotWebsocketClientTestWrapper = SpotWebsocketClientTestWrapper()
+#         client: SpotWebsocketClientV1TestWrapper = SpotWebsocketClientV1TestWrapper()
 #         await async_wait(seconds=60)
 
 #     asyncio_run(check_reconnect())
