@@ -6,6 +6,8 @@
 
 """Module that implements the Kraken Spot Orderbook client"""
 
+from __future__ import annotations
+
 import logging
 from asyncio import sleep as asyncio_sleep
 from binascii import crc32
@@ -105,7 +107,7 @@ class OrderbookClient:
     LOG: logging.Logger = logging.getLogger(__name__)
 
     def __init__(
-        self: "OrderbookClient",
+        self: OrderbookClient,
         depth: int = 10,
         callback: Optional[Callable] = None,
     ) -> None:
@@ -118,7 +120,7 @@ class OrderbookClient:
             callback=self.on_message
         )
 
-    async def on_message(self: "OrderbookClient", message: Union[list, dict]) -> None:
+    async def on_message(self: OrderbookClient, message: Union[list, dict]) -> None:
         """
         The on_message function is implemented in the KrakenSpotWSClient
         class and used as callback to receive all messages sent by the
@@ -192,7 +194,7 @@ class OrderbookClient:
         else:
             await self.on_book_update(pair=pair, message=message)
 
-    async def on_book_update(self: "OrderbookClient", pair: str, message: list) -> None:
+    async def on_book_update(self: OrderbookClient, pair: str, message: list) -> None:
         """
         This function will be called every time the orderbook gets updated.
         It needs to be overloaded if no callback function was defined
@@ -211,7 +213,7 @@ class OrderbookClient:
         else:
             logging.info(message)
 
-    async def add_book(self: "OrderbookClient", pairs: List[str]) -> None:
+    async def add_book(self: OrderbookClient, pairs: List[str]) -> None:
         """
         Add an orderbook to this client. The feed will be subscribed
         and updates will be published to the :func:`on_book_update` function.
@@ -225,7 +227,7 @@ class OrderbookClient:
             subscription={"name": "book", "depth": self.__depth}, pair=pairs
         )
 
-    async def remove_book(self: "OrderbookClient", pairs: List[str]) -> None:
+    async def remove_book(self: OrderbookClient, pairs: List[str]) -> None:
         """
         Unsubscribe from a subscribed orderbook.
 
@@ -239,14 +241,14 @@ class OrderbookClient:
         )
 
     @property
-    def depth(self: "OrderbookClient") -> int:
+    def depth(self: OrderbookClient) -> int:
         """
         Return the fixed depth of this orderbook client.
         """
         return self.__depth
 
     @property
-    def exception_occur(self: "OrderbookClient") -> bool:
+    def exception_occur(self: OrderbookClient) -> bool:
         """
         Can be used to determine if any critical error occurred within the
         websocket connection. If so, the function will return ``True``
@@ -259,7 +261,7 @@ class OrderbookClient:
         """
         return bool(self.ws_client.exception_occur)
 
-    def get(self: "OrderbookClient", pair: str) -> Optional[dict]:
+    def get(self: OrderbookClient, pair: str) -> Optional[dict]:
         """
         Returns the orderbook for a specific ``pair``.
 
@@ -289,7 +291,7 @@ class OrderbookClient:
         return self.__book.get(pair)
 
     def __update_book(
-        self: "OrderbookClient", pair: str, side: str, snapshot: list
+        self: OrderbookClient, pair: str, side: str, snapshot: list
     ) -> None:
         """
         This functions updates the local orderbook based on the
@@ -341,7 +343,7 @@ class OrderbookClient:
                     )[: self.__depth]
                 )
 
-    def __validate_checksum(self: "OrderbookClient", pair: str, checksum: str) -> None:
+    def __validate_checksum(self: OrderbookClient, pair: str, checksum: str) -> None:
         """
         Function that validates the checksum of the orderbook as described here
         https://docs.kraken.com/websockets/#book-checksum.

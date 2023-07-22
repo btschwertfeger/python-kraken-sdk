@@ -50,7 +50,7 @@ class TradingBot(KrakenFuturesWSClient):
         }
     """
 
-    def __init__(self: "TradingBot", config: dict) -> None:
+    def __init__(self: TradingBot, config: dict) -> None:
         super().__init__(
             key=config["key"], secret=config["secret"]
         )  # initialize the KrakenFuturesWSClient
@@ -61,9 +61,9 @@ class TradingBot(KrakenFuturesWSClient):
         self.__market: Market = Market(key=config["key"], secret=config["secret"])
         self.__funding: Funding = Funding(key=config["key"], secret=config["secret"])
 
-    async def on_message(self: "TradingBot", event: Union[list, dict]) -> None:
-        """Receives all events that came form the websocket feed(s)"""
-        logging.info(event)
+    async def on_message(self: TradingBot, msg: Union[list, dict]) -> None:
+        """Receives all messages that came form the websocket feed(s)"""
+        logging.info(msg)
         # ... apply your trading strategy here
 
         # call functions from self.__trade and other clients if conditions met...
@@ -83,7 +83,7 @@ class TradingBot(KrakenFuturesWSClient):
     # ...
     # ...
 
-    def save_exit(self: "TradingBot", reason: Optional[str] = "") -> None:
+    def save_exit(self: TradingBot, reason: Optional[str] = "") -> None:
         """Controlled shutdown of the strategy"""
         logging.warning(f"Save exit triggered, reason: {reason}")
         # ideas:
@@ -108,11 +108,11 @@ class ManagedBot:
         }
     """
 
-    def __init__(self: "ManagedBot", config: dict) -> None:
+    def __init__(self: ManagedBot, config: dict) -> None:
         self.__config: dict = config
         self.__trading_strategy: Optional[TradingBot] = None
 
-    def run(self: "ManagedBot") -> None:
+    def run(self: ManagedBot) -> None:
         """Runner function"""
         if not self.__check_credentials():
             sys.exit(1)
@@ -125,7 +125,7 @@ class ManagedBot:
             if self.__trading_strategy is not None:
                 self.__trading_strategy.save_exit(reason="Asyncio loop left")
 
-    async def __main(self: "ManagedBot") -> None:
+    async def __main(self: ManagedBot) -> None:
         """
         Instantiates the trading strategy/algorithm and subscribes to the
         desired websocket feeds. Run the loop while no exception occur.
@@ -166,7 +166,7 @@ class ManagedBot:
         )
         return
 
-    def __check_credentials(self: "ManagedBot") -> bool:
+    def __check_credentials(self: ManagedBot) -> bool:
         """Checks the user credentials and the connection to Kraken"""
         try:
             User(self.__config["key"], self.__config["secret"]).get_wallets()
@@ -182,7 +182,7 @@ class ManagedBot:
             logging.error("Invalid credentials!")
             return False
 
-    def save_exit(self: "ManagedBot", reason: str = "") -> None:
+    def save_exit(self: ManagedBot, reason: str = "") -> None:
         """Calls the save exit function of the trading strategy"""
         print(f"Save exit triggered - {reason}")
         if self.__trading_strategy is not None:

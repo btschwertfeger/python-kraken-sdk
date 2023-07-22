@@ -6,6 +6,8 @@
 
 """Module that implements the Kraken Futures trade client"""
 
+from __future__ import annotations
+
 from typing import List, Optional, Tuple, Union
 
 from ..base_api import KrakenBaseFuturesAPI, defined
@@ -45,7 +47,7 @@ class Trade(KrakenBaseFuturesAPI):
     """
 
     def __init__(
-        self: "Trade",
+        self: Trade,
         key: str = "",
         secret: str = "",
         url: str = "",
@@ -53,11 +55,11 @@ class Trade(KrakenBaseFuturesAPI):
     ) -> None:
         super().__init__(key=key, secret=secret, url=url, sandbox=sandbox)
 
-    def __enter__(self: "Trade") -> "Trade":
+    def __enter__(self: Trade) -> Trade:
         super().__enter__()
         return self
 
-    def get_fills(self: "Trade", lastFillTime: Optional[str] = None) -> dict:
+    def get_fills(self: Trade, lastFillTime: Optional[str] = None) -> dict:
         """
         Return the current fills of the user.
 
@@ -102,7 +104,7 @@ class Trade(KrakenBaseFuturesAPI):
             auth=True,
         )
 
-    def create_batch_order(self: "Trade", batchorder_list: List[dict]) -> dict:
+    def create_batch_order(self: Trade, batchorder_list: List[dict]) -> dict:
         """
         Create multiple orders at once using the batch order endpoint.
 
@@ -209,7 +211,7 @@ class Trade(KrakenBaseFuturesAPI):
             auth=True,
         )
 
-    def cancel_all_orders(self: "Trade", symbol: Optional[str] = None) -> dict:
+    def cancel_all_orders(self: Trade, symbol: Optional[str] = None) -> dict:
         """
         Cancels all open orders, can be filtered by symbol.
 
@@ -257,7 +259,7 @@ class Trade(KrakenBaseFuturesAPI):
             auth=True,
         )
 
-    def dead_mans_switch(self: "Trade", timeout: Optional[int] = 0) -> dict:
+    def dead_mans_switch(self: Trade, timeout: Optional[int] = 0) -> dict:
         """
         The Death Man's Switch can be used to cancel all orders after a specific timeout.
         If the timeout is set to 60, all orders will be cancelled after 60 seconds. The timeout
@@ -296,7 +298,7 @@ class Trade(KrakenBaseFuturesAPI):
         )
 
     def cancel_order(
-        self: "Trade", order_id: Optional[str] = None, cliOrdId: Optional[str] = None
+        self: Trade, order_id: Optional[str] = None, cliOrdId: Optional[str] = None
     ) -> dict:
         """
         This endpoint can be used to cancel a specific order by ``order_id`` or ``cliOrdId``.
@@ -346,7 +348,7 @@ class Trade(KrakenBaseFuturesAPI):
         )
 
     def edit_order(
-        self: "Trade",
+        self: Trade,
         orderId: Optional[str] = None,
         cliOrdId: Optional[str] = None,
         limitPrice: Optional[Union[str, int, float]] = None,
@@ -416,7 +418,7 @@ class Trade(KrakenBaseFuturesAPI):
         )
 
     def get_orders_status(
-        self: "Trade",
+        self: Trade,
         orderIds: Optional[Union[str, List[str]]] = None,
         cliOrdIds: Optional[Union[str, List[str]]] = None,
     ) -> dict:
@@ -461,7 +463,7 @@ class Trade(KrakenBaseFuturesAPI):
         )
 
     def create_order(
-        self: "Trade",
+        self: Trade,
         orderType: str,
         size: Union[str, int, float],
         symbol: str,

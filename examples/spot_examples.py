@@ -31,8 +31,10 @@ secret = os.getenv("SECRET_KEY")
 # |  \| | | | || | |  _| (_)
 # | |\  | |_| || | | |___ _
 # |_| \_|\___/ |_| |_____(_)
-# ----> More examples can be found in kraken/tests/*.py, the doc and in the doc strings
-# examples may not be updated regularly
+# ----> More examples can be found in kraken/tests/*.py, the doc and in the
+# doc strings
+#
+# Examples may not be updated regularly.
 
 
 def user_examples() -> None:

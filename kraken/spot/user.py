@@ -5,6 +5,9 @@
 #
 
 """ Module that implements the Kraken Spot User client"""
+
+from __future__ import annotations
+
 from decimal import Decimal
 from typing import List, Optional, Union
 
@@ -44,18 +47,18 @@ class User(KrakenBaseSpotAPI):
     """
 
     def __init__(
-        self: "User",
+        self: User,
         key: str = "",
         secret: str = "",
         url: str = "",
     ) -> None:
         super().__init__(key=key, secret=secret, url=url)
 
-    def __enter__(self: "User") -> "User":
+    def __enter__(self: User) -> User:
         super().__enter__()
         return self
 
-    def get_account_balance(self: "User") -> dict:
+    def get_account_balance(self: User) -> dict:
         """
         Get the current balances of the user.
 
@@ -85,7 +88,7 @@ class User(KrakenBaseSpotAPI):
             method="POST", uri="/private/Balance"
         )
 
-    def get_balances(self: "User") -> dict:
+    def get_balances(self: User) -> dict:
         """
         Retrieve the user's asset balances and the
         the corresponding amount held by open orders.
@@ -126,7 +129,7 @@ class User(KrakenBaseSpotAPI):
             method="POST", uri="/private/BalanceEx"
         )
 
-    def get_balance(self: "User", currency: str) -> dict:
+    def get_balance(self: User, currency: str) -> dict:
         """
         Returns the balance and available balance of a given currency.
 
@@ -169,7 +172,7 @@ class User(KrakenBaseSpotAPI):
             "available_balance": float(available_balance),
         }
 
-    def get_trade_balance(self: "User", asset: Optional[str] = "ZUSD") -> dict:
+    def get_trade_balance(self: User, asset: Optional[str] = "ZUSD") -> dict:
         """
         Get the summary of all collateral balances.
 
@@ -208,7 +211,7 @@ class User(KrakenBaseSpotAPI):
         )
 
     def get_open_orders(
-        self: "User", trades: Optional[bool] = False, userref: Optional[int] = None
+        self: User, trades: Optional[bool] = False, userref: Optional[int] = None
     ) -> dict:
         """
         Get information about the open orders.
@@ -273,7 +276,7 @@ class User(KrakenBaseSpotAPI):
         )
 
     def get_closed_orders(
-        self: "User",
+        self: User,
         trades: Optional[bool] = False,
         userref: Optional[int] = None,
         start: Optional[int] = None,
@@ -361,7 +364,7 @@ class User(KrakenBaseSpotAPI):
 
     @ensure_string("txid")
     def get_orders_info(
-        self: "User",
+        self: User,
         txid: Union[List[str], str],
         trades: Optional[bool] = False,
         userref: Optional[int] = None,
@@ -466,7 +469,7 @@ class User(KrakenBaseSpotAPI):
         )
 
     def get_trades_history(
-        self: "User",
+        self: User,
         type_: Optional[str] = "all",
         trades: Optional[bool] = False,
         start: Optional[int] = None,
@@ -540,7 +543,7 @@ class User(KrakenBaseSpotAPI):
 
     @ensure_string("txid")
     def get_trades_info(
-        self: "User", txid: Union[str, List[str]], trades: Optional[bool] = False
+        self: User, txid: Union[str, List[str]], trades: Optional[bool] = False
     ) -> dict:
         """
         Get information about specific trades/filled orders. 20 txids can be queried maximum.
@@ -592,7 +595,7 @@ class User(KrakenBaseSpotAPI):
 
     @ensure_string("txid")
     def get_open_positions(
-        self: "User",
+        self: User,
         txid: Optional[Union[str, List[str]]] = None,
         docalcs: Optional[bool] = False,
         consolidation: Optional[str] = "market",
@@ -651,7 +654,7 @@ class User(KrakenBaseSpotAPI):
 
     @ensure_string("asset")
     def get_ledgers_info(
-        self: "User",
+        self: User,
         asset: Optional[Union[str, List[str]]] = "all",
         aclass: Optional[str] = "currency",
         type_: Optional[str] = "all",
@@ -721,7 +724,7 @@ class User(KrakenBaseSpotAPI):
 
     @ensure_string("id_")
     def get_ledgers(
-        self: "User", id_: Union[str, List[str]], trades: Optional[bool] = False
+        self: User, id_: Union[str, List[str]], trades: Optional[bool] = False
     ) -> dict:
         """
         Get information about specific ledeger entries.
@@ -765,7 +768,7 @@ class User(KrakenBaseSpotAPI):
 
     @ensure_string("pair")
     def get_trade_volume(
-        self: "User",
+        self: User,
         pair: Optional[Union[str, List[str]]] = None,
         fee_info: bool = True,
     ) -> dict:
@@ -830,7 +833,7 @@ class User(KrakenBaseSpotAPI):
 
     @ensure_string("fields")
     def request_export_report(
-        self: "User",
+        self: User,
         report: str,
         description: str,
         format_: Optional[str] = "CSV",
@@ -891,7 +894,7 @@ class User(KrakenBaseSpotAPI):
             method="POST", uri="/private/AddExport", params=params
         )
 
-    def get_export_report_status(self: "User", report: str) -> dict:
+    def get_export_report_status(self: User, report: str) -> dict:
         """
         Get the status of the current pending report.
 
@@ -946,7 +949,7 @@ class User(KrakenBaseSpotAPI):
             method="POST", uri="/private/ExportStatus", params={"report": report}
         )
 
-    def retrieve_export(self: "User", id_: str) -> dict:
+    def retrieve_export(self: User, id_: str) -> dict:
         """
         Retrieve the requested report export.
 
@@ -987,7 +990,7 @@ class User(KrakenBaseSpotAPI):
         )
 
     def delete_export_report(
-        self: "User", id_: str, type_: Optional[str] = "delete"
+        self: User, id_: str, type_: Optional[str] = "delete"
     ) -> dict:
         """
         Delete a report from the Kraken server.
@@ -1021,7 +1024,7 @@ class User(KrakenBaseSpotAPI):
             params={"id": id_, "type": type_},
         )
 
-    def create_subaccount(self: "User", username: str, email: str) -> dict:
+    def create_subaccount(self: User, username: str, email: str) -> dict:
         """
         Create a subaccount for trading. This is currently *only available
         for institutional clients*.

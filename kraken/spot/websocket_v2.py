@@ -8,19 +8,15 @@
 This module provides the Spot websocket client (Websocket API V2 as
 documented in - https://docs.kraken.com/websockets-v2).
 """
+
 from __future__ import annotations
 
 import asyncio
 import json
-
-# import logging
-# from copy import deepcopy
 from typing import Any, Callable, List, Optional
 
-from kraken.base_api import defined  # , ensure_string
+from kraken.base_api import defined
 from kraken.exceptions import KrakenException
-
-# from kraken.spot.trade import Trade
 from kraken.spot.websocket import KrakenSpotWSClientBase
 
 
@@ -36,7 +32,10 @@ class KrakenSpotWSClientV2(KrakenSpotWSClientBase):
     Websockets API v1.
 
     This class holds up to two websocket connections, one private
-    and one public.
+    and one public. The core functionalities are un-/subscribing to websocket
+    feeds and sending messages.
+    See :func:`kraken.spot.KrakenSpotWSClientV2.subscribe` and
+    :func:`kraken.spot.KrakenSpotWSClientV2.send_message` for more information.
 
     When accessing private endpoints that need authentication make sure,
     that the ``Access WebSockets API`` API key permission is set in the user's
@@ -186,6 +185,8 @@ class KrakenSpotWSClientV2(KrakenSpotWSClientBase):
         :type message: dict
         :param raw: If set to ``True`` the ``message`` will be sent directly.
         :type raw: bool, optional
+
+        todo: add a lot of examples on how to create orders and so on
         """
         if not message.get("method", False):
             raise ValueError(
@@ -338,6 +339,9 @@ class KrakenSpotWSClientV2(KrakenSpotWSClientBase):
         """
         Returns the list of available methods - parameters are  similar to the
         REST API trade methods.
+
+        The available methods and their documentation are listed below (as of
+        June 2023):
 
         - `add_order <https://docs.kraken.com/websockets-v2/#add-order>`_
         - `batch_order <https://docs.kraken.com/websockets-v2/#batch-add>`_

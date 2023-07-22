@@ -6,6 +6,8 @@
 
 """Module that implements the Kraken Trade Spot client"""
 
+from __future__ import annotations
+
 from decimal import Decimal
 from functools import lru_cache
 from math import floor
@@ -47,7 +49,7 @@ class Trade(KrakenBaseSpotAPI):
     """
 
     def __init__(
-        self: "Trade",
+        self: Trade,
         key: str = "",
         secret: str = "",
         url: str = "",
@@ -55,13 +57,13 @@ class Trade(KrakenBaseSpotAPI):
         super().__init__(key=key, secret=secret, url=url)
         self.__market: Market = Market()
 
-    def __enter__(self: "Trade") -> "Trade":
+    def __enter__(self: Trade) -> Trade:
         super().__enter__()
         return self
 
     @ensure_string("oflags")
     def create_order(
-        self: "Trade",
+        self: Trade,
         ordertype: str,
         side: str,
         pair: str,
@@ -357,7 +359,7 @@ class Trade(KrakenBaseSpotAPI):
         )
 
     def create_order_batch(
-        self: "Trade",
+        self: Trade,
         orders: List[dict],
         pair: str,
         deadline: Optional[str] = None,
@@ -433,7 +435,7 @@ class Trade(KrakenBaseSpotAPI):
 
     @ensure_string("oflags")
     def edit_order(
-        self: "Trade",
+        self: Trade,
         txid: str,
         pair: str,
         volume: Optional[Union[str, int, float]] = None,
@@ -532,7 +534,7 @@ class Trade(KrakenBaseSpotAPI):
         )
 
     @ensure_string("txid")
-    def cancel_order(self: "Trade", txid: str) -> dict:
+    def cancel_order(self: Trade, txid: str) -> dict:
         """
         Cancel a specific order by ``txid``. Instead of a transaction id
         a user reference id can be passed.
@@ -562,7 +564,7 @@ class Trade(KrakenBaseSpotAPI):
             params={"txid": txid},
         )
 
-    def cancel_all_orders(self: "Trade") -> dict:
+    def cancel_all_orders(self: Trade) -> dict:
         """
         Cancel all open orders.
 
@@ -587,7 +589,7 @@ class Trade(KrakenBaseSpotAPI):
             method="POST", uri="/private/CancelAll"
         )
 
-    def cancel_all_orders_after_x(self: "Trade", timeout: int = 0) -> dict:
+    def cancel_all_orders_after_x(self: Trade, timeout: int = 0) -> dict:
         """
         Cancel all orders after a timeout. This can be used as Dead Man's Switch.
 
@@ -619,7 +621,7 @@ class Trade(KrakenBaseSpotAPI):
             params={"timeout": timeout},
         )
 
-    def cancel_order_batch(self: "Trade", orders: List[Union[str, int]]) -> dict:
+    def cancel_order_batch(self: Trade, orders: List[Union[str, int]]) -> dict:
         """
         Cancel a a list of orders by ``txid`` or ``userref``
 
@@ -653,7 +655,7 @@ class Trade(KrakenBaseSpotAPI):
 
     @lru_cache()
     def truncate(
-        self: "Trade",
+        self: Trade,
         amount: Union[Decimal, float, int, str],
         amount_type: str,
         pair: str,

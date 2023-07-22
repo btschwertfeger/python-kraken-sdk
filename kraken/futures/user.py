@@ -6,6 +6,8 @@
 
 """Module that implements the Kraken Futures user client"""
 
+from __future__ import annotations
+
 from typing import Optional, Union
 
 import requests
@@ -47,7 +49,7 @@ class User(KrakenBaseFuturesAPI):
     """
 
     def __init__(
-        self: "User",
+        self: User,
         key: str = "",
         secret: str = "",
         url: str = "",
@@ -55,11 +57,11 @@ class User(KrakenBaseFuturesAPI):
     ) -> None:
         super().__init__(key=key, secret=secret, url=url, sandbox=sandbox)
 
-    def __enter__(self: "User") -> "User":
+    def __enter__(self: User) -> User:
         super().__enter__()
         return self
 
-    def get_wallets(self: "User") -> dict:
+    def get_wallets(self: User) -> dict:
         """
         Lists the current wallet balances of the user.
 
@@ -145,7 +147,7 @@ class User(KrakenBaseFuturesAPI):
             method="GET", uri="/derivatives/api/v3/accounts", auth=True
         )
 
-    def get_subaccounts(self: "User") -> dict:
+    def get_subaccounts(self: User) -> dict:
         """
         List the subaccounts of the user.
 
@@ -174,7 +176,7 @@ class User(KrakenBaseFuturesAPI):
             method="GET", uri="/derivatives/api/v3/subaccounts", auth=True
         )
 
-    def get_unwind_queue(self: "User") -> dict:
+    def get_unwind_queue(self: User) -> dict:
         """
         Retrieve information about the percentile of the open position in case of unwinding.
 
@@ -204,7 +206,7 @@ class User(KrakenBaseFuturesAPI):
             method="GET", uri="/derivatives/api/v3/unwindqueue", auth=True
         )
 
-    def get_notifications(self: "User") -> dict:
+    def get_notifications(self: User) -> dict:
         """
         Retrieve the latest notifications from the Kraken Futures API
 
@@ -237,7 +239,7 @@ class User(KrakenBaseFuturesAPI):
         )
 
     def get_account_log(
-        self: "User",
+        self: User,
         before: Optional[Union[str, int]] = None,
         count: Optional[Union[str, int]] = None,
         from_: Optional[Union[str, int]] = None,
@@ -329,7 +331,7 @@ class User(KrakenBaseFuturesAPI):
             auth=True,
         )
 
-    def get_account_log_csv(self: "User") -> requests.Response:
+    def get_account_log_csv(self: User) -> requests.Response:
         """
         Return the account log as csv, for example to export it. This is not available in the
         Kraken demo/sandbox environment.
@@ -359,7 +361,7 @@ class User(KrakenBaseFuturesAPI):
         )
 
     def _get_historical_events(
-        self: "User",
+        self: User,
         endpoint: str,
         before: Optional[int] = None,
         continuation_token: Optional[str] = None,
@@ -405,7 +407,7 @@ class User(KrakenBaseFuturesAPI):
         )
 
     def get_execution_events(
-        self: "User",
+        self: User,
         before: Optional[int] = None,
         continuation_token: Optional[str] = None,
         since: Optional[int] = None,
@@ -527,7 +529,7 @@ class User(KrakenBaseFuturesAPI):
         )
 
     def get_order_events(
-        self: "User",
+        self: User,
         before: Optional[int] = None,
         continuation_token: Optional[str] = None,
         since: Optional[int] = None,
@@ -603,7 +605,7 @@ class User(KrakenBaseFuturesAPI):
         )
 
     def get_trigger_events(
-        self: "User",
+        self: User,
         before: Optional[int] = None,
         continuation_token: Optional[str] = None,
         since: Optional[int] = None,
@@ -687,7 +689,7 @@ class User(KrakenBaseFuturesAPI):
             tradeable=tradeable,
         )
 
-    def get_open_positions(self: "User") -> dict:
+    def get_open_positions(self: User) -> dict:
         """
         List the open positions of the user.
 
@@ -724,7 +726,7 @@ class User(KrakenBaseFuturesAPI):
             method="GET", uri="/derivatives/api/v3/openpositions", auth=True
         )
 
-    def get_open_orders(self: "User") -> dict:
+    def get_open_orders(self: User) -> dict:
         """
         Retrieve the open orders.
 
@@ -806,7 +808,7 @@ class User(KrakenBaseFuturesAPI):
             method="GET", uri="/derivatives/api/v3/openorders", auth=True
         )
 
-    def check_trading_enabled_on_subaccount(self: "User", subaccountUid: str) -> dict:
+    def check_trading_enabled_on_subaccount(self: User, subaccountUid: str) -> dict:
         """
         Checks if trading is enabled or disabled on the specified subaccount.
 
@@ -840,7 +842,7 @@ class User(KrakenBaseFuturesAPI):
         )
 
     def set_trading_on_subaccount(
-        self: "User", subaccountUid: str, trading_enabled: bool
+        self: User, subaccountUid: str, trading_enabled: bool
     ) -> dict:
         """
         Enable or disable trading on a subaccount.

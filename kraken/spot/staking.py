@@ -6,6 +6,8 @@
 
 """Module that implements the Kraken Spot Staking client"""
 
+from __future__ import annotations
+
 from typing import List, Optional, Union
 
 from ..base_api import KrakenBaseSpotAPI, defined
@@ -50,12 +52,12 @@ class Staking(KrakenBaseSpotAPI):
     ) -> None:
         super().__init__(key=key, secret=secret, url=url)
 
-    def __enter__(self: "Staking") -> "Staking":
+    def __enter__(self: Staking) -> Staking:
         super().__enter__()
         return self
 
     def stake_asset(
-        self: "Staking", asset: str, amount: Union[str, int, float], method: str
+        self: Staking, asset: str, amount: Union[str, int, float], method: str
     ) -> dict:
         """
         Stake the specified asset from the Spot wallet.
@@ -97,7 +99,7 @@ class Staking(KrakenBaseSpotAPI):
         )
 
     def unstake_asset(
-        self: "Staking",
+        self: Staking,
         asset: str,
         amount: Union[str, int, float],
         method: Optional[str] = None,
@@ -142,7 +144,7 @@ class Staking(KrakenBaseSpotAPI):
             method="POST", uri="/private/Unstake", params=params, auth=True
         )
 
-    def list_stakeable_assets(self: "Staking") -> List[dict]:
+    def list_stakeable_assets(self: Staking) -> List[dict]:
         """
         Get a list of stakeable assets. Only assets that the user is able to stake
         will be shown.
@@ -199,7 +201,7 @@ class Staking(KrakenBaseSpotAPI):
             method="POST", uri="/private/Staking/Assets", auth=True
         )
 
-    def get_pending_staking_transactions(self: "Staking") -> List[dict]:
+    def get_pending_staking_transactions(self: Staking) -> List[dict]:
         """
         Get the list of pending staking transactions of the user.
 
@@ -235,7 +237,7 @@ class Staking(KrakenBaseSpotAPI):
             method="POST", uri="/private/Staking/Pending", auth=True
         )
 
-    def list_staking_transactions(self: "Staking") -> List[dict]:
+    def list_staking_transactions(self: Staking) -> List[dict]:
         """
         List the last 1000 staking transactions of the past 90 days.
 
