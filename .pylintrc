@@ -199,7 +199,8 @@ good-names=i,
            reduceOnly,triggerSignal,
            EXCEPTION_ASSIGNMENT,
            trailingStopDeviationUnit,trailingStopMaxDeviation,
-           subaccountUid
+           subaccountUid,
+           ConnectSpotWebsocket
 
 
 # Good variable names regexes, separated by a comma. If names match any regex,

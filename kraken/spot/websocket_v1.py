@@ -25,8 +25,7 @@ from kraken.spot.websocket import KrakenSpotWSClientBase
 
 class KrakenSpotWSClient(KrakenSpotWSClientBase):
     """
-    Class to access public and (optional)
-    private/authenticated websocket connection.
+    Class to access public and private/authenticated websocket connections.
 
     **This client only supports the Kraken Websocket API v1.**
 
@@ -48,43 +47,47 @@ class KrakenSpotWSClient(KrakenSpotWSClientBase):
     :type secret: str, optional
     :param url: Set a specific URL to access the Kraken REST API
     :type url: str, optional
-    :param no_public: Don't use the public connection. (default: ``False``).
+    :param no_public: Disables public connection (default: ``False``).
         If not set or set to ``False``, the client will create a public and
         a private connection per default. If only a private connection is
         required, this parameter should be set to ``True``.
-    :param beta: Use the beta websocket channels (maybe not supported anymore, default: ``False``)
+    :param beta: Use the beta websocket channels (maybe not supported anymore,
+        default: ``False``)
     :type beta: bool
 
     .. code-block:: python
         :linenos:
-        :caption: HowTo: Create a Bot and integrate the python-kraken-sdk Spot Websocket Client
+        :caption: HowTo: Use the Kraken Spot Websocket Client (v1)
 
         import asyncio
         from kraken.spot import KrakenSpotWSClient
 
+
+        class Client(KrakenSpotWSClient):
+
+            async def on_message(self, event: dict) -> None:
+                print(event)
+
+
         async def main() -> None:
-            class Bot(KrakenSpotWSClient):
 
-                async def on_message(self, event: dict) -> None:
-                    print(event)
-
-            bot = Bot()         # unauthenticated
-            auth_bot = Bot(     # authenticated
-                key='kraken-api-key',
-                secret='kraken-secret-key'
+            client = Client()         # unauthenticated
+            client_auth = Client(     # authenticated
+                key="kraken-api-key",
+                secret="kraken-secret-key"
             )
 
             # subscribe to the desired feeds:
-            await bot.subscribe(
+            await client.subscribe(
                 subscription={"name": ticker},
                 pair=["XBTUSD", "DOT/EUR"]
             )
             # from now on the on_message function receives the ticker feed
 
-            while not bot.exception_occur:
+            while not client.exception_occur:
                 await asyncio.sleep(6)
 
-        if __name__ == '__main__':
+        if __name__ == "__main__":
             try:
                 asyncio.run(main())
             except KeyboardInterrupt:
@@ -92,7 +95,36 @@ class KrakenSpotWSClient(KrakenSpotWSClientBase):
 
     .. code-block:: python
         :linenos:
-        :caption: HowTo: Use the websocket client as context manager
+        :caption: HowTo: Use the websocket client (v1) as instance
+
+        import asyncio
+        from kraken.spot import KrakenSpotWSClient
+
+
+        async def main() -> None:
+            async def on_message(message) -> None:
+                print(message)
+
+            client = KrakenSpotWSClient(callback=on_message)
+            await client.subscribe(
+                subscription={"name": "ticker"},
+                pair=["XBT/USD"]
+            )
+
+            while not client.exception_occur:
+                await asyncio.sleep(10)
+
+
+        if __name__ == "__main__":
+            try:
+                asyncio.run(main())
+            except KeyboardInterrupt:
+                pass
+
+
+    .. code-block:: python
+        :linenos:
+        :caption: HowTo: Use the websocket client (v1) as context manager
 
         import asyncio
         from kraken.spot import KrakenSpotWSClient
@@ -111,7 +143,7 @@ class KrakenSpotWSClient(KrakenSpotWSClientBase):
                     pair=["XBT/USD"]
                 )
 
-            while not bot.exception_occur::
+            while True
                 await asyncio.sleep(6)
 
 
@@ -123,7 +155,7 @@ class KrakenSpotWSClient(KrakenSpotWSClientBase):
     """
 
     def __init__(
-        self: "KrakenSpotWSClient",
+        self: KrakenSpotWSClient,
         key: str = "",
         secret: str = "",
         callback: Optional[Callable] = None,
@@ -140,14 +172,15 @@ class KrakenSpotWSClient(KrakenSpotWSClientBase):
         )
 
     async def send_message(  # pylint: disable=arguments-differ
-        self: "KrakenSpotWSClient",
+        self: KrakenSpotWSClient,
         msg: dict,
         private: bool = False,
         raw: bool = False,
     ) -> None:
         """
-        Sends a message via websocket. For private subscriptions the
-        authentication token will be assigned automatically if ``raw=False``.
+        Sends a message via the websocket connection. For private messages
+        the authentication token will be assigned automatically if
+        ``raw=False``.
 
         The user can specify a ``reqid`` within the msg to identify
         corresponding responses via websocket feed.
@@ -179,7 +212,7 @@ class KrakenSpotWSClient(KrakenSpotWSClientBase):
         await socket.send(json.dumps(msg))
 
     async def subscribe(  # pylint: disable=arguments-differ
-        self: "KrakenSpotWSClient", subscription: dict, pair: List[str] = None
+        self: KrakenSpotWSClient, subscription: dict, pair: List[str] = None
     ) -> None:
         """
         Subscribe to a channel
@@ -196,16 +229,16 @@ class KrakenSpotWSClient(KrakenSpotWSClientBase):
         :param subscription: The subscription message
         :type subscription: dict
         :param pair: The pair to subscribe to
-        :type pair: List[str] | None, optional
+        :type pair: list[str], optional
 
         Initialize your client as described in
         :class:`kraken.spot.KrakenSpotWSClient` to run the following example:
 
         .. code-block:: python
             :linenos:
-            :caption: Spot Websocket: Subscribe to a websocket feed
+            :caption: Spot Websocket v1: Subscribe to a websocket feed
 
-            >>> await bot.subscribe(
+            >>> await client.subscribe(
             ...     subscription={"name": ticker},
             ...     pair=["XBTUSD", "DOT/EUR"]
             ... )
@@ -244,33 +277,33 @@ class KrakenSpotWSClient(KrakenSpotWSClientBase):
             await self.send_message(payload, private=False)
 
     async def unsubscribe(  # pylint: disable=arguments-differ
-        self: "KrakenSpotWSClient", subscription: dict, pair: Optional[List[str]] = None
+        self: KrakenSpotWSClient, subscription: dict, pair: Optional[List[str]] = None
     ) -> None:
         """
-        Unsubscribe from a topic
+        Unsubscribe from a feed
 
-        Success or failures are sent over the websocket connection and can be
-        received via the on_message callback function.
+        Success or failures are sent via the websocket connection and can be
+        received via the on_message or callback function.
 
-        When accessing private endpoints and subscription feeds that need authentication
-        make sure, that the ``Access WebSockets API`` API key permission is set
-        in the users Kraken account.
+        When accessing private endpoints and subscription feeds that need
+        authentication make sure, that the ``Access WebSockets API`` API key
+        permission is set in the users Kraken account.
 
         - https://docs.kraken.com/websockets/#message-unsubscribe
 
         :param subscription: The subscription to unsubscribe from
         :type subscription: dict
         :param pair: The pair or list of pairs to unsubscribe
-        :type pair: List[str], optional
+        :type pair: list[str], optional
 
-        Initialize your client as described in :class:`kraken.spot.KrakenSpotWSClient` to
-        run the following example:
+        Initialize your client as described in
+        :class:`kraken.spot.KrakenSpotWSClient` to run the following example:
 
         .. code-block:: python
             :linenos:
-            :caption: Spot Websocket: Unsubscribe from a websocket feed
+            :caption: Spot Websocket v1: Unsubscribe from a websocket feed
 
-            >>> await bot.unsubscribe(
+            >>> await client.unsubscribe(
             ...     subscription={"name": ticker},
             ...     pair=["XBTUSD", "DOT/EUR"]
             ... )
@@ -308,29 +341,30 @@ class KrakenSpotWSClient(KrakenSpotWSClientBase):
             await self.send_message(payload, private=False)
 
     @property
-    def public_channel_names(self: "KrakenSpotWSClient") -> List[str]:
+    def public_channel_names(self: KrakenSpotWSClient) -> List[str]:
         """
         Returns the public subscription names
 
         :return: List of public subscription names (``ticker``,
-         ``spread``, ``book``, ``ohlc``, ``trade``, ``*``)
-        :rtype: List[str]
+            ``spread``, ``book``, ``ohlc``, ``trade``, ``*``)
+        :rtype: list[str]
         """
         return ["ticker", "spread", "book", "ohlc", "trade", "*"]
 
     @property
-    def private_channel_names(self: "KrakenSpotWSClient") -> List[str]:
+    def private_channel_names(self: KrakenSpotWSClient) -> List[str]:
         """
         Returns the private subscription names
 
-        :return: List of private subscription names (``ownTrades``, ``openOrders``)
-        :rtype: List[str]
+        :return: List of private subscription names (``ownTrades``,
+            ``openOrders``)
+        :rtype: list[str]
         """
         return ["ownTrades", "openOrders"]
 
     @ensure_string("oflags")
     async def create_order(
-        self: "KrakenSpotWSClient",
+        self: KrakenSpotWSClient,
         ordertype: str,
         side: str,
         pair: str,
@@ -353,13 +387,15 @@ class KrakenSpotWSClient(KrakenSpotWSClientBase):
         """
         Create an order and submit it.
 
-        Requires the ``Access WebSockets API`` and ``Create and modify orders`` API key permissions.
+        Requires the ``Access WebSockets API`` and ``Create and modify orders``
+        API key permissions.
 
         - https://docs.kraken.com/websockets/#message-addOrder
 
-        :param ordertype: The type of order, one of: ``limit``, ``market`` ``stop-loss``,
-            ``take-profit``, ``stop-loss-limit``, ``settle-position``, ``take-profit-limit``
-            (see: https://support.kraken.com/hc/en-us/sections/200577136-Order-types)
+        :param ordertype: The type of order, one of: ``limit``, ``market``,
+            ``stop-loss``, ``take-profit``, ``stop-loss-limit``,
+            ``settle-position``, ``take-profit-limit`` (see:
+            https://support.kraken.com/hc/en-us/sections/200577136-Order-types)
         :type ordertype: str
         :param side: The side - one of ``buy``, ``sell``
         :type side: str
@@ -367,60 +403,68 @@ class KrakenSpotWSClient(KrakenSpotWSClientBase):
         :type pair: str
         :param volume: The volume of the order that is being created
         :type volume: str | int | float
-        :param price: The limit price for ``limit`` orders or the trigger price for orders with
-            ``ordertype`` one of ``stop-loss``, ``stop-loss-limit``, ``take-profit``, and ``take-profit-limit``
+        :param price: The limit price for ``limit`` orders or the trigger price
+            for orders with ``ordertype`` one of ``stop-loss``,
+            ``stop-loss-limit``, ``take-profit``, and ``take-profit-limit``
         :type price: str | int | float, optional
-        :param price2: The second price for ``stop-loss-limit`` and ``take-profit-limit``
-            orders (see the referenced Kraken documentation for more information)
+        :param price2: The second price for ``stop-loss-limit`` and
+            ``take-profit-limit`` orders (see the referenced Kraken
+            documentation for more information)
         :type price2: str | int | float, optional
-        :param truncate: If enabled: round the ``price`` and ``volume`` to Kraken's
-            maximum allowed decimal places. See https://support.kraken.com/hc/en-us/articles/4521313131540
+        :param truncate: If enabled: round the ``price`` and ``volume`` to
+            Kraken's maximum allowed decimal places. See
+            https://support.kraken.com/hc/en-us/articles/4521313131540
             fore more information about decimals.
         :type truncate: bool, optional
         :param leverage: The leverage
         :type leverage: str | int | float, optional
-        :param oflags: Order flags like ``post``, ``fcib``, ``fciq``, ``nomp``, ``viqc``
-            (see the referenced Kraken documentation for more information)
-        :type oflags: str | List[str], optional
-        :param starttm: Unix timestamp or seconds defining the start time (default: ``"0"``)
+        :param oflags: Order flags like ``post``, ``fcib``, ``fciq``, ``nomp``,
+            ``viqc`` (see the referenced Kraken documentation for more
+            information)
+        :type oflags: str | list[str], optional
+        :param starttm: Unix timestamp or seconds defining the start time
+            (default: ``"0"``)
         :type starttm: str | int, optional
-        :param expiretim: Unix timestamp or time in seconds defining the expiration of
-            the order (default: ``"0"`` - i.e., no expiration)
+        :param expiretim: Unix timestamp or time in seconds defining the
+            expiration of the order (default: ``"0"`` - i.e., no expiration)
         :type expiretim: str
-        :param deadline: RFC3339 timestamp + {0..60} seconds that defines when the matching
-            engine should reject the order.
+        :param deadline: RFC3339 timestamp + {0..60} seconds that defines when
+            the matching engine should reject the order.
         :type deadline: str
         :param userref: User reference id for example to group orders
         :type userref: int
-        :param validate: Validate the order without placing on the market (default: ``False``)
+        :param validate: Validate the order without placing on the market
+            (default: ``False``)
         :type validate: bool, optional
-        :param close_ordertype:  Conditional close order type, one of: ``limit``, ``stop-loss``,
-            ``take-profit``, ``stop-loss-limit``, ``take-profit-limit``
+        :param close_ordertype:  Conditional close order type, one of:
+            ``limit``, ``stop-loss``, ``take-profit``, ``stop-loss-limit``,
+            ``take-profit-limit``
         :type close_ordertype: str, optional
         :param close_price: Conditional close price
         :type close_price: str | int | float, optional
         :param close_price2: Second conditional close price
         :type close_price2: str | int | float, optional
-        :param timeinforce: How long the order remains in the orderbook, one of: ``GTC``, ``IOC``,
-            ``GTD`` (see the referenced Kraken documentation for more information)
+        :param timeinforce: How long the order remains in the orderbook, one of:
+            ``GTC``, ``IOC``, ``GTD`` (see the referenced Kraken documentation
+            for more information)
         :type timeinforce: str, optional
         :raises ValueError: If input is not correct
         :rtype: None
 
-        Initialize your client as described in :class:`kraken.spot.KrakenSpotWSClient` to
-        run the following example:
+        Initialize your client as described in
+        :class:`kraken.spot.KrakenSpotWSClient` to run the following example:
 
         .. code-block:: python
             :linenos:
             :caption: Spot Websocket: Create an order
 
-            >>> await auth_bot.create_order(
+            >>> await client_auth.create_order(
             ...     ordertype="market",
             ...     pair="XBTUSD",
             ...     side="buy",
             ...     volume=0.001
             ... )
-            >>> await auth_bot.create_order(
+            >>> await client_auth.create_order(
             ...     ordertype="limit",
             ...     side="buy",
             ...     pair="XBTUSD",
@@ -458,7 +502,8 @@ class KrakenSpotWSClient(KrakenSpotWSClientBase):
         if defined(oflags):
             if not isinstance(oflags, str):
                 raise ValueError(
-                    "oflags must be a comma delimited list of order flags as str. Available flags: {viqc, fcib, fciq, nompp, post}"
+                    "oflags must be a comma delimited list of order flags as "
+                    "str. Available flags: {viqc, fcib, fciq, nompp, post}"
                 )
             payload["oflags"] = oflags
         if defined(starttm):
@@ -484,7 +529,7 @@ class KrakenSpotWSClient(KrakenSpotWSClientBase):
 
     @ensure_string("oflags")
     async def edit_order(
-        self: "KrakenSpotWSClient",
+        self: KrakenSpotWSClient,
         orderid: str,
         reqid: Optional[Union[str, int]] = None,
         pair: Optional[str] = None,
@@ -499,7 +544,8 @@ class KrakenSpotWSClient(KrakenSpotWSClientBase):
         """
         Edit an open order that was placed on the Spot market.
 
-        Requires the ``Access WebSockets API`` and ``Create and modify orders`` API key permissions.
+        Requires the ``Access WebSockets API`` and ``Create and modify orders``
+        API key permissions.
 
         - https://docs.kraken.com/websockets/#message-editOrder
 
@@ -514,28 +560,30 @@ class KrakenSpotWSClient(KrakenSpotWSClientBase):
         :param price2: Set a new second price
         :type price2: str | int | float, optional
         :param truncate: If enabled: round the ``price`` and ``volume`` to Kraken's
-            maximum allowed decimal places. See https://support.kraken.com/hc/en-us/articles/4521313131540
-            fore more information about decimals.
+            maximum allowed decimal places. See
+            https://support.kraken.com/hc/en-us/articles/4521313131540 fore more
+            information about decimals.
         :type truncate: bool, optional
         :param volume: Set a new volume
         :type volume: str | int | float, optional
         :param oflags: Set new oflags (overwrite old ones)
-        :type oflags: str | List[str], optional
+        :type oflags: str | list[str], optional
         :param newuserref: Set a new user reference id
         :type newuserref: str | int, optional
-        :param validate: Validate the input without applying the changes (default: ``False``)
+        :param validate: Validate the input without applying the changes
+            (default: ``False``)
         :type validate: bool, optional
         :raises ValueError: If input is not correct
         :rtype: None
 
-        Initialize your client as described in :class:`kraken.spot.KrakenSpotWSClient` to
-        run the following example:
+        Initialize your client as described in
+        :class:`kraken.spot.KrakenSpotWSClient` to run the following example:
 
         .. code-block:: python
             :linenos:
             :caption: Spot Websocket: Edit an order
 
-            >>> await auth_bot.edit_order(
+            >>> await client_auth.edit_order(
             ...     orderId="OBGFYP-XVQNL-P4GMWF",
             ...     volume=0.75,
             ...     pair="XBTUSD",
@@ -578,27 +626,29 @@ class KrakenSpotWSClient(KrakenSpotWSClientBase):
 
         await self.send_message(msg=payload, private=True)
 
-    async def cancel_order(self: "KrakenSpotWSClient", txid: List[str]) -> None:
+    async def cancel_order(self: KrakenSpotWSClient, txid: List[str]) -> None:
         """
         Cancel a specific order or a list of orders.
 
-        Requires the ``Access WebSockets API`` and ``Cancel/close orders`` API key permissions.
+        Requires the ``Access WebSockets API`` and ``Cancel/close orders`` API
+        key permissions.
 
         - https://docs.kraken.com/websockets/#message-cancelOrder
 
         :param txid: A single or multiple transaction ids as list
-        :type txid: List[str]
-        :raises ValueError: If the websocket is not connected or the connection is not authenticated
+        :type txid: list[str]
+        :raises ValueError: If the websocket is not connected or the connection
+            is not authenticated
         :return: None
 
-        Initialize your client as described in :class:`kraken.spot.KrakenSpotWSClient` to
-        run the following example:
+        Initialize your client as described in
+        :class:`kraken.spot.KrakenSpotWSClient` to run the following example:
 
         .. code-block:: python
             :linenos:
             :caption: Spot Websocket: Cancel an order
 
-            >>> await auth_bot.cancel_order(txid=["OBGFYP-XVQNL-P4GMWF"])
+            >>> await client_auth.cancel_order(txid=["OBGFYP-XVQNL-P4GMWF"])
         """
         if not self._priv_conn:
             logging.warning("Websocket not connected!")
@@ -609,25 +659,27 @@ class KrakenSpotWSClient(KrakenSpotWSClientBase):
             msg={"event": "cancelOrder", "txid": txid}, private=True
         )
 
-    async def cancel_all_orders(self: "KrakenSpotWSClient") -> None:
+    async def cancel_all_orders(self: KrakenSpotWSClient) -> None:
         """
         Cancel all open Spot orders.
 
-        Requires the ``Access WebSockets API`` and ``Cancel/close orders`` API key permissions.
+        Requires the ``Access WebSockets API`` and ``Cancel/close orders`` API
+        key permissions.
 
         - https://docs.kraken.com/websockets/#message-cancelAll
 
-        :raises ValueError: If the websocket is not connected or the connection is not authenticated
+        :raises ValueError: If the websocket is not connected or the connection
+            is not authenticated
         :return: None
 
-        Initialize your client as described in :class:`kraken.spot.KrakenSpotWSClient` to
-        run the following example:
+        Initialize your client as described in
+        :class:`kraken.spot.KrakenSpotWSClient` to run the following example:
 
         .. code-block:: python
             :linenos:
             :caption: Spot Websocket: Cancel all Orders
 
-            >>> await auth_bot.cancel_all_orders()
+            >>> await client_auth.cancel_all_orders()
         """
 
         if not self._priv_conn:
@@ -638,28 +690,31 @@ class KrakenSpotWSClient(KrakenSpotWSClientBase):
         await self.send_message(msg={"event": "cancelAll"}, private=True)
 
     async def cancel_all_orders_after(
-        self: "KrakenSpotWSClient", timeout: int = 0
+        self: KrakenSpotWSClient, timeout: int = 0
     ) -> None:
         """
         Set a Death Man's Switch
 
-        Requires the ``Access WebSockets API`` and ``Cancel/close orders`` API key permissions.
+        Requires the ``Access WebSockets API`` and ``Cancel/close orders`` API
+        key permissions.
 
         - https://docs.kraken.com/websockets/#message-cancelAllOrdersAfter
 
-        :param timeout: Set the timeout in seconds to cancel the orders after, set to ``0`` to reset.
+        :param timeout: Set the timeout in seconds to cancel the orders after,
+            set to ``0`` to reset.
         :type timeout: int
-        :raises ValueError: If the websocket is not connected or the connection is not authenticated
+        :raises ValueError: If the websocket is not connected or the connection
+            is not authenticated
         :return: None
 
-        Initialize your client as described in :class:`kraken.spot.KrakenSpotWSClient` to
-        run the following example:
+        Initialize your client as described in
+        :class:`kraken.spot.KrakenSpotWSClient` to run the following example:
 
         .. code-block:: python
             :linenos:
             :caption: Spot Websocket: Death Man's Switch
 
-            >>> await auth_bot.cancel_all_orders_after(timeout=60)
+            >>> await client_auth.cancel_all_orders_after(timeout=60)
         """
         if not self._priv_conn:
             logging.warning("Websocket not connected!")
