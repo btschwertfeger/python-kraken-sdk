@@ -194,8 +194,10 @@ class KrakenSpotWSClientV2(KrakenSpotWSClientBase):
                 The ``message`` must contain the 'method' key with a proper value.
             """
             )
-        private: bool = (
-            message["method"] in self.private_methods + self.private_channel_names
+        private: bool = (message["method"] in self.private_methods) or (
+            message.get("method") in ("subscribe", "unsubscribe")
+            and message.get("params")
+            and message["params"].get("channel") in self.private_channel_names
         )
         if private and not self._is_auth:
             raise KrakenException.KrakenAuthenticationError()

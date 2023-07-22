@@ -5,19 +5,20 @@
 #
 
 """
-Module that implenents the unit tests for the Kraken Spot Websocket API v1
+Module that implements the unit tests for the Kraken Spot Websocket API v1
 client.
 """
 
 from __future__ import annotations
 
+import json
 import logging
 import os
 from asyncio import sleep
 from time import time
 from typing import Any, Union
 
-from kraken.spot import KrakenSpotWSClient, OrderbookClient
+from kraken.spot import KrakenSpotWSClient, KrakenSpotWSClientV2, OrderbookClient
 
 FIXTURE_DIR: str = os.path.join(os.path.dirname(__file__), "fixture")
 
@@ -50,7 +51,7 @@ class SpotWebsocketClientV1TestWrapper(KrakenSpotWSClient):
     ) -> None:
         super().__init__(key=key, secret=secret, callback=self.on_message)
         self.LOG.setLevel(logging.INFO)
-        fh = logging.FileHandler("spot_ws.log", mode="a")
+        fh = logging.FileHandler("spot_ws_v1.log", mode="a")
         fh.setLevel(logging.INFO)
         self.LOG.addHandler(fh)
 
@@ -62,6 +63,36 @@ class SpotWebsocketClientV1TestWrapper(KrakenSpotWSClient):
         to handle custom websocket messages.
         """
         self.LOG.info(message)  # the log is read within the tests
+
+
+class SpotWebsocketClientV2TestWrapper(KrakenSpotWSClientV2):
+    """
+    Class that creates an instance to test the KrakenSpotWSClientV2.
+
+    It writes the messages to the log and a file. The log is used
+    within the tests, the log file is for local debugging.
+    """
+
+    LOG: logging.Logger = logging.getLogger(__name__)
+
+    def __init__(
+        self: SpotWebsocketClientV2TestWrapper,
+        key: str = "",
+        secret: str = "",
+        **kwargs: Any,
+    ) -> None:
+        super().__init__(key=key, secret=secret, callback=self.on_message, **kwargs)
+        self.LOG.setLevel(logging.INFO)
+        fh = logging.FileHandler("spot_ws_v2.log", mode="a")
+        fh.setLevel(logging.INFO)
+        self.LOG.addHandler(fh)
+
+    async def on_message(self: SpotWebsocketClientV2TestWrapper, message: dict) -> None:
+        """
+        This is the callback function that must be implemented
+        to handle custom websocket messages.
+        """
+        self.LOG.info(json.dumps(message))  # the log is read within the tests
 
 
 class OrderbookClientWrapper(OrderbookClient):

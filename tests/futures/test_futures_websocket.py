@@ -18,7 +18,7 @@ from .helper import FuturesWebsocketClientTestWrapper, async_wait
 
 @pytest.mark.futures
 @pytest.mark.futures_websocket
-def test_create_public_bot(caplog: Any) -> None:
+def test_create_public_client(caplog: Any) -> None:
     """
     Checks if the unauthenticated websocket client
     can be instantiated.
@@ -38,7 +38,7 @@ def test_create_public_bot(caplog: Any) -> None:
 @pytest.mark.futures
 @pytest.mark.futures_auth
 @pytest.mark.futures_websocket
-def test_create_private_bot(
+def test_create_private_client(
     futures_api_key: str, futures_secret_key: str, caplog: Any
 ) -> None:
     """

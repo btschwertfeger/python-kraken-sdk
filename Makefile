@@ -43,14 +43,17 @@ install:
 ## test		Run the unit tests
 ##
 test:
+	rm *.log
 	$(PYTEST) $(PYTEST_OPTS) $(TEST_DIR)
 
 tests: test
 
 test-wip:
+	rm *.log
 	$(PYTEST) -m "wip" -vv $(TEST_DIR)
 
 coverage:
+	rm *.log
 	$(PYTEST) $(PYTEST_COV_OPTS) $(TEST_DIR)
 
 ## doctest	Run the documentation tests

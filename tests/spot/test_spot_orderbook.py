@@ -89,7 +89,6 @@ def test_assing_msg_and_validate_checksum(mock_ws_client: mock.MagicMock) -> Non
     asyncio.run(assign())
 
 
-@pytest.mark.wip
 @pytest.mark.spot
 @pytest.mark.spot_websocket
 @pytest.mark.spot_orderbook
