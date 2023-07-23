@@ -17,7 +17,6 @@ import asyncio
 import logging
 import logging.config
 import os
-import time
 from typing import Union
 
 from kraken.spot import KrakenSpotWSClient
@@ -33,14 +32,13 @@ logging.getLogger("urllib3").setLevel(logging.WARNING)
 
 
 async def main() -> None:
-    """Create bot and subscribe to topics/feeds"""
+    """Create a client and subscribe to channels/feeds"""
 
     key: str = os.getenv("SPOT_API_KEY")
     secret: str = os.getenv("SPOT_SECRET_KEY")
 
-    # ___Custom_Trading_Bot/Client______________
     class Client(KrakenSpotWSClient):
-        """Can be used to create a custom trading strategy/bot"""
+        """Can be used to create a custom trading strategy"""
 
         async def on_message(self: "Client", message: Union[list, dict]) -> None:
             """Receives the websocket messages"""
@@ -54,44 +52,44 @@ async def main() -> None:
             #     await self.create_order(
             #         ordertype="limit",
             #         side="buy",
-            #         pair="BTC/EUR",
+            #         pair="BTC/USD",
             #         price=20000,
             #         volume=200
             #     )
             # ... it is also possible to call regular REST endpoints
             # but using the websocket messages is more efficient
-            # you can also un/subscribe here using self.subscribe/self-unsubscribe
+            # you can also un-/subscribe here using self.subscribe/self.unsubscribe
 
     # ___Public_Websocket_Feed_____
     client: Client = Client()  # only use this one if you don't need private feeds
-    # print(bot.public_sub_names) # list public subscription names
+    # print(client.public_channel_names) # list public subscription names
 
-    await client.subscribe(subscription={"name": "ticker"}, pair=["XBT/EUR", "DOT/EUR"])
-    await client.subscribe(subscription={"name": "spread"}, pair=["XBT/EUR", "DOT/EUR"])
-    await client.subscribe(subscription={"name": "book"}, pair=["BTC/EUR"])
-    # await client.subscribe(subscription={ "name": "book", "depth": 25}, pair=["BTC/EUR"])
-    # await client.subscribe(subscription={ "name": "ohlc" }, pair=["BTC/EUR"])
-    # await client.subscribe(subscription={ "name": "ohlc", "interval": 15}, pair=["XBT/EUR", "DOT/EUR"])
-    # await client.subscribe(subscription={ "name": "trade" }, pair=["BTC/EUR"])
-    # await client.subscribe(subscription={ "name": "*"} , pair=["BTC/EUR"])
+    await client.subscribe(subscription={"name": "ticker"}, pair=["XBT/USD", "DOT/USD"])
+    await client.subscribe(subscription={"name": "spread"}, pair=["XBT/USD", "DOT/USD"])
+    await client.subscribe(subscription={"name": "book"}, pair=["BTC/USD"])
+    # await client.subscribe(subscription={ "name": "book", "depth": 25}, pair=["BTC/USD"])
+    # await client.subscribe(subscription={ "name": "ohlc" }, pair=["BTC/USD"])
+    # await client.subscribe(subscription={ "name": "ohlc", "interval": 15}, pair=["XBT/USD", "DOT/USD"])
+    # await client.subscribe(subscription={ "name": "trade" }, pair=["BTC/USD"])
+    # await client.subscribe(subscription={ "name": "*"} , pair=["BTC/USD"])
 
-    time.sleep(2)  # wait because unsubscribing is faster than subscribing ...
-    # print(bot.active_public_subscriptions)
+    await asyncio.sleep(2)  # wait because unsubscribing is faster than subscribing ...
+    # print(client.active_public_subscriptions)
     await client.unsubscribe(
-        subscription={"name": "ticker"}, pair=["XBT/EUR", "DOT/EUR"]
+        subscription={"name": "ticker"}, pair=["XBT/USD", "DOT/USD"]
     )
-    await client.unsubscribe(subscription={"name": "spread"}, pair=["XBT/EUR"])
-    await client.unsubscribe(subscription={"name": "spread"}, pair=["DOT/EUR"])
+    await client.unsubscribe(subscription={"name": "spread"}, pair=["XBT/USD"])
+    await client.unsubscribe(subscription={"name": "spread"}, pair=["DOT/USD"])
     # ...
 
     client_auth = Client(key=key, secret=secret)
-    # print(client.active_private_subscriptions)
-    # print(client_auth.private_sub_names) # list private subscription names
-    # when using the authenticated bot, you can also subscribe to public feeds
+    # print(client_auth.active_private_subscriptions)
+    # print(client_auth.private_channel_names) # list private channel names
+    # when using the authenticated client, you can also subscribe to public feeds
     await client_auth.subscribe(subscription={"name": "ownTrades"})
     await client_auth.subscribe(subscription={"name": "openOrders"})
 
-    time.sleep(2)
+    await asyncio.sleep(2)
     await client_auth.unsubscribe(subscription={"name": "ownTrades"})
     await client_auth.unsubscribe(subscription={"name": "openOrders"})
 
@@ -105,8 +103,9 @@ if __name__ == "__main__":
         asyncio.run(main())
     except KeyboardInterrupt:
         pass
-        # the websocket client will send {'event': 'asyncio.CancelledError'} via on_message
-        # so you can handle the behavior/next actions individually within you bot
+        # The websocket client will send {'event': 'asyncio.CancelledError'}
+        # via on_message so you can handle the behavior/next actions
+        # individually within your strategy.
 
 # ============================================================
 # Alternative - as ContextManager:

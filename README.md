@@ -214,7 +214,7 @@ async def main()
     key = "kraken-public-key"
     secret = "kraken-secret-key"
 
-    class Bot(KrakenSpotWSClient):
+    class Client(KrakenSpotWSClient):
         async def on_message(self, msg):
             if isinstance(msg, dict) and "event" in msg:
                 if msg["event"] in ("pong", "heartbeat"):
@@ -234,36 +234,36 @@ async def main()
             # because the requests will be sent via the ws connection
 
     # ___Public_Websocket_Feeds__
-    bot = Bot() # only use the unauthenticated client if you don't need private feeds
-    print(bot.public_sub_names) # list public subscription names
+    client = Client() # only use the unauthenticated client if you don't need private feeds
+    print(client.public_channel_names) # list public channel names
 
-    await bot.subscribe(subscription={ "name": "ticker" }, pair=["XBT/EUR", "DOT/EUR"])
-    await bot.subscribe(subscription={ "name": "spread" }, pair=["XBT/EUR", "DOT/EUR"])
-    # await bot.subscribe(subscription={ "name": "book" }, pair=["BTC/EUR"])
-    # await bot.subscribe(subscription={ "name": "book", "depth": 25}, pair=["BTC/EUR"])
-    # await bot.subscribe(subscription={ "name": "ohlc" }, pair=["BTC/EUR"])
-    # await bot.subscribe(subscription={ "name": "ohlc", "interval": 15}, pair=["XBT/EUR", "DOT/EUR"])
-    # await bot.subscribe(subscription={ "name": "trade" }, pair=["BTC/EUR"])
-    # await bot.subscribe(subscription={ "name": "*" } , pair=["BTC/EUR"])
+    await client.subscribe(subscription={ "name": "ticker" }, pair=["XBT/EUR", "DOT/EUR"])
+    await client.subscribe(subscription={ "name": "spread" }, pair=["XBT/EUR", "DOT/EUR"])
+    # await client.subscribe(subscription={ "name": "book" }, pair=["BTC/EUR"])
+    # await client.subscribe(subscription={ "name": "book", "depth": 25}, pair=["BTC/EUR"])
+    # await client.subscribe(subscription={ "name": "ohlc" }, pair=["BTC/EUR"])
+    # await client.subscribe(subscription={ "name": "ohlc", "interval": 15}, pair=["XBT/EUR", "DOT/EUR"])
+    # await client.subscribe(subscription={ "name": "trade" }, pair=["BTC/EUR"])
+    # await client.subscribe(subscription={ "name": "*" } , pair=["BTC/EUR"])
 
     time.sleep(2) # wait because unsubscribing is faster than subscribing ...
-    await bot.unsubscribe(subscription={ "name": "ticker" }, pair=["XBT/EUR","DOT/EUR"])
-    await bot.unsubscribe(subscription={ "name": "spread" }, pair=["XBT/EUR"])
-    await bot.unsubscribe(subscription={ "name": "spread" }, pair=["DOT/EUR"])
+    await client.unsubscribe(subscription={ "name": "ticker" }, pair=["XBT/EUR","DOT/EUR"])
+    await client.unsubscribe(subscription={ "name": "spread" }, pair=["XBT/EUR"])
+    await client.unsubscribe(subscription={ "name": "spread" }, pair=["DOT/EUR"])
     # ...
 
     # ___Authenticated_Websocket_________
     # when using the authenticated client, you can also subscribe to public feeds
-    auth_bot = Bot(key=key, secret=secret)
-    print(auth_bot.private_sub_names) # list private subscription names
-    await auth_bot.subscribe(subscription={ "name": "ownTrades" })
-    await auth_bot.subscribe(subscription={ "name": "openOrders" })
+    client_auth = Client(key=key, secret=secret)
+    print(client_auth.private_channel_names) # list private channel names
+    await client_auth.subscribe(subscription={ "name": "ownTrades" })
+    await client_auth.subscribe(subscription={ "name": "openOrders" })
 
     time.sleep(2)
-    await auth_bot.unsubscribe(subscription={ "name": "ownTrades" })
-    await auth_bot.unsubscribe(subscription={ "name": "openOrders" })
+    await client_auth.unsubscribe(subscription={ "name": "ownTrades" })
+    await client_auth.unsubscribe(subscription={ "name": "openOrders" })
 
-    while True:
+    while while not client.exception_occur and not client_auth.exception_occur:
         await asyncio.sleep(6)
 
 if __name__ == "__main__":
@@ -383,8 +383,8 @@ async def main():
     key = "futures-api-key"
     secret = "futures-secret-key"
 
-    # ___Custom_Trading_Bot________
-    class Bot(KrakenFuturesWSClient):
+    # ___Custom_Trading_Client________
+    class Client(KrakenFuturesWSClient):
 
         async def on_message(self, event):
             print(event)
@@ -392,31 +392,31 @@ async def main():
             # you can also combine this with the Futures REST clients
 
     # ___Public_Websocket_Feeds____
-    bot = Bot()
-    # print(bot.get_available_public_subscription_feeds())
+    client = Client()
+    # print(client.get_available_public_subscription_feeds())
 
     products = ["PI_XBTUSD", "PF_ETHUSD"]
 
     # subscribe to a public websocket feed
-    await bot.subscribe(feed="ticker", products=products)
-    # await bot.subscribe(feed="book", products=products)
+    await client.subscribe(feed="ticker", products=products)
+    # await client.subscribe(feed="book", products=products)
     # ...
 
     # unsubscribe from a public websocket feed
-    # await bot.unsubscribe(feed="ticker", products=products)
+    # await client.unsubscribe(feed="ticker", products=products)
 
     # ___Authenticated_Websocket_________
-    auth_bot = Bot(key=key, secret=secret)
-    # print(auth_bot.get_available_private_subscription_feeds())
+    client_auth = Client(key=key, secret=secret)
+    # print(client_auth.get_available_private_subscription_feeds())
 
     # subscribe to a private/authenticated websocket feed
-    await auth_bot.subscribe(feed="fills")
-    await auth_bot.subscribe(feed="open_positions")
-    await auth_bot.subscribe(feed="open_orders")
+    await client_auth.subscribe(feed="fills")
+    await client_auth.subscribe(feed="open_positions")
+    await client_auth.subscribe(feed="open_orders")
     # ...
 
     # unsubscribe from a private/authenticated websocket feed
-    await auth_bot.unsubscribe(feed="fills")
+    await client_auth.unsubscribe(feed="fills")
 
     while True:
         await asyncio.sleep(6)

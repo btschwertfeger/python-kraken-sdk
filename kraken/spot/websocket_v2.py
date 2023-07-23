@@ -28,8 +28,8 @@ class KrakenSpotWSClientV2(KrakenSpotWSClientBase):
 
     - https://docs.kraken.com/websockets-v2
 
-    … please use :class:`KrakenSpotWSClient` for accessing the Kraken
-    Websockets API v1.
+    … please use :class:`KrakenSpotWSClient` for accessing the Kraken's
+    Websocket API v1.
 
     This class holds up to two websocket connections, one private
     and one public. The core functionalities are un-/subscribing to websocket
@@ -358,23 +358,38 @@ class KrakenSpotWSClientV2(KrakenSpotWSClientBase):
             ...     }
             ... )
         """
-        if not isinstance(message, dict) or not message.get("method", False):
-            raise ValueError(
-                """
-                The ``message`` must be a dict containing at least the 'method'
-                key with a proper value.
-                """
+        if not isinstance(message, dict):
+            raise TypeError("The ``message`` must be type dict!")
+
+        if not message.get("method") or not isinstance(message["method"], str):
+            raise TypeError(
+                "The message must contain the ``method`` key with a valid string!"
             )
+
+        # includes also unsubscribe
+        if "subscribe" in message["method"]:
+            if not message.get("params") or not isinstance(message["params"], dict):
+                raise TypeError(
+                    "The message must contain the ``params`` key as type dict!"
+                )
+            if not message["params"].get("channel") or not isinstance(
+                message["params"]["channel"], str
+            ):
+                raise TypeError(
+                    "The message must contain the ``params`` key that points to"
+                    " a dictionary containing the ``channel`` key with a valid"
+                    " string!"
+                )
+
+        # ----------------------------------------------------------------------
+
         private: bool = (message["method"] in self.private_methods) or (
-            message.get("method") in ("subscribe", "unsubscribe")
-            and message.get("params")
-            and message["params"].get("channel") in self.private_channel_names
+            "subscribe" in message["method"]
+            and message["params"]
+            and message["params"]["channel"] in self.private_channel_names
         )
         if private and not self._is_auth:
             raise KrakenException.KrakenAuthenticationError()
-
-        if not message.get("params"):
-            message["params"] = {}
 
         retries: int = 0
         socket: Any = self._get_socket(private=private)
@@ -386,9 +401,16 @@ class KrakenSpotWSClientV2(KrakenSpotWSClientBase):
         if retries == 12 and not socket:
             raise TimeoutError("Could not get the desired websocket connection!")
 
+        # ----------------------------------------------------------------------
+
         if raw:
             await socket.send(json.dumps(message))
             return
+
+        # ----------------------------------------------------------------------
+
+        if not message.get("params") and message["method"] in self.private_methods:
+            message["params"] = {}
 
         if private:
             message["params"]["token"] = self._priv_conn.ws_conn_details["token"]

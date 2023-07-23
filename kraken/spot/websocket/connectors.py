@@ -354,9 +354,13 @@ class ConnectSpotWebsocketV2(ConnectSpotWebsocketBase):
         :param subscription: The subscription to remove.
         :type subscription: dict
         """
-        self._subscriptions = [
-            sub for sub in self._subscriptions if sub != subscription
-        ]
+        for position, sub in enumerate(self._subscriptions):
+            if sub == subscription or (
+                subscription.get("channel", False) == sub.get("channel", False)
+                and subscription.get("symbol", False) == sub.get("symbol", False)
+            ):
+                del self._subscriptions[position]
+                return
 
 
 class ConnectSpotWebsocketV1(ConnectSpotWebsocketBase):
