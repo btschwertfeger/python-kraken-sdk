@@ -1,7 +1,7 @@
-.. The futures trading bot
+.. The spot trading bot templates
 
-Spot Trading Bot Example
-------------------------
+Spot Trading Bot Examples
+-------------------------
 
 The templates presented below serves as a starting point for the development of
 a trading algorithm for Spot trading on the cryptocurrency platform Kraken using

@@ -6,8 +6,6 @@
 """
 Module that provides an example Spot trading bot structure. It uses the Kraken
 Websocket API v1.
-
-todo: test this out
 """
 
 from __future__ import annotations
@@ -26,6 +24,15 @@ import urllib3
 from kraken.exceptions import KrakenException
 from kraken.spot import Funding, KrakenSpotWSClient, Market, Staking, Trade, User
 
+logging.basicConfig(
+    format="%(asctime)s %(module)s,line: %(lineno)d %(levelname)8s | %(message)s",
+    datefmt="%Y/%m/%d %H:%M:%S",
+    level=logging.INFO,
+)
+logging.getLogger().setLevel(logging.INFO)
+logging.getLogger("requests").setLevel(logging.WARNING)
+logging.getLogger("urllib3").setLevel(logging.WARNING)
+
 
 class TradingBot(KrakenSpotWSClient):
     """
@@ -39,16 +46,16 @@ class TradingBot(KrakenSpotWSClient):
     ====== P A R A M E T E R S ======
     config: dict
         configuration like: {
-            'key' 'kraken-futures-key',
-            'secret': 'kraken-secret-key',
-            'products': ['PI_XBTUSD']
+            "key": "kraken-spot-key",
+            "secret": "kraken-spot-secret",
+            "pairs": ["DOT/USD", "BTC/USD"],
         }
     """
 
     def __init__(self: TradingBot, config: dict) -> None:
         super().__init__(
             key=config["key"], secret=config["secret"]
-        )  # initialize the KakenFuturesWSClient
+        )  # initialize the KrakenSpotWSClient
         self.__config: dict = config
 
         self.__user: User = User(key=config["key"], secret=config["secret"])
@@ -58,19 +65,18 @@ class TradingBot(KrakenSpotWSClient):
         self.__staking: Staking = Staking(key=config["key"], secret=config["secret"])
 
     async def on_message(self: TradingBot, message: Union[dict, list]) -> None:
-        """Receives all messages that came form the websocket connection"""
+        """Receives all messages of the websocket connection(s)"""
         if isinstance(message, dict) and "event" in message:
             if message["event"] in ("heartbeat", "pong"):
                 return
             if "error" in message:
-                # handle exceptions/errors sent by websocket connection ...
+                # handle exceptions/errors sent by websocket connection …
                 pass
 
         logging.info(message)
 
-        # ... apply your trading strategy here
-
-        # call functions from self.__trade and other clients if conditions met...
+        # … apply your trading strategy here
+        # … call functions from self.__trade and other clients if conditions met …
 
         # try:
         #     print(self.__trade.create_order(
@@ -95,12 +101,10 @@ class TradingBot(KrakenSpotWSClient):
         #     volume=200
         # )
 
-        # you can also un-/subscribe here using `self.subscribe(...)` or `self.unsubscribe(...)`
+        # You can also un-/subscribe here using `self.subscribe(...)` or `self.unsubscribe(...)`
+        # … more can be found in the documentation (https://python-kraken-sdk.readthedocs.io/en/stable/)
 
-        # more can be found in the documentation
-
-    # add more functions to customize the trading strategy
-    # ...
+    # Add more functions to customize the trading strategy …
 
     def save_exit(self: TradingBot, reason: Optional[str] = "") -> None:
         """controlled shutdown of the strategy"""
@@ -116,14 +120,15 @@ class ManagedBot:
     """
     Class to manage the trading strategy
 
-    subscribes to desired feeds, instantiates the strategy and runs until condition met
+    … subscribes to desired feeds, instantiates the strategy and runs as long
+    as there is no error.
 
     ====== P A R A M E T E R S ======
     config: dict
         configuration like: {
-            'key' 'kraken-futures-key',
-            'secret': 'kraken-secret-key',
-            'products': ['PI_XBTUSD']
+            "key": "kraken-spot-key",
+            "secret": "kraken-spot-secret",
+            "pairs": ["DOT/USD", "BTC/USD"],
         }
     """
 
@@ -210,9 +215,9 @@ class ManagedBot:
 def main() -> None:
     """Main"""
     bot_config: dict = {
-        "key": os.getenv("API_KEY"),
-        "secret": os.getenv("SECRET_KEY"),
-        "pairs": ["DOT/EUR", "XBT/USD"],
+        "key": os.getenv("SPOT_API_KEY"),
+        "secret": os.getenv("SPOT_SECRET_KEY"),
+        "pairs": ["DOT/USD", "XBT/USD"],
     }
     managed_bot: ManagedBot = ManagedBot(config=bot_config)
     try:

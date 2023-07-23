@@ -18,6 +18,6 @@ For questions, feedback, additions, suggestions for improvement or problems
 .. toctree::
     :maxdepth: 2
 
-    spot_bot_template.rst
+    spot_bot_templates.rst
     spot_orderbook.rst
     futures_bot_template.rst
