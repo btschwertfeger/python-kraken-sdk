@@ -73,14 +73,13 @@ jobs:
     needs: [Pre-Commit]
     uses: ./.github/workflows/_build.yaml
     strategy:
-      fail-fast: false
+      fail-fast: true
       matrix:
-        os: [ubuntu-latest, macos-latest] #, windows-latest]
+        os: [ubuntu-latest, macos-latest, windows-latest]
         python-version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
     with:
       os: ${{ matrix.os }}
       python-version: ${{ matrix.python-version }}
-      # todo: add 'WHEEL_PATH' to support windows builds
 
   ## ==========================================================================
   ##    Build the documentation
