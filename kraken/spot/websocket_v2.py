@@ -196,8 +196,8 @@ class KrakenSpotWSClientV2(KrakenSpotWSClientBase):
         be instantiated using valid credentials since only this way placing or
         cancelling orders can be done on that user account.
 
-        **Please note that but the send_message function will automatically
-        pass the authentication token (except for the case if ``raw=True``).**
+        **Please note that the send_message function will automatically
+        pass the authentication token (except for the case if** ``raw=True``**).**
 
         **Placing orders** using an authenticated websocket connection can be
         easily done as shown in the example below. See
@@ -370,7 +370,8 @@ class KrakenSpotWSClientV2(KrakenSpotWSClientBase):
         if "subscribe" in message["method"]:
             if not message.get("params") or not isinstance(message["params"], dict):
                 raise TypeError(
-                    "The message must contain the ``params`` key as type dict!"
+                    "The message must contain the ``params`` key with a value"
+                    " as type dict!"
                 )
             if not message["params"].get("channel") or not isinstance(
                 message["params"]["channel"], str

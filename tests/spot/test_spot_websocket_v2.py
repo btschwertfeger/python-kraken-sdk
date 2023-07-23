@@ -158,18 +158,34 @@ def test_access_private_client_attributes(
     asyncio_run(check_access())
 
 
+@pytest.mark.wip
 @pytest.mark.spot
 @pytest.mark.spot_websocket
 @pytest.mark.spot_websocket_v2
 def test_send_message_missing_method_failing() -> None:
     """
-    Checks if the send_message function fails when not method was defined.
+    Checks if the send_message function fails when specific keys or values
+    are incorrect formatted or missing.
     """
 
     async def create_client() -> None:
         client: SpotWebsocketClientV2TestWrapper = SpotWebsocketClientV2TestWrapper()
-        with pytest.raises(ValueError):
-            await client.send_message(message={})
+        with pytest.raises(TypeError):  # wrong message format
+            await client.send_message(message=[])
+        with pytest.raises(TypeError):  # method value not string
+            await client.send_message(message={"method": 1})
+        with pytest.raises(TypeError):  # missing params for '*subscribe'
+            await client.send_message(message={"method": "subscribe"})
+        with pytest.raises(TypeError):  # params not dict
+            await client.send_message(message={"method": "subscribe", "params": []})
+        with pytest.raises(TypeError):  # params missing channel key
+            await client.send_message(
+                message={"method": "subscribe", "params": {"test": 1}}
+            )
+        with pytest.raises(TypeError):  # channel key must be str
+            await client.send_message(
+                message={"method": "subscribe", "params": {"channel": 1}}
+            )
         await async_wait(seconds=1)
 
     asyncio_run(create_client())
