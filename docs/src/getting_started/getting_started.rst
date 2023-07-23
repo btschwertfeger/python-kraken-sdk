@@ -16,11 +16,13 @@ Getting Started
 
 3. Start using the provided example scripts
 
-The examples can be found within the repository of the `python-kraken-sdk`_ and obviously in this documentation.
-For trading algorithms templates see the :ref:`section-trading-bot-templates` section.
+The examples can be found within the repository of the `python-kraken-sdk`_ and
+obviously in this documentation. For trading algorithms templates see the
+:ref:`section-trading-bot-templates` section.
 
 4. Error handling
 
-If any unexpected behavior occurs, please check **your API permissions**, **rate limits**,
-update the `python-kraken-sdk`_, see the :ref:`section-troubleshooting` section, and if the error
-persists please open an issue at `python-kraken-sdk/issues`_.
+If any unexpected behavior occurs, please check **your API permissions**,
+**rate limits**, update the `python-kraken-sdk`_, see the
+:ref:`section-troubleshooting` section, and if the error persists please open an
+issue at `python-kraken-sdk/issues`_.

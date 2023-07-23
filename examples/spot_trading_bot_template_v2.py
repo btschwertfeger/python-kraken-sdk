@@ -5,8 +5,8 @@
 
 
 """
-Module that provides an example Futures trading bot data structure.
-It uses the Kraken Websocket API v2.
+Module that provides an example Futures trading bot data structure. It uses the
+Kraken Websocket API v2.
 
 todo: implement this
 """

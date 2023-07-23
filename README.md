@@ -459,7 +459,7 @@ Note: Authenticated Futures websocket clients can also un-/subscribe from/to pub
 - The version scheme is `<Major>.<Minor>.<Service Level>` where:
 
   - **Major** will affect everything and there will be breaking changes
-    in any case. This could be for example a change to Python 3.11+ only
+    in any case. This could be for example a change to Python 3.11+ only.
 
   - **Minor** introduces features and enhancements which may bring breaking
     changes in some cases. These breaking changes could be renaming or

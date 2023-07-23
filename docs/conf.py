@@ -3,9 +3,9 @@
 #
 # For the full list of built-in configuration values, see the documentation:
 # https://www.sphinx-doc.org/en/master/usage/configuration.html
+# pylint: disable=invalid-name
 
 """This module is the configuration for the Sphinx documentation building process"""
-# pylint: disable=invalid-name
 
 import os
 import sys

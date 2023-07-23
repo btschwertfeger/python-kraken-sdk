@@ -3,10 +3,9 @@
 # Copyright (C) 2023 Benjamin Thomas Schwertfeger
 # GitHub: https://github.com/btschwertfeger
 
-
 """
-Module that provides an example Futures trading bot data structure.
-It uses the Kraken Websocket API v1.
+Module that provides an example Spot trading bot structure. It uses the Kraken
+Websocket API v1.
 
 todo: test this out
 """
