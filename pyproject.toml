@@ -121,7 +121,7 @@ omit = ["*tests*"]
 
 [tool.coverage.report]
 exclude_lines = [
-  "pragma: coverage: disable",
+  "coverage: disable",
   "if TYPE_CHECKING:"
 ]
 skip_empty = true
