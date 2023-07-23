@@ -39,7 +39,9 @@ class KrakenSpotWSClientV2(KrakenSpotWSClientBase):
 
     When accessing private endpoints that need authentication make sure,
     that the ``Access WebSockets API`` API key permission is set in the user's
-    account.
+    account. To place or cancel orders, querying leger information or accessing
+    live portfolio changes (fills, new orders, ...) there are separate
+    permissions that must be enabled if required.
 
     :param key: API Key for the Kraken Spot API (default: ``""``)
     :type key: str, optional
@@ -57,7 +59,7 @@ class KrakenSpotWSClientV2(KrakenSpotWSClientBase):
 
     .. code-block:: python
         :linenos:
-        :caption: HowTo: Use the Kraken Spot Websocket Client (v2)
+        :caption: HowTo: Use the Kraken Spot websocket client (v2)
 
         import asyncio
         from kraken.spot import KrakenSpotWSClientV2
@@ -186,7 +188,175 @@ class KrakenSpotWSClientV2(KrakenSpotWSClientBase):
         :param raw: If set to ``True`` the ``message`` will be sent directly.
         :type raw: bool, optional
 
-        todo: add a lot of examples on how to create orders and so on
+        The following examples demonstrate how to use the
+        :func:`kraken.spot.KrakenSpotWSClientV2.send_message` function. The
+        client must be instantiated as described in
+        :class:`kraken.spot.KrakenSpotWSClientV2` where ``client`` uses
+        public connections (without authentication) and ``client_auth`` must
+        be instantiated using valid credentials since only this way placing or
+        cancelling orders can be done on that user account.
+
+        **Please note that but the send_message function will automatically
+        pass the authentication token (except for the case if ``raw=True``).**
+
+        **Placing orders** using an authenticated websocket connection can be
+        easily done as shown in the example below. See
+        https://docs.kraken.com/websockets-v2/#add-order to retrieve more
+        information about the available parameters.
+
+        .. code-block:: python
+            :linenos:
+            :caption: Spot Websocket v2: Place a new order
+
+            >>> await client_auth.send_message(
+            ...     message={
+            ...         "method": "add_order",
+            ...         "params": {
+            ...             "limit_price": 1234.56,
+            ...             "order_type": "limit",
+            ...             "order_userref": 123456789,
+            ...             "order_qty": 1.0,
+            ...             "side": "buy",
+            ...             "symbol": "BTC/USD",
+            ...         },
+            ...     }
+            ... )
+
+        **Placing orders as batch** can be done by passing ``batch_add`` as
+        method. Its parameters and limitations are described in
+        https://docs.kraken.com/websockets-v2/#batch-add.
+
+        .. code-block:: python
+            :linenos:
+            :caption: Spot Websocket v2: Placing orders as batch
+
+            >>> await client_auth.send_message(
+            ...     message={
+            ...         "method": "batch_add",
+            ...         "params": {
+            ...             "orders": [
+            ...                 {
+            ...                     "limit_price": 1000.23,
+            ...                     "order_qty": 1,
+            ...                     "order_type": "limit",
+            ...                     "order_userref": 123456789,
+            ...                     "side": "buy",
+            ...                 },
+            ...                 {
+            ...                     "limit_price": 500.21,
+            ...                     "order_qty": 2.12345,
+            ...                     "order_type": "limit",
+            ...                     "order_userref": 212345679,
+            ...                     "side": "sell",
+            ...                     "stp_type": "cancel_both",
+            ...                 },
+            ...             ],
+            ...             "symbol": "BTC/USD",
+            ...             "validate": True,
+            ...         },
+            ...     }
+            ... )
+
+        **Cancel orders as batch** is available using the ``batch_cancel``
+        method as described in
+        https://docs.kraken.com/websockets-v2/#batch-cancel.
+
+        .. code-block:: python
+            :linenos:
+            :caption: Spot Websocket v2: Cancel orders as batch
+
+            >>> await client_auth.send_message(
+            ...     message={
+            ...         "method": "batch_cancel",
+            ...         "params": {
+            ...             "orders": [
+            ...                 "123456789",
+            ...                 "212345679",
+            ...                 "ORDER-ID123-4567890"
+            ...             ],
+            ...         },
+            ...     }
+            ... )
+
+        **Cancel all orders** can be used as the name suggests - to cancel
+        all open orders (see
+        https://docs.kraken.com/websockets-v2/#cancel-all-orders).
+
+        .. code-block:: python
+            :linenos:
+            :caption: Spot Websocket v2: Cancel all orders
+
+            >>> await client_auth.send_message(
+            ...     message={
+            ...         "method": "cancel_all",
+            ...     }
+            ... )
+
+        **Death Man's Switch** is a useful utility to reduce the risk of losses
+        due to network fuckups since it will cancel all orders if the call
+        was not received by Kraken within a certain amount of time. See
+        https://docs.kraken.com/websockets-v2/#cancel-all-orders-after for more
+        information.
+
+        .. code-block:: python
+            :linenos:
+            :caption: Spot Websocket v2: Death Man's Switch / cancel_all_orders_after
+
+            >>> await client_auth.send_message(
+            ...     message={
+            ...         "method": "cancel_all_orders_after",
+            ...         "params": {"timeout": 60},
+            ...     }
+            ... )
+
+        **Canceling orders** is a common task during trading and can be done
+        as described in https://docs.kraken.com/websockets-v2/#cancel-order.
+
+        .. code-block:: python
+            :linenos:
+            :caption: Spot Websocket v2: Cancel order(s)
+
+            >>> await client_auth.send_message(
+            ...     message={
+            ...         "method": "cancel_order",
+            ...         "params": {
+            ...             "order_id": ["ORDER-ID123-456789", "ORDER-ID123-987654"],
+            ...         },
+            ...     }
+            ... )
+
+        **Editing orders** can be done as shown in the example below. See
+        https://docs.kraken.com/websockets-v2/#edit-order for more information.
+
+        .. code-block:: python
+            :linenos:
+            :caption: Spot Websocket v2: Cancel order(s)
+
+            >>> await client_auth.send_message(
+            ...     message={
+            ...         "method": "edit_order",
+            ...         "params": {
+            ...             "order_id": "ORDER-ID123-456789",
+            ...             "order_qty": 2.5,
+            ...             "symbol": "BTC/USD",
+            ...         },
+            ...     }
+            ... )
+
+        **Subscribing** to websocket feeds can be done using the send_message
+        function but it is recommended to use
+        :func:`kraken.spot.KrakenSpotWSClientV2.subscribe`.
+
+        .. code-block:: python
+            :linenos:
+            :caption: Spot Websocket v2: Subscribe to a websocket feed
+
+            >>> await client.send_message(
+            ...     message={
+            ...         "method": "subscribe",
+            ...         "params": {"channel": "book", "snapshot": False, "symbol": ["BTC/USD"]},
+            ...     }
+            ... )
         """
         if not isinstance(message, dict) or not message.get("method", False):
             raise ValueError(
@@ -202,6 +372,9 @@ class KrakenSpotWSClientV2(KrakenSpotWSClientBase):
         )
         if private and not self._is_auth:
             raise KrakenException.KrakenAuthenticationError()
+
+        if not message.get("params"):
+            message["params"] = {}
 
         retries: int = 0
         socket: Any = self._get_socket(private=private)
@@ -226,7 +399,7 @@ class KrakenSpotWSClientV2(KrakenSpotWSClientBase):
         self: KrakenSpotWSClientV2, params: dict, req_id: Optional[int] = None
     ) -> None:
         """
-        Subscribe to a channel
+        Subscribe to a channel/feed
 
         Success or failures are sent over the websocket connection and can be
         received via the on_message or callback function.
@@ -236,6 +409,12 @@ class KrakenSpotWSClientV2(KrakenSpotWSClientBase):
         permission is set in the users Kraken account.
 
         - https://docs.kraken.com/websockets-v2/#subscribe
+
+        See https://docs.kraken.com/websockets-v2/#channels for all channels.
+
+        **Please note** that this function automatically assigns the ``method``
+        key and sets its value to ``subscribe``. The authentication token is
+        also assigned automatically, so only the params part is needed here.
 
         :param params: The subscription message
         :type params: dict
@@ -266,7 +445,7 @@ class KrakenSpotWSClientV2(KrakenSpotWSClientBase):
         self: KrakenSpotWSClientV2, params: dict, req_id: Optional[int] = None
     ) -> None:
         """
-        Unsubscribe from a feed
+        Unsubscribe from a channel/feed
 
         Success or failures are sent via the websocket connection and can be
         received via the on_message or callback function.
@@ -277,7 +456,7 @@ class KrakenSpotWSClientV2(KrakenSpotWSClientBase):
 
         - https://docs.kraken.com/websockets-v2/#unsubscribe
 
-        :param params: The unsubscription message
+        :param params: The unsubscription message (only the params part)
         :type params: dict
 
         Initialize your client as described in

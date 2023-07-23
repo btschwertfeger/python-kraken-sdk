@@ -56,7 +56,7 @@ class KrakenSpotWSClient(KrakenSpotWSClientBase):
 
     .. code-block:: python
         :linenos:
-        :caption: HowTo: Use the Kraken Spot Websocket Client (v1)
+        :caption: HowTo: Use the Kraken Spot websocket client (v1)
 
         import asyncio
         from kraken.spot import KrakenSpotWSClient

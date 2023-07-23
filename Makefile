@@ -4,13 +4,12 @@
 # GitHub: https://github.com/btschwertfeger
 
 PYTHON := python
-
 PYTEST := $(PYTHON) -m pytest
 PYTEST_OPTS := -vv --junit-xml=pytest.xml
 PYTEST_COV_OPTS := $(PYTEST_OPTS) --cov --cov-report=xml:coverage.xml --cov-report=term
 TEST_DIR := tests
 
-.PHONY := build dev install test tests coverage doc doctest clean changelog pre-commit
+.PHONY := help build rebuild doc install dev test tests test-wip coverage doctest pre-commit changelog clean
 
 help:
 	@grep "^##" Makefile | sed -e "s/##//"
@@ -23,11 +22,6 @@ build:
 
 rebuild: clean build
 
-## dev		Installs the extended package in edit mode
-##
-dev:
-	$(PYTHON) -m pip install -e ".[dev]"
-
 ## doc		Build the documentation
 ##
 doc:
@@ -39,6 +33,11 @@ doc:
 install:
 	$(PYTHON) -m pip install .
 
+## dev		Installs the extended package in edit mode
+##
+dev:
+	$(PYTHON) -m pip install -e ".[dev]"
+
 ## ======= T E S T I N G =======
 ## test		Run the unit tests
 ##
@@ -46,17 +45,22 @@ test:
 	@rm *.log || true
 	$(PYTEST) $(PYTEST_OPTS) $(TEST_DIR)
 
+
 tests: test
 
+## test-wip		Run tests marked as 'wip'
+##
 test-wip:
 	@rm *.log || true
 	$(PYTEST) -m "wip" -vv $(TEST_DIR)
 
+## coverage		Run all tests and generate the coverage report
+##
 coverage:
 	@rm *.log || true
 	$(PYTEST) $(PYTEST_COV_OPTS) $(TEST_DIR)
 
-## doctest	Run the documentation tests
+## doctest	Run the documentation related tests
 ##
 doctest:
 	cd docs && make doctest
