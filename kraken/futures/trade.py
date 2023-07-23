@@ -10,7 +10,7 @@ from __future__ import annotations
 
 from typing import List, Optional, Tuple, Union
 
-from ..base_api import KrakenBaseFuturesAPI, defined
+from kraken.base_api import KrakenBaseFuturesAPI, defined
 
 
 class Trade(KrakenBaseFuturesAPI):
@@ -673,3 +673,6 @@ class Trade(KrakenBaseFuturesAPI):
             post_params=params,
             auth=True,
         )
+
+
+__all__ = ["Trade"]

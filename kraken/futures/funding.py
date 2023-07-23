@@ -9,7 +9,7 @@ from __future__ import annotations
 
 from typing import Optional, Union
 
-from ..base_api import KrakenBaseFuturesAPI
+from kraken.base_api import KrakenBaseFuturesAPI
 
 
 class Funding(KrakenBaseFuturesAPI):
@@ -256,3 +256,6 @@ class Funding(KrakenBaseFuturesAPI):
             post_params=params,
             auth=True,
         )
+
+
+__all__ = ["Funding"]

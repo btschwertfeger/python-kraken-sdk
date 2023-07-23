@@ -414,3 +414,6 @@ class Funding(KrakenBaseSpotAPI):
             uri="/private/WalletTransfer",
             params={"asset": asset, "from": from_, "to": to_, "amount": str(amount)},
         )
+
+
+__all__ = ["Funding"]

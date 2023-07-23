@@ -1052,3 +1052,6 @@ class User(KrakenBaseSpotAPI):
             uri="/private/CreateSubaccount",
             params={"username": username, "email": email},
         )
+
+
+__all__ = ["User"]

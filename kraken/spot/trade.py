@@ -743,3 +743,6 @@ class Trade(KrakenBaseSpotAPI):
 
         amount_rounded: float = floor(float(amount) * 10**decimals) / 10**decimals
         return f"{amount_rounded:.{decimals}f}"
+
+
+__all__ = ["Trade"]

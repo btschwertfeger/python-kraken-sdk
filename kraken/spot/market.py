@@ -430,3 +430,6 @@ class Market(KrakenBaseSpotAPI):
         return self._request(  # type: ignore[return-value]
             method="GET", uri="/public/SystemStatus", auth=False
         )
+
+
+__all__ = ["Market"]

@@ -275,3 +275,6 @@ class Staking(KrakenBaseSpotAPI):
         return self._request(  # type: ignore[return-value]
             method="POST", uri="/private/Staking/Transactions", auth=True
         )
+
+
+__all__ = ["Staking"]

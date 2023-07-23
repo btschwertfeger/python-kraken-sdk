@@ -518,3 +518,10 @@ class ConnectSpotWebsocketV1(ConnectSpotWebsocketBase):
                 "package maintainer."
             )
         return sub
+
+
+__all__ = [
+    "ConnectSpotWebsocketBase",
+    "ConnectSpotWebsocketV1",
+    "ConnectSpotWebsocketV2",
+]

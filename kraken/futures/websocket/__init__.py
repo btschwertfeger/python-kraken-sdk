@@ -18,11 +18,11 @@ from typing import TYPE_CHECKING, Any, List, Optional
 
 import websockets
 
-from ...exceptions import KrakenException
+from kraken.exceptions import KrakenException
 
 if TYPE_CHECKING:
     # to avoid circular import for type checking
-    from ...futures import KrakenFuturesWSClient
+    from kraken.futures import KrakenFuturesWSClient
 
 
 class ConnectFuturesWebsocket:
@@ -280,3 +280,6 @@ class ConnectFuturesWebsocket:
     def _get_active_subscriptions(self: "ConnectFuturesWebsocket") -> List[dict]:
         """Returns the active subscriptions"""
         return self.__subscriptions
+
+
+__all__ = ["ConnectFuturesWebsocket"]

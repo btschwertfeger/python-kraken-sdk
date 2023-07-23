@@ -158,7 +158,6 @@ def test_access_private_client_attributes(
     asyncio_run(check_access())
 
 
-@pytest.mark.wip
 @pytest.mark.spot
 @pytest.mark.spot_websocket
 @pytest.mark.spot_websocket_v2

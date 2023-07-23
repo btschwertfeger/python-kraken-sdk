@@ -619,3 +619,6 @@ class KrakenBaseFuturesAPI:
 
     def __exit__(self, *exc: tuple, **kwargs: Dict[str, Any]) -> None:
         pass
+
+
+__all__ = ["defined", "ensure_string", "KrakenBaseSpotAPI", "KrakenBaseFuturesAPI"]

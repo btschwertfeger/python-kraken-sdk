@@ -262,3 +262,6 @@ class KrakenSpotWSClientBase(KrakenBaseSpotAPI):
         subscribed to (for authenticated connections).
         """
         raise NotImplementedError("Must be overloaded!")  # codecov: disable
+
+
+__all__ = ["KrakenSpotWSClientBase"]

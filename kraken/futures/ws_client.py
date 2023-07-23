@@ -15,9 +15,9 @@ import logging
 from copy import deepcopy
 from typing import Any, Dict, List, Optional
 
-from ..base_api import KrakenBaseFuturesAPI
-from ..exceptions import KrakenException
-from .websocket import ConnectFuturesWebsocket
+from kraken.base_api import KrakenBaseFuturesAPI
+from kraken.exceptions import KrakenException
+from kraken.futures.websocket import ConnectFuturesWebsocket
 
 
 class KrakenFuturesWSClient(KrakenBaseFuturesAPI):
@@ -402,3 +402,6 @@ class KrakenFuturesWSClient(KrakenBaseFuturesAPI):
         self: KrakenFuturesWSClient, *exc: tuple, **kwargs: Dict[str, Any]
     ) -> None:
         pass
+
+
+__all__ = ["KrakenFuturesWSClient"]

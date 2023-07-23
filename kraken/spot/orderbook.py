@@ -383,3 +383,6 @@ class OrderbookClient:
         :rtype: float
         """
         return float(values[0])
+
+
+__all__ = ["OrderbookClient"]

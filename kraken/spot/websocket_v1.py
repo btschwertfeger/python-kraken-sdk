@@ -732,3 +732,6 @@ class KrakenSpotWSClient(KrakenSpotWSClientBase):
         await self.send_message(
             message={"event": "cancelAllOrdersAfter", "timeout": timeout}, private=True
         )
+
+
+__all__ = ["KrakenSpotWSClient"]

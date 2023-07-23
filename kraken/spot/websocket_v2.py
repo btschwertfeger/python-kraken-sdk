@@ -568,3 +568,6 @@ class KrakenSpotWSClientV2(KrakenSpotWSClientBase):
             "cancel_order",
             "edit_order",
         ]
+
+
+__all__ = ["KrakenSpotWSClientV2"]

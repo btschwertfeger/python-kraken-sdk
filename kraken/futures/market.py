@@ -10,7 +10,7 @@ from __future__ import annotations
 from functools import lru_cache
 from typing import List, Optional, Union
 
-from ..base_api import KrakenBaseFuturesAPI, defined
+from kraken.base_api import KrakenBaseFuturesAPI, defined
 
 
 class Market(KrakenBaseFuturesAPI):
@@ -989,3 +989,6 @@ class Market(KrakenBaseFuturesAPI):
             since=since,
             sort=sort,
         )
+
+
+__all__ = ["Market"]

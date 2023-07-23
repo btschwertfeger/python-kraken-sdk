@@ -12,7 +12,7 @@ from typing import Optional, Union
 
 import requests
 
-from ..base_api import KrakenBaseFuturesAPI, defined
+from kraken.base_api import KrakenBaseFuturesAPI, defined
 
 
 class User(KrakenBaseFuturesAPI):
@@ -877,3 +877,6 @@ class User(KrakenBaseFuturesAPI):
             post_params={"tradingEnabled": trading_enabled},
             auth=True,
         )
+
+
+__all__ = ["User"]

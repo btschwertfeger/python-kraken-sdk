@@ -14,3 +14,14 @@ from kraken.spot.trade import Trade
 from kraken.spot.user import User
 from kraken.spot.websocket_v1 import KrakenSpotWSClient
 from kraken.spot.websocket_v2 import KrakenSpotWSClientV2
+
+__all__ = [
+    "Funding",
+    "Market",
+    "OrderbookClient",
+    "Staking",
+    "Trade",
+    "User",
+    "KrakenSpotWSClient",
+    "KrakenSpotWSClientV2",
+]

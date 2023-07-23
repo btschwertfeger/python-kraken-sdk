@@ -310,3 +310,6 @@ class KrakenException(Exception):
     @docstring_message
     class MaxReconnectError(Exception):
         """To many reconnect tries."""
+
+
+__all__ = ["KrakenException"]
