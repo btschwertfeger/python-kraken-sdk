@@ -48,7 +48,7 @@ repos:
         name: pylint
         types: [python]
         exclude: ^examples/|^tests/|^setup.py$
-        args: ["--rcfile=.pylintrc", "-d", "R0801"] # ignore duplicate code
+        args: ["--rcfile=pyproject.toml", "-d", "R0801"] # ignore duplicate code
   - repo: https://github.com/pre-commit/mirrors-mypy
     rev: v1.2.0
     hooks:
