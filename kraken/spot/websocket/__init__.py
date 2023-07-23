@@ -253,7 +253,7 @@ class KrakenSpotWSClientBase(KrakenBaseSpotAPI):
         This function must be overloaded and return a list of names that can be
         subscribed to (for unauthenticated connections).
         """
-        raise NotImplementedError("Must be overloaded!")  # codecov: disable
+        raise NotImplementedError("Must be overloaded!")  # coverage: disable
 
     @property
     def private_channel_names(self: KrakenSpotWSClientBase) -> List[str]:
@@ -261,7 +261,7 @@ class KrakenSpotWSClientBase(KrakenBaseSpotAPI):
         This function must be overloaded and return a list of names that can be
         subscribed to (for authenticated connections).
         """
-        raise NotImplementedError("Must be overloaded!")  # codecov: disable
+        raise NotImplementedError("Must be overloaded!")  # coverage: disable
 
 
 __all__ = ["KrakenSpotWSClientBase"]

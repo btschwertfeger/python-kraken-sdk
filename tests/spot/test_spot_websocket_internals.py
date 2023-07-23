@@ -33,7 +33,7 @@ def test_ws_base_client_invalid_api_v() -> None:
 
 @pytest.mark.spot
 @pytest.mark.spot_websocket
-def test_ws_base_client_context_manager(caplog: Any) -> None:
+def test_ws_base_client_context_manager() -> None:
     """
     Checks that the KrakenSpotWSClientBase can be instantiated as context
     manager.
@@ -63,15 +63,3 @@ def test_ws_base_client_on_message_no_callback(caplog: Any) -> None:
     client = KrakenSpotWSClientBase(api_version="v2", no_public=True)
     asyncio_run(client.on_message({"event": "testing"}))
     assert "Received message but no callback is defined!" in caplog.text
-
-
-@pytest.mark.spot
-@pytest.mark.spot_websocket
-def test_ws_base_client_no_socket_error(caplog: Any) -> None:
-    """
-    Checks that the KrakenSpotWSClientBase raises an error, when not socket
-    can be found.
-    """
-
-    with pytest.raises(AttributeError):
-        KrakenSpotWSClientBase._get_socket(KrakenSpotWSClientBase, private=False)

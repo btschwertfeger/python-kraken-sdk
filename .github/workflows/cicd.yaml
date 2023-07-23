@@ -80,6 +80,7 @@ jobs:
     with:
       os: ${{ matrix.os }}
       python-version: ${{ matrix.python-version }}
+      # todo: add 'WHEEL_PATH' to support windows builds
 
   ## ==========================================================================
   ##    Build the documentation
@@ -116,7 +117,7 @@ jobs:
       max-parallel: 1 # to avoid failing tests because of API Rate limits
       fail-fast: false
       matrix:
-        os: [ubuntu-latest]
+        os: [ubuntu-latest] # only ubuntu since this takes to much time ATM
         python-version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
     with:
       os: ${{ matrix.os }}
@@ -147,7 +148,7 @@ jobs:
       max-parallel: 1 # to avoid failing tests because of API Rate limits
       fail-fast: false
       matrix:
-        os: [ubuntu-latest]
+        os: [ubuntu-latest, windows-latest]
         python-version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
     with:
       os: ${{ matrix.os }}
@@ -161,12 +162,10 @@ jobs:
   UploadTestPyPI:
     if: success() && github.actor == 'btschwertfeger' && github.ref == 'refs/heads/master'
     needs:
-      [
-        Test-Spot-Public,
-        Test-Spot-Private,
-        Test-Futures-Public,
-        Test-Futures-Private,
-      ]
+      - Test-Spot-Public
+      - Test-Spot-Private
+      - Test-Futures-Public
+      - Test-Futures-Private
     name: Upload current development version to Test PyPI
     uses: ./.github/workflows/_pypi_publish.yaml
     with:
@@ -180,12 +179,10 @@ jobs:
   CodeCov:
     if: success() && github.actor == 'btschwertfeger'
     needs:
-      [
-        Test-Spot-Public,
-        Test-Spot-Private,
-        Test-Futures-Public,
-        Test-Futures-Private,
-      ]
+      - Test-Spot-Public
+      - Test-Spot-Private
+      - Test-Futures-Public
+      - Test-Futures-Private
     uses: ./.github/workflows/_codecov.yaml
     with:
       os: "ubuntu-latest"
