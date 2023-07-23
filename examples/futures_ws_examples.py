@@ -28,20 +28,20 @@ logging.getLogger("urllib3").setLevel(logging.WARNING)
 
 
 async def main() -> None:
-    """Create bot and subscribe to topics/feeds"""
+    """Create a client and subscribe to channels/feeds"""
 
-    key = os.getenv("Futures_API_KEY")
-    secret = os.getenv("Futures_SECRET_KEY")
+    key = os.getenv("FUTURES_API_KEY")
+    secret = os.getenv("FUTURES_SECRET_KEY")
 
-    # ___Custom_Trading_Bot__________
+    # Custom client
     class Client(KrakenFuturesWSClient):
-        """Can be used to create a custom trading strategy/bot"""
+        """Can be used to create a custom trading strategy"""
 
         async def on_message(self: "Client", msg: Union[list, dict]) -> None:
-            """receives the websocket messages"""
+            """Receives the websocket messages"""
             logging.info(msg)
-            # ... apply your trading strategy here
-            # you can also combine this with the Futures REST clients
+            # … apply your trading strategy here
+            # … you can also combine this with the Futures REST clients
 
     # _____Public_Websocket_Feeds___________________
     client = Client()
@@ -97,7 +97,7 @@ if __name__ == "__main__":
         asyncio.run(main())
     except KeyboardInterrupt:
         # the websocket client will send {'event': 'asyncio.CancelledError'} via on_message
-        # so you can handle the behavior/next actions individually within you bot
+        # so you can handle the behavior/next actions individually within you strategy
         pass
 
 # ============================================================

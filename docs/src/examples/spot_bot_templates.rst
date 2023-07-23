@@ -3,7 +3,7 @@
 Spot Trading Bot Examples
 -------------------------
 
-The templates presented below serves as a starting point for the development of
+The templates presented below serve as starting points for the development of
 a trading algorithm for Spot trading on the cryptocurrency platform Kraken using
 the `python-kraken-sdk`_.
 

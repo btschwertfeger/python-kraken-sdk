@@ -76,8 +76,8 @@ Troubleshooting
   python-kraken-sdk.
 - Check the **permissions of your API keys** and the required permissions on the
   respective endpoints.
-- If you get some Cloudflare or **rate limit errors**, please check your Kraken
-  Tier level and maybe apply for a higher rank if required.
+- If you get some Cloudflare or **rate limit errors**, please check your
+  `Kraken`_ Tier level and maybe apply for a higher rank if required.
 - **Use different API keys for different algorithms**, because the nonce
   calculation is based on timestamps and a sent nonce must always be the highest
   nonce ever sent of that API key. Having multiple algorithms using the same
@@ -87,6 +87,7 @@ Troubleshooting
 
 References
 ----------
+
 - https://python-kraken-sdk.readthedocs.io/en/stable
 - https://docs.kraken.com/rest
 - https://docs.kraken.com/websockets
