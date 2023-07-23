@@ -34,9 +34,9 @@ jobs:
     uses: ./.github/workflows/_build.yaml
     needs: [Pre-Commit]
     strategy:
-      fail-fast: false
+      fail-fast: true
       matrix:
-        os: [macos-latest, ubuntu-latest] #, windows-latest]
+        os: [macos-latest, ubuntu-latest, windows-latest]
         python-version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
     with:
       os: ${{ matrix.os }}
@@ -63,7 +63,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest]
+        os: [ubuntu-latest, windows-latest]
         python-version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
     with:
       os: ${{ matrix.os }}
@@ -94,7 +94,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest]
+        os: [ubuntu-latest, windows-latest]
         python-version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
     with:
       os: ${{ matrix.os }}
@@ -108,7 +108,7 @@ jobs:
       max-parallel: 1 # to avoid failing tests because of API Rate limits
       fail-fast: false
       matrix:
-        os: [ubuntu-latest]
+        os: [ubuntu-latest, windows-latest]
         python-version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
     with:
       os: ${{ matrix.os }}
@@ -120,12 +120,10 @@ jobs:
   ##
   UploadTestPyPI:
     needs:
-      [
-        Test-Spot-Public,
-        Test-Spot-Private,
-        Test-Futures-Public,
-        Test-Futures-Private,
-      ]
+      - Test-Spot-Public
+      - Test-Spot-Private
+      - Test-Futures-Public
+      - Test-Futures-Private
     name: Upload the current release to Test PyPI
     uses: ./.github/workflows/_pypi_publish.yaml
     with:
