@@ -6,10 +6,14 @@
 
 **Closed issues:**
 
+- The content of `.pylintrc` can be moved into `pyproject.toml` [\#136](https://github.com/btschwertfeger/python-kraken-sdk/issues/136)
+- Build the package also on Windows within the CI [\#134](https://github.com/btschwertfeger/python-kraken-sdk/issues/134)
 - Add `/private/AccountTransfer` endpoint to `kraken.spot.User` [\#128](https://github.com/btschwertfeger/python-kraken-sdk/issues/128)
 
 Uncategorized merged pull requests:
 
+- Merge `.pylintrc` and `pyproject.toml` [\#137](https://github.com/btschwertfeger/python-kraken-sdk/pull/137) ([btschwertfeger](https://github.com/btschwertfeger))
+- Enable Windows builds within the CI [\#135](https://github.com/btschwertfeger/python-kraken-sdk/pull/135) ([btschwertfeger](https://github.com/btschwertfeger))
 - Add `/private/AccountTransfer` endpoint -\> `kraken.spot.User.account_transfer` [\#129](https://github.com/btschwertfeger/python-kraken-sdk/pull/129) ([btschwertfeger](https://github.com/btschwertfeger))
 
 ## [v1.5.0](https://github.com/btschwertfeger/python-kraken-sdk/tree/v1.5.0) (2023-07-16)

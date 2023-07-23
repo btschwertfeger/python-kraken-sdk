@@ -1053,5 +1053,51 @@ class User(KrakenBaseSpotAPI):
             params={"username": username, "email": email},
         )
 
+    def account_transfer(
+        self: "User", asset: str, amount: Union[str, int, float], from_: str, to_: str
+    ) -> dict:
+        """
+        Transfer funds between master and subaccounts. This is currently *only
+        available for institutional clients and must be called by the
+        master account*.
+
+        - https://docs.kraken.com/rest/#tag/User-Subaccounts/operation/accountTransfer
+
+        :param asset: The asset to transfer
+        :type asset: str
+        :param amount: The amount of that asset to transfer
+        :type amount: str | int | float
+        :param from_: The source account (IIBAN)
+        :type from_: str
+        :param to_: The destination account (IIBAN)
+        :type to_: str
+        :return: Success or failure
+        :rtype: dict
+
+        .. code-block:: python
+            :linenos:
+            :caption: Spot User: Transfer funds between accounts
+
+            >>> from kraken.spot import User
+            >>> user = User(key="api-key", secret="secret-key")
+            >>> user.account_transfer(
+            ...     "asset": "XBT",
+            ...     "amount": 1.0,
+            ...     "from": "ABCD 1234 EFGH 5678"
+            ...     "to": "IJKL 0987 MNOP 6543"
+            ... )
+            {
+                'result': {
+                    'transfer_id': 'TOH3AS2-LPCWR8-JDQGEU',
+                    'status': 'complete'
+                }
+            }
+        """
+        return self._request(  # type: ignore[return-value]
+            method="POST",
+            uri="/private/AccountTransfer",
+            params={"asset": asset, "amount": amount, "from": from_, "to": to_},
+        )
+
 
 __all__ = ["User"]

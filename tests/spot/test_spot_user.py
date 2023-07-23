@@ -378,12 +378,38 @@ def test_export_report_status_invalid(spot_auth_user: User) -> None:
 @pytest.mark.spot
 @pytest.mark.spot_auth
 @pytest.mark.spot_user
-def test_create_subaccount(spot_auth_user: User) -> None:
+def test_create_subaccount_failing(spot_auth_user: User) -> None:
     """
     Checks the ``create_subaccount`` function by creating one.
 
-    Creating subaccounts is only available for institutional clients (May 2023),
-    so a KrakenException.KrakenPermissionDeniedError will be raised.
+    Creating subaccounts is only available for institutional clients
+    (July 2023), so a KrakenException.KrakenPermissionDeniedError will be
+    raised.
+
+    todo: test this using a valid account
     """
     with pytest.raises(KrakenException.KrakenPermissionDeniedError):
         spot_auth_user.create_subaccount(email="abc@welt.de", username="tomtucker")
+
+
+@pytest.mark.wip
+@pytest.mark.spot
+@pytest.mark.spot_auth
+@pytest.mark.spot_user
+def test_account_transfer_failing(spot_auth_user: User) -> None:
+    """
+    Checks the ``account_transfer`` function by creating one.
+
+    Transferring funds between subaccounts is only available for institutional
+    clients (July 2023), so a KrakenException.KrakenPermissionDeniedError will
+    be raised.
+
+    todo: test this using a valid account
+    """
+    with pytest.raises(KrakenException.KrakenAuthenticationFailedError):
+        spot_auth_user.account_transfer(
+            asset="XBT",
+            amount=1.0,
+            from_="ABCD 1234 EFGH 5678",
+            to_="JKIL 9012 MNOP 3456",
+        )

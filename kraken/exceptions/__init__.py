@@ -62,6 +62,7 @@ class KrakenException(Exception):
             "EService:Market in cancel_only mode": self.KrakenMarketInOnlyCancelModeError,
             "EService:Market in post_only mode": self.KrakenMarketInOnlyPostModeError,
             "EService:Deadline elapsed": self.KrakenDeadlineElapsedError,
+            "EAuth:Failed": self.KrakenAuthenticationFailedError,
             "EAPI:Invalid key": self.KrakenInvalidAPIKeyError,
             "EAPI:Invalid signature": self.KrakenInvalidSignatureError,
             "EAPI:Invalid nonce": self.KrakenInvalidNonceError,
@@ -181,6 +182,10 @@ class KrakenException(Exception):
     @docstring_message
     class KrakenAuthenticationError(Exception):
         """Credentials are invalid."""
+
+    @docstring_message
+    class KrakenAuthenticationFailedError(Exception):
+        """The account or its permissions could not be authenticated."""
 
     @docstring_message
     class KrakenCannotOpenPositionError(Exception):
