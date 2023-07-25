@@ -7,8 +7,6 @@
 """
 Module that provides an example usage for the KrakenSpotWebsocketClient.
 It uses the Kraken Websocket API v1.
-
-todo: test this out
 """
 
 from __future__ import annotations
@@ -40,7 +38,7 @@ async def main() -> None:
     class Client(KrakenSpotWSClient):
         """Can be used to create a custom trading strategy"""
 
-        async def on_message(self: "Client", message: Union[list, dict]) -> None:
+        async def on_message(self: Client, message: Union[list, dict]) -> None:
             """Receives the websocket messages"""
             if isinstance(message, dict) and "event" in message:
                 topic = message["event"]
@@ -57,8 +55,8 @@ async def main() -> None:
             #         volume=200
             #     )
             # ... it is also possible to call regular REST endpoints
-            # but using the websocket messages is more efficient
-            # you can also un-/subscribe here using self.subscribe/self.unsubscribe
+            # but using the websocket messages is more efficient.
+            # You can also un-/subscribe here using self.subscribe/self.unsubscribe.
 
     # ___Public_Websocket_Feed_____
     client: Client = Client()  # only use this one if you don't need private feeds

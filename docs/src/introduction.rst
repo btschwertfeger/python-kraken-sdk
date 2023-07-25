@@ -52,15 +52,19 @@ Clients:
 
 - Spot REST Clients
 - Spot Websocket Clients (Websocket API v1 and v2)
+- Spot Orderbook Client
 - Futures REST Clients
 - Futures Websocket Client
 
 General:
 
-- access both public and private endpoints
-- responsive error handling, custom exceptions and logging
+
+- access both public and private, REST and websocket endpoints
+- responsive error handling and custom exceptions
 - extensive examples
-- all clients can be used as context manager
+- tested using the `pytest <https://docs.pytest.org/en/7.3.x/>`_ framework
+- releases are permanently archived at `Zenodo <https://zenodo.org/badge/latestdoi/510751854>`_
+
 
 Important Notice
 -----------------

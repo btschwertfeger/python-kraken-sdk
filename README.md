@@ -49,7 +49,7 @@ Clients:
 
 General:
 
-- access both public and private endpoints
+- access both public and private, REST and websocket endpoints
 - responsive error handling and custom exceptions
 - extensive example scripts (see `/examples` and `/tests`)
 - tested using the [pytest](https://docs.pytest.org/en/7.3.x/) framework
