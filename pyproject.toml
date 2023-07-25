@@ -87,7 +87,6 @@ local_scheme = "no-local-version"
 
 # ========= T E S T I N G =====================================================
 #
-
 [tool.pytest]
 junit_family = "xunit2"
 testpaths = ["tests"]

@@ -29,15 +29,13 @@ logging.getLogger("urllib3").setLevel(logging.WARNING)
 
 
 async def main() -> None:
-    """Create a client and subscribe to channels/feeds"""
-
     key: str = os.getenv("SPOT_API_KEY")
     secret: str = os.getenv("SPOT_SECRET_KEY")
 
     class Client(KrakenSpotWSClientV2):
         """Can be used to create a custom trading strategy"""
 
-        async def on_message(self: "Client", message: dict) -> None:
+        async def on_message(self: Client, message: dict) -> None:
             """Receives the websocket messages"""
             if message.get("method") == "pong" or message.get("channel") == "heartbeat":
                 return
@@ -60,8 +58,8 @@ async def main() -> None:
             #         }
             #     )
             # ... it is also possible to call regular REST endpoints
-            # but using the websocket messages is more efficient
-            # you can also un-/subscribe here using self.subscribe/self.unsubscribe
+            # but using the websocket messages is more efficient.
+            # You can also un-/subscribe here using self.subscribe/self.unsubscribe.
 
     # Public/unauthenticated websocket client
     client: Client = Client()  # only use this one if you don't need private feeds
@@ -84,7 +82,8 @@ async def main() -> None:
     )
     await client.subscribe(params={"channel": "trade", "symbol": ["BTC/USD"]})
 
-    await asyncio.sleep(3)  # wait because unsubscribing is faster than subscribing ...
+    # wait because unsubscribing is faster than unsubscribing ... (just for that example)
+    await asyncio.sleep(3)
     # print(client.active_public_subscriptions) # … to list active subscriptions
     await client.unsubscribe(
         params={"channel": "ticker", "symbol": ["BTC/USD", "DOT/USD"]}

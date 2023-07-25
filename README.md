@@ -73,10 +73,10 @@ release specific READMEs and changelogs.
 ## Table of Contents
 
 - [ Installation and setup ](#installation)
-- [ Spot Client Example Usage ](#spotusage)
+- [ Spot Clients Example Usage ](#spotusage)
   - [REST API](#spotrest)
-  - [Websockets](#spotws)
-- [ Futures Client Example Usage ](#futuresusage)
+  - [Websockets (V2)](#spotws)
+- [ Futures Clients Example Usage ](#futuresusage)
   - [REST API](#futuresrest)
   - [Websockets](#futuresws)
 - [ Troubleshooting ](#trouble)
@@ -115,10 +115,10 @@ persists please open an issue.
 
 <a name="spotusage"></a>
 
-# 📍 Spot Client Example Usage
+# 📍 Spot Clients Example Usage
 
-A template Spot trading bot using both websocket and REST clients can be found
-in `/examples/spot_trading_bot_template.py`.
+A template for Spot trading using both websocket and REST clients can be
+found in `/examples/spot_trading_bot_template_v2.py`.
 
 For those who need a realtime order book - a script that demonstrates how to
 maintain a valid order book can be found here: `/examples/spot_orderbook.py`.
@@ -184,107 +184,129 @@ if __name__ == "__main__":
 
 <a name="spotws"></a>
 
-## Websockets
+## Websockets (V2)
 
-Kraken offers two versions of their websocket API (V1 and V2).
+Kraken offers two versions of their websocket API (V1 and V2). Since V2 is
+offers more possibilities, is way faster and easier to use, only those examples
+are shown below. For using the websocket API V1 please have a look into the
+`examples` directory.
 
-The documentation can be found here:
+The documentation for both API versions can be found here:
 
 - https://docs.kraken.com/websockets
 - https://docs.kraken.com/websockets-v2
 
-Note that authenticated Spot websocket clients can also un/subscribe from/to
+Note that authenticated Spot websocket clients can also un-/subscribe from/to
 public feeds.
 
-### Websocket API V2
-
-todo: TBD
-
-### Websocket API V1
-
-The following example can be found in `/examples/spot_ws_examples_v1.py`.
+The following example can be found in `/examples/spot_ws_examples_v2.py`.
 
 ```python
-import time
 import asyncio
-from kraken.spot import KrakenSpotWSClient
+import os
+from kraken.spot import KrakenSpotWSClientV2
 
-async def main()
+async def main():
+    key = os.getenv("SPOT_API_KEY")
+    secret = os.getenv("SPOT_SECRET_KEY")
 
-    key = "kraken-public-key"
-    secret = "kraken-secret-key"
+    class Client(KrakenSpotWSClientV2):
+        """Can be used to create a custom trading strategy"""
 
-    class Client(KrakenSpotWSClient):
-        async def on_message(self, msg):
-            if isinstance(msg, dict) and "event" in msg:
-                if msg["event"] in ("pong", "heartbeat"):
-                    return
+        async def on_message(self, message):
+            """Receives the websocket messages"""
+            if message.get("method") == "pong" \
+                or message.get("channel") == "heartbeat":
+                return
 
-            print(msg)
-            # if condition:
-            #     await self.create_order(
-            #         ordertype="limit",
-            #         side="buy",
-            #         pair="BTC/EUR",
-            #         price=20000,
-            #         volume=1
+            print(message)
+            # here we can access lots of methods, for example to create an order:
+            # if self._is_auth:  # only if the client is authenticated …
+            #     await self.send_message(
+            #         message={
+            #             "method": "add_order",
+            #             "params": {
+            #                 "limit_price": 1234.56,
+            #                 "order_type": "limit",
+            #                 "order_userref": 123456789,
+            #                 "order_qty": 1.0,
+            #                 "side": "buy",
+            #                 "symbol": "BTC/USD",
+            #                 "validate": True,
+            #             },
+            #         }
             #     )
-            # ... it is also possible to call regular Spot REST endpoints
-            # but using the WsClient's functions is more efficient
-            # because the requests will be sent via the ws connection
+            # ... it is also possible to call regular REST endpoints
+            # but using the websocket messages is more efficient.
+            # You can also un-/subscribe here using self.subscribe/self.unsubscribe.
 
-    # ___Public_Websocket_Feeds__
-    client = Client() # only use the unauthenticated client if you don't need private feeds
-    print(client.public_channel_names) # list public channel names
+    # Public/unauthenticated websocket client
+    client = Client()  # only use this one if you don't need private feeds
+    # print(client.public_channel_names)  # list public subscription names
 
-    await client.subscribe(subscription={ "name": "ticker" }, pair=["XBT/EUR", "DOT/EUR"])
-    await client.subscribe(subscription={ "name": "spread" }, pair=["XBT/EUR", "DOT/EUR"])
-    # await client.subscribe(subscription={ "name": "book" }, pair=["BTC/EUR"])
-    # await client.subscribe(subscription={ "name": "book", "depth": 25}, pair=["BTC/EUR"])
-    # await client.subscribe(subscription={ "name": "ohlc" }, pair=["BTC/EUR"])
-    # await client.subscribe(subscription={ "name": "ohlc", "interval": 15}, pair=["XBT/EUR", "DOT/EUR"])
-    # await client.subscribe(subscription={ "name": "trade" }, pair=["BTC/EUR"])
-    # await client.subscribe(subscription={ "name": "*" } , pair=["BTC/EUR"])
+    await client.subscribe(
+        params={"channel": "ticker", "symbol": ["BTC/USD", "DOT/USD"]}
+    )
+    await client.subscribe(
+        params={"channel": "book", "depth": 25, "symbol": ["BTC/USD"]}
+    )
+    await client.subscribe(params={"channel": "ohlc", "symbol": ["BTC/USD"]})
+    await client.subscribe(
+        params={
+            "channel": "ohlc",
+            "interval": 15,
+            "snapshot": False,
+            "symbol": ["BTC/USD", "DOT/USD"],
+        }
+    )
+    await client.subscribe(params={"channel": "trade", "symbol": ["BTC/USD"]})
 
-    time.sleep(2) # wait because unsubscribing is faster than subscribing ...
-    await client.unsubscribe(subscription={ "name": "ticker" }, pair=["XBT/EUR","DOT/EUR"])
-    await client.unsubscribe(subscription={ "name": "spread" }, pair=["XBT/EUR"])
-    await client.unsubscribe(subscription={ "name": "spread" }, pair=["DOT/EUR"])
+    # wait because unsubscribing is faster than unsubscribing ... (just for that example)
+    await asyncio.sleep(3)
+    # print(client.active_public_subscriptions) # … to list active subscriptions
+    await client.unsubscribe(
+        params={"channel": "ticker", "symbol": ["BTC/USD", "DOT/USD"]}
+    )
     # ...
 
-    # ___Authenticated_Websocket_________
+    # Per default, the authenticated client starts two websocket connections,
+    # one for authenticated and one for public messages. If there is no need
+    # for a public connection, it can be disabled using the ``no_public``
+    # parameter.
+    client_auth = Client(key=key, secret=secret, no_public=True)
+    # print(client_auth.private_channel_names)  # … list private channel names
     # when using the authenticated client, you can also subscribe to public feeds
-    client_auth = Client(key=key, secret=secret)
-    print(client_auth.private_channel_names) # list private channel names
-    await client_auth.subscribe(subscription={ "name": "ownTrades" })
-    await client_auth.subscribe(subscription={ "name": "openOrders" })
+    await client_auth.subscribe(params={"channel": "executions"})
 
-    time.sleep(2)
-    await client_auth.unsubscribe(subscription={ "name": "ownTrades" })
-    await client_auth.unsubscribe(subscription={ "name": "openOrders" })
+    await asyncio.sleep(5)
+    await client_auth.unsubscribe(params={"channel": "executions"})
 
-    while while not client.exception_occur and not client_auth.exception_occur:
+    while not client.exception_occur and not client_auth.exception_occur:
         await asyncio.sleep(6)
+    return
+
 
 if __name__ == "__main__":
     try:
         asyncio.run(main())
     except KeyboardInterrupt:
-        # do some exception handling ...
         pass
+        # The websocket client will send {'event': 'asyncio.CancelledError'}
+        # via on_message so you can handle the behavior/next actions
+        # individually within your strategy.
 ```
 
 ---
 
 <a name="futuresusage"></a>
 
-# 📍 Futures Client Example Usage
+# 📍 Futures Clients Example Usage
 
 Kraken provides a sandbox environment at https://demo-futures.kraken.com for
 paper trading. When using this API keys you have to set the `sandbox` parameter
 to `True` when instantiating the respective client.
 
-A template Futures trading bot using both websocket and REST clients can be
+A template for Futures trading using both websocket and REST clients can be
 found in `/examples/futures_trading_bot_template.py`.
 
 <a name="futuresrest"></a>
