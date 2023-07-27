@@ -1,7 +1,12 @@
-.. The futures trading bot
+.. -*- coding: utf-8 -*-
+.. Copyright (C) 2023 Benjamin Thomas Schwertfeger
+.. GitHub: https://github.com/btschwertfeger
 
-Futures Trading Bot Example
+.. The futures trading bot template
+
+Futures Trading Bot Template
 ----------------------------
+
 
 The template presented below serves as a starting point for the development of
 a trading algorithm for trading futures contracts on the cryptocurrency exchange

@@ -1,6 +1,10 @@
+.. -*- coding: utf-8 -*-
+.. Copyright (C) 2023 Benjamin Thomas Schwertfeger
+.. GitHub: https://github.com/btschwertfeger
+
 .. The spot trading bot templates
 
-Spot Trading Bot Examples
+Spot Trading Bot Templates
 -------------------------
 
 The templates presented below serve as starting points for the development of

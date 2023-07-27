@@ -1,3 +1,7 @@
+.. -*- coding: utf-8 -*-
+.. Copyright (C) 2023 Benjamin Thomas Schwertfeger
+.. GitHub: https://github.com/btschwertfeger
+
 .. The Futures websocket examples
 
 Futures Websocket Usage Examples
