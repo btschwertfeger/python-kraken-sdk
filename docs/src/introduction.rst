@@ -48,7 +48,7 @@ regarding the use of this software.
 Features
 --------
 
-Clients:
+Available Clients:
 
 - Spot REST Clients
 - Spot Websocket Clients (Websocket API v1 and v2)
@@ -57,7 +57,6 @@ Clients:
 - Futures Websocket Client
 
 General:
-
 
 - access both public and private, REST and websocket endpoints
 - responsive error handling and custom exceptions

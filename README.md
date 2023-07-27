@@ -1,4 +1,4 @@
-<h1 align="center">Futures and Spot Websocket and REST API Python SDK for the Kraken Cryptocurrency Exchange 🐙</h1>
+<h1 align="center">Futures and Spot - REST and Websocket API Python SDK for the Kraken Cryptocurrency Exchange 🐙</h1>
 
 <div align="center">
 
@@ -39,7 +39,7 @@ regarding the use of this software.
 
 ## Features
 
-Clients:
+Available Clients:
 
 - Spot REST Clients
 - Spot Websocket Clients (Websocket API v1 and v2)
@@ -57,8 +57,8 @@ General:
 
 Documentation:
 
-- Stable: [https://python-kraken-sdk.readthedocs.io/en/stable](https://python-kraken-sdk.readthedocs.io/en/stable)
-- Latest: [https://python-kraken-sdk.readthedocs.io/en/latest](https://python-kraken-sdk.readthedocs.io/en/latest)
+- [https://python-kraken-sdk.readthedocs.io/en/stable](https://python-kraken-sdk.readthedocs.io/en/stable)
+- [https://python-kraken-sdk.readthedocs.io/en/latest](https://python-kraken-sdk.readthedocs.io/en/latest)
 
 ---
 
@@ -73,12 +73,12 @@ release specific READMEs and changelogs.
 ## Table of Contents
 
 - [ Installation and setup ](#installation)
-- [ Spot Clients Example Usage ](#spotusage)
+- [ Spot Clients ](#spotusage)
   - [REST API](#spotrest)
-  - [Websockets (V2)](#spotws)
-- [ Futures Clients Example Usage ](#futuresusage)
+  - [Websocket API V2)](#spotws)
+- [ Futures Clients ](#futuresusage)
   - [REST API](#futuresrest)
-  - [Websockets](#futuresws)
+  - [Websocket API](#futuresws)
 - [ Troubleshooting ](#trouble)
 - [ Contributions ](#contribution)
 - [ Notes ](#notes)
@@ -115,7 +115,7 @@ persists please open an issue.
 
 <a name="spotusage"></a>
 
-# 📍 Spot Clients Example Usage
+# 📍 Spot Clients
 
 A template for Spot trading using both websocket and REST clients can be
 found in `/examples/spot_trading_bot_template_v2.py`.
@@ -184,7 +184,7 @@ if __name__ == "__main__":
 
 <a name="spotws"></a>
 
-## Websockets (V2)
+## Spot Websocket API V2
 
 Kraken offers two versions of their websocket API (V1 and V2). Since V2 is
 offers more possibilities, is way faster and easier to use, only those examples
@@ -199,16 +199,16 @@ The documentation for both API versions can be found here:
 Note that authenticated Spot websocket clients can also un-/subscribe from/to
 public feeds.
 
-The following example can be found in `/examples/spot_ws_examples_v2.py`.
+The example below can be found in an extended way in
+`/examples/spot_ws_examples_v2.py`.
 
 ```python
 import asyncio
-import os
 from kraken.spot import KrakenSpotWSClientV2
 
 async def main():
-    key = os.getenv("SPOT_API_KEY")
-    secret = os.getenv("SPOT_SECRET_KEY")
+    key = "spot-api-key
+    secret = "spot-secret-key"
 
     class Client(KrakenSpotWSClientV2):
         """Can be used to create a custom trading strategy"""
@@ -242,7 +242,6 @@ async def main():
 
     # Public/unauthenticated websocket client
     client = Client()  # only use this one if you don't need private feeds
-    # print(client.public_channel_names)  # list public subscription names
 
     await client.subscribe(
         params={"channel": "ticker", "symbol": ["BTC/USD", "DOT/USD"]}
@@ -250,17 +249,6 @@ async def main():
     await client.subscribe(
         params={"channel": "book", "depth": 25, "symbol": ["BTC/USD"]}
     )
-    await client.subscribe(params={"channel": "ohlc", "symbol": ["BTC/USD"]})
-    await client.subscribe(
-        params={
-            "channel": "ohlc",
-            "interval": 15,
-            "snapshot": False,
-            "symbol": ["BTC/USD", "DOT/USD"],
-        }
-    )
-    await client.subscribe(params={"channel": "trade", "symbol": ["BTC/USD"]})
-
     # wait because unsubscribing is faster than unsubscribing ... (just for that example)
     await asyncio.sleep(3)
     # print(client.active_public_subscriptions) # … to list active subscriptions
@@ -274,12 +262,7 @@ async def main():
     # for a public connection, it can be disabled using the ``no_public``
     # parameter.
     client_auth = Client(key=key, secret=secret, no_public=True)
-    # print(client_auth.private_channel_names)  # … list private channel names
-    # when using the authenticated client, you can also subscribe to public feeds
     await client_auth.subscribe(params={"channel": "executions"})
-
-    await asyncio.sleep(5)
-    await client_auth.unsubscribe(params={"channel": "executions"})
 
     while not client.exception_occur and not client_auth.exception_occur:
         await asyncio.sleep(6)
@@ -300,7 +283,7 @@ if __name__ == "__main__":
 
 <a name="futuresusage"></a>
 
-# 📍 Futures Clients Example Usage
+# 📍 Futures Clients
 
 Kraken provides a sandbox environment at https://demo-futures.kraken.com for
 paper trading. When using this API keys you have to set the `sandbox` parameter
@@ -392,9 +375,10 @@ if __name__ == "__main__":
 
 <a name="futuresws"></a>
 
-## Futures Websocket Client
+## Futures Websocket API
 
-The following example can be found in `/examples/futures_ws_examples.py`.
+The following example can be found as extended version in
+`/examples/futures_ws_examples.py`.
 
 ```python
 import asyncio
@@ -405,17 +389,13 @@ async def main():
     key = "futures-api-key"
     secret = "futures-secret-key"
 
-    # ___Custom_Trading_Client________
     class Client(KrakenFuturesWSClient):
 
         async def on_message(self, event):
             print(event)
-            # >> apply your trading strategy here <<
-            # you can also combine this with the Futures REST clients
 
-    # ___Public_Websocket_Feeds____
+    # Public/unauthenticated websocket connection
     client = Client()
-    # print(client.get_available_public_subscription_feeds())
 
     products = ["PI_XBTUSD", "PF_ETHUSD"]
 
@@ -427,7 +407,7 @@ async def main():
     # unsubscribe from a public websocket feed
     # await client.unsubscribe(feed="ticker", products=products)
 
-    # ___Authenticated_Websocket_________
+    # Private/authenticated websocket connection (+public)
     client_auth = Client(key=key, secret=secret)
     # print(client_auth.get_available_private_subscription_feeds())
 
@@ -451,7 +431,8 @@ if __name__ == "__main__":
         pass
 ```
 
-Note: Authenticated Futures websocket clients can also un-/subscribe from/to public feeds.
+Note: Authenticated Futures websocket clients can also un-/subscribe from/to
+public feeds.
 
 ---
 
@@ -467,10 +448,16 @@ Note: Authenticated Futures websocket clients can also un-/subscribe from/to pub
 
 # 🚨 Troubleshooting
 
-- Check if you downloaded and installed the **latest version** of the python-kraken-sdk.
-- Check the **permissions of your API keys** and the required permissions on the respective endpoints.
-- If you get some Cloudflare or **rate limit errors**, please check your Kraken Tier level and maybe apply for a higher rank if required.
-- **Use different API keys for different algorithms**, because the nonce calculation is based on timestamps and a sent nonce must always be the highest nonce ever sent of that API key. Having multiple algorithms using the same keys will result in invalid nonce errors.
+- Check if you downloaded and installed the **latest version** of the
+  python-kraken-sdk.
+- Check the **permissions of your API keys** and the required permissions on the
+  respective endpoints.
+- If you get some Cloudflare or **rate limit errors**, please check your Kraken
+  Tier level and maybe apply for a higher rank if required.
+- **Use different API keys for different algorithms**, because the nonce
+  calculation is based on timestamps and a sent nonce must always be the highest
+  nonce ever sent of that API key. Having multiple algorithms using the same
+  keys will result in invalid nonce errors.
 
 ---
 
