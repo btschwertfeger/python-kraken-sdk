@@ -25,9 +25,9 @@ class KrakenFuturesWSClient(KrakenBaseFuturesAPI):
     Class to access public and (optional)
     private/authenticated websocket connection.
 
-    So far there are no trade endpoints that can be accessed using the
-    Futures Kraken API. If this has changed and not implemented yet,
-    please open an issue: https://github.com/btschwertfeger/python-kraken-sdk/issues
+    So far there are no trade endpoints that can be accessed using the Futures
+    Kraken API. If this has changed and is not implemented yet, please open an
+    issue at https://github.com/btschwertfeger/python-kraken-sdk/issues
 
     - https://docs.futures.kraken.com/#websocket-api
 

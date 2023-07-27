@@ -259,110 +259,6 @@ class ConnectSpotWebsocketBase:
         )
 
 
-class ConnectSpotWebsocketV2(ConnectSpotWebsocketBase):
-    """
-    This class extends the
-    :class:`kraken.spot.websocket.connectors.ConnectSpotWebsocketBase` and
-    can be instantiated to create and maintain a websocket connection using
-    the Kraken Websocket API v2.
-
-    **This is an internal class and should not be used outside.**
-
-    :param client: The websocket client that wants to connect
-    :type client: :class:`kraken.spot.KrakenSpotWSClientBase`
-    :param endpoint: The websocket endpoint
-    :type endpoint: str
-    :param callback: Callback function that receives the websocket messages
-    :type callback: function
-    :param is_auth: If the websocket connects to endpoints that
-        require authentication (default: ``False``)
-    :type is_auth: bool, optional
-    """
-
-    def __init__(
-        self: ConnectSpotWebsocketV2,
-        client: KrakenSpotWSClientBase,
-        endpoint: str,
-        callback: Any,
-        is_auth: bool = False,
-    ) -> None:
-        super().__init__(
-            client=client, endpoint=endpoint, callback=callback, is_auth=is_auth
-        )
-
-    async def send_ping(self: ConnectSpotWebsocketV2) -> None:
-        """Sends ping to Kraken"""
-        await self.socket.send(json.dumps({"method": "ping"}))
-        self._last_ping = time()
-
-    async def _recover_subscriptions(
-        self: ConnectSpotWebsocketV2, event: asyncio.Event
-    ) -> None:
-        """
-        Executes the subscribe function for all subscriptions that were  tracked
-        locally. This function is called when the connection was closed to
-        recover the subscriptions.
-
-        :param event: Event to wait for (so this is only executed when
-            it is set to ``True`` - which is when the connection is ready)
-        :type event: asyncio.Event
-        """
-        log_msg: str = f'Recover {"authenticated" if self.is_auth else "public"} subscriptions {self._subscriptions}'
-        self.LOG.info(f"{log_msg} waiting.")
-        await event.wait()
-
-        for subscription in self._subscriptions:
-            await self.client.subscribe(params=subscription)
-            self.LOG.info(f"{subscription} OK")
-
-        self.LOG.info(f"{log_msg} done.")
-
-    def _manage_subscriptions(self: ConnectSpotWebsocketV2, message: dict) -> None:  # type: ignore[override]
-        """
-        Checks if the message contains events about un-/subscriptions
-        to add or remove these from the list of current tracked subscriptions.
-
-        :param message: The message to check for subscriptions
-        :type message: dict
-        """
-        if message.get("method") == "subscribe":
-            if message.get("success") and message.get("result"):
-                self.__append_subscription(subscription=message["result"])
-            else:
-                self.LOG.warning(message)
-
-        elif message.get("method") == "unsubscribe":
-            if message.get("success") and message.get("result"):
-                self.__remove_subscription(subscription=message["result"])
-            else:
-                self.LOG.warning(message)
-
-    def __append_subscription(self: ConnectSpotWebsocketV2, subscription: dict) -> None:
-        """
-        Appends a subscription to the local list of tracked subscriptions.
-
-        :param subscription: The subscription to append
-        :type subscription: dict
-        """
-        self.__remove_subscription(subscription=subscription)
-        self._subscriptions.append(subscription)
-
-    def __remove_subscription(self: ConnectSpotWebsocketV2, subscription: dict) -> None:
-        """
-        Removes a subscription from the list of locally tracked subscriptions.
-
-        :param subscription: The subscription to remove.
-        :type subscription: dict
-        """
-        for position, sub in enumerate(self._subscriptions):
-            if sub == subscription or (
-                subscription.get("channel", False) == sub.get("channel", False)
-                and subscription.get("symbol", False) == sub.get("symbol", False)
-            ):
-                del self._subscriptions[position]
-                return
-
-
 class ConnectSpotWebsocketV1(ConnectSpotWebsocketBase):
     """
     This class extends the
@@ -518,6 +414,110 @@ class ConnectSpotWebsocketV1(ConnectSpotWebsocketBase):
                 "package maintainer."
             )
         return sub
+
+
+class ConnectSpotWebsocketV2(ConnectSpotWebsocketBase):
+    """
+    This class extends the
+    :class:`kraken.spot.websocket.connectors.ConnectSpotWebsocketBase` and
+    can be instantiated to create and maintain a websocket connection using
+    the Kraken Websocket API v2.
+
+    **This is an internal class and should not be used outside.**
+
+    :param client: The websocket client that wants to connect
+    :type client: :class:`kraken.spot.KrakenSpotWSClientBase`
+    :param endpoint: The websocket endpoint
+    :type endpoint: str
+    :param callback: Callback function that receives the websocket messages
+    :type callback: function
+    :param is_auth: If the websocket connects to endpoints that
+        require authentication (default: ``False``)
+    :type is_auth: bool, optional
+    """
+
+    def __init__(
+        self: ConnectSpotWebsocketV2,
+        client: KrakenSpotWSClientBase,
+        endpoint: str,
+        callback: Any,
+        is_auth: bool = False,
+    ) -> None:
+        super().__init__(
+            client=client, endpoint=endpoint, callback=callback, is_auth=is_auth
+        )
+
+    async def send_ping(self: ConnectSpotWebsocketV2) -> None:
+        """Sends ping to Kraken"""
+        await self.socket.send(json.dumps({"method": "ping"}))
+        self._last_ping = time()
+
+    async def _recover_subscriptions(
+        self: ConnectSpotWebsocketV2, event: asyncio.Event
+    ) -> None:
+        """
+        Executes the subscribe function for all subscriptions that were  tracked
+        locally. This function is called when the connection was closed to
+        recover the subscriptions.
+
+        :param event: Event to wait for (so this is only executed when
+            it is set to ``True`` - which is when the connection is ready)
+        :type event: asyncio.Event
+        """
+        log_msg: str = f'Recover {"authenticated" if self.is_auth else "public"} subscriptions {self._subscriptions}'
+        self.LOG.info(f"{log_msg} waiting.")
+        await event.wait()
+
+        for subscription in self._subscriptions:
+            await self.client.subscribe(params=subscription)
+            self.LOG.info(f"{subscription} OK")
+
+        self.LOG.info(f"{log_msg} done.")
+
+    def _manage_subscriptions(self: ConnectSpotWebsocketV2, message: dict) -> None:  # type: ignore[override]
+        """
+        Checks if the message contains events about un-/subscriptions
+        to add or remove these from the list of current tracked subscriptions.
+
+        :param message: The message to check for subscriptions
+        :type message: dict
+        """
+        if message.get("method") == "subscribe":
+            if message.get("success") and message.get("result"):
+                self.__append_subscription(subscription=message["result"])
+            else:
+                self.LOG.warning(message)
+
+        elif message.get("method") == "unsubscribe":
+            if message.get("success") and message.get("result"):
+                self.__remove_subscription(subscription=message["result"])
+            else:
+                self.LOG.warning(message)
+
+    def __append_subscription(self: ConnectSpotWebsocketV2, subscription: dict) -> None:
+        """
+        Appends a subscription to the local list of tracked subscriptions.
+
+        :param subscription: The subscription to append
+        :type subscription: dict
+        """
+        self.__remove_subscription(subscription=subscription)
+        self._subscriptions.append(subscription)
+
+    def __remove_subscription(self: ConnectSpotWebsocketV2, subscription: dict) -> None:
+        """
+        Removes a subscription from the list of locally tracked subscriptions.
+
+        :param subscription: The subscription to remove.
+        :type subscription: dict
+        """
+        for position, sub in enumerate(self._subscriptions):
+            if sub == subscription or (
+                subscription.get("channel", False) == sub.get("channel", False)
+                and subscription.get("symbol", False) == sub.get("symbol", False)
+            ):
+                del self._subscriptions[position]
+                return
 
 
 __all__ = [

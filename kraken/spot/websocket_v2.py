@@ -39,7 +39,7 @@ class KrakenSpotWSClientV2(KrakenSpotWSClientBase):
 
     When accessing private endpoints that need authentication make sure,
     that the ``Access WebSockets API`` API key permission is set in the user's
-    account. To place or cancel orders, querying leger information or accessing
+    account. To place or cancel orders, querying ledger information or accessing
     live portfolio changes (fills, new orders, ...) there are separate
     permissions that must be enabled if required.
 
@@ -194,10 +194,11 @@ class KrakenSpotWSClientV2(KrakenSpotWSClientBase):
         :class:`kraken.spot.KrakenSpotWSClientV2` where ``client`` uses
         public connections (without authentication) and ``client_auth`` must
         be instantiated using valid credentials since only this way placing or
-        cancelling orders can be done on that user account.
+        canceling orders can be done.
 
         **Please note that the send_message function will automatically
-        pass the authentication token (except for the case if** ``raw=True``**).**
+        pass the authentication token (except for the case if** ``raw=True``
+        **).**
 
         **Placing orders** using an authenticated websocket connection can be
         easily done as shown in the example below. See
@@ -345,7 +346,7 @@ class KrakenSpotWSClientV2(KrakenSpotWSClientBase):
 
         **Subscribing** to websocket feeds can be done using the send_message
         function but it is recommended to use
-        :func:`kraken.spot.KrakenSpotWSClientV2.subscribe`.
+        :func:`kraken.spot.KrakenSpotWSClientV2.subscribe` instead.
 
         .. code-block:: python
             :linenos:
@@ -428,7 +429,7 @@ class KrakenSpotWSClientV2(KrakenSpotWSClientBase):
         received via the on_message or callback function.
 
         When accessing private endpoints and subscription feeds that need
-        authentication make sure, that the ``Access WebSockets API`` API key
+        authentication make sure that the ``Access WebSockets API`` API key
         permission is set in the users Kraken account.
 
         - https://docs.kraken.com/websockets-v2/#subscribe
@@ -437,7 +438,7 @@ class KrakenSpotWSClientV2(KrakenSpotWSClientBase):
 
         **Please note** that this function automatically assigns the ``method``
         key and sets its value to ``subscribe``. The authentication token is
-        also assigned automatically, so only the params part is needed here.
+        also assigned automatically, so only the ``params`` are needed here.
 
         :param params: The subscription message
         :type params: dict

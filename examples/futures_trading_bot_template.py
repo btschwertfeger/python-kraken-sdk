@@ -4,7 +4,10 @@
 # GitHub: https://github.com/btschwertfeger
 #
 
-"""Module that provides an example Futures trading bot data structure."""
+"""
+Module that provides a template to build a Futures trading algorithm using the
+python-kraken-sdk.
+"""
 
 from __future__ import annotations
 
@@ -36,8 +39,8 @@ class TradingBot(KrakenFuturesWSClient):
     """
     Class that implements the trading strategy
 
-    * The on_message function gets all events from the websocket feed
-    * Decisions can be made based on these events
+    * The on_message function gets all messages sent by the websocket feeds.
+    * Decisions can be made based on these messages
     * Can place trades using the self.__trade client
     * Do everything you want
 
@@ -51,9 +54,9 @@ class TradingBot(KrakenFuturesWSClient):
     """
 
     def __init__(self: TradingBot, config: dict) -> None:
-        super().__init__(
+        super().__init__(  # initialize the KrakenFuturesWSClient
             key=config["key"], secret=config["secret"]
-        )  # initialize the KrakenFuturesWSClient
+        )
         self.__config: dict = config
 
         self.__user: User = User(key=config["key"], secret=config["secret"])
@@ -64,29 +67,31 @@ class TradingBot(KrakenFuturesWSClient):
     async def on_message(self: TradingBot, msg: Union[list, dict]) -> None:
         """Receives all messages that came form the websocket feed(s)"""
         logging.info(msg)
-        # ... apply your trading strategy here
 
-        # call functions from self.__trade and other clients if conditions met...
+        # == apply your trading strategy here ==
 
-        # response = self.__trade.create_order(
-        #     orderType='lmt',
-        #     size=2,
-        #     symbol='PI_XBTUSD',
-        #     side='buy',
-        #     limitPrice=10000
+        # Call functions of `self.__trade` and other clients if conditions met …
+        # print(
+        #     self.__trade.create_order(
+        #         orderType='lmt',
+        #         size=2,
+        #         symbol='PI_XBTUSD',
+        #         side='buy',
+        #         limitPrice=10000
+        #     )
         # )
-        # ...
 
-        # you can also un-/subscribe here using `self.subscribe(...)` or `self.unsubscribe(...)`
+        # You can also un-/subscribe here using `self.subscribe(...)` or
+        # `self.unsubscribe(...)`
+        # … more can be found in the documentation
+        #        (https://python-kraken-sdk.readthedocs.io/en/stable/).
 
-    # add more functions to customize the trading strategy
-    # ...
-    # ...
+    # Add more functions to customize the trading strategy …
 
     def save_exit(self: TradingBot, reason: Optional[str] = "") -> None:
         """Controlled shutdown of the strategy"""
         logging.warning(f"Save exit triggered, reason: {reason}")
-        # ideas:
+        # some ideas:
         #   * save the bots data
         #   * maybe close trades
         #   * enable dead man's switch
@@ -97,7 +102,8 @@ class ManagedBot:
     """
     Class to manage the trading strategy
 
-    Subscribes to desired feeds, instantiates the strategy and runs until condition met
+    … subscribes to desired feeds, instantiates the strategy and runs as long
+    as there is no error.
 
     ====== P A R A M E T E R S ======
     config: dict
@@ -120,19 +126,19 @@ class ManagedBot:
         try:
             asyncio.run(self.__main())
         except KeyboardInterrupt:
-            pass
-        finally:
-            if self.__trading_strategy is not None:
-                self.__trading_strategy.save_exit(reason="Asyncio loop left")
+            self.save_exit(reason="KeyboardInterrupt")
+        else:
+            self.save_exit(reason="Asyncio loop left")
 
     async def __main(self: ManagedBot) -> None:
         """
         Instantiates the trading strategy/algorithm and subscribes to the
         desired websocket feeds. Run the loop while no exception occur.
 
-        Thi variable `exception_occur` which is an attribute of the KrakenFuturesWSClient
-        can be set individually but is also being set to `True` if the websocket connection
-        has some fatal error. This is used to exit the asyncio loop.
+        Thi variable `exception_occur` which is an attribute of the
+        KrakenFuturesWSClient can be set individually but is also being set to
+        `True` if the websocket connection has some fatal error. This is used to
+        exit the asyncio loop - but you can also apply your own reconnect rules.
         """
         self.__trading_strategy = TradingBot(config=self.__config)
 
@@ -150,9 +156,9 @@ class ManagedBot:
 
         while not self.__trading_strategy.exception_occur:
             try:
-                # check if bot feels good
+                # check if the strategy feels good
                 # maybe send a status update every day
-                # ...
+                # …
                 pass
 
             except Exception as exc:
@@ -170,7 +176,7 @@ class ManagedBot:
         """Checks the user credentials and the connection to Kraken"""
         try:
             User(self.__config["key"], self.__config["secret"]).get_wallets()
-            logging.info("Client credentials are valid")
+            logging.info("Client credentials are valid.")
             return True
         except urllib3.exceptions.MaxRetryError:
             logging.error("MaxRetryError, cannot connect.")
@@ -187,17 +193,22 @@ class ManagedBot:
         print(f"Save exit triggered - {reason}")
         if self.__trading_strategy is not None:
             self.__trading_strategy.save_exit(reason=reason)
+        else:
+            sys.exit(1)
 
 
 def main() -> None:
-    """Main"""
-    bot_config: dict = {
-        "key": os.getenv("FUTURES_API_KEY"),
-        "secret": os.getenv("FUTURES_SECRET_KEY"),
-        "products": ["PI_XBTUSD", "PF_SOLUSD"],
-    }
+    """Example main - load environment variables and run the strategy."""
+
+    managed_bot: ManagedBot = ManagedBot(
+        config={
+            "key": os.getenv("FUTURES_API_KEY"),
+            "secret": os.getenv("FUTURES_SECRET_KEY"),
+            "products": ["PI_XBTUSD", "PF_SOLUSD"],
+        }
+    )
+
     try:
-        managed_bot: ManagedBot = ManagedBot(config=bot_config)
         managed_bot.run()
     except Exception:
         managed_bot.save_exit(

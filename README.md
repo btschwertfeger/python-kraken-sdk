@@ -75,7 +75,7 @@ release specific READMEs and changelogs.
 - [ Installation and setup ](#installation)
 - [ Spot Clients ](#spotusage)
   - [REST API](#spotrest)
-  - [Websocket API V2)](#spotws)
+  - [Websocket API V2](#spotws)
 - [ Futures Clients ](#futuresusage)
   - [REST API](#futuresrest)
   - [Websocket API](#futuresws)
@@ -118,16 +118,22 @@ persists please open an issue.
 # 📍 Spot Clients
 
 A template for Spot trading using both websocket and REST clients can be
-found in `/examples/spot_trading_bot_template_v2.py`.
+found in `examples/spot_trading_bot_template_v2.py`.
 
 For those who need a realtime order book - a script that demonstrates how to
-maintain a valid order book can be found here: `/examples/spot_orderbook.py`.
+maintain a valid order book using the Orderbook client can be found in
+`examples/spot_orderbook.py`.
 
 <a name="spotrest"></a>
 
 ## Spot REST API
 
-... can be found in `/examples/spot_examples.py`
+The Kraken Spot REST API offers many endpoints for almost every use-case. The
+python-kraken-sdk aims to provide all of them - split in User, Market,
+Trade, Funding and Staking related clients.
+
+The following code block demonstrates how to use some of them. More examples
+can be found in `examples/spot_examples.py`.
 
 ```python
 from kraken.spot import User, Market, Trade, Funding, Staking
@@ -189,7 +195,7 @@ if __name__ == "__main__":
 Kraken offers two versions of their websocket API (V1 and V2). Since V2 is
 offers more possibilities, is way faster and easier to use, only those examples
 are shown below. For using the websocket API V1 please have a look into the
-`examples` directory.
+`examples/spot_ws_examples_v1.py`.
 
 The documentation for both API versions can be found here:
 
@@ -200,14 +206,14 @@ Note that authenticated Spot websocket clients can also un-/subscribe from/to
 public feeds.
 
 The example below can be found in an extended way in
-`/examples/spot_ws_examples_v2.py`.
+`examples/spot_ws_examples_v2.py`.
 
 ```python
 import asyncio
 from kraken.spot import KrakenSpotWSClientV2
 
 async def main():
-    key = "spot-api-key
+    key = "spot-api-key"
     secret = "spot-secret-key"
 
     class Client(KrakenSpotWSClientV2):
@@ -286,17 +292,24 @@ if __name__ == "__main__":
 # 📍 Futures Clients
 
 Kraken provides a sandbox environment at https://demo-futures.kraken.com for
-paper trading. When using this API keys you have to set the `sandbox` parameter
-to `True` when instantiating the respective client.
+Futures paper trading. When using these API keys you have to set the `sandbox`
+parameter to `True` when instantiating the respective client.
 
 A template for Futures trading using both websocket and REST clients can be
-found in `/examples/futures_trading_bot_template.py`.
+found in `examples/futures_trading_bot_template.py`.
+
+The Kraken Futures API documentation can be found here:
+
+- https://docs.futures.kraken.com
+- https://support.kraken.com/hc/en-us/sections/360012894412-Futures-API
 
 <a name="futuresrest"></a>
 
 ## Futures REST API
 
-The following example can be found in `/examples/futures_examples.py`.
+As the Spot API, Kraken also offers a REST API for Futures. Examples on how to
+use the python-kraken-sdk fot Futures are shown in
+`examples/futures_examples.py` and listed in a shorter ways below.
 
 ```python
 from kraken.futures import Market, User, Trade, Funding
@@ -377,8 +390,13 @@ if __name__ == "__main__":
 
 ## Futures Websocket API
 
-The following example can be found as extended version in
-`/examples/futures_ws_examples.py`.
+Not only REST, also the websocket API for Kraken Futures is available. Examples
+are shown below and demonstrated in `examples/futures_ws_examples.py`.
+
+- https://docs.futures.kraken.com/#websocket-api
+
+Note: Authenticated Futures websocket clients can also un-/subscribe from/to
+public feeds.
 
 ```python
 import asyncio
@@ -430,9 +448,6 @@ if __name__ == "__main__":
         # do some exception handling ...
         pass
 ```
-
-Note: Authenticated Futures websocket clients can also un-/subscribe from/to
-public feeds.
 
 ---
 

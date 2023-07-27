@@ -4,7 +4,9 @@
 # GitHub: https://github.com/btschwertfeger
 #
 
-"""Module that provides an example usage for the Kraken Futures websocket client"""
+"""
+Module that provides an example usage for the Kraken Futures websocket client.
+"""
 
 from __future__ import annotations
 

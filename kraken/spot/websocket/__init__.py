@@ -128,11 +128,13 @@ class KrakenSpotWSClientBase(KrakenBaseSpotAPI):
         self: KrakenSpotWSClientBase, message: Union[dict, list]
     ) -> None:
         """
-        Calls the defined callback function (if defined) or overload this
-        function.
+        Calls the defined callback function (if defined). In most cases you
+        have to overwrite this function since it will receive all incoming
+        messages that will be sent by Kraken.
 
-        Can be overloaded as described in :class:`kraken.spot.KrakenSpotWSClient`
-        and :class:`kraken.spot.KrakenSpotWSClientV2`.
+        See :class:`kraken.spot.KrakenSpotWSClient` and
+        :class:`kraken.spot.KrakenSpotWSClientV2` for examples to use this
+        function.
 
         :param message: The message received sent by Kraken via the websocket connection
         :type message: dict | list
@@ -161,7 +163,8 @@ class KrakenSpotWSClientBase(KrakenBaseSpotAPI):
     def get_ws_token(self: KrakenSpotWSClientBase) -> dict:
         """
         Get the authentication token to establish the authenticated
-        websocket connection.
+        websocket connection. This is used internally ond in moste cases not
+        needed outside.
 
         - https://docs.kraken.com/rest/#tag/Websockets-Authentication
 

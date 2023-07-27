@@ -12,7 +12,7 @@ for dynamic trading algorithms. In both cases websockets are used to capture the
 live data. In addition REST clients are integrated, so that their endpoints can
 also be reached at any time.
 
-For questions, feedback, additions, suggestions for improvement or problems
+For questions, feedback, additions, suggestions or problems
 `python-kraken-sdk/discussions`_ or `python-kraken-sdk/issues`_ may be helpful.
 
 .. toctree::

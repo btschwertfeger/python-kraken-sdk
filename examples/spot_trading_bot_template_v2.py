@@ -3,10 +3,9 @@
 # Copyright (C) 2023 Benjamin Thomas Schwertfeger
 # GitHub: https://github.com/btschwertfeger
 
-
 """
-Module that provides an example Spot trading bot structure. It uses the Kraken
-Kraken Websocket API v2.
+Module that provides a template to build a Spot trading algorithm using the
+python-kraken-sdk and Kraken Spot websocket API v1.
 """
 
 from __future__ import annotations
@@ -39,9 +38,9 @@ class TradingBot(KrakenSpotWSClientV2):
     """
     Class that implements the trading strategy
 
-    * The on_message function gets all messages sent by the websocket feed
+    * The on_message function gets all messages sent by the websocket feeds.
     * Decisions can be made based on these messages
-    * Can place trades using the self.__trade client
+    * Can place trades using the self.__trade client or self.send_message
     * Do everything you want
 
     ====== P A R A M E T E R S ======
@@ -54,9 +53,9 @@ class TradingBot(KrakenSpotWSClientV2):
     """
 
     def __init__(self: TradingBot, config: dict, **kwargs: Any) -> None:
-        super().__init__(
+        super().__init__(  # initialize the KrakenSpotWSClientV2
             key=config["key"], secret=config["secret"], **kwargs
-        )  # initialize the KrakenSpotWSClientV2
+        )
         self.__config: dict = config
 
         self.__user: User = User(key=config["key"], secret=config["secret"])
@@ -70,15 +69,14 @@ class TradingBot(KrakenSpotWSClientV2):
         if message.get("method") == "pong" or message.get("channel") == "heartbeat":
             return
         if "error" in message:
-            # handle exceptions/errors sent by websocket connection ...
+            # handle exceptions/errors sent by websocket connection …
             pass
 
         logging.info(message)
 
-        # ... apply your trading strategy here
+        # == apply your trading strategy here ==
 
-        # call functions from self.__trade and other clients if conditions met …
-
+        # Call functions of `self.__trade` and other clients if conditions met …
         # try:
         #     print(self.__trade.create_order(
         #         ordertype='limit',
@@ -88,12 +86,11 @@ class TradingBot(KrakenSpotWSClientV2):
         #         price=12000
         #     ))
         # except KrakenException.KrakenPermissionDeniedError:
-        #    # ... handle exceptions
+        #    # … handle exceptions
         #    pass
 
         # The spot websocket client also allow sending orders via websockets
         # this is way faster than using REST endpoints.
-
         # await self.send_message(
         #     message={
         #         "method": "add_order",
@@ -109,15 +106,18 @@ class TradingBot(KrakenSpotWSClientV2):
         #     }
         # )
 
-        # You can also un-/subscribe here using `self.subscribe(...)` or `self.unsubscribe(...)`
-        # … more can be found in the documentation (https://python-kraken-sdk.readthedocs.io/en/stable/).
+        # You can also un-/subscribe here using `self.subscribe(...)` or
+        # `self.unsubscribe(...)`.
+        #
+        # … more can be found in the documentation
+        #        (https://python-kraken-sdk.readthedocs.io/en/stable/).
 
     # Add more functions to customize the trading strategy …
 
     def save_exit(self: TradingBot, reason: Optional[str] = "") -> None:
         """controlled shutdown of the strategy"""
         logging.warning(f"Save exit triggered, reason: {reason}")
-        # ideas:
+        # some ideas:
         #   * save the current data
         #   * maybe close trades
         #   * enable dead man's switch
@@ -152,20 +152,20 @@ class ManagedBot:
         try:
             asyncio.run(self.__main())
         except KeyboardInterrupt:
-            pass
-        finally:
-            if self.__trading_strategy is not None:
-                self.__trading_strategy.save_exit(reason="Asyncio loop left")
+            self.save_exit(reason="KeyboardInterrupt")
+        else:
+            self.save_exit(reason="Asyncio loop left")
 
     async def __main(self: ManagedBot) -> None:
         """
-        Instantiates the trading strategy (bot) and subscribes to the
-        desired websocket feeds. While no exception within the strategy occur
-        run the loop.
+        Instantiates the trading strategy and subscribes to the desired
+        websocket feeds. While no exception within the strategy occur run the
+        loop.
 
-        This variable `exception_occur` which is an attribute of the KrakenSpotWSClient
-        can be set individually but is also being set to True if the websocket connection
-        has some fatal error. This is used to exit the asyncio loop.
+        The variable `exception_occur` which is an attribute of the
+        KrakenSpotWSClient can be set individually but is also being set to
+        `True` if the websocket connection has some fatal error. This is used to
+        exit the asyncio loop - but you can also apply your own reconnect rules.
         """
         self.__trading_strategy = TradingBot(config=self.__config)
 
@@ -180,9 +180,9 @@ class ManagedBot:
 
         while not self.__trading_strategy.exception_occur:
             try:
-                # check if bot feels good
-                # maybe send a status update every day
-                # ...
+                # check if the algorithm feels good
+                # maybe send a status update every day via Telegram or Mail
+                # …
                 pass
 
             except Exception as exc:
@@ -200,7 +200,7 @@ class ManagedBot:
         """Checks the user credentials and the connection to Kraken"""
         try:
             User(self.__config["key"], self.__config["secret"]).get_account_balance()
-            logging.info("Client credentials are valid")
+            logging.info("Client credentials are valid.")
             return True
         except urllib3.exceptions.MaxRetryError:
             logging.error("MaxRetryError, cannot connect.")
@@ -217,16 +217,20 @@ class ManagedBot:
         print(f"Save exit triggered - {reason}")
         if self.__trading_strategy is not None:
             self.__trading_strategy.save_exit(reason=reason)
+        else:
+            sys.exit(1)
 
 
 def main() -> None:
-    """Main"""
-    bot_config: dict = {
-        "key": os.getenv("SPOT_API_KEY"),
-        "secret": os.getenv("SPOT_SECRET_KEY"),
-        "pairs": ["DOT/USD", "BTC/USD"],
-    }
-    managed_bot: ManagedBot = ManagedBot(config=bot_config)
+    """Example main - load environment variables and run the strategy."""
+    managed_bot: ManagedBot = ManagedBot(
+        config={
+            "key": os.getenv("SPOT_API_KEY"),
+            "secret": os.getenv("SPOT_SECRET_KEY"),
+            "pairs": ["DOT/USD", "BTC/USD"],
+        }
+    )
+
     try:
         managed_bot.run()
     except Exception:

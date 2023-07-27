@@ -38,7 +38,9 @@ class KrakenSpotWSClient(KrakenSpotWSClientBase):
 
     When accessing private endpoints that need authentication make sure,
     that the ``Access WebSockets API`` API key permission is set in the user's
-    account.
+    account. To place or cancel orders, querying ledger information or accessing
+    live portfolio changes (fills, new orders, ...) there are separate
+    permissions that must be enabled if required.
 
     :param key: API Key for the Kraken Spot API (default: ``""``)
     :type key: str, optional
