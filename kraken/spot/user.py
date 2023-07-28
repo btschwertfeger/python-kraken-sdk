@@ -11,7 +11,7 @@ from __future__ import annotations
 from decimal import Decimal
 from typing import List, Optional, Union
 
-from ..base_api import KrakenBaseSpotAPI, defined, ensure_string
+from kraken.base_api import KrakenBaseSpotAPI, defined, ensure_string
 
 
 class User(KrakenBaseSpotAPI):

@@ -10,7 +10,7 @@ from __future__ import annotations
 
 from typing import List, Optional, Union
 
-from ..base_api import KrakenBaseSpotAPI, defined
+from kraken.base_api import KrakenBaseSpotAPI, defined
 
 
 class Staking(KrakenBaseSpotAPI):

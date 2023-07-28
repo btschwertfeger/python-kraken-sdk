@@ -13,8 +13,8 @@ from functools import lru_cache
 from math import floor
 from typing import List, Optional, Union
 
-from ..base_api import KrakenBaseSpotAPI, defined, ensure_string
-from .market import Market
+from kraken.base_api import KrakenBaseSpotAPI, defined, ensure_string
+from kraken.spot.market import Market
 
 
 class Trade(KrakenBaseSpotAPI):

@@ -15,7 +15,7 @@ from collections import OrderedDict
 from inspect import iscoroutinefunction
 from typing import Callable, Dict, List, Optional, Union
 
-from .websocket_v1 import KrakenSpotWSClient
+from kraken.spot.websocket_v1 import KrakenSpotWSClient
 
 
 class OrderbookClient:
@@ -122,11 +122,11 @@ class OrderbookClient:
 
     async def on_message(self: OrderbookClient, message: Union[list, dict]) -> None:
         """
-        The on_message function is implemented in the KrakenSpotWSClient
+        The on_message function is implemented within the KrakenSpotWSClient
         class and used as callback to receive all messages sent by the
         Kraken API.
 
-        *This function should not be overloaded - this would break this client!*
+        *This function must not be overloaded - it will break this client!*
         """
         if "errorMessage" in message:
             self.LOG.warning(message)
