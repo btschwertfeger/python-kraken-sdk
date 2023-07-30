@@ -87,7 +87,7 @@ async def main() -> None:
     Finally we need some "game loop" - so we create a while loop
     that runs as long as there is no error.
     """
-    orderbook: Orderbook = Orderbook()
+    orderbook: Orderbook = Orderbook(depth=10)
 
     await orderbook.add_book(
         pairs=["BTC/USD"]  # we can also subscribe to more currency pairs
