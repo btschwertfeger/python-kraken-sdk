@@ -39,12 +39,12 @@ def test_create_public_bot(caplog: Any) -> None:
     asyncio.run(create_bot())
 
     for expected in (
-        "'connectionID",
-        "'event': 'systemStatus', 'status': 'online'",
-        "'event': 'pong'",
+        'channel": "status"',
+        '"api_version": "v2"',
+        '"system": "online", "version": "2.',
+        '"type": "update"',
     ):
         assert expected in caplog.text
-    assert "Kraken websockets at full capacity, try again later" not in caplog.text
 
 
 @pytest.mark.spot
@@ -62,7 +62,7 @@ def test_get_first() -> None:
     )
 
 
-@mock.patch("kraken.spot.orderbook.KrakenSpotWSClient", return_value=None)
+@mock.patch("kraken.spot.orderbook.KrakenSpotWSClientV2", return_value=None)
 @pytest.mark.spot
 @pytest.mark.spot_orderbook
 def test_assing_msg_and_validate_checksum(mock_ws_client: mock.MagicMock) -> None:
@@ -80,11 +80,11 @@ def test_assing_msg_and_validate_checksum(mock_ws_client: mock.MagicMock) -> Non
         client: OrderbookClient = OrderbookClient(depth=10)
 
         await client.on_message(message=orderbook["init"])
-        assert client.get(pair="XBT/USD")["valid"]
+        assert client.get(pair="BTC/USD")["valid"]
 
         for update in orderbook["updates"]:
             await client.on_message(message=update)
-            assert client.get(pair="XBT/USD")["valid"]
+            assert client.get(pair="BTC/USD")["valid"]
 
     asyncio.run(assign())
 
@@ -101,13 +101,16 @@ def test_add_book(caplog: Any) -> None:
     async def execute_add_book() -> None:
         orderbook: OrderbookClientWrapper = OrderbookClientWrapper()
 
-        await orderbook.add_book(pairs=["XBT/USD"])
+        await orderbook.add_book(pairs=["BTC/USD"])
         await async_wait(seconds=2)
 
-        book: Optional[dict] = orderbook.get(pair="XBT/USD")
+        book: Optional[dict] = orderbook.get(pair="BTC/USD")
         assert isinstance(book, dict)
 
-        assert all(key in book for key in ("ask", "bid", "valid")), book
+        assert all(
+            key in book
+            for key in ("ask", "bid", "valid", "price_decimals", "qty_decimals")
+        ), book
 
         assert isinstance(book["ask"], OrderedDict)
         assert isinstance(book["bid"], OrderedDict)
@@ -119,8 +122,8 @@ def test_add_book(caplog: Any) -> None:
     asyncio.run(execute_add_book())
 
     for expected in (
-        "'channelName': 'book-10', 'event': 'subscriptionStatus', 'pair': 'XBT/USD'",
-        "'status': 'subscribed', 'subscription': {'depth': 10, 'name': 'book'}}",
+        '{"method": "subscribe", "result": {"channel": "book", "depth": 10, "snapshot": true, "symbol": "BTC/USD"}, "success": true, "time_in": ',
+        '{"channel": "book", "type": "snapshot", "data": [{"symbol": "BTC/USD", "bids": ',
     ):
         assert expected in caplog.text
 
@@ -137,17 +140,15 @@ def test_remove_book(caplog: Any) -> None:
     async def execute_remove_book() -> None:
         orderbook: OrderbookClientWrapper = OrderbookClientWrapper()
 
-        await orderbook.add_book(pairs=["XBT/USD"])
+        await orderbook.add_book(pairs=["BTC/USD"])
         await async_wait(seconds=2)
 
-        await orderbook.remove_book(pairs=["XBT/USD"])
+        await orderbook.remove_book(pairs=["BTC/USD"])
         await async_wait(seconds=2)
 
     asyncio.run(execute_remove_book())
 
-    for expected in (
-        "'channelName': 'book-10', 'event': 'subscriptionStatus', 'pair': 'XBT/USD'",
-        "'status': 'subscribed', 'subscription': {'depth': 10, 'name': 'book'}}",
-        "'status': 'unsubscribed', 'subscription': {'depth': 10, 'name': 'book'}}",
-    ):
-        assert expected in caplog.text
+    assert (
+        '{"method": "unsubscribe", "result": {"channel": "book", "depth": 10, "symbol": "BTC/USD"}, "success": true, "time_in":'
+        in caplog.text
+    )

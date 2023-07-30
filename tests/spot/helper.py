@@ -105,18 +105,16 @@ class OrderbookClientWrapper(OrderbookClient):
 
     LOG: logging.Logger = logging.getLogger(__name__)
 
-    def __init__(self: "OrderbookClientWrapper") -> None:
+    def __init__(self: OrderbookClientWrapper) -> None:
         super().__init__()
         self.LOG.setLevel(logging.INFO)
 
-    async def on_message(
-        self: "OrderbookClientWrapper", message: Union[list, dict]
-    ) -> None:
+    async def on_message(self: OrderbookClientWrapper, message: dict) -> None:
         self.ensure_log(message)
         await super().on_message(message=message)
 
     async def on_book_update(
-        self: "OrderbookClientWrapper", pair: str, message: list
+        self: OrderbookClientWrapper, pair: str, message: dict
     ) -> None:
         """
         This is the callback function that must be implemented
@@ -131,7 +129,7 @@ class OrderbookClientWrapper(OrderbookClient):
         Into a file for debugging and general to the log
         to read the logs within the unit tests.
         """
-        cls.LOG.info(content)
+        cls.LOG.info(json.dumps(content))
 
         log: str = ""
         try:
@@ -141,4 +139,4 @@ class OrderbookClientWrapper(OrderbookClient):
             pass
 
         with open("spot_orderbook.log", "w", encoding="utf-8") as logfile:
-            logfile.write(f"{log}\n{content}")
+            logfile.write(f"{log}\n{json.dumps(content)}")
