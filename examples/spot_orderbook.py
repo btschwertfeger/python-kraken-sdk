@@ -35,6 +35,7 @@ data and fast price movements are considered.
 from __future__ import annotations
 
 import asyncio
+import json
 from typing import Any, Dict, List, Tuple
 
 from kraken.spot import OrderbookClient
@@ -89,7 +90,7 @@ async def main() -> None:
     orderbook: Orderbook = Orderbook()
 
     await orderbook.add_book(
-        pairs=["XBT/USD"]  # we can also subscribe to more currency pairs
+        pairs=["BTC/USD"]  # we can also subscribe to more currency pairs
     )
 
     while not orderbook.exception_occur:
