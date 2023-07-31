@@ -92,7 +92,8 @@ clean:
 		python_kraken_sdk.egg-info \
 		docs/_build \
 		.vscode \
-		.mypy_cache
+		.mypy_cache \
+		.ruff_cache
 
 	rm -f .coverage coverage.xml pytest.xml mypy.xml \
 		kraken/_version.py \

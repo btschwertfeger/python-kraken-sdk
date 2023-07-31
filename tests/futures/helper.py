@@ -4,6 +4,8 @@
 # GitHub: https://github.com/btschwertfeger
 #
 
+from __future__ import annotations
+
 import logging
 from asyncio import sleep
 from time import time

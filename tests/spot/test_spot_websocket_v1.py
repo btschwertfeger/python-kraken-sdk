@@ -506,24 +506,24 @@ def test_create_order(spot_api_key: str, spot_secret_key: str, caplog: Any) -> N
         client: SpotWebsocketClientV1TestWrapper = SpotWebsocketClientV1TestWrapper(
             key=spot_api_key, secret=spot_secret_key
         )
-        params: dict = dict(
-            ordertype="limit",
-            side="buy",
-            pair="XBT/USD",
-            volume="2",
-            price="1000",
-            price2="1200",
-            leverage="2",
-            oflags="viqc",
-            starttm="0",
-            expiretm="1000",
-            userref="12345678",
-            validate=True,
-            close_ordertype="limit",
-            close_price="1000",
-            close_price2="1200",
-            timeinforce="GTC",
-        )
+        params: dict = {
+            "ordertype": "limit",
+            "side": "buy",
+            "pair": "XBT/USD",
+            "volume": "2",
+            "price": "1000",
+            "price2": "1200",
+            "leverage": "2",
+            "oflags": "viqc",
+            "starttm": "0",
+            "expiretm": "1000",
+            "userref": "12345678",
+            "validate": True,
+            "close_ordertype": "limit",
+            "close_price": "1000",
+            "close_price2": "1200",
+            "timeinforce": "GTC",
+        }
         await client.create_order(**params)
         await async_wait(seconds=2)
 

@@ -188,7 +188,7 @@ def test_set_leverage_preference(futures_auth_market: Market) -> None:
     )
     assert (
         "leveragePreferences" in new_leverage_preferences.keys()
-        and dict(symbol="PF_XBTUSD", maxLeverage=float(2.0))
+        and {"symbol": "PF_XBTUSD", "maxLeverage": 2.0}
         in new_leverage_preferences["leveragePreferences"]
     )
 
@@ -235,7 +235,7 @@ def test_set_pnl_preference(futures_auth_market: Market) -> None:
     )
     assert (
         "preferences" in new_pnl_preference.keys()
-        and dict(symbol="PF_XBTUSD", pnlCurrency="BTC")
+        and {"symbol": "PF_XBTUSD", "pnlCurrency": "BTC"}
         in new_pnl_preference["preferences"]
     )
 

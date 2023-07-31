@@ -220,7 +220,9 @@ class ConnectSpotWebsocketBase:
         :return: Wait time
         :rtype: float | Any
         """
-        return round(random() * min(60 * 3, (2**attempts) - 1) + 1)
+        return round(
+            random() * min(60 * 3, (2**attempts) - 1) + 1
+        )  # ruff: noqa: S311
 
     # --------------------------------------------------------------------------
     # Functions to overload
@@ -392,7 +394,7 @@ class ConnectSpotWebsocketV1(ConnectSpotWebsocketBase):
         """
         sub: dict = {"event": "subscribe"}
 
-        if not "subscription" in message or "name" not in message["subscription"]:
+        if "subscription" not in message or "name" not in message["subscription"]:
             raise ValueError("Cannot remove subscription with missing attributes.")
         if (
             message["subscription"]["name"] in self.client.public_channel_names

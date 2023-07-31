@@ -40,7 +40,6 @@ def test_initiate_wallet_transfer(futures_demo_funding: Funding) -> None:
     # print(futures_demo_funding.initiate_wallet_transfer(
     #     amount=200, fromAccount='Futures Wallet', toAccount='Spot Wallet', unit='XBT'
     # ))
-    pass
 
 
 @pytest.mark.futures
@@ -59,7 +58,6 @@ def test_initiate_subccount_transfer(futures_demo_funding: Funding) -> None:
     #     toUser='The user account (this or a sub account) to which funds should be credited',
     #     unit='XBT',
     # ))
-    pass
 
 
 @pytest.mark.futures
@@ -74,4 +72,3 @@ def test_initiate_withdrawal_to_spot_wallet(futures_demo_funding: Funding) -> No
     #     amount=200,
     #     currency='XBT',
     # ))
-    pass

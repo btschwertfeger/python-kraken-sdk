@@ -391,17 +391,17 @@ class KrakenSpotWSClientV2(KrakenSpotWSClientBase):
             and message["params"]["channel"] in self.private_channel_names
         )
         if private and not self._is_auth:
-            raise KrakenException.KrakenAuthenticationError()
+            raise KrakenException.KrakenAuthenticationError
 
         retries: int = 0
         socket: Any = self._get_socket(private=private)
         while not socket and retries < 12:
             retries += 1
             socket = self._get_socket(private=private)
-            await asyncio.sleep(0.4)
+            await asyncio.sleep(0.4 * retries)
 
         if retries == 12 and not socket:
-            raise TimeoutError("Could not get the desired websocket connection!")
+            raise TimeoutError("Could not retrieve the desired websocket connection!")
 
         # ----------------------------------------------------------------------
 

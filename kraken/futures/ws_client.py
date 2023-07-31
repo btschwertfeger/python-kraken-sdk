@@ -144,7 +144,7 @@ class KrakenFuturesWSClient(KrakenBaseFuturesAPI):
         :rtype: str
         """
         if not self.is_auth:
-            raise KrakenException.KrakenAuthenticationError()
+            raise KrakenException.KrakenAuthenticationError
 
         sha256_hash = hashlib.sha256()
         sha256_hash.update(challenge.encode("utf-8"))

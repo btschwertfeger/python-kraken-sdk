@@ -149,7 +149,7 @@ class KrakenSpotWSClientBase(KrakenBaseSpotAPI):
                 its ``on_message`` function.
             """
             )
-            print(message)
+            print(message)  # ruff: noqa: T201
 
     async def __aenter__(self: KrakenSpotWSClientBase) -> KrakenSpotWSClientBase:
         """Entrypoint for use as context manager"""

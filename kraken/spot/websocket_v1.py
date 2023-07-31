@@ -195,7 +195,7 @@ class KrakenSpotWSClient(KrakenSpotWSClientBase):
         """
 
         if private and not self._is_auth:
-            raise KrakenException.KrakenAuthenticationError()
+            raise KrakenException.KrakenAuthenticationError
 
         socket: Any = self._get_socket(private=private)
         while not socket:
@@ -213,7 +213,7 @@ class KrakenSpotWSClient(KrakenSpotWSClientBase):
         await socket.send(json.dumps(message))
 
     async def subscribe(  # pylint: disable=arguments-differ
-        self: KrakenSpotWSClient, subscription: dict, pair: List[str] = None
+        self: KrakenSpotWSClient, subscription: dict, pair: Optional[List[str]] = None
     ) -> None:
         """
         Subscribe to a channel

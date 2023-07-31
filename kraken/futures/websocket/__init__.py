@@ -59,7 +59,9 @@ class ConnectFuturesWebsocket:
         self.__socket: Any = None
         self.__subscriptions: List[dict] = []
 
-        asyncio.ensure_future(self.__run_forever(), loop=asyncio.get_running_loop())
+        self.task = asyncio.ensure_future(
+            self.__run_forever(), loop=asyncio.get_running_loop()
+        )
 
     @property
     def subscriptions(self: "ConnectFuturesWebsocket") -> List[dict]:
@@ -84,8 +86,8 @@ class ConnectFuturesWebsocket:
             while keep_alive:
                 try:
                     _msg = await asyncio.wait_for(self.__socket.recv(), timeout=15)
-                except asyncio.TimeoutError:
-                    pass  # important
+                except asyncio.TimeoutError as exc:
+                    logging.debug(str(exc))  # important since it may happen often
                 except asyncio.CancelledError:
                     logging.exception("asyncio.CancelledError")
                     keep_alive = False
@@ -129,7 +131,7 @@ class ConnectFuturesWebsocket:
 
         self.__reconnect_num += 1
         if self.__reconnect_num >= self.MAX_RECONNECT_NUM:
-            raise KrakenException.MaxReconnectError()
+            raise KrakenException.MaxReconnectError
 
         reconnect_wait: float = self.__get_reconnect_wait(self.__reconnect_num)
         logging.debug(
@@ -228,7 +230,9 @@ class ConnectFuturesWebsocket:
             await asyncio.sleep(0.2)
 
     def __get_reconnect_wait(self, attempts: int) -> float:
-        return round(random() * min(60 * 3, (2**attempts) - 1) + 1)  # type: ignore[no-any-return]
+        return round(  # type: ignore[no-any-return]
+            random() * min(60 * 3, (2**attempts) - 1) + 1  # ruff: noqa: S311
+        )
 
     def __append_subscription(self: "ConnectFuturesWebsocket", msg: dict) -> None:
         self.__remove_subscription(msg=msg)  # remove from list, to avoid duplicates

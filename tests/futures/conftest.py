@@ -8,19 +8,24 @@ import os
 
 import pytest
 
-from kraken.futures import Funding, KrakenFuturesWSClient, Market, Trade, User
+from kraken.futures import Funding, Market, Trade, User
+
+FUTURES_API_KEY: str = os.getenv("FUTURES_API_KEY")
+FUTURES_SECRET_KEY: str = os.getenv("FUTURES_SECRET_KEY")
+FUTURES_SANDBOX_KEY: str = os.getenv("FUTURES_SANDBOX_KEY")
+FUTURES_SANDBOX_SECRET_KEY: str = os.getenv("FUTURES_SANDBOX_SECRET")
 
 
 @pytest.fixture
 def futures_api_key() -> str:
     """Returns the Futures API key"""
-    return os.getenv("FUTURES_API_KEY")
+    return FUTURES_API_KEY
 
 
 @pytest.fixture
 def futures_secret_key() -> str:
     """Returns the Futures API secret key"""
-    return os.getenv("FUTURES_SECRET_KEY")
+    return FUTURES_SECRET_KEY
 
 
 @pytest.fixture
@@ -36,9 +41,7 @@ def futures_auth_market() -> Market:
     """
     Fixture providing an authenticated Futures Market client.
     """
-    return Market(
-        key=os.getenv("FUTURES_API_KEY"), secret=os.getenv("FUTURES_SECRET_KEY")
-    )
+    return Market(key=FUTURES_API_KEY, secret=FUTURES_SECRET_KEY)
 
 
 @pytest.fixture
@@ -48,8 +51,8 @@ def futures_demo_market() -> Market:
     uses the demo/sandbox environment.
     """
     return Market(
-        key=os.getenv("FUTURES_SANDBOX_KEY"),
-        secret=os.getenv("FUTURES_SANDBOX_SECRET"),
+        key=FUTURES_SANDBOX_KEY,
+        secret=FUTURES_SANDBOX_SECRET_KEY,
         sandbox=True,
     )
 
@@ -67,9 +70,7 @@ def futures_auth_user() -> User:
     """
     Fixture providing an authenticated Futures User client.
     """
-    return User(
-        key=os.getenv("FUTURES_API_KEY"), secret=os.getenv("FUTURES_SECRET_KEY")
-    )
+    return User(key=FUTURES_API_KEY, secret=FUTURES_SECRET_KEY)
 
 
 @pytest.fixture
@@ -79,8 +80,8 @@ def futures_demo_user() -> User:
     uses the demo/sandbox environment.
     """
     return User(
-        key=os.getenv("FUTURES_SANDBOX_KEY"),
-        secret=os.getenv("FUTURES_SANDBOX_SECRET"),
+        key=FUTURES_SANDBOX_KEY,
+        secret=FUTURES_SANDBOX_SECRET_KEY,
         sandbox=True,
     )
 
@@ -98,9 +99,7 @@ def futures_auth_trade() -> Trade:
     """
     Fixture providing an authenticated Futures Trade client.
     """
-    return Trade(
-        key=os.getenv("FUTURES_API_KEY"), secret=os.getenv("FUTURES_SECRET_KEY")
-    )
+    return Trade(key=FUTURES_API_KEY, secret=FUTURES_SECRET_KEY)
 
 
 @pytest.fixture
@@ -110,8 +109,8 @@ def futures_demo_trade() -> Trade:
     uses the demo/sandbox environment.
     """
     return Trade(
-        key=os.getenv("FUTURES_SANDBOX_KEY"),
-        secret=os.getenv("FUTURES_SANDBOX_SECRET"),
+        key=FUTURES_SANDBOX_KEY,
+        secret=FUTURES_SANDBOX_SECRET_KEY,
         sandbox=True,
     )
 
@@ -129,9 +128,7 @@ def futures_auth_funding() -> Funding:
     """
     Fixture providing an authenticated Futures Funding client.
     """
-    return Funding(
-        key=os.getenv("FUTURES_API_KEY"), secret=os.getenv("FUTURES_SECRET_KEY")
-    )
+    return Funding(key=FUTURES_API_KEY, secret=FUTURES_SECRET_KEY)
 
 
 @pytest.fixture
@@ -141,7 +138,7 @@ def futures_demo_funding() -> Funding:
     uses the demo/sandbox environment.
     """
     return Funding(
-        key=os.getenv("FUTURES_SANDBOX_KEY"),
-        secret=os.getenv("FUTURES_SANDBOX_SECRET"),
+        key=FUTURES_SANDBOX_KEY,
+        secret=FUTURES_SANDBOX_SECRET_KEY,
         sandbox=True,
     )
