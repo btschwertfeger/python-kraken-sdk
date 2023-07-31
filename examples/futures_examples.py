@@ -30,7 +30,8 @@ secret = os.getenv("Futures_SANDBOX_SECRET")
 # | |\  | |_| || | | |___ _
 # |_| \_|\___/ |_| |_____(_)
 # ----> More examples can be found in kraken/tests/*.py
-# examples may not be updated regularly
+#
+# Examples may not be updated regularly
 
 
 def market_examples() -> None:

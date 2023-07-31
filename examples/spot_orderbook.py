@@ -5,16 +5,16 @@
 #
 
 """
-This module provides an example on how to use the Spot Orderbook
-client of the python-kraken-sdk (https://github.com/btschwertfeger/python-kraken-sdk)
-to retrieve and maintain a valid Spot order book for (a) specific
-asset pair(s). It can be run directly without any credentials if the
-python-kraken-sdk is installed.
+This module provides an example on how to use the Spot Orderbook client of the
+python-kraken-sdk (https://github.com/btschwertfeger/python-kraken-sdk) to
+retrieve and maintain a valid Spot order book for (a) specific asset pair(s).
+It can be run directly without any credentials if the python-kraken-sdk is
+installed.
 
     python3 -m pip install python-kraken-sdk
 
-The output when running this snippet looks like the following table and
-updates the book as soon as Kraken sent any order book update.
+The output when running this snippet looks like the following table and updates
+the book as soon as Kraken sent any order book update.
 
 Bid         Volume               Ask         Volume
 27076.00000 (8.28552127)         27076.10000 (2.85897056)
@@ -28,8 +28,8 @@ Bid         Volume               Ask         Volume
 27072.00000 (0.81770000)         27083.00000 (0.38934000)
 27071.50000 (0.07194657)         27083.80000 (2.76918992)
 
-This can be the basis of an order book based trading strategy where
-realtime data and fast price movements are considered.
+This can be the basis of an order book based trading strategy where realtime
+data and fast price movements are considered.
 """
 
 from __future__ import annotations
@@ -49,13 +49,13 @@ class Orderbook(OrderbookClient):
     other provided utility.
     """
 
-    async def on_book_update(self: "Orderbook", pair: str, message: list) -> None:
+    async def on_book_update(self: Orderbook, pair: str, message: list) -> None:
         """
         This function is called every time the order book of ``pair`` gets
         updated.
 
-        The ``pair`` parameter can be used to access the updated order book
-        as shown in the function body below.
+        The ``pair`` parameter can be used to access the updated order book as
+        shown in the function body below.
 
         :param pair: The currency pair of the updated order book
         :type pair: str
@@ -100,4 +100,4 @@ if __name__ == "__main__":
     try:
         asyncio.run(main())
     except KeyboardInterrupt:
-        pass
+        print("KeyboardInterrupt!")

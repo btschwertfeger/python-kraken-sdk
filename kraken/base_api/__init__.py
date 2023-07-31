@@ -5,6 +5,8 @@
 
 """Module that implements the base classes for all Spot and Futures clients"""
 
+from __future__ import annotations
+
 import base64
 import hashlib
 import hmac
@@ -78,30 +80,31 @@ def ensure_string(parameter_name: str) -> Callable:
 class KrakenErrorHandler:
     """
     Class that checks if the response of a request contains error messages and
-    returns either message if there is no error or raises a custom KrakenException
-    based on the error message.
+    returns either message if there is no error or raises a custom
+    KrakenException based on the error message.
     """
 
-    def __init__(self: "KrakenErrorHandler") -> None:
+    def __init__(self: KrakenErrorHandler) -> None:
         self.__kexceptions: KrakenException = KrakenException()
 
-    def __get_exception(self: "KrakenErrorHandler", msg: str) -> Optional[Any]:
+    def __get_exception(self: KrakenErrorHandler, msg: str) -> Optional[Any]:
         """
         Must be called when an error was found in the message, so the corresponding
         KrakenException will be returned.
         """
         return self.__kexceptions.get_exception(msg)
 
-    def check(self: "KrakenErrorHandler", data: dict) -> Union[dict, Any]:
+    def check(self: KrakenErrorHandler, data: dict) -> Union[dict, Any]:
         """
-        Check if the error message is a known KrakenError response and than raise
-        a custom exception or return the data containing the "error".
+        Check if the error message is a known KrakenError response and than
+        raise a custom exception or return the data containing the "error".
         This is only for the Spot REST endpoints, since the Futures API
         serves kinds of errors.
 
         :param data: The response as dict to check for an error
         :type data: dict
-        :raise kraken.exceptions.KrakenException.*: raises a KrakenError if the response contains an error
+        :raise kraken.exceptions.KrakenException.*: raises a KrakenError if the
+            response contains an error
         :return: The response as dict
         :rtype: dict
         :raises KrakenError: If is the error keyword in the response
@@ -114,13 +117,14 @@ class KrakenErrorHandler:
             raise exception(data)
         return data
 
-    def check_send_status(self: "KrakenErrorHandler", data: dict) -> dict:
+    def check_send_status(self: KrakenErrorHandler, data: dict) -> dict:
         """
         Checks the responses of Futures REST endpoints
 
         :param data: The response as dict to check for an error
         :type data: dict
-        :raise kraken.exceptions.KrakenException.*: raises a KrakenError if the response contains an error
+        :raise kraken.exceptions.KrakenException.*: raises a KrakenError if the
+            response contains an error
         :return: The response as dict
         :rtype: dict
         """
@@ -133,14 +137,15 @@ class KrakenErrorHandler:
             return data
         return data
 
-    def check_batch_status(self: "KrakenErrorHandler", data: dict) -> dict:
+    def check_batch_status(self: KrakenErrorHandler, data: dict) -> dict:
         """
         Used to check the Futures batch order responses for errors
 
         :param data: The response as dict to check for an error
         :type data: dict
-        :raise kraken.exceptions.KrakenException.*: raises a KrakenError if the response contains an error
-        :return: The response as List[dict]
+        :raise kraken.exceptions.KrakenException.*: raises a KrakenError if the
+            response contains an error
+        :return: The response as list[dict]
         :rtype: dict
         """
         if "batchStatus" in data:
@@ -166,7 +171,8 @@ class KrakenBaseSpotAPI:
     :type secret: str, optional
     :param url: URL to access the Kraken API (default: https://api.kraken.com)
     :type url: str, optional
-    :param sandbox: Use the sandbox (not supported for Spot trading so far, default: ``False``)
+    :param sandbox: Use the sandbox (not supported for Spot trading so far,
+        default: ``False``)
     :type sandbox: bool, optional
     """
 
@@ -174,7 +180,7 @@ class KrakenBaseSpotAPI:
     API_V: str = "/0"
 
     def __init__(
-        self: "KrakenBaseSpotAPI",
+        self: KrakenBaseSpotAPI,
         key: str = "",
         secret: str = "",
         url: str = "",
@@ -197,7 +203,7 @@ class KrakenBaseSpotAPI:
         self.__session.headers.update({"User-Agent": "python-kraken-sdk"})
 
     def _request(
-        self: "KrakenBaseSpotAPI",
+        self: KrakenBaseSpotAPI,
         method: str,
         uri: str,
         timeout: int = 10,
@@ -207,8 +213,9 @@ class KrakenBaseSpotAPI:
         return_raw: bool = False,
     ) -> Union[Dict[str, Any], List[str], List[Dict[str, Any]], requests.Response]:
         """
-        Handles the requested requests, by sending the request, handling the response,
-        and returning the message or in case of an error the respective Exception.
+        Handles the requested requests, by sending the request, handling the
+        response, and returning the message or in case of an error the
+        respective Exception.
 
         :param method:  The request method, e.g., ``GET``, ``POST``, and ``PUT``
         :type method: str
@@ -218,16 +225,20 @@ class KrakenBaseSpotAPI:
         :type timeout: int
         :param auth: If the requests needs authentication (default: ``True``)
         :type auth: bool
-        :param params: The query or post parameter of the request (default: ``None``)
-        :type params: Optional[dict]
-        :param do_json: If the ``params`` must be "jsonified" - in case of nested dict style
+        :param params: The query or post parameter of the request (default:
+            ``None``)
+        :type params: dict, optional
+        :param do_json: If the ``params`` must be "jsonified" - in case of
+            nested dict style
         :type do_json: bool
-        :param return_raw: If the response should be returned without parsing. This is used
-         for example when requesting an export of the trade history as .zip archive.
-        :type return_raw: bool
-        :raise kraken.exceptions.KrakenException.*: If the response contains errors
+        :param return_raw: If the response should be returned without parsing.
+            This is used for example when requesting an export of the trade
+            history as .zip archive.
+        :type return_raw: bool, optional
+        :raise kraken.exceptions.KrakenException.*: If the response contains
+            errors
         :return: The response
-        :rtype: Union[Dict[str, Any], List[str], List[Dict[str, Any]], requests.Response]
+        :rtype: dict[str, Any] | list[str] | list[dict[str, Any]] | requests.Response
         """
         if params is None:
             params = {}
@@ -301,11 +312,11 @@ class KrakenBaseSpotAPI:
         )
 
     def _get_kraken_signature(
-        self: "KrakenBaseSpotAPI", url_path: str, data: str, nonce: int
+        self: KrakenBaseSpotAPI, url_path: str, data: str, nonce: int
     ) -> str:
         """
-        Creates the signature of the data. This is required for authenticated requests
-        to verify the user.
+        Creates the signature of the data. This is required for authenticated
+        requests to verify the user.
 
         :param url_path: The endpoint including the api version
         :type url_path: str
@@ -326,7 +337,7 @@ class KrakenBaseSpotAPI:
         ).decode()
 
     def __check_response_data(
-        self: "KrakenBaseSpotAPI", response: requests.Response, return_raw: bool = False
+        self: KrakenBaseSpotAPI, response: requests.Response, return_raw: bool = False
     ) -> Union[dict, list, requests.Response]:
         """
         Checks the response, handles the error (if exists) and returns the response data.
@@ -334,9 +345,9 @@ class KrakenBaseSpotAPI:
         :param response: The response of a request, requested by the requests module
         :type response: requests.Response
         :param return_raw: Defines if the return should be the raw response if there is no error
-        :type data: bool
+        :type data: bool, optional
         :return: The response in raw or parsed to dict
-        :rtype: Union[dict, list, requests.Response]
+        :rtype: dict | list | requests.Response
         """
         if not self.__use_custom_exceptions:
             return response
@@ -357,7 +368,7 @@ class KrakenBaseSpotAPI:
         raise Exception(f"{response.status_code} - {response.text}")
 
     @property
-    def return_unique_id(self: "KrakenBaseSpotAPI") -> str:
+    def return_unique_id(self: KrakenBaseSpotAPI) -> str:
         """Returns a unique uuid string
 
         :return: uuid
@@ -365,11 +376,11 @@ class KrakenBaseSpotAPI:
         """
         return "".join(str(uuid1()).split("-"))
 
-    def __enter__(self: "KrakenBaseSpotAPI") -> "KrakenBaseSpotAPI":
+    def __enter__(self: KrakenBaseSpotAPI) -> KrakenBaseSpotAPI:
         return self
 
     def __exit__(
-        self: "KrakenBaseSpotAPI", *exc: tuple, **kwargs: Dict[str, Any]
+        self: KrakenBaseSpotAPI, *exc: tuple, **kwargs: Dict[str, Any]
     ) -> None:
         pass
 
@@ -396,7 +407,7 @@ class KrakenBaseFuturesAPI:
     SANDBOX_URL: str = "https://demo-futures.kraken.com"
 
     def __init__(
-        self: "KrakenBaseFuturesAPI",
+        self: KrakenBaseFuturesAPI,
         key: str = "",
         secret: str = "",
         url: str = "",
@@ -421,7 +432,7 @@ class KrakenBaseFuturesAPI:
         self.__session.headers.update({"User-Agent": "python-kraken-sdk"})
 
     def _request(
-        self: "KrakenBaseFuturesAPI",
+        self: KrakenBaseFuturesAPI,
         method: str,
         uri: str,
         timeout: int = 10,
@@ -431,8 +442,9 @@ class KrakenBaseFuturesAPI:
         return_raw: bool = False,
     ) -> Union[Dict[str, Any], List[Dict[str, Any]], List[str], requests.Response]:
         """
-        Handles the requested requests, by sending the request, handling the response,
-        and returning the message or in case of an error the respective Exception.
+        Handles the requested requests, by sending the request, handling the
+        response, and returning the message or in case of an error the
+        respective Exception.
 
         :param method:  The request method, e.g., ``GET``, ``POST``, and ``PUT``
         :type method: str
@@ -442,18 +454,23 @@ class KrakenBaseFuturesAPI:
         :type timeout: int
         :param auth: If the request needs authentication (default: ``True``)
         :type auth: bool
-        :param post_params: The query parameter of the request (default: ``None``)
-        :type post_params: Optional[dict]
-        :param query_params: The query parameter of the request (default: ``None``)
-        :type query_params: Optional[dict]
-        :param do_json: If the ``post_params`` must be "jsonified" - in case of nested dict style
-        :type do_json: bool
+        :param post_params: The query parameter of the request (default:
+            ``None``)
+        :type post_params: dict, optional
+        :param query_params: The query parameter of the request (default:
+            ``None``)
+        :type query_params: dict, optional
+        :param do_json: If the ``post_params`` must be "jsonified" - in case of
+            nested dict style
+        :type do_json: bool, optional
         :param return_raw: If the response should be returned without parsing.
-            This is used for example when requesting an export of the trade history as .zip archive.
-        :type return_raw: bool
-        :raise kraken.exceptions.KrakenException.*: If the response contains errors
+            This is used for example when requesting an export of the trade
+            history as .zip archive.
+        :type return_raw: bool, optional
+        :raise kraken.exceptions.KrakenException.*: If the response contains
+            errors
         :return: The response
-        :rtype: Union[Dict[str, Any], List[Dict[str, Any]], List[str], requests.Response]
+        :rtype: dict[str, Any] | list[dict[str, Any]] | list[str] | requests.Response
         """
         method = method.upper()
 
@@ -530,11 +547,11 @@ class KrakenBaseFuturesAPI:
         )
 
     def _get_kraken_futures_signature(
-        self: "KrakenBaseFuturesAPI", endpoint: str, data: str, nonce: str
+        self: KrakenBaseFuturesAPI, endpoint: str, data: str, nonce: str
     ) -> str:
         """
-        Creates the signature of the data. This is required for authenticated requests
-        to verify the user.
+        Creates the signature of the data. This is required for authenticated
+        requests to verify the user.
 
         :param endpoint: The endpoint including the api version
         :type endpoint: str
@@ -557,20 +574,24 @@ class KrakenBaseFuturesAPI:
         ).decode()
 
     def __check_response_data(
-        self: "KrakenBaseFuturesAPI",
+        self: KrakenBaseFuturesAPI,
         response: requests.Response,
         return_raw: bool = False,
     ) -> Union[dict, requests.Response]:
         """
-        Checks the response, handles the error (if exists) and returns the response data.
+        Checks the response, handles the error (if exists) and returns the
+        response data.
 
-        :param response: The response of a request, requested by the requests module
+        :param response: The response of a request, requested by the requests
+            module
         :type response: requests.Response
-        :param return_raw: Defines if the return should be the raw response if there is no error
-        :type return_raw: dict
-        :raise kraken.exceptions.KrakenException.*: If the response contains the error key
+        :param return_raw: Defines if the return should be the raw response if
+            there is no error
+        :type return_raw: dict, optional
+        :raise kraken.exceptions.KrakenException.*: If the response contains the
+            error key
         :return: The signed string
-        :rtype: Union[dict, Response]
+        :rtype: dict | requests.Response
         """
         if not self.__use_custom_exceptions:
             return response
@@ -593,8 +614,11 @@ class KrakenBaseFuturesAPI:
 
         raise Exception(f"{response.status_code} - {response.text}")
 
-    def __enter__(self: "KrakenBaseFuturesAPI") -> "KrakenBaseFuturesAPI":
+    def __enter__(self: KrakenBaseFuturesAPI) -> KrakenBaseFuturesAPI:
         return self
 
     def __exit__(self, *exc: tuple, **kwargs: Dict[str, Any]) -> None:
         pass
+
+
+__all__ = ["defined", "ensure_string", "KrakenBaseSpotAPI", "KrakenBaseFuturesAPI"]

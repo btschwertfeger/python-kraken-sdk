@@ -3,8 +3,10 @@
 # Copyright (C) 2023 Benjamin Thomas Schwertfeger
 # GitHub: https://github.com/btschwertfeger
 
-
 """Module that provides custom exceptions for the python-kraken-sdk"""
+
+from __future__ import annotations
+
 import functools
 from typing import Any, Dict, List, Optional, Union
 
@@ -19,7 +21,7 @@ def docstring_message(cls: Any) -> Any:
 
     @functools.wraps(cls.__init__)
     def wrapped_init(
-        self: "KrakenException",
+        self: KrakenException,
         msg: Optional[Union[str, dict]] = None,
         *args: tuple,
         **kwargs: Dict[str, Any],
@@ -43,7 +45,7 @@ class KrakenException(Exception):
     """
 
     def __init__(
-        self: "KrakenException",
+        self: KrakenException,
         msg: Optional[Union[str, dict]] = None,
         *args: tuple,
         **kwargs: Dict[str, Any],
@@ -106,7 +108,7 @@ class KrakenException(Exception):
         }
 
     def get_exception(
-        self: "KrakenException", data: Union[str, List[str]]
+        self: KrakenException, data: Union[str, List[str]]
     ) -> Optional[Any]:
         """Returns the exception given by name if available"""
         is_list: bool = isinstance(data, list)
@@ -313,3 +315,6 @@ class KrakenException(Exception):
     @docstring_message
     class MaxReconnectError(Exception):
         """To many reconnect tries."""
+
+
+__all__ = ["KrakenException"]

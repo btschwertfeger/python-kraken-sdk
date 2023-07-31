@@ -2,7 +2,8 @@
 # Copyright (C) 2023 Benjamin Thomas Schwertfeger
 # GitHub: https://github.com/btschwertfeger
 #
-# Based on https://docs.github.com/en/repositories/releasing-projects-on-github/automatically-generated-release-notes
+# Config file to auto-generate release notes based on
+# https://docs.github.com/en/repositories/releasing-projects-on-github/automatically-generated-release-notes
 
 changelog:
   exclude:
@@ -11,7 +12,7 @@ changelog:
     # authors:
     #   - john-doe
   categories:
-    - title: Breaking Changes 🛠
+    - title: Breaking Changes ⚠️
       labels:
         - breaking
         - Breaking

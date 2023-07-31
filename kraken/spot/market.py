@@ -6,6 +6,8 @@
 
 """Module that implements the Kraken Spot Market client"""
 
+from __future__ import annotations
+
 from functools import lru_cache
 from typing import List, Optional, Union
 
@@ -44,21 +46,21 @@ class Market(KrakenBaseSpotAPI):
     """
 
     def __init__(
-        self: "Market",
+        self: Market,
         key: str = "",
         secret: str = "",
         url: str = "",
     ) -> None:
         super().__init__(key=key, secret=secret, url=url)
 
-    def __enter__(self: "Market") -> "Market":
+    def __enter__(self: Market) -> Market:
         super().__enter__()
         return self
 
     @ensure_string("assets")
     @lru_cache()
     def get_assets(
-        self: "Market",
+        self: Market,
         assets: Optional[Union[str, List[str]]] = None,
         aclass: Optional[str] = None,
     ) -> dict:
@@ -125,7 +127,7 @@ class Market(KrakenBaseSpotAPI):
     @ensure_string("pair")
     @lru_cache()
     def get_asset_pairs(
-        self: "Market",
+        self: Market,
         pair: Optional[Union[str, List[str]]] = None,
         info: Optional[str] = None,
     ) -> dict:
@@ -198,9 +200,7 @@ class Market(KrakenBaseSpotAPI):
         )
 
     @ensure_string("pair")
-    def get_ticker(
-        self: "Market", pair: Optional[Union[str, List[str]]] = None
-    ) -> dict:
+    def get_ticker(self: Market, pair: Optional[Union[str, List[str]]] = None) -> dict:
         """
         Returns all tickers if pair is not specified - else just
         the ticker of the ``pair``. Multiple pairs can be specified.
@@ -240,7 +240,7 @@ class Market(KrakenBaseSpotAPI):
         )
 
     def get_ohlc(
-        self: "Market",
+        self: Market,
         pair: str,
         interval: Union[int, str] = 1,
         since: Optional[Union[int, str]] = None,
@@ -288,7 +288,7 @@ class Market(KrakenBaseSpotAPI):
             method="GET", uri="/public/OHLC", params=params, auth=False
         )
 
-    def get_order_book(self: "Market", pair: str, count: Optional[int] = 100) -> dict:
+    def get_order_book(self: Market, pair: str, count: Optional[int] = 100) -> dict:
         """
         Get the current orderbook of a specified trading pair.
 
@@ -329,7 +329,7 @@ class Market(KrakenBaseSpotAPI):
         )
 
     def get_recent_trades(
-        self: "Market",
+        self: Market,
         pair: str,
         since: Optional[Union[str, int]] = None,
         count: Optional[int] = None,
@@ -374,7 +374,7 @@ class Market(KrakenBaseSpotAPI):
         )
 
     def get_recent_spreads(
-        self: "Market", pair: str, since: Optional[Union[str, int]] = None
+        self: Market, pair: str, since: Optional[Union[str, int]] = None
     ) -> dict:
         """
         Get the latest spreads for a specific trading pair.
@@ -410,7 +410,7 @@ class Market(KrakenBaseSpotAPI):
             method="GET", uri="/public/Spread", params=params, auth=False
         )
 
-    def get_system_status(self: "Market") -> dict:
+    def get_system_status(self: Market) -> dict:
         """
         Returns the system status of the Kraken Spot API.
 
@@ -430,3 +430,6 @@ class Market(KrakenBaseSpotAPI):
         return self._request(  # type: ignore[return-value]
             method="GET", uri="/public/SystemStatus", auth=False
         )
+
+
+__all__ = ["Market"]

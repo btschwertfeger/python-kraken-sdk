@@ -5,9 +5,11 @@
 
 """Module that implements the Kraken Futures Funding client"""
 
+from __future__ import annotations
+
 from typing import Optional, Union
 
-from ..base_api import KrakenBaseFuturesAPI
+from kraken.base_api import KrakenBaseFuturesAPI
 
 
 class Funding(KrakenBaseFuturesAPI):
@@ -52,11 +54,11 @@ class Funding(KrakenBaseFuturesAPI):
     ) -> None:
         super().__init__(key=key, secret=secret, url=url, sandbox=sandbox)
 
-    def __enter__(self: "Funding") -> "Funding":
+    def __enter__(self: Funding) -> Funding:
         super().__enter__()
         return self
 
-    def get_historical_funding_rates(self, symbol: str) -> dict:
+    def get_historical_funding_rates(self: Funding, symbol: str) -> dict:
         """
         Retrieve information about the historical funding rates of a specific ``symbol``
 
@@ -95,7 +97,7 @@ class Funding(KrakenBaseFuturesAPI):
         )
 
     def initiate_wallet_transfer(
-        self,
+        self: Funding,
         amount: Union[str, int, float],
         fromAccount: str,
         toAccount: str,
@@ -148,7 +150,7 @@ class Funding(KrakenBaseFuturesAPI):
         )
 
     def initiate_subaccount_transfer(
-        self,
+        self: Funding,
         amount: Union[str, int, float],
         fromAccount: str,
         fromUser: str,
@@ -205,7 +207,7 @@ class Funding(KrakenBaseFuturesAPI):
         )
 
     def initiate_withdrawal_to_spot_wallet(
-        self,
+        self: Funding,
         amount: Union[str, int, float],
         currency: str,
         sourceWallet: Optional[str] = None,
@@ -254,3 +256,6 @@ class Funding(KrakenBaseFuturesAPI):
             post_params=params,
             auth=True,
         )
+
+
+__all__ = ["Funding"]

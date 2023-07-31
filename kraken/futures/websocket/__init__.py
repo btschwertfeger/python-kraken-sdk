@@ -18,11 +18,11 @@ from typing import TYPE_CHECKING, Any, List, Optional
 
 import websockets
 
-from ...exceptions import KrakenException
+from kraken.exceptions import KrakenException
 
 if TYPE_CHECKING:
     # to avoid circular import for type checking
-    from ...futures import KrakenFuturesWSClient
+    from kraken.futures import KrakenFuturesWSClient
 
 
 class ConnectFuturesWebsocket:
@@ -92,22 +92,22 @@ class ConnectFuturesWebsocket:
                     await self.__callback({"error": "asyncio.CancelledError"})
                 else:
                     try:
-                        msg: dict = json.loads(_msg)
+                        message: dict = json.loads(_msg)
                     except ValueError:
                         logging.warning(_msg)
                     else:
                         forward: bool = True
-                        if "event" in msg:
-                            _event: str = msg["event"]
-                            if _event == "challenge" and "message" in msg:
+                        if "event" in message:
+                            _event: str = message["event"]
+                            if _event == "challenge" and "message" in message:
                                 forward = False
-                                self.__handle_new_challenge(msg)
+                                self.__handle_new_challenge(message)
                             elif _event == "subscribed":
-                                self.__append_subscription(msg)
+                                self.__append_subscription(message)
                             elif _event == "unsubscribed":
-                                self.__remove_subscription(msg)
+                                self.__remove_subscription(message)
                         if forward:
-                            await self.__callback(msg)
+                            await self.__callback(message)
 
     async def __run_forever(self: "ConnectFuturesWebsocket") -> None:
         try:
@@ -280,3 +280,6 @@ class ConnectFuturesWebsocket:
     def _get_active_subscriptions(self: "ConnectFuturesWebsocket") -> List[dict]:
         """Returns the active subscriptions"""
         return self.__subscriptions
+
+
+__all__ = ["ConnectFuturesWebsocket"]

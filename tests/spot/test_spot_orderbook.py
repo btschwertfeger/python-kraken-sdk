@@ -41,7 +41,7 @@ def test_create_public_bot(caplog: Any) -> None:
     for expected in (
         "'connectionID",
         "'event': 'systemStatus', 'status': 'online'",
-        "'event': 'pong', 'reqid':",
+        "'event': 'pong'",
     ):
         assert expected in caplog.text
     assert "Kraken websockets at full capacity, try again later" not in caplog.text
@@ -79,11 +79,11 @@ def test_assing_msg_and_validate_checksum(mock_ws_client: mock.MagicMock) -> Non
     async def assign() -> None:
         client: OrderbookClient = OrderbookClient(depth=10)
 
-        await client.on_message(msg=orderbook["init"])
+        await client.on_message(message=orderbook["init"])
         assert client.get(pair="XBT/USD")["valid"]
 
         for update in orderbook["updates"]:
-            await client.on_message(msg=update)
+            await client.on_message(message=update)
             assert client.get(pair="XBT/USD")["valid"]
 
     asyncio.run(assign())
@@ -119,7 +119,7 @@ def test_add_book(caplog: Any) -> None:
     asyncio.run(execute_add_book())
 
     for expected in (
-        "'channelName': 'book-10', 'event': 'subscriptionStatus', 'pair': 'XBT/USD', 'reqid':",
+        "'channelName': 'book-10', 'event': 'subscriptionStatus', 'pair': 'XBT/USD'",
         "'status': 'subscribed', 'subscription': {'depth': 10, 'name': 'book'}}",
     ):
         assert expected in caplog.text
@@ -146,7 +146,7 @@ def test_remove_book(caplog: Any) -> None:
     asyncio.run(execute_remove_book())
 
     for expected in (
-        "'channelName': 'book-10', 'event': 'subscriptionStatus', 'pair': 'XBT/USD', 'reqid':",
+        "'channelName': 'book-10', 'event': 'subscriptionStatus', 'pair': 'XBT/USD'",
         "'status': 'subscribed', 'subscription': {'depth': 10, 'name': 'book'}}",
         "'status': 'unsubscribed', 'subscription': {'depth': 10, 'name': 'book'}}",
     ):

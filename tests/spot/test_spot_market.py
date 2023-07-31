@@ -113,7 +113,7 @@ def test_get_recent_trades(spot_market: Market) -> None:
     """
     assert is_not_error(spot_market.get_recent_trades(pair="XBTUSD"))
     assert is_not_error(
-        spot_market.get_recent_trades(pair="XBTUSD", since="1616663618")
+        spot_market.get_recent_trades(pair="XBTUSD", since="1616663618", count=2)
     )
 
 
