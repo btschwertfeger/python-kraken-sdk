@@ -392,7 +392,6 @@ def test_create_subaccount_failing(spot_auth_user: User) -> None:
         spot_auth_user.create_subaccount(email="abc@welt.de", username="tomtucker")
 
 
-@pytest.mark.wip
 @pytest.mark.spot
 @pytest.mark.spot_auth
 @pytest.mark.spot_user

@@ -15,29 +15,33 @@ from collections import OrderedDict
 from inspect import iscoroutinefunction
 from typing import Callable, Dict, List, Optional, Union
 
-from .websocket_v1 import KrakenSpotWSClient
+from kraken.spot import Market
+from kraken.spot.websocket_v2 import KrakenSpotWSClientV2
 
 
 class OrderbookClient:
     """
     The orderbook client can be used for instantiation and maintaining
-    one or multiple orderbooks for Spot trading on the Kraken cryptocurrency
-    exchange. It connects to the websocket feed(s) and receives the book
-    updates, calculates the checksum and will publish the changes to the
+    one or multiple order books for Spot trading on the Kraken cryptocurrency
+    exchange. It uses websockets to subscribe to book feeds and receives book
+    updates, calculates the checksum and will publish the raw message to the
     :func:`OrderbookClient.on_book_update` function or to the specified
     callback function.
 
-    The :func:`OrderbookClient.get` function can be used to access a specific
-    book of this client.
+    :func:`OrderbookClient.get` can be used to access a specific book of this
+    client - they will always be up-to date when used from within
+    :func:`OrderbookClient.on_book_update`.
 
     The client will resubscribe to the book feed(s) if any errors occur and
-    publish the changes to the mentioned function(s).
+    publish the changes to the mentioned function(s). This is required to
+    compute the correct checksum internally.
 
-    This class has a fixed book depth. Available depths are: {10, 25, 50, 100}
+    This class has a default book depth of 10. Available depths are: 10, 25, 50,
+    100, 500, 1000. This client can handle multiple books - but only for one
+    depth. When subscribing to books with different depths, please use separate
+    instances of this class.
 
-    - https://support.kraken.com/hc/en-us/articles/360027821131-WebSocket-API-v1-How-to-maintain-a-valid-order-book
-
-    - https://docs.kraken.com/websockets/#book-checksum
+    - https://docs.kraken.com/websockets-v2/#calculate-book-checksum
 
     .. code-block:: python
         :linenos:
@@ -116,85 +120,98 @@ class OrderbookClient:
         self.__depth: int = depth
         self.__callback: Optional[Callable] = callback
 
-        self.ws_client: KrakenSpotWSClient = KrakenSpotWSClient(
+        self.__market: Market = Market()
+        self.ws_client: KrakenSpotWSClientV2 = KrakenSpotWSClientV2(
             callback=self.on_message
         )
 
     async def on_message(self: OrderbookClient, message: Union[list, dict]) -> None:
         """
-        The on_message function is implemented in the KrakenSpotWSClient
+        The on_message function is implemented within the KrakenSpotWSClient
         class and used as callback to receive all messages sent by the
         Kraken API.
 
-        *This function should not be overloaded - this would break this client!*
+        *This function must not be overloaded - it would break this client!*
         """
-        if "errorMessage" in message:
-            self.LOG.warning(message)
 
-        if "event" in message and isinstance(message, dict):
-            # ignore heartbeat / ping - pong messages / any event message
-            # ignore errors since they are handled by the parent class
-            # just handle the removal of an orderbook
-            if (
-                message["event"] == "subscriptionStatus"
-                and "status" in message
-                and "pair" in message
-                and message["status"] == "unsubscribed"
-                and message["pair"] in self.__book
-            ):
-                del self.__book[message["pair"]]
-                return
-
-        if not isinstance(message, list):
-            # The orderbook feed only sends messages with type list,
-            # so we can ignore anything else.
+        if not isinstance(message, dict):
             return
 
-        pair: str = message[-1]
+        if (
+            message.get("method") == "unsubscribe"
+            and message.get("result")
+            and message["result"].get("channel") == "book"
+            and message.get("success")
+            and message["result"]["symbol"] in self.__book
+        ):
+            del self.__book[message["result"]["symbol"]]
+            return
+
+        if (  # pylint: disable=too-many-boolean-expressions)
+            message.get("channel") != "book"
+            or not message.get("data")
+            or not message.get("type")
+            or not isinstance(message["data"], list)
+            or len(message["data"]) == 0
+            or not isinstance(message["data"][0], dict)
+            or not message["data"][0].get("checksum")
+        ):
+            # we are only interested in book related messages
+            return
+
+        # ----------------------------------------------------------------------
+        pair: str = message["data"][0]["symbol"]
         if pair not in self.__book:
+            # retrieve the decimal places required for checksum calculation
+            sym_info: dict = self.__market.get_asset_pairs(pair=pair)
+
             self.__book[pair] = {
                 "bid": {},
                 "ask": {},
                 "valid": True,
+                "price_decimals": int(sym_info[pair]["pair_decimals"]),
+                "qty_decimals": int(sym_info[pair]["lot_decimals"]),
             }
 
-        if "as" in message[1]:
-            # This will be triggered initially when the
-            # first message comes in that provides the initial snapshot
-            # of the current orderbook.
-            self.__update_book(pair=pair, side="ask", snapshot=message[1]["as"])
-            self.__update_book(pair=pair, side="bid", snapshot=message[1]["bs"])
-        else:
-            checksum: Optional[str] = None
-            # This is executed every time a new update comes in.
-            for data in message[1 : len(message) - 2]:
-                if "a" in data:
-                    self.__update_book(pair=pair, side="ask", snapshot=data["a"])
-                elif "b" in data:
-                    self.__update_book(pair=pair, side="bid", snapshot=data["b"])
-                if "c" in data:
-                    checksum = data["c"]
+        timestamp: Optional[str] = message["data"][0].get(
+            "timestamp", None  # snapshot does not provide a timestamp
+        )
 
-            self.__validate_checksum(pair=pair, checksum=checksum)
+        # ----------------------------------------------------------------------
+        self.__update_book(
+            orders=message["data"][0]["asks"],
+            side="ask",
+            symbol=pair,
+            timestamp=timestamp,
+        )
+        self.__update_book(
+            orders=message["data"][0]["bids"],
+            side="bid",
+            symbol=pair,
+            timestamp=timestamp,
+        )
+
+        if message["type"] != "snapshot":
+            self.__validate_checksum(
+                pair=pair, checksum=int(message["data"][0]["checksum"])
+            )
+
+        await self.on_book_update(pair=pair, message=message)
 
         if not self.__book[pair]["valid"]:
             await self.on_book_update(
                 pair=pair,
-                message=[
-                    {
-                        "error": f"Checksum mismatch - resubscribe to the orderbook {pair}"
-                    }
-                ],
+                message={
+                    "error": f"Checksum mismatch - resubscribing to the orderbook for {pair}"
+                },
             )
             # if the orderbook's checksum is invalid, we need re-add the orderbook
             await self.remove_book(pairs=[pair])
 
             await asyncio_sleep(3)
             await self.add_book(pairs=[pair])
-        else:
-            await self.on_book_update(pair=pair, message=message)
 
-    async def on_book_update(self: OrderbookClient, pair: str, message: list) -> None:
+    async def on_book_update(self: OrderbookClient, pair: str, message: dict) -> None:
         """
         This function will be called every time the orderbook gets updated.
         It needs to be overloaded if no callback function was defined
@@ -203,6 +220,8 @@ class OrderbookClient:
         :param pair: The currency pair of the orderbook that has
             been updated.
         :type pair: str
+        :param message: The book message sent by Kraken
+        :type message: dict
         """
 
         if self.__callback:
@@ -211,7 +230,7 @@ class OrderbookClient:
             else:
                 self.__callback(pair=pair, message=message)
         else:
-            logging.info(message)
+            print(message)
 
     async def add_book(self: OrderbookClient, pairs: List[str]) -> None:
         """
@@ -219,12 +238,12 @@ class OrderbookClient:
         and updates will be published to the :func:`on_book_update` function.
 
         :param pairs: The pair(s) to subscribe to
-        :type pairs: List[str]
+        :type pairs: list[str]
         :param depth: The book depth
         :type depth: int
         """
         await self.ws_client.subscribe(
-            subscription={"name": "book", "depth": self.__depth}, pair=pairs
+            params={"channel": "book", "depth": self.__depth, "symbol": pairs}
         )
 
     async def remove_book(self: OrderbookClient, pairs: List[str]) -> None:
@@ -232,12 +251,12 @@ class OrderbookClient:
         Unsubscribe from a subscribed orderbook.
 
         :param pairs: The pair(s) to unsubscribe from
-        :type pairs: List[str]
+        :type pairs: list[str]
         :param depth: The book depth
         :type depth: int
         """
         await self.ws_client.unsubscribe(
-            subscription={"name": "book", "depth": self.__depth}, pair=pairs
+            params={"channel": "book", "depth": self.__depth, "symbol": pairs}
         )
 
     @property
@@ -270,6 +289,8 @@ class OrderbookClient:
         :return: The orderbook of that ``pair``.
         :rtype: dict
 
+        todo: fix documentation
+
         .. code-block::python
             :linenos:
             :caption: Orderbook: Get ask and bid
@@ -291,67 +312,59 @@ class OrderbookClient:
         return self.__book.get(pair)
 
     def __update_book(
-        self: OrderbookClient, pair: str, side: str, snapshot: list
+        self: OrderbookClient,
+        orders: List[dict],
+        side: str,
+        symbol: str,
+        timestamp: Optional[str] = None,
     ) -> None:
         """
         This functions updates the local orderbook based on the
-        information provided in ``data`` and assigns/update the
-        asks and bids in book.
+        information provided in ``orders`` and assigns or updates the
+        asks and bids of the book.
 
-        The ``data`` here looks like:
-        [
-            ['25026.00000', '2.77183035', '1684658128.013525'],
-            ['25028.50000', '0.04725650', '1684658121.180535'],
-            ['25030.20000', '0.29527502', '1684658128.018182'],
-            ['25030.40000', '2.77134976', '1684658131.751539'],
-            ['25032.20000', '0.13978808', '1684658131.751577']
-        ]
-        … where the first value is the ask or bid price, the second
-          represents the volume and the last one is the timestamp.
-
-        :param side: The side to assign the data to,
-            either ``ask`` or ``bid``
+        :param orders: List of asks or bids like [{"price":1, "qty": 2}]
+        :type orders: list[dict]
+        :param side: The type of orders (``ask`` or ``bid``)
         :type side: str
-        :param data: The data that needs to be assigned.
-        :type data: list
+        :param symbol: The currency pair / symbol
+        :type symbol: str
+        :param timestamp: The timestamp of that order(s)
+        :type timestamp: str, optional
         """
-        for entry in snapshot:
-            price: str = entry[0]
-            volume: str = entry[1]
-            timestamp: str = entry[2]
+        for order in orders:
+            volume = "{:.{}f}".format(  # pylint: disable=consider-using-f-string
+                order["qty"], self.__book[symbol]["qty_decimals"]
+            )
+            price = "{:.{}f}".format(  # pylint: disable=consider-using-f-string
+                order["price"], self.__book[symbol]["price_decimals"]
+            )
 
             if float(volume) > 0.0:
-                # Price level exist or is new
-                self.__book[pair][side][price] = (volume, timestamp)
+                # Price level exists or is new
+                self.__book[symbol][side][price] = (volume, timestamp)
             else:
                 # Price level moved out of range
-                self.__book[pair][side].pop(price)
+                self.__book[symbol][side].pop(price, None)
 
-            if side == "ask":
-                self.__book[pair]["ask"] = OrderedDict(
-                    sorted(self.__book[pair]["ask"].items(), key=self.get_first)[
-                        : self.__depth
-                    ]
-                )
+            # Sort and limit the depth of the order book
+            self.__book[symbol][side] = OrderedDict(
+                sorted(
+                    self.__book[symbol][side].items(),
+                    key=self.get_first,
+                    reverse=side == "bid",
+                )[: self.__depth]
+            )
 
-            elif side == "bid":
-                self.__book[pair]["bid"] = OrderedDict(
-                    sorted(
-                        self.__book[pair]["bid"].items(),
-                        key=self.get_first,
-                        reverse=True,
-                    )[: self.__depth]
-                )
-
-    def __validate_checksum(self: OrderbookClient, pair: str, checksum: str) -> None:
+    def __validate_checksum(self: OrderbookClient, pair: str, checksum: int) -> None:
         """
-        Function that validates the checksum of the orderbook as described here
-        https://docs.kraken.com/websockets/#book-checksum.
+        Function that validates the checksum of the order book as described here
+        https://docs.kraken.com/websockets-v2/#calculate-book-checksum.
 
-        :param pair: The pair that's orderbook checksum should be validated.
+        :param pair: The pair that's order book checksum should be validated.
         :type pair: str
         :param checksum: The checksum sent by the Kraken API
-        :type checksum: str
+        :type checksum: int
         """
         book: dict = self.__book[pair]
         ask = list(book["ask"].items())
@@ -368,7 +381,7 @@ class OrderbookClient:
                 ".", ""
             ).lstrip("0")
 
-        self.__book[pair]["valid"] = checksum == str(crc32(local_checksum.encode()))
+        self.__book[pair]["valid"] = checksum == crc32(local_checksum.encode())
 
     @staticmethod
     def get_first(values: tuple) -> float:

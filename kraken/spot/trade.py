@@ -13,8 +13,8 @@ from functools import lru_cache
 from math import floor
 from typing import List, Optional, Union
 
-from ..base_api import KrakenBaseSpotAPI, defined, ensure_string
-from .market import Market
+from kraken.base_api import KrakenBaseSpotAPI, defined, ensure_string
+from kraken.spot.market import Market
 
 
 class Trade(KrakenBaseSpotAPI):
@@ -470,7 +470,8 @@ class Trade(KrakenBaseSpotAPI):
             maximum allowed decimal places. See https://support.kraken.com/hc/en-us/articles/4521313131540
             fore more information about decimals.
         :type truncate: bool, optional
-        :param oflags: Order flags like ``post``, ``fcib``, ``fciq``, ``nomp``, ``viqc`` (see the referenced Kraken documentation for more information)
+        :param oflags: Order flags like ``post``, ``fcib``, ``fciq``, ``nomp``,
+            ``viqc`` (see the referenced Kraken documentation for more information)
         :type oflags: str | List[str], optional
         :param deadline: (see the referenced Kraken documentation for more information)
         :type deadline: string
