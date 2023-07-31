@@ -58,10 +58,6 @@ jobs:
         run: python -m pip install ".[dev]"
 
       - name: Generate coverage report
-        uses: nick-fields/retry@v2
-        with:
-          timeout_minutes: 10
-          max_attempts: 10
         env:
           SPOT_API_KEY: ${{ secrets.SPOT_API_KEY }}
           SPOT_SECRET_KEY: ${{ secrets.SPOT_SECRET_KEY }}
@@ -69,7 +65,7 @@ jobs:
           FUTURES_SECRET_KEY: ${{ secrets.FUTURES_SECRET_KEY }}
           FUTURES_SANDBOX_KEY: ${{ secrets.FUTURES_SANDBOX_KEY }}
           FUTURES_SANDBOX_SECRET: ${{ secrets.FUTURES_SANDBOX_SECRET }}
-        script: pytest -vv --cov --cov-report=xml:coverage.xml tests
+        run: pytest -vv --cov --cov-report=xml:coverage.xml tests
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
