@@ -69,7 +69,7 @@ class Orderbook(OrderbookClient):
         print("Bid     Volume\t\t  Ask     Volume")
         for level in range(self.depth):
             print(
-                f"{bid[level][0]} ({bid[level][1][0]}) \t {ask[level][0]} ({ask[level][1][0]})"
+                f"{bid[level][0]} ({bid[level][1][0]}) \t {ask[level][0]} ({ask[level][1][0]})",
             )
 
         assert book["valid"]  # ensure that the checksum is valid
@@ -92,7 +92,7 @@ async def main() -> None:
     orderbook: Orderbook = Orderbook(depth=10)
 
     await orderbook.add_book(
-        pairs=["BTC/USD"]  # we can also subscribe to more currency pairs
+        pairs=["BTC/USD"],  # we can also subscribe to more currency pairs
     )
 
     while not orderbook.exception_occur:

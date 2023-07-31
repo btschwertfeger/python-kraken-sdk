@@ -9,7 +9,7 @@ PYTEST_OPTS := -vv --junit-xml=pytest.xml
 PYTEST_COV_OPTS := $(PYTEST_OPTS) --cov --cov-report=xml:coverage.xml --cov-report=term
 TEST_DIR := tests
 
-.PHONY := help build rebuild doc install dev test tests test-wip coverage doctest pre-commit changelog clean
+.PHONY := help build rebuild doc install dev test tests test-wip coverage doctest pre-commit ruff ruff-fix changelog clean
 
 help:
 	@grep "^##" Makefile | sed -e "s/##//"
@@ -70,6 +70,14 @@ doctest:
 ##
 pre-commit:
 	@pre-commit run -a
+
+## ruff 	Run ruff without fix
+ruff:
+	ruff check .
+
+## ruff-fix 	Run ruff with fix
+ruff-fix:
+	ruff check . --fix
 
 ## changelog	Generate the changelog
 ##

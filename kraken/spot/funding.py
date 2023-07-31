@@ -87,11 +87,16 @@ class Funding(KrakenBaseSpotAPI):
             ]
         """
         return self._request(
-            method="POST", uri="/private/DepositMethods", params={"asset": asset}  # type: ignore
+            method="POST",
+            uri="/private/DepositMethods",
+            params={"asset": asset},  # type: ignore
         )
 
     def get_deposit_address(
-        self: Funding, asset: str, method: str, new: Optional[bool] = False
+        self: Funding,
+        asset: str,
+        method: str,
+        new: Optional[bool] = False,
     ) -> List[dict]:
         """
         Get the deposit addresses for a specific asset. New deposit addresses can be generated.
@@ -137,7 +142,9 @@ class Funding(KrakenBaseSpotAPI):
         )
 
     def get_recent_deposits_status(
-        self: Funding, asset: Optional[str] = None, method: Optional[str] = None
+        self: Funding,
+        asset: Optional[str] = None,
+        method: Optional[str] = None,
     ) -> List[dict]:
         """
         Get information about the recent deposit status. The look back period is 90 days and
@@ -204,11 +211,16 @@ class Funding(KrakenBaseSpotAPI):
         if defined(method):
             params["method"] = method
         return self._request(  # type: ignore[return-value]
-            method="POST", uri="/private/DepositStatus", params=params
+            method="POST",
+            uri="/private/DepositStatus",
+            params=params,
         )
 
     def get_withdrawal_info(
-        self: Funding, asset: str, key: str, amount: Union[str, int, float]
+        self: Funding,
+        asset: str,
+        key: str,
+        amount: Union[str, int, float],
     ) -> dict:
         """
         Get information about a possible withdraw, including fee and limit information.
@@ -254,7 +266,10 @@ class Funding(KrakenBaseSpotAPI):
         )
 
     def withdraw_funds(
-        self: Funding, asset: str, key: str, amount: Union[str, int, float]
+        self: Funding,
+        asset: str,
+        key: str,
+        amount: Union[str, int, float],
     ) -> dict:
         """
         Create a new withdraw. The key must be the name of the withdraw key
@@ -293,7 +308,9 @@ class Funding(KrakenBaseSpotAPI):
         )
 
     def get_recent_withdraw_status(
-        self: Funding, asset: Optional[str] = None, method: Optional[str] = None
+        self: Funding,
+        asset: Optional[str] = None,
+        method: Optional[str] = None,
     ) -> List[dict]:
         """
         Get information about the recent withdraw status, including withdraws of the
@@ -336,7 +353,9 @@ class Funding(KrakenBaseSpotAPI):
         if defined(method):
             params["method"] = method
         return self._request(  # type: ignore[return-value]
-            method="POST", uri="/private/WithdrawStatus", params=params
+            method="POST",
+            uri="/private/WithdrawStatus",
+            params=params,
         )
 
     def cancel_withdraw(self: Funding, asset: str, refid: str) -> dict:

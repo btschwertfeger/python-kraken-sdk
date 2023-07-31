@@ -122,7 +122,7 @@ class OrderbookClient:
 
         self.__market: Market = Market()
         self.ws_client: KrakenSpotWSClientV2 = KrakenSpotWSClientV2(
-            callback=self.on_message
+            callback=self.on_message,
         )
 
     async def on_message(self: OrderbookClient, message: Union[list, dict]) -> None:
@@ -174,7 +174,8 @@ class OrderbookClient:
             }
 
         timestamp: Optional[str] = message["data"][0].get(
-            "timestamp", None  # snapshot does not provide a timestamp
+            "timestamp",
+            None,  # snapshot does not provide a timestamp
         )
 
         # ----------------------------------------------------------------------
@@ -193,7 +194,8 @@ class OrderbookClient:
 
         if message["type"] != "snapshot":
             self.__validate_checksum(
-                pair=pair, checksum=int(message["data"][0]["checksum"])
+                pair=pair,
+                checksum=int(message["data"][0]["checksum"]),
             )
 
         await self.on_book_update(pair=pair, message=message)
@@ -202,7 +204,7 @@ class OrderbookClient:
             await self.on_book_update(
                 pair=pair,
                 message={
-                    "error": f"Checksum mismatch - resubscribing to the orderbook for {pair}"
+                    "error": f"Checksum mismatch - resubscribing to the orderbook for {pair}",
                 },
             )
             # if the orderbook's checksum is invalid, we need re-add the orderbook
@@ -230,7 +232,7 @@ class OrderbookClient:
             else:
                 self.__callback(pair=pair, message=message)
         else:
-            print(message)
+            print(message)  # ruff: noqa: T201
 
     async def add_book(self: OrderbookClient, pairs: List[str]) -> None:
         """
@@ -243,7 +245,7 @@ class OrderbookClient:
         :type depth: int
         """
         await self.ws_client.subscribe(
-            params={"channel": "book", "depth": self.__depth, "symbol": pairs}
+            params={"channel": "book", "depth": self.__depth, "symbol": pairs},
         )
 
     async def remove_book(self: OrderbookClient, pairs: List[str]) -> None:
@@ -256,7 +258,7 @@ class OrderbookClient:
         :type depth: int
         """
         await self.ws_client.unsubscribe(
-            params={"channel": "book", "depth": self.__depth, "symbol": pairs}
+            params={"channel": "book", "depth": self.__depth, "symbol": pairs},
         )
 
     @property
@@ -334,10 +336,12 @@ class OrderbookClient:
         """
         for order in orders:
             volume = "{:.{}f}".format(  # pylint: disable=consider-using-f-string
-                order["qty"], self.__book[symbol]["qty_decimals"]
+                order["qty"],
+                self.__book[symbol]["qty_decimals"],
             )
             price = "{:.{}f}".format(  # pylint: disable=consider-using-f-string
-                order["price"], self.__book[symbol]["price_decimals"]
+                order["price"],
+                self.__book[symbol]["price_decimals"],
             )
 
             if float(volume) > 0.0:
@@ -353,7 +357,7 @@ class OrderbookClient:
                     self.__book[symbol][side].items(),
                     key=self.get_first,
                     reverse=side == "bid",
-                )[: self.__depth]
+                )[: self.__depth],
             )
 
     def __validate_checksum(self: OrderbookClient, pair: str, checksum: int) -> None:
@@ -373,12 +377,14 @@ class OrderbookClient:
         local_checksum: str = ""
         for price_level, (volume, _) in ask[:10]:
             local_checksum += price_level.replace(".", "").lstrip("0") + volume.replace(
-                ".", ""
+                ".",
+                "",
             ).lstrip("0")
 
         for price_level, (volume, _) in bid[:10]:
             local_checksum += price_level.replace(".", "").lstrip("0") + volume.replace(
-                ".", ""
+                ".",
+                "",
             ).lstrip("0")
 
         self.__book[pair]["valid"] = checksum == crc32(local_checksum.encode())

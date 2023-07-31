@@ -245,7 +245,7 @@ def test_cancel_order_batch(spot_auth_trade: Trade) -> None:
                     "O523KJ-DO4M2-KAT243",
                     "OCDIAL-YC66C-DOF7HS",
                     "OVFPZ2-DA2GV-VBFVVI",
-                ]
+                ],
             ),
             dict,
         )

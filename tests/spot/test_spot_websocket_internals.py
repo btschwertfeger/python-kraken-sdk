@@ -43,7 +43,7 @@ def test_ws_base_client_context_manager() -> None:
         class TestClient(KrakenSpotWSClientBase):
             async def on_message(self: TestClient, message: dict) -> None:
                 if message == {"error": "yes"}:
-                    raise ValueError()
+                    raise ValueError
 
         with TestClient(api_version="v2", no_public=True) as client:
             with pytest.raises(ValueError):

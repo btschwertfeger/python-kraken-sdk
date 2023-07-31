@@ -104,7 +104,8 @@ class ConnectSpotWebsocketBase:
         self.LOG.debug(f"Websocket token: {self.ws_conn_details}")
 
         async with websockets.connect(  # pylint: disable=no-member
-            f"wss://{self.__ws_endpoint}", ping_interval=30
+            f"wss://{self.__ws_endpoint}",
+            ping_interval=30,
         ) as socket:
             self.LOG.info("Websocket connected!")
             self.socket = socket
@@ -147,7 +148,7 @@ class ConnectSpotWebsocketBase:
                 await self.__reconnect()
         except KrakenException.MaxReconnectError:
             await self.__callback(
-                {"error": "kraken.exceptions.KrakenException.MaxReconnectError"}
+                {"error": "kraken.exceptions.KrakenException.MaxReconnectError"},
             )
         except Exception as exc:
             traceback_: str = traceback.format_exc()
@@ -155,7 +156,7 @@ class ConnectSpotWebsocketBase:
             await self.__callback({"error": traceback_})
         finally:
             await self.__callback(
-                {"error": "Exception stopped the Kraken Spot Websocket Client!"}
+                {"error": "Exception stopped the Kraken Spot Websocket Client!"},
             )
             self.__client.exception_occur = True
 
@@ -172,12 +173,12 @@ class ConnectSpotWebsocketBase:
         self.__reconnect_num += 1
         if self.__reconnect_num >= self.MAX_RECONNECT_NUM:
             raise KrakenException.MaxReconnectError(
-                "The KrakenSpotWebsocketClient encountered to many reconnects!"
+                "The KrakenSpotWebsocketClient encountered to many reconnects!",
             )
 
         reconnect_wait: float = self.__get_reconnect_wait(self.__reconnect_num)
         self.LOG.debug(
-            f"asyncio sleep reconnect_wait={reconnect_wait} s reconnect_num={self.__reconnect_num}"
+            f"asyncio sleep reconnect_wait={reconnect_wait} s reconnect_num={self.__reconnect_num}",
         )
         await asyncio.sleep(reconnect_wait)
 
@@ -189,7 +190,8 @@ class ConnectSpotWebsocketBase:
 
         while True:
             finished, pending = await asyncio.wait(
-                tasks, return_when=asyncio.FIRST_EXCEPTION
+                tasks,
+                return_when=asyncio.FIRST_EXCEPTION,
             )
             exception_occur: bool = False
             for task in finished:
@@ -210,7 +212,8 @@ class ConnectSpotWebsocketBase:
         self.LOG.warning("reconnect over")
 
     def __get_reconnect_wait(
-        self: ConnectSpotWebsocketBase, attempts: int
+        self: ConnectSpotWebsocketBase,
+        attempts: int,
     ) -> Union[float, Any]:
         """
         Get some random wait time that increases by any attempt.
@@ -220,7 +223,9 @@ class ConnectSpotWebsocketBase:
         :return: Wait time
         :rtype: float | Any
         """
-        return round(random() * min(60 * 3, (2**attempts) - 1) + 1)
+        return round(
+            random() * min(60 * 3, (2**attempts) - 1) + 1,
+        )  # ruff: noqa: S311
 
     # --------------------------------------------------------------------------
     # Functions to overload
@@ -231,11 +236,12 @@ class ConnectSpotWebsocketBase:
         Has to implement the ping to Kraken.
         """
         raise NotImplementedError(  # coverage: disable
-            "This function must be overloaded."
+            "This function must be overloaded.",
         )
 
     def _manage_subscriptions(
-        self: ConnectSpotWebsocketBase, message: Union[dict, list]
+        self: ConnectSpotWebsocketBase,
+        message: Union[dict, list],
     ) -> None:
         """Function that is to be overloaded.
 
@@ -243,11 +249,12 @@ class ConnectSpotWebsocketBase:
         the local management of new un-/subscriptions.
         """
         raise NotImplementedError(  # coverage: disable
-            "This function must be overloaded."
+            "This function must be overloaded.",
         )
 
     async def _recover_subscriptions(
-        self: ConnectSpotWebsocketBase, event: asyncio.Event
+        self: ConnectSpotWebsocketBase,
+        event: asyncio.Event,
     ) -> None:
         """Function that is to be overloaded.
 
@@ -255,7 +262,7 @@ class ConnectSpotWebsocketBase:
         closed.
         """
         raise NotImplementedError(  # coverage: disable
-            "This function must be overloaded."
+            "This function must be overloaded.",
         )
 
 
@@ -287,7 +294,10 @@ class ConnectSpotWebsocketV1(ConnectSpotWebsocketBase):
         is_auth: bool = False,
     ) -> None:
         super().__init__(
-            client=client, endpoint=endpoint, callback=callback, is_auth=is_auth
+            client=client,
+            endpoint=endpoint,
+            callback=callback,
+            is_auth=is_auth,
         )
 
     async def send_ping(self: ConnectSpotWebsocketV1) -> None:
@@ -297,13 +307,14 @@ class ConnectSpotWebsocketV1(ConnectSpotWebsocketBase):
                 {
                     "event": "ping",
                     "reqid": int(time() * 1000),
-                }
-            )
+                },
+            ),
         )
         self._last_ping = time()
 
     async def _recover_subscriptions(
-        self: ConnectSpotWebsocketV1, event: asyncio.Event
+        self: ConnectSpotWebsocketV1,
+        event: asyncio.Event,
     ) -> None:
         """
         Executes the subscribe function for all subscriptions that were  tracked
@@ -335,7 +346,8 @@ class ConnectSpotWebsocketV1(ConnectSpotWebsocketBase):
         self.LOG.info(f"{log_msg} done.")
 
     def _manage_subscriptions(
-        self: ConnectSpotWebsocketV1, message: Union[dict, list]
+        self: ConnectSpotWebsocketV1,
+        message: Union[dict, list],
     ) -> None:
         """
         Checks if the message contains events about un-/subscriptions
@@ -411,7 +423,7 @@ class ConnectSpotWebsocketV1(ConnectSpotWebsocketBase):
         else:
             self.LOG.warning(
                 "Feed not implemented. Please contact the python-kraken-sdk "
-                "package maintainer."
+                "package maintainer.",
             )
         return sub
 
@@ -444,7 +456,10 @@ class ConnectSpotWebsocketV2(ConnectSpotWebsocketBase):
         is_auth: bool = False,
     ) -> None:
         super().__init__(
-            client=client, endpoint=endpoint, callback=callback, is_auth=is_auth
+            client=client,
+            endpoint=endpoint,
+            callback=callback,
+            is_auth=is_auth,
         )
 
     async def send_ping(self: ConnectSpotWebsocketV2) -> None:
@@ -453,7 +468,8 @@ class ConnectSpotWebsocketV2(ConnectSpotWebsocketBase):
         self._last_ping = time()
 
     async def _recover_subscriptions(
-        self: ConnectSpotWebsocketV2, event: asyncio.Event
+        self: ConnectSpotWebsocketV2,
+        event: asyncio.Event,
     ) -> None:
         """
         Executes the subscribe function for all subscriptions that were  tracked

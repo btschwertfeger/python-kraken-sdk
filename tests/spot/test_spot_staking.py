@@ -45,8 +45,10 @@ def test_stake_asset(spot_auth_staking: Staking) -> None:
     try:
         assert is_not_error(
             spot_auth_staking.stake_asset(
-                asset="DOT", amount="4500000", method="polkadot-staked"
-            )
+                asset="DOT",
+                amount="4500000",
+                method="polkadot-staked",
+            ),
         )
     except KrakenException.KrakenInvalidAmountError:
         pass
@@ -65,7 +67,7 @@ def test_unstake_asset(spot_auth_staking: Staking) -> None:
     """
     try:
         assert is_not_error(
-            spot_auth_staking.unstake_asset(asset="DOT", amount="4500000")
+            spot_auth_staking.unstake_asset(asset="DOT", amount="4500000"),
         )
     except KrakenException.KrakenInvalidAmountError:
         pass

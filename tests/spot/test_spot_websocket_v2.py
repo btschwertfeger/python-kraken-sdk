@@ -116,7 +116,7 @@ def test_access_public_subscriptions_no_conn_failing() -> None:
 
     async def check_access() -> None:
         client: SpotWebsocketClientV2TestWrapper = SpotWebsocketClientV2TestWrapper(
-            no_public=True
+            no_public=True,
         )
         with pytest.raises(ConnectionError):
             assert isinstance(client.active_public_subscriptions, list)
@@ -131,7 +131,8 @@ def test_access_public_subscriptions_no_conn_failing() -> None:
 @pytest.mark.spot_websocket
 @pytest.mark.spot_websocket_v2
 def test_access_private_client_attributes(
-    spot_api_key: str, spot_secret_key: str
+    spot_api_key: str,
+    spot_secret_key: str,
 ) -> None:
     """
     Checks the ``access_private_client_attributes`` function
@@ -179,11 +180,11 @@ def test_send_message_missing_method_failing() -> None:
             await client.send_message(message={"method": "subscribe", "params": []})
         with pytest.raises(TypeError):  # params missing channel key
             await client.send_message(
-                message={"method": "subscribe", "params": {"test": 1}}
+                message={"method": "subscribe", "params": {"test": 1}},
             )
         with pytest.raises(TypeError):  # channel key must be str
             await client.send_message(
-                message={"method": "subscribe", "params": {"channel": 1}}
+                message={"method": "subscribe", "params": {"channel": 1}},
             )
         await async_wait(seconds=1)
 
@@ -201,7 +202,8 @@ def test_send_message_raw(caplog: Any) -> None:
     async def create_client() -> None:
         client: SpotWebsocketClientV2TestWrapper = SpotWebsocketClientV2TestWrapper()
         await client.send_message(
-            message={"method": "ping", "req_id": 123456789}, raw=True
+            message={"method": "ping", "req_id": 123456789},
+            raw=True,
         )
         await async_wait(seconds=1)
 
@@ -222,7 +224,8 @@ def test_public_subscribe(caplog: Any) -> None:
     async def test_subscription() -> None:
         client: SpotWebsocketClientV2TestWrapper = SpotWebsocketClientV2TestWrapper()
         await client.subscribe(
-            params={"channel": "ticker", "symbol": ["BTC/USD"]}, req_id=12345678
+            params={"channel": "ticker", "symbol": ["BTC/USD"]},
+            req_id=12345678,
         )
         await async_wait(seconds=2)
 
@@ -259,7 +262,9 @@ def test_private_subscribe_failing_on_public_connection() -> None:
 @pytest.mark.spot_websocket
 @pytest.mark.spot_websocket_v2
 def test_private_subscribe(
-    spot_api_key: str, spot_secret_key: str, caplog: Any
+    spot_api_key: str,
+    spot_secret_key: str,
+    caplog: Any,
 ) -> None:
     """
     Checks if the authenticated websocket client can subscribe to private feeds.
@@ -268,7 +273,9 @@ def test_private_subscribe(
     async def test_subscription() -> None:
         auth_client: SpotWebsocketClientV2TestWrapper = (
             SpotWebsocketClientV2TestWrapper(
-                key=spot_api_key, secret=spot_secret_key, no_public=True
+                key=spot_api_key,
+                secret=spot_secret_key,
+                no_public=True,
             )
         )
         await auth_client.subscribe(params={"channel": "executions"}, req_id=123456789)
@@ -326,7 +333,8 @@ def test_public_unsubscribe_failure(caplog: Any) -> None:
         # We did not subscribed to this tickers but it will work,
         # and the response will inform us that there are no subscriptions.
         await client.unsubscribe(
-            params={"channel": "ticker", "symbol": ["BTC/USD"]}, req_id=123456789
+            params={"channel": "ticker", "symbol": ["BTC/USD"]},
+            req_id=123456789,
         )
 
         await async_wait(seconds=2)
@@ -344,7 +352,9 @@ def test_public_unsubscribe_failure(caplog: Any) -> None:
 @pytest.mark.spot_websocket
 @pytest.mark.spot_websocket_v2
 def test_private_unsubscribe(
-    spot_api_key: str, spot_secret_key: str, caplog: Any
+    spot_api_key: str,
+    spot_secret_key: str,
+    caplog: Any,
 ) -> None:
     """
     Checks if private unsubscriptions are available.
@@ -352,7 +362,9 @@ def test_private_unsubscribe(
 
     async def check_unsubscribe() -> None:
         client: SpotWebsocketClientV2TestWrapper = SpotWebsocketClientV2TestWrapper(
-            key=spot_api_key, secret=spot_secret_key, no_public=True
+            key=spot_api_key,
+            secret=spot_secret_key,
+            no_public=True,
         )
 
         await client.subscribe(params={"channel": "executions"}, req_id=123456789)

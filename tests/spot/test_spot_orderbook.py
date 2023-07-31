@@ -8,6 +8,8 @@
 Module that implements the unit tests regarding the Spot Orderbook client.
 """
 
+from __future__ import annotations
+
 import asyncio
 import json
 import os
@@ -72,7 +74,9 @@ def test_assing_msg_and_validate_checksum(mock_ws_client: mock.MagicMock) -> Non
     assigned book updates and values.
     """
     with open(
-        os.path.join(FIXTURE_DIR, "orderbook.json"), "r", encoding="utf-8"
+        os.path.join(FIXTURE_DIR, "orderbook.json"),
+        "r",
+        encoding="utf-8",
     ) as json_file:
         orderbook: dict = json.load(json_file)
 

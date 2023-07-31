@@ -67,7 +67,8 @@ def test_get_account_log(futures_auth_user: User) -> None:
     """
     assert isinstance(futures_auth_user.get_account_log(), dict)
     assert isinstance(
-        futures_auth_user.get_account_log(info="futures liquidation"), dict
+        futures_auth_user.get_account_log(info="futures liquidation"),
+        dict,
     )
 
 
@@ -83,7 +84,8 @@ def test_get_account_log_csv(futures_auth_user: User) -> None:
 
     with tempfile.TemporaryDirectory() as tmp_dir:
         with open(
-            os.path.join(tmp_dir, f"account_log-{random.randint(0, 10000)}.csv"), "wb"
+            os.path.join(tmp_dir, f"account_log-{random.randint(0, 10000)}.csv"),
+            "wb",
         ) as file:
             for chunk in response.iter_content(chunk_size=512):
                 if chunk:
@@ -98,7 +100,10 @@ def test_get_execution_events(futures_auth_user: User) -> None:
     Checks the ``get_execution_events`` endpoint.
     """
     result: dict = futures_auth_user.get_execution_events(
-        tradeable="PF_SOLUSD", since=1668989233, before=1668999999, sort="asc"
+        tradeable="PF_SOLUSD",
+        since=1668989233,
+        before=1668999999,
+        sort="asc",
     )
 
     assert isinstance(result, dict)
@@ -113,7 +118,10 @@ def test_get_order_events(futures_auth_user: User) -> None:
     Checks the ``get_order_events`` endpoint.
     """
     result: dict = futures_auth_user.get_order_events(
-        tradeable="PF_SOLUSD", since=1668989233, before=1668999999, sort="asc"
+        tradeable="PF_SOLUSD",
+        since=1668989233,
+        before=1668999999,
+        sort="asc",
     )
     assert isinstance(result, dict)
     assert "elements" in result.keys()
@@ -147,7 +155,10 @@ def test_get_trigger_events(futures_auth_user: User) -> None:
     Checks the ``get_trigger_events`` endpoint.
     """
     result = futures_auth_user.get_trigger_events(
-        tradeable="PF_SOLUSD", since=1668989233, before=1668999999, sort="asc"
+        tradeable="PF_SOLUSD",
+        since=1668989233,
+        before=1668999999,
+        sort="asc",
     )
     assert isinstance(result, dict)
     assert "elements" in result.keys()
@@ -166,9 +177,9 @@ def test_check_trading_enabled_on_subaccount(futures_auth_user: User) -> None:
     Kraken enables subaccounts for pro trader.
     """
     assert {
-        "tradingEnabled": False
+        "tradingEnabled": False,
     } == futures_auth_user.check_trading_enabled_on_subaccount(
-        subaccountUid="778387bh61b-f990-4128-16a7-f819abc8"
+        subaccountUid="778387bh61b-f990-4128-16a7-f819abc8",
     )
 
 
@@ -185,5 +196,6 @@ def test_set_trading_on_subaccount(futures_auth_user: User) -> None:
     Kraken enables subaccounts for pro trader.
     """
     assert {"tradingEnabled": True} == futures_auth_user.set_trading_on_subaccount(
-        subaccountUid="778387bh61b-f990-4128-16a7-f819abc8", trading_enabled=True
+        subaccountUid="778387bh61b-f990-4128-16a7-f819abc8",
+        trading_enabled=True,
     )

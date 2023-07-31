@@ -178,7 +178,7 @@ def test_set_leverage_preference(futures_auth_market: Market) -> None:
         and old_leverage_preferences["result"] == "success"
     )
     assert is_success(
-        futures_auth_market.set_leverage_preference(symbol="PF_XBTUSD", maxLeverage=2)
+        futures_auth_market.set_leverage_preference(symbol="PF_XBTUSD", maxLeverage=2),
     )
 
     new_leverage_preferences: dict = futures_auth_market.get_leverage_preference()
@@ -188,7 +188,7 @@ def test_set_leverage_preference(futures_auth_market: Market) -> None:
     )
     assert (
         "leveragePreferences" in new_leverage_preferences.keys()
-        and dict(symbol="PF_XBTUSD", maxLeverage=float(2.0))
+        and {"symbol": "PF_XBTUSD", "maxLeverage": 2.0}
         in new_leverage_preferences["leveragePreferences"]
     )
 
@@ -196,7 +196,7 @@ def test_set_leverage_preference(futures_auth_market: Market) -> None:
         for setting in old_leverage_preferences["leveragePreferences"]:
             if "symbol" in setting.keys() and setting["symbol"] == "PF_XBTUSD":
                 assert is_success(
-                    futures_auth_market.set_leverage_preference(symbol="PF_XBTUSD")
+                    futures_auth_market.set_leverage_preference(symbol="PF_XBTUSD"),
                 )
                 break
 
@@ -225,7 +225,7 @@ def test_set_pnl_preference(futures_auth_market: Market) -> None:
         and old_pnl_preference["result"] == "success"
     )
     assert is_success(
-        futures_auth_market.set_pnl_preference(symbol="PF_XBTUSD", pnlPreference="BTC")
+        futures_auth_market.set_pnl_preference(symbol="PF_XBTUSD", pnlPreference="BTC"),
     )
 
     new_pnl_preference: dict = futures_auth_market.get_pnl_preference()
@@ -235,7 +235,7 @@ def test_set_pnl_preference(futures_auth_market: Market) -> None:
     )
     assert (
         "preferences" in new_pnl_preference.keys()
-        and dict(symbol="PF_XBTUSD", pnlCurrency="BTC")
+        and {"symbol": "PF_XBTUSD", "pnlCurrency": "BTC"}
         in new_pnl_preference["preferences"]
     )
 
@@ -244,8 +244,9 @@ def test_set_pnl_preference(futures_auth_market: Market) -> None:
             if "symbol" in setting.keys() and setting["symbol"] == "PF_XBTUSD":
                 assert is_success(
                     futures_auth_market.set_pnl_preference(
-                        symbol="PF_XBTUSD", pnlPreference=setting["pnlCurrency"]
-                    )
+                        symbol="PF_XBTUSD",
+                        pnlPreference=setting["pnlCurrency"],
+                    ),
                 )
                 break
 
@@ -258,8 +259,10 @@ def test_get_public_execution_events(futures_market: Market) -> None:
     """
     assert is_not_error(
         futures_market.get_public_execution_events(
-            tradeable="PF_SOLUSD", since=1668989233, before=1668999999
-        )
+            tradeable="PF_SOLUSD",
+            since=1668989233,
+            before=1668999999,
+        ),
     )
 
 
@@ -271,8 +274,10 @@ def test_get_public_order_events(futures_market: Market) -> None:
     """
     assert is_not_error(
         futures_market.get_public_order_events(
-            tradeable="PF_SOLUSD", since=1668989233, sort="asc"
-        )
+            tradeable="PF_SOLUSD",
+            since=1668989233,
+            sort="asc",
+        ),
     )
 
 
@@ -284,6 +289,7 @@ def test_get_public_mark_price_events(futures_market: Market) -> None:
     """
     assert is_not_error(
         futures_market.get_public_mark_price_events(
-            tradeable="PF_SOLUSD", since=1668989233
-        )
+            tradeable="PF_SOLUSD",
+            since=1668989233,
+        ),
     )

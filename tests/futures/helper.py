@@ -4,6 +4,8 @@
 # GitHub: https://github.com/btschwertfeger
 #
 
+from __future__ import annotations
+
 import logging
 from asyncio import sleep
 from time import time
@@ -45,13 +47,16 @@ class FuturesWebsocketClientTestWrapper(KrakenFuturesWSClient):
     LOG: logging.Logger = logging.getLogger(__name__)
 
     def __init__(
-        self: "FuturesWebsocketClientTestWrapper", key: str = "", secret: str = ""
+        self: "FuturesWebsocketClientTestWrapper",
+        key: str = "",
+        secret: str = "",
     ) -> None:
         super().__init__(key=key, secret=secret, callback=self.on_message)
         self.LOG.setLevel(logging.INFO)
 
     async def on_message(
-        self: "FuturesWebsocketClientTestWrapper", msg: Union[list, dict]
+        self: "FuturesWebsocketClientTestWrapper",
+        msg: Union[list, dict],
     ) -> None:
         """
         This is the callback function that must be implemented

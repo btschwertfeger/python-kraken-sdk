@@ -67,7 +67,7 @@ def ensure_string(parameter_name: str) -> Callable:
                     kwargs[parameter_name] = ",".join(value)
                 else:
                     raise ValueError(
-                        f"{parameter_name} cannot be {type(kwargs[parameter_name])}!"
+                        f"{parameter_name} cannot be {type(kwargs[parameter_name])}!",
                     )
 
             return func(*args, **kwargs)
@@ -130,7 +130,7 @@ class KrakenErrorHandler:
         """
         if "sendStatus" in data and "status" in data["sendStatus"]:
             exception: Type[KrakenException] = self.__get_exception(
-                data["sendStatus"]["status"]
+                data["sendStatus"]["status"],
             )
             if exception:
                 raise exception(data)
@@ -153,7 +153,7 @@ class KrakenErrorHandler:
             for status in batch_status:
                 if "status" in status:
                     exception: Type[KrakenException] = self.__get_exception(
-                        status["status"]
+                        status["status"],
                     )
                     if exception:
                         raise exception(data)
@@ -280,14 +280,17 @@ class KrakenBaseSpotAPI:
                         data=sign_data,
                         nonce=params["nonce"],
                     ),
-                }
+                },
             )
 
         url: str = f"{self.url}{uri}"
         if method in ("GET", "DELETE"):
             return self.__check_response_data(
                 self.__session.request(
-                    method=method, url=url, headers=headers, timeout=timeout
+                    method=method,
+                    url=url,
+                    headers=headers,
+                    timeout=timeout,
                 ),
                 return_raw,
             )
@@ -306,13 +309,20 @@ class KrakenBaseSpotAPI:
 
         return self.__check_response_data(
             self.__session.request(
-                method=method, url=url, headers=headers, data=params, timeout=timeout
+                method=method,
+                url=url,
+                headers=headers,
+                data=params,
+                timeout=timeout,
             ),
             return_raw,
         )
 
     def _get_kraken_signature(
-        self: KrakenBaseSpotAPI, url_path: str, data: str, nonce: int
+        self: KrakenBaseSpotAPI,
+        url_path: str,
+        data: str,
+        nonce: int,
     ) -> str:
         """
         Creates the signature of the data. This is required for authenticated
@@ -333,11 +343,13 @@ class KrakenBaseSpotAPI:
                 url_path.encode()
                 + hashlib.sha256((str(nonce) + data).encode()).digest(),
                 hashlib.sha512,
-            ).digest()
+            ).digest(),
         ).decode()
 
     def __check_response_data(
-        self: KrakenBaseSpotAPI, response: requests.Response, return_raw: bool = False
+        self: KrakenBaseSpotAPI,
+        response: requests.Response,
+        return_raw: bool = False,
     ) -> Union[dict, list, requests.Response]:
         """
         Checks the response, handles the error (if exists) and returns the response data.
@@ -380,7 +392,9 @@ class KrakenBaseSpotAPI:
         return self
 
     def __exit__(
-        self: KrakenBaseSpotAPI, *exc: tuple, **kwargs: Dict[str, Any]
+        self: KrakenBaseSpotAPI,
+        *exc: tuple,
+        **kwargs: Dict[str, Any],
     ) -> None:
         pass
 
@@ -505,9 +519,11 @@ class KrakenBaseFuturesAPI:
                     "Nonce": nonce,
                     "APIKey": self.__key,
                     "Authent": self._get_kraken_futures_signature(
-                        uri, query_string + post_string, nonce
+                        uri,
+                        query_string + post_string,
+                        nonce,
                     ),
-                }
+                },
             )
 
         if method in ("GET", "DELETE"):
@@ -547,7 +563,10 @@ class KrakenBaseFuturesAPI:
         )
 
     def _get_kraken_futures_signature(
-        self: KrakenBaseFuturesAPI, endpoint: str, data: str, nonce: str
+        self: KrakenBaseFuturesAPI,
+        endpoint: str,
+        data: str,
+        nonce: str,
     ) -> str:
         """
         Creates the signature of the data. This is required for authenticated
@@ -569,8 +588,10 @@ class KrakenBaseFuturesAPI:
         sha256_hash.update((data + nonce + endpoint).encode("utf8"))
         return base64.b64encode(
             hmac.new(
-                base64.b64decode(self.__secret), sha256_hash.digest(), hashlib.sha512
-            ).digest()
+                base64.b64decode(self.__secret),
+                sha256_hash.digest(),
+                hashlib.sha512,
+            ).digest(),
         ).decode()
 
     def __check_response_data(

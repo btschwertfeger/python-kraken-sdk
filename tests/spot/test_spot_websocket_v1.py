@@ -84,7 +84,9 @@ def test_create_public_client_as_context_manager(caplog: Any) -> None:
 @pytest.mark.spot_websocket
 @pytest.mark.spot_websocket_v1
 def test_create_private_client(
-    spot_api_key: str, spot_secret_key: str, caplog: Any
+    spot_api_key: str,
+    spot_secret_key: str,
+    caplog: Any,
 ) -> None:
     """
     Checks if the authenticated websocket client can be instantiated.
@@ -92,7 +94,8 @@ def test_create_private_client(
 
     async def create_client() -> None:
         client: SpotWebsocketClientV1TestWrapper = SpotWebsocketClientV1TestWrapper(
-            key=spot_api_key, secret=spot_secret_key
+            key=spot_api_key,
+            secret=spot_secret_key,
         )
         await async_wait(seconds=5)
 
@@ -141,7 +144,8 @@ def test_access_public_client_attributes() -> None:
 @pytest.mark.spot_websocket
 @pytest.mark.spot_websocket_v1
 def test_access_private_client_attributes(
-    spot_api_key: str, spot_secret_key: str
+    spot_api_key: str,
+    spot_secret_key: str,
 ) -> None:
     """
     Checks the ``access_private_client_attributes`` function
@@ -150,7 +154,8 @@ def test_access_private_client_attributes(
 
     async def check_access() -> None:
         client: SpotWebsocketClientV1TestWrapper = SpotWebsocketClientV1TestWrapper(
-            key=spot_api_key, secret=spot_secret_key
+            key=spot_api_key,
+            secret=spot_secret_key,
         )
         assert client.private_channel_names == ["ownTrades", "openOrders"]
         assert client.active_private_subscriptions == []
@@ -215,7 +220,9 @@ def test_public_subscribe_without_pair_failing() -> None:
 @pytest.mark.spot_websocket
 @pytest.mark.spot_websocket_v1
 def test_private_subscribe(
-    spot_api_key: str, spot_secret_key: str, caplog: Any
+    spot_api_key: str,
+    spot_secret_key: str,
+    caplog: Any,
 ) -> None:
     """
     Checks if the authenticated websocket client can subscribe to private feeds.
@@ -298,7 +305,8 @@ def test_public_unsubscribe_failure(caplog: Any) -> None:
         # We did not subscribed to this tickers but it will work,
         # and the response will inform us that there are no subscriptions.
         await client.unsubscribe(
-            subscription={"name": "ticker"}, pair=["DOT/USD", "ETH/USD"]
+            subscription={"name": "ticker"},
+            pair=["DOT/USD", "ETH/USD"],
         )
 
         with pytest.raises(AttributeError):
@@ -344,7 +352,9 @@ def test_public_unsubscribe_without_pair_failing() -> None:
 @pytest.mark.spot_websocket
 @pytest.mark.spot_websocket_v1
 def test_private_unsubscribe(
-    spot_api_key: str, spot_secret_key: str, caplog: Any
+    spot_api_key: str,
+    spot_secret_key: str,
+    caplog: Any,
 ) -> None:
     """
     Checks if private subscriptions are available.
@@ -352,7 +362,8 @@ def test_private_unsubscribe(
 
     async def check_unsubscribe() -> None:
         client: SpotWebsocketClientV1TestWrapper = SpotWebsocketClientV1TestWrapper(
-            key=spot_api_key, secret=spot_secret_key
+            key=spot_api_key,
+            secret=spot_secret_key,
         )
 
         await client.subscribe(subscription={"name": "ownTrades"})
@@ -395,7 +406,8 @@ def test_private_unsubscribe_failing(spot_api_key: str, spot_secret_key: str) ->
         with pytest.raises(ValueError):
             # private subscriptions does not have a pair
             await auth_client.unsubscribe(
-                subscription={"name": "ownTrades"}, pair=["XBTUSD"]
+                subscription={"name": "ownTrades"},
+                pair=["XBTUSD"],
             )
 
         await async_wait(seconds=2)
@@ -504,26 +516,27 @@ def test_create_order(spot_api_key: str, spot_secret_key: str, caplog: Any) -> N
 
     async def execute_create_order() -> None:
         client: SpotWebsocketClientV1TestWrapper = SpotWebsocketClientV1TestWrapper(
-            key=spot_api_key, secret=spot_secret_key
+            key=spot_api_key,
+            secret=spot_secret_key,
         )
-        params: dict = dict(
-            ordertype="limit",
-            side="buy",
-            pair="XBT/USD",
-            volume="2",
-            price="1000",
-            price2="1200",
-            leverage="2",
-            oflags="viqc",
-            starttm="0",
-            expiretm="1000",
-            userref="12345678",
-            validate=True,
-            close_ordertype="limit",
-            close_price="1000",
-            close_price2="1200",
-            timeinforce="GTC",
-        )
+        params: dict = {
+            "ordertype": "limit",
+            "side": "buy",
+            "pair": "XBT/USD",
+            "volume": "2",
+            "price": "1000",
+            "price2": "1200",
+            "leverage": "2",
+            "oflags": "viqc",
+            "starttm": "0",
+            "expiretm": "1000",
+            "userref": "12345678",
+            "validate": True,
+            "close_ordertype": "limit",
+            "close_price": "1000",
+            "close_price2": "1200",
+            "timeinforce": "GTC",
+        }
         await client.create_order(**params)
         await async_wait(seconds=2)
 
@@ -595,7 +608,8 @@ def test_edit_order(spot_api_key: str, spot_secret_key: str, caplog: Any) -> Non
 
     async def execute_edit_order() -> None:
         client: SpotWebsocketClientV1TestWrapper = SpotWebsocketClientV1TestWrapper(
-            key=spot_api_key, secret=spot_secret_key
+            key=spot_api_key,
+            secret=spot_secret_key,
         )
 
         await client.edit_order(
@@ -674,7 +688,8 @@ def test_cancel_order(spot_api_key: str, spot_secret_key: str, caplog: Any) -> N
 
     async def execute_cancel_order() -> None:
         client: SpotWebsocketClientV1TestWrapper = SpotWebsocketClientV1TestWrapper(
-            key=spot_api_key, secret=spot_secret_key
+            key=spot_api_key,
+            secret=spot_secret_key,
         )
         await client.cancel_order(txid=["AOUEHF-ASLBD-A6B4A"])
         await async_wait(seconds=2)
@@ -724,7 +739,9 @@ def test_cancel_order_failing_no_connection(caplog: Any) -> None:
 @pytest.mark.spot_websocket_v1
 @pytest.mark.skip("CI does not have trade/cancel permission")
 def test_cancel_all_orders(
-    spot_api_key: str, spot_secret_key: str, caplog: Any
+    spot_api_key: str,
+    spot_secret_key: str,
+    caplog: Any,
 ) -> None:
     """
     Check the ``cancel_all_orders`` function by executing the function.
@@ -734,7 +751,8 @@ def test_cancel_all_orders(
 
     async def execute_cancel_all() -> None:
         client: SpotWebsocketClientV1TestWrapper = SpotWebsocketClientV1TestWrapper(
-            key=spot_api_key, secret=spot_secret_key
+            key=spot_api_key,
+            secret=spot_secret_key,
         )
         await client.cancel_all_orders()
         await async_wait(seconds=2)
@@ -779,7 +797,9 @@ def test_cancel_all_orders_failing_no_connection(caplog: Any) -> None:
 @pytest.mark.spot_websocket
 @pytest.mark.spot_websocket_v1
 def test_cancel_all_orders_after(
-    spot_api_key: str, spot_secret_key: str, caplog: Any
+    spot_api_key: str,
+    spot_secret_key: str,
+    caplog: Any,
 ) -> None:
     """
     Checking the ``cancel_all_orders_after`` function by
@@ -792,7 +812,8 @@ def test_cancel_all_orders_after(
 
     async def execute_cancel_after() -> None:
         client: SpotWebsocketClientV1TestWrapper = SpotWebsocketClientV1TestWrapper(
-            key=spot_api_key, secret=spot_secret_key
+            key=spot_api_key,
+            secret=spot_secret_key,
         )
         await client.cancel_all_orders_after(0)
         await async_wait(seconds=3)

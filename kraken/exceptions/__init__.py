@@ -108,7 +108,8 @@ class KrakenException(Exception):
         }
 
     def get_exception(
-        self: KrakenException, data: Union[str, List[str]]
+        self: KrakenException,
+        data: Union[str, List[str]],
     ) -> Optional[Any]:
         """Returns the exception given by name if available"""
         is_list: bool = isinstance(data, list)
