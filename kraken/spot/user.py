@@ -216,11 +216,13 @@ class User(KrakenBaseSpotAPI):
         """
         Get information about the open orders.
 
-        Requires the ``Query open orders & trades`` permission in the API key settings.
+        Requires the ``Query open orders & trades`` permission in the API key
+        settings.
 
         - https://docs.kraken.com/rest/#operation/getOpenOrders
 
-        :param trades: Include trades related to position or not into the response (default: ``False``)
+        :param trades: Include trades related to position or not into the
+            response (default: ``False``)
         :type trades: bool
         :param userref: Filter the results by user reference id
         :type userref: int, optional
@@ -287,11 +289,13 @@ class User(KrakenBaseSpotAPI):
         """
         Get the 50 latest closed (filled or canceled) orders.
 
-        Requires the ``Query closed orders & trades`` permission in the API key settings.
+        Requires the ``Query closed orders & trades`` permission in the API key
+        settings.
 
         - https://docs.kraken.com/rest/#operation/getClosedOrders
 
-        :param trades: Include trades related to position into the response or not (default: ``False``)
+        :param trades: Include trades related to position into the response or
+        not (default: ``False``)
         :type trades: bool
         :param userref: Filter the results by user reference id
         :type userref: int, optional
@@ -301,7 +305,8 @@ class User(KrakenBaseSpotAPI):
         :type end: int, optional
         :param ofs: Offset for pagination
         :type ofs: int, optional
-        :param closetime: Specify the exact time frame, one of: ``both``, ``open``, ``close`` (default: ``both``)
+        :param closetime: Specify the exact time frame, one of: ``both``,
+            ``open``, ``close`` (default: ``both``)
         :type closetime: str, optional
 
         .. code-block:: python
@@ -373,18 +378,20 @@ class User(KrakenBaseSpotAPI):
         """
         Get information about one or more orders.
 
-        Requires the ``Query open orders & trades`` and ``Query closed orders & trades``
-        permissions in the API key settings.
+        Requires the ``Query open orders & trades`` and
+        ``Query closed orders & trades`` permissions in the API key settings.
 
         - https://docs.kraken.com/rest/#tag/User-Data/operation/getOrdersInfo
 
-        :param txid: A transaction id of a specific order, a list of txids or a string containing a comma delimited list of txids
+        :param txid: A transaction id of a specific order, a list of txids or a
+            string containing a comma delimited list of txids
         :type txid: str | List[str]
         :param trades: Include trades in the result or not (default: ``False``)
         :type trades: bool, optional
         :param userref: Filter results by user reference id
         :type userref: int, optional
-        :param consolidate_taker: Consolidate trades by individual taker trades (default: ``True``)
+        :param consolidate_taker: Consolidate trades by individual taker trades
+            (default: ``True``)
         :type consolidate_taker: bool, optional
 
         .. code-block:: python
@@ -484,7 +491,9 @@ class User(KrakenBaseSpotAPI):
 
         - https://docs.kraken.com/rest/#operation/getTradeHistory
 
-        :param type_: Filter by type of trade, one of: ``all``, ``any position``, ``closed position``, ``closing position``, and ``no position`` (default: ``all``)
+        :param type_: Filter by type of trade, one of: ``all``,
+            ``any position``, ``closed position``, ``closing position``, and
+            ``no position`` (default: ``all``)
         :type type_: str, optional
         :param trades: Include trades related to a position or not (default: ``False``)
         :type trades: bool, optional
@@ -734,9 +743,11 @@ class User(KrakenBaseSpotAPI):
 
         - https://docs.kraken.com/rest/#operation/getLedgersInfo
 
-        :param id_: Ledger id as string, list of strings, or comma delimited list of ledger ids as string
+        :param id_: Ledger id as string, list of strings, or comma delimited
+            list of ledger ids as string
         :type id_: str | List[str]
-        :param trades: Include trades related to a position or not (default: ``False``)
+        :param trades: Include trades related to a position or not
+            (default: ``False``)
         :type trades: bool, optional
 
         .. code-block:: python
@@ -779,7 +790,8 @@ class User(KrakenBaseSpotAPI):
 
         - https://docs.kraken.com/rest/#operation/getTradeVolume
 
-        :param pair: Asset pair, list of asset pairs or comma delimited list (as string) of asset pairs to filter
+        :param pair: Asset pair, list of asset pairs or comma delimited list
+            (as string) of asset pairs to filter
         :type pair: str | List[str], optional
         :param fee_info: Include fee information or not (default: ``True``)
         :type fee_info: bool, optional
@@ -854,7 +866,8 @@ class User(KrakenBaseSpotAPI):
 
         :param report: Kind of report, one of: ``trades`` and ``ledgers``
         :type report: str
-        :param format_: The export format of the requesting report, one of ``CSV`` and ``TSV`` (default: ``CSV``)
+        :param format_: The export format of the requesting report, one of
+            ``CSV`` and ``TSV`` (default: ``CSV``)
         :type format_: str
         :param fields: Fields to include in the report (default: ``all``)
         :type fields: str | List[str], optional
