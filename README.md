@@ -147,12 +147,12 @@ def main():
     user = User(key=key, secret=secret)
     print(user.get_account_balance())
     print(user.get_open_orders())
-    # ...
+    # …
 
     # ____MARKET____
     market = Market()
     print(market.get_ticker(pair="BTCUSD"))
-    # ...
+    # …
 
     # ____TRADE_________________________
     trade = Trade(key=key, secret=secret)
@@ -163,7 +163,7 @@ def main():
          pair="BTC/EUR",
          price=20000
     ))
-    # ...
+    # …
 
     # ____FUNDING___________________________
     funding = Funding(key=key, secret=secret)
@@ -173,7 +173,7 @@ def main():
         )
     )
     print(funding.cancel_withdraw(asset="DOT", refid="<some id>"))
-    # ...
+    # …
 
     # ____STAKING___________________________
     staking = Staking(key=key, secret=secret)
@@ -183,7 +183,7 @@ def main():
             asset="DOT", amount=20, method="polkadot-staked"
         )
     )
-    # ...
+    # …
 
 if __name__ == "__main__":
     main()
@@ -243,7 +243,7 @@ async def main():
             #             },
             #         }
             #     )
-            # ... it is also possible to call regular REST endpoints
+            # … it is also possible to call regular REST endpoints
             # but using the websocket messages is more efficient.
             # You can also un-/subscribe here using self.subscribe/self.unsubscribe.
 
@@ -256,13 +256,13 @@ async def main():
     await client.subscribe(
         params={"channel": "book", "depth": 25, "symbol": ["BTC/USD"]}
     )
-    # wait because unsubscribing is faster than unsubscribing ... (just for that example)
+    # wait because unsubscribing is faster than unsubscribing … (just for that example)
     await asyncio.sleep(3)
     # print(client.active_public_subscriptions) # … to list active subscriptions
     await client.unsubscribe(
         params={"channel": "ticker", "symbol": ["BTC/USD", "DOT/USD"]}
     )
-    # ...
+    # …
 
     # Per default, the authenticated client starts two websocket connections,
     # one for authenticated and one for public messages. If there is no need
@@ -326,7 +326,7 @@ def main():
     print(user.get_open_orders())
     print(user.get_open_positions())
     print(user.get_subaccounts())
-    # ...
+    # …
 
     # ____MARKET____
     market = Market()
@@ -335,7 +335,7 @@ def main():
     priv_market = Market(key=key, secret=secret)
     print(priv_market.get_fee_schedules_vol())
     print(priv_market.get_execution_events())
-    # ...
+    # …
 
     # ____TRADE_________________________
     trade = Trade(key=key, secret=secret)
@@ -377,11 +377,11 @@ def main():
             symbol="pf_bchusd"
         )
     )
-    # ...
+    # …
 
     # ____FUNDING___________________________
     funding = Funding(key=key, secret=secret)
-    # ...
+    # …
 
 if __name__ == "__main__":
     main()
@@ -421,7 +421,7 @@ async def main():
     # subscribe to a public websocket feed
     await client.subscribe(feed="ticker", products=products)
     # await client.subscribe(feed="book", products=products)
-    # ...
+    # …
 
     # unsubscribe from a public websocket feed
     # await client.unsubscribe(feed="ticker", products=products)
@@ -434,7 +434,7 @@ async def main():
     await client_auth.subscribe(feed="fills")
     await client_auth.subscribe(feed="open_positions")
     await client_auth.subscribe(feed="open_orders")
-    # ...
+    # …
 
     # unsubscribe from a private/authenticated websocket feed
     await client_auth.unsubscribe(feed="fills")
@@ -446,7 +446,7 @@ if __name__ == "__main__":
     try:
         asyncio.run(main())
     except KeyboardInterrupt:
-        # do some exception handling ...
+        # do some exception handling …
         pass
 ```
 

@@ -196,11 +196,11 @@ select = [
   "C4", # flake8-comprehensions
   "FA", # flake8-future-annotations
   "ISC", # flake8-implicit-string-concat
-  "ICN", #flake8-import-conventions
-  # "G", #flake8-logging-format # todo
+  "ICN", # flake8-import-conventions
+  # "G", # flake8-logging-format # todo
   "PIE", # flake8-pie
   "T20", # flake8-print
-  "PYI", #flake8-pyi
+  "PYI", # flake8-pyi
   # "PT", # flake8-pytest-style # todo
   "Q", # flake8-quotes
   "RSE", # flake8-raise
@@ -225,7 +225,10 @@ select = [
   "RUF", # Ruff-specific rules
 ]
 fixable = [
+  "I",
+  "C4",
   "Q",
+  "ICN",
   "COM",
   "RSE",
   "PT",

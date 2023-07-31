@@ -4,6 +4,12 @@
 
 [Full Changelog](https://github.com/btschwertfeger/python-kraken-sdk/compare/v1.5.0...HEAD)
 
+**Breaking changes:**
+
+- Integrate Websockets API v2 [\#130](https://github.com/btschwertfeger/python-kraken-sdk/issues/130)
+- Let `kraken.spot.OrderbookClient` use Spot Websocket API v2 [\#139](https://github.com/btschwertfeger/python-kraken-sdk/pull/139) ([btschwertfeger](https://github.com/btschwertfeger))
+- Integrate Kraken Websockets API v2; add `kraken.spot.KrakenSpotWebsocketClientV2`; internals [\#131](https://github.com/btschwertfeger/python-kraken-sdk/pull/131) ([btschwertfeger](https://github.com/btschwertfeger))
+
 **Implemented enhancements:**
 
 - Add `/private/AccountTransfer` endpoint to `kraken.spot.User` [\#128](https://github.com/btschwertfeger/python-kraken-sdk/issues/128)
