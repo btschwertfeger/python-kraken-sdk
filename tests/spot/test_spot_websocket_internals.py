@@ -20,8 +20,8 @@ from kraken.spot.websocket import KrakenSpotWSClientBase
 from .helper import async_wait
 
 
-@pytest.mark.spot
-@pytest.mark.spot_websocket
+@pytest.mark.spot()
+@pytest.mark.spot_websocket()
 def test_ws_base_client_invalid_api_v() -> None:
     """
     Checks that the KrakenSpotWSClientBase raises an error when an invalid API
@@ -31,8 +31,8 @@ def test_ws_base_client_invalid_api_v() -> None:
         client = KrakenSpotWSClientBase(api_version="10")
 
 
-@pytest.mark.spot
-@pytest.mark.spot_websocket
+@pytest.mark.spot()
+@pytest.mark.spot_websocket()
 def test_ws_base_client_context_manager() -> None:
     """
     Checks that the KrakenSpotWSClientBase can be instantiated as context
@@ -53,8 +53,8 @@ def test_ws_base_client_context_manager() -> None:
     asyncio_run(check_it())
 
 
-@pytest.mark.spot
-@pytest.mark.spot_websocket
+@pytest.mark.spot()
+@pytest.mark.spot_websocket()
 def test_ws_base_client_on_message_no_callback(caplog: Any) -> None:
     """
     Checks that the KrakenSpotWSClientBase logs a message when no callback

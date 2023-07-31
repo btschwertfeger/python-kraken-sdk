@@ -15,7 +15,7 @@ from kraken.spot import Funding, Market, Staking, Trade, User
 from .helper import is_not_error
 
 
-@pytest.mark.spot
+@pytest.mark.spot()
 def test_KrakenBaseSpotAPI_without_exception() -> None:
     """
     Checks first if the expected error will be raised and than
@@ -38,8 +38,8 @@ def test_KrakenBaseSpotAPI_without_exception() -> None:
     }
 
 
-@pytest.mark.spot
-@pytest.mark.spot_auth
+@pytest.mark.spot()
+@pytest.mark.spot_auth()
 def test_spot_rest_contextmanager(
     spot_market: Market,
     spot_auth_funding: Funding,

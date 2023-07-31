@@ -15,7 +15,7 @@ from kraken.futures import Funding, Market, Trade, User
 from .helper import is_success
 
 
-@pytest.mark.futures
+@pytest.mark.futures()
 def test_KrakenBaseFuturesAPI_without_exception() -> None:
     """
     Checks first if the expected error will be raised and than
@@ -35,14 +35,12 @@ def test_KrakenBaseFuturesAPI_without_exception() -> None:
         .json()
     )
 
-    assert (
-        result.get("result") == "error"
-        and result.get("error") == "requiredArgumentMissing"
-    )
+    assert result.get("result") == "error"
+    assert result.get("error") == "requiredArgumentMissing"
 
 
-@pytest.mark.futures
-@pytest.mark.futures_auth
+@pytest.mark.futures()
+@pytest.mark.futures_auth()
 def test_futures_rest_contextmanager(
     futures_market: Market,
     futures_auth_funding: Funding,

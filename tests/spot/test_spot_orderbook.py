@@ -24,9 +24,9 @@ from kraken.spot import OrderbookClient
 from .helper import FIXTURE_DIR, OrderbookClientWrapper, async_wait
 
 
-@pytest.mark.spot
-@pytest.mark.spot_websocket
-@pytest.mark.spot_orderbook
+@pytest.mark.spot()
+@pytest.mark.spot_websocket()
+@pytest.mark.spot_orderbook()
 def test_create_public_bot(caplog: Any) -> None:
     """
     Checks if the websocket client can be instantiated.
@@ -49,9 +49,9 @@ def test_create_public_bot(caplog: Any) -> None:
         assert expected in caplog.text
 
 
-@pytest.mark.spot
-@pytest.mark.spot_websocket
-@pytest.mark.spot_orderbook
+@pytest.mark.spot()
+@pytest.mark.spot_websocket()
+@pytest.mark.spot_orderbook()
 def test_get_first() -> None:
     """
     Checks the ``get_first`` method.
@@ -65,8 +65,8 @@ def test_get_first() -> None:
 
 
 @mock.patch("kraken.spot.orderbook.KrakenSpotWSClientV2", return_value=None)
-@pytest.mark.spot
-@pytest.mark.spot_orderbook
+@pytest.mark.spot()
+@pytest.mark.spot_orderbook()
 def test_assing_msg_and_validate_checksum(mock_ws_client: mock.MagicMock) -> None:
     """
     This function checks if the initial snapshot and the book updates are
@@ -93,9 +93,9 @@ def test_assing_msg_and_validate_checksum(mock_ws_client: mock.MagicMock) -> Non
     asyncio.run(assign())
 
 
-@pytest.mark.spot
-@pytest.mark.spot_websocket
-@pytest.mark.spot_orderbook
+@pytest.mark.spot()
+@pytest.mark.spot_websocket()
+@pytest.mark.spot_orderbook()
 def test_add_book(caplog: Any) -> None:
     """
     Checks if the orderbook client is able to add a book by subscribing.
@@ -132,9 +132,9 @@ def test_add_book(caplog: Any) -> None:
         assert expected in caplog.text
 
 
-@pytest.mark.spot
-@pytest.mark.spot_websocket
-@pytest.mark.spot_orderbook
+@pytest.mark.spot()
+@pytest.mark.spot_websocket()
+@pytest.mark.spot_orderbook()
 def test_remove_book(caplog: Any) -> None:
     """
     Checks if the orderbook client is able to add a book by subscribing to a book

@@ -227,7 +227,8 @@ select = [
 fixable = [
   "Q",
   "COM",
-  "RSE"
+  "RSE",
+  "PT"
 ]
 
 ignore = [
