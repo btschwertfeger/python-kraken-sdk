@@ -67,13 +67,16 @@ class Orderbook(OrderbookClient):
         bid: List[Tuple[str, str]] = list(book["bid"].items())
         ask: List[Tuple[str, str]] = list(book["ask"].items())
 
-        print("Bid         Volume\t\t Ask         Volume")
+        print("Bid     Volume\t\t  Ask     Volume")
         for level in range(self.depth):
             print(
                 f"{bid[level][0]} ({bid[level][1][0]}) \t {ask[level][0]} ({ask[level][1][0]})"
             )
 
         assert book["valid"]  # ensure that the checksum is valid
+        # … the client will automatically resubscribe to a book feed if the
+        #   checksum is not valid. The user must not do anything for that, but
+        #   will get informed.
 
 
 async def main() -> None:
