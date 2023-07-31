@@ -52,7 +52,8 @@ def test_get_recent_deposits_status(spot_auth_funding: Funding) -> None:
     assert isinstance(spot_auth_funding.get_recent_deposits_status(), list)
     assert isinstance(spot_auth_funding.get_recent_deposits_status(asset="XLM"), list)
     assert isinstance(
-        spot_auth_funding.get_recent_deposits_status(method="Stellar XLM"), list
+        spot_auth_funding.get_recent_deposits_status(method="Stellar XLM"),
+        list,
     )
     assert isinstance(
         spot_auth_funding.get_recent_deposits_status(asset="XLM", method="Stellar XLM"),
@@ -75,8 +76,10 @@ def test_withdraw_funds(spot_auth_funding: Funding) -> None:
     with pytest.raises(KrakenException.KrakenPermissionDeniedError):
         assert is_not_error(
             spot_auth_funding.withdraw_funds(
-                asset="XLM", key="enter-withdraw-key", amount=10000000
-            )
+                asset="XLM",
+                key="enter-withdraw-key",
+                amount=10000000,
+            ),
         )
 
 
@@ -94,8 +97,10 @@ def test_get_withdrawal_info(spot_auth_funding: Funding) -> None:
     with pytest.raises(KrakenException.KrakenPermissionDeniedError):
         assert is_not_error(
             spot_auth_funding.get_withdrawal_info(
-                asset="XLM", amount=10000000, key="enter-withdraw-key"
-            )
+                asset="XLM",
+                amount=10000000,
+                key="enter-withdraw-key",
+            ),
         )
 
 
@@ -115,7 +120,8 @@ def test_get_recent_withdraw_status(spot_auth_funding: Funding) -> None:
     assert isinstance(spot_auth_funding.get_recent_withdraw_status(), list)
     assert isinstance(spot_auth_funding.get_recent_withdraw_status(asset="XLM"), list)
     assert isinstance(
-        spot_auth_funding.get_recent_withdraw_status(method="Stellar XLM"), list
+        spot_auth_funding.get_recent_withdraw_status(method="Stellar XLM"),
+        list,
     )
 
 
@@ -138,6 +144,9 @@ def test_wallet_transfer(spot_auth_funding: Funding) -> None:
     with pytest.raises(KrakenException.KrakenInvalidArgumentsError):
         assert is_not_error(
             spot_auth_funding.wallet_transfer(
-                asset="XLM", from_="Futures Wallet", to_="Spot Wallet", amount=10000
-            )
+                asset="XLM",
+                from_="Futures Wallet",
+                to_="Spot Wallet",
+                amount=10000,
+            ),
         )

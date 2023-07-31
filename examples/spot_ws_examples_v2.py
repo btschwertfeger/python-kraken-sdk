@@ -66,10 +66,10 @@ async def main() -> None:
     # print(client.public_channel_names)  # list public subscription names
 
     await client.subscribe(
-        params={"channel": "ticker", "symbol": ["BTC/USD", "DOT/USD"]}
+        params={"channel": "ticker", "symbol": ["BTC/USD", "DOT/USD"]},
     )
     await client.subscribe(
-        params={"channel": "book", "depth": 25, "symbol": ["BTC/USD"]}
+        params={"channel": "book", "depth": 25, "symbol": ["BTC/USD"]},
     )
     await client.subscribe(params={"channel": "ohlc", "symbol": ["BTC/USD"]})
     await client.subscribe(
@@ -78,7 +78,7 @@ async def main() -> None:
             "interval": 15,
             "snapshot": False,
             "symbol": ["BTC/USD", "DOT/USD"],
-        }
+        },
     )
     await client.subscribe(params={"channel": "trade", "symbol": ["BTC/USD"]})
 
@@ -86,7 +86,7 @@ async def main() -> None:
     await asyncio.sleep(3)
     # print(client.active_public_subscriptions) # … to list active subscriptions
     await client.unsubscribe(
-        params={"channel": "ticker", "symbol": ["BTC/USD", "DOT/USD"]}
+        params={"channel": "ticker", "symbol": ["BTC/USD", "DOT/USD"]},
     )
     # ...
 

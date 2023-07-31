@@ -74,7 +74,8 @@ async def main() -> None:
     await asyncio.sleep(2)  # wait because unsubscribing is faster than subscribing ...
     # print(client.active_public_subscriptions)
     await client.unsubscribe(
-        subscription={"name": "ticker"}, pair=["XBT/USD", "DOT/USD"]
+        subscription={"name": "ticker"},
+        pair=["XBT/USD", "DOT/USD"],
     )
     await client.unsubscribe(subscription={"name": "spread"}, pair=["XBT/USD"])
     await client.unsubscribe(subscription={"name": "spread"}, pair=["DOT/USD"])

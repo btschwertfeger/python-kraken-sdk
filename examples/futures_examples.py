@@ -93,7 +93,7 @@ def user_examples() -> None:
 def trade_examples() -> None:
     """Example Trade client usage"""
     raise ValueError(
-        "Attention: Please check if you really want to test the trade endpoints!"
+        "Attention: Please check if you really want to test the trade endpoints!",
     )
     trade = Trade(key=key, secret=secret, sandbox=True)
     print(trade.get_fills())
@@ -129,7 +129,7 @@ def trade_examples() -> None:
                     "cliOrdId": 123456789,
                 },
             ],
-        )
+        ),
     )
     print(trade.cancel_all_orders())
     print(trade.cancel_all_orders(symbol="pi_xbtusd"))
@@ -138,8 +138,11 @@ def trade_examples() -> None:
     print(trade.cancel_order(order_id="some order id"))
     print(
         trade.edit_order(
-            orderId="some order id", size=300, limitPrice=401, stopPrice=350
-        )
+            orderId="some order id",
+            size=300,
+            limitPrice=401,
+            stopPrice=350,
+        ),
     )
     print(trade.get_orders_status(orderIds=["orderid1", "orderid2"]))
     print(
@@ -149,7 +152,7 @@ def trade_examples() -> None:
             size=1,
             limitPrice=4,
             symbol="pf_bchusd",
-        )
+        ),
     )
     print(
         trade.create_order(
@@ -159,7 +162,7 @@ def trade_examples() -> None:
             symbol="pf_bchusd",
             stopPrice=100,
             triggerSignal="mark",
-        )
+        ),
     )
 
 

@@ -364,7 +364,7 @@ class KrakenSpotWSClientV2(KrakenSpotWSClientBase):
 
         if not message.get("method") or not isinstance(message["method"], str):
             raise TypeError(
-                "The message must contain the ``method`` key with a valid string!"
+                "The message must contain the ``method`` key with a valid string!",
             )
 
         # includes also unsubscribe
@@ -372,15 +372,16 @@ class KrakenSpotWSClientV2(KrakenSpotWSClientBase):
             if not message.get("params") or not isinstance(message["params"], dict):
                 raise TypeError(
                     "The message must contain the ``params`` key with a value"
-                    " as type dict!"
+                    " as type dict!",
                 )
             if not message["params"].get("channel") or not isinstance(
-                message["params"]["channel"], str
+                message["params"]["channel"],
+                str,
             ):
                 raise TypeError(
                     "The message must contain the ``params`` key that points to"
                     " a dictionary containing the ``channel`` key with a valid"
-                    " string!"
+                    " string!",
                 )
 
         # ----------------------------------------------------------------------
@@ -420,7 +421,9 @@ class KrakenSpotWSClientV2(KrakenSpotWSClientBase):
         await socket.send(json.dumps(message))
 
     async def subscribe(  # pylint: disable=arguments-differ
-        self: KrakenSpotWSClientV2, params: dict, req_id: Optional[int] = None
+        self: KrakenSpotWSClientV2,
+        params: dict,
+        req_id: Optional[int] = None,
     ) -> None:
         """
         Subscribe to a channel/feed
@@ -466,7 +469,9 @@ class KrakenSpotWSClientV2(KrakenSpotWSClientBase):
         await self.send_message(message=payload)
 
     async def unsubscribe(  # pylint: disable=arguments-differ
-        self: KrakenSpotWSClientV2, params: dict, req_id: Optional[int] = None
+        self: KrakenSpotWSClientV2,
+        params: dict,
+        req_id: Optional[int] = None,
     ) -> None:
         """
         Unsubscribe from a channel/feed

@@ -62,7 +62,9 @@ dev = [
   "black",
   # typing
   "mypy",
-  "types-requests"
+  "types-requests",
+  # linting
+  "ruff"
 ]
 examples = ["matplotlib"]
 
@@ -93,25 +95,25 @@ testpaths = ["tests"]
 
 [tool.pytest.ini_options]
 markers = [
-    "wip: Used to run a specific test by hand.",
-    "spot: … Spot endpoint.",
-    "spot_auth: … authenticated Spot endpoint.",
-    "spot_trade: … Spot Trade endpoint.",
-    "spot_user: … Spot User endpoint.",
-    "spot_market: … Spot Market endpoint.",
-    "spot_funding: … Spot Funding endpoint.",
-    "spot_staking: … Spot Staking endpoint.",
-    "spot_websocket: … Spot Websocket clients (v1 + v2) + Spot Orderbook client.",
-    "spot_websocket_v1: … Spot Websocket client v1.",
-    "spot_websocket_v2: … Spot Websocket client v2.",
-    "spot_orderbook: … Spot Orderbook client.",
-    "futures: … Futures endpoint.",
-    "futures_auth: … authenticated Futures endpoint.",
-    "futures_market: … Futures Market endpoint.",
-    "futures_user: … Futures User endpoint.",
-    "futures_trade: … Futures Trade endpoint.",
-    "futures_funding: … Futures Funding endpoint.",
-    "futures_websocket: … Futures Websocket endpoint.",
+  "wip: Used to run a specific test by hand.",
+  "spot: … Spot endpoint.",
+  "spot_auth: … authenticated Spot endpoint.",
+  "spot_trade: … Spot Trade endpoint.",
+  "spot_user: … Spot User endpoint.",
+  "spot_market: … Spot Market endpoint.",
+  "spot_funding: … Spot Funding endpoint.",
+  "spot_staking: … Spot Staking endpoint.",
+  "spot_websocket: … Spot Websocket clients (v1 + v2) + Spot Orderbook client.",
+  "spot_websocket_v1: … Spot Websocket client v1.",
+  "spot_websocket_v2: … Spot Websocket client v2.",
+  "spot_orderbook: … Spot Orderbook client.",
+  "futures: … Futures endpoint.",
+  "futures_auth: … authenticated Futures endpoint.",
+  "futures_market: … Futures Market endpoint.",
+  "futures_user: … Futures User endpoint.",
+  "futures_trade: … Futures Trade endpoint.",
+  "futures_funding: … Futures Funding endpoint.",
+  "futures_websocket: … Futures Websocket endpoint.",
 ]
 
 [tool.coverage.run]
@@ -190,7 +192,7 @@ select = [
   # "FBT", # boolean trap # todo
   "B", # flake8-bugbear
   "A", # flake8-builtins
-  # "COM", # flake8-commas # todo
+  "COM", # flake8-commas # todo
   "C4", # flake8-comprehensions
   "FA", # flake8-future-annotations
   "ISC", # flake8-implicit-string-concat
@@ -223,6 +225,7 @@ select = [
   "RUF", # Ruff-specific rules
 ]
 fixable = [
+  "Q",
   "COM"
 ]
 
@@ -235,6 +238,7 @@ exclude = []
 
 line-length = 130
 cache-dir = "~/.cache/ruff"
+task-tags = ["todo", "TODO"]
 
 [tool.ruff.per-file-ignores]
 "setup.py" = ["F401"] # unused import
@@ -257,6 +261,9 @@ cache-dir = "~/.cache/ruff"
   "S311", # pseudo-random-generator
   "ASYNC101", # no open call on async function
 ]
+
+[tool.ruff.flake8-quotes]
+docstring-quotes = "double"
 
 [tool.ruff.flake8-bandit]
 check-typed-exception = true

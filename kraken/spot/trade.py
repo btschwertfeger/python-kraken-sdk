@@ -330,12 +330,12 @@ class Trade(KrakenBaseSpotAPI):
         if ordertype in ("stop-loss-limit", "take-profit-limit"):
             if not defined(price2):
                 raise ValueError(
-                    f"Ordertype {ordertype} requires a secondary price (price2)!"
+                    f"Ordertype {ordertype} requires a secondary price (price2)!",
                 )
             params["price2"] = str(price2)
         elif price2 is not None:
             raise ValueError(
-                f"Ordertype {ordertype} dos not allow a second price (price2)!"
+                f"Ordertype {ordertype} dos not allow a second price (price2)!",
             )
         if defined(leverage):
             params["leverage"] = str(leverage)
@@ -355,7 +355,9 @@ class Trade(KrakenBaseSpotAPI):
             params["displayvol"] = str(displayvol)
 
         return self._request(  # type: ignore[return-value]
-            method="POST", uri="/private/AddOrder", params=params
+            method="POST",
+            uri="/private/AddOrder",
+            params=params,
         )
 
     def create_order_batch(
@@ -430,7 +432,10 @@ class Trade(KrakenBaseSpotAPI):
         if defined(deadline):
             params["deadline"] = deadline
         return self._request(  # type: ignore[return-value]
-            method="POST", uri="/private/AddOrderBatch", params=params, do_json=True
+            method="POST",
+            uri="/private/AddOrderBatch",
+            params=params,
+            do_json=True,
         )
 
     @ensure_string("oflags")
@@ -531,7 +536,9 @@ class Trade(KrakenBaseSpotAPI):
         if defined(deadline):
             params["deadline"] = deadline
         return self._request(  # type: ignore[return-value]
-            "POST", uri="/private/EditOrder", params=params
+            "POST",
+            uri="/private/EditOrder",
+            params=params,
         )
 
     @ensure_string("txid")
@@ -587,7 +594,8 @@ class Trade(KrakenBaseSpotAPI):
             { 'count': 2 }
         """
         return self._request(  # type: ignore[return-value]
-            method="POST", uri="/private/CancelAll"
+            method="POST",
+            uri="/private/CancelAll",
         )
 
     def cancel_all_orders_after_x(self: Trade, timeout: int = 0) -> dict:

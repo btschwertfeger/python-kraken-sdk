@@ -38,7 +38,7 @@ def test_get_fills(futures_demo_trade) -> None:
     """
     assert is_success(futures_demo_trade.get_fills())
     assert is_success(
-        futures_demo_trade.get_fills(lastFillTime="2020-07-21T12:41:52.790Z")
+        futures_demo_trade.get_fills(lastFillTime="2020-07-21T12:41:52.790Z"),
     )
 
 
@@ -51,7 +51,7 @@ def test_dead_mans_switch(futures_demo_trade) -> None:
     """
     assert is_success(futures_demo_trade.dead_mans_switch(timeout=60))
     assert is_success(
-        futures_demo_trade.dead_mans_switch(timeout=0)
+        futures_demo_trade.dead_mans_switch(timeout=0),
     )  # reset dead mans switch
 
 
@@ -67,16 +67,16 @@ def test_get_orders_status(futures_demo_trade) -> None:
             orderIds=[
                 "d47e7fb4-aed0-4f3d-987b-9e3ca78ba74e",
                 "fc589be9-5095-48f0-b6f1-a2dfad6d9677",
-            ]
-        )
+            ],
+        ),
     )
     assert is_success(
         futures_demo_trade.get_orders_status(
             cliOrdIds=[
                 "2c611222-bfe6-42d1-9f55-77bddc01a313",
                 "fc589be9-5095-48f0-b6f1-a2dfad6d9677",
-            ]
-        )
+            ],
+        ),
     )
 
 
@@ -199,7 +199,7 @@ def test_create_batch_order(futures_demo_trade) -> None:
                         "cliOrdId": "my_client_id",
                     },
                 ],
-            )
+            ),
         )
     except KrakenException.KrakenInsufficientAvailableFundsError:
         pass
@@ -214,13 +214,15 @@ def test_edit_order(futures_demo_trade) -> None:
     """
     # success, because kraken received the correct message, even if the id is invalid
     assert is_success(
-        futures_demo_trade.edit_order(orderId="my_another_client_id", limitPrice=3)
+        futures_demo_trade.edit_order(orderId="my_another_client_id", limitPrice=3),
     )
 
     assert is_success(
         futures_demo_trade.edit_order(
-            cliOrdId="myclientorderid", size=111.0, stopPrice=1000
-        )
+            cliOrdId="myclientorderid",
+            size=111.0,
+            stopPrice=1000,
+        ),
     )
 
 

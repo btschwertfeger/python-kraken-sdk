@@ -175,7 +175,9 @@ class Market(KrakenBaseFuturesAPI):
             ["PI_XBTUSD", "PF_XBTUSD", "PF_SOLUSD", ...]
         """
         return self._request(  # type: ignore[return-value]
-            method="GET", uri=f"/api/charts/v1/{tick_type}", auth=False
+            method="GET",
+            uri=f"/api/charts/v1/{tick_type}",
+            auth=False,
         )
 
     @lru_cache()
@@ -203,7 +205,9 @@ class Market(KrakenBaseFuturesAPI):
             ['1h', '12h', '1w', '15m', '1d', '5m', '30m', '4h', '1m']
         """
         return self._request(  # type: ignore[return-value]
-            method="GET", uri=f"/api/charts/v1/{tick_type}/{tradeable}", auth=False
+            method="GET",
+            uri=f"/api/charts/v1/{tick_type}/{tradeable}",
+            auth=False,
         )
 
     @lru_cache()
@@ -244,7 +248,9 @@ class Market(KrakenBaseFuturesAPI):
             }
         """
         return self._request(  # type: ignore[return-value]
-            method="GET", uri="/derivatives/api/v3/feeschedules", auth=False
+            method="GET",
+            uri="/derivatives/api/v3/feeschedules",
+            auth=False,
         )
 
     def get_fee_schedules_vol(self: Market) -> dict:
@@ -272,7 +278,9 @@ class Market(KrakenBaseFuturesAPI):
 
         """
         return self._request(  # type: ignore[return-value]
-            method="GET", uri="/derivatives/api/v3/feeschedules/volumes", auth=True
+            method="GET",
+            uri="/derivatives/api/v3/feeschedules/volumes",
+            auth=True,
         )
 
     def get_orderbook(self: Market, symbol: Optional[str] = None) -> dict:
@@ -369,7 +377,9 @@ class Market(KrakenBaseFuturesAPI):
             }
         """
         return self._request(  # type: ignore[return-value]
-            method="GET", uri="/derivatives/api/v3/tickers", auth=False
+            method="GET",
+            uri="/derivatives/api/v3/tickers",
+            auth=False,
         )
 
     def get_instruments(self: Market) -> dict:
@@ -451,7 +461,9 @@ class Market(KrakenBaseFuturesAPI):
 
         """
         return self._request(  # type: ignore[return-value]
-            method="GET", uri="/derivatives/api/v3/instruments", auth=False
+            method="GET",
+            uri="/derivatives/api/v3/instruments",
+            auth=False,
         )
 
     def get_instruments_status(self: Market, instrument: Optional[str] = None) -> dict:
@@ -489,7 +501,9 @@ class Market(KrakenBaseFuturesAPI):
             )
 
         return self._request(  # type: ignore[return-value]
-            method="GET", uri="/derivatives/api/v3/instruments/status", auth=False
+            method="GET",
+            uri="/derivatives/api/v3/instruments/status",
+            auth=False,
         )
 
     def get_trade_history(
@@ -616,7 +630,9 @@ class Market(KrakenBaseFuturesAPI):
             }
         """
         return self._request(  # type: ignore[return-value]
-            method="GET", uri="/derivatives/api/v3/leveragepreferences", auth=True
+            method="GET",
+            uri="/derivatives/api/v3/leveragepreferences",
+            auth=True,
         )
 
     def set_leverage_preference(
@@ -680,7 +696,9 @@ class Market(KrakenBaseFuturesAPI):
             {'result': 'success', 'serverTime': '2023-04-04T15:21:29.413Z', 'preferences': []}
         """
         return self._request(  # type: ignore[return-value]
-            method="GET", uri="/derivatives/api/v3/pnlpreferences", auth=True
+            method="GET",
+            uri="/derivatives/api/v3/pnlpreferences",
+            auth=True,
         )
 
     def set_pnl_preference(self: Market, symbol: str, pnlPreference: str) -> dict:
@@ -759,7 +777,10 @@ class Market(KrakenBaseFuturesAPI):
             params["tradeable"] = tradeable
         params.update(kwargs)
         return self._request(  # type: ignore[return-value]
-            method="GET", uri=endpoint, post_params=params, auth=False
+            method="GET",
+            uri=endpoint,
+            post_params=params,
+            auth=False,
         )
 
     def get_public_execution_events(

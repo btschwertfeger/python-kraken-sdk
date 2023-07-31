@@ -144,7 +144,9 @@ class User(KrakenBaseFuturesAPI):
             }
         """
         return self._request(  # type: ignore[return-value]
-            method="GET", uri="/derivatives/api/v3/accounts", auth=True
+            method="GET",
+            uri="/derivatives/api/v3/accounts",
+            auth=True,
         )
 
     def get_subaccounts(self: User) -> dict:
@@ -173,7 +175,9 @@ class User(KrakenBaseFuturesAPI):
             }
         """
         return self._request(  # type: ignore[return-value]
-            method="GET", uri="/derivatives/api/v3/subaccounts", auth=True
+            method="GET",
+            uri="/derivatives/api/v3/subaccounts",
+            auth=True,
         )
 
     def get_unwind_queue(self: User) -> dict:
@@ -203,7 +207,9 @@ class User(KrakenBaseFuturesAPI):
             }
         """
         return self._request(  # type: ignore[return-value]
-            method="GET", uri="/derivatives/api/v3/unwindqueue", auth=True
+            method="GET",
+            uri="/derivatives/api/v3/unwindqueue",
+            auth=True,
         )
 
     def get_notifications(self: User) -> dict:
@@ -235,7 +241,9 @@ class User(KrakenBaseFuturesAPI):
             }
         """
         return self._request(  # type: ignore[return-value]
-            method="GET", uri="/derivatives/api/v3/notifications", auth=True
+            method="GET",
+            uri="/derivatives/api/v3/notifications",
+            auth=True,
         )
 
     def get_account_log(
@@ -403,7 +411,10 @@ class User(KrakenBaseFuturesAPI):
             params["tradeable"] = tradeable
         params.update(kwargs)
         return self._request(  # type: ignore[return-value]
-            method="GET", uri=endpoint, query_params=params, auth=True
+            method="GET",
+            uri=endpoint,
+            query_params=params,
+            auth=True,
         )
 
     def get_execution_events(
@@ -723,7 +734,9 @@ class User(KrakenBaseFuturesAPI):
             }
         """
         return self._request(  # type: ignore[return-value]
-            method="GET", uri="/derivatives/api/v3/openpositions", auth=True
+            method="GET",
+            uri="/derivatives/api/v3/openpositions",
+            auth=True,
         )
 
     def get_open_orders(self: User) -> dict:
@@ -805,7 +818,9 @@ class User(KrakenBaseFuturesAPI):
             }
         """
         return self._request(  # type: ignore[return-value]
-            method="GET", uri="/derivatives/api/v3/openorders", auth=True
+            method="GET",
+            uri="/derivatives/api/v3/openorders",
+            auth=True,
         )
 
     def check_trading_enabled_on_subaccount(self: User, subaccountUid: str) -> dict:
@@ -842,7 +857,9 @@ class User(KrakenBaseFuturesAPI):
         )
 
     def set_trading_on_subaccount(
-        self: User, subaccountUid: str, trading_enabled: bool
+        self: User,
+        subaccountUid: str,
+        trading_enabled: bool,
     ) -> dict:
         """
         Enable or disable trading on a subaccount.

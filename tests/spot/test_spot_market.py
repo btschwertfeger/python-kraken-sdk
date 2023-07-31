@@ -85,7 +85,7 @@ def test_get_ohlc(spot_market: Market) -> None:
     """
     assert is_not_error(spot_market.get_ohlc(pair="XBTUSD"))
     assert is_not_error(
-        spot_market.get_ohlc(pair="XBTUSD", interval=240, since="1616663618")
+        spot_market.get_ohlc(pair="XBTUSD", interval=240, since="1616663618"),
     )  # interval in [1 5 15 30 60 240 1440 10080 21600]
 
 
@@ -99,7 +99,7 @@ def test_get_order_book(spot_market: Market) -> None:
     """
     assert is_not_error(spot_market.get_order_book(pair="XBTUSD"))
     assert is_not_error(
-        spot_market.get_order_book(pair="XBTUSD", count=2)
+        spot_market.get_order_book(pair="XBTUSD", count=2),
     )  # count in [1...500]
 
 
@@ -113,7 +113,7 @@ def test_get_recent_trades(spot_market: Market) -> None:
     """
     assert is_not_error(spot_market.get_recent_trades(pair="XBTUSD"))
     assert is_not_error(
-        spot_market.get_recent_trades(pair="XBTUSD", since="1616663618", count=2)
+        spot_market.get_recent_trades(pair="XBTUSD", since="1616663618", count=2),
     )
 
 
@@ -127,5 +127,5 @@ def test_get_recent_spreads(spot_market: Market) -> None:
     """
     assert is_not_error(spot_market.get_recent_spreads(pair="XBTUSD"))
     assert is_not_error(
-        spot_market.get_recent_spreads(pair="XBTUSD", since="1616663618")
+        spot_market.get_recent_spreads(pair="XBTUSD", since="1616663618"),
     )

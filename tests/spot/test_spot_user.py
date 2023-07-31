@@ -109,12 +109,15 @@ def test_get_closed_orders(spot_auth_user: User) -> None:
     assert is_not_error(spot_auth_user.get_closed_orders())
     assert is_not_error(spot_auth_user.get_closed_orders(trades=True, userref="1234"))
     assert is_not_error(
-        spot_auth_user.get_closed_orders(trades=True, start="1668431675.4778206")
+        spot_auth_user.get_closed_orders(trades=True, start="1668431675.4778206"),
     )
     assert is_not_error(
         spot_auth_user.get_closed_orders(
-            trades=True, start="1668431675.4778206", end="1668455555.4778206", ofs=2
-        )
+            trades=True,
+            start="1668431675.4778206",
+            end="1668455555.4778206",
+            ofs=2,
+        ),
     )
     assert is_not_error(
         spot_auth_user.get_closed_orders(
@@ -123,7 +126,7 @@ def test_get_closed_orders(spot_auth_user: User) -> None:
             end="1668455555.4778206",
             ofs=1,
             closetime="open",
-        )
+        ),
     )
 
 
@@ -203,7 +206,7 @@ def test_get_trades_history(spot_auth_user: User) -> None:
             start="1677717104",
             end="1677817104",
             ofs="1",
-        )
+        ),
     )
 
 
@@ -217,7 +220,8 @@ def test_get_open_positions(spot_auth_user: User) -> None:
     """
     assert isinstance(spot_auth_user.get_open_positions(), list)
     assert isinstance(
-        spot_auth_user.get_open_positions(txid="OQQYNL-FXCFA-FBFVD7"), list
+        spot_auth_user.get_open_positions(txid="OQQYNL-FXCFA-FBFVD7"),
+        list,
     )
     assert isinstance(
         spot_auth_user.get_open_positions(txid="OQQYNL-FXCFA-FBFVD7", docalcs=True),
@@ -237,18 +241,21 @@ def test_get_ledgers_info(spot_auth_user: User) -> None:
     assert is_not_error(spot_auth_user.get_ledgers_info(type_="deposit"))
     assert is_not_error(
         spot_auth_user.get_ledgers_info(
-            asset="EUR", start="1668431675.4778206", end="1668455555.4778206", ofs=2
-        )
+            asset="EUR",
+            start="1668431675.4778206",
+            end="1668455555.4778206",
+            ofs=2,
+        ),
     )
     assert is_not_error(
         spot_auth_user.get_ledgers_info(
             asset=["EUR", "USD"],
-        )
+        ),
     )
     assert is_not_error(
         spot_auth_user.get_ledgers_info(
             asset="EUR,USD",
-        )
+        ),
     )
 
 
@@ -263,8 +270,9 @@ def test_get_ledgers(spot_auth_user: User) -> None:
     assert is_not_error(spot_auth_user.get_ledgers(id_="LNYQGU-SUR5U-UXTOWM"))
     assert is_not_error(
         spot_auth_user.get_ledgers(
-            id_=["LNYQGU-SUR5U-UXTOWM", "LTCMN2-5DZHX-6CPRC4"], trades=True
-        )
+            id_=["LNYQGU-SUR5U-UXTOWM", "LTCMN2-5DZHX-6CPRC4"],
+            trades=True,
+        ),
     )
 
 
@@ -291,7 +299,8 @@ def test_request_save_export_report(spot_auth_user: User) -> None:
     with pytest.raises(ValueError):
         # invalid report type
         spot_auth_user.request_export_report(
-            report="invalid", description="this is an invalid report type"
+            report="invalid",
+            description="this is an invalid report type",
         )
 
     for report in ("trades", "ledgers"):
@@ -350,7 +359,8 @@ def test_request_save_export_report(spot_auth_user: User) -> None:
             try:
                 assert isinstance(
                     spot_auth_user.delete_export_report(
-                        id_=response["id"], type_="delete"
+                        id_=response["id"],
+                        type_="delete",
                     ),
                     dict,
                 )

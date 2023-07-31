@@ -39,7 +39,9 @@ def test_create_public_client(caplog: Any) -> None:
 @pytest.mark.futures_auth
 @pytest.mark.futures_websocket
 def test_create_private_client(
-    futures_api_key: str, futures_secret_key: str, caplog: Any
+    futures_api_key: str,
+    futures_secret_key: str,
+    caplog: Any,
 ) -> None:
     """
     Checks if the authenticated websocket client
@@ -48,7 +50,8 @@ def test_create_private_client(
 
     async def instantiate_client() -> None:
         client: FuturesWebsocketClientTestWrapper = FuturesWebsocketClientTestWrapper(
-            key=futures_api_key, secret=futures_secret_key
+            key=futures_api_key,
+            secret=futures_secret_key,
         )
         assert client.is_auth
         await async_wait(5)
@@ -142,7 +145,9 @@ def test_subscribe_public(caplog: Any) -> None:
 @pytest.mark.futures_auth
 @pytest.mark.futures_websocket
 def test_subscribe_private(
-    futures_api_key: str, futures_secret_key: str, caplog: Any
+    futures_api_key: str,
+    futures_secret_key: str,
+    caplog: Any,
 ) -> None:
     """
     Checks if the authenticated websocket client is able to subscribe
@@ -151,7 +156,8 @@ def test_subscribe_private(
 
     async def submit_subscription() -> None:
         client: FuturesWebsocketClientTestWrapper = FuturesWebsocketClientTestWrapper(
-            key=futures_api_key, secret=futures_secret_key
+            key=futures_api_key,
+            secret=futures_secret_key,
         )
 
         with pytest.raises(ValueError):
@@ -207,7 +213,9 @@ def test_unsubscribe_public(caplog: Any) -> None:
 @pytest.mark.futures_auth
 @pytest.mark.futures_websocket
 def test_unsubscribe_private(
-    futures_api_key: str, futures_secret_key: str, caplog: Any
+    futures_api_key: str,
+    futures_secret_key: str,
+    caplog: Any,
 ) -> None:
     """
     Checks if the authenticated websocket client is able to unsubscribe
@@ -216,7 +224,8 @@ def test_unsubscribe_private(
 
     async def execute_unsubscribe() -> None:
         client: FuturesWebsocketClientTestWrapper = FuturesWebsocketClientTestWrapper(
-            key=futures_api_key, secret=futures_secret_key
+            key=futures_api_key,
+            secret=futures_secret_key,
         )
         await client.subscribe(feed="open_orders")
 

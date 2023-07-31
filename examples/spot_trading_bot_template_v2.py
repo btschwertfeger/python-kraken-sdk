@@ -54,7 +54,9 @@ class TradingBot(KrakenSpotWSClientV2):
 
     def __init__(self: TradingBot, config: dict, **kwargs: Any) -> None:
         super().__init__(  # initialize the KrakenSpotWSClientV2
-            key=config["key"], secret=config["secret"], **kwargs
+            key=config["key"],
+            secret=config["secret"],
+            **kwargs,
         )
         self.__config: dict = config
 
@@ -170,10 +172,14 @@ class ManagedBot:
         self.__trading_strategy = TradingBot(config=self.__config)
 
         await self.__trading_strategy.subscribe(
-            params={"channel": "ticker", "symbol": self.__config["pairs"]}
+            params={"channel": "ticker", "symbol": self.__config["pairs"]},
         )
         await self.__trading_strategy.subscribe(
-            params={"channel": "ohlc", "interval": 15, "symbol": self.__config["pairs"]}
+            params={
+                "channel": "ohlc",
+                "interval": 15,
+                "symbol": self.__config["pairs"],
+            },
         )
 
         await self.__trading_strategy.subscribe(params={"channel": "executions"})
@@ -192,7 +198,7 @@ class ManagedBot:
 
             await asyncio.sleep(6)
         self.__trading_strategy.save_exit(
-            reason="Left main loop because of exception in strategy."
+            reason="Left main loop because of exception in strategy.",
         )
         return
 
@@ -228,14 +234,14 @@ def main() -> None:
             "key": os.getenv("SPOT_API_KEY"),
             "secret": os.getenv("SPOT_SECRET_KEY"),
             "pairs": ["DOT/USD", "BTC/USD"],
-        }
+        },
     )
 
     try:
         managed_bot.run()
     except Exception:
         managed_bot.save_exit(
-            reason=f"manageBot.run() has ended: {traceback.format_exc()}"
+            reason=f"manageBot.run() has ended: {traceback.format_exc()}",
         )
 
 

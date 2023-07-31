@@ -23,7 +23,7 @@ def test_get_historical_funding_rates(futures_demo_funding: Funding) -> None:
     Checks the ``get_historical_funding_rates`` function.
     """
     assert is_success(
-        futures_demo_funding.get_historical_funding_rates(symbol="PF_SOLUSD")
+        futures_demo_funding.get_historical_funding_rates(symbol="PF_SOLUSD"),
     )
 
 

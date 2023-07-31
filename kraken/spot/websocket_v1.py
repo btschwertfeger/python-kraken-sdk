@@ -213,7 +213,9 @@ class KrakenSpotWSClient(KrakenSpotWSClientBase):
         await socket.send(json.dumps(message))
 
     async def subscribe(  # pylint: disable=arguments-differ
-        self: KrakenSpotWSClient, subscription: dict, pair: Optional[List[str]] = None
+        self: KrakenSpotWSClient,
+        subscription: dict,
+        pair: Optional[List[str]] = None,
     ) -> None:
         """
         Subscribe to a channel
@@ -253,18 +255,18 @@ class KrakenSpotWSClient(KrakenSpotWSClientBase):
         if pair is not None:
             if not isinstance(pair, list):
                 raise TypeError(
-                    'Parameter pair must be type of list[str] (e.g. pair=["XBTUSD"])'
+                    'Parameter pair must be type of list[str] (e.g. pair=["XBTUSD"])',
                 )
             payload["pair"] = pair
 
         if private:  # private == without pair
             if not self._is_auth:
                 raise KrakenException.KrakenAuthenticationError(
-                    "Cannot subscribe to private feeds without valid credentials!"
+                    "Cannot subscribe to private feeds without valid credentials!",
                 )
             if pair is not None:
                 raise ValueError(
-                    "Cannot subscribe to private endpoint with specific pair!"
+                    "Cannot subscribe to private endpoint with specific pair!",
                 )
             await self.send_message(payload, private=True)
 
@@ -276,14 +278,16 @@ class KrakenSpotWSClient(KrakenSpotWSClientBase):
 
         else:
             raise ValueError(
-                "At least one pair must be specified when subscribing to public feeds."
+                "At least one pair must be specified when subscribing to public feeds.",
             )
             # Currently there is no possibility to public subscribe without a
             # pair (July 2023).
             # await self.send_message(payload, private=False)
 
     async def unsubscribe(  # pylint: disable=arguments-differ
-        self: KrakenSpotWSClient, subscription: dict, pair: Optional[List[str]] = None
+        self: KrakenSpotWSClient,
+        subscription: dict,
+        pair: Optional[List[str]] = None,
     ) -> None:
         """
         Unsubscribe from a feed
@@ -322,18 +326,18 @@ class KrakenSpotWSClient(KrakenSpotWSClientBase):
         if pair is not None:
             if not isinstance(pair, list):
                 raise TypeError(
-                    'Parameter pair must be type of list[str] (e.g. pair=["XBTUSD"])'
+                    'Parameter pair must be type of list[str] (e.g. pair=["XBTUSD"])',
                 )
             payload["pair"] = pair
 
         if private:  # private == without pair
             if not self._is_auth:
                 raise KrakenException.KrakenAuthenticationError(
-                    "Cannot unsubscribe from private feeds without valid credentials!"
+                    "Cannot unsubscribe from private feeds without valid credentials!",
                 )
             if pair is not None:
                 raise ValueError(
-                    "Cannot unsubscribe from private endpoint with specific pair!"
+                    "Cannot unsubscribe from private endpoint with specific pair!",
                 )
             await self.send_message(payload, private=True)
 
@@ -346,7 +350,7 @@ class KrakenSpotWSClient(KrakenSpotWSClientBase):
         else:
             raise ValueError(
                 "At least one pair must be specified when unsubscribing "
-                "from public feeds."
+                "from public feeds.",
             )
             # Currently there is no possibility to public unsubscribe without a
             # pair (July 2023).
@@ -491,7 +495,7 @@ class KrakenSpotWSClient(KrakenSpotWSClientBase):
         """
         if not self._priv_conn or not self._priv_conn.is_auth:
             raise KrakenException.KrakenAuthenticationError(
-                "Can't place order - Authenticated websocket not connected!"
+                "Can't place order - Authenticated websocket not connected!",
             )
 
         payload: dict = {
@@ -516,7 +520,7 @@ class KrakenSpotWSClient(KrakenSpotWSClientBase):
             if not isinstance(oflags, str):
                 raise ValueError(
                     "oflags must be a comma delimited list of order flags as "
-                    "str. Available flags: {viqc, fcib, fciq, nompp, post}"
+                    "str. Available flags: {viqc, fcib, fciq, nompp, post}",
                 )
             payload["oflags"] = oflags
         if defined(starttm):
@@ -607,7 +611,7 @@ class KrakenSpotWSClient(KrakenSpotWSClientBase):
         """
         if not self._priv_conn or not self._priv_conn.is_auth:
             raise KrakenException.KrakenAuthenticationError(
-                "Can't edit order - Authenticated websocket not connected!"
+                "Can't edit order - Authenticated websocket not connected!",
             )
 
         payload: dict = {
@@ -666,10 +670,11 @@ class KrakenSpotWSClient(KrakenSpotWSClientBase):
         """
         if not self._priv_conn or not self._priv_conn.is_auth:
             raise KrakenException.KrakenAuthenticationError(
-                "Can't cancel order - Authenticated websocket not connected!"
+                "Can't cancel order - Authenticated websocket not connected!",
             )
         await self.send_message(
-            message={"event": "cancelOrder", "txid": txid}, private=True
+            message={"event": "cancelOrder", "txid": txid},
+            private=True,
         )
 
     async def cancel_all_orders(self: KrakenSpotWSClient) -> None:
@@ -696,12 +701,13 @@ class KrakenSpotWSClient(KrakenSpotWSClientBase):
         """
         if not self._priv_conn or not self._priv_conn.is_auth:
             raise KrakenException.KrakenAuthenticationError(
-                "Can't cancel all orders - Authenticated websocket not connected!"
+                "Can't cancel all orders - Authenticated websocket not connected!",
             )
         await self.send_message(message={"event": "cancelAll"}, private=True)
 
     async def cancel_all_orders_after(
-        self: KrakenSpotWSClient, timeout: int = 0
+        self: KrakenSpotWSClient,
+        timeout: int = 0,
     ) -> None:
         """
         Set a Death Man's Switch
@@ -729,10 +735,11 @@ class KrakenSpotWSClient(KrakenSpotWSClientBase):
         """
         if not self._priv_conn or not self._priv_conn.is_auth:
             raise KrakenException.KrakenAuthenticationError(
-                "Can't cancel all orders after - Authenticated websocket not connected!"
+                "Can't cancel all orders after - Authenticated websocket not connected!",
             )
         await self.send_message(
-            message={"event": "cancelAllOrdersAfter", "timeout": timeout}, private=True
+            message={"event": "cancelAllOrdersAfter", "timeout": timeout},
+            private=True,
         )
 
 
