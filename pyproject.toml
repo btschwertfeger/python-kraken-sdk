@@ -192,7 +192,7 @@ select = [
   # "FBT", # boolean trap # todo
   "B", # flake8-bugbear
   "A", # flake8-builtins
-  "COM", # flake8-commas # todo
+  "COM", # flake8-commas
   "C4", # flake8-comprehensions
   "FA", # flake8-future-annotations
   "ISC", # flake8-implicit-string-concat
@@ -226,7 +226,8 @@ select = [
 ]
 fixable = [
   "Q",
-  "COM"
+  "COM",
+  "RSE"
 ]
 
 ignore = [

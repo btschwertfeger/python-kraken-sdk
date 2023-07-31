@@ -71,6 +71,14 @@ doctest:
 pre-commit:
 	@pre-commit run -a
 
+## ruff 	Run ruff without fix
+ruff:
+	ruff check .
+
+## ruff-fix 	Run ruff with fix
+ruff-fix:
+	ruff check . --fix
+
 ## changelog	Generate the changelog
 ##
 changelog:
