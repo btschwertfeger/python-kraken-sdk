@@ -6,7 +6,6 @@
 #
 # For the full list of built-in configuration values, see the documentation:
 # https://www.sphinx-doc.org/en/master/usage/configuration.html
-# pylint: disable=invalid-name
 
 """This module is the configuration for the Sphinx documentation building process"""
 
@@ -17,7 +16,7 @@ import sys
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 project = "python-kraken-sdk"
-copyright = "2023, Benjamin Thomas Schwertfeger"  # pylint: disable=redefined-builtin
+copyright = "2023, Benjamin Thomas Schwertfeger"  # ruff: noqa: A001
 author = "Benjamin Thomas Schwertfeger"
 
 # to import the package
