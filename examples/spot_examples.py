@@ -46,21 +46,23 @@ def user_examples() -> None:
     print(user.get_open_orders())
     print(user.get_closed_orders())
     print(
-        user.get_orders_info(txid="OBQFM7-JNVKS-H3ULEH")
+        user.get_orders_info(txid="OBQFM7-JNVKS-H3ULEH"),
     )  # or txid='id1,id2,id3' or txid=['id1','id2']
     print(user.get_trades_history())
     time.sleep(3)
     print(user.get_trades_info(txid="TCNTTR-QBEVO-E5H5UK"))
     print(user.get_open_positions())  # txid='someid'
     print(
-        user.get_ledgers_info()
+        user.get_ledgers_info(),
     )  # asset='BTC' or asset='BTC,EUR' or asset=['BTC','EUR']
     print(user.get_ledgers(id_="LIORGR-33NXH-LBUS5Z"))
     print(user.get_trade_volume())  # pair='BTC/EUR'
 
     # ____export_report____
     response = user.request_export_report(
-        report="ledgers", description="myLedgers1", format="CSV"
+        report="ledgers",
+        description="myLedgers1",
+        format="CSV",
     )  # report='trades'
     print(user.get_export_report_status(report="ledgers"))
 
@@ -72,7 +74,7 @@ def user_examples() -> None:
                 file.write(chunk)
 
     print(
-        user.delete_export_report(id_=response["id"], type_="delete")
+        user.delete_export_report(id_=response["id"], type_="delete"),
     )  # alternative: type_=cancel
 
 
@@ -94,15 +96,19 @@ def market_examples() -> None:
 def trade_examples() -> None:
     """Example usage of the Trade client"""
     raise ValueError(
-        "Attention: Please check if you really want to execute trade functions."
+        "Attention: Please check if you really want to execute trade functions.",
     )
     trade = Trade(key=key, secret=secret)
 
     if False:
         print(
             trade.create_order(
-                ordertype="limit", side="buy", volume=1, pair="BTC/EUR", price=0.01
-            )
+                ordertype="limit",
+                side="buy",
+                volume=1,
+                pair="BTC/EUR",
+                price=0.01,
+            ),
         )
         print(
             trade.create_order_batch(
@@ -132,11 +138,11 @@ def trade_examples() -> None:
                 ],
                 pair="BTC/USD",
                 validate=True,
-            )
+            ),
         )
 
         print(
-            trade.edit_order(txid="sometxid", pair="BTC/EUR", volume=4.2, price=17000)
+            trade.edit_order(txid="sometxid", pair="BTC/EUR", volume=4.2, price=17000),
         )
         time.sleep(2)
 
@@ -151,8 +157,8 @@ def trade_examples() -> None:
                 "O523KJ-DO4M2-KAT243",
                 "OCDIAL-YC66C-DOF7HS",
                 "OVFPZ2-DA2GV-VBFVVI",
-            ]
-        )
+            ],
+        ),
     )
 
 
@@ -163,11 +169,11 @@ def funding_examples() -> None:
     # print(funding.get_deposit_address(asset='DOT', method='Polkadot'))
     # print(funding.get_recent_deposits_status(asset='DOT'))
     print(
-        funding.get_withdrawal_info(asset="DOT", key="MyPolkadotWallet", amount="200")
+        funding.get_withdrawal_info(asset="DOT", key="MyPolkadotWallet", amount="200"),
     )
 
     raise ValueError(
-        "Attention: Please check if you really want to execute funding functions."
+        "Attention: Please check if you really want to execute funding functions.",
     )
     if False:
         time.sleep(2)
@@ -176,8 +182,11 @@ def funding_examples() -> None:
         print(funding.cancel_widthdraw(asset="DOT", refid="12345"))
         print(
             funding.wallet_transfer(
-                asset="ETH", amount=0.100, from_="Spot Wallet", to_="Futures Wallet"
-            )
+                asset="ETH",
+                amount=0.100,
+                from_="Spot Wallet",
+                to_="Futures Wallet",
+            ),
         )
 
 
@@ -188,7 +197,7 @@ def staking_examples() -> None:
     print(staking.list_staking_transactions())
     print(staking.get_pending_staking_transactions())
     raise ValueError(
-        "Attention: Please check if you really want to execute staking functions."
+        "Attention: Please check if you really want to execute staking functions.",
     )
     if False:
         print(staking.stake_asset(asset="DOT", amount=2000, method="polkadot-staked"))

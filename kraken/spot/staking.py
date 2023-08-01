@@ -57,7 +57,10 @@ class Staking(KrakenBaseSpotAPI):
         return self
 
     def stake_asset(
-        self: Staking, asset: str, amount: Union[str, int, float], method: str
+        self: Staking,
+        asset: str,
+        amount: Union[str, int, float],
+        method: str,
     ) -> dict:
         """
         Stake the specified asset from the Spot wallet.
@@ -141,7 +144,10 @@ class Staking(KrakenBaseSpotAPI):
             params["method"] = method
 
         return self._request(  # type: ignore[return-value]
-            method="POST", uri="/private/Unstake", params=params, auth=True
+            method="POST",
+            uri="/private/Unstake",
+            params=params,
+            auth=True,
         )
 
     def list_stakeable_assets(self: Staking) -> List[dict]:
@@ -198,7 +204,9 @@ class Staking(KrakenBaseSpotAPI):
             ]
         """
         return self._request(  # type: ignore[return-value]
-            method="POST", uri="/private/Staking/Assets", auth=True
+            method="POST",
+            uri="/private/Staking/Assets",
+            auth=True,
         )
 
     def get_pending_staking_transactions(self: Staking) -> List[dict]:
@@ -234,7 +242,9 @@ class Staking(KrakenBaseSpotAPI):
             ]
         """
         return self._request(  # type: ignore[return-value]
-            method="POST", uri="/private/Staking/Pending", auth=True
+            method="POST",
+            uri="/private/Staking/Pending",
+            auth=True,
         )
 
     def list_staking_transactions(self: Staking) -> List[dict]:
@@ -273,7 +283,9 @@ class Staking(KrakenBaseSpotAPI):
 
         """
         return self._request(  # type: ignore[return-value]
-            method="POST", uri="/private/Staking/Transactions", auth=True
+            method="POST",
+            uri="/private/Staking/Transactions",
+            auth=True,
         )
 
 

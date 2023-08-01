@@ -121,7 +121,10 @@ class Market(KrakenBaseSpotAPI):
         if defined(aclass):
             params["aclass"] = aclass
         return self._request(  # type: ignore[return-value]
-            method="GET", uri="/public/Assets", params=params, auth=False
+            method="GET",
+            uri="/public/Assets",
+            params=params,
+            auth=False,
         )
 
     @ensure_string("pair")
@@ -196,7 +199,10 @@ class Market(KrakenBaseSpotAPI):
         if defined(info):
             params["info"] = info
         return self._request(  # type: ignore[return-value]
-            method="GET", uri="/public/AssetPairs", params=params, auth=False
+            method="GET",
+            uri="/public/AssetPairs",
+            params=params,
+            auth=False,
         )
 
     @ensure_string("pair")
@@ -236,7 +242,10 @@ class Market(KrakenBaseSpotAPI):
         if defined(pair):
             params["pair"] = pair
         return self._request(  # type: ignore[return-value]
-            method="GET", uri="/public/Ticker", params=params, auth=False
+            method="GET",
+            uri="/public/Ticker",
+            params=params,
+            auth=False,
         )
 
     def get_ohlc(
@@ -285,7 +294,10 @@ class Market(KrakenBaseSpotAPI):
         if defined(since):
             params["since"] = since
         return self._request(  # type: ignore[return-value]
-            method="GET", uri="/public/OHLC", params=params, auth=False
+            method="GET",
+            uri="/public/OHLC",
+            params=params,
+            auth=False,
         )
 
     def get_order_book(self: Market, pair: str, count: Optional[int] = 100) -> dict:
@@ -370,11 +382,16 @@ class Market(KrakenBaseSpotAPI):
         if defined(count):
             params["count"] = count
         return self._request(  # type: ignore[return-value]
-            method="GET", uri="/public/Trades", params=params, auth=False
+            method="GET",
+            uri="/public/Trades",
+            params=params,
+            auth=False,
         )
 
     def get_recent_spreads(
-        self: Market, pair: str, since: Optional[Union[str, int]] = None
+        self: Market,
+        pair: str,
+        since: Optional[Union[str, int]] = None,
     ) -> dict:
         """
         Get the latest spreads for a specific trading pair.
@@ -407,7 +424,10 @@ class Market(KrakenBaseSpotAPI):
         if defined(since):
             params["since"] = since
         return self._request(  # type: ignore[return-value]
-            method="GET", uri="/public/Spread", params=params, auth=False
+            method="GET",
+            uri="/public/Spread",
+            params=params,
+            auth=False,
         )
 
     def get_system_status(self: Market) -> dict:
@@ -428,7 +448,9 @@ class Market(KrakenBaseSpotAPI):
             {'status': 'online', 'timestamp': '2023-04-05T17:12:31Z'}
         """
         return self._request(  # type: ignore[return-value]
-            method="GET", uri="/public/SystemStatus", auth=False
+            method="GET",
+            uri="/public/SystemStatus",
+            auth=False,
         )
 
 

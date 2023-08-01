@@ -8,13 +8,13 @@
 Module that provides an example usage for the KrakenSpotWebsocketClient.
 It uses the Kraken Websocket API v2.
 """
-
 from __future__ import annotations
 
 import asyncio
 import logging
 import logging.config
 import os
+from contextlib import suppress
 
 from kraken.spot import KrakenSpotWSClientV2
 
@@ -66,10 +66,10 @@ async def main() -> None:
     # print(client.public_channel_names)  # list public subscription names
 
     await client.subscribe(
-        params={"channel": "ticker", "symbol": ["BTC/USD", "DOT/USD"]}
+        params={"channel": "ticker", "symbol": ["BTC/USD", "DOT/USD"]},
     )
     await client.subscribe(
-        params={"channel": "book", "depth": 25, "symbol": ["BTC/USD"]}
+        params={"channel": "book", "depth": 25, "symbol": ["BTC/USD"]},
     )
     await client.subscribe(params={"channel": "ohlc", "symbol": ["BTC/USD"]})
     await client.subscribe(
@@ -78,7 +78,7 @@ async def main() -> None:
             "interval": 15,
             "snapshot": False,
             "symbol": ["BTC/USD", "DOT/USD"],
-        }
+        },
     )
     await client.subscribe(params={"channel": "trade", "symbol": ["BTC/USD"]})
 
@@ -86,7 +86,7 @@ async def main() -> None:
     await asyncio.sleep(3)
     # print(client.active_public_subscriptions) # … to list active subscriptions
     await client.unsubscribe(
-        params={"channel": "ticker", "symbol": ["BTC/USD", "DOT/USD"]}
+        params={"channel": "ticker", "symbol": ["BTC/USD", "DOT/USD"]},
     )
     # ...
 
@@ -104,17 +104,14 @@ async def main() -> None:
 
     while not client.exception_occur and not client_auth.exception_occur:
         await asyncio.sleep(6)
-    return
 
 
 if __name__ == "__main__":
-    try:
+    with suppress(KeyboardInterrupt):
         asyncio.run(main())
-    except KeyboardInterrupt:
-        pass
-        # The websocket client will send {'event': 'asyncio.CancelledError'}
-        # via on_message so you can handle the behavior/next actions
-        # individually within your strategy.
+    # The websocket client will send {'event': 'asyncio.CancelledError'}
+    # via on_message so you can handle the behavior/next actions
+    # individually within your strategy.
 
 # ============================================================
 # Alternative - as ContextManager:

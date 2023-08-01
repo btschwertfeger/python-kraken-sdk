@@ -6,6 +6,7 @@
 
 """Module that implements the unit tests for the Futures trade client"""
 
+from contextlib import suppress
 from time import sleep
 
 import pytest
@@ -16,7 +17,7 @@ from .helper import is_success
 
 
 @pytest.fixture(autouse=True)
-def run_before_and_after_tests(futures_demo_trade):
+def _run_before_and_after_tests(futures_demo_trade) -> None:
     """
     Fixture that ensures all orders are cancelled after test.
     """
@@ -29,35 +30,35 @@ def run_before_and_after_tests(futures_demo_trade):
     sleep(0.25)
 
 
-@pytest.mark.futures
-@pytest.mark.futures_auth
-@pytest.mark.futures_trade
+@pytest.mark.futures()
+@pytest.mark.futures_auth()
+@pytest.mark.futures_trade()
 def test_get_fills(futures_demo_trade) -> None:
     """
     Checks the ``get_fills`` endpoint.
     """
     assert is_success(futures_demo_trade.get_fills())
     assert is_success(
-        futures_demo_trade.get_fills(lastFillTime="2020-07-21T12:41:52.790Z")
+        futures_demo_trade.get_fills(lastFillTime="2020-07-21T12:41:52.790Z"),
     )
 
 
-@pytest.mark.futures
-@pytest.mark.futures_auth
-@pytest.mark.futures_trade
+@pytest.mark.futures()
+@pytest.mark.futures_auth()
+@pytest.mark.futures_trade()
 def test_dead_mans_switch(futures_demo_trade) -> None:
     """
     Checks the ``dead_mans_switch`` endpoint.
     """
     assert is_success(futures_demo_trade.dead_mans_switch(timeout=60))
     assert is_success(
-        futures_demo_trade.dead_mans_switch(timeout=0)
+        futures_demo_trade.dead_mans_switch(timeout=0),
     )  # reset dead mans switch
 
 
-@pytest.mark.futures
-@pytest.mark.futures_auth
-@pytest.mark.futures_trade
+@pytest.mark.futures()
+@pytest.mark.futures_auth()
+@pytest.mark.futures_trade()
 def test_get_orders_status(futures_demo_trade) -> None:
     """
     Checks the ``get_orders_status`` endpoint.
@@ -67,27 +68,27 @@ def test_get_orders_status(futures_demo_trade) -> None:
             orderIds=[
                 "d47e7fb4-aed0-4f3d-987b-9e3ca78ba74e",
                 "fc589be9-5095-48f0-b6f1-a2dfad6d9677",
-            ]
-        )
+            ],
+        ),
     )
     assert is_success(
         futures_demo_trade.get_orders_status(
             cliOrdIds=[
                 "2c611222-bfe6-42d1-9f55-77bddc01a313",
                 "fc589be9-5095-48f0-b6f1-a2dfad6d9677",
-            ]
-        )
+            ],
+        ),
     )
 
 
-@pytest.mark.futures
-@pytest.mark.futures_auth
-@pytest.mark.futures_trade
+@pytest.mark.futures()
+@pytest.mark.futures_auth()
+@pytest.mark.futures_trade()
 def test_create_order(futures_demo_trade) -> None:
     """
     Checks the ``create_order`` endpoint.
     """
-    try:
+    with suppress(KrakenException.KrakenInsufficientAvailableFundsError):
         futures_demo_trade.create_order(
             orderType="lmt",
             size=10,
@@ -97,10 +98,8 @@ def test_create_order(futures_demo_trade) -> None:
             stopPrice=10,
             reduceOnly=True,
         )
-    except KrakenException.KrakenInsufficientAvailableFundsError:
-        pass
 
-    try:
+    with suppress(KrakenException.KrakenInsufficientAvailableFundsError):
         futures_demo_trade.create_order(
             orderType="take_profit",
             size=10,
@@ -110,8 +109,6 @@ def test_create_order(futures_demo_trade) -> None:
             triggerSignal="last",
             stopPrice=13000,
         )
-    except KrakenException.KrakenInsufficientAvailableFundsError:
-        pass
 
     # try:
     #     # does not work,  400 response "invalid order type"
@@ -131,15 +128,18 @@ def test_create_order(futures_demo_trade) -> None:
     #     pass
 
 
-@pytest.mark.futures
-@pytest.mark.futures_auth
-@pytest.mark.futures_trade
+@pytest.mark.futures()
+@pytest.mark.futures_auth()
+@pytest.mark.futures_trade()
 def test_create_order_failing(futures_demo_trade) -> None:
     """
     Checks ``create_order`` endpoint to fail when using invalid
     parameters.
     """
-    with pytest.raises(ValueError):
+    with pytest.raises(
+        ValueError,
+        match=r"Invalid side. One of \[\('buy', 'sell'\)\] is required!",
+    ):
         futures_demo_trade.create_order(
             orderType="mkt",
             size=10,
@@ -147,7 +147,10 @@ def test_create_order_failing(futures_demo_trade) -> None:
             side="long",
         )
 
-    with pytest.raises(ValueError):
+    with pytest.raises(
+        ValueError,
+        match=r"Trigger signal must be in \[\('mark', 'spot', 'last'\)\]!",
+    ):
         futures_demo_trade.create_order(
             orderType="take-profit",
             size=10,
@@ -159,14 +162,14 @@ def test_create_order_failing(futures_demo_trade) -> None:
         )
 
 
-@pytest.mark.futures
-@pytest.mark.futures_auth
-@pytest.mark.futures_trade
+@pytest.mark.futures()
+@pytest.mark.futures_auth()
+@pytest.mark.futures_trade()
 def test_create_batch_order(futures_demo_trade) -> None:
     """
     Checks the ``create_order_batch`` endpoint.
     """
-    try:
+    with suppress(KrakenException.KrakenInsufficientAvailableFundsError):
         assert is_success(
             futures_demo_trade.create_batch_order(
                 batchorder_list=[
@@ -199,46 +202,46 @@ def test_create_batch_order(futures_demo_trade) -> None:
                         "cliOrdId": "my_client_id",
                     },
                 ],
-            )
+            ),
         )
-    except KrakenException.KrakenInsufficientAvailableFundsError:
-        pass
 
 
-@pytest.mark.futures
-@pytest.mark.futures_auth
-@pytest.mark.futures_trade
+@pytest.mark.futures()
+@pytest.mark.futures_auth()
+@pytest.mark.futures_trade()
 def test_edit_order(futures_demo_trade) -> None:
     """
     Checks the ``edit_order`` endpoint.
     """
     # success, because kraken received the correct message, even if the id is invalid
     assert is_success(
-        futures_demo_trade.edit_order(orderId="my_another_client_id", limitPrice=3)
+        futures_demo_trade.edit_order(orderId="my_another_client_id", limitPrice=3),
     )
 
     assert is_success(
         futures_demo_trade.edit_order(
-            cliOrdId="myclientorderid", size=111.0, stopPrice=1000
-        )
+            cliOrdId="myclientorderid",
+            size=111.0,
+            stopPrice=1000,
+        ),
     )
 
 
-@pytest.mark.futures
-@pytest.mark.futures_auth
-@pytest.mark.futures_trade
+@pytest.mark.futures()
+@pytest.mark.futures_auth()
+@pytest.mark.futures_trade()
 def test_edit_order_failing(futures_demo_trade) -> None:
     """
     Checks if the ``edit_order`` endpoint fails when using invalid
     parameters.
     """
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match=r"Either orderId or cliOrdId must be set!"):
         futures_demo_trade.edit_order()
 
 
-@pytest.mark.futures
-@pytest.mark.futures_auth
-@pytest.mark.futures_trade
+@pytest.mark.futures()
+@pytest.mark.futures_auth()
+@pytest.mark.futures_trade()
 def test_cancel_order(futures_demo_trade) -> None:
     """
     Checks the ``cancel_order`` endpoint.
@@ -247,21 +250,21 @@ def test_cancel_order(futures_demo_trade) -> None:
     assert is_success(futures_demo_trade.cancel_order(order_id="1234"))
 
 
-@pytest.mark.futures
-@pytest.mark.futures_auth
-@pytest.mark.futures_trade
+@pytest.mark.futures()
+@pytest.mark.futures_auth()
+@pytest.mark.futures_trade()
 def test_cancel_order_failing(futures_demo_trade) -> None:
     """
     Checks if the ``cancel_order`` endpoint is failing when
     passing invalid arguments.
     """
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match=r"Either order_id or cliOrdId must be set!"):
         futures_demo_trade.cancel_order()
 
 
-@pytest.mark.futures
-@pytest.mark.futures_auth
-@pytest.mark.futures_trade
+@pytest.mark.futures()
+@pytest.mark.futures_auth()
+@pytest.mark.futures_trade()
 def test_cancel_all_orders(futures_demo_trade) -> None:
     """
     Checks the ``cancel_all_orders`` endpoint.

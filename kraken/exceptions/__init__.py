@@ -3,7 +3,11 @@
 # Copyright (C) 2023 Benjamin Thomas Schwertfeger
 # GitHub: https://github.com/btschwertfeger
 
-"""Module that provides custom exceptions for the python-kraken-sdk"""
+"""
+Module that provides custom exceptions for the python-kraken-sdk
+
+TODO: make each Error separate
+"""
 
 from __future__ import annotations
 
@@ -108,7 +112,8 @@ class KrakenException(Exception):
         }
 
     def get_exception(
-        self: KrakenException, data: Union[str, List[str]]
+        self: KrakenException,
+        data: Union[str, List[str]],
     ) -> Optional[Any]:
         """Returns the exception given by name if available"""
         is_list: bool = isinstance(data, list)

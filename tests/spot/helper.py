@@ -33,7 +33,6 @@ async def async_wait(seconds: float = 1.0) -> None:
     start: float = time()
     while time() - seconds < start:
         await sleep(0.2)
-    return
 
 
 class SpotWebsocketClientV1TestWrapper(KrakenSpotWSClient):
@@ -47,7 +46,9 @@ class SpotWebsocketClientV1TestWrapper(KrakenSpotWSClient):
     LOG: logging.Logger = logging.getLogger(__name__)
 
     def __init__(
-        self: SpotWebsocketClientV1TestWrapper, key: str = "", secret: str = ""
+        self: SpotWebsocketClientV1TestWrapper,
+        key: str = "",
+        secret: str = "",
     ) -> None:
         super().__init__(key=key, secret=secret, callback=self.on_message)
         self.LOG.setLevel(logging.INFO)
@@ -56,7 +57,8 @@ class SpotWebsocketClientV1TestWrapper(KrakenSpotWSClient):
         self.LOG.addHandler(fh)
 
     async def on_message(
-        self: SpotWebsocketClientV1TestWrapper, message: Union[list, dict]
+        self: SpotWebsocketClientV1TestWrapper,
+        message: Union[list, dict],
     ) -> None:
         """
         This is the callback function that must be implemented
@@ -114,7 +116,9 @@ class OrderbookClientWrapper(OrderbookClient):
         await super().on_message(message=message)
 
     async def on_book_update(
-        self: OrderbookClientWrapper, pair: str, message: dict
+        self: OrderbookClientWrapper,
+        pair: str,
+        message: dict,
     ) -> None:
         """
         This is the callback function that must be implemented

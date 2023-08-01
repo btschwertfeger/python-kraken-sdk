@@ -77,7 +77,10 @@ class KrakenSpotWSClientBase(KrakenBaseSpotAPI):
     # --------------------------------------------------------------------------
     # Internals
     def __connect(
-        self: "KrakenSpotWSClientBase", version: str, beta: bool, no_public: bool
+        self: "KrakenSpotWSClientBase",
+        version: str,
+        beta: bool,
+        no_public: bool,
     ) -> None:
         """
         Set up functions and attributes based on the API version.
@@ -86,7 +89,8 @@ class KrakenSpotWSClientBase(KrakenBaseSpotAPI):
         :type version: str
         """
         ConnectSpotWebsocket: Union[
-            Type[ConnectSpotWebsocketV1], Type[ConnectSpotWebsocketV2]
+            Type[ConnectSpotWebsocketV1],
+            Type[ConnectSpotWebsocketV2],
         ]
 
         if version == "v1":
@@ -125,7 +129,8 @@ class KrakenSpotWSClientBase(KrakenBaseSpotAPI):
         )
 
     async def on_message(
-        self: KrakenSpotWSClientBase, message: Union[dict, list]
+        self: KrakenSpotWSClientBase,
+        message: Union[dict, list],
     ) -> None:
         """
         Calls the defined callback function (if defined). In most cases you
@@ -147,16 +152,18 @@ class KrakenSpotWSClientBase(KrakenBaseSpotAPI):
                 Received message but no callback is defined! Either use a
                 callback when initializing the websocket client or overload
                 its ``on_message`` function.
-            """
+            """,
             )
-            print(message)
+            print(message)  # noqa: T201
 
     async def __aenter__(self: KrakenSpotWSClientBase) -> KrakenSpotWSClientBase:
         """Entrypoint for use as context manager"""
         return self
 
     async def __aexit__(
-        self: KrakenSpotWSClientBase, *exc: tuple, **kwargs: dict
+        self: KrakenSpotWSClientBase,
+        *exc: Any,
+        **kwargs: Any,
     ) -> None:
         """Exit if used as context manager"""
 
@@ -172,7 +179,8 @@ class KrakenSpotWSClientBase(KrakenBaseSpotAPI):
         :rtype: dict
         """
         return self._request(  # type: ignore[return-value]
-            "POST", "/private/GetWebSocketsToken"
+            "POST",
+            "/private/GetWebSocketsToken",
         )
 
     def _get_socket(self: KrakenSpotWSClientBase, private: bool) -> Any:
@@ -202,7 +210,7 @@ class KrakenSpotWSClientBase(KrakenBaseSpotAPI):
         :raises ConnectionError: If there is no active public connection.
         """
         if self._pub_conn is not None:
-            return self._pub_conn._subscriptions
+            return self._pub_conn.subscriptions
         raise ConnectionError("Public connection does not exist!")
 
     @property
@@ -217,14 +225,16 @@ class KrakenSpotWSClientBase(KrakenBaseSpotAPI):
         :raises ConnectionError: If there is no active private connection
         """
         if self._priv_conn is not None:
-            return self._priv_conn._subscriptions
+            return self._priv_conn.subscriptions
         raise ConnectionError("Private connection does not exist!")
 
     # --------------------------------------------------------------------------
     # Functions and attributes to overload
 
     async def send_message(
-        self: KrakenSpotWSClientBase, *args: Any, **kwargs: Any
+        self: KrakenSpotWSClientBase,
+        *args: Any,
+        **kwargs: Any,
     ) -> None:
         """
         This functions must be overloaded and should be used to send messages
@@ -233,7 +243,9 @@ class KrakenSpotWSClientBase(KrakenBaseSpotAPI):
         raise NotImplementedError("Must be overloaded!")  # coverage: disable
 
     async def subscribe(
-        self: KrakenSpotWSClientBase, *args: Any, **kwargs: Any
+        self: KrakenSpotWSClientBase,
+        *args: Any,
+        **kwargs: Any,
     ) -> None:
         """
         This function must be overloaded and should be used to subscribe
@@ -242,7 +254,9 @@ class KrakenSpotWSClientBase(KrakenBaseSpotAPI):
         raise NotImplementedError("Must be overloaded!")  # coverage: disable
 
     async def unsubscribe(
-        self: KrakenSpotWSClientBase, *args: Any, **kwargs: Any
+        self: KrakenSpotWSClientBase,
+        *args: Any,
+        **kwargs: Any,
     ) -> None:
         """
         This function must be overloaded and should be used to unsubscribe

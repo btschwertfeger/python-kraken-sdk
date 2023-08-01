@@ -85,7 +85,8 @@ class User(KrakenBaseSpotAPI):
             }
         """
         return self._request(  # type: ignore[return-value]
-            method="POST", uri="/private/Balance"
+            method="POST",
+            uri="/private/Balance",
         )
 
     def get_balances(self: User) -> dict:
@@ -126,7 +127,8 @@ class User(KrakenBaseSpotAPI):
             }
         """
         return self._request(  # type: ignore[return-value]
-            method="POST", uri="/private/BalanceEx"
+            method="POST",
+            uri="/private/BalanceEx",
         )
 
     def get_balance(self: User, currency: str) -> dict:
@@ -207,11 +209,15 @@ class User(KrakenBaseSpotAPI):
         if defined(asset):
             params["asset"] = asset
         return self._request(  # type: ignore[return-value]
-            method="POST", uri="/private/TradeBalance", params=params
+            method="POST",
+            uri="/private/TradeBalance",
+            params=params,
         )
 
     def get_open_orders(
-        self: User, trades: Optional[bool] = False, userref: Optional[int] = None
+        self: User,
+        trades: Optional[bool] = False,
+        userref: Optional[int] = None,
     ) -> dict:
         """
         Get information about the open orders.
@@ -274,7 +280,9 @@ class User(KrakenBaseSpotAPI):
         if defined(userref):
             params["userref"] = userref
         return self._request(  # type: ignore[return-value]
-            method="POST", uri="/private/OpenOrders", params=params
+            method="POST",
+            uri="/private/OpenOrders",
+            params=params,
         )
 
     def get_closed_orders(
@@ -364,7 +372,9 @@ class User(KrakenBaseSpotAPI):
             params["ofs"] = ofs
 
         return self._request(  # type: ignore[return-value]
-            method="POST", uri="/private/ClosedOrders", params=params
+            method="POST",
+            uri="/private/ClosedOrders",
+            params=params,
         )
 
     @ensure_string("txid")
@@ -472,7 +482,9 @@ class User(KrakenBaseSpotAPI):
         if defined(userref):
             params["userref"] = userref
         return self._request(  # type: ignore[return-value]
-            method="POST", uri="/private/QueryOrders", params=params
+            method="POST",
+            uri="/private/QueryOrders",
+            params=params,
         )
 
     def get_trades_history(
@@ -547,12 +559,16 @@ class User(KrakenBaseSpotAPI):
         if defined(ofs):
             params["ofs"] = ofs
         return self._request(  # type: ignore[return-value]
-            method="POST", uri="/private/TradesHistory", params=params
+            method="POST",
+            uri="/private/TradesHistory",
+            params=params,
         )
 
     @ensure_string("txid")
     def get_trades_info(
-        self: User, txid: Union[str, List[str]], trades: Optional[bool] = False
+        self: User,
+        txid: Union[str, List[str]],
+        trades: Optional[bool] = False,
     ) -> dict:
         """
         Get information about specific trades/filled orders. 20 txids can be queried maximum.
@@ -658,7 +674,9 @@ class User(KrakenBaseSpotAPI):
         if defined(txid):
             params["txid"] = txid
         return self._request(  # type: ignore[return-value]
-            method="POST", uri="/private/OpenPositions", params=params
+            method="POST",
+            uri="/private/OpenPositions",
+            params=params,
         )
 
     @ensure_string("asset")
@@ -728,12 +746,16 @@ class User(KrakenBaseSpotAPI):
         if defined(ofs):
             params["ofs"] = ofs
         return self._request(  # type: ignore[return-value]
-            method="POST", uri="/private/Ledgers", params=params
+            method="POST",
+            uri="/private/Ledgers",
+            params=params,
         )
 
     @ensure_string("id_")
     def get_ledgers(
-        self: User, id_: Union[str, List[str]], trades: Optional[bool] = False
+        self: User,
+        id_: Union[str, List[str]],
+        trades: Optional[bool] = False,
     ) -> dict:
         """
         Get information about specific ledeger entries.
@@ -840,7 +862,9 @@ class User(KrakenBaseSpotAPI):
         if defined(pair):
             params["pair"] = pair
         return self._request(  # type: ignore[return-value]
-            method="POST", uri="/private/TradeVolume", params=params
+            method="POST",
+            uri="/private/TradeVolume",
+            params=params,
         )
 
     @ensure_string("fields")
@@ -889,8 +913,8 @@ class User(KrakenBaseSpotAPI):
             ... )
             { 'id': 'GEHI' }
         """
-        if report not in ["trades", "ledgers"]:
-            raise ValueError('report must be one of "trades", "ledgers"')
+        if report not in ("trades", "ledgers"):
+            raise ValueError('`report` must be either "trades" or "ledgers".')
 
         params: dict = {
             "report": report,
@@ -904,7 +928,9 @@ class User(KrakenBaseSpotAPI):
         if defined(endtm):
             params["endtm"] = endtm
         return self._request(  # type: ignore[return-value]
-            method="POST", uri="/private/AddExport", params=params
+            method="POST",
+            uri="/private/AddExport",
+            params=params,
         )
 
     def get_export_report_status(self: User, report: str) -> dict:
@@ -959,7 +985,9 @@ class User(KrakenBaseSpotAPI):
         if report not in ("trades", "ledgers"):
             raise ValueError('report must be one of "trades", "ledgers"')
         return self._request(  # type: ignore[return-value]
-            method="POST", uri="/private/ExportStatus", params={"report": report}
+            method="POST",
+            uri="/private/ExportStatus",
+            params={"report": report},
         )
 
     def retrieve_export(self: User, id_: str) -> dict:
@@ -1003,7 +1031,9 @@ class User(KrakenBaseSpotAPI):
         )
 
     def delete_export_report(
-        self: User, id_: str, type_: Optional[str] = "delete"
+        self: User,
+        id_: str,
+        type_: Optional[str] = "delete",
     ) -> dict:
         """
         Delete a report from the Kraken server.
@@ -1067,7 +1097,11 @@ class User(KrakenBaseSpotAPI):
         )
 
     def account_transfer(
-        self: "User", asset: str, amount: Union[str, int, float], from_: str, to_: str
+        self: "User",
+        asset: str,
+        amount: Union[str, int, float],
+        from_: str,
+        to_: str,
     ) -> dict:
         """
         Transfer funds between master and subaccounts. This is currently *only

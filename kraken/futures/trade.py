@@ -298,7 +298,9 @@ class Trade(KrakenBaseFuturesAPI):
         )
 
     def cancel_order(
-        self: Trade, order_id: Optional[str] = None, cliOrdId: Optional[str] = None
+        self: Trade,
+        order_id: Optional[str] = None,
+        cliOrdId: Optional[str] = None,
     ) -> dict:
         """
         This endpoint can be used to cancel a specific order by ``order_id`` or ``cliOrdId``.
@@ -462,7 +464,7 @@ class Trade(KrakenBaseFuturesAPI):
             auth=True,
         )
 
-    def create_order(
+    def create_order(  # noqa: PLR0913
         self: Trade,
         orderType: str,
         size: Union[str, int, float],

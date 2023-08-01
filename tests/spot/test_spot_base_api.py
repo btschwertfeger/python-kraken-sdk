@@ -15,7 +15,7 @@ from kraken.spot import Funding, Market, Staking, Trade, User
 from .helper import is_not_error
 
 
-@pytest.mark.spot
+@pytest.mark.spot()
 def test_KrakenBaseSpotAPI_without_exception() -> None:
     """
     Checks first if the expected error will be raised and than
@@ -30,14 +30,16 @@ def test_KrakenBaseSpotAPI_without_exception() -> None:
         )._request(method="POST", uri="/private/AddOrder", auth=True)
 
     assert KrakenBaseSpotAPI(
-        key="fake", secret="fake", use_custom_exceptions=False
+        key="fake",
+        secret="fake",
+        use_custom_exceptions=False,
     )._request(method="POST", uri="/private/AddOrder", auth=True).json() == {
-        "error": ["EAPI:Invalid key"]
+        "error": ["EAPI:Invalid key"],
     }
 
 
-@pytest.mark.spot
-@pytest.mark.spot_auth
+@pytest.mark.spot()
+@pytest.mark.spot_auth()
 def test_spot_rest_contextmanager(
     spot_market: Market,
     spot_auth_funding: Funding,
@@ -61,6 +63,7 @@ def test_spot_rest_contextmanager(
     with spot_auth_staking as staking:
         assert isinstance(staking.get_pending_staking_transactions(), list)
 
-    with spot_auth_trade as trade:
-        with pytest.raises(KrakenException.KrakenPermissionDeniedError):
-            trade.cancel_order(txid="OB6JJR-7NZ5P-N5SKCB")
+    with spot_auth_trade as trade, pytest.raises(
+        KrakenException.KrakenPermissionDeniedError,
+    ):
+        trade.cancel_order(txid="OB6JJR-7NZ5P-N5SKCB")

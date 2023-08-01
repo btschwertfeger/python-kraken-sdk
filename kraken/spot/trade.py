@@ -62,7 +62,7 @@ class Trade(KrakenBaseSpotAPI):
         return self
 
     @ensure_string("oflags")
-    def create_order(
+    def create_order(  # noqa: PLR0913 PLR0912
         self: Trade,
         ordertype: str,
         side: str,
@@ -330,12 +330,12 @@ class Trade(KrakenBaseSpotAPI):
         if ordertype in ("stop-loss-limit", "take-profit-limit"):
             if not defined(price2):
                 raise ValueError(
-                    f"Ordertype {ordertype} requires a secondary price (price2)!"
+                    f"Ordertype {ordertype} requires a secondary price (price2)!",
                 )
             params["price2"] = str(price2)
         elif price2 is not None:
             raise ValueError(
-                f"Ordertype {ordertype} dos not allow a second price (price2)!"
+                f"Ordertype {ordertype} dos not allow a second price (price2)!",
             )
         if defined(leverage):
             params["leverage"] = str(leverage)
@@ -355,7 +355,9 @@ class Trade(KrakenBaseSpotAPI):
             params["displayvol"] = str(displayvol)
 
         return self._request(  # type: ignore[return-value]
-            method="POST", uri="/private/AddOrder", params=params
+            method="POST",
+            uri="/private/AddOrder",
+            params=params,
         )
 
     def create_order_batch(
@@ -430,11 +432,14 @@ class Trade(KrakenBaseSpotAPI):
         if defined(deadline):
             params["deadline"] = deadline
         return self._request(  # type: ignore[return-value]
-            method="POST", uri="/private/AddOrderBatch", params=params, do_json=True
+            method="POST",
+            uri="/private/AddOrderBatch",
+            params=params,
+            do_json=True,
         )
 
     @ensure_string("oflags")
-    def edit_order(
+    def edit_order(  # noqa: PLR0913
         self: Trade,
         txid: str,
         pair: str,
@@ -531,7 +536,9 @@ class Trade(KrakenBaseSpotAPI):
         if defined(deadline):
             params["deadline"] = deadline
         return self._request(  # type: ignore[return-value]
-            "POST", uri="/private/EditOrder", params=params
+            "POST",
+            uri="/private/EditOrder",
+            params=params,
         )
 
     @ensure_string("txid")
@@ -587,7 +594,8 @@ class Trade(KrakenBaseSpotAPI):
             { 'count': 2 }
         """
         return self._request(  # type: ignore[return-value]
-            method="POST", uri="/private/CancelAll"
+            method="POST",
+            uri="/private/CancelAll",
         )
 
     def cancel_all_orders_after_x(self: Trade, timeout: int = 0) -> dict:
@@ -722,7 +730,7 @@ class Trade(KrakenBaseSpotAPI):
             raise ValueError("Amount type must be 'volume' or 'price'!")
 
         pair_data: dict = self.__market.get_asset_pairs(pair=pair)
-        data: dict = pair_data[list(pair_data)[0]]
+        data: dict = pair_data[next(iter(pair_data))]
 
         pair_decimals: int = int(data["pair_decimals"])
         lot_decimals: int = int(data["lot_decimals"])

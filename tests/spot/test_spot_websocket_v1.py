@@ -33,9 +33,9 @@ from kraken.exceptions import KrakenException
 from .helper import SpotWebsocketClientV1TestWrapper, async_wait
 
 
-@pytest.mark.spot
-@pytest.mark.spot_websocket
-@pytest.mark.spot_websocket_v1
+@pytest.mark.spot()
+@pytest.mark.spot_websocket()
+@pytest.mark.spot_websocket_v1()
 def test_create_public_client(caplog: Any) -> None:
     """
     Checks if the websocket client can be instantiated.
@@ -56,9 +56,9 @@ def test_create_public_client(caplog: Any) -> None:
         assert expected in caplog.text
 
 
-@pytest.mark.spot
-@pytest.mark.spot_websocket
-@pytest.mark.spot_websocket_v2
+@pytest.mark.spot()
+@pytest.mark.spot_websocket()
+@pytest.mark.spot_websocket_v2()
 def test_create_public_client_as_context_manager(caplog: Any) -> None:
     """
     Checks if the websocket client can be instantiated as context manager.
@@ -79,12 +79,14 @@ def test_create_public_client_as_context_manager(caplog: Any) -> None:
         assert expected in caplog.text
 
 
-@pytest.mark.spot
-@pytest.mark.spot_auth
-@pytest.mark.spot_websocket
-@pytest.mark.spot_websocket_v1
+@pytest.mark.spot()
+@pytest.mark.spot_auth()
+@pytest.mark.spot_websocket()
+@pytest.mark.spot_websocket_v1()
 def test_create_private_client(
-    spot_api_key: str, spot_secret_key: str, caplog: Any
+    spot_api_key: str,
+    spot_secret_key: str,
+    caplog: Any,
 ) -> None:
     """
     Checks if the authenticated websocket client can be instantiated.
@@ -92,7 +94,8 @@ def test_create_private_client(
 
     async def create_client() -> None:
         client: SpotWebsocketClientV1TestWrapper = SpotWebsocketClientV1TestWrapper(
-            key=spot_api_key, secret=spot_secret_key
+            key=spot_api_key,
+            secret=spot_secret_key,
         )
         await async_wait(seconds=5)
 
@@ -105,9 +108,9 @@ def test_create_private_client(
         assert expected in caplog.text
 
 
-@pytest.mark.spot
-@pytest.mark.spot_websocket
-@pytest.mark.spot_websocket_v1
+@pytest.mark.spot()
+@pytest.mark.spot_websocket()
+@pytest.mark.spot_websocket_v1()
 def test_access_public_client_attributes() -> None:
     """
     Checks the ``access_public_client_attributes`` function
@@ -136,12 +139,13 @@ def test_access_public_client_attributes() -> None:
     asyncio_run(check_access())
 
 
-@pytest.mark.spot
-@pytest.mark.spot_auth
-@pytest.mark.spot_websocket
-@pytest.mark.spot_websocket_v1
+@pytest.mark.spot()
+@pytest.mark.spot_auth()
+@pytest.mark.spot_websocket()
+@pytest.mark.spot_websocket_v1()
 def test_access_private_client_attributes(
-    spot_api_key: str, spot_secret_key: str
+    spot_api_key: str,
+    spot_secret_key: str,
 ) -> None:
     """
     Checks the ``access_private_client_attributes`` function
@@ -150,7 +154,8 @@ def test_access_private_client_attributes(
 
     async def check_access() -> None:
         client: SpotWebsocketClientV1TestWrapper = SpotWebsocketClientV1TestWrapper(
-            key=spot_api_key, secret=spot_secret_key
+            key=spot_api_key,
+            secret=spot_secret_key,
         )
         assert client.private_channel_names == ["ownTrades", "openOrders"]
         assert client.active_private_subscriptions == []
@@ -159,9 +164,9 @@ def test_access_private_client_attributes(
     asyncio_run(check_access())
 
 
-@pytest.mark.spot
-@pytest.mark.spot_websocket
-@pytest.mark.spot_websocket_v1
+@pytest.mark.spot()
+@pytest.mark.spot_websocket()
+@pytest.mark.spot_websocket_v1()
 def test_public_subscribe(caplog: Any) -> None:
     """
     Function that checks if the websocket client
@@ -192,9 +197,9 @@ def test_public_subscribe(caplog: Any) -> None:
         assert expected in caplog.text
 
 
-@pytest.mark.spot
-@pytest.mark.spot_websocket
-@pytest.mark.spot_websocket_v1
+@pytest.mark.spot()
+@pytest.mark.spot_websocket()
+@pytest.mark.spot_websocket_v1()
 def test_public_subscribe_without_pair_failing() -> None:
     """
     Checks that subscribing without specifying a pair fails.
@@ -203,19 +208,24 @@ def test_public_subscribe_without_pair_failing() -> None:
     async def test_subscription() -> None:
         client: SpotWebsocketClientV1TestWrapper = SpotWebsocketClientV1TestWrapper()
 
-        with pytest.raises(ValueError):
+        with pytest.raises(
+            ValueError,
+            match=r"At least one pair must be specified when subscribing to public feeds.",
+        ):
             await client.subscribe(subscription={"name": "ticker"})
         await async_wait(seconds=2)
 
     asyncio_run(test_subscription())
 
 
-@pytest.mark.spot
-@pytest.mark.spot_auth
-@pytest.mark.spot_websocket
-@pytest.mark.spot_websocket_v1
+@pytest.mark.spot()
+@pytest.mark.spot_auth()
+@pytest.mark.spot_websocket()
+@pytest.mark.spot_websocket_v1()
 def test_private_subscribe(
-    spot_api_key: str, spot_secret_key: str, caplog: Any
+    spot_api_key: str,
+    spot_secret_key: str,
+    caplog: Any,
 ) -> None:
     """
     Checks if the authenticated websocket client can subscribe to private feeds.
@@ -225,21 +235,29 @@ def test_private_subscribe(
         subscription: Dict[str, str] = {"name": "ownTrades"}
 
         client: SpotWebsocketClientV1TestWrapper = SpotWebsocketClientV1TestWrapper()
-        with pytest.raises(KrakenException.KrakenAuthenticationError):
-            # unauthenticated
+        with pytest.raises(
+            KrakenException.KrakenAuthenticationError,
+            match=r"Credentials are invalid.",
+        ):
             await client.subscribe(subscription=subscription)
 
-        with pytest.raises(KrakenException.KrakenAuthenticationError):
+        with pytest.raises(
+            KrakenException.KrakenAuthenticationError,
+            match=r"Credentials are invalid.",
+        ):
             # same here also using a pair for coverage ...
             await client.subscribe(subscription=subscription, pair=["XBT/EUR"])
 
         auth_client: SpotWebsocketClientV1TestWrapper = (
             SpotWebsocketClientV1TestWrapper(key=spot_api_key, secret=spot_secret_key)
         )
-        with pytest.raises(ValueError):
-            # private conns does not accept pairs
+        with pytest.raises(
+            ValueError,
+            match=r"Cannot subscribe to private endpoint with specific pair!",
+        ):
             await auth_client.subscribe(subscription=subscription, pair=["XBT/EUR"])
-            await async_wait(seconds=1)
+
+        await async_wait(seconds=1)
 
         await auth_client.subscribe(subscription=subscription)
         await async_wait(seconds=2)
@@ -252,9 +270,9 @@ def test_private_subscribe(
         assert expected in caplog.text
 
 
-@pytest.mark.spot
-@pytest.mark.spot_websocket
-@pytest.mark.spot_websocket_v1
+@pytest.mark.spot()
+@pytest.mark.spot_websocket()
+@pytest.mark.spot_websocket_v1()
 def test_public_unsubscribe(caplog: Any) -> None:
     """
     Checks if the websocket client can unsubscribe from public feeds.
@@ -283,9 +301,9 @@ def test_public_unsubscribe(caplog: Any) -> None:
         assert expected in caplog.text
 
 
-@pytest.mark.spot
-@pytest.mark.spot_websocket
-@pytest.mark.spot_websocket_v1
+@pytest.mark.spot()
+@pytest.mark.spot_websocket()
+@pytest.mark.spot_websocket_v1()
 def test_public_unsubscribe_failure(caplog: Any) -> None:
     """
     Checks if the websocket client responses with failures
@@ -298,15 +316,20 @@ def test_public_unsubscribe_failure(caplog: Any) -> None:
         # We did not subscribed to this tickers but it will work,
         # and the response will inform us that there are no subscriptions.
         await client.unsubscribe(
-            subscription={"name": "ticker"}, pair=["DOT/USD", "ETH/USD"]
+            subscription={"name": "ticker"},
+            pair=["DOT/USD", "ETH/USD"],
         )
 
-        with pytest.raises(AttributeError):
-            # invalid subscription
+        with pytest.raises(
+            AttributeError,
+            match=r"Subscription requires a \"name\" key.",
+        ):
             await client.unsubscribe(subscription={})
 
-        with pytest.raises(TypeError):
-            # pair must be list[str]
+        with pytest.raises(
+            TypeError,
+            match=r"Parameter pair must be type of list\[str\] \(e.g. pair=\[\"XBTUSD\"\]\)",
+        ):
             await client.unsubscribe(subscription={"name": "ticker"}, pair="XBT/USD")  # type: ignore[arg-type]
 
         await async_wait(seconds=2)
@@ -321,9 +344,9 @@ def test_public_unsubscribe_failure(caplog: Any) -> None:
         assert expected in caplog.text
 
 
-@pytest.mark.spot
-@pytest.mark.spot_websocket
-@pytest.mark.spot_websocket_v1
+@pytest.mark.spot()
+@pytest.mark.spot_websocket()
+@pytest.mark.spot_websocket_v1()
 def test_public_unsubscribe_without_pair_failing() -> None:
     """
     Checks that subscribing without specifying a pair fails.
@@ -332,19 +355,24 @@ def test_public_unsubscribe_without_pair_failing() -> None:
     async def test_subscription() -> None:
         client: SpotWebsocketClientV1TestWrapper = SpotWebsocketClientV1TestWrapper()
 
-        with pytest.raises(ValueError):
+        with pytest.raises(
+            ValueError,
+            match=r"At least one pair must be specified when unsubscribing from public feeds.",
+        ):
             await client.unsubscribe(subscription={"name": "ticker"})
         await async_wait(seconds=2)
 
     asyncio_run(test_subscription())
 
 
-@pytest.mark.spot
-@pytest.mark.spot_auth
-@pytest.mark.spot_websocket
-@pytest.mark.spot_websocket_v1
+@pytest.mark.spot()
+@pytest.mark.spot_auth()
+@pytest.mark.spot_websocket()
+@pytest.mark.spot_websocket_v1()
 def test_private_unsubscribe(
-    spot_api_key: str, spot_secret_key: str, caplog: Any
+    spot_api_key: str,
+    spot_secret_key: str,
+    caplog: Any,
 ) -> None:
     """
     Checks if private subscriptions are available.
@@ -352,7 +380,8 @@ def test_private_unsubscribe(
 
     async def check_unsubscribe() -> None:
         client: SpotWebsocketClientV1TestWrapper = SpotWebsocketClientV1TestWrapper(
-            key=spot_api_key, secret=spot_secret_key
+            key=spot_api_key,
+            secret=spot_secret_key,
         )
 
         await client.subscribe(subscription={"name": "ownTrades"})
@@ -372,10 +401,10 @@ def test_private_unsubscribe(
         assert expected in caplog.text
 
 
-@pytest.mark.spot
-@pytest.mark.spot_auth
-@pytest.mark.spot_websocket
-@pytest.mark.spot_websocket_v1
+@pytest.mark.spot()
+@pytest.mark.spot_auth()
+@pytest.mark.spot_websocket()
+@pytest.mark.spot_websocket_v1()
 def test_private_unsubscribe_failing(spot_api_key: str, spot_secret_key: str) -> None:
     """
     Checks if the ``unsubscribe`` function fails when invalid
@@ -388,14 +417,20 @@ def test_private_unsubscribe_failing(spot_api_key: str, spot_secret_key: str) ->
             SpotWebsocketClientV1TestWrapper(key=spot_api_key, secret=spot_secret_key)
         )
 
-        with pytest.raises(KrakenException.KrakenAuthenticationError):
+        with pytest.raises(
+            KrakenException.KrakenAuthenticationError,
+            match=r"Credentials are invalid.",
+        ):
             # private feed on unauthenticated client
             await client.unsubscribe(subscription={"name": "ownTrades"})
 
-        with pytest.raises(ValueError):
-            # private subscriptions does not have a pair
+        with pytest.raises(
+            ValueError,
+            match=r"Cannot unsubscribe from private endpoint with specific pair!",
+        ):
             await auth_client.unsubscribe(
-                subscription={"name": "ownTrades"}, pair=["XBTUSD"]
+                subscription={"name": "ownTrades"},
+                pair=["XBTUSD"],
             )
 
         await async_wait(seconds=2)
@@ -403,10 +438,10 @@ def test_private_unsubscribe_failing(spot_api_key: str, spot_secret_key: str) ->
     asyncio_run(check_unsubscribe_failing())
 
 
-@pytest.mark.spot
-@pytest.mark.spot_auth
-@pytest.mark.spot_websocket
-@pytest.mark.spot_websocket_v1
+@pytest.mark.spot()
+@pytest.mark.spot_auth()
+@pytest.mark.spot_websocket()
+@pytest.mark.spot_websocket_v1()
 def test_send_private_message_raw(caplog: Any) -> None:
     """
     Checks that the send_message function is able to send raw messages.
@@ -434,10 +469,10 @@ def test_send_private_message_raw(caplog: Any) -> None:
     )
 
 
-@pytest.mark.spot
-@pytest.mark.spot_auth
-@pytest.mark.spot_websocket
-@pytest.mark.spot_websocket_v1
+@pytest.mark.spot()
+@pytest.mark.spot_auth()
+@pytest.mark.spot_websocket()
+@pytest.mark.spot_websocket_v1()
 def test_send_private_message_from_public_connection_failing() -> None:
     """
     Ensures that the public websocket connection can't send messages that
@@ -483,10 +518,10 @@ def test_send_private_message_from_public_connection_failing() -> None:
 # Executables
 
 
-@pytest.mark.spot
-@pytest.mark.spot_auth
-@pytest.mark.spot_websocket
-@pytest.mark.spot_websocket_v1
+@pytest.mark.spot()
+@pytest.mark.spot_auth()
+@pytest.mark.spot_websocket()
+@pytest.mark.spot_websocket_v1()
 def test_create_order(spot_api_key: str, spot_secret_key: str, caplog: Any) -> None:
     """
     Checks the ``create_order`` function by submitting a
@@ -504,26 +539,27 @@ def test_create_order(spot_api_key: str, spot_secret_key: str, caplog: Any) -> N
 
     async def execute_create_order() -> None:
         client: SpotWebsocketClientV1TestWrapper = SpotWebsocketClientV1TestWrapper(
-            key=spot_api_key, secret=spot_secret_key
+            key=spot_api_key,
+            secret=spot_secret_key,
         )
-        params: dict = dict(
-            ordertype="limit",
-            side="buy",
-            pair="XBT/USD",
-            volume="2",
-            price="1000",
-            price2="1200",
-            leverage="2",
-            oflags="viqc",
-            starttm="0",
-            expiretm="1000",
-            userref="12345678",
-            validate=True,
-            close_ordertype="limit",
-            close_price="1000",
-            close_price2="1200",
-            timeinforce="GTC",
-        )
+        params: dict = {
+            "ordertype": "limit",
+            "side": "buy",
+            "pair": "XBT/USD",
+            "volume": "2",
+            "price": "1000",
+            "price2": "1200",
+            "leverage": "2",
+            "oflags": "viqc",
+            "starttm": "0",
+            "expiretm": "1000",
+            "userref": "12345678",
+            "validate": True,
+            "close_ordertype": "limit",
+            "close_price": "1000",
+            "close_price2": "1200",
+            "timeinforce": "GTC",
+        }
         await client.create_order(**params)
         await async_wait(seconds=2)
 
@@ -536,10 +572,10 @@ def test_create_order(spot_api_key: str, spot_secret_key: str, caplog: Any) -> N
     assert "'errorMessage': 'EGeneral:Invalid" not in caplog.text
 
 
-@pytest.mark.spot
-@pytest.mark.spot_auth
-@pytest.mark.spot_websocket
-@pytest.mark.spot_websocket_v1
+@pytest.mark.spot()
+@pytest.mark.spot_auth()
+@pytest.mark.spot_websocket()
+@pytest.mark.spot_websocket_v1()
 def test_create_order_failing_no_connection(caplog: Any) -> None:
     """
     Checks the ``create_order`` function by submitting a
@@ -576,10 +612,10 @@ def test_create_order_failing_no_connection(caplog: Any) -> None:
     )
 
 
-@pytest.mark.spot
-@pytest.mark.spot_auth
-@pytest.mark.spot_websocket
-@pytest.mark.spot_websocket_v1
+@pytest.mark.spot()
+@pytest.mark.spot_auth()
+@pytest.mark.spot_websocket()
+@pytest.mark.spot_websocket_v1()
 def test_edit_order(spot_api_key: str, spot_secret_key: str, caplog: Any) -> None:
     """
     Checks the edit order function by editing an order in validate mode.
@@ -595,7 +631,8 @@ def test_edit_order(spot_api_key: str, spot_secret_key: str, caplog: Any) -> Non
 
     async def execute_edit_order() -> None:
         client: SpotWebsocketClientV1TestWrapper = SpotWebsocketClientV1TestWrapper(
-            key=spot_api_key, secret=spot_secret_key
+            key=spot_api_key,
+            secret=spot_secret_key,
         )
 
         await client.edit_order(
@@ -619,10 +656,10 @@ def test_edit_order(spot_api_key: str, spot_secret_key: str, caplog: Any) -> Non
     assert "'errorMessage': 'EGeneral:Invalid" not in caplog.text
 
 
-@pytest.mark.spot
-@pytest.mark.spot_auth
-@pytest.mark.spot_websocket
-@pytest.mark.spot_websocket_v1
+@pytest.mark.spot()
+@pytest.mark.spot_auth()
+@pytest.mark.spot_websocket()
+@pytest.mark.spot_websocket_v1()
 def test_edit_order_failing_no_connection(caplog: Any) -> None:
     """
     Checks the ``edit_order`` function by editing an order - it is intended to
@@ -658,10 +695,10 @@ def test_edit_order_failing_no_connection(caplog: Any) -> None:
 
 
 # @pytest.mark.skip("CI does not have trade/cancel permission")
-@pytest.mark.spot
-@pytest.mark.spot_auth
-@pytest.mark.spot_websocket
-@pytest.mark.spot_websocket_v1
+@pytest.mark.spot()
+@pytest.mark.spot_auth()
+@pytest.mark.spot_websocket()
+@pytest.mark.spot_websocket_v1()
 def test_cancel_order(spot_api_key: str, spot_secret_key: str, caplog: Any) -> None:
     """
     Checks the ``cancel_order`` function by canceling some orders.
@@ -674,7 +711,8 @@ def test_cancel_order(spot_api_key: str, spot_secret_key: str, caplog: Any) -> N
 
     async def execute_cancel_order() -> None:
         client: SpotWebsocketClientV1TestWrapper = SpotWebsocketClientV1TestWrapper(
-            key=spot_api_key, secret=spot_secret_key
+            key=spot_api_key,
+            secret=spot_secret_key,
         )
         await client.cancel_order(txid=["AOUEHF-ASLBD-A6B4A"])
         await async_wait(seconds=2)
@@ -689,10 +727,10 @@ def test_cancel_order(spot_api_key: str, spot_secret_key: str, caplog: Any) -> N
 
 
 # @pytest.mark.skip("CI does not have trade/cancel permission")
-@pytest.mark.spot
-@pytest.mark.spot_auth
-@pytest.mark.spot_websocket
-@pytest.mark.spot_websocket_v1
+@pytest.mark.spot()
+@pytest.mark.spot_auth()
+@pytest.mark.spot_websocket()
+@pytest.mark.spot_websocket_v1()
 def test_cancel_order_failing_no_connection(caplog: Any) -> None:
     """
     Checks the ``cancel_order`` function - it is intended to check what happens
@@ -718,13 +756,15 @@ def test_cancel_order_failing_no_connection(caplog: Any) -> None:
     )
 
 
-@pytest.mark.spot
-@pytest.mark.spot_auth
-@pytest.mark.spot_websocket
-@pytest.mark.spot_websocket_v1
+@pytest.mark.spot()
+@pytest.mark.spot_auth()
+@pytest.mark.spot_websocket()
+@pytest.mark.spot_websocket_v1()
 @pytest.mark.skip("CI does not have trade/cancel permission")
 def test_cancel_all_orders(
-    spot_api_key: str, spot_secret_key: str, caplog: Any
+    spot_api_key: str,
+    spot_secret_key: str,
+    caplog: Any,
 ) -> None:
     """
     Check the ``cancel_all_orders`` function by executing the function.
@@ -734,7 +774,8 @@ def test_cancel_all_orders(
 
     async def execute_cancel_all() -> None:
         client: SpotWebsocketClientV1TestWrapper = SpotWebsocketClientV1TestWrapper(
-            key=spot_api_key, secret=spot_secret_key
+            key=spot_api_key,
+            secret=spot_secret_key,
         )
         await client.cancel_all_orders()
         await async_wait(seconds=2)
@@ -748,10 +789,10 @@ def test_cancel_all_orders(
     assert "'errorMessage': 'EGeneral:Invalid" not in caplog.text
 
 
-@pytest.mark.spot
-@pytest.mark.spot_auth
-@pytest.mark.spot_websocket
-@pytest.mark.spot_websocket_v1
+@pytest.mark.spot()
+@pytest.mark.spot_auth()
+@pytest.mark.spot_websocket()
+@pytest.mark.spot_websocket_v1()
 def test_cancel_all_orders_failing_no_connection(caplog: Any) -> None:
     """
     Checks the ``cancel_all_orders`` function - it is intended to check what
@@ -774,12 +815,14 @@ def test_cancel_all_orders_failing_no_connection(caplog: Any) -> None:
     )
 
 
-@pytest.mark.spot
-@pytest.mark.spot_auth
-@pytest.mark.spot_websocket
-@pytest.mark.spot_websocket_v1
+@pytest.mark.spot()
+@pytest.mark.spot_auth()
+@pytest.mark.spot_websocket()
+@pytest.mark.spot_websocket_v1()
 def test_cancel_all_orders_after(
-    spot_api_key: str, spot_secret_key: str, caplog: Any
+    spot_api_key: str,
+    spot_secret_key: str,
+    caplog: Any,
 ) -> None:
     """
     Checking the ``cancel_all_orders_after`` function by
@@ -792,7 +835,8 @@ def test_cancel_all_orders_after(
 
     async def execute_cancel_after() -> None:
         client: SpotWebsocketClientV1TestWrapper = SpotWebsocketClientV1TestWrapper(
-            key=spot_api_key, secret=spot_secret_key
+            key=spot_api_key,
+            secret=spot_secret_key,
         )
         await client.cancel_all_orders_after(0)
         await async_wait(seconds=3)
@@ -806,10 +850,10 @@ def test_cancel_all_orders_after(
     assert "'errorMessage': 'EGeneral:Invalid" not in caplog.text in caplog.text
 
 
-@pytest.mark.spot
-@pytest.mark.spot_auth
-@pytest.mark.spot_websocket
-@pytest.mark.spot_websocket_v1
+@pytest.mark.spot()
+@pytest.mark.spot_auth()
+@pytest.mark.spot_websocket()
+@pytest.mark.spot_websocket_v1()
 def test_cancel_all_orders_after_failing_no_connection(caplog: Any) -> None:
     """
     Checks the ``cancel_all_orders_after`` function - it is intended to check

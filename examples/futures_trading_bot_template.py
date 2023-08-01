@@ -55,7 +55,8 @@ class TradingBot(KrakenFuturesWSClient):
 
     def __init__(self: TradingBot, config: dict) -> None:
         super().__init__(  # initialize the KrakenFuturesWSClient
-            key=config["key"], secret=config["secret"]
+            key=config["key"],
+            secret=config["secret"],
         )
         self.__config: dict = config
 
@@ -90,7 +91,10 @@ class TradingBot(KrakenFuturesWSClient):
 
     def save_exit(self: TradingBot, reason: Optional[str] = "") -> None:
         """Controlled shutdown of the strategy"""
-        logging.warning(f"Save exit triggered, reason: {reason}")
+        logging.warning(
+            "Save exit triggered, reason: {reason}",
+            extra={"reason": reason},
+        )
         # some ideas:
         #   * save the bots data
         #   * maybe close trades
@@ -143,10 +147,12 @@ class ManagedBot:
         self.__trading_strategy = TradingBot(config=self.__config)
 
         await self.__trading_strategy.subscribe(
-            feed="ticker", products=self.__config["products"]
+            feed="ticker",
+            products=self.__config["products"],
         )
         await self.__trading_strategy.subscribe(
-            feed="book", products=self.__config["products"]
+            feed="book",
+            products=self.__config["products"],
         )
 
         await self.__trading_strategy.subscribe(feed="fills")
@@ -168,9 +174,8 @@ class ManagedBot:
 
             await asyncio.sleep(6)
         self.__trading_strategy.save_exit(
-            reason="Left main loop because of exception in strategy."
+            reason="Left main loop because of exception in strategy.",
         )
-        return
 
     def __check_credentials(self: ManagedBot) -> bool:
         """Checks the user credentials and the connection to Kraken"""
@@ -205,14 +210,14 @@ def main() -> None:
             "key": os.getenv("FUTURES_API_KEY"),
             "secret": os.getenv("FUTURES_SECRET_KEY"),
             "products": ["PI_XBTUSD", "PF_SOLUSD"],
-        }
+        },
     )
 
     try:
         managed_bot.run()
     except Exception:
         managed_bot.save_exit(
-            reason=f"manageBot.run() has ended: {traceback.format_exc()}"
+            reason=f"manageBot.run() has ended: {traceback.format_exc()}",
         )
 
 

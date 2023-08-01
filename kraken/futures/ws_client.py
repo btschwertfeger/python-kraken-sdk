@@ -118,8 +118,8 @@ class KrakenFuturesWSClient(KrakenBaseFuturesAPI):
     ):
         super().__init__(key=key, secret=secret, url=url, sandbox=sandbox)
 
-        self._key: str = key
-        self._secret: str = secret
+        self.__key: str = key
+        self.__secret: str = secret
 
         self.exception_occur: bool = False
         self.__callback: Any = callback
@@ -133,7 +133,12 @@ class KrakenFuturesWSClient(KrakenBaseFuturesAPI):
             callback=self.on_message,
         )
 
-    def _get_sign_challenge(self: KrakenFuturesWSClient, challenge: str) -> str:
+    @property
+    def key(self: KrakenBaseFuturesAPI) -> str:
+        """Returns the API key"""
+        return self.__key
+
+    def get_sign_challenge(self: KrakenFuturesWSClient, challenge: str) -> str:
         """
         Sign the challenge/message using the secret key
 
@@ -144,14 +149,16 @@ class KrakenFuturesWSClient(KrakenBaseFuturesAPI):
         :rtype: str
         """
         if not self.is_auth:
-            raise KrakenException.KrakenAuthenticationError()
+            raise KrakenException.KrakenAuthenticationError
 
         sha256_hash = hashlib.sha256()
         sha256_hash.update(challenge.encode("utf-8"))
         return base64.b64encode(
             hmac.new(
-                base64.b64decode(self._secret), sha256_hash.digest(), hashlib.sha512
-            ).digest()
+                base64.b64decode(self.__secret),
+                sha256_hash.digest(),
+                hashlib.sha512,
+            ).digest(),
         ).decode("utf-8")
 
     async def on_message(self: KrakenFuturesWSClient, msg: dict) -> None:
@@ -174,7 +181,9 @@ class KrakenFuturesWSClient(KrakenBaseFuturesAPI):
             logging.info(msg)
 
     async def subscribe(
-        self: KrakenFuturesWSClient, feed: str, products: Optional[List[str]] = None
+        self: KrakenFuturesWSClient,
+        feed: str,
+        products: Optional[List[str]] = None,
     ) -> None:
         """
         Subscribe to a Futures websocket channel/feed. For some feeds authentication is required.
@@ -185,7 +194,7 @@ class KrakenFuturesWSClient(KrakenBaseFuturesAPI):
         :type feed: str
         :param products: The products/futures contracts to subscribe to
         :type products: list[str], optional
-        :raises ValueError: If the parameters don't match the requirements set
+        :raises TypeError: If the parameters don't match the requirements set
             by the Kraken API
 
         Initialize your client as described in
@@ -207,9 +216,9 @@ class KrakenFuturesWSClient(KrakenBaseFuturesAPI):
 
         if products is not None:
             if not isinstance(products, list):
-                raise ValueError(
+                raise TypeError(
                     "Parameter products must be type of list[str] "
-                    '(e.g. products=["PI_XBTUSD"])'
+                    '(e.g. products=["PI_XBTUSD"])',
                 )
             message["product_ids"] = products
 
@@ -229,7 +238,9 @@ class KrakenFuturesWSClient(KrakenBaseFuturesAPI):
             raise ValueError(f"Feed: {feed} not found. Not subscribing to it.")
 
     async def unsubscribe(
-        self: KrakenFuturesWSClient, feed: str, products: Optional[List[str]] = None
+        self: KrakenFuturesWSClient,
+        feed: str,
+        products: Optional[List[str]] = None,
     ) -> None:
         """
         Subscribe to a Futures websocket channel/feed. For some feeds
@@ -241,7 +252,7 @@ class KrakenFuturesWSClient(KrakenBaseFuturesAPI):
         :type feed: str
         :param products: The products/futures contracts to unsubscribe from
         :type products: List[str], optional
-        :raises ValueError: If the parameters don't match the requirements set
+        :raises TypeError: If the parameters don't match the requirements set
             by the Kraken API
 
         Initialize your client as described in
@@ -264,9 +275,9 @@ class KrakenFuturesWSClient(KrakenBaseFuturesAPI):
 
         if products is not None:
             if not isinstance(products, list):
-                raise ValueError(
-                    'Parameter products must be type of List[str]\
-                    (e.g. products=["PI_XBTUSD"])'
+                raise TypeError(
+                    'Parameter products must be type of list[str]\
+                    (e.g. products=["PI_XBTUSD"])',
                 )
             message["product_ids"] = products
 
@@ -358,10 +369,10 @@ class KrakenFuturesWSClient(KrakenBaseFuturesAPI):
             False
         """
         return (
-            self._key is not None
-            and self._key != ""
-            and self._secret is not None
-            and self._secret != ""
+            self.__key is not None
+            and self.__key != ""
+            and self.__secret is not None
+            and self.__secret != ""
         )
 
     def get_active_subscriptions(self: KrakenFuturesWSClient) -> List[dict]:
@@ -393,13 +404,15 @@ class KrakenFuturesWSClient(KrakenBaseFuturesAPI):
                 }, ...
             ]
         """
-        return self._conn._get_active_subscriptions()
+        return self._conn.get_active_subscriptions()
 
     async def __aenter__(self: KrakenFuturesWSClient) -> KrakenFuturesWSClient:
         return self
 
     async def __aexit__(
-        self: KrakenFuturesWSClient, *exc: tuple, **kwargs: Dict[str, Any]
+        self: KrakenFuturesWSClient,
+        *exc: tuple,
+        **kwargs: Dict[str, Any],
     ) -> None:
         pass
 

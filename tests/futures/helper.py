@@ -4,6 +4,8 @@
 # GitHub: https://github.com/btschwertfeger
 #
 
+from __future__ import annotations
+
 import logging
 from asyncio import sleep
 from time import time
@@ -23,7 +25,7 @@ def is_success(value: Any) -> bool:
 
 def is_not_error(value: Any) -> bool:
     """Returns true if result is not error"""
-    return isinstance(value, dict) and "error" not in value.keys()
+    return isinstance(value, dict) and "error" not in value
 
 
 async def async_wait(seconds: float = 1.0) -> None:
@@ -31,7 +33,6 @@ async def async_wait(seconds: float = 1.0) -> None:
     start: float = time()
     while time() - seconds < start:
         await sleep(0.2)
-    return
 
 
 class FuturesWebsocketClientTestWrapper(KrakenFuturesWSClient):
@@ -45,13 +46,16 @@ class FuturesWebsocketClientTestWrapper(KrakenFuturesWSClient):
     LOG: logging.Logger = logging.getLogger(__name__)
 
     def __init__(
-        self: "FuturesWebsocketClientTestWrapper", key: str = "", secret: str = ""
+        self: "FuturesWebsocketClientTestWrapper",
+        key: str = "",
+        secret: str = "",
     ) -> None:
         super().__init__(key=key, secret=secret, callback=self.on_message)
         self.LOG.setLevel(logging.INFO)
 
     async def on_message(
-        self: "FuturesWebsocketClientTestWrapper", msg: Union[list, dict]
+        self: "FuturesWebsocketClientTestWrapper",
+        msg: Union[list, dict],
     ) -> None:
         """
         This is the callback function that must be implemented
