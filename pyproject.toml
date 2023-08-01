@@ -202,13 +202,13 @@ select = [
   "T20",   # flake8-print
   "TCH",   # flake8-type-checking
   "TID",   # flake8-tidy-imports
-  # "ARG", # flake8-unused-arguments # todo after exceptions updated
-  # "ERA", # eradicate # // (commented-out code)
-  # "FBT", # boolean trap # todo fix in v2.0.0
-  # "FIX", # flake8-fixme # //
+  # "ARG", # flake8-unused-arguments # todo: after the exceptions were updated (fix in v2.0.0)
+  # "ERA", # eradicate # !(commented-out code)
+  # "FBT", # boolean trap # todo: fix in v2.0.0
+  # "FIX", # flake8-fixme # !
   # "PTH", # flake8-use-pathlib # maybe
-  # "TD",  # flake8-todos # //
-  # "TRY", # tryceratops
+  # "TD",  # flake8-todos # !
+  # "TRY", # tryceratops # todo: during update of the exceptions (fix in v2.0.0)
 ]
 fixable = ["I", "C4", "Q", "PT", "ICN", "COM", "RSE", "PT", "FA"]
 
