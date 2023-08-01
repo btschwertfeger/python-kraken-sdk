@@ -8,9 +8,10 @@
 
 from __future__ import annotations
 
-from typing import Optional, Union
+from typing import TYPE_CHECKING, Optional, Union
 
-import requests
+if TYPE_CHECKING:
+    import requests
 
 from kraken.base_api import KrakenBaseFuturesAPI, defined
 

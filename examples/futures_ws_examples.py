@@ -15,6 +15,7 @@ import logging
 import logging.config
 import os
 import time
+from contextlib import suppress
 from typing import Union
 
 from kraken.futures import KrakenFuturesWSClient
@@ -95,12 +96,10 @@ async def main() -> None:
 
 
 if __name__ == "__main__":
-    try:
+    with suppress(KeyboardInterrupt):
         asyncio.run(main())
-    except KeyboardInterrupt:
-        # the websocket client will send {'event': 'asyncio.CancelledError'} via on_message
-        # so you can handle the behavior/next actions individually within you strategy
-        pass
+    # the websocket client will send {'event': 'asyncio.CancelledError'} via on_message
+    # so you can handle the behavior/next actions individually within you strategy
 
 # ============================================================
 # Alternative - as ContextManager:

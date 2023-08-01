@@ -50,7 +50,7 @@ def test_initiate_subccount_transfer(futures_demo_funding: Funding) -> None:
     """
     Checks the ``initiate_subaccount_transfer`` function.
     """
-    # print(futures_demo_funding.initiate_subccount_transfer(
+    # print(futures_demo_funding.initiate_subaccount_transfer(
     #     amount=200,
     #     fromAccount='The wallet (cash or margin account) from which funds should be debited',
     #     fromUser='The user account (this or a sub account) from which funds should be debited',

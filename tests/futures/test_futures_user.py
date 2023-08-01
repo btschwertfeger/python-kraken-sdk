@@ -9,13 +9,16 @@
 import os
 import random
 import tempfile
+from typing import TYPE_CHECKING
 
 import pytest
-import requests
 
 from kraken.futures import User
 
 from .helper import is_success
+
+if TYPE_CHECKING:
+    import requests
 
 
 @pytest.mark.futures()
@@ -82,14 +85,13 @@ def test_get_account_log_csv(futures_auth_user: User) -> None:
     response: requests.Response = futures_auth_user.get_account_log_csv()
     assert response.status_code in (200, "200")
 
-    with tempfile.TemporaryDirectory() as tmp_dir:
-        with open(
-            os.path.join(tmp_dir, f"account_log-{random.randint(0, 10000)}.csv"),
-            "wb",
-        ) as file:
-            for chunk in response.iter_content(chunk_size=512):
-                if chunk:
-                    file.write(chunk)
+    with tempfile.TemporaryDirectory() as tmp_dir, open(
+        os.path.join(tmp_dir, f"account_log-{random.randint(0, 10000)}.csv"),
+        "wb",
+    ) as file:
+        for chunk in response.iter_content(chunk_size=512):
+            if chunk:
+                file.write(chunk)
 
 
 @pytest.mark.futures()
@@ -107,7 +109,7 @@ def test_get_execution_events(futures_auth_user: User) -> None:
     )
 
     assert isinstance(result, dict)
-    assert "elements" in result.keys()
+    assert "elements" in result
 
 
 @pytest.mark.futures()
@@ -124,7 +126,7 @@ def test_get_order_events(futures_auth_user: User) -> None:
         sort="asc",
     )
     assert isinstance(result, dict)
-    assert "elements" in result.keys()
+    assert "elements" in result
 
 
 @pytest.mark.futures()
@@ -161,7 +163,7 @@ def test_get_trigger_events(futures_auth_user: User) -> None:
         sort="asc",
     )
     assert isinstance(result, dict)
-    assert "elements" in result.keys()
+    assert "elements" in result
 
 
 @pytest.mark.futures()

@@ -23,7 +23,6 @@ author = "Benjamin Thomas Schwertfeger"
 # to import the package
 sys.path.insert(0, os.path.abspath(".."))
 
-# import links
 rst_epilog = ""
 # Read link all targets from file
 with open("links.rst", encoding="utf-8") as f:
@@ -43,11 +42,6 @@ extensions = [
 
 templates_path = ["_templates"]
 exclude_patterns = ["_build", "Thumbs.db", ".DS_Store", "links.rst"]
-
-
-def setup(app):
-    """Run during the Sphinx building process"""
-
 
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output

@@ -3,7 +3,11 @@
 # Copyright (C) 2023 Benjamin Thomas Schwertfeger
 # GitHub: https://github.com/btschwertfeger
 
-"""Module that provides custom exceptions for the python-kraken-sdk"""
+"""
+Module that provides custom exceptions for the python-kraken-sdk
+
+TODO: make each Error separate
+"""
 
 from __future__ import annotations
 

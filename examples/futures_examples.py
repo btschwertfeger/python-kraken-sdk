@@ -21,8 +21,8 @@ logging.getLogger().setLevel(logging.INFO)
 logging.getLogger("requests").setLevel(logging.WARNING)
 logging.getLogger("urllib3").setLevel(logging.WARNING)
 
-key = os.getenv("Futures_SANDBOX_KEY")
-secret = os.getenv("Futures_SANDBOX_SECRET")
+key = os.getenv("FUTURES_SANDBOX_KEY")
+secret = os.getenv("FUTURES_SANDBOX_SECRET")
 
 #  _   _  ___ _____ _____
 # | \ | |/ _ \_   _| ____|_

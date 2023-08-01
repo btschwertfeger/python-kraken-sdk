@@ -15,6 +15,7 @@ import asyncio
 import logging
 import logging.config
 import os
+from contextlib import suppress
 from typing import Union
 
 from kraken.spot import KrakenSpotWSClient
@@ -98,13 +99,11 @@ async def main() -> None:
 
 
 if __name__ == "__main__":
-    try:
+    with suppress(KeyboardInterrupt):
         asyncio.run(main())
-    except KeyboardInterrupt:
-        pass
-        # The websocket client will send {'event': 'asyncio.CancelledError'}
-        # via on_message so you can handle the behavior/next actions
-        # individually within your strategy.
+    # The websocket client will send {'event': 'asyncio.CancelledError'}
+    # via on_message so you can handle the behavior/next actions
+    # individually within your strategy.
 
 # ============================================================
 # Alternative - as ContextManager:

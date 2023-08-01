@@ -63,6 +63,7 @@ def test_spot_rest_contextmanager(
     with spot_auth_staking as staking:
         assert isinstance(staking.get_pending_staking_transactions(), list)
 
-    with spot_auth_trade as trade:
-        with pytest.raises(KrakenException.KrakenPermissionDeniedError):
-            trade.cancel_order(txid="OB6JJR-7NZ5P-N5SKCB")
+    with spot_auth_trade as trade, pytest.raises(
+        KrakenException.KrakenPermissionDeniedError,
+    ):
+        trade.cancel_order(txid="OB6JJR-7NZ5P-N5SKCB")

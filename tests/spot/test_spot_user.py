@@ -9,6 +9,7 @@
 import os
 import random
 import tempfile
+from contextlib import suppress
 from time import sleep, time
 from unittest import mock
 
@@ -349,17 +350,19 @@ def test_request_save_export_report(spot_auth_user: User) -> None:
         sleep(5)
 
         result = spot_auth_user.retrieve_export(id_=response["id"])
-        with tempfile.TemporaryDirectory() as tmp_dir:
-            with open(os.path.join(tmp_dir, f"{export_descr}.zip"), "wb") as file:
-                for chunk in result.iter_content(chunk_size=512):
-                    if chunk:
-                        file.write(chunk)
+        with tempfile.TemporaryDirectory() as tmp_dir, open(
+            os.path.join(tmp_dir, f"{export_descr}.zip"),
+            "wb",
+        ) as file:
+            for chunk in result.iter_content(chunk_size=512):
+                if chunk:
+                    file.write(chunk)
 
         status = spot_auth_user.get_export_report_status(report=report)
         assert isinstance(status, list)
         for response in status:
             assert "id" in response
-            try:
+            with suppress(Exception):
                 assert isinstance(
                     spot_auth_user.delete_export_report(
                         id_=response["id"],
@@ -367,10 +370,6 @@ def test_request_save_export_report(spot_auth_user: User) -> None:
                     ),
                     dict,
                 )
-            except (
-                Exception
-            ):  # '200 - {"error":["WDatabase:No change"],"result":{"delete":true}}'
-                pass
             sleep(2)
 
 
@@ -382,10 +381,11 @@ def test_export_report_status_invalid(spot_auth_user: User) -> None:
     Checks the ``export_report_status`` function by passing an invalid
     report type.
     """
-    try:
+    with pytest.raises(
+        ValueError,
+        match=r"report must be one of \"trades\", \"ledgers\"",
+    ):
         spot_auth_user.get_export_report_status(report="invalid")
-    except ValueError:
-        pass
 
 
 @pytest.mark.spot()

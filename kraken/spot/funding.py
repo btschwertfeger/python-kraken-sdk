@@ -89,7 +89,7 @@ class Funding(KrakenBaseSpotAPI):
         return self._request(
             method="POST",
             uri="/private/DepositMethods",
-            params={"asset": asset},  # type: ignore
+            params={"asset": asset},  # type: ignore[return-value]
         )
 
     def get_deposit_address(

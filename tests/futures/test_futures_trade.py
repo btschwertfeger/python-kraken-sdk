@@ -6,6 +6,7 @@
 
 """Module that implements the unit tests for the Futures trade client"""
 
+from contextlib import suppress
 from time import sleep
 
 import pytest
@@ -87,7 +88,7 @@ def test_create_order(futures_demo_trade) -> None:
     """
     Checks the ``create_order`` endpoint.
     """
-    try:
+    with suppress(KrakenException.KrakenInsufficientAvailableFundsError):
         futures_demo_trade.create_order(
             orderType="lmt",
             size=10,
@@ -97,10 +98,8 @@ def test_create_order(futures_demo_trade) -> None:
             stopPrice=10,
             reduceOnly=True,
         )
-    except KrakenException.KrakenInsufficientAvailableFundsError:
-        pass
 
-    try:
+    with suppress(KrakenException.KrakenInsufficientAvailableFundsError):
         futures_demo_trade.create_order(
             orderType="take_profit",
             size=10,
@@ -110,8 +109,6 @@ def test_create_order(futures_demo_trade) -> None:
             triggerSignal="last",
             stopPrice=13000,
         )
-    except KrakenException.KrakenInsufficientAvailableFundsError:
-        pass
 
     # try:
     #     # does not work,  400 response "invalid order type"
@@ -172,7 +169,7 @@ def test_create_batch_order(futures_demo_trade) -> None:
     """
     Checks the ``create_order_batch`` endpoint.
     """
-    try:
+    with suppress(KrakenException.KrakenInsufficientAvailableFundsError):
         assert is_success(
             futures_demo_trade.create_batch_order(
                 batchorder_list=[
@@ -207,8 +204,6 @@ def test_create_batch_order(futures_demo_trade) -> None:
                 ],
             ),
         )
-    except KrakenException.KrakenInsufficientAvailableFundsError:
-        pass
 
 
 @pytest.mark.futures()

@@ -179,23 +179,23 @@ def test_set_leverage_preference(futures_auth_market: Market) -> None:
     Checks the ``set_leverage_preference`` endpoint.
     """
     old_leverage_preferences: dict = futures_auth_market.get_leverage_preference()
-    assert "result" in old_leverage_preferences.keys()
+    assert "result" in old_leverage_preferences
     assert old_leverage_preferences["result"] == "success"
     assert is_success(
         futures_auth_market.set_leverage_preference(symbol="PF_XBTUSD", maxLeverage=2),
     )
 
     new_leverage_preferences: dict = futures_auth_market.get_leverage_preference()
-    assert "result" in new_leverage_preferences.keys()
+    assert "result" in new_leverage_preferences
     assert new_leverage_preferences["result"] == "success"
-    assert "leveragePreferences" in new_leverage_preferences.keys()
+    assert "leveragePreferences" in new_leverage_preferences
     assert {"symbol": "PF_XBTUSD", "maxLeverage": 2.0} in new_leverage_preferences[
         "leveragePreferences"
     ]
 
-    if "leveragePreferences" in old_leverage_preferences.keys():
+    if "leveragePreferences" in old_leverage_preferences:
         for setting in old_leverage_preferences["leveragePreferences"]:
-            if "symbol" in setting.keys() and setting["symbol"] == "PF_XBTUSD":
+            if "symbol" in setting and setting["symbol"] == "PF_XBTUSD":
                 assert is_success(
                     futures_auth_market.set_leverage_preference(symbol="PF_XBTUSD"),
                 )
@@ -221,23 +221,23 @@ def test_set_pnl_preference(futures_auth_market: Market) -> None:
     Checks the ``set_pnl_preference`` endpoint.
     """
     old_pnl_preference: dict = futures_auth_market.get_pnl_preference()
-    assert "result" in old_pnl_preference.keys()
+    assert "result" in old_pnl_preference
     assert old_pnl_preference["result"] == "success"
     assert is_success(
         futures_auth_market.set_pnl_preference(symbol="PF_XBTUSD", pnlPreference="BTC"),
     )
 
     new_pnl_preference: dict = futures_auth_market.get_pnl_preference()
-    assert "result" in new_pnl_preference.keys()
+    assert "result" in new_pnl_preference
     assert new_pnl_preference["result"] == "success"
-    assert "preferences" in new_pnl_preference.keys()
+    assert "preferences" in new_pnl_preference
     assert {"symbol": "PF_XBTUSD", "pnlCurrency": "BTC"} in new_pnl_preference[
         "preferences"
     ]
 
-    if "preferences" in old_pnl_preference.keys():
+    if "preferences" in old_pnl_preference:
         for setting in old_pnl_preference["preferences"]:
-            if "symbol" in setting.keys() and setting["symbol"] == "PF_XBTUSD":
+            if "symbol" in setting and setting["symbol"] == "PF_XBTUSD":
                 assert is_success(
                     futures_auth_market.set_pnl_preference(
                         symbol="PF_XBTUSD",

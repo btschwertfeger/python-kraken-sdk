@@ -245,10 +245,9 @@ class KrakenBaseSpotAPI:
 
         method = method.upper()
         data_json: str = ""
-        if method in ("GET", "DELETE"):
-            if params:
-                data_json = "&".join([f"{key}={params[key]}" for key in sorted(params)])
-                uri += f"?{data_json}".replace(" ", "%20")
+        if method in ("GET", "DELETE") and params:
+            data_json = "&".join([f"{key}={params[key]}" for key in sorted(params)])
+            uri += f"?{data_json}".replace(" ", "%20")
 
         headers: dict = {}
         if auth:

@@ -8,13 +8,13 @@
 Module that provides an example usage for the KrakenSpotWebsocketClient.
 It uses the Kraken Websocket API v2.
 """
-
 from __future__ import annotations
 
 import asyncio
 import logging
 import logging.config
 import os
+from contextlib import suppress
 
 from kraken.spot import KrakenSpotWSClientV2
 
@@ -108,13 +108,11 @@ async def main() -> None:
 
 
 if __name__ == "__main__":
-    try:
+    with suppress(KeyboardInterrupt):
         asyncio.run(main())
-    except KeyboardInterrupt:
-        pass
-        # The websocket client will send {'event': 'asyncio.CancelledError'}
-        # via on_message so you can handle the behavior/next actions
-        # individually within your strategy.
+    # The websocket client will send {'event': 'asyncio.CancelledError'}
+    # via on_message so you can handle the behavior/next actions
+    # individually within your strategy.
 
 # ============================================================
 # Alternative - as ContextManager:
