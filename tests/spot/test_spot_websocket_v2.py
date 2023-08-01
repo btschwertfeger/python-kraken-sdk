@@ -330,8 +330,8 @@ def test_public_unsubscribe_failure(caplog: Any) -> None:
     async def check_unsubscribe_fail() -> None:
         client: SpotWebsocketClientV2TestWrapper = SpotWebsocketClientV2TestWrapper()
 
-        # We did not subscribed to this tickers but it will work,
-        # and the response will inform us that there are no subscriptions.
+        # We did not subscribed to this ticker but it will work,
+        # and the response will inform us that there is no such subscription.
         await client.unsubscribe(
             params={"channel": "ticker", "symbol": ["BTC/USD"]},
             req_id=123456789,

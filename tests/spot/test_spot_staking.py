@@ -8,10 +8,10 @@
 
 import pytest
 
-from kraken.exceptions import KrakenException  # ruff: noqa: F401
+from kraken.exceptions import KrakenException  # noqa: F401
 from kraken.spot import Staking
 
-from .helper import is_not_error  # ruff: noqa: F401
+from .helper import is_not_error  # noqa: F401
 
 # todo: Mock skipped tests - or is this to dangerous?
 

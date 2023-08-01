@@ -154,7 +154,7 @@ class KrakenSpotWSClientBase(KrakenBaseSpotAPI):
                 its ``on_message`` function.
             """,
             )
-            print(message)  # ruff: noqa: T201
+            print(message)  # noqa: T201
 
     async def __aenter__(self: KrakenSpotWSClientBase) -> KrakenSpotWSClientBase:
         """Entrypoint for use as context manager"""
@@ -162,8 +162,8 @@ class KrakenSpotWSClientBase(KrakenBaseSpotAPI):
 
     async def __aexit__(
         self: KrakenSpotWSClientBase,
-        *exc: tuple,
-        **kwargs: dict,
+        *exc: Any,
+        **kwargs: Any,
     ) -> None:
         """Exit if used as context manager"""
 

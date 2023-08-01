@@ -67,7 +67,7 @@ def test_get_first() -> None:
 @mock.patch("kraken.spot.orderbook.KrakenSpotWSClientV2", return_value=None)
 @pytest.mark.spot()
 @pytest.mark.spot_orderbook()
-def test_assing_msg_and_validate_checksum(mock_ws_client: mock.MagicMock) -> None:
+def test_passing_msg_and_validate_checksum(mock_ws_client: mock.MagicMock) -> None:
     """
     This function checks if the initial snapshot and the book updates are
     assigned correctly so that the checksum calculation can validate the

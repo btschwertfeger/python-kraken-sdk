@@ -62,7 +62,7 @@ class Trade(KrakenBaseSpotAPI):
         return self
 
     @ensure_string("oflags")
-    def create_order(
+    def create_order(  # noqa: PLR0913 PLR0912
         self: Trade,
         ordertype: str,
         side: str,
@@ -86,7 +86,7 @@ class Trade(KrakenBaseSpotAPI):
         deadline: Optional[str] = None,
         validate: bool = False,
         userref: Optional[int] = None,
-    ) -> dict:  # ruff: noqa: PLR0912
+    ) -> dict:
         """
         Create a new order and place it on the market.
 
@@ -439,7 +439,7 @@ class Trade(KrakenBaseSpotAPI):
         )
 
     @ensure_string("oflags")
-    def edit_order(
+    def edit_order(  # noqa: PLR0913
         self: Trade,
         txid: str,
         pair: str,
@@ -452,7 +452,7 @@ class Trade(KrakenBaseSpotAPI):
         cancel_response: Optional[bool] = None,
         validate: bool = False,
         userref: Optional[int] = None,
-    ) -> dict:  # ruff: noqa: PLR0913
+    ) -> dict:
         """
         Edit an open order.
 

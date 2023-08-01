@@ -91,13 +91,13 @@ release specific READMEs and changelogs.
 
 # 🛠 Installation and setup
 
-### 1. Install the Python module:
+### 1. Install the package into the desired environment
 
 ```bash
 python3 -m pip install python-kraken-sdk
 ```
 
-### 2. Register at Kraken and generate API Keys:
+### 2. Register at [Kraken](https://www.kraken.com) and generate API keys
 
 - Spot Trading: https://www.kraken.com/u/security/api
 - Futures Trading: https://futures.kraken.com/trade/settings/api (see _[help](https://docs.futures.kraken.com/#introduction-generate-api-keys)_)
@@ -258,7 +258,7 @@ async def main():
     )
     # wait because unsubscribing is faster than unsubscribing … (just for that example)
     await asyncio.sleep(3)
-    # print(client.active_public_subscriptions) # … to list active subscriptions
+    # print(client.active_public_subscriptions) # to list active subscriptions
     await client.unsubscribe(
         params={"channel": "ticker", "symbol": ["BTC/USD", "DOT/USD"]}
     )

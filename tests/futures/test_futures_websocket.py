@@ -197,7 +197,7 @@ def test_unsubscribe_public(caplog: Any) -> None:
 
         with pytest.raises(
             TypeError,
-            match=r"Parameter products must be type of list\[str\ ",
+            match=r"Parameter products must be type of list\[str\]",
         ):
             await client.unsubscribe(feed="ticker", products="PI_XBTUSD")  # type: ignore[arg-type]
 

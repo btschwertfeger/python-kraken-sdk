@@ -25,7 +25,7 @@ def is_success(value: Any) -> bool:
 
 def is_not_error(value: Any) -> bool:
     """Returns true if result is not error"""
-    return isinstance(value, dict) and "error" not in value.keys()
+    return isinstance(value, dict) and "error" not in value
 
 
 async def async_wait(seconds: float = 1.0) -> None:

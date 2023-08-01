@@ -464,7 +464,7 @@ class Trade(KrakenBaseFuturesAPI):
             auth=True,
         )
 
-    def create_order(
+    def create_order(  # noqa: PLR0913
         self: Trade,
         orderType: str,
         size: Union[str, int, float],
@@ -477,7 +477,7 @@ class Trade(KrakenBaseFuturesAPI):
         triggerSignal: Optional[str] = None,
         trailingStopDeviationUnit: Optional[str] = None,
         trailingStopMaxDeviation: Optional[str] = None,
-    ) -> dict:  # ruff: noqa: PLR0913
+    ) -> dict:
         """
         Create and place an order on the futures market.
 

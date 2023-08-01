@@ -232,7 +232,7 @@ class OrderbookClient:
             else:
                 self.__callback(pair=pair, message=message)
         else:
-            print(message)  # ruff: noqa: T201
+            print(message)  # noqa: T201
 
     async def add_book(self: OrderbookClient, pairs: List[str]) -> None:
         """

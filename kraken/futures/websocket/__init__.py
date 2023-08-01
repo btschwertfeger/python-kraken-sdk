@@ -124,7 +124,7 @@ class ConnectFuturesWebsocket:
             await self.__callback(
                 {"error": "kraken.exceptions.KrakenException.MaxReconnectError"},
             )
-        except Exception:  # ruff: noqa: BLE001
+        except Exception:
             logging.exception(traceback.format_exc())
         finally:
             self.__client.exception_occur = True
@@ -245,7 +245,7 @@ class ConnectFuturesWebsocket:
 
     def __get_reconnect_wait(self, attempts: int) -> float:
         return round(  # type: ignore[no-any-return]
-            random() * min(60 * 3, (2**attempts) - 1) + 1,  # ruff: noqa: S311
+            random() * min(60 * 3, (2**attempts) - 1) + 1,  # noqa: S311
         )
 
     def __append_subscription(self: ConnectFuturesWebsocket, msg: dict) -> None:
