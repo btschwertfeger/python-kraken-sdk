@@ -95,7 +95,6 @@ async def main() -> None:
 
     while not client.exception_occur and not client_auth.exception_occur:
         await asyncio.sleep(6)
-    return
 
 
 if __name__ == "__main__":

@@ -399,7 +399,7 @@ class KrakenSpotWSClient(KrakenSpotWSClientBase):
         close_price: Optional[Union[str, int, float]] = None,
         close_price2: Optional[Union[str, int, float]] = None,
         timeinforce: Optional[Union[str, int]] = None,
-    ) -> None:
+    ) -> None:  # ruff: noqa: PLR0912
         """
         Create an order and submit it.
 
@@ -545,7 +545,7 @@ class KrakenSpotWSClient(KrakenSpotWSClientBase):
         await self.send_message(message=payload, private=True)
 
     @ensure_string("oflags")
-    async def edit_order(
+    async def edit_order(  # ruff: noqa: PLR0913
         self: KrakenSpotWSClient,
         orderid: str,
         reqid: Optional[Union[str, int]] = None,

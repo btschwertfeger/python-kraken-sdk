@@ -477,7 +477,7 @@ class Trade(KrakenBaseFuturesAPI):
         triggerSignal: Optional[str] = None,
         trailingStopDeviationUnit: Optional[str] = None,
         trailingStopMaxDeviation: Optional[str] = None,
-    ) -> dict:
+    ) -> dict:  # ruff: noqa: PLR0913
         """
         Create and place an order on the futures market.
 

@@ -33,7 +33,6 @@ async def async_wait(seconds: float = 1.0) -> None:
     start: float = time()
     while time() - seconds < start:
         await sleep(0.2)
-    return
 
 
 class SpotWebsocketClientV1TestWrapper(KrakenSpotWSClient):

@@ -90,7 +90,8 @@ class ConnectFuturesWebsocket:
                     _msg = await asyncio.wait_for(self.__socket.recv(), timeout=15)
                 except asyncio.TimeoutError:
                     logging.debug(
-                        "Timeout error in %s" % self.__ws_endpoint,
+                        "Timeout error in {endpoint}",
+                        extra={"endpoint": self.__ws_endpoint},
                     )  # important
                 except asyncio.CancelledError:
                     logging.exception("asyncio.CancelledError")
@@ -137,7 +138,8 @@ class ConnectFuturesWebsocket:
 
         reconnect_wait: float = self.__get_reconnect_wait(self.__reconnect_num)
         logging.debug(
-            f"asyncio sleep reconnect_wait={reconnect_wait} s reconnect_num={self.__reconnect_num}",
+            "asyncio sleep reconnect_wait={wait} s reconnect_num={num}",
+            extra={"wait": reconnect_wait, "num": self.__reconnect_num},
         )
         await asyncio.sleep(reconnect_wait)
         logging.debug("asyncio sleep done")
@@ -163,7 +165,7 @@ class ConnectFuturesWebsocket:
                     message = f"{task} got an exception {task.exception()}\n {task.get_stack()}"
                     logging.warning(message)
                     for process in pending:
-                        logging.warning(f"pending {process}")
+                        logging.warning("pending {proc}", extra={"proc": process})
                         try:
                             process.cancel()
                         except asyncio.CancelledError:
@@ -178,7 +180,10 @@ class ConnectFuturesWebsocket:
         self: ConnectFuturesWebsocket,
         event: asyncio.Event,
     ) -> None:
-        logging.info(f"Recover subscriptions {self.__subscriptions} waiting.")
+        logging.info(
+            "Recover subscriptions {subscriptions} waiting.",
+            extra={"subscriptions": self.__subscriptions},
+        )
         await event.wait()
 
         for sub in self.__subscriptions:
@@ -186,9 +191,12 @@ class ConnectFuturesWebsocket:
                 await self.send_message(deepcopy(sub), private=True)
             elif sub["feed"] in self.__client.get_available_public_subscription_feeds():
                 await self.send_message(deepcopy(sub), private=False)
-            logging.info(f"{sub}: OK")
+            logging.info("{sub}: OK", extra={"sub": sub})
 
-        logging.info(f"Recover subscriptions {self.__subscriptions} done.")
+        logging.info(
+            "Recover subscriptions {subscriptions} done.",
+            extra={"subscriptions": self.__subscriptions},
+        )
 
     async def send_message(
         self: ConnectFuturesWebsocket,

@@ -158,7 +158,10 @@ class ConnectSpotWebsocketBase:
             )
         except Exception as exc:  # ruff: noqa: BLE001
             traceback_: str = traceback.format_exc()
-            logging.exception(f"{exc}: {traceback_}")
+            logging.exception(
+                "{exc}: {traceback}",
+                extra={"exc": exc, "traceback": traceback_},
+            )
             await self.__callback({"error": traceback_})
         finally:
             await self.__callback(

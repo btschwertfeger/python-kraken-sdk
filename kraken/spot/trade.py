@@ -86,7 +86,7 @@ class Trade(KrakenBaseSpotAPI):
         deadline: Optional[str] = None,
         validate: bool = False,
         userref: Optional[int] = None,
-    ) -> dict:
+    ) -> dict:  # ruff: noqa: PLR0912
         """
         Create a new order and place it on the market.
 
@@ -452,7 +452,7 @@ class Trade(KrakenBaseSpotAPI):
         cancel_response: Optional[bool] = None,
         validate: bool = False,
         userref: Optional[int] = None,
-    ) -> dict:
+    ) -> dict:  # ruff: noqa: PLR0913
         """
         Edit an open order.
 

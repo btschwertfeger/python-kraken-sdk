@@ -66,8 +66,8 @@ def ensure_string(parameter_name: str) -> Callable:
                 elif isinstance(value, list):
                     kwargs[parameter_name] = ",".join(value)
                 else:
-                    raise ValueError(
-                        f"{parameter_name} cannot be {type(kwargs[parameter_name])}!",
+                    raise TypeError(
+                        f"{parameter_name} can't be {type(kwargs[parameter_name])}!",
                     )
 
             return func(*args, **kwargs)

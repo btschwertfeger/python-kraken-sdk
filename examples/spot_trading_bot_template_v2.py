@@ -118,7 +118,10 @@ class TradingBot(KrakenSpotWSClientV2):
 
     def save_exit(self: TradingBot, reason: Optional[str] = "") -> None:
         """controlled shutdown of the strategy"""
-        logging.warning(f"Save exit triggered, reason: {reason}")
+        logging.warning(
+            "Save exit triggered, reason: {reason}",
+            extra={"reason": reason},
+        )
         # some ideas:
         #   * save the current data
         #   * maybe close trades
@@ -200,7 +203,6 @@ class ManagedBot:
         self.__trading_strategy.save_exit(
             reason="Left main loop because of exception in strategy.",
         )
-        return
 
     def __check_credentials(self: ManagedBot) -> bool:
         """Checks the user credentials and the connection to Kraken"""

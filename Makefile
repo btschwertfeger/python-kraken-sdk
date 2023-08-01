@@ -100,6 +100,7 @@ clean:
 		python_kraken_sdk.egg-info \
 		docs/_build \
 		.vscode \
+		.cache \
 		.mypy_cache \
 		.ruff_cache
 

@@ -170,7 +170,7 @@ class KrakenSpotWSClientV2(KrakenSpotWSClientBase):
             api_version="v2",
         )
 
-    async def send_message(  # pylint: disable=arguments-differ
+    async def send_message(  # ruff: noqa: PLR0912
         self: KrakenSpotWSClientV2,
         message: dict,
         raw: bool = False,
