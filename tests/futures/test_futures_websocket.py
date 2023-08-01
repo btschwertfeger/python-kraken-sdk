@@ -16,8 +16,8 @@ import pytest
 from .helper import FuturesWebsocketClientTestWrapper, async_wait
 
 
-@pytest.mark.futures
-@pytest.mark.futures_websocket
+@pytest.mark.futures()
+@pytest.mark.futures_websocket()
 def test_create_public_client(caplog: Any) -> None:
     """
     Checks if the unauthenticated websocket client
@@ -35,9 +35,9 @@ def test_create_public_client(caplog: Any) -> None:
     assert "{'event': 'info', 'version': 1}" in caplog.text
 
 
-@pytest.mark.futures
-@pytest.mark.futures_auth
-@pytest.mark.futures_websocket
+@pytest.mark.futures()
+@pytest.mark.futures_auth()
+@pytest.mark.futures_websocket()
 def test_create_private_client(
     futures_api_key: str,
     futures_secret_key: str,
@@ -61,8 +61,8 @@ def test_create_private_client(
     assert "{'event': 'info', 'version': 1}" in caplog.text
 
 
-@pytest.mark.futures
-@pytest.mark.futures_websocket
+@pytest.mark.futures()
+@pytest.mark.futures_websocket()
 def test_get_available_public_subscriptions() -> None:
     """
     Checks the ``get_available_public_subscription_feeds`` function.
@@ -81,8 +81,8 @@ def test_get_available_public_subscriptions() -> None:
     )
 
 
-@pytest.mark.futures
-@pytest.mark.futures_websocket
+@pytest.mark.futures()
+@pytest.mark.futures_websocket()
 def test_get_available_private_subscriptions() -> None:
     """
     Checks the ``get_available_private_subscription_feeds`` function.
@@ -105,8 +105,8 @@ def test_get_available_private_subscriptions() -> None:
     )
 
 
-@pytest.mark.futures
-@pytest.mark.futures_websocket
+@pytest.mark.futures()
+@pytest.mark.futures_websocket()
 def test_subscribe_public(caplog: Any) -> None:
     """
     Checks if the client is able to subscribe to a public feed.
@@ -116,8 +116,10 @@ def test_subscribe_public(caplog: Any) -> None:
         client: FuturesWebsocketClientTestWrapper = FuturesWebsocketClientTestWrapper()
         await async_wait(2)
 
-        with pytest.raises(ValueError):
-            # products must be List[str]
+        with pytest.raises(
+            TypeError,
+            match=r"Parameter products must be type of list\[str\] \(e.g. products=\[\"PI_XBTUSD\"\]\)",
+        ):
             await client.subscribe(feed="ticker", products="PI_XBTUSD")  # type: ignore[arg-type]
 
         await client.subscribe(feed="ticker", products=["PI_XBTUSD", "PF_SOLUSD"])
@@ -141,9 +143,9 @@ def test_subscribe_public(caplog: Any) -> None:
         assert expected in caplog.text
 
 
-@pytest.mark.futures
-@pytest.mark.futures_auth
-@pytest.mark.futures_websocket
+@pytest.mark.futures()
+@pytest.mark.futures_auth()
+@pytest.mark.futures_websocket()
 def test_subscribe_private(
     futures_api_key: str,
     futures_secret_key: str,
@@ -160,8 +162,10 @@ def test_subscribe_private(
             secret=futures_secret_key,
         )
 
-        with pytest.raises(ValueError):
-            # private subscriptions does not use products
+        with pytest.raises(
+            ValueError,
+            match=r"There is no private feed that accepts products!",
+        ):
             await client.subscribe(feed="fills", products=["PI_XBTUSD"])
 
         await client.subscribe(feed="open_orders")
@@ -176,8 +180,8 @@ def test_subscribe_private(
         assert expected in caplog.text
 
 
-@pytest.mark.futures
-@pytest.mark.futures_websocket
+@pytest.mark.futures()
+@pytest.mark.futures_websocket()
 def test_unsubscribe_public(caplog: Any) -> None:
     """
     Checks if the unauthenticated websocket client is able to unsubscribe
@@ -191,8 +195,10 @@ def test_unsubscribe_public(caplog: Any) -> None:
         await client.subscribe(feed="ticker", products=products)
         await async_wait(seconds=2)
 
-        with pytest.raises(ValueError):
-            # products must be type List[str]
+        with pytest.raises(
+            TypeError,
+            match=r"Parameter products must be type of list\[str\ ",
+        ):
             await client.unsubscribe(feed="ticker", products="PI_XBTUSD")  # type: ignore[arg-type]
 
         await client.unsubscribe(feed="ticker", products=products)
@@ -209,9 +215,9 @@ def test_unsubscribe_public(caplog: Any) -> None:
         assert expected in caplog.text
 
 
-@pytest.mark.futures
-@pytest.mark.futures_auth
-@pytest.mark.futures_websocket
+@pytest.mark.futures()
+@pytest.mark.futures_auth()
+@pytest.mark.futures_websocket()
 def test_unsubscribe_private(
     futures_api_key: str,
     futures_secret_key: str,
@@ -230,8 +236,10 @@ def test_unsubscribe_private(
         await client.subscribe(feed="open_orders")
 
         await async_wait(seconds=2)
-        with pytest.raises(ValueError):
-            # private un/-subscriptions does not accept a product
+        with pytest.raises(
+            ValueError,
+            match=r"There is no private feed that accepts products!",
+        ):
             await client.unsubscribe(feed="open_orders", products=["PI_XBTUSD"])
 
         await client.unsubscribe(feed="open_orders")
@@ -246,8 +254,8 @@ def test_unsubscribe_private(
         assert expected in caplog.text
 
 
-@pytest.mark.futures
-@pytest.mark.futures_websocket
+@pytest.mark.futures()
+@pytest.mark.futures_websocket()
 def test_get_active_subscriptions(caplog: Any) -> None:
     """
     Checks the ``get_active_subscriptions`` function.

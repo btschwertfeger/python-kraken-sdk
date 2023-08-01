@@ -17,9 +17,9 @@ from kraken.spot import Trade
 # todo: Mock skipped tests - or is this to dangerous?
 
 
-@pytest.mark.spot
-@pytest.mark.spot_auth
-@pytest.mark.spot_trade
+@pytest.mark.spot()
+@pytest.mark.spot_auth()
+@pytest.mark.spot_trade()
 def test_create_order(spot_auth_trade: Trade) -> None:
     """
     This test checks the ``create_order`` function by performing
@@ -79,8 +79,11 @@ def test_create_order(spot_auth_trade: Trade) -> None:
             dict,
         )
 
-    with pytest.raises(KrakenException.KrakenPermissionDeniedError):
-        deadline = (datetime.now(timezone.utc) + timedelta(seconds=20)).isoformat()
+    deadline = (datetime.now(timezone.utc) + timedelta(seconds=20)).isoformat()
+    with pytest.raises(
+        KrakenException.KrakenPermissionDeniedError,
+        match=r"Credentials are invalid.",
+    ):
         spot_auth_trade.create_order(
             ordertype="stop-loss-limit",
             pair="XBTUSD",
@@ -96,16 +99,19 @@ def test_create_order(spot_auth_trade: Trade) -> None:
         )
 
 
-@pytest.mark.spot
-@pytest.mark.spot_auth
-@pytest.mark.spot_trade
+@pytest.mark.spot()
+@pytest.mark.spot_auth()
+@pytest.mark.spot_trade()
 def test_failing_create_order(spot_auth_trade: Trade) -> None:
     """
     Test that checks if the ``create_order`` function raises a ValueError
     because of missing or invalid parameters.
     > stop-loss-limit (and take-profit-limit) require a second price ``price2``)
     """
-    with pytest.raises(ValueError):
+    with pytest.raises(
+        ValueError,
+        match=r"Ordertype stop-loss-limit requires a secondary price \(price2\)!",
+    ):
         spot_auth_trade.create_order(
             ordertype="stop-loss-limit",
             pair="XBTUSD",
@@ -118,9 +124,9 @@ def test_failing_create_order(spot_auth_trade: Trade) -> None:
         )
 
 
-@pytest.mark.spot
-@pytest.mark.spot_auth
-@pytest.mark.spot_trade
+@pytest.mark.spot()
+@pytest.mark.spot_auth()
+@pytest.mark.spot_trade()
 def test_create_order_batch(spot_auth_trade: Trade) -> None:
     """
     Checks the ``create_order_batch`` function by executing
@@ -158,9 +164,9 @@ def test_create_order_batch(spot_auth_trade: Trade) -> None:
         )
 
 
-@pytest.mark.spot
-@pytest.mark.spot_auth
-@pytest.mark.spot_trade
+@pytest.mark.spot()
+@pytest.mark.spot_auth()
+@pytest.mark.spot_trade()
 def test_edit_order(spot_auth_trade: Trade) -> None:
     """
     Test the ``edit_order`` function by editing an order.
@@ -184,9 +190,9 @@ def test_edit_order(spot_auth_trade: Trade) -> None:
         )
 
 
-@pytest.mark.spot
-@pytest.mark.spot_auth
-@pytest.mark.spot_trade
+@pytest.mark.spot()
+@pytest.mark.spot_auth()
+@pytest.mark.spot_trade()
 def test_cancel_order(spot_auth_trade: Trade) -> None:
     """
     Checks the ``cancel_order`` function by canceling an order.
@@ -198,9 +204,9 @@ def test_cancel_order(spot_auth_trade: Trade) -> None:
         spot_auth_trade.cancel_order(txid="OB6JJR-7NZ5P-N5SKCB")
 
 
-@pytest.mark.spot
-@pytest.mark.spot_auth
-@pytest.mark.spot_trade
+@pytest.mark.spot()
+@pytest.mark.spot_auth()
+@pytest.mark.spot_trade()
 @pytest.mark.skip(reason="CI does not have trade/cancel permission")
 def test_cancel_all_orders(spot_auth_trade: Trade) -> None:
     """
@@ -212,9 +218,9 @@ def test_cancel_all_orders(spot_auth_trade: Trade) -> None:
         assert isinstance(spot_auth_trade.cancel_all_orders(), dict)
 
 
-@pytest.mark.spot
-@pytest.mark.spot_auth
-@pytest.mark.spot_trade
+@pytest.mark.spot()
+@pytest.mark.spot_auth()
+@pytest.mark.spot_trade()
 @pytest.mark.skip(reason="CI does not have trade/cancel permission")
 def test_cancel_all_orders_after_x(spot_auth_trade: Trade) -> None:
     """
@@ -228,9 +234,9 @@ def test_cancel_all_orders_after_x(spot_auth_trade: Trade) -> None:
         assert isinstance(spot_auth_trade.cancel_all_orders_after_x(timeout=0), dict)
 
 
-@pytest.mark.spot
-@pytest.mark.spot_auth
-@pytest.mark.spot_trade
+@pytest.mark.spot()
+@pytest.mark.spot_auth()
+@pytest.mark.spot_trade()
 def test_cancel_order_batch(spot_auth_trade: Trade) -> None:
     """
     Tests the ``cancel_order_batch`` function by cancelling dummy orders that
@@ -251,8 +257,8 @@ def test_cancel_order_batch(spot_auth_trade: Trade) -> None:
         )
 
 
-@pytest.mark.spot
-@pytest.mark.spot_trade
+@pytest.mark.spot()
+@pytest.mark.spot_trade()
 def test_truncate_price(spot_trade: Trade) -> None:
     """
     Checks if the truncate function returns the expected results by
@@ -286,8 +292,8 @@ def test_truncate_price(spot_trade: Trade) -> None:
     sleep(3)
 
 
-@pytest.mark.spot
-@pytest.mark.spot_trade
+@pytest.mark.spot()
+@pytest.mark.spot_trade()
 def test_truncate_volume(spot_trade: Trade) -> None:
     """
     Checks if the truncate function returns the expected results by
@@ -321,8 +327,8 @@ def test_truncate_volume(spot_trade: Trade) -> None:
     sleep(3)
 
 
-@pytest.mark.spot
-@pytest.mark.spot_trade
+@pytest.mark.spot()
+@pytest.mark.spot_trade()
 def test_truncate_fail_price_costmin(spot_trade: Trade) -> None:
     """
     Checks if the truncate function fails if the price is less than the costmin.
@@ -330,12 +336,12 @@ def test_truncate_fail_price_costmin(spot_trade: Trade) -> None:
     NOTE: This test may break in the future since the lot_decimals, pair_decimals,
     ordermin and costmin attributes could change.
     """
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match=r"Price is less than the costmin: 0.5!"):
         spot_trade.truncate(amount=0.001, amount_type="price", pair="XBTUSD")
 
 
-@pytest.mark.spot
-@pytest.mark.spot_trade
+@pytest.mark.spot()
+@pytest.mark.spot_trade()
 def test_truncate_fail_volume_ordermin(spot_trade: Trade) -> None:
     """
     Checks if the truncate function fails if the volume is less than the ordermin.
@@ -343,15 +349,15 @@ def test_truncate_fail_volume_ordermin(spot_trade: Trade) -> None:
     NOTE: This test may break in the future since the lot_decimals, pair_decimals,
     ordermin and costmin attributes could change.
     """
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match=r"Volume is less than the ordermin: 0.0001!"):
         spot_trade.truncate(amount=0.00001, amount_type="volume", pair="XBTUSD")
 
 
-@pytest.mark.spot
-@pytest.mark.spot_trade
+@pytest.mark.spot()
+@pytest.mark.spot_trade()
 def test_truncate_fail_invalid_amount_type(spot_trade: Trade) -> None:
     """
     Checks if the truncate function fails when no valid ``amount_type`` was specified.
     """
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match=r"Amount type must be 'volume' or 'price'!"):
         spot_trade.truncate(amount=1, amount_type="invalid", pair="XBTUSD")

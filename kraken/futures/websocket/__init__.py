@@ -211,7 +211,7 @@ class ConnectFuturesWebsocket:
 
         if private:
             if not self.__client.is_auth:
-                raise ValueError(
+                raise AttributeError(
                     "Cannot access private endpoints with unauthenticated client!",
                 )
             if not self.__challenge_ready:
@@ -262,7 +262,7 @@ class ConnectFuturesWebsocket:
             or subscription["event"] not in ["subscribed", "unsubscribed"]
             or "feed" not in subscription
         ):
-            raise ValueError(
+            raise AttributeError(
                 "Cannot append/remove subscription with missing attributes.",
             )
 

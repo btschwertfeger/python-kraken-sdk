@@ -228,7 +228,7 @@ async def main():
 
             print(message)
             # here we can access lots of methods, for example to create an order:
-            # if self._is_auth:  # only if the client is authenticated …
+            # if self.is_auth:  # only if the client is authenticated …
             #     await self.send_message(
             #         message={
             #             "method": "add_order",

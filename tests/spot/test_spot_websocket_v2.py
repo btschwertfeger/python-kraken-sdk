@@ -29,9 +29,9 @@ from kraken.exceptions import KrakenException
 from .helper import SpotWebsocketClientV2TestWrapper, async_wait
 
 
-@pytest.mark.spot
-@pytest.mark.spot_websocket
-@pytest.mark.spot_websocket_v2
+@pytest.mark.spot()
+@pytest.mark.spot_websocket()
+@pytest.mark.spot_websocket_v2()
 def test_create_public_client(caplog: Any) -> None:
     """
     Checks if the websocket client can be instantiated.
@@ -52,9 +52,9 @@ def test_create_public_client(caplog: Any) -> None:
         assert expected in caplog.text
 
 
-@pytest.mark.spot
-@pytest.mark.spot_websocket
-@pytest.mark.spot_websocket_v2
+@pytest.mark.spot()
+@pytest.mark.spot_websocket()
+@pytest.mark.spot_websocket_v2()
 def test_create_public_client_as_context_manager(caplog: Any) -> None:
     """
     Checks if the websocket client can be instantiated as context manager.
@@ -75,9 +75,9 @@ def test_create_public_client_as_context_manager(caplog: Any) -> None:
         assert expected in caplog.text
 
 
-@pytest.mark.spot
-@pytest.mark.spot_websocket
-@pytest.mark.spot_websocket_v2
+@pytest.mark.spot()
+@pytest.mark.spot_websocket()
+@pytest.mark.spot_websocket_v2()
 def test_access_public_client_attributes() -> None:
     """
     Checks the ``access_public_client_attributes`` function
@@ -105,9 +105,9 @@ def test_access_public_client_attributes() -> None:
     asyncio_run(check_access())
 
 
-@pytest.mark.spot
-@pytest.mark.spot_websocket
-@pytest.mark.spot_websocket_v2
+@pytest.mark.spot()
+@pytest.mark.spot_websocket()
+@pytest.mark.spot_websocket_v2()
 def test_access_public_subscriptions_no_conn_failing() -> None:
     """
     Checks if ``active_public_subscriptions`` fails, because there is no
@@ -126,10 +126,10 @@ def test_access_public_subscriptions_no_conn_failing() -> None:
     asyncio_run(check_access())
 
 
-@pytest.mark.spot
-@pytest.mark.spot_auth
-@pytest.mark.spot_websocket
-@pytest.mark.spot_websocket_v2
+@pytest.mark.spot()
+@pytest.mark.spot_auth()
+@pytest.mark.spot_websocket()
+@pytest.mark.spot_websocket_v2()
 def test_access_private_client_attributes(
     spot_api_key: str,
     spot_secret_key: str,
@@ -159,9 +159,9 @@ def test_access_private_client_attributes(
     asyncio_run(check_access())
 
 
-@pytest.mark.spot
-@pytest.mark.spot_websocket
-@pytest.mark.spot_websocket_v2
+@pytest.mark.spot()
+@pytest.mark.spot_websocket()
+@pytest.mark.spot_websocket_v2()
 def test_send_message_missing_method_failing() -> None:
     """
     Checks if the send_message function fails when specific keys or values
@@ -191,9 +191,9 @@ def test_send_message_missing_method_failing() -> None:
     asyncio_run(create_client())
 
 
-@pytest.mark.spot
-@pytest.mark.spot_websocket
-@pytest.mark.spot_websocket_v2
+@pytest.mark.spot()
+@pytest.mark.spot_websocket()
+@pytest.mark.spot_websocket_v2()
 def test_send_message_raw(caplog: Any) -> None:
     """
     Checks if the send_message function fails when the socket is not available.
@@ -212,9 +212,9 @@ def test_send_message_raw(caplog: Any) -> None:
     assert '{"method": "pong", "req_id": 123456789, "time_in":' in caplog.text
 
 
-@pytest.mark.spot
-@pytest.mark.spot_websocket
-@pytest.mark.spot_websocket_v2
+@pytest.mark.spot()
+@pytest.mark.spot_websocket()
+@pytest.mark.spot_websocket_v2()
 def test_public_subscribe(caplog: Any) -> None:
     """
     Function that checks if the websocket client is able to subscribe to public
@@ -237,10 +237,10 @@ def test_public_subscribe(caplog: Any) -> None:
     )
 
 
-@pytest.mark.spot
-@pytest.mark.spot_auth
-@pytest.mark.spot_websocket
-@pytest.mark.spot_websocket_v2
+@pytest.mark.spot()
+@pytest.mark.spot_auth()
+@pytest.mark.spot_websocket()
+@pytest.mark.spot_websocket_v2()
 def test_private_subscribe_failing_on_public_connection() -> None:
     """
     Ensures that the public websocket connection can't subscribe to private
@@ -257,10 +257,10 @@ def test_private_subscribe_failing_on_public_connection() -> None:
     asyncio_run(test_subscription())
 
 
-@pytest.mark.spot
-@pytest.mark.spot_auth
-@pytest.mark.spot_websocket
-@pytest.mark.spot_websocket_v2
+@pytest.mark.spot()
+@pytest.mark.spot_auth()
+@pytest.mark.spot_websocket()
+@pytest.mark.spot_websocket_v2()
 def test_private_subscribe(
     spot_api_key: str,
     spot_secret_key: str,
@@ -290,9 +290,9 @@ def test_private_subscribe(
     )
 
 
-@pytest.mark.spot
-@pytest.mark.spot_websocket
-@pytest.mark.spot_websocket_v2
+@pytest.mark.spot()
+@pytest.mark.spot_websocket()
+@pytest.mark.spot_websocket_v2()
 def test_public_unsubscribe(caplog: Any) -> None:
     """
     Checks if the websocket client can unsubscribe from public feeds.
@@ -318,9 +318,9 @@ def test_public_unsubscribe(caplog: Any) -> None:
         assert expected in caplog.text
 
 
-@pytest.mark.spot
-@pytest.mark.spot_websocket
-@pytest.mark.spot_websocket_v2
+@pytest.mark.spot()
+@pytest.mark.spot_websocket()
+@pytest.mark.spot_websocket_v2()
 def test_public_unsubscribe_failure(caplog: Any) -> None:
     """
     Checks if the websocket client responses with failures
@@ -347,10 +347,10 @@ def test_public_unsubscribe_failure(caplog: Any) -> None:
     )
 
 
-@pytest.mark.spot
-@pytest.mark.spot_auth
-@pytest.mark.spot_websocket
-@pytest.mark.spot_websocket_v2
+@pytest.mark.spot()
+@pytest.mark.spot_auth()
+@pytest.mark.spot_websocket()
+@pytest.mark.spot_websocket_v2()
 def test_private_unsubscribe(
     spot_api_key: str,
     spot_secret_key: str,

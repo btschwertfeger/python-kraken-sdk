@@ -189,7 +189,7 @@ class KrakenFuturesWSClient(KrakenBaseFuturesAPI):
         :type feed: str
         :param products: The products/futures contracts to subscribe to
         :type products: list[str], optional
-        :raises ValueError: If the parameters don't match the requirements set
+        :raises TypeError: If the parameters don't match the requirements set
             by the Kraken API
 
         Initialize your client as described in
@@ -211,7 +211,7 @@ class KrakenFuturesWSClient(KrakenBaseFuturesAPI):
 
         if products is not None:
             if not isinstance(products, list):
-                raise ValueError(
+                raise TypeError(
                     "Parameter products must be type of list[str] "
                     '(e.g. products=["PI_XBTUSD"])',
                 )
@@ -247,7 +247,7 @@ class KrakenFuturesWSClient(KrakenBaseFuturesAPI):
         :type feed: str
         :param products: The products/futures contracts to unsubscribe from
         :type products: List[str], optional
-        :raises ValueError: If the parameters don't match the requirements set
+        :raises TypeError: If the parameters don't match the requirements set
             by the Kraken API
 
         Initialize your client as described in
@@ -270,8 +270,8 @@ class KrakenFuturesWSClient(KrakenBaseFuturesAPI):
 
         if products is not None:
             if not isinstance(products, list):
-                raise ValueError(
-                    'Parameter products must be type of List[str]\
+                raise TypeError(
+                    'Parameter products must be type of list[str]\
                     (e.g. products=["PI_XBTUSD"])',
                 )
             message["product_ids"] = products

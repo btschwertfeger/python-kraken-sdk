@@ -15,9 +15,9 @@ from .helper import is_success
 # todo: Mocking? Or is this to dangerous?
 
 
-@pytest.mark.futures
-@pytest.mark.futures_auth
-@pytest.mark.futures_funding
+@pytest.mark.futures()
+@pytest.mark.futures_auth()
+@pytest.mark.futures_funding()
 def test_get_historical_funding_rates(futures_demo_funding: Funding) -> None:
     """
     Checks the ``get_historical_funding_rates`` function.
@@ -27,9 +27,9 @@ def test_get_historical_funding_rates(futures_demo_funding: Funding) -> None:
     )
 
 
-@pytest.mark.futures
-@pytest.mark.futures_auth
-@pytest.mark.futures_funding
+@pytest.mark.futures()
+@pytest.mark.futures_auth()
+@pytest.mark.futures_funding()
 @pytest.mark.skip(reason="CI does not have withdraw permission")
 def test_initiate_wallet_transfer(futures_demo_funding: Funding) -> None:
     """
@@ -42,9 +42,9 @@ def test_initiate_wallet_transfer(futures_demo_funding: Funding) -> None:
     # ))
 
 
-@pytest.mark.futures
-@pytest.mark.futures_auth
-@pytest.mark.futures_funding
+@pytest.mark.futures()
+@pytest.mark.futures_auth()
+@pytest.mark.futures_funding()
 @pytest.mark.skip(reason="CI does not have withdraw permission")
 def test_initiate_subccount_transfer(futures_demo_funding: Funding) -> None:
     """
@@ -60,9 +60,9 @@ def test_initiate_subccount_transfer(futures_demo_funding: Funding) -> None:
     # ))
 
 
-@pytest.mark.futures
-@pytest.mark.futures_auth
-@pytest.mark.futures_funding
+@pytest.mark.futures()
+@pytest.mark.futures_auth()
+@pytest.mark.futures_funding()
 @pytest.mark.skip(reason="CI does not have withdraw permission")
 def test_initiate_withdrawal_to_spot_wallet(futures_demo_funding: Funding) -> None:
     """

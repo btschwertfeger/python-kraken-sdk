@@ -11,36 +11,32 @@ build-backend = "setuptools.build_meta"
 name = "python-kraken-sdk"
 dynamic = ["version"]
 authors = [
-  {name = "Benjamin Thomas Schwertfeger", email = "contact@b-schwertfeger.de"},
+  { name = "Benjamin Thomas Schwertfeger", email = "contact@b-schwertfeger.de" },
 ]
 description = "Collection of REST and websocket clients to interact with the Kraken cryptocurrency exchange."
 readme = "README.md"
-license = {file = "LICENSE"}
+license = { file = "LICENSE" }
 requires-python = ">=3.7"
-dependencies = [
-    "asyncio>=3.4",
-    "requests",
-    "websockets",
-]
+dependencies = ["asyncio>=3.4", "requests", "websockets"]
 keywords = ["crypto", "trading", "kraken", "exchange", "api"]
 classifiers = [
-    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
-    "Development Status :: 5 - Production/Stable",
-    "Intended Audience :: Developers",
-    "Topic :: Office/Business :: Financial",
-    "Topic :: Software Development :: Libraries :: Python Modules",
-    "Topic :: Internet :: WWW/HTTP",
-    "Topic :: Utilities",
-    "Programming Language :: Python",
-    "Programming Language :: Python :: 3.7",
-    "Programming Language :: Python :: 3.8",
-    "Programming Language :: Python :: 3.9",
-    "Programming Language :: Python :: 3.10",
-    "Programming Language :: Python :: 3.11",
-    "Framework :: AsyncIO",
-    "Natural Language :: English",
-    "Operating System :: MacOS",
-    "Operating System :: Unix"
+  "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+  "Development Status :: 5 - Production/Stable",
+  "Intended Audience :: Developers",
+  "Topic :: Office/Business :: Financial",
+  "Topic :: Software Development :: Libraries :: Python Modules",
+  "Topic :: Internet :: WWW/HTTP",
+  "Topic :: Utilities",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3.7",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Framework :: AsyncIO",
+  "Natural Language :: English",
+  "Operating System :: MacOS",
+  "Operating System :: Unix",
 ]
 
 [project.urls]
@@ -64,7 +60,7 @@ dev = [
   "mypy",
   "types-requests",
   # linting
-  "ruff"
+  "ruff",
 ]
 examples = ["matplotlib"]
 
@@ -72,15 +68,8 @@ examples = ["matplotlib"]
 include-package-data = false
 
 [tool.setuptools.packages.find]
-include = [
-  "kraken*"
-]
-exclude = [
-  "docs*",
-  "tests*",
-  "examples*",
-  ".env"
-]
+include = ["kraken*"]
+exclude = ["docs*", "tests*", "examples*", ".env"]
 
 [tool.setuptools_scm]
 write_to = "kraken/_version.py"
@@ -121,10 +110,7 @@ source = ["kraken"]
 omit = ["*tests*"]
 
 [tool.coverage.report]
-exclude_lines = [
-  "coverage: disable",
-  "if TYPE_CHECKING:"
-]
+exclude_lines = ["coverage: disable", "if TYPE_CHECKING:"]
 skip_empty = true
 
 # ========= T Y P I N G =======================================================
@@ -182,27 +168,27 @@ ignore_missing_imports = true
 # https://beta.ruff.rs/docs/rules/
 # https://beta.ruff.rs/docs/settings/
 select = [
-  "E", # pycodestyle
-  "F", # pyflakes
-  "I", # isort
-  "N", # PEP8 naming
+  "E",     # pycodestyle
+  "F",     # pyflakes
+  "I",     # isort
+  "N",     # PEP8 naming
   "ASYNC", # flake8-async
-  "S", # flake8-bandit
+  "S",     # flake8-bandit
   # "BLE", # blind-except # todo
   # "FBT", # boolean trap # todo
-  "B", # flake8-bugbear
-  "A", # flake8-builtins
+  "B",   # flake8-bugbear
+  "A",   # flake8-builtins
   "COM", # flake8-commas
-  "C4", # flake8-comprehensions
-  "FA", # flake8-future-annotations
+  "C4",  # flake8-comprehensions
+  "FA",  # flake8-future-annotations
   "ISC", # flake8-implicit-string-concat
   "ICN", # flake8-import-conventions
   # "G", # flake8-logging-format # todo
   "PIE", # flake8-pie
   "T20", # flake8-print
   "PYI", # flake8-pyi
-  # "PT", # flake8-pytest-style # todo
-  "Q", # flake8-quotes
+  "PT",  # flake8-pytest-style # todo
+  "Q",   # flake8-quotes
   "RSE", # flake8-raise
   "RET", # flake8-return
   # "SLF", # flake8-self # todo
@@ -224,16 +210,7 @@ select = [
   # "PERF", # Perflint # maybe
   "RUF", # Ruff-specific rules
 ]
-fixable = [
-  "I",
-  "C4",
-  "Q",
-  "ICN",
-  "COM",
-  "RSE",
-  "PT",
-  "FA"
-]
+fixable = ["I", "C4", "Q", "PT", "ICN", "COM", "RSE", "PT", "FA"]
 
 ignore = [
   "B019", # use of lru_cache or cache
@@ -249,22 +226,22 @@ task-tags = ["todo", "TODO"]
 [tool.ruff.per-file-ignores]
 "setup.py" = ["F401"] # unused import
 "kraken/exceptions/__init__.py" = [
-  "N818" # Exception name should be named with an Error suffix # todo
+  "N818", # Exception name should be named with an Error suffix # todo
 ]
 "examples/*.py" = [
-  "S101", # assert use
-  "S110", # try-catch-pass without logging
-  "T201", # print
+  "S101",     # assert use
+  "S110",     # try-catch-pass without logging
+  "T201",     # print
   "ASYNC101", # no open call on async function
 ]
 "tests/*.py" = [
-  "F841", # unused variable
-  "E501", # Line to long
-  "N802", # PEP8 naming
-  "S101", # assert use
-  "S106", # hardcoded password
-  "S110", # try-except-pass without logging
-  "S311", # pseudo-random-generator
+  "F841",     # unused variable
+  "E501",     # Line to long
+  "N802",     # PEP8 naming
+  "S101",     # assert use
+  "S106",     # hardcoded password
+  "S110",     # try-except-pass without logging
+  "S311",     # pseudo-random-generator
   "ASYNC101", # no open call on async function
 ]
 
@@ -279,22 +256,32 @@ case-sensitive = true
 
 [tool.ruff.pep8-naming]
 ignore-names = [
-  "i", "j", "k", "_",
-  "fromAccount", "toAccount",
-  "fromUser", "toUser",
+  "i",
+  "j",
+  "k",
+  "_",
+  "fromAccount",
+  "toAccount",
+  "fromUser",
+  "toUser",
   "sourceWallet",
-  "lastTime", "lastFillTime",
+  "lastTime",
+  "lastFillTime",
   "to",
   "maxLeverage",
   "pnlPreference",
-  "cliOrdId", "cliOrdIds", "orderId", "orderIds",
+  "cliOrdId",
+  "cliOrdIds",
+  "orderId",
+  "orderIds",
   "stopPrice",
   "limitPrice",
   "orderType",
   "reduceOnly",
   "triggerSignal",
   "EXCEPTION_ASSIGNMENT",
-  "trailingStopDeviationUnit", "trailingStopMaxDeviation",
+  "trailingStopDeviationUnit",
+  "trailingStopMaxDeviation",
   "subaccountUid",
-  "ConnectSpotWebsocket"
+  "ConnectSpotWebsocket",
 ]

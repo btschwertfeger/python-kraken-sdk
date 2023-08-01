@@ -913,8 +913,8 @@ class User(KrakenBaseSpotAPI):
             ... )
             { 'id': 'GEHI' }
         """
-        if report not in ["trades", "ledgers"]:
-            raise ValueError('report must be one of "trades", "ledgers"')
+        if report not in ("trades", "ledgers"):
+            raise ValueError('`report` must be either "trades" or "ledgers".')
 
         params: dict = {
             "report": report,

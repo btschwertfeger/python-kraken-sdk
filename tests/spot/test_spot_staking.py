@@ -16,9 +16,9 @@ from .helper import is_not_error
 # todo: Mock skipped tests - or is this to dangerous?
 
 
-@pytest.mark.spot
-@pytest.mark.spot_auth
-@pytest.mark.spot_staking
+@pytest.mark.spot()
+@pytest.mark.spot_auth()
+@pytest.mark.spot_staking()
 def test_list_stakeable_assets(spot_auth_staking: Staking) -> None:
     """
     Checks if the ``list_stakeable_assets`` endpoint returns the
@@ -32,9 +32,9 @@ def test_list_stakeable_assets(spot_auth_staking: Staking) -> None:
         pass
 
 
-@pytest.mark.spot
-@pytest.mark.spot_auth
-@pytest.mark.spot_staking
+@pytest.mark.spot()
+@pytest.mark.spot_auth()
+@pytest.mark.spot_staking()
 @pytest.mark.skip(reason="CI does not have withdraw/stake permission")
 def test_stake_asset(spot_auth_staking: Staking) -> None:
     """
@@ -54,9 +54,9 @@ def test_stake_asset(spot_auth_staking: Staking) -> None:
         pass
 
 
-@pytest.mark.spot
-@pytest.mark.spot_auth
-@pytest.mark.spot_staking
+@pytest.mark.spot()
+@pytest.mark.spot_auth()
+@pytest.mark.spot_staking()
 @pytest.mark.skip(reason="CI does not have withdraw/stake permission")
 def test_unstake_asset(spot_auth_staking: Staking) -> None:
     """
@@ -73,9 +73,9 @@ def test_unstake_asset(spot_auth_staking: Staking) -> None:
         pass
 
 
-@pytest.mark.spot
-@pytest.mark.spot_auth
-@pytest.mark.spot_staking
+@pytest.mark.spot()
+@pytest.mark.spot_auth()
+@pytest.mark.spot_staking()
 @pytest.mark.skip(reason="CI does not have withdraw/stake permission")
 def test_get_pending_staking_transactions(spot_auth_staking: Staking) -> None:
     """
@@ -86,9 +86,9 @@ def test_get_pending_staking_transactions(spot_auth_staking: Staking) -> None:
     assert isinstance(spot_auth_staking.get_pending_staking_transactions(), list)
 
 
-@pytest.mark.spot
-@pytest.mark.spot_auth
-@pytest.mark.spot_staking
+@pytest.mark.spot()
+@pytest.mark.spot_auth()
+@pytest.mark.spot_staking()
 @pytest.mark.skip(reason="CI does not have withdraw/stake permission")
 def test_list_staking_transactions(spot_auth_staking: Staking) -> None:
     """
