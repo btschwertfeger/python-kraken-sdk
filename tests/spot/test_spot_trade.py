@@ -82,7 +82,7 @@ def test_create_order(spot_auth_trade: Trade) -> None:
     deadline = (datetime.now(timezone.utc) + timedelta(seconds=20)).isoformat()
     with pytest.raises(
         KrakenException.KrakenPermissionDeniedError,
-        match=r"Credentials are invalid.",
+        match=r"API key doesn't have permission to make this request.",
     ):
         spot_auth_trade.create_order(
             ordertype="stop-loss-limit",
