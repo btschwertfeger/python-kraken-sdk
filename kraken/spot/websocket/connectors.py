@@ -55,6 +55,7 @@ class ConnectSpotWebsocketBase:
     """
 
     MAX_RECONNECT_NUM: int = 7
+    PING_INTERVAL: int = 10  # seconds
     LOG: logging.Logger = logging.getLogger(__name__)
 
     def __init__(
@@ -75,7 +76,7 @@ class ConnectSpotWebsocketBase:
 
         self._last_ping: Optional[Union[int, float]] = None
         self.socket: Optional[Any] = None
-        self._subscriptions: List[dict] = []
+        self.__subscriptions: List[dict] = []
         self.task: asyncio.Task = asyncio.create_task(self.__run_forever())
 
     @property
@@ -87,6 +88,11 @@ class ConnectSpotWebsocketBase:
     def client(self: ConnectSpotWebsocketBase) -> KrakenSpotWSClientBase:
         """Return the websocket client"""
         return self.__client
+
+    @property
+    def subscriptions(self: ConnectSpotWebsocketBase) -> List[dict]:
+        """Returns a copy of active subscriptions"""
+        return deepcopy(self.__subscriptions)
 
     async def __run(self: ConnectSpotWebsocketBase, event: asyncio.Event) -> None:
         """
@@ -116,7 +122,7 @@ class ConnectSpotWebsocketBase:
             self.__reconnect_num = 0
 
             while keep_alive:
-                if time() - self._last_ping > 10:
+                if time() - self._last_ping > self.PING_INTERVAL:
                     await self.send_ping()
                 try:
                     _msg = await asyncio.wait_for(self.socket.recv(), timeout=15)
@@ -150,9 +156,9 @@ class ConnectSpotWebsocketBase:
             await self.__callback(
                 {"error": "kraken.exceptions.KrakenException.MaxReconnectError"},
             )
-        except Exception as exc:
+        except Exception as exc:  # ruff: noqa: BLE001
             traceback_: str = traceback.format_exc()
-            logging.error(f"{exc}: {traceback_}")
+            logging.exception(f"{exc}: {traceback_}")
             await self.__callback({"error": traceback_})
         finally:
             await self.__callback(
@@ -325,11 +331,11 @@ class ConnectSpotWebsocketV1(ConnectSpotWebsocketBase):
             it is set to ``True`` - which is when the connection is ready)
         :type event: asyncio.Event
         """
-        log_msg: str = f'Recover {"authenticated" if self.is_auth else "public"} subscriptions {self._subscriptions}'
+        log_msg: str = f'Recover {"authenticated" if self.is_auth else "public"} subscriptions {self.__subscriptions}'
         self.LOG.info(f"{log_msg} waiting.")
         await event.wait()
 
-        for sub in self._subscriptions:
+        for sub in self.__subscriptions:
             cpy = deepcopy(sub)
             private = False
             if (
@@ -377,7 +383,7 @@ class ConnectSpotWebsocketV1(ConnectSpotWebsocketBase):
         """
         # remove from list, to avoid duplicate entries
         self.__remove_subscription(message)
-        self._subscriptions.append(self.__build_subscription(message))
+        self.__subscriptions.append(self.__build_subscription(message))
 
     def __remove_subscription(self: ConnectSpotWebsocketV1, message: dict) -> None:
         """
@@ -387,8 +393,8 @@ class ConnectSpotWebsocketV1(ConnectSpotWebsocketBase):
         :type subscription: dict
         """
         subscription: dict = self.__build_subscription(message=message)
-        self._subscriptions = [
-            sub for sub in self._subscriptions if sub != subscription
+        self.__subscriptions = [
+            sub for sub in self.__subscriptions if sub != subscription
         ]
 
     def __build_subscription(self: ConnectSpotWebsocketV1, message: dict) -> dict:
@@ -480,11 +486,11 @@ class ConnectSpotWebsocketV2(ConnectSpotWebsocketBase):
             it is set to ``True`` - which is when the connection is ready)
         :type event: asyncio.Event
         """
-        log_msg: str = f'Recover {"authenticated" if self.is_auth else "public"} subscriptions {self._subscriptions}'
+        log_msg: str = f'Recover {"authenticated" if self.is_auth else "public"} subscriptions {self.__subscriptions}'
         self.LOG.info(f"{log_msg} waiting.")
         await event.wait()
 
-        for subscription in self._subscriptions:
+        for subscription in self.__subscriptions:
             await self.client.subscribe(params=subscription)
             self.LOG.info(f"{subscription} OK")
 
@@ -518,7 +524,7 @@ class ConnectSpotWebsocketV2(ConnectSpotWebsocketBase):
         :type subscription: dict
         """
         self.__remove_subscription(subscription=subscription)
-        self._subscriptions.append(subscription)
+        self.__subscriptions.append(subscription)
 
     def __remove_subscription(self: ConnectSpotWebsocketV2, subscription: dict) -> None:
         """
@@ -527,12 +533,12 @@ class ConnectSpotWebsocketV2(ConnectSpotWebsocketBase):
         :param subscription: The subscription to remove.
         :type subscription: dict
         """
-        for position, sub in enumerate(self._subscriptions):
+        for position, sub in enumerate(self.__subscriptions):
             if sub == subscription or (
                 subscription.get("channel", False) == sub.get("channel", False)
                 and subscription.get("symbol", False) == sub.get("symbol", False)
             ):
-                del self._subscriptions[position]
+                del self.__subscriptions[position]
                 return
 
 

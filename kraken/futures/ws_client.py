@@ -118,8 +118,8 @@ class KrakenFuturesWSClient(KrakenBaseFuturesAPI):
     ):
         super().__init__(key=key, secret=secret, url=url, sandbox=sandbox)
 
-        self._key: str = key
-        self._secret: str = secret
+        self.__key: str = key
+        self.__secret: str = secret
 
         self.exception_occur: bool = False
         self.__callback: Any = callback
@@ -133,7 +133,12 @@ class KrakenFuturesWSClient(KrakenBaseFuturesAPI):
             callback=self.on_message,
         )
 
-    def _get_sign_challenge(self: KrakenFuturesWSClient, challenge: str) -> str:
+    @property
+    def key(self: KrakenBaseFuturesAPI) -> str:
+        """Returns the API key"""
+        return self.__key
+
+    def get_sign_challenge(self: KrakenFuturesWSClient, challenge: str) -> str:
         """
         Sign the challenge/message using the secret key
 
@@ -150,7 +155,7 @@ class KrakenFuturesWSClient(KrakenBaseFuturesAPI):
         sha256_hash.update(challenge.encode("utf-8"))
         return base64.b64encode(
             hmac.new(
-                base64.b64decode(self._secret),
+                base64.b64decode(self.__secret),
                 sha256_hash.digest(),
                 hashlib.sha512,
             ).digest(),
@@ -364,10 +369,10 @@ class KrakenFuturesWSClient(KrakenBaseFuturesAPI):
             False
         """
         return (
-            self._key is not None
-            and self._key != ""
-            and self._secret is not None
-            and self._secret != ""
+            self.__key is not None
+            and self.__key != ""
+            and self.__secret is not None
+            and self.__secret != ""
         )
 
     def get_active_subscriptions(self: KrakenFuturesWSClient) -> List[dict]:
@@ -399,7 +404,7 @@ class KrakenFuturesWSClient(KrakenBaseFuturesAPI):
                 }, ...
             ]
         """
-        return self._conn._get_active_subscriptions()
+        return self._conn.get_active_subscriptions()
 
     async def __aenter__(self: KrakenFuturesWSClient) -> KrakenFuturesWSClient:
         return self

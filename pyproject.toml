@@ -174,36 +174,36 @@ select = [
   "N",     # PEP8 naming
   "ASYNC", # flake8-async
   "S",     # flake8-bandit
-  # "BLE", # blind-except # todo
-  # "FBT", # boolean trap # todo
-  "B",   # flake8-bugbear
-  "A",   # flake8-builtins
-  "COM", # flake8-commas
-  "C4",  # flake8-comprehensions
-  "FA",  # flake8-future-annotations
-  "ISC", # flake8-implicit-string-concat
-  "ICN", # flake8-import-conventions
-  # "G", # flake8-logging-format # todo
-  "PIE", # flake8-pie
-  "T20", # flake8-print
-  "PYI", # flake8-pyi
-  "PT",  # flake8-pytest-style # todo
-  "Q",   # flake8-quotes
-  "RSE", # flake8-raise
-  "RET", # flake8-return
-  # "SLF", # flake8-self # todo
+  "BLE",   # blind-except
+  "B",     # flake8-bugbear
+  "A",     # flake8-builtins
+  "COM",   # flake8-commas
+  "C4",    # flake8-comprehensions
+  "FA",    # flake8-future-annotations
+  "ISC",   # flake8-implicit-string-concat
+  "ICN",   # flake8-import-conventions
+  # "G",   # flake8-logging-format # todo
+  "PIE",  # flake8-pie
+  "T20",  # flake8-print
+  "PYI",  # flake8-pyi
+  "PT",   # flake8-pytest-style
+  "Q",    # flake8-quotes
+  "RSE",  # flake8-raise
+  "RET",  # flake8-return
+  "SLF",  # flake8-self
   "SLOT", # flake8-slots
-  "SIM",  # flake8-simplify # todo
+  "SIM",  # flake8-simplify
   "TID",  # flake8-tidy-imports
   "TCH",  # flake8-type-checking
   "INT",  # flake8-gettext
+  # "FBT", # boolean trap # todo fix in 2.0
   # "ARG", # flake8-unused-arguments # todo after exceptions updated
   # "PTH", # flake8-use-pathlib # maybe
-  # "TD", # flake8-todos
-  # "FIX", # flake8-fixme
-  # "ERA", # eradicate (commented-out code
+  # "TD", # flake8-todos # //
+  # "FIX", # flake8-fixme # //
+  # "ERA", # eradicate # // (commented-out code)
   "PGH", # pygrep-hooks
-  # "PL", # Pylint # todo
+  "PL",  # Pylint
   # "TRY", # tryceratops
   "FLY",  # flynt
   "AIR",  # Airflow
@@ -234,6 +234,7 @@ task-tags = ["todo", "TODO"]
   "S110",     # try-catch-pass without logging
   "T201",     # print
   "ASYNC101", # no open call on async function
+  "BLE001",   # blind exception
 ]
 "tests/*.py" = [
   "F841",     # unused variable
@@ -244,6 +245,7 @@ task-tags = ["todo", "TODO"]
   "S110",     # try-except-pass without logging
   "S311",     # pseudo-random-generator
   "ASYNC101", # no open call on async function
+  "SLF001",   # private member access
 ]
 
 [tool.ruff.flake8-quotes]
@@ -286,3 +288,6 @@ ignore-names = [
   "subaccountUid",
   "ConnectSpotWebsocket",
 ]
+
+[tool.ruff.pylint]
+max-args = 7

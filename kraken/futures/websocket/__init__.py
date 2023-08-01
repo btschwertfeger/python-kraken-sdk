@@ -41,7 +41,7 @@ class ConnectFuturesWebsocket:
     MAX_RECONNECT_NUM: int = 2
 
     def __init__(
-        self: "ConnectFuturesWebsocket",
+        self: ConnectFuturesWebsocket,
         client: KrakenFuturesWSClient,
         endpoint: str,
         callback: Any,
@@ -65,11 +65,11 @@ class ConnectFuturesWebsocket:
         )
 
     @property
-    def subscriptions(self: "ConnectFuturesWebsocket") -> List[dict]:
+    def subscriptions(self: ConnectFuturesWebsocket) -> List[dict]:
         """Returns the active subscriptions"""
         return self.__subscriptions
 
-    async def __run(self: "ConnectFuturesWebsocket", event: asyncio.Event) -> None:
+    async def __run(self: ConnectFuturesWebsocket, event: asyncio.Event) -> None:
         keep_alive: bool = True
         self.__new_challenge = None
         self.__last_challenge = None
@@ -115,7 +115,7 @@ class ConnectFuturesWebsocket:
                         if forward:
                             await self.__callback(message)
 
-    async def __run_forever(self: "ConnectFuturesWebsocket") -> None:
+    async def __run_forever(self: ConnectFuturesWebsocket) -> None:
         try:
             while True:
                 await self.__reconnect()
@@ -123,14 +123,12 @@ class ConnectFuturesWebsocket:
             await self.__callback(
                 {"error": "kraken.exceptions.KrakenException.MaxReconnectError"},
             )
-        except Exception:
-            # for task in asyncio.all_tasks(): task.cancel()
-            logging.error(traceback.format_exc())
-        # except asyncio.CancelledError: pass
+        except Exception:  # ruff: noqa: BLE001
+            logging.exception(traceback.format_exc())
         finally:
             self.__client.exception_occur = True
 
-    async def __reconnect(self: "ConnectFuturesWebsocket") -> None:
+    async def __reconnect(self: ConnectFuturesWebsocket) -> None:
         logging.info("Websocket start connect/reconnect")
 
         self.__reconnect_num += 1
@@ -177,7 +175,7 @@ class ConnectFuturesWebsocket:
         logging.warning("reconnect over")
 
     async def __recover_subscription_req_msg(
-        self: "ConnectFuturesWebsocket",
+        self: ConnectFuturesWebsocket,
         event: asyncio.Event,
     ) -> None:
         logging.info(f"Recover subscriptions {self.__subscriptions} waiting.")
@@ -193,7 +191,7 @@ class ConnectFuturesWebsocket:
         logging.info(f"Recover subscriptions {self.__subscriptions} done.")
 
     async def send_message(
-        self: "ConnectFuturesWebsocket",
+        self: ConnectFuturesWebsocket,
         msg: dict,
         private: bool = False,
     ) -> None:
@@ -217,20 +215,20 @@ class ConnectFuturesWebsocket:
             if not self.__challenge_ready:
                 await self.__check_challenge_ready()
 
-            msg["api_key"] = self.__client._key
+            msg["api_key"] = self.__client.key
             msg["original_challenge"] = self.__last_challenge
             msg["signed_challenge"] = self.__new_challenge
 
         await self.__socket.send(json.dumps(msg))
 
-    def __handle_new_challenge(self: "ConnectFuturesWebsocket", msg: dict) -> None:
+    def __handle_new_challenge(self: ConnectFuturesWebsocket, msg: dict) -> None:
         self.__last_challenge = msg["message"]
-        self.__new_challenge = self.__client._get_sign_challenge(self.__last_challenge)
+        self.__new_challenge = self.__client.get_sign_challenge(self.__last_challenge)
         self.__challenge_ready = True
 
-    async def __check_challenge_ready(self: "ConnectFuturesWebsocket") -> None:
+    async def __check_challenge_ready(self: ConnectFuturesWebsocket) -> None:
         await self.__socket.send(
-            json.dumps({"event": "challenge", "api_key": self.__client._key}),
+            json.dumps({"event": "challenge", "api_key": self.__client.key}),
         )
 
         logging.debug("Awaiting challenge...")
@@ -242,17 +240,17 @@ class ConnectFuturesWebsocket:
             random() * min(60 * 3, (2**attempts) - 1) + 1,  # ruff: noqa: S311
         )
 
-    def __append_subscription(self: "ConnectFuturesWebsocket", msg: dict) -> None:
+    def __append_subscription(self: ConnectFuturesWebsocket, msg: dict) -> None:
         self.__remove_subscription(msg=msg)  # remove from list, to avoid duplicates
         sub: dict = self.__build_subscription(msg)
         self.__subscriptions.append(sub)
 
-    def __remove_subscription(self: "ConnectFuturesWebsocket", msg: dict) -> None:
+    def __remove_subscription(self: ConnectFuturesWebsocket, msg: dict) -> None:
         sub: dict = self.__build_subscription(msg)
         self.__subscriptions = [x for x in self.__subscriptions if x != sub]
 
     def __build_subscription(
-        self: "ConnectFuturesWebsocket",
+        self: ConnectFuturesWebsocket,
         subscription: dict,
     ) -> dict:
         sub: dict = {"event": "subscribe"}
@@ -290,7 +288,7 @@ class ConnectFuturesWebsocket:
             )
         return sub
 
-    def _get_active_subscriptions(self: "ConnectFuturesWebsocket") -> List[dict]:
+    def get_active_subscriptions(self: ConnectFuturesWebsocket) -> List[dict]:
         """Returns the active subscriptions"""
         return self.__subscriptions
 

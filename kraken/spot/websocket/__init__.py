@@ -210,7 +210,7 @@ class KrakenSpotWSClientBase(KrakenBaseSpotAPI):
         :raises ConnectionError: If there is no active public connection.
         """
         if self._pub_conn is not None:
-            return self._pub_conn._subscriptions
+            return self._pub_conn.subscriptions
         raise ConnectionError("Public connection does not exist!")
 
     @property
@@ -225,7 +225,7 @@ class KrakenSpotWSClientBase(KrakenBaseSpotAPI):
         :raises ConnectionError: If there is no active private connection
         """
         if self._priv_conn is not None:
-            return self._priv_conn._subscriptions
+            return self._priv_conn.subscriptions
         raise ConnectionError("Private connection does not exist!")
 
     # --------------------------------------------------------------------------
