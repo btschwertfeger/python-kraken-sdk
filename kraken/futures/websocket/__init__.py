@@ -21,7 +21,6 @@ import websockets
 from kraken.exceptions import KrakenException
 
 if TYPE_CHECKING:
-    # to avoid circular import for type checking
     from kraken.futures import KrakenFuturesWSClient
 
 
@@ -89,10 +88,10 @@ class ConnectFuturesWebsocket:
                 try:
                     _msg = await asyncio.wait_for(self.__socket.recv(), timeout=15)
                 except asyncio.TimeoutError:
-                    logging.debug(
-                        "Timeout error in {endpoint}",
-                        extra={"endpoint": self.__ws_endpoint},
-                    )  # important
+                    logging.debug(  # important
+                        "Timeout error in %s",
+                        self.__ws_endpoint,
+                    )
                 except asyncio.CancelledError:
                     logging.exception("asyncio.CancelledError")
                     keep_alive = False
@@ -138,8 +137,9 @@ class ConnectFuturesWebsocket:
 
         reconnect_wait: float = self.__get_reconnect_wait(self.__reconnect_num)
         logging.debug(
-            "asyncio sleep reconnect_wait={wait} s reconnect_num={num}",
-            extra={"wait": reconnect_wait, "num": self.__reconnect_num},
+            "asyncio sleep reconnect_wait=%f s reconnect_num=%d",
+            reconnect_wait,
+            self.__reconnect_num,
         )
         await asyncio.sleep(reconnect_wait)
         logging.debug("asyncio sleep done")
@@ -165,7 +165,7 @@ class ConnectFuturesWebsocket:
                     message = f"{task} got an exception {task.exception()}\n {task.get_stack()}"
                     logging.warning(message)
                     for process in pending:
-                        logging.warning("pending {proc}", extra={"proc": process})
+                        logging.warning("pending %s", process)
                         try:
                             process.cancel()
                         except asyncio.CancelledError:
@@ -181,8 +181,8 @@ class ConnectFuturesWebsocket:
         event: asyncio.Event,
     ) -> None:
         logging.info(
-            "Recover subscriptions {subscriptions} waiting.",
-            extra={"subscriptions": self.__subscriptions},
+            "Recover subscriptions %s waiting.",
+            self.__subscriptions,
         )
         await event.wait()
 
@@ -191,11 +191,11 @@ class ConnectFuturesWebsocket:
                 await self.send_message(deepcopy(sub), private=True)
             elif sub["feed"] in self.__client.get_available_public_subscription_feeds():
                 await self.send_message(deepcopy(sub), private=False)
-            logging.info("{sub}: OK", extra={"sub": sub})
+            logging.info("%s: OK", sub)
 
         logging.info(
-            "Recover subscriptions {subscriptions} done.",
-            extra={"subscriptions": self.__subscriptions},
+            "Recover subscriptions %s done.",
+            self.__subscriptions,
         )
 
     async def send_message(

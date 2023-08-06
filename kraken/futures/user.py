@@ -10,10 +10,10 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Optional, Union
 
+from kraken.base_api import KrakenBaseFuturesAPI, defined
+
 if TYPE_CHECKING:
     import requests
-
-from kraken.base_api import KrakenBaseFuturesAPI, defined
 
 
 class User(KrakenBaseFuturesAPI):
