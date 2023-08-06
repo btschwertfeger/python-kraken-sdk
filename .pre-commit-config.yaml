@@ -49,6 +49,16 @@ repos:
           - --select=E9,F63,F7,F82
           - --show-source
           - --statistics
+  - repo: https://github.com/pycqa/pylint
+    rev: v2.17.0
+    hooks:
+      - id: pylint
+        name: pylint
+        types: [python]
+        exclude: ^examples/|^tests/|^setup.py$
+        args:
+          - --rcfile=pyproject.toml
+          - -d=R0801 # ignore duplicate code
   - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.0.282
     hooks:
