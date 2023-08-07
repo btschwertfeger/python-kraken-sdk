@@ -108,8 +108,8 @@ class ConnectSpotWebsocketBase:
             None if not self.__is_auth else self.__client.get_ws_token()
         )
         self.LOG.debug(
-            "Websocket token: {details}",
-            extra={"details": self.ws_conn_details},
+            "Websocket token: %s",
+            self.ws_conn_details,
         )
 
         async with websockets.connect(  # pylint: disable=no-member
@@ -162,8 +162,9 @@ class ConnectSpotWebsocketBase:
         except Exception as exc:
             traceback_: str = traceback.format_exc()
             logging.exception(
-                "{exc}: {traceback}",
-                extra={"exc": exc, "traceback": traceback_},
+                "%s: %s",
+                exc,
+                traceback_,
             )
             await self.__callback({"error": traceback_})
         finally:
@@ -215,7 +216,7 @@ class ConnectSpotWebsocketBase:
                     message: str = f"{task} got an exception {task.exception()}\n {task.get_stack()}"
                     self.LOG.warning(message)
                     for process in pending:
-                        self.LOG.warning("pending {proc}", extra={"proc": process})
+                        self.LOG.warning("pending %s", process)
                         try:
                             process.cancel()
                         except asyncio.CancelledError:
@@ -355,7 +356,7 @@ class ConnectSpotWebsocketV1(ConnectSpotWebsocketBase):
                 private = True
 
             await self.client.send_message(cpy, private=private)
-            self.LOG.info("{sub} OK", extra={"sub": sub})
+            self.LOG.info("%s: OK", sub)
 
         self.LOG.info("%s done.", log_msg)
 
@@ -500,7 +501,7 @@ class ConnectSpotWebsocketV2(ConnectSpotWebsocketBase):
 
         for subscription in self._subscriptions:
             await self.client.subscribe(params=subscription)
-            self.LOG.info("{subscription} OK", extra={"subscription": subscription})
+            self.LOG.info("%s: OK", subscription)
 
         self.LOG.info("%s done.", log_msg)
 

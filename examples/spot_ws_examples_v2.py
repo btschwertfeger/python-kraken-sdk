@@ -90,19 +90,20 @@ async def main() -> None:
     )
     # ...
 
-    # Per default, the authenticated client starts two websocket connections,
-    # one for authenticated and one for public messages. If there is no need
-    # for a public connection, it can be disabled using the ``no_public``
-    # parameter.
-    client_auth = Client(key=key, secret=secret, no_public=True)
-    # print(client_auth.private_channel_names)  # … list private channel names
-    # when using the authenticated client, you can also subscribe to public feeds
-    await client_auth.subscribe(params={"channel": "executions"})
+    if key and secret:
+        # Per default, the authenticated client starts two websocket connections,
+        # one for authenticated and one for public messages. If there is no need
+        # for a public connection, it can be disabled using the ``no_public``
+        # parameter.
+        client_auth = Client(key=key, secret=secret, no_public=True)
+        # print(client_auth.private_channel_names)  # … list private channel names
+        # when using the authenticated client, you can also subscribe to public feeds
+        await client_auth.subscribe(params={"channel": "executions"})
 
-    await asyncio.sleep(5)
-    await client_auth.unsubscribe(params={"channel": "executions"})
+        await asyncio.sleep(5)
+        await client_auth.unsubscribe(params={"channel": "executions"})
 
-    while not client.exception_occur and not client_auth.exception_occur:
+    while not client.exception_occur:  # and not client_auth.exception_occur:
         await asyncio.sleep(6)
 
 

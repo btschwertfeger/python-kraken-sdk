@@ -5,7 +5,7 @@
 
 """
 Module that provides a template to build a Spot trading algorithm using the
-python-kraken-sdk and Kraken Spot websocket API v1.
+python-kraken-sdk and Kraken Spot websocket API v2.
 """
 
 from __future__ import annotations

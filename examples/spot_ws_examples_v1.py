@@ -82,18 +82,19 @@ async def main() -> None:
     await client.unsubscribe(subscription={"name": "spread"}, pair=["DOT/USD"])
     # ...
 
-    client_auth = Client(key=key, secret=secret)
-    # print(client_auth.active_private_subscriptions)
-    # print(client_auth.private_channel_names) # list private channel names
-    # when using the authenticated client, you can also subscribe to public feeds
-    await client_auth.subscribe(subscription={"name": "ownTrades"})
-    await client_auth.subscribe(subscription={"name": "openOrders"})
+    if key and secret:
+        client_auth = Client(key=key, secret=secret)
+        # print(client_auth.active_private_subscriptions)
+        # print(client_auth.private_channel_names) # list private channel names
+        # when using the authenticated client, you can also subscribe to public feeds
+        await client_auth.subscribe(subscription={"name": "ownTrades"})
+        await client_auth.subscribe(subscription={"name": "openOrders"})
 
-    await asyncio.sleep(2)
-    await client_auth.unsubscribe(subscription={"name": "ownTrades"})
-    await client_auth.unsubscribe(subscription={"name": "openOrders"})
+        await asyncio.sleep(2)
+        await client_auth.unsubscribe(subscription={"name": "ownTrades"})
+        await client_auth.unsubscribe(subscription={"name": "openOrders"})
 
-    while not client.exception_occur and not client_auth.exception_occur:
+    while not client.exception_occur:  # and not client_auth.exception_occur:
         await asyncio.sleep(6)
 
 

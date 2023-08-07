@@ -17,7 +17,7 @@ import sys
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 project = "python-kraken-sdk"
-copyright = "2023, Benjamin Thomas Schwertfeger"  # noqa: A001
+copyright = "2023, Benjamin Thomas Schwertfeger"  # noqa: A001 # pylint: disable=redefined-builtin
 author = "Benjamin Thomas Schwertfeger"
 
 # to import the package
