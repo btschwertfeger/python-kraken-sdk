@@ -94,7 +94,7 @@ async def main() -> None:
         await client_auth.unsubscribe(subscription={"name": "ownTrades"})
         await client_auth.unsubscribe(subscription={"name": "openOrders"})
 
-    while not client.exception_occur and not client_auth.exception_occur:
+    while not client.exception_occur:  # and not client_auth.exception_occur:
         await asyncio.sleep(6)
 
 

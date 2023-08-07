@@ -103,7 +103,7 @@ async def main() -> None:
         await asyncio.sleep(5)
         await client_auth.unsubscribe(params={"channel": "executions"})
 
-    while not client.exception_occur and not client_auth.exception_occur:
+    while not client.exception_occur:  # and not client_auth.exception_occur:
         await asyncio.sleep(6)
 
 

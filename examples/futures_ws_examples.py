@@ -67,30 +67,31 @@ async def main() -> None:
     # ...
 
     # _____Private_Websocket_Feeds_________________
-    client_auth = Client(key=key, secret=secret)
-    # print(client_auth.get_available_private_subscription_feeds())
+    if key and secret:
+        client_auth = Client(key=key, secret=secret)
+        # print(client_auth.get_available_private_subscription_feeds())
 
-    # subscribe to a private/authenticated websocket feed
-    await client_auth.subscribe(feed="fills")
-    await client_auth.subscribe(feed="open_positions")
-    # await client_auth.subscribe(feed='open_orders')
-    # await client_auth.subscribe(feed='open_orders_verbose')
-    # await client_auth.subscribe(feed='deposits_withdrawals')
-    # await client_auth.subscribe(feed='account_balances_and_margins')
-    # await client_auth.subscribe(feed='balances')
-    # await client_auth.subscribe(feed='account_log')
-    # await client_auth.subscribe(feed='notifications_auth')
+        # subscribe to a private/authenticated websocket feed
+        await client_auth.subscribe(feed="fills")
+        await client_auth.subscribe(feed="open_positions")
+        # await client_auth.subscribe(feed='open_orders')
+        # await client_auth.subscribe(feed='open_orders_verbose')
+        # await client_auth.subscribe(feed='deposits_withdrawals')
+        # await client_auth.subscribe(feed='account_balances_and_margins')
+        # await client_auth.subscribe(feed='balances')
+        # await client_auth.subscribe(feed='account_log')
+        # await client_auth.subscribe(feed='notifications_auth')
 
-    # authenticated clients can also subscribe to public feeds
-    # await client_auth.subscribe(feed='ticker', products=['PI_XBTUSD', 'PF_ETHUSD'])
+        # authenticated clients can also subscribe to public feeds
+        # await client_auth.subscribe(feed='ticker', products=['PI_XBTUSD', 'PF_ETHUSD'])
 
-    # time.sleep(1)
-    # unsubscribe from a private/authenticated websocket feed
-    await client_auth.unsubscribe(feed="fills")
-    await client_auth.unsubscribe(feed="open_positions")
-    # ...
+        # time.sleep(1)
+        # unsubscribe from a private/authenticated websocket feed
+        await client_auth.unsubscribe(feed="fills")
+        await client_auth.unsubscribe(feed="open_positions")
+        # ...
 
-    while not client.exception_occur and not client_auth.exception_occur:
+    while not client.exception_occur:  # and not client_auth.exception_occur:
         await asyncio.sleep(6)
 
 

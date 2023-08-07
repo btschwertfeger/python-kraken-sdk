@@ -306,8 +306,8 @@ class OrderbookClient:
                     message: list
                 ) -> None:
                     book: Dict[str, Any] = self.get(pair="XBT/USD")
-                    ask: List[Tuple[str, str]] = list(book["ask"].items())
-                    bid: List[Tuple[str, str]] = list(book["bid"].items())
+                    ask: list[Tuple[str, str]] = list(book["ask"].items())
+                    bid: list[Tuple[str, str]] = list(book["bid"].items())
                     # ask and bid are now in format [price, (volume, timestamp)]
                     # … and include the whole orderbook
         """
