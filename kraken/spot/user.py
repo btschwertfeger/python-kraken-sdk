@@ -9,9 +9,11 @@
 from __future__ import annotations
 
 from decimal import Decimal
-from typing import List, Optional, Union
+from typing import List, Optional, TypeVar, Union
 
 from kraken.base_api import KrakenBaseSpotAPI, defined, ensure_string
+
+Self = TypeVar("Self")
 
 
 class User(KrakenBaseSpotAPI):
@@ -54,7 +56,7 @@ class User(KrakenBaseSpotAPI):
     ) -> None:
         super().__init__(key=key, secret=secret, url=url)
 
-    def __enter__(self: User) -> User:
+    def __enter__(self: Self) -> Self:
         super().__enter__()
         return self
 
@@ -1099,7 +1101,7 @@ class User(KrakenBaseSpotAPI):
     def account_transfer(
         self: "User",
         asset: str,
-        amount: Union[str, int, float],
+        amount: Union[str, float],
         from_: str,
         to_: str,
     ) -> dict:
@@ -1113,7 +1115,7 @@ class User(KrakenBaseSpotAPI):
         :param asset: The asset to transfer
         :type asset: str
         :param amount: The amount of that asset to transfer
-        :type amount: str | int | float
+        :type amount: str | float
         :param from_: The source account (IIBAN)
         :type from_: str
         :param to_: The destination account (IIBAN)

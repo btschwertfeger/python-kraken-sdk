@@ -13,11 +13,13 @@ import hashlib
 import hmac
 import logging
 from copy import deepcopy
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, TypeVar
 
 from kraken.base_api import KrakenBaseFuturesAPI
 from kraken.exceptions import KrakenException
 from kraken.futures.websocket import ConnectFuturesWebsocket
+
+Self = TypeVar("Self")
 
 
 class KrakenFuturesWSClient(KrakenBaseFuturesAPI):
@@ -406,12 +408,12 @@ class KrakenFuturesWSClient(KrakenBaseFuturesAPI):
         """
         return self._conn.get_active_subscriptions()
 
-    async def __aenter__(self: KrakenFuturesWSClient) -> KrakenFuturesWSClient:
+    async def __aenter__(self: Self) -> Self:
         return self
 
     async def __aexit__(
         self: KrakenFuturesWSClient,
-        *exc: tuple,
+        *exc: object,
         **kwargs: Dict[str, Any],
     ) -> None:
         pass

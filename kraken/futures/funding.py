@@ -7,9 +7,11 @@
 
 from __future__ import annotations
 
-from typing import Optional, Union
+from typing import Optional, TypeVar, Union
 
 from kraken.base_api import KrakenBaseFuturesAPI
+
+Self = TypeVar("Self")
 
 
 class Funding(KrakenBaseFuturesAPI):
@@ -54,7 +56,7 @@ class Funding(KrakenBaseFuturesAPI):
     ) -> None:
         super().__init__(key=key, secret=secret, url=url, sandbox=sandbox)
 
-    def __enter__(self: Funding) -> Funding:
+    def __enter__(self: Self) -> Self:
         super().__enter__()
         return self
 
@@ -98,7 +100,7 @@ class Funding(KrakenBaseFuturesAPI):
 
     def initiate_wallet_transfer(
         self: Funding,
-        amount: Union[str, int, float],
+        amount: Union[str, float],
         fromAccount: str,
         toAccount: str,
         unit: str,
@@ -112,7 +114,7 @@ class Funding(KrakenBaseFuturesAPI):
         - https://docs.futures.kraken.com/#http-api-trading-v3-api-transfers-initiate-wallet-transfer
 
         :param amount: The volume to transfer
-        :type amount: str | int | float
+        :type amount: str | float
         :param fromAccount: The account to withdraw from
         :type fromAccount: str
         :param fromAccount: The account to deposit to
@@ -151,7 +153,7 @@ class Funding(KrakenBaseFuturesAPI):
 
     def initiate_subaccount_transfer(
         self: Funding,
-        amount: Union[str, int, float],
+        amount: Union[str, float],
         fromAccount: str,
         fromUser: str,
         toAccount: str,
@@ -167,7 +169,7 @@ class Funding(KrakenBaseFuturesAPI):
         - https://docs.futures.kraken.com/#http-api-trading-v3-api-transfers-initiate-sub-account-transfer
 
         :param amount: The volume to transfer
-        :type amount: str | int | float
+        :type amount: str | float
         :param fromAccount: The account to withdraw from
         :type fromAccount: str
         :param fromUser: The user account to transfer from
@@ -208,7 +210,7 @@ class Funding(KrakenBaseFuturesAPI):
 
     def initiate_withdrawal_to_spot_wallet(
         self: Funding,
-        amount: Union[str, int, float],
+        amount: Union[str, float],
         currency: str,
         sourceWallet: Optional[str] = None,
         **kwargs: dict,
@@ -222,7 +224,7 @@ class Funding(KrakenBaseFuturesAPI):
         - https://docs.futures.kraken.com/#http-api-trading-v3-api-transfers-initiate-withdrawal-to-spot-wallet
 
         :param amount: The volume to transfer
-        :type amount: str | int | float
+        :type amount: str | float
         :param currency: The asset or currency to transfer
         :type currency: str
         :param sourceWallet: The wallet to withdraw from (default: ``cash``)

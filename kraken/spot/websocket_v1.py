@@ -384,11 +384,11 @@ class KrakenSpotWSClient(KrakenSpotWSClientBase):
         ordertype: str,
         side: str,
         pair: str,
-        volume: Union[str, int, float],
-        price: Optional[Union[str, int, float]] = None,
-        price2: Optional[Union[str, int, float]] = None,
+        volume: Union[str, float],
+        price: Optional[Union[str, float]] = None,
+        price2: Optional[Union[str, float]] = None,
         truncate: bool = False,
-        leverage: Optional[Union[str, int, float]] = None,
+        leverage: Optional[Union[str, float]] = None,
         oflags: Optional[Union[str, List[str]]] = None,
         starttm: Optional[Union[str, int]] = None,
         expiretm: Optional[Union[str, int]] = None,
@@ -418,22 +418,22 @@ class KrakenSpotWSClient(KrakenSpotWSClientBase):
         :param pair: The asset pair to trade
         :type pair: str
         :param volume: The volume of the order that is being created
-        :type volume: str | int | float
+        :type volume: str | float
         :param price: The limit price for ``limit`` orders or the trigger price
             for orders with ``ordertype`` one of ``stop-loss``,
             ``stop-loss-limit``, ``take-profit``, and ``take-profit-limit``
-        :type price: str | int | float, optional
+        :type price: str | float, optional
         :param price2: The second price for ``stop-loss-limit`` and
             ``take-profit-limit`` orders (see the referenced Kraken
             documentation for more information)
-        :type price2: str | int | float, optional
+        :type price2: str | float, optional
         :param truncate: If enabled: round the ``price`` and ``volume`` to
             Kraken's maximum allowed decimal places. See
             https://support.kraken.com/hc/en-us/articles/4521313131540
             fore more information about decimals.
         :type truncate: bool, optional
         :param leverage: The leverage
-        :type leverage: str | int | float, optional
+        :type leverage: str | float, optional
         :param oflags: Order flags like ``post``, ``fcib``, ``fciq``, ``nomp``,
             ``viqc`` (see the referenced Kraken documentation for more
             information)
@@ -457,9 +457,9 @@ class KrakenSpotWSClient(KrakenSpotWSClientBase):
             ``take-profit-limit``
         :type close_ordertype: str, optional
         :param close_price: Conditional close price
-        :type close_price: str | int | float, optional
+        :type close_price: str | float, optional
         :param close_price2: Second conditional close price
-        :type close_price2: str | int | float, optional
+        :type close_price2: str | float, optional
         :param timeinforce: How long the order remains in the orderbook, one of:
             ``GTC``, ``IOC``, ``GTD`` (see the referenced Kraken documentation
             for more information)

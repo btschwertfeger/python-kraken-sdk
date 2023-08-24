@@ -11,13 +11,15 @@ Module that provides the base class for the Kraken Websocket clients v1 and v2.
 from __future__ import annotations
 
 import logging
-from typing import Any, Callable, List, Optional, Type, Union
+from typing import Any, Callable, List, Optional, Type, TypeVar, Union
 
 from kraken.base_api import KrakenBaseSpotAPI
 from kraken.spot.websocket.connectors import (
     ConnectSpotWebsocketV1,
     ConnectSpotWebsocketV2,
 )
+
+Self = TypeVar("Self")
 
 
 class KrakenSpotWSClientBase(KrakenBaseSpotAPI):
@@ -156,13 +158,13 @@ class KrakenSpotWSClientBase(KrakenBaseSpotAPI):
             )
             print(message)  # noqa: T201
 
-    async def __aenter__(self: KrakenSpotWSClientBase) -> KrakenSpotWSClientBase:
+    async def __aenter__(self: Self) -> Self:
         """Entrypoint for use as context manager"""
         return self
 
     async def __aexit__(
         self: KrakenSpotWSClientBase,
-        *exc: Any,
+        *exc: object,
         **kwargs: Any,
     ) -> None:
         """Exit if used as context manager"""

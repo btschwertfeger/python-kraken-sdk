@@ -11,10 +11,12 @@ from __future__ import annotations
 from decimal import Decimal
 from functools import lru_cache
 from math import floor
-from typing import List, Optional, Union
+from typing import List, Optional, TypeVar, Union
 
 from kraken.base_api import KrakenBaseSpotAPI, defined, ensure_string
 from kraken.spot.market import Market
+
+Self = TypeVar("Self")
 
 
 class Trade(KrakenBaseSpotAPI):
@@ -57,7 +59,7 @@ class Trade(KrakenBaseSpotAPI):
         super().__init__(key=key, secret=secret, url=url)
         self.__market: Market = Market()
 
-    def __enter__(self: Trade) -> Trade:
+    def __enter__(self: Self) -> Self:
         super().__enter__()
         return self
 
@@ -67,9 +69,9 @@ class Trade(KrakenBaseSpotAPI):
         ordertype: str,
         side: str,
         pair: str,
-        volume: Union[str, int, float],
-        price: Optional[Union[str, int, float]] = None,
-        price2: Optional[Union[str, int, float]] = None,
+        volume: Union[str, float],
+        price: Optional[Union[str, float]] = None,
+        price2: Optional[Union[str, float]] = None,
         truncate: bool = False,
         trigger: Optional[str] = None,
         leverage: Optional[str] = None,
@@ -81,8 +83,8 @@ class Trade(KrakenBaseSpotAPI):
         starttm: Optional[str] = "0",
         expiretm: Optional[str] = None,
         close_ordertype: Optional[str] = None,
-        close_price: Optional[Union[str, int, float]] = None,
-        close_price2: Optional[Union[str, int, float]] = None,
+        close_price: Optional[Union[str, float]] = None,
+        close_price2: Optional[Union[str, float]] = None,
         deadline: Optional[str] = None,
         validate: bool = False,
         userref: Optional[int] = None,
@@ -104,16 +106,16 @@ class Trade(KrakenBaseSpotAPI):
         :param pair: The asset to trade
         :type pair: str
         :param volume: The volume of the position to create
-        :type volume: str | int | float
+        :type volume: str | float
         :param price: The limit price for ``limit`` orders and the trigger price for orders with
             ``ordertype`` one of ``stop-loss``, ``stop-loss-limit``, ``take-profit``, and ``take-profit-limit``
-        :type price: str | int | float, optional
+        :type price: str | float, optional
         :param price2: The limit price for ``stop-loss-limit`` and ``take-profit-limit`` orders
             The price2 can also be set to absolut or relative changes.
                 * Prefixed using ``+`` or ``-`` defines the change in the quote asset
                 * Prefixed by # is the same as ``+`` and ``-`` but the sign is set automatically
                 * The percentage sign ``%`` can be used to define relative changes.
-        :type price2: str | int | float, optional
+        :type price2: str | float, optional
         :param truncate: If enabled: round the ``price`` and ``volume`` to Kraken's
             maximum allowed decimal places. See https://support.kraken.com/hc/en-us/articles/4521313131540
             fore more information about decimals.
@@ -123,7 +125,7 @@ class Trade(KrakenBaseSpotAPI):
             Kraken will use ``last`` if nothing is specified.
         :type trigger: str, optional
         :param leverage: The leverage
-        :type leverage: str | int | float, optional
+        :type leverage: str | float, optional
         :param reduce_only: Reduce existing orders (default: ``False``)
         :type reduce_only: bool, optional
         :param stptype: Define what cancels the order, one of ``cancel-newest``,
@@ -136,7 +138,7 @@ class Trade(KrakenBaseSpotAPI):
             ``GTC``, ``IOC``, ``GTD`` (see the referenced Kraken documentation for more information)
         :type timeinforce: str, optional
         :param displayvol: Define how much of the volume is visible in the orderbook (iceberg)
-        :type displayvol: str | int | float, optional
+        :type displayvol: str | float, optional
         :param starttim: Unix timestamp or seconds defining the start time (default: ``"0"``)
         :type starttim: str, optional
         :param expiretm: Unix timestamp or time in seconds defining the expiration of the order,
@@ -147,9 +149,9 @@ class Trade(KrakenBaseSpotAPI):
             (see the referenced Kraken documentation for more information)
         :type close_ordertype: str, optional
         :param close_price: Conditional close price
-        :type close_price: str | int | float, optional
+        :type close_price: str | float, optional
         :param close_price2: The price2 for the conditional order - see the price2 parameter description
-        :type close_price2: str | int | float, optional
+        :type close_price2: str | float, optional
         :param deadline: RFC3339 timestamp + {0..60} seconds that defines when the matching
             engine should reject the order.
         :type deadline: str, optional
@@ -665,7 +667,7 @@ class Trade(KrakenBaseSpotAPI):
     @lru_cache()
     def truncate(
         self: Trade,
-        amount: Union[Decimal, float, int, str],
+        amount: Union[Decimal, float, str],
         amount_type: str,
         pair: str,
     ) -> str:
@@ -681,7 +683,7 @@ class Trade(KrakenBaseSpotAPI):
         This function uses caching. Run ``truncate.clear_cache()`` to clear.
 
         :param amount: The floating point number to represent
-        :type amount: Decimal | float | int | str
+        :type amount: Decimal | float | str
         :param amount_type: What the amount represents. Either ``"price"`` or ``"volume"``
         :type amount_type: str
         :param pair: The currency pair the amount is in reference to.

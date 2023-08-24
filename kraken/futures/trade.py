@@ -8,9 +8,11 @@
 
 from __future__ import annotations
 
-from typing import List, Optional, Tuple, Union
+from typing import List, Optional, Tuple, TypeVar, Union
 
 from kraken.base_api import KrakenBaseFuturesAPI, defined
+
+Self = TypeVar("Self")
 
 
 class Trade(KrakenBaseFuturesAPI):
@@ -55,7 +57,7 @@ class Trade(KrakenBaseFuturesAPI):
     ) -> None:
         super().__init__(key=key, secret=secret, url=url, sandbox=sandbox)
 
-    def __enter__(self: Trade) -> Trade:
+    def __enter__(self: Self) -> Self:
         super().__enter__()
         return self
 
@@ -467,13 +469,13 @@ class Trade(KrakenBaseFuturesAPI):
     def create_order(  # noqa: PLR0913
         self: Trade,
         orderType: str,
-        size: Union[str, int, float],
+        size: Union[str, float],
         symbol: str,
         side: str,
         cliOrdId: Optional[str] = None,
-        limitPrice: Optional[Union[str, int, float]] = None,
+        limitPrice: Optional[Union[str, float]] = None,
         reduceOnly: Optional[bool] = None,
-        stopPrice: Optional[Union[str, int, float]] = None,
+        stopPrice: Optional[Union[str, float]] = None,
         triggerSignal: Optional[str] = None,
         trailingStopDeviationUnit: Optional[str] = None,
         trailingStopMaxDeviation: Optional[str] = None,
@@ -489,7 +491,7 @@ class Trade(KrakenBaseFuturesAPI):
             (https://support.kraken.com/hc/en-us/sections/200577136-Order-types)
         :type orderType: str
         :param size: The volume of the position
-        :type size: str | int | float
+        :type size: str | float
         :param symbol: The symbol to trade
         :type symbol: str
         :param side: Long or Short, i.e.,: ``buy`` or ``sell``
@@ -497,7 +499,7 @@ class Trade(KrakenBaseFuturesAPI):
         :param cliOrdId: A user defined order id
         :type cliOrdId: str, optional
         :param limitPrice: Define a custom limit price
-        :type limitPrice: str | int | float
+        :type limitPrice: str |float
         :param reduceOnly: Reduces existing positions if set to ``True``
         :type reduceOnly: bool, optional
         :param stopPrice: Define a price when to exit the order. Required for specific order types

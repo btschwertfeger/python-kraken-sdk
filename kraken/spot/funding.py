@@ -8,9 +8,11 @@
 
 from __future__ import annotations
 
-from typing import List, Optional, Union
+from typing import List, Optional, TypeVar, Union
 
 from kraken.base_api import KrakenBaseSpotAPI, defined
+
+Self = TypeVar("Self")
 
 
 class Funding(KrakenBaseSpotAPI):
@@ -52,7 +54,7 @@ class Funding(KrakenBaseSpotAPI):
     ) -> None:
         super().__init__(key=key, secret=secret, url=url)
 
-    def __enter__(self: Funding) -> Funding:
+    def __enter__(self: Self) -> Self:
         super().__enter__()
         return self
 
@@ -220,7 +222,7 @@ class Funding(KrakenBaseSpotAPI):
         self: Funding,
         asset: str,
         key: str,
-        amount: Union[str, int, float],
+        amount: Union[str, float],
     ) -> dict:
         """
         Get information about a possible withdraw, including fee and limit information.
@@ -236,8 +238,7 @@ class Funding(KrakenBaseSpotAPI):
         :param key: Withdrawal key name as set up in the user account
         :type key: str
         :param amount: The amount to withdraw
-        :type amount: str | int | float
-
+        :type amount: str | float
         :return: Information about a possible withdraw including the fee and amount.
         :rtype: dict
 
@@ -269,7 +270,7 @@ class Funding(KrakenBaseSpotAPI):
         self: Funding,
         asset: str,
         key: str,
-        amount: Union[str, int, float],
+        amount: Union[str, float],
     ) -> dict:
         """
         Create a new withdraw. The key must be the name of the withdraw key
@@ -284,7 +285,7 @@ class Funding(KrakenBaseSpotAPI):
         :param key: Withdrawal key name as set up in the account
         :type key: str
         :param amount: The amount to withdraw
-        :type amount: str | int | float
+        :type amount: str | float
         :return: The reference id of the withdraw
         :rtype: dict
 
@@ -394,7 +395,7 @@ class Funding(KrakenBaseSpotAPI):
         asset: str,
         from_: str,
         to_: str,
-        amount: Union[str, int, float],
+        amount: Union[str, float],
     ) -> dict:
         """
         Transfer assets between the Spot and Futures wallet.
@@ -410,7 +411,7 @@ class Funding(KrakenBaseSpotAPI):
         :param to_: The wallet to deposit to
         :type to_: str
         :param amount: The amount to transfer
-        :type amount: str | int | float
+        :type amount: str | float
         :return: The reference id
         :rtype: dict
 

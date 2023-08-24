@@ -9,9 +9,11 @@
 from __future__ import annotations
 
 from functools import lru_cache
-from typing import List, Optional, Union
+from typing import List, Optional, TypeVar, Union
 
 from kraken.base_api import KrakenBaseSpotAPI, defined, ensure_string
+
+Self = TypeVar("Self")
 
 
 class Market(KrakenBaseSpotAPI):
@@ -53,7 +55,7 @@ class Market(KrakenBaseSpotAPI):
     ) -> None:
         super().__init__(key=key, secret=secret, url=url)
 
-    def __enter__(self: Market) -> Market:
+    def __enter__(self: Self) -> Self:
         super().__enter__()
         return self
 

@@ -14,13 +14,15 @@ import json
 import time
 import urllib.parse
 from functools import wraps
-from typing import Any, Callable, Dict, List, Optional, Type, Union
+from typing import Any, Callable, Dict, List, Optional, Type, TypeVar, Union
 from urllib.parse import urljoin
 from uuid import uuid1
 
 import requests
 
 from kraken.exceptions import KrakenException
+
+Self = TypeVar("Self")
 
 
 def defined(value: Any) -> bool:
@@ -387,12 +389,12 @@ class KrakenBaseSpotAPI:
         """
         return "".join(str(uuid1()).split("-"))
 
-    def __enter__(self: KrakenBaseSpotAPI) -> KrakenBaseSpotAPI:
+    def __enter__(self: Self) -> Self:
         return self
 
     def __exit__(
         self: KrakenBaseSpotAPI,
-        *exc: tuple,
+        *exc: object,
         **kwargs: Dict[str, Any],
     ) -> None:
         pass
@@ -634,10 +636,10 @@ class KrakenBaseFuturesAPI:
 
         raise Exception(f"{response.status_code} - {response.text}")
 
-    def __enter__(self: KrakenBaseFuturesAPI) -> KrakenBaseFuturesAPI:
+    def __enter__(self: Self) -> Self:
         return self
 
-    def __exit__(self, *exc: tuple, **kwargs: Dict[str, Any]) -> None:
+    def __exit__(self, *exc: object, **kwargs: Dict[str, Any]) -> None:
         pass
 
 
