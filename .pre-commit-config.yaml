@@ -73,8 +73,8 @@ repos:
         name: mypy
         args:
           - --config-file=pyproject.toml
-          - --install-types
-          - --non-interactive
+          # - --install-types # do not use within pre-commit
+          # - --non-interactive # same here
           - kraken
         pass_filenames: false
   - repo: https://github.com/pre-commit/mirrors-prettier
@@ -86,7 +86,7 @@ ci:
     [pre-commit.ci] auto fixes from pre-commit.com hooks
 
     for more information, see https://pre-commit.ci
-  autofix_prs: true
+  autofix_prs: false
   autoupdate_branch: ""
   autoupdate_commit_msg: "[pre-commit.ci] pre-commit autoupdate"
   autoupdate_schedule: weekly
