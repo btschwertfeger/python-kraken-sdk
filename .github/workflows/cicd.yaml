@@ -1,12 +1,11 @@
-# -*- coding: utf-8 -*-
-# Copyright (C) 2023 Benjamin Thomas Schwertfeger
-# GitHub: https://github.com/btschwertfeger
+# -*- coding: utf-8 -*- Copyright (C) 2023 Benjamin Thomas Schwertfeger GitHub:
+# https://github.com/btschwertfeger
 #
-# Workflow to apply pre-commit, build, test and upload the package
-# to the test index of PyPI.
+# Workflow to apply pre-commit, build, test and upload the package to the test
+# index of PyPI.
 #
-# This workflow runs the whole CI of the python-kraken-sdk and serves
-# to run the following checks:
+# This workflow runs the whole CI of the python-kraken-sdk and serves to run the
+# following checks:
 #   * pre-commit: checks the code style, syntax, formatting, etc.
 #   * CodeQL: checks security issues
 #   * Build: builds the python-kraken-sdk for multiple versions and os
@@ -26,19 +25,20 @@
 #                * Query ledger entries
 #                * Export data
 #                * Access WebSockets API
-#             Disable all other permissions since we don't want to create or cancel
-#             real orders or withdraw funds during testing. These tests are disabled
-#             by default but having the permissions disabled is the safest way of
-#             testing.
+#             Disable all other permissions since we don't want to create or
+#             cancel real orders or withdraw funds during testing. These tests
+#             are disabled by default but having the permissions disabled is the
+#             safest way of testing.
 #
 #             for Futures:
 #                * FUTURES_API_KEY
 #                * FUTURES_SECRET_KEY
 #                * FUTURES_SANDBOX_KEY
 #                * FUTURES_SANDBOX_SECRET
-#             Please also make sure to set the "Read Only" permission
-#             for the live account to not risk any funds during testing!
-#             The demo/sandbox account requires full permissions.
+#
+#             Please also make sure to set the "Read Only" permission for the
+#             live account to not risk any funds during testing! The
+#             demo/sandbox account requires full permissions.
 #
 
 name: CI/CD
@@ -53,19 +53,19 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  ## ==========================================================================
+  ## ===========================================================================
   ##    Checks the code logic, style and more
   ##
   Pre-Commit:
     uses: ./.github/workflows/_pre_commit.yaml
 
-  ## ==========================================================================
+  ## ===========================================================================
   ##  Discover vulnerabilities
   ##
   CodeQL:
     uses: ./.github/workflows/_codeql.yaml
 
-  ## ==========================================================================
+  ## ===========================================================================
   ##    Builds the package on multiple OS for multiple
   ##    Python versions
   ##
@@ -81,7 +81,7 @@ jobs:
       os: ${{ matrix.os }}
       python-version: ${{ matrix.python-version }}
 
-  ## ==========================================================================
+  ## ===========================================================================
   ##    Build the documentation
   ##
   Build-Doc:
@@ -91,7 +91,7 @@ jobs:
       os: "ubuntu-latest"
       python-version: "3.11"
 
-  ## ==========================================================================
+  ## ===========================================================================
   ##          Run the Spot tests for Python 3.7 until 3.11
   ##
   ##  (public endpoints)
@@ -123,7 +123,7 @@ jobs:
       python-version: ${{ matrix.python-version }}
     secrets: inherit
 
-  ## ==========================================================================
+  ## ===========================================================================
   ##        Run the Futures tests for Python 3.7 until 3.11
   ##
   ##  (public endpoints)
@@ -154,7 +154,7 @@ jobs:
       python-version: ${{ matrix.python-version }}
     secrets: inherit
 
-  ## ==========================================================================
+  ## ===========================================================================
   ##    Uploads the package to test.pypi.org on master if triggered by
   ##    a regular commit/push.
   ##
@@ -172,7 +172,7 @@ jobs:
     secrets:
       API_TOKEN: ${{ secrets.TEST_PYPI_API_TOKEN }}
 
-  ## ==========================================================================
+  ## ===========================================================================
   ##    Generates and uploads the coverage statistics to codecov
   ##
   CodeCov:

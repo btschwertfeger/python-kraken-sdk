@@ -118,8 +118,8 @@ persists please open an issue.
 
 # 📍 Spot Clients
 
-A template for Spot trading using both websocket and REST clients can be
-found in `examples/spot_trading_bot_template_v2.py`.
+A template for Spot trading using both websocket and REST clients can be found
+in `examples/spot_trading_bot_template_v2.py`.
 
 For those who need a realtime order book - a script that demonstrates how to
 maintain a valid order book using the Orderbook client can be found in
@@ -130,8 +130,8 @@ maintain a valid order book using the Orderbook client can be found in
 ## Spot REST API
 
 The Kraken Spot REST API offers many endpoints for almost every use-case. The
-python-kraken-sdk aims to provide all of them - split in User, Market,
-Trade, Funding and Staking related clients.
+python-kraken-sdk aims to provide all of them - split in User, Market, Trade,
+Funding and Staking related clients.
 
 The following code block demonstrates how to use some of them. More examples
 can be found in `examples/spot_examples.py`.
@@ -483,13 +483,11 @@ if __name__ == "__main__":
 
 - The version scheme is `<Major>.<Minor>.<Service Level>` where:
 
-  - **Major** will affect everything and there will be breaking changes
-    in any case. This could be for example a change to Python 3.11+ only.
-
+  - **Major** will affect everything and there will be breaking changes in any
+    case. This could be for example a change to Python 3.11+ only.
   - **Minor** introduces features and enhancements which may bring breaking
-    changes in some cases. These breaking changes could be renaming or
-    addition of parameters, change in order of parameters or even renaming
-    a function.
+    changes in some cases. These breaking changes could be renaming or addition
+    of parameters, change in order of parameters or even renaming a function.
   - **Service Level** includes bug fixes, documentation or CI related changes.
 
 - Coding standards are not always followed to make arguments and function names

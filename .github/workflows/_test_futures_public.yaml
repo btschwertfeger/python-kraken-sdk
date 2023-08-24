@@ -44,5 +44,4 @@ jobs:
       ##    Unit tests of the public Futures REST clients and endpoints
       ##
       - name: Testing Futures REST endpoints
-        run: |
-          pytest -vv -m "futures and not futures_auth and not futures_websocket" tests
+        run: pytest -vv -m "futures and not futures_auth and not futures_websocket" tests
