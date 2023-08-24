@@ -54,8 +54,7 @@ jobs:
         env:
           SPOT_API_KEY: ${{ secrets.SPOT_API_KEY }}
           SPOT_SECRET_KEY: ${{ secrets.SPOT_SECRET_KEY }}
-        run: |
-          pytest -vv -m "spot_auth and not spot_websocket" tests
+        run: pytest -vv -m "spot_auth and not spot_websocket" tests
 
       ##    Unit tests of Spot websocket clients
       ##
@@ -63,5 +62,4 @@ jobs:
         env:
           SPOT_API_KEY: ${{ secrets.SPOT_API_KEY }}
           SPOT_SECRET_KEY: ${{ secrets.SPOT_SECRET_KEY }}
-        run: |
-          pytest -vv -m spot_websocket tests
+        run: pytest -vv -m spot_websocket tests

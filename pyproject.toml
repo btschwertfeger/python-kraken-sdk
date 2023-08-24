@@ -117,9 +117,14 @@ skip_empty = true
 #
 [tool.mypy]
 python_version = "3.7"
+
 # junit_xml = "mypy.xml"
 files = ["kraken/**/*.py"]
 exclude = ["tests/*/*.py"]
+
+cache_dir = ".mypy_cache"
+sqlite_cache = true
+cache_fine_grained = true
 
 # Disallow dynamic typing
 disallow_any_unimported = false
@@ -159,6 +164,16 @@ pretty = true
 color_output = true
 show_absolute_path = true
 ignore_missing_imports = true
+
+# Miscellaneous strictness flags
+allow_untyped_globals = false
+allow_redefinition = false
+local_partial_types = false
+# disable_error_code = xxx,xxx
+implicit_reexport = true
+strict_concatenate = false
+strict_equality = true
+strict = true
 
 # ========= L I N T I N G ======================================================
 #

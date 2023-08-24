@@ -6,4 +6,4 @@ labels: "Question"
 assignees: ""
 ---
 
-There is no stupid question.
+There are no stupid questions.

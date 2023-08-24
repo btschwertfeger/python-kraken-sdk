@@ -1,22 +1,33 @@
 # Changelog
 
-## [Unreleased](https://github.com/btschwertfeger/python-kraken-sdk/tree/HEAD)
+## [v1.6.1](https://github.com/btschwertfeger/python-kraken-sdk/tree/v1.6.1) (2023-08-07)
 
-[Full Changelog](https://github.com/btschwertfeger/python-kraken-sdk/compare/v1.5.0...HEAD)
+[Full Changelog](https://github.com/btschwertfeger/python-kraken-sdk/compare/v1.6.0...v1.6.1)
+
+**Fixed bugs:**
+
+- Adjust logging and examples; add PyLint check [\#144](https://github.com/btschwertfeger/python-kraken-sdk/pull/144) ([btschwertfeger](https://github.com/btschwertfeger))
+
+## [v1.6.0](https://github.com/btschwertfeger/python-kraken-sdk/tree/v1.6.0) (2023-08-01)
+
+[Full Changelog](https://github.com/btschwertfeger/python-kraken-sdk/compare/v1.5.0...v1.6.0)
 
 **Breaking changes:**
 
 - Integrate Websockets API v2 [\#130](https://github.com/btschwertfeger/python-kraken-sdk/issues/130)
+- Integrate and apply ruff [\#142](https://github.com/btschwertfeger/python-kraken-sdk/pull/142) ([btschwertfeger](https://github.com/btschwertfeger))
 - Let `kraken.spot.OrderbookClient` use Spot Websocket API v2 [\#139](https://github.com/btschwertfeger/python-kraken-sdk/pull/139) ([btschwertfeger](https://github.com/btschwertfeger))
 - Integrate Kraken Websockets API v2; add `kraken.spot.KrakenSpotWebsocketClientV2`; internals [\#131](https://github.com/btschwertfeger/python-kraken-sdk/pull/131) ([btschwertfeger](https://github.com/btschwertfeger))
 
 **Implemented enhancements:**
 
+- Let `kraken.spot.OrderbookClient` use the Spot Websocket API v2 [\#133](https://github.com/btschwertfeger/python-kraken-sdk/issues/133)
 - Add `/private/AccountTransfer` endpoint to `kraken.spot.User` [\#128](https://github.com/btschwertfeger/python-kraken-sdk/issues/128)
 - Add `/private/AccountTransfer` endpoint -\> `kraken.spot.User.account_transfer` [\#129](https://github.com/btschwertfeger/python-kraken-sdk/pull/129) ([btschwertfeger](https://github.com/btschwertfeger))
 
 **Closed issues:**
 
+- Use ruff instead of pylint and friends [\#140](https://github.com/btschwertfeger/python-kraken-sdk/issues/140)
 - The content of `.pylintrc` can be moved into `pyproject.toml` [\#136](https://github.com/btschwertfeger/python-kraken-sdk/issues/136)
 - Build the package also on Windows within the CI [\#134](https://github.com/btschwertfeger/python-kraken-sdk/issues/134)
 

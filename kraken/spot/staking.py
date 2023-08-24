@@ -8,9 +8,11 @@
 
 from __future__ import annotations
 
-from typing import List, Optional, Union
+from typing import List, Optional, TypeVar, Union
 
 from kraken.base_api import KrakenBaseSpotAPI, defined
+
+Self = TypeVar("Self")
 
 
 class Staking(KrakenBaseSpotAPI):
@@ -52,14 +54,14 @@ class Staking(KrakenBaseSpotAPI):
     ) -> None:
         super().__init__(key=key, secret=secret, url=url)
 
-    def __enter__(self: Staking) -> Staking:
+    def __enter__(self: Self) -> Self:
         super().__enter__()
         return self
 
     def stake_asset(
         self: Staking,
         asset: str,
-        amount: Union[str, int, float],
+        amount: Union[str, float],
         method: str,
     ) -> dict:
         """
@@ -75,7 +77,7 @@ class Staking(KrakenBaseSpotAPI):
         :param asset: The asset to stake
         :type asset: str
         :param amount: The amount to stake
-        :type amount: str | int | float
+        :type amount: str | float
         :param method: The staking method
         :type method: str
         :return: The reference id of the staking transaction
@@ -104,7 +106,7 @@ class Staking(KrakenBaseSpotAPI):
     def unstake_asset(
         self: Staking,
         asset: str,
-        amount: Union[str, int, float],
+        amount: Union[str, float],
         method: Optional[str] = None,
     ) -> dict:
         """
@@ -120,7 +122,7 @@ class Staking(KrakenBaseSpotAPI):
         :param asset: The asset to stake
         :type asset: str
         :param amount: The amount to stake
-        :type amount: str | int | float
+        :type amount: str | float
         :param method: Filter by staking method (default: ``None``)
         :type method: str, optional
         :return: The reference id of the unstaking transaction

@@ -8,12 +8,14 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Optional, Union
+from typing import TYPE_CHECKING, Optional, TypeVar, Union
 
 from kraken.base_api import KrakenBaseFuturesAPI, defined
 
 if TYPE_CHECKING:
     import requests
+
+Self = TypeVar("Self")
 
 
 class User(KrakenBaseFuturesAPI):
@@ -58,7 +60,7 @@ class User(KrakenBaseFuturesAPI):
     ) -> None:
         super().__init__(key=key, secret=secret, url=url, sandbox=sandbox)
 
-    def __enter__(self: User) -> User:
+    def __enter__(self: Self) -> Self:
         super().__enter__()
         return self
 
