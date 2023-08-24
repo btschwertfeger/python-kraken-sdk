@@ -4,9 +4,7 @@
 # GitHub: https://github.com/btschwertfeger
 #
 
-"""
-Checks the internals
-"""
+"""Checks the internals."""
 
 from __future__ import annotations
 
@@ -22,7 +20,7 @@ from .helper import async_wait
 
 @pytest.mark.spot()
 @pytest.mark.spot_websocket()
-def test_ws_base_client_invalid_api_v() -> None:
+def test_ws_base_client_invalid_api_version() -> None:
     """
     Checks that the KrakenSpotWSClientBase raises an error when an invalid API
     version was specified.
