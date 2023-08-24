@@ -14,20 +14,20 @@ on:
     types: [created]
 
 jobs:
-  ## ==========================================================================
+  ## ===========================================================================
   ##    Run pre-commit - just to make sure that the code is still
   ##    in the proper format
   ##
   Pre-Commit:
     uses: ./.github/workflows/_pre_commit.yaml
 
-  ## ==========================================================================
+  ## ===========================================================================
   ##  Discover vulnerabilities
   ##
   CodeQL:
     uses: ./.github/workflows/_codeql.yaml
 
-  ## ==========================================================================
+  ## ===========================================================================
   ##    Build the package - for all Python versions
   ##
   Build:
@@ -42,7 +42,7 @@ jobs:
       os: ${{ matrix.os }}
       python-version: ${{ matrix.python-version }}
 
-  ## ==========================================================================
+  ## ===========================================================================
   ##    Build the documentation
   ##
   Build-Doc:
@@ -52,7 +52,7 @@ jobs:
       os: "ubuntu-latest"
       python-version: "3.11"
 
-  ## ==========================================================================
+  ## ===========================================================================
   ##          Run the Spot tests for Python 3.7 until 3.11
   ##
   ##  (public endpoints)
@@ -84,7 +84,7 @@ jobs:
       python-version: ${{ matrix.python-version }}
     secrets: inherit
 
-  ## ==========================================================================
+  ## ===========================================================================
   ##        Run the Futures tests for Python 3.7 until 3.11
   ##
   ##  (public endpoints)
@@ -115,7 +115,7 @@ jobs:
       python-version: ${{ matrix.python-version }}
     secrets: inherit
 
-  ## ==========================================================================
+  ## ===========================================================================
   ##    Upload the python-kraken-sdk to Test PyPI
   ##
   UploadTestPyPI:
@@ -131,7 +131,7 @@ jobs:
     secrets:
       API_TOKEN: ${{ secrets.TEST_PYPI_API_TOKEN }}
 
-  ## ==========================================================================
+  ## ===========================================================================
   ##    Upload the python-kraken-sdk to Production PyPI
   ##
   UploadPyPI:
