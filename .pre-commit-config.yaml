@@ -50,7 +50,7 @@ repos:
           - --show-source
           - --statistics
   - repo: https://github.com/pycqa/pylint
-    rev: v2.17.5
+    rev: v3.0.0a7
     hooks:
       - id: pylint
         name: pylint
@@ -60,7 +60,7 @@ repos:
           - --rcfile=pyproject.toml
           - -d=R0801 # ignore duplicate code
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.0.285
+    rev: v0.0.286
     hooks:
       - id: ruff
         args:
