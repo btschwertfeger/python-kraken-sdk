@@ -25,7 +25,6 @@ logging.basicConfig(
     datefmt="%Y/%m/%d %H:%M:%S",
     level=logging.INFO,
 )
-logging.getLogger().setLevel(logging.INFO)
 logging.getLogger("requests").setLevel(logging.WARNING)
 logging.getLogger("urllib3").setLevel(logging.WARNING)
 
