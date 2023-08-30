@@ -133,18 +133,18 @@ class OrderbookClient:
 
         *This function must not be overloaded - it would break this client!*
         """
-
         if not isinstance(message, dict):
             return
 
         if (
-            message.get("method") == "unsubscribe"
+            message.get("method") in ("subscribe", "unsubscribe")
             and message.get("result")
             and message["result"].get("channel") == "book"
             and message.get("success")
             and message["result"]["symbol"] in self.__book
         ):
             del self.__book[message["result"]["symbol"]]
+            self.LOG.debug("Removed book for %s", message["result"]["symbol"])
             return
 
         if (  # pylint: disable=too-many-boolean-expressions)
@@ -162,6 +162,7 @@ class OrderbookClient:
         # ----------------------------------------------------------------------
         pair: str = message["data"][0]["symbol"]
         if pair not in self.__book:
+            self.LOG.debug("Add book for %s", pair)
             # retrieve the decimal places required for checksum calculation
             sym_info: dict = self.__market.get_asset_pairs(pair=pair)
 
@@ -290,8 +291,6 @@ class OrderbookClient:
         :type pair: str
         :return: The orderbook of that ``pair``.
         :rtype: dict
-
-        todo: fix documentation
 
         .. code-block::python
             :linenos:

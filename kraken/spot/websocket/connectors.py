@@ -114,6 +114,7 @@ class ConnectSpotWebsocketBase:
 
         async with websockets.connect(  # pylint: disable=no-member
             f"wss://{self.__ws_endpoint}",
+            extra_headers={"User-Agent": "python-kraken-sdk"},
             ping_interval=30,
         ) as socket:
             self.LOG.info("Websocket connected!")
@@ -141,6 +142,7 @@ class ConnectSpotWebsocketBase:
                     except ValueError:
                         self.LOG.warning(_msg)
                     else:
+                        self.LOG.debug(message)
                         self._manage_subscriptions(message=message)
                         await self.__callback(message)
 
@@ -515,12 +517,14 @@ class ConnectSpotWebsocketV2(ConnectSpotWebsocketBase):
         """
         if message.get("method") == "subscribe":
             if message.get("success") and message.get("result"):
+                message = self.__transform_subscription(subscription=message)
                 self.__append_subscription(subscription=message["result"])
             else:
                 self.LOG.warning(message)
 
         elif message.get("method") == "unsubscribe":
             if message.get("success") and message.get("result"):
+                message = self.__transform_subscription(subscription=message)
                 self.__remove_subscription(subscription=message["result"])
             else:
                 self.LOG.warning(message)
@@ -549,6 +553,37 @@ class ConnectSpotWebsocketV2(ConnectSpotWebsocketBase):
             ):
                 del self._subscriptions[position]
                 return
+
+    def __transform_subscription(
+        self: ConnectSpotWebsocketV2,
+        subscription: dict,
+    ) -> dict:
+        """
+        Returns the keys and values of a un-/subscription confirmation message
+        sent by Kraken.
+
+        :param subscription: The raw un-/subscription confirmation
+        :type subscription: dict
+        :return: The "corrected" subscription
+        :rtype: dict
+        """
+        # Without deepcopy, the whole message passed to on_message would be
+        # affected.
+        subscription_copy: dict = deepcopy(subscription)
+
+        # Book feeds must be subscribed via symbols type list[str].
+        # Un-/subscription responses only contain individual subscriptions which
+        # lead to type mismatch when resubscribing. The following ensures that
+        # the value of symbol will be a list.
+        if subscription["result"].get("channel", "") == "book" and not isinstance(
+            subscription["result"].get("symbol"),
+            list,
+        ):
+            subscription_copy["result"]["symbol"] = [
+                subscription_copy["result"]["symbol"],
+            ]
+
+        return subscription_copy
 
 
 __all__ = [
