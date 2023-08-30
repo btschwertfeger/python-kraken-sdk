@@ -22,9 +22,9 @@ from kraken.spot.websocket import KrakenSpotWSClientBase
 
 class KrakenSpotWSClientV2(KrakenSpotWSClientBase):
     """
-    Class to access public and private/authenticated websocket connections.
-
     **This client only supports the Kraken Websocket API v2.**
+
+    Class to access public and private/authenticated websocket connections.
 
     - https://docs.kraken.com/websockets-v2
 
@@ -170,7 +170,7 @@ class KrakenSpotWSClientV2(KrakenSpotWSClientBase):
             api_version="v2",
         )
 
-    async def send_message(  # noqa: PLR0912 # pylint: disable=arguments-differ
+    async def send_message(  # pylint: disable=arguments-differ
         self: KrakenSpotWSClientV2,
         message: dict,
         raw: bool = False,

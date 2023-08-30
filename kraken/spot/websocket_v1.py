@@ -379,7 +379,7 @@ class KrakenSpotWSClient(KrakenSpotWSClientBase):
         return ["ownTrades", "openOrders"]
 
     @ensure_string("oflags")
-    async def create_order(  # noqa: PLR0912 PLR0913
+    async def create_order(  # noqa: PLR0913
         self: KrakenSpotWSClient,
         ordertype: str,
         side: str,
