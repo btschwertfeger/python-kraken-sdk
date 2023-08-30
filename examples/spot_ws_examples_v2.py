@@ -71,7 +71,7 @@ async def main() -> None:
     await client.subscribe(
         params={"channel": "book", "depth": 25, "symbol": ["BTC/USD"]},
     )
-    await client.subscribe(params={"channel": "ohlc", "symbol": ["BTC/USD"]})
+    # await client.subscribe(params={"channel": "ohlc", "symbol": ["BTC/USD"]})
     await client.subscribe(
         params={
             "channel": "ohlc",

@@ -334,11 +334,11 @@ class OrderbookClient:
         :type timestamp: str, optional
         """
         for order in orders:
-            volume = "{:.{}f}".format(  # pylint: disable=consider-using-f-string # noqa: PLE1300
+            volume = "{:.{}f}".format(  # pylint: disable=consider-using-f-string
                 order["qty"],
                 self.__book[symbol]["qty_decimals"],
             )
-            price = "{:.{}f}".format(  # pylint: disable=consider-using-f-string # noqa: PLE1300
+            price = "{:.{}f}".format(  # pylint: disable=consider-using-f-string
                 order["price"],
                 self.__book[symbol]["price_decimals"],
             )

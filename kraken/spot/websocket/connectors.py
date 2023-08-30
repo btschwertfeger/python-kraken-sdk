@@ -559,23 +559,31 @@ class ConnectSpotWebsocketV2(ConnectSpotWebsocketBase):
         subscription: dict,
     ) -> dict:
         """
-        Returns the keys and values of a un-/subscription confirmation message
-        sent by Kraken.
+        Returns a dictionary that can be used to subscribe to a websocket feed.
+        This function is most likely used to parse incoming un-/subscription
+        messages.
 
         :param subscription: The raw un-/subscription confirmation
         :type subscription: dict
         :return: The "corrected" subscription
         :rtype: dict
         """
-        # Without deepcopy, the whole message passed to on_message would be
-        # affected.
+        # Without deepcopy, the passed message will be modified, which is *not*
+        # intended.
         subscription_copy: dict = deepcopy(subscription)
 
-        # Book feeds must be subscribed via symbols type list[str].
-        # Un-/subscription responses only contain individual subscriptions which
-        # lead to type mismatch when resubscribing. The following ensures that
-        # the value of symbol will be a list.
-        if subscription["result"].get("channel", "") == "book" and not isinstance(
+        # Subscriptions for specific symbols must contain the 'symbols' key with
+        # a value of type list[str]. The python-kraken-sdk is caching active
+        # subscriptions from that moment, the successful response arrives. These
+        # responses must be parsed to use them to resubscribe on connection
+        # losses.
+        if subscription["result"].get("channel", "") in (
+            "book",
+            "ticker",
+            "ohlc",
+            "trade",
+            "ticker",
+        ) and not isinstance(
             subscription["result"].get("symbol"),
             list,
         ):
