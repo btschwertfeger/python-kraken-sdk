@@ -19,9 +19,9 @@ from unittest import mock
 
 import pytest
 
-from kraken.spot import OrderbookClient
+from kraken.spot import OrderbookClientV2
 
-from .helper import FIXTURE_DIR, OrderbookClientWrapper, async_wait
+from .helper import FIXTURE_DIR, OrderbookClientV2Wrapper, async_wait
 
 
 @pytest.mark.spot()
@@ -33,7 +33,7 @@ def test_create_public_bot(caplog: Any) -> None:
     """
 
     async def create_bot() -> None:
-        orderbook: OrderbookClientWrapper = OrderbookClientWrapper()
+        orderbook: OrderbookClientV2Wrapper = OrderbookClientV2Wrapper()
         await async_wait(seconds=4)
 
         assert orderbook.depth == 10
@@ -59,12 +59,12 @@ def test_get_first() -> None:
 
     assert (
         float(10)
-        == OrderbookClientWrapper.get_first(("10", "5"))
-        == OrderbookClientWrapper.get_first((10, 5))
+        == OrderbookClientV2Wrapper.get_first(("10", "5"))
+        == OrderbookClientV2Wrapper.get_first((10, 5))
     )
 
 
-@mock.patch("kraken.spot.orderbook.KrakenSpotWSClientV2", return_value=None)
+@mock.patch("kraken.spot.orderbook_v2.KrakenSpotWSClientV2", return_value=None)
 @pytest.mark.spot()
 @pytest.mark.spot_orderbook()
 def test_passing_msg_and_validate_checksum(mock_ws_client: mock.MagicMock) -> None:
@@ -74,14 +74,14 @@ def test_passing_msg_and_validate_checksum(mock_ws_client: mock.MagicMock) -> No
     assigned book updates and values.
     """
     with open(
-        os.path.join(FIXTURE_DIR, "orderbook.json"),
+        os.path.join(FIXTURE_DIR, "orderbook-v2.json"),
         "r",
         encoding="utf-8",
     ) as json_file:
         orderbook: dict = json.load(json_file)
 
     async def assign() -> None:
-        client: OrderbookClient = OrderbookClient(depth=10)
+        client: OrderbookClientV2 = OrderbookClientV2(depth=10)
 
         await client.on_message(message=orderbook["init"])
         assert client.get(pair="BTC/USD")["valid"]
@@ -103,7 +103,7 @@ def test_add_book(caplog: Any) -> None:
     """
 
     async def execute_add_book() -> None:
-        orderbook: OrderbookClientWrapper = OrderbookClientWrapper()
+        orderbook: OrderbookClientV2Wrapper = OrderbookClientV2Wrapper()
 
         await orderbook.add_book(pairs=["BTC/USD"])
         await async_wait(seconds=2)
@@ -142,7 +142,7 @@ def test_remove_book(caplog: Any) -> None:
     """
 
     async def execute_remove_book() -> None:
-        orderbook: OrderbookClientWrapper = OrderbookClientWrapper()
+        orderbook: OrderbookClientV2Wrapper = OrderbookClientV2Wrapper()
 
         await orderbook.add_book(pairs=["BTC/USD"])
         await async_wait(seconds=2)
