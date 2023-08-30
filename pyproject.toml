@@ -225,7 +225,7 @@ select = [
   # "TD",  # flake8-todos # !
   # "TRY", # tryceratops # todo: during update of the exceptions (fix in v2.0.0)
 ]
-fixable = ["I", "C4", "Q", "PT", "ICN", "COM", "RSE", "PT", "FA"]
+fixable = ["I", "C4", "Q", "PT", "ICN", "COM", "RSE", "PT", "FA", "FA100"]
 
 ignore = [
   "B019",    # use of lru_cache or cache
@@ -308,7 +308,7 @@ ignore-names = [
 
 [tool.ruff.pylint]
 max-args = 8
-max-branches = 10
+max-branches = 15
 
 [tool.pylint.main]
 # Analyse import fallback blocks. This can be used to support both Python 2 and 3
@@ -599,7 +599,7 @@ max-attributes = 10
 max-bool-expr = 5
 
 # Maximum number of branch for function / method body.
-max-branches = 18
+max-branches = 15
 
 # Maximum number of locals for function / method body.
 max-locals = 15
