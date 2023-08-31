@@ -582,7 +582,6 @@ class ConnectSpotWebsocketV2(ConnectSpotWebsocketBase):
             "ticker",
             "ohlc",
             "trade",
-            "ticker",
         ) and not isinstance(
             subscription["result"].get("symbol"),
             list,
