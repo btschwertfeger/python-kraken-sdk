@@ -878,6 +878,7 @@ class User(KrakenBaseSpotAPI):
         fields: Optional[Union[str, List[str]]] = "all",
         starttm: Optional[int] = None,
         endtm: Optional[int] = None,
+        timeout: int = 10,
         **kwargs: dict,
     ) -> dict:
         """
@@ -901,6 +902,8 @@ class User(KrakenBaseSpotAPI):
         :type starttm: int, optional
         :param endtm: Unix timestamp of the last result
         :type endtm: int, optional
+        :param timeout: The timeout for that request
+        :type timeout: int
         :return: A dictionary containing the export id
         :rtype: dict
 
@@ -933,6 +936,7 @@ class User(KrakenBaseSpotAPI):
             method="POST",
             uri="/private/AddExport",
             params=params,
+            timeout=timeout,
         )
 
     def get_export_report_status(self: User, report: str) -> dict:

@@ -340,6 +340,7 @@ def test_request_save_export_report(spot_auth_user: User) -> None:
             format_="CSV",
             starttm="1662100592",
             endtm=int(1000 * time()),
+            timeout=30,
         )
         assert is_not_error(response)
         assert "id" in response
