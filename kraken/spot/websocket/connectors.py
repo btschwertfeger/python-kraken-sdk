@@ -114,6 +114,7 @@ class ConnectSpotWebsocketBase:
 
         async with websockets.connect(  # pylint: disable=no-member
             f"wss://{self.__ws_endpoint}",
+            extra_headers={"User-Agent": "python-kraken-sdk"},
             ping_interval=30,
         ) as socket:
             self.LOG.info("Websocket connected!")
@@ -141,6 +142,7 @@ class ConnectSpotWebsocketBase:
                     except ValueError:
                         self.LOG.warning(_msg)
                     else:
+                        self.LOG.debug(message)
                         self._manage_subscriptions(message=message)
                         await self.__callback(message)
 
@@ -515,12 +517,14 @@ class ConnectSpotWebsocketV2(ConnectSpotWebsocketBase):
         """
         if message.get("method") == "subscribe":
             if message.get("success") and message.get("result"):
+                message = self.__transform_subscription(subscription=message)
                 self.__append_subscription(subscription=message["result"])
             else:
                 self.LOG.warning(message)
 
         elif message.get("method") == "unsubscribe":
             if message.get("success") and message.get("result"):
+                message = self.__transform_subscription(subscription=message)
                 self.__remove_subscription(subscription=message["result"])
             else:
                 self.LOG.warning(message)
@@ -549,6 +553,44 @@ class ConnectSpotWebsocketV2(ConnectSpotWebsocketBase):
             ):
                 del self._subscriptions[position]
                 return
+
+    def __transform_subscription(
+        self: ConnectSpotWebsocketV2,
+        subscription: dict,
+    ) -> dict:
+        """
+        Returns a dictionary that can be used to subscribe to a websocket feed.
+        This function is most likely used to parse incoming un-/subscription
+        messages.
+
+        :param subscription: The raw un-/subscription confirmation
+        :type subscription: dict
+        :return: The "corrected" subscription
+        :rtype: dict
+        """
+        # Without deepcopy, the passed message will be modified, which is *not*
+        # intended.
+        subscription_copy: dict = deepcopy(subscription)
+
+        # Subscriptions for specific symbols must contain the 'symbols' key with
+        # a value of type list[str]. The python-kraken-sdk is caching active
+        # subscriptions from that moment, the successful response arrives. These
+        # responses must be parsed to use them to resubscribe on connection
+        # losses.
+        if subscription["result"].get("channel", "") in (
+            "book",
+            "ticker",
+            "ohlc",
+            "trade",
+        ) and not isinstance(
+            subscription["result"].get("symbol"),
+            list,
+        ):
+            subscription_copy["result"]["symbol"] = [
+                subscription_copy["result"]["symbol"],
+            ]
+
+        return subscription_copy
 
 
 __all__ = [
