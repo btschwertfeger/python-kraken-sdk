@@ -14,7 +14,7 @@ import logging
 import traceback
 from copy import deepcopy
 from random import random
-from typing import TYPE_CHECKING, Any, List, Optional
+from typing import TYPE_CHECKING, Any, Optional
 
 import websockets
 
@@ -56,7 +56,7 @@ class ConnectFuturesWebsocket:
         self.__challenge_ready: bool = False
 
         self.__socket: Any = None
-        self.__subscriptions: List[dict] = []
+        self.__subscriptions: list[dict] = []
 
         self.task = asyncio.ensure_future(
             self.__run_forever(),
@@ -64,7 +64,7 @@ class ConnectFuturesWebsocket:
         )
 
     @property
-    def subscriptions(self: ConnectFuturesWebsocket) -> List[dict]:
+    def subscriptions(self: ConnectFuturesWebsocket) -> list[dict]:
         """Returns the active subscriptions"""
         return self.__subscriptions
 
@@ -296,7 +296,7 @@ class ConnectFuturesWebsocket:
             )
         return sub
 
-    def get_active_subscriptions(self: ConnectFuturesWebsocket) -> List[dict]:
+    def get_active_subscriptions(self: ConnectFuturesWebsocket) -> list[dict]:
         """Returns the active subscriptions"""
         return self.__subscriptions
 

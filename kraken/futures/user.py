@@ -8,7 +8,7 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Optional, TypeVar, Union
+from typing import TYPE_CHECKING, Optional, TypeVar
 
 from kraken.base_api import KrakenBaseFuturesAPI, defined
 
@@ -251,11 +251,11 @@ class User(KrakenBaseFuturesAPI):
 
     def get_account_log(
         self: User,
-        before: Optional[Union[str, int]] = None,
-        count: Optional[Union[str, int]] = None,
-        from_: Optional[Union[str, int]] = None,
+        before: Optional[str | int] = None,
+        count: Optional[str | int] = None,
+        from_: Optional[str | int] = None,
         info: Optional[str] = None,
-        since: Optional[Union[str, int]] = None,
+        since: Optional[str | int] = None,
         sort: Optional[str] = None,
         to: Optional[str] = None,
     ) -> dict:
