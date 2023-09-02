@@ -64,10 +64,17 @@ def test_get_first() -> None:
     )
 
 
-@mock.patch("kraken.spot.orderbook_v2.KrakenSpotWSClientV2", return_value=None)
+@pytest.mark.wip()
 @pytest.mark.spot()
 @pytest.mark.spot_orderbook()
-def test_passing_msg_and_validate_checksum(mock_ws_client: mock.MagicMock) -> None:
+@mock.patch("kraken.spot.orderbook_v2.KrakenSpotWSClientV2", return_value=None)
+@mock.patch("kraken.spot.orderbook_v2.OrderbookClientV2.remove_book", return_value=None)
+@mock.patch("kraken.spot.orderbook_v2.OrderbookClientV2.add_book", return_value=None)
+def test_passing_msg_and_validate_checksum(
+    mock_add_book: mock.MagicMock,
+    mock_remove_bookv,
+    mock_ws_client: mock.MagicMock,
+) -> None:
     """
     This function checks if the initial snapshot and the book updates are
     assigned correctly so that the checksum calculation can validate the
@@ -89,6 +96,22 @@ def test_passing_msg_and_validate_checksum(mock_ws_client: mock.MagicMock) -> No
         for update in orderbook["updates"]:
             await client.on_message(message=update)
             assert client.get(pair="BTC/USD")["valid"]
+
+        bad_message: dict = {
+            "channel": "book",
+            "type": "update",
+            "data": [
+                {
+                    "symbol": "BTC/USD",
+                    "bids": [{"price": 29430.3, "qty": 1.69289565}],
+                    "asks": [],
+                    "checksum": 2438868880,
+                    "timestamp": "2023-07-30T15:30:49.008834Z",
+                },
+            ],
+        }
+        await client.on_message(message=bad_message)
+        assert not client.get(pair="BTC/USD")["valid"]
 
     asyncio.run(assign())
 

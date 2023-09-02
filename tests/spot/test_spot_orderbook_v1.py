@@ -64,11 +64,16 @@ def test_get_first() -> None:
     )
 
 
-@pytest.mark.wip()
 @pytest.mark.spot()
 @pytest.mark.spot_orderbook()
 @mock.patch("kraken.spot.orderbook_v1.KrakenSpotWSClient", return_value=None)
-def test_assing_msg_and_validate_checksum(mock_ws_client: mock.MagicMock) -> None:
+@mock.patch("kraken.spot.orderbook_v1.OrderbookClientV1.remove_book", return_value=None)
+@mock.patch("kraken.spot.orderbook_v1.OrderbookClientV1.add_book", return_value=None)
+def test_assign_msg_and_validate_checksum(
+    mock_add_book: mock.MagicMock,
+    mock_remove_book: mock.MagicMock,
+    mock_ws_client: mock.MagicMock,
+) -> None:
     """
     This function checks if the initial snapshot and the book updates are
     assigned correctly so that the checksum calculation can validate the
@@ -90,6 +95,20 @@ def test_assing_msg_and_validate_checksum(mock_ws_client: mock.MagicMock) -> Non
         for message in orderbook["updates"]:
             await client.on_message(message=message)
             assert client.get(pair="XBT/USD")["valid"]
+
+        # NOTE: The price must be higher than the last one to trigger an
+        #       invalid orderbook in this case.
+        bad_message: list = [
+            336,
+            {
+                "b": [["29131.30000", "17.39936238", "1693415483.413309"]],
+                "c": "3842386424",
+            },
+            "book-10",
+            "XBT/USD",
+        ]
+        await client.on_message(message=bad_message)
+        assert not client.get(pair="XBT/USD")["valid"]
 
     asyncio.run(assign())
 
