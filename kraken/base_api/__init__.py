@@ -255,7 +255,7 @@ class KrakenBaseSpotAPI:
             params = {}
         if defined(extra_params):
             params |= (
-                json.loads(extra_params)  # type: ignore[arg-type]
+                json.loads(extra_params)
                 if isinstance(extra_params, str)
                 else extra_params
             )
@@ -513,8 +513,8 @@ class KrakenBaseFuturesAPI:
         if defined(post_params):
             if defined(extra_params):
                 post_params |= (
-                    json.loads(extra_params)  # type: ignore[arg-type]
-                    if isinstance(post_params, str)
+                    json.loads(extra_params)
+                    if isinstance(extra_params, str)
                     else extra_params
                 )
             strl = [f"{key}={post_params[key]}" for key in sorted(post_params)]
@@ -522,7 +522,7 @@ class KrakenBaseFuturesAPI:
         else:
             post_params = {}
             if isinstance(extra_params, dict):
-                post_params |= extra_params
+                post_params |= extra_params  # type: ignore[operator]
 
         query_string: str = ""
         if query_params is not None:

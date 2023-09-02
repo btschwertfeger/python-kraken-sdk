@@ -161,7 +161,10 @@ class Market(KrakenBaseFuturesAPI):
             ['mark', 'spot', 'trade']
         """
         return self._request(  # type: ignore[return-value]
-            method="GET", uri="/api/charts/v1/", auth=False, extra_params=extra_params,
+            method="GET",
+            uri="/api/charts/v1/",
+            auth=False,
+            extra_params=extra_params,
         )
 
     @ensure_string("extra_params")
