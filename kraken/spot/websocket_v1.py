@@ -14,7 +14,7 @@ from __future__ import annotations
 import asyncio
 import json
 from copy import deepcopy
-from typing import Any, Callable, List, Optional, Union
+from typing import Any, Callable, Optional
 
 from kraken.base_api import defined, ensure_string
 from kraken.exceptions import KrakenException
@@ -215,7 +215,7 @@ class KrakenSpotWSClient(KrakenSpotWSClientBase):
     async def subscribe(  # pylint: disable=arguments-differ
         self: KrakenSpotWSClient,
         subscription: dict,
-        pair: Optional[List[str]] = None,
+        pair: Optional[list[str]] = None,
     ) -> None:
         """
         Subscribe to a channel
@@ -287,7 +287,7 @@ class KrakenSpotWSClient(KrakenSpotWSClientBase):
     async def unsubscribe(  # pylint: disable=arguments-differ
         self: KrakenSpotWSClient,
         subscription: dict,
-        pair: Optional[List[str]] = None,
+        pair: Optional[list[str]] = None,
     ) -> None:
         """
         Unsubscribe from a feed
@@ -357,7 +357,7 @@ class KrakenSpotWSClient(KrakenSpotWSClientBase):
             # await self.send_message(payload, private=False)
 
     @property
-    def public_channel_names(self: KrakenSpotWSClient) -> List[str]:
+    def public_channel_names(self: KrakenSpotWSClient) -> list[str]:
         """
         Returns the public subscription names
 
@@ -368,7 +368,7 @@ class KrakenSpotWSClient(KrakenSpotWSClientBase):
         return ["ticker", "spread", "book", "ohlc", "trade", "*"]
 
     @property
-    def private_channel_names(self: KrakenSpotWSClient) -> List[str]:
+    def private_channel_names(self: KrakenSpotWSClient) -> list[str]:
         """
         Returns the private subscription names
 
@@ -384,21 +384,21 @@ class KrakenSpotWSClient(KrakenSpotWSClientBase):
         ordertype: str,
         side: str,
         pair: str,
-        volume: Union[str, float],
-        price: Optional[Union[str, float]] = None,
-        price2: Optional[Union[str, float]] = None,
+        volume: str | float,
+        price: Optional[str | float] = None,
+        price2: Optional[str | float] = None,
         truncate: bool = False,
-        leverage: Optional[Union[str, float]] = None,
-        oflags: Optional[Union[str, List[str]]] = None,
-        starttm: Optional[Union[str, int]] = None,
-        expiretm: Optional[Union[str, int]] = None,
+        leverage: Optional[str | float] = None,
+        oflags: Optional[str | list[str]] = None,
+        starttm: Optional[str | int] = None,
+        expiretm: Optional[str | int] = None,
         deadline: Optional[str] = None,
-        userref: Optional[Union[str, int]] = None,
+        userref: Optional[str | int] = None,
         validate: bool = False,
         close_ordertype: Optional[str] = None,
-        close_price: Optional[Union[str, int, float]] = None,
-        close_price2: Optional[Union[str, int, float]] = None,
-        timeinforce: Optional[Union[str, int]] = None,
+        close_price: Optional[str | float] = None,
+        close_price2: Optional[str | float] = None,
+        timeinforce: Optional[str | int] = None,
     ) -> None:
         """
         Create an order and submit it.
@@ -548,14 +548,14 @@ class KrakenSpotWSClient(KrakenSpotWSClientBase):
     async def edit_order(  # noqa: PLR0913
         self: KrakenSpotWSClient,
         orderid: str,
-        reqid: Optional[Union[str, int]] = None,
+        reqid: Optional[str | int] = None,
         pair: Optional[str] = None,
-        price: Optional[Union[str, int, float]] = None,
-        price2: Optional[Union[str, int, float]] = None,
+        price: Optional[str | float] = None,
+        price2: Optional[str | float] = None,
         truncate: bool = False,
-        volume: Optional[Union[str, int, float]] = None,
-        oflags: Optional[Union[str, List[str]]] = None,
-        newuserref: Optional[Union[str, int]] = None,
+        volume: Optional[str | float] = None,
+        oflags: Optional[str | list[str]] = None,
+        newuserref: Optional[str | int] = None,
         validate: bool = False,
     ) -> None:
         """
@@ -644,7 +644,7 @@ class KrakenSpotWSClient(KrakenSpotWSClientBase):
 
         await self.send_message(message=payload, private=True)
 
-    async def cancel_order(self: KrakenSpotWSClient, txid: List[str]) -> None:
+    async def cancel_order(self: KrakenSpotWSClient, txid: list[str]) -> None:
         """
         Cancel a specific order or a list of orders.
 

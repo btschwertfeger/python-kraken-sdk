@@ -14,7 +14,7 @@ import json
 import time
 import urllib.parse
 from functools import wraps
-from typing import Any, Callable, Dict, List, Optional, Type, TypeVar, Union
+from typing import Any, Callable, Optional, Type, TypeVar
 from urllib.parse import urljoin
 from uuid import uuid1
 
@@ -43,7 +43,7 @@ def ensure_string(parameter_name: str) -> Callable:
         @lru_cache()
         def get_assets(
             self: "Market",
-            assets: Optional[Union[str, List[str]]] = None,
+            assets: Optional[str | list[str]] = None,
             aclass: Optional[str] = None,
         ) -> dict:
             # If the function was called using
@@ -96,7 +96,7 @@ class KrakenErrorHandler:
         """
         return self.__kexceptions.get_exception(msg)
 
-    def check(self: KrakenErrorHandler, data: dict) -> Union[dict, Any]:
+    def check(self: KrakenErrorHandler, data: dict) -> dict | Any:
         """
         Check if the error message is a known KrakenError response and than
         raise a custom exception or return the data containing the "error".
@@ -151,7 +151,7 @@ class KrakenErrorHandler:
         :rtype: dict
         """
         if "batchStatus" in data:
-            batch_status: List[Dict[str, Any]] = data["batchStatus"]
+            batch_status: list[dict[str, Any]] = data["batchStatus"]
             for status in batch_status:
                 if "status" in status:
                     exception: Type[KrakenException] = self.__get_exception(
@@ -213,7 +213,7 @@ class KrakenBaseSpotAPI:
         params: Optional[dict] = None,
         do_json: bool = False,
         return_raw: bool = False,
-    ) -> Union[Dict[str, Any], List[str], List[Dict[str, Any]], requests.Response]:
+    ) -> dict[str, Any] | list[str] | list[dict[str, Any]] | requests.Response:
         """
         Handles the requested requests, by sending the request, handling the
         response, and returning the message or in case of an error the
@@ -351,7 +351,7 @@ class KrakenBaseSpotAPI:
         self: KrakenBaseSpotAPI,
         response: requests.Response,
         return_raw: bool = False,
-    ) -> Union[dict, list, requests.Response]:
+    ) -> dict | list | requests.Response:
         """
         Checks the response, handles the error (if exists) and returns the response data.
 
@@ -369,7 +369,7 @@ class KrakenBaseSpotAPI:
             if return_raw:
                 return response
             try:
-                data: Union[dict, list] = response.json()
+                data: dict | list = response.json()
             except ValueError as exc:
                 raise ValueError(response.content) from exc
 
@@ -395,7 +395,7 @@ class KrakenBaseSpotAPI:
     def __exit__(
         self: KrakenBaseSpotAPI,
         *exc: object,
-        **kwargs: Dict[str, Any],
+        **kwargs: dict[str, Any],
     ) -> None:
         pass
 
@@ -455,7 +455,7 @@ class KrakenBaseFuturesAPI:
         post_params: Optional[dict] = None,
         query_params: Optional[dict] = None,
         return_raw: bool = False,
-    ) -> Union[Dict[str, Any], List[Dict[str, Any]], List[str], requests.Response]:
+    ) -> dict[str, Any] | list[dict[str, Any]] | list[str] | requests.Response:
         """
         Handles the requested requests, by sending the request, handling the
         response, and returning the message or in case of an error the
@@ -490,7 +490,7 @@ class KrakenBaseFuturesAPI:
         method = method.upper()
 
         post_string: str = ""
-        strl: List[str]
+        strl: list[str]
         if post_params is not None:
             strl = [f"{key}={post_params[key]}" for key in sorted(post_params)]
             post_string = "&".join(strl)
@@ -599,7 +599,7 @@ class KrakenBaseFuturesAPI:
         self: KrakenBaseFuturesAPI,
         response: requests.Response,
         return_raw: bool = False,
-    ) -> Union[dict, requests.Response]:
+    ) -> dict | requests.Response:
         """
         Checks the response, handles the error (if exists) and returns the
         response data.
@@ -639,7 +639,7 @@ class KrakenBaseFuturesAPI:
     def __enter__(self: Self) -> Self:
         return self
 
-    def __exit__(self, *exc: object, **kwargs: Dict[str, Any]) -> None:
+    def __exit__(self, *exc: object, **kwargs: dict[str, Any]) -> None:
         pass
 
 

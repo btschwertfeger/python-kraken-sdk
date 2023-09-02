@@ -13,7 +13,7 @@ from __future__ import annotations
 
 import asyncio
 import json
-from typing import Any, Callable, List, Optional
+from typing import Any, Callable, Optional
 
 from kraken.base_api import defined
 from kraken.exceptions import KrakenException
@@ -508,7 +508,7 @@ class KrakenSpotWSClientV2(KrakenSpotWSClientBase):
         await self.send_message(message=payload)
 
     @property
-    def public_channel_names(self: KrakenSpotWSClientV2) -> List[str]:
+    def public_channel_names(self: KrakenSpotWSClientV2) -> list[str]:
         """
         Returns the list of valid values for ``channel`` when un-/subscribing
         from/to public feeds without authentication.
@@ -529,7 +529,7 @@ class KrakenSpotWSClientV2(KrakenSpotWSClientBase):
         return ["book", "instrument", "ohlc", "ticker", "trade"]
 
     @property
-    def private_channel_names(self: KrakenSpotWSClientV2) -> List[str]:
+    def private_channel_names(self: KrakenSpotWSClientV2) -> list[str]:
         """
         Returns the list of valid values for ``channel`` when un-/subscribing
         from/to private feeds that need authentication.
@@ -546,7 +546,7 @@ class KrakenSpotWSClientV2(KrakenSpotWSClientBase):
         return ["executions"]
 
     @property
-    def private_methods(self: KrakenSpotWSClientV2) -> List[str]:
+    def private_methods(self: KrakenSpotWSClientV2) -> list[str]:
         """
         Returns the list of available methods - parameters are  similar to the
         REST API trade methods.

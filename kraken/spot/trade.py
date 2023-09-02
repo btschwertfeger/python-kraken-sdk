@@ -11,7 +11,7 @@ from __future__ import annotations
 from decimal import Decimal
 from functools import lru_cache
 from math import floor
-from typing import List, Optional, TypeVar, Union
+from typing import Optional, TypeVar
 
 from kraken.base_api import KrakenBaseSpotAPI, defined, ensure_string
 from kraken.spot.market import Market
@@ -69,22 +69,22 @@ class Trade(KrakenBaseSpotAPI):
         ordertype: str,
         side: str,
         pair: str,
-        volume: Union[str, float],
-        price: Optional[Union[str, float]] = None,
-        price2: Optional[Union[str, float]] = None,
+        volume: str | float,
+        price: Optional[str | float] = None,
+        price2: Optional[str | float] = None,
         truncate: bool = False,
         trigger: Optional[str] = None,
         leverage: Optional[str] = None,
         reduce_only: Optional[bool] = False,
         stptype: Optional[str] = "cancel-newest",
-        oflags: Optional[Union[str, List[str]]] = None,
+        oflags: Optional[str | list[str]] = None,
         timeinforce: Optional[str] = None,
         displayvol: Optional[str] = None,
         starttm: Optional[str] = "0",
         expiretm: Optional[str] = None,
         close_ordertype: Optional[str] = None,
-        close_price: Optional[Union[str, float]] = None,
-        close_price2: Optional[Union[str, float]] = None,
+        close_price: Optional[str | float] = None,
+        close_price2: Optional[str | float] = None,
         deadline: Optional[str] = None,
         validate: bool = False,
         userref: Optional[int] = None,
@@ -364,7 +364,7 @@ class Trade(KrakenBaseSpotAPI):
 
     def create_order_batch(
         self: Trade,
-        orders: List[dict],
+        orders: list[dict],
         pair: str,
         deadline: Optional[str] = None,
         validate: bool = False,
@@ -445,9 +445,9 @@ class Trade(KrakenBaseSpotAPI):
         self: Trade,
         txid: str,
         pair: str,
-        volume: Optional[Union[str, int, float]] = None,
-        price: Optional[Union[str, int, float]] = None,
-        price2: Optional[Union[str, int, float]] = None,
+        volume: Optional[str | float] = None,
+        price: Optional[str | float] = None,
+        price2: Optional[str | float] = None,
         truncate: bool = False,
         oflags: Optional[str] = None,
         deadline: Optional[str] = None,
@@ -468,11 +468,11 @@ class Trade(KrakenBaseSpotAPI):
         :param pair: The asset pair of the order
         :type pair: str
         :param volume: Set a new volume
-        :type volume: str | int | float, optional
+        :type volume: str | float, optional
         :param price: Set a new price
-        :type price: str | int | float, optional
+        :type price: str | float, optional
         :param price2: Set a new second price
-        :type price2: str | int | float, optional
+        :type price2: str | float, optional
         :param truncate: If enabled: round the ``price`` and ``volume`` to Kraken's
             maximum allowed decimal places. See https://support.kraken.com/hc/en-us/articles/4521313131540
             fore more information about decimals.
@@ -632,7 +632,7 @@ class Trade(KrakenBaseSpotAPI):
             params={"timeout": timeout},
         )
 
-    def cancel_order_batch(self: Trade, orders: List[Union[str, int]]) -> dict:
+    def cancel_order_batch(self: Trade, orders: list[str | int]) -> dict:
         """
         Cancel a a list of orders by ``txid`` or ``userref``
 
@@ -642,7 +642,7 @@ class Trade(KrakenBaseSpotAPI):
         - https://docs.kraken.com/rest/#operation/cancelOrderBatch
 
         :param orders: List of orders to cancel
-        :type orders: List[str | int]
+        :type orders: list[str | int]
         :return: Success or failure - Number of closed orders
         :rtype: dict
 
@@ -667,7 +667,7 @@ class Trade(KrakenBaseSpotAPI):
     @lru_cache()
     def truncate(
         self: Trade,
-        amount: Union[Decimal, float, str],
+        amount: Decimal | float | str,
         amount_type: str,
         pair: str,
     ) -> str:

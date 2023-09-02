@@ -12,7 +12,7 @@ TODO: make each Error separate
 from __future__ import annotations
 
 import functools
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Optional
 
 
 def docstring_message(cls: Any) -> Any:
@@ -26,9 +26,9 @@ def docstring_message(cls: Any) -> Any:
     @functools.wraps(cls.__init__)
     def wrapped_init(
         self: KrakenException,
-        msg: Optional[Union[str, dict]] = None,
+        msg: Optional[str | dict] = None,
         *args: tuple,
-        **kwargs: Dict[str, Any],
+        **kwargs: dict[str, Any],
     ) -> None:
         err_message: str = (
             self.__doc__ if not msg else f"{self.__doc__}\nDetails: {msg}"
@@ -50,11 +50,11 @@ class KrakenException(Exception):
 
     def __init__(
         self: KrakenException,
-        msg: Optional[Union[str, dict]] = None,
+        msg: Optional[str | dict] = None,
         *args: tuple,
-        **kwargs: Dict[str, Any],
+        **kwargs: dict[str, Any],
     ) -> None:
-        self.EXCEPTION_ASSIGNMENT: Dict[str, Any] = {
+        self.EXCEPTION_ASSIGNMENT: dict[str, Any] = {
             ##      Spot, Margin, and Futures trading Errors
             ##
             "EGeneral:Invalid arguments": self.KrakenInvalidArgumentsError,
@@ -113,7 +113,7 @@ class KrakenException(Exception):
 
     def get_exception(
         self: KrakenException,
-        data: Union[str, List[str]],
+        data: str | list[str],
     ) -> Optional[Any]:
         """Returns the exception given by name if available"""
         is_list: bool = isinstance(data, list)
