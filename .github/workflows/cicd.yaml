@@ -76,7 +76,7 @@ jobs:
       fail-fast: true
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
-        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
+        python-version: ["3.12"]
     with:
       os: ${{ matrix.os }}
       python-version: ${{ matrix.python-version }}
@@ -89,10 +89,10 @@ jobs:
     uses: ./.github/workflows/_build_doc.yaml
     with:
       os: "ubuntu-latest"
-      python-version: "3.11"
+      python-version: "3.12"
 
   ## ===========================================================================
-  ##          Run the Spot tests for Python 3.7 until 3.11
+  ##          Run the Spot tests for Python 3.12
   ##
   ##  (public endpoints)
   ##
@@ -103,7 +103,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest]
-        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
+        python-version: ["3.12"]
     with:
       os: ${{ matrix.os }}
       python-version: ${{ matrix.python-version }}
@@ -117,14 +117,14 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest] # only ubuntu since this takes to much time ATM
-        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
+        python-version: ["3.12"]
     with:
       os: ${{ matrix.os }}
       python-version: ${{ matrix.python-version }}
     secrets: inherit
 
   ## ===========================================================================
-  ##        Run the Futures tests for Python 3.7 until 3.11
+  ##        Run the Futures tests for Python 3.12
   ##
   ##  (public endpoints)
   Test-Futures-Public:
@@ -134,7 +134,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest]
-        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
+        python-version: ["3.12"]
     with:
       os: ${{ matrix.os }}
       python-version: ${{ matrix.python-version }}
@@ -148,7 +148,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest]
-        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
+        python-version: ["3.12"]
     with:
       os: ${{ matrix.os }}
       python-version: ${{ matrix.python-version }}

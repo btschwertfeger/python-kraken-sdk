@@ -16,7 +16,7 @@ authors = [
 description = "Collection of REST and websocket clients to interact with the Kraken cryptocurrency exchange."
 readme = "README.md"
 license = { file = "LICENSE" }
-requires-python = ">=3.7"
+requires-python = ">=3.12"
 dependencies = ["asyncio>=3.4", "requests", "websockets"]
 keywords = ["crypto", "trading", "kraken", "exchange", "api"]
 classifiers = [
@@ -28,11 +28,7 @@ classifiers = [
   "Topic :: Internet :: WWW/HTTP",
   "Topic :: Utilities",
   "Programming Language :: Python",
-  "Programming Language :: Python :: 3.7",
-  "Programming Language :: Python :: 3.8",
-  "Programming Language :: Python :: 3.9",
-  "Programming Language :: Python :: 3.10",
-  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
   "Framework :: AsyncIO",
   "Natural Language :: English",
   "Operating System :: MacOS",
@@ -116,7 +112,7 @@ skip_empty = true
 # ========= T Y P I N G =======================================================
 #
 [tool.mypy]
-python_version = "3.7"
+python_version = "3.12"
 
 # junit_xml = "mypy.xml"
 files = ["kraken/**/*.py"]
@@ -392,7 +388,7 @@ persistent = true
 
 # Minimum Python version to use for version dependent checks. Will default to the
 # version used to run pylint.
-py-version = "3.11"
+py-version = "3.12"
 
 # Discover python modules and packages in the file system subtree.
 # recursive =
