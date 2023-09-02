@@ -63,7 +63,11 @@ def ensure_string(parameter_name: str) -> Callable:
         def wrapper(*args: Any, **kwargs: Any) -> Any:
             if parameter_name in kwargs:
                 value: Any = kwargs[parameter_name]
-                if isinstance(value, str) or value is None:
+                if parameter_name == "extra_params":
+                    if not isinstance(value, dict):
+                        raise TypeError("'extra_params must be type dict.")
+                    kwargs[parameter_name] = json.dumps(value)
+                elif isinstance(value, str) or value is None:
                     pass
                 elif isinstance(value, list):
                     kwargs[parameter_name] = ",".join(value)
@@ -204,14 +208,14 @@ class KrakenBaseSpotAPI:
         self.__session: requests.Session = requests.Session()
         self.__session.headers.update({"User-Agent": "python-kraken-sdk"})
 
-    def _request(
+    def _request(  # noqa: PLR0913
         self: KrakenBaseSpotAPI,
         method: str,
         uri: str,
         timeout: int = 10,
         auth: bool = True,
         params: Optional[dict] = None,
-        extra_params: Optional[dict] = None,
+        extra_params: Optional[Union[str, dict]] = None,
         do_json: bool = False,
         return_raw: bool = False,
     ) -> Union[Dict[str, Any], List[str], List[Dict[str, Any]], requests.Response]:
@@ -231,9 +235,9 @@ class KrakenBaseSpotAPI:
         :param params: The query or post parameter of the request (default:
             ``None``)
         :type params: dict, optional
-        :param params: Additional query or post parameter of the request
+        :param extra_params: Additional query or post parameter of the request
             (default: ``None``)
-        :type params: dict, optional
+        :type extra_params: str | dict, optional
         :param do_json: If the ``params`` must be "jsonified" - in case of
             nested dict style
         :type do_json: bool
@@ -249,10 +253,12 @@ class KrakenBaseSpotAPI:
         """
         if not defined(params):
             params = {}
-        if not defined(extra_params):
-            extra_params = {}
-
-        params |= extra_params
+        if defined(extra_params):
+            params |= (
+                json.loads(extra_params)  # type: ignore[arg-type]
+                if isinstance(extra_params, str)
+                else extra_params
+            )
 
         method = method.upper()
         data_json: str = ""
@@ -455,13 +461,14 @@ class KrakenBaseFuturesAPI:
         self.__session: requests.Session = requests.Session()
         self.__session.headers.update({"User-Agent": "python-kraken-sdk"})
 
-    def _request(
+    def _request(  # noqa: PLR0913
         self: KrakenBaseFuturesAPI,
         method: str,
         uri: str,
         timeout: int = 10,
         auth: bool = True,
         post_params: Optional[dict] = None,
+        extra_params: Optional[dict] = None,
         query_params: Optional[dict] = None,
         return_raw: bool = False,
     ) -> Union[Dict[str, Any], List[Dict[str, Any]], List[str], requests.Response]:
@@ -481,6 +488,9 @@ class KrakenBaseFuturesAPI:
         :param post_params: The query parameter of the request (default:
             ``None``)
         :type post_params: dict, optional
+        :param extra_params: Additional query parameter of the request (default:
+            ``None``)
+        :type extra_params: str | dict, optional
         :param query_params: The query parameter of the request (default:
             ``None``)
         :type query_params: dict, optional
@@ -500,11 +510,19 @@ class KrakenBaseFuturesAPI:
 
         post_string: str = ""
         strl: List[str]
-        if post_params is not None:
+        if defined(post_params):
+            if defined(extra_params):
+                post_params |= (
+                    json.loads(extra_params)  # type: ignore[arg-type]
+                    if isinstance(post_params, str)
+                    else extra_params
+                )
             strl = [f"{key}={post_params[key]}" for key in sorted(post_params)]
             post_string = "&".join(strl)
         else:
             post_params = {}
+            if isinstance(extra_params, dict):
+                post_params |= extra_params
 
         query_string: str = ""
         if query_params is not None:

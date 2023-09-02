@@ -59,7 +59,10 @@ class Funding(KrakenBaseSpotAPI):
         return self
 
     def get_deposit_methods(
-        self: Funding, asset: str, *, extra_params: Optional[dict] = None,
+        self: Funding,
+        asset: str,
+        *,
+        extra_params: Optional[dict] = None,
     ) -> List[dict]:
         """
         Get the available deposit methods for a specific asset.
@@ -378,7 +381,11 @@ class Funding(KrakenBaseSpotAPI):
         )
 
     def cancel_withdraw(
-        self: Funding, asset: str, refid: str, *, extra_params: Optional[dict] = None,
+        self: Funding,
+        asset: str,
+        refid: str,
+        *,
+        extra_params: Optional[dict] = None,
     ) -> dict:
         """
         Cancel a requested withdraw. This will only be successful if the withdraw

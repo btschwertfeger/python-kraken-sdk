@@ -129,3 +129,16 @@ def test_get_recent_spreads(spot_market: Market) -> None:
     assert is_not_error(
         spot_market.get_recent_spreads(pair="XBTUSD", since="1616663618"),
     )
+
+
+@pytest.mark.spot()
+@pytest.mark.spot_market()
+def test_extra_parameter(spot_market: Market) -> None:
+    """
+    Checks if the extra parameter can be used to overwrite an existing one.
+    This also checks ensure_string for this parameter.
+    """
+
+    result: dict = spot_market.get_assets(assets="XBT", extra_params={"asset": "ETH"})
+    assert "XBT" not in result
+    assert "XETH" in result
