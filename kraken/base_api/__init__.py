@@ -211,6 +211,7 @@ class KrakenBaseSpotAPI:
         timeout: int = 10,
         auth: bool = True,
         params: Optional[dict] = None,
+        extra_params: Optional[dict] = None,
         do_json: bool = False,
         return_raw: bool = False,
     ) -> Union[Dict[str, Any], List[str], List[Dict[str, Any]], requests.Response]:
@@ -230,6 +231,9 @@ class KrakenBaseSpotAPI:
         :param params: The query or post parameter of the request (default:
             ``None``)
         :type params: dict, optional
+        :param params: Additional query or post parameter of the request
+            (default: ``None``)
+        :type params: dict, optional
         :param do_json: If the ``params`` must be "jsonified" - in case of
             nested dict style
         :type do_json: bool
@@ -240,10 +244,15 @@ class KrakenBaseSpotAPI:
         :raise kraken.exceptions.KrakenException.*: If the response contains
             errors
         :return: The response
-        :rtype: dict[str, Any] | list[str] | list[dict[str, Any]] | requests.Response
+        :rtype: dict[str, Any] | list[str] | list[dict[str, Any]] |
+            requests.Response
         """
-        if params is None:
+        if not defined(params):
             params = {}
+        if not defined(extra_params):
+            extra_params = {}
+
+        params |= extra_params
 
         method = method.upper()
         data_json: str = ""
