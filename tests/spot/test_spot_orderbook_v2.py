@@ -68,8 +68,14 @@ def test_get_first() -> None:
 @pytest.mark.spot()
 @pytest.mark.spot_orderbook()
 @mock.patch("kraken.spot.orderbook_v2.KrakenSpotWSClientV2", return_value=None)
-@mock.patch("kraken.spot.orderbook_v2.OrderbookClientV2.remove_book", return_value=None)
-@mock.patch("kraken.spot.orderbook_v2.OrderbookClientV2.add_book", return_value=None)
+@mock.patch(
+    "kraken.spot.orderbook_v2.OrderbookClientV2.remove_book",
+    return_value=mock.AsyncMock(),
+)
+@mock.patch(
+    "kraken.spot.orderbook_v2.OrderbookClientV2.add_book",
+    return_value=mock.AsyncMock(),
+)
 def test_passing_msg_and_validate_checksum(
     mock_add_book: mock.MagicMock,
     mock_remove_bookv,
