@@ -9,9 +9,9 @@ Maintain a valid Spot order book
 
 The following examples demonstrate how to use the python-kraken-sdk to retrieve
 valid realtime orderbooks. The current implementation of the
-:class:`kraken.spot.OrderbookClientV2` uses the Websocket API v2 and
-:class:`kraken.spot.OrderbookClientV1` provides the legacy support for Krakens
-websocket API v2.
+:class:`kraken.spot.OrderbookClientV2` uses the websocket API v2 and
+:class:`kraken.spot.OrderbookClientV1` provides the legacy support for websocket
+API v2.
 
 .. literalinclude:: ../../../examples/spot_orderbook_v2.py
    :language: python

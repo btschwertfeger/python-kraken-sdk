@@ -44,7 +44,7 @@ Available Clients:
 
 - Spot REST Clients
 - Spot Websocket Clients (Websocket API v1 and v2)
-- Spot Orderbook Client
+- Spot Orderbook Client (Websocket API v1 and v2)
 - Futures REST Clients
 - Futures Websocket Client
 
@@ -68,6 +68,9 @@ Documentation:
 **ONLY** tagged releases are available at PyPI. So the content of the master may
 not match with the content of the latest release. - Please have a look at the
 release specific READMEs and changelogs.
+
+It is also recommended to _pin the used version_ to avoid unexpected behavior on
+new releases.
 
 ---
 
