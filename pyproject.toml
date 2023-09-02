@@ -118,7 +118,7 @@ python_version = "3.12"
 files = ["kraken/**/*.py"]
 exclude = ["tests/*/*.py"]
 
-cache_dir = ".mypy_cache"
+cache_dir = ".cache/mypy"
 sqlite_cache = true
 cache_fine_grained = true
 
