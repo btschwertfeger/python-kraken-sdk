@@ -5,6 +5,9 @@
 #
 
 """
+
+**For websocket API v1**
+
 This module provides an example on how to use the Spot Orderbook client of the
 python-kraken-sdk (https://github.com/btschwertfeger/python-kraken-sdk) to
 retrieve and maintain a valid Spot order book for (a) specific asset pair(s).
