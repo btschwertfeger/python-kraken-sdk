@@ -63,6 +63,8 @@ class Staking(KrakenBaseSpotAPI):
         asset: str,
         amount: str | float,
         method: str,
+        *,
+        extra_params: Optional[dict] = None,
     ) -> dict:
         """
         Stake the specified asset from the Spot wallet.
@@ -101,6 +103,7 @@ class Staking(KrakenBaseSpotAPI):
             uri="/private/Stake",
             params={"asset": asset, "amount": amount, "method": method},
             auth=True,
+            extra_params=extra_params,
         )
 
     def unstake_asset(
@@ -108,6 +111,8 @@ class Staking(KrakenBaseSpotAPI):
         asset: str,
         amount: str | float,
         method: Optional[str] = None,
+        *,
+        extra_params: Optional[dict] = None,
     ) -> dict:
         """
         Unstake an asset and transfer the amount to the Spot wallet.
@@ -150,9 +155,14 @@ class Staking(KrakenBaseSpotAPI):
             uri="/private/Unstake",
             params=params,
             auth=True,
+            extra_params=extra_params,
         )
 
-    def list_stakeable_assets(self: Staking) -> list[dict]:
+    def list_stakeable_assets(
+        self: Staking,
+        *,
+        extra_params: Optional[dict] = None,
+    ) -> list[dict]:
         """
         Get a list of stakeable assets. Only assets that the user is able to stake
         will be shown.
@@ -209,9 +219,14 @@ class Staking(KrakenBaseSpotAPI):
             method="POST",
             uri="/private/Staking/Assets",
             auth=True,
+            extra_params=extra_params,
         )
 
-    def get_pending_staking_transactions(self: Staking) -> list[dict]:
+    def get_pending_staking_transactions(
+        self: Staking,
+        *,
+        extra_params: Optional[dict] = None,
+    ) -> list[dict]:
         """
         Get the list of pending staking transactions of the user.
 
@@ -247,9 +262,14 @@ class Staking(KrakenBaseSpotAPI):
             method="POST",
             uri="/private/Staking/Pending",
             auth=True,
+            extra_params=extra_params,
         )
 
-    def list_staking_transactions(self: Staking) -> list[dict]:
+    def list_staking_transactions(
+        self: Staking,
+        *,
+        extra_params: Optional[dict] = None,
+    ) -> list[dict]:
         """
         List the last 1000 staking transactions of the past 90 days.
 
@@ -288,6 +308,7 @@ class Staking(KrakenBaseSpotAPI):
             method="POST",
             uri="/private/Staking/Transactions",
             auth=True,
+            extra_params=extra_params,
         )
 
 

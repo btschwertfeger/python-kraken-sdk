@@ -58,7 +58,12 @@ class Funding(KrakenBaseSpotAPI):
         super().__enter__()
         return self
 
-    def get_deposit_methods(self: Funding, asset: str) -> list[dict]:
+    def get_deposit_methods(
+        self: Funding,
+        asset: str,
+        *,
+        extra_params: Optional[dict] = None,
+    ) -> list[dict]:
         """
         Get the available deposit methods for a specific asset.
 
@@ -92,6 +97,7 @@ class Funding(KrakenBaseSpotAPI):
             method="POST",
             uri="/private/DepositMethods",
             params={"asset": asset},  # type: ignore[return-value]
+            extra_params=extra_params,
         )
 
     def get_deposit_address(
@@ -100,6 +106,7 @@ class Funding(KrakenBaseSpotAPI):
         method: str,
         *,
         new: Optional[bool] = False,
+        extra_params: Optional[dict] = None,
     ) -> list[dict]:
         """
         Get the deposit addresses for a specific asset. New deposit addresses can be generated.
@@ -142,12 +149,15 @@ class Funding(KrakenBaseSpotAPI):
             method="POST",
             uri="/private/DepositAddresses",
             params={"asset": asset, "method": method, "new": new},
+            extra_params=extra_params,
         )
 
     def get_recent_deposits_status(
         self: Funding,
         asset: Optional[str] = None,
         method: Optional[str] = None,
+        *,
+        extra_params: Optional[dict] = None,
     ) -> list[dict]:
         """
         Get information about the recent deposit status. The look back period is 90 days and
@@ -217,6 +227,7 @@ class Funding(KrakenBaseSpotAPI):
             method="POST",
             uri="/private/DepositStatus",
             params=params,
+            extra_params=extra_params,
         )
 
     def get_withdrawal_info(
@@ -224,6 +235,8 @@ class Funding(KrakenBaseSpotAPI):
         asset: str,
         key: str,
         amount: str | float,
+        *,
+        extra_params: Optional[dict] = None,
     ) -> dict:
         """
         Get information about a possible withdraw, including fee and limit information.
@@ -265,6 +278,7 @@ class Funding(KrakenBaseSpotAPI):
             method="POST",
             uri="/private/WithdrawInfo",
             params={"asset": asset, "key": str(key), "amount": str(amount)},
+            extra_params=extra_params,
         )
 
     def withdraw_funds(
@@ -272,6 +286,8 @@ class Funding(KrakenBaseSpotAPI):
         asset: str,
         key: str,
         amount: str | float,
+        *,
+        extra_params: Optional[dict] = None,
     ) -> dict:
         """
         Create a new withdraw. The key must be the name of the withdraw key
@@ -307,12 +323,15 @@ class Funding(KrakenBaseSpotAPI):
             method="POST",
             uri="/private/Withdraw",
             params={"asset": asset, "key": str(key), "amount": str(amount)},
+            extra_params=extra_params,
         )
 
     def get_recent_withdraw_status(
         self: Funding,
         asset: Optional[str] = None,
         method: Optional[str] = None,
+        *,
+        extra_params: Optional[dict] = None,
     ) -> list[dict]:
         """
         Get information about the recent withdraw status, including withdraws of the
@@ -358,9 +377,16 @@ class Funding(KrakenBaseSpotAPI):
             method="POST",
             uri="/private/WithdrawStatus",
             params=params,
+            extra_params=extra_params,
         )
 
-    def cancel_withdraw(self: Funding, asset: str, refid: str) -> dict:
+    def cancel_withdraw(
+        self: Funding,
+        asset: str,
+        refid: str,
+        *,
+        extra_params: Optional[dict] = None,
+    ) -> dict:
         """
         Cancel a requested withdraw. This will only be successful if the withdraw
         is not being processed so far.
@@ -389,6 +415,7 @@ class Funding(KrakenBaseSpotAPI):
             method="POST",
             uri="/private/WithdrawCancel",
             params={"asset": asset, "refid": str(refid)},
+            extra_params=extra_params,
         )
 
     def wallet_transfer(
@@ -397,6 +424,8 @@ class Funding(KrakenBaseSpotAPI):
         from_: str,
         to_: str,
         amount: str | float,
+        *,
+        extra_params: Optional[dict] = None,
     ) -> dict:
         """
         Transfer assets between the Spot and Futures wallet.
@@ -434,6 +463,7 @@ class Funding(KrakenBaseSpotAPI):
             method="POST",
             uri="/private/WalletTransfer",
             params={"asset": asset, "from": from_, "to": to_, "amount": str(amount)},
+            extra_params=extra_params,
         )
 
 

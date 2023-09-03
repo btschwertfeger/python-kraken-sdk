@@ -60,11 +60,14 @@ class Market(KrakenBaseSpotAPI):
         return self
 
     @ensure_string("assets")
+    @ensure_string("extra_params")
     @lru_cache()
     def get_assets(
         self: Market,
         assets: Optional[str | list[str]] = None,
         aclass: Optional[str] = None,
+        *,
+        extra_params: Optional[dict] = None,
     ) -> dict:
         """
         Get information about one or more assets.
@@ -127,14 +130,18 @@ class Market(KrakenBaseSpotAPI):
             uri="/public/Assets",
             params=params,
             auth=False,
+            extra_params=extra_params,
         )
 
     @ensure_string("pair")
+    @ensure_string("extra_params")
     @lru_cache()
     def get_asset_pairs(
         self: Market,
         pair: Optional[str | list[str]] = None,
         info: Optional[str] = None,
+        *,
+        extra_params: Optional[dict] = None,
     ) -> dict:
         """
         Get information about a single or multiple asset/currency pair(s).
@@ -205,10 +212,16 @@ class Market(KrakenBaseSpotAPI):
             uri="/public/AssetPairs",
             params=params,
             auth=False,
+            extra_params=extra_params,
         )
 
     @ensure_string("pair")
-    def get_ticker(self: Market, pair: Optional[str | list[str]] = None) -> dict:
+    def get_ticker(
+        self: Market,
+        pair: Optional[str | list[str]] = None,
+        *,
+        extra_params: Optional[dict] = None,
+    ) -> dict:
         """
         Returns all tickers if pair is not specified - else just
         the ticker of the ``pair``. Multiple pairs can be specified.
@@ -248,6 +261,7 @@ class Market(KrakenBaseSpotAPI):
             uri="/public/Ticker",
             params=params,
             auth=False,
+            extra_params=extra_params,
         )
 
     def get_ohlc(
@@ -255,6 +269,8 @@ class Market(KrakenBaseSpotAPI):
         pair: str,
         interval: int | str = 1,
         since: Optional[int | str] = None,
+        *,
+        extra_params: Optional[dict] = None,
     ) -> dict:
         """
         Get the open, high, low, and close data for a specific trading pair.
@@ -300,9 +316,16 @@ class Market(KrakenBaseSpotAPI):
             uri="/public/OHLC",
             params=params,
             auth=False,
+            extra_params=extra_params,
         )
 
-    def get_order_book(self: Market, pair: str, count: Optional[int] = 100) -> dict:
+    def get_order_book(
+        self: Market,
+        pair: str,
+        count: Optional[int] = 100,
+        *,
+        extra_params: Optional[dict] = None,
+    ) -> dict:
         """
         Get the current orderbook of a specified trading pair.
 
@@ -340,6 +363,7 @@ class Market(KrakenBaseSpotAPI):
             uri="/public/Depth",
             params={"pair": pair, "count": count},
             auth=False,
+            extra_params=extra_params,
         )
 
     def get_recent_trades(
@@ -347,6 +371,8 @@ class Market(KrakenBaseSpotAPI):
         pair: str,
         since: Optional[str | int] = None,
         count: Optional[int] = None,
+        *,
+        extra_params: Optional[dict] = None,
     ) -> dict:
         """
         Get the latest trades for a specific trading pair (up to 1000).
@@ -388,12 +414,15 @@ class Market(KrakenBaseSpotAPI):
             uri="/public/Trades",
             params=params,
             auth=False,
+            extra_params=extra_params,
         )
 
     def get_recent_spreads(
         self: Market,
         pair: str,
         since: Optional[str | int] = None,
+        *,
+        extra_params: Optional[dict] = None,
     ) -> dict:
         """
         Get the latest spreads for a specific trading pair.
@@ -430,9 +459,14 @@ class Market(KrakenBaseSpotAPI):
             uri="/public/Spread",
             params=params,
             auth=False,
+            extra_params=extra_params,
         )
 
-    def get_system_status(self: Market) -> dict:
+    def get_system_status(
+        self: Market,
+        *,
+        extra_params: Optional[dict] = None,
+    ) -> dict:
         """
         Returns the system status of the Kraken Spot API.
 
@@ -453,6 +487,7 @@ class Market(KrakenBaseSpotAPI):
             method="GET",
             uri="/public/SystemStatus",
             auth=False,
+            extra_params=extra_params,
         )
 
 

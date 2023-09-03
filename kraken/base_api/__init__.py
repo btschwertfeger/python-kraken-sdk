@@ -63,7 +63,11 @@ def ensure_string(parameter_name: str) -> Callable:
         def wrapper(*args: Any, **kwargs: Any) -> Any:
             if parameter_name in kwargs:
                 value: Any = kwargs[parameter_name]
-                if isinstance(value, str) or value is None:
+                if parameter_name == "extra_params":
+                    if not isinstance(value, dict):
+                        raise TypeError("'extra_params must be type dict.")
+                    kwargs[parameter_name] = json.dumps(value)
+                elif isinstance(value, str) or value is None:
                     pass
                 elif isinstance(value, list):
                     kwargs[parameter_name] = ",".join(value)
@@ -205,7 +209,7 @@ class KrakenBaseSpotAPI:
         self.__session: requests.Session = requests.Session()
         self.__session.headers.update({"User-Agent": "python-kraken-sdk"})
 
-    def _request(
+    def _request(  # noqa: PLR0913
         self: KrakenBaseSpotAPI,
         method: str,
         uri: str,
@@ -215,6 +219,7 @@ class KrakenBaseSpotAPI:
         auth: bool = True,
         do_json: bool = False,
         return_raw: bool = False,
+        extra_params: Optional[str | dict] = None,
     ) -> dict[str, Any] | list[str] | list[dict[str, Any]] | requests.Response:
         """
         Handles the requested requests, by sending the request, handling the
@@ -225,13 +230,16 @@ class KrakenBaseSpotAPI:
         :type method: str
         :param uri: The endpoint to send the message
         :type uri: str
+        :param auth: If the requests needs authentication (default: ``True``)
+        :type auth: bool
         :param params: The query or post parameter of the request (default:
             ``None``)
         :type params: dict, optional
+        :param extra_params: Additional query or post parameter of the request
+            (default: ``None``)
+        :type extra_params: str | dict, optional
         :param timeout: Timeout for the request (default: ``10``)
         :type timeout: int
-        :param auth: If the requests needs authentication (default: ``True``)
-        :type auth: bool
         :param do_json: If the ``params`` must be "jsonified" - in case of
             nested dict style
         :type do_json: bool
@@ -242,10 +250,17 @@ class KrakenBaseSpotAPI:
         :raise kraken.exceptions.KrakenException.*: If the response contains
             errors
         :return: The response
-        :rtype: dict[str, Any] | list[str] | list[dict[str, Any]] | requests.Response
+        :rtype: dict[str, Any] | list[str] | list[dict[str, Any]] |
+            requests.Response
         """
-        if params is None:
+        if not defined(params):
             params = {}
+        if defined(extra_params):
+            params |= (
+                json.loads(extra_params)
+                if isinstance(extra_params, str)
+                else extra_params
+            )
 
         method = method.upper()
         data_json: str = ""
@@ -450,16 +465,17 @@ class KrakenBaseFuturesAPI:
         self.__session: requests.Session = requests.Session()
         self.__session.headers.update({"User-Agent": "python-kraken-sdk"})
 
-    def _request(
+    def _request(  # noqa: PLR0913
         self: KrakenBaseFuturesAPI,
         method: str,
         uri: str,
-        query_params: Optional[dict] = None,
         post_params: Optional[dict] = None,
+        query_params: Optional[dict] = None,
         timeout: int = 10,
         *,
         auth: bool = True,
         return_raw: bool = False,
+        extra_params: Optional[dict] = None,
     ) -> dict[str, Any] | list[dict[str, Any]] | list[str] | requests.Response:
         """
         Handles the requested requests, by sending the request, handling the
@@ -470,19 +486,19 @@ class KrakenBaseFuturesAPI:
         :type method: str
         :param uri: The endpoint to send the message
         :type uri: str
-        :param query_params: The query parameter of the request (default:
-            ``None``)
-        :type query_params: dict, optional
         :param post_params: The query parameter of the request (default:
             ``None``)
         :type post_params: dict, optional
+        :param extra_params: Additional query parameter of the request (default:
+            ``None``)
+        :type extra_params: str | dict, optional
+        :param query_params: The query parameter of the request (default:
+            ``None``)
+        :type query_params: dict, optional
         :param timeout: Timeout for the request (default: ``10``)
         :type timeout: int
         :param auth: If the request needs authentication (default: ``True``)
         :type auth: bool
-        :param do_json: If the ``post_params`` must be "jsonified" - in case of
-            nested dict style
-        :type do_json: bool, optional
         :param return_raw: If the response should be returned without parsing.
             This is used for example when requesting an export of the trade
             history as .zip archive.
@@ -495,17 +511,30 @@ class KrakenBaseFuturesAPI:
         method = method.upper()
 
         post_string: str = ""
-        strl: list[str]
-        if post_params is not None:
-            strl = [f"{key}={post_params[key]}" for key in sorted(post_params)]
-            post_string = "&".join(strl)
+        listed_params: list[str]
+        if defined(extra_params):
+            extra_params = (
+                json.loads(extra_params)
+                if isinstance(extra_params, str)
+                else extra_params
+            )
+        else:
+            extra_params = {}
+
+        if defined(post_params):
+            post_params |= extra_params
+            listed_params = [f"{key}={post_params[key]}" for key in sorted(post_params)]
+            post_string = "&".join(listed_params)
         else:
             post_params = {}
+            post_params |= extra_params
 
         query_string: str = ""
         if query_params is not None:
-            strl = [f"{key}={query_params[key]}" for key in sorted(query_params)]
-            query_string = "&".join(strl).replace(" ", "%20")
+            listed_params = [
+                f"{key}={query_params[key]}" for key in sorted(query_params)
+            ]
+            query_string = "&".join(listed_params).replace(" ", "%20")
         else:
             query_params = {}
 

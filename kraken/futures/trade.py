@@ -62,7 +62,12 @@ class Trade(KrakenBaseFuturesAPI):
         super().__enter__()
         return self
 
-    def get_fills(self: Trade, lastFillTime: Optional[str] = None) -> dict:
+    def get_fills(
+        self: Trade,
+        lastFillTime: Optional[str] = None,
+        *,
+        extra_params: Optional[dict] = None,
+    ) -> dict:
         """
         Return the current fills of the user.
 
@@ -105,9 +110,15 @@ class Trade(KrakenBaseFuturesAPI):
             uri="/derivatives/api/v3/fills",
             query_params=query_params,
             auth=True,
+            extra_params=extra_params,
         )
 
-    def create_batch_order(self: Trade, batchorder_list: list[dict]) -> dict:
+    def create_batch_order(
+        self: Trade,
+        batchorder_list: list[dict],
+        *,
+        extra_params: Optional[dict] = None,
+    ) -> dict:
         """
         Create multiple orders at once using the batch order endpoint.
 
@@ -212,9 +223,15 @@ class Trade(KrakenBaseFuturesAPI):
             uri="/derivatives/api/v3/batchorder",
             post_params={"json": f"{batchorder}"},
             auth=True,
+            extra_params=extra_params,
         )
 
-    def cancel_all_orders(self: Trade, symbol: Optional[str] = None) -> dict:
+    def cancel_all_orders(
+        self: Trade,
+        symbol: Optional[str] = None,
+        *,
+        extra_params: Optional[dict] = None,
+    ) -> dict:
         """
         Cancels all open orders, can be filtered by symbol.
 
@@ -260,9 +277,15 @@ class Trade(KrakenBaseFuturesAPI):
             uri="/derivatives/api/v3/cancelallorders",
             post_params=params,
             auth=True,
+            extra_params=extra_params,
         )
 
-    def dead_mans_switch(self: Trade, timeout: Optional[int] = 0) -> dict:
+    def dead_mans_switch(
+        self: Trade,
+        timeout: Optional[int] = 0,
+        *,
+        extra_params: Optional[dict] = None,
+    ) -> dict:
         """
         The Death Man's Switch can be used to cancel all orders after a specific timeout.
         If the timeout is set to 60, all orders will be cancelled after 60 seconds. The timeout
@@ -298,12 +321,15 @@ class Trade(KrakenBaseFuturesAPI):
             method="POST",
             uri="/derivatives/api/v3/cancelallordersafter",
             post_params={"timeout": timeout},
+            extra_params=extra_params,
         )
 
     def cancel_order(
         self: Trade,
         order_id: Optional[str] = None,
         cliOrdId: Optional[str] = None,
+        *,
+        extra_params: Optional[dict] = None,
     ) -> dict:
         """
         This endpoint can be used to cancel a specific order by ``order_id`` or ``cliOrdId``.
@@ -350,6 +376,7 @@ class Trade(KrakenBaseFuturesAPI):
             uri="/derivatives/api/v3/cancelorder",
             post_params=params,
             auth=True,
+            extra_params=extra_params,
         )
 
     def edit_order(
@@ -359,6 +386,8 @@ class Trade(KrakenBaseFuturesAPI):
         limitPrice: Optional[str | float] = None,
         size: Optional[str | float] = None,
         stopPrice: Optional[str | float] = None,
+        *,
+        extra_params: Optional[dict] = None,
     ) -> dict:
         """
         Edit an open order.
@@ -420,12 +449,15 @@ class Trade(KrakenBaseFuturesAPI):
             uri="/derivatives/api/v3/editorder",
             post_params=params,
             auth=True,
+            extra_params=extra_params,
         )
 
     def get_orders_status(
         self: Trade,
         orderIds: Optional[str | list[str]] = None,
         cliOrdIds: Optional[str | list[str]] = None,
+        *,
+        extra_params: Optional[dict] = None,
     ) -> dict:
         """
         Get the status of multiple orders.
@@ -465,6 +497,7 @@ class Trade(KrakenBaseFuturesAPI):
             uri="/derivatives/api/v3/orders/status",
             post_params=params,
             auth=True,
+            extra_params=extra_params,
         )
 
     def create_order(  # noqa: PLR0913
@@ -480,6 +513,8 @@ class Trade(KrakenBaseFuturesAPI):
         triggerSignal: Optional[str] = None,
         trailingStopDeviationUnit: Optional[str] = None,
         trailingStopMaxDeviation: Optional[str] = None,
+        *,
+        extra_params: Optional[dict] = None,
     ) -> dict:
         """
         Create and place an order on the futures market.
@@ -677,6 +712,7 @@ class Trade(KrakenBaseFuturesAPI):
             uri="/derivatives/api/v3/sendorder",
             post_params=params,
             auth=True,
+            extra_params=extra_params,
         )
 
 
