@@ -214,12 +214,12 @@ class KrakenBaseSpotAPI:
         method: str,
         uri: str,
         params: Optional[dict] = None,
-        extra_params: Optional[str | dict] = None,
         timeout: int = 10,
         *,
         auth: bool = True,
         do_json: bool = False,
         return_raw: bool = False,
+        extra_params: Optional[str | dict] = None,
     ) -> dict[str, Any] | list[str] | list[dict[str, Any]] | requests.Response:
         """
         Handles the requested requests, by sending the request, handling the
@@ -470,12 +470,12 @@ class KrakenBaseFuturesAPI:
         method: str,
         uri: str,
         post_params: Optional[dict] = None,
-        extra_params: Optional[dict] = None,
         query_params: Optional[dict] = None,
         timeout: int = 10,
         *,
         auth: bool = True,
         return_raw: bool = False,
+        extra_params: Optional[dict] = None,
     ) -> dict[str, Any] | list[dict[str, Any]] | list[str] | requests.Response:
         """
         Handles the requested requests, by sending the request, handling the
@@ -495,13 +495,10 @@ class KrakenBaseFuturesAPI:
         :param query_params: The query parameter of the request (default:
             ``None``)
         :type query_params: dict, optional
-        :param do_json: If the ``post_params`` must be "jsonified" - in case of
-            nested dict style
         :param timeout: Timeout for the request (default: ``10``)
         :type timeout: int
         :param auth: If the request needs authentication (default: ``True``)
         :type auth: bool
-        :type do_json: bool, optional
         :param return_raw: If the response should be returned without parsing.
             This is used for example when requesting an export of the trade
             history as .zip archive.
@@ -515,19 +512,22 @@ class KrakenBaseFuturesAPI:
 
         post_string: str = ""
         listed_params: list[str]
+        if defined(extra_params):
+            extra_params = (
+                json.loads(extra_params)
+                if isinstance(extra_params, str)
+                else extra_params
+            )
+        else:
+            extra_params = {}
+
         if defined(post_params):
-            if defined(extra_params):
-                post_params |= (
-                    json.loads(extra_params)
-                    if isinstance(extra_params, str)
-                    else extra_params
-                )
+            post_params |= extra_params
             listed_params = [f"{key}={post_params[key]}" for key in sorted(post_params)]
             post_string = "&".join(listed_params)
         else:
             post_params = {}
-            if isinstance(extra_params, dict):
-                post_params |= extra_params
+            post_params |= extra_params
 
         query_string: str = ""
         if query_params is not None:
