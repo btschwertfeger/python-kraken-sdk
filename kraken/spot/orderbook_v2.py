@@ -13,7 +13,7 @@ from asyncio import sleep as asyncio_sleep
 from binascii import crc32
 from collections import OrderedDict
 from inspect import iscoroutinefunction
-from typing import Callable, Dict, List, Optional, Union
+from typing import Callable, Optional
 
 from kraken.spot import Market
 from kraken.spot.websocket_v2 import KrakenSpotWSClientV2
@@ -121,16 +121,16 @@ class OrderbookClientV2:
         callback: Optional[Callable] = None,
     ) -> None:
         super().__init__()
-        self.__book: Dict[str, dict] = {}
+        self.__book: dict[str, dict] = {}
         self.__depth: int = depth
         self.__callback: Optional[Callable] = callback
 
         self.__market: Market = Market()
         self.ws_client: KrakenSpotWSClientV2 = KrakenSpotWSClientV2(
-            callback=self.on_message,
+            callback=self.__on_message,
         )
 
-    async def on_message(self: OrderbookClientV2, message: Union[list, dict]) -> None:
+    async def __on_message(self: OrderbookClientV2, message: list | dict) -> None:
         """
         The on_message function is implemented within the KrakenSpotWSClient
         class and used as callback to receive all messages sent by the
@@ -240,7 +240,7 @@ class OrderbookClientV2:
         else:
             print(message)  # noqa: T201
 
-    async def add_book(self: OrderbookClientV2, pairs: List[str]) -> None:
+    async def add_book(self: OrderbookClientV2, pairs: list[str]) -> None:
         """
         Add an orderbook to this client. The feed will be subscribed
         and updates will be published to the :func:`on_book_update` function.
@@ -254,7 +254,7 @@ class OrderbookClientV2:
             params={"channel": "book", "depth": self.__depth, "symbol": pairs},
         )
 
-    async def remove_book(self: OrderbookClientV2, pairs: List[str]) -> None:
+    async def remove_book(self: OrderbookClientV2, pairs: list[str]) -> None:
         """
         Unsubscribe from a subscribed orderbook.
 
@@ -309,7 +309,7 @@ class OrderbookClientV2:
                     pair: str,
                     message: list
                 ) -> None:
-                    book: Dict[str, Any] = self.get(pair="XBT/USD")
+                    book: dict[str, Any] = self.get(pair="XBT/USD")
                     ask: list[Tuple[str, str]] = list(book["ask"].items())
                     bid: list[Tuple[str, str]] = list(book["bid"].items())
                     # ask and bid are now in format [price, (volume, timestamp)]
@@ -319,7 +319,7 @@ class OrderbookClientV2:
 
     def __update_book(
         self: OrderbookClientV2,
-        orders: List[dict],
+        orders: list[dict],
         side: str,
         symbol: str,
         timestamp: Optional[str] = None,

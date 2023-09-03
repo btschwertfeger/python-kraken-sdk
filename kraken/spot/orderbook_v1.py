@@ -13,7 +13,7 @@ from asyncio import sleep as asyncio_sleep
 from binascii import crc32
 from collections import OrderedDict
 from inspect import iscoroutinefunction
-from typing import Callable, Dict, List, Optional, Union
+from typing import Callable, Optional
 
 from kraken.spot.websocket_v1 import KrakenSpotWSClient
 
@@ -119,15 +119,15 @@ class OrderbookClientV1:
         callback: Optional[Callable] = None,
     ) -> None:
         super().__init__()
-        self.__book: Dict[str, dict] = {}
+        self.__book: dict[str, dict] = {}
         self.__depth: int = depth
         self.__callback: Optional[Callable] = callback
 
         self.ws_client: KrakenSpotWSClient = KrakenSpotWSClient(
-            callback=self.on_message,
+            callback=self.__on_message,
         )
 
-    async def on_message(self: OrderbookClientV1, message: Union[list, dict]) -> None:
+    async def __on_message(self: OrderbookClientV1, message: list | dict) -> None:
         """
         The on_message function is implemented in the KrakenSpotWSClient
         class and used as callback to receive all messages sent by the
@@ -219,7 +219,7 @@ class OrderbookClientV1:
         else:
             logging.info(message)
 
-    async def add_book(self: OrderbookClientV1, pairs: List[str]) -> None:
+    async def add_book(self: OrderbookClientV1, pairs: list[str]) -> None:
         """
         Add an orderbook to this client. The feed will be subscribed
         and updates will be published to the :func:`on_book_update` function.
@@ -234,7 +234,7 @@ class OrderbookClientV1:
             pair=pairs,
         )
 
-    async def remove_book(self: OrderbookClientV1, pairs: List[str]) -> None:
+    async def remove_book(self: OrderbookClientV1, pairs: list[str]) -> None:
         """
         Unsubscribe from a subscribed orderbook.
 

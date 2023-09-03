@@ -97,10 +97,10 @@ def test_assign_msg_and_validate_checksum(
         client: OrderbookClientV1 = OrderbookClientV1(depth=10)
 
         for message in orderbook["init"]:
-            await client.on_message(message=message)
+            await client.__on_message(message=message)
 
         for message in orderbook["updates"]:
-            await client.on_message(message=message)
+            await client.__on_message(message=message)
             assert client.get(pair="XBT/USD")["valid"]
 
         # NOTE: The price must be higher than the last one to trigger an
@@ -114,7 +114,7 @@ def test_assign_msg_and_validate_checksum(
             "book-10",
             "XBT/USD",
         ]
-        await client.on_message(message=bad_message)
+        await client.__on_message(message=bad_message)
         assert not client.get(pair="XBT/USD")["valid"]
 
     asyncio.run(assign())
