@@ -2,10 +2,10 @@
 # -*- coding: utf-8 -*-
 # Copyright (C) 2023 Benjamin Thomas Schwertfeger
 # GitHub: https://github.com/btschwertfeger
+# pylint: disable=unused-import
 
 """This module provides the Kraken Futures clients"""
 
-# pylint: disable=unused-import
 from kraken.futures.funding import Funding
 from kraken.futures.market import Market
 from kraken.futures.trade import Trade

@@ -385,7 +385,6 @@ def test_private_unsubscribe(
         assert expected in caplog.text
 
 
-@pytest.mark.wip()
 @pytest.mark.spot()
 @pytest.mark.spot_websocket()
 @pytest.mark.spot_websocket_v2()
@@ -425,7 +424,6 @@ def test___transform_subscription() -> None:
         )
 
 
-@pytest.mark.wip()
 @pytest.mark.spot()
 @pytest.mark.spot_websocket()
 @pytest.mark.spot_websocket_v2()

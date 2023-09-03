@@ -14,8 +14,8 @@ changelog:
   categories:
     - title: Breaking Changes ⚠️
       labels:
-        - breaking
         - Breaking
+        - breaking
     - title: Implemented Enhancements 🎉
       labels:
         - Feature

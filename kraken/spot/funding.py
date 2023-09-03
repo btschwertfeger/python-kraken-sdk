@@ -8,7 +8,7 @@
 
 from __future__ import annotations
 
-from typing import List, Optional, TypeVar, Union
+from typing import Optional, TypeVar
 
 from kraken.base_api import KrakenBaseSpotAPI, defined
 
@@ -58,7 +58,7 @@ class Funding(KrakenBaseSpotAPI):
         super().__enter__()
         return self
 
-    def get_deposit_methods(self: Funding, asset: str) -> List[dict]:
+    def get_deposit_methods(self: Funding, asset: str) -> list[dict]:
         """
         Get the available deposit methods for a specific asset.
 
@@ -67,7 +67,7 @@ class Funding(KrakenBaseSpotAPI):
         :param asset: Asset being deposited
         :type asset: str
         :return: List of available deposit methods of the asset
-        :rtype: List[dict]
+        :rtype: list[dict]
 
         .. code-block:: python
             :linenos:
@@ -98,8 +98,9 @@ class Funding(KrakenBaseSpotAPI):
         self: Funding,
         asset: str,
         method: str,
+        *,
         new: Optional[bool] = False,
-    ) -> List[dict]:
+    ) -> list[dict]:
         """
         Get the deposit addresses for a specific asset. New deposit addresses can be generated.
 
@@ -114,7 +115,7 @@ class Funding(KrakenBaseSpotAPI):
         :param new: Generate a new deposit address (default: ``False``)
         :type new: bool, optional
         :return: The user and asset specific deposit addresses
-        :rtype: List[dict]
+        :rtype: list[dict]
 
         .. code-block:: python
             :linenos:
@@ -147,7 +148,7 @@ class Funding(KrakenBaseSpotAPI):
         self: Funding,
         asset: Optional[str] = None,
         method: Optional[str] = None,
-    ) -> List[dict]:
+    ) -> list[dict]:
         """
         Get information about the recent deposit status. The look back period is 90 days and
         only the last 25 deposits will be returned.
@@ -161,7 +162,7 @@ class Funding(KrakenBaseSpotAPI):
         :param method: Filter by deposit method
         :type method: str, optional
         :return: The user specific deposit history
-        :rtype: List[dict]
+        :rtype: list[dict]
 
         .. code-block:: python
             :linenos:
@@ -222,7 +223,7 @@ class Funding(KrakenBaseSpotAPI):
         self: Funding,
         asset: str,
         key: str,
-        amount: Union[str, float],
+        amount: str | float,
     ) -> dict:
         """
         Get information about a possible withdraw, including fee and limit information.
@@ -270,7 +271,7 @@ class Funding(KrakenBaseSpotAPI):
         self: Funding,
         asset: str,
         key: str,
-        amount: Union[str, float],
+        amount: str | float,
     ) -> dict:
         """
         Create a new withdraw. The key must be the name of the withdraw key
@@ -312,7 +313,7 @@ class Funding(KrakenBaseSpotAPI):
         self: Funding,
         asset: Optional[str] = None,
         method: Optional[str] = None,
-    ) -> List[dict]:
+    ) -> list[dict]:
         """
         Get information about the recent withdraw status, including withdraws of the
         past 90 days but at max 500 results.
@@ -324,7 +325,7 @@ class Funding(KrakenBaseSpotAPI):
         :param method: Filter by withdraw method (default: ``None``)
         :type method: str, optional
         :return: Withdrawal information
-        :rtype: List[dict]
+        :rtype: list[dict]
 
         .. code-block:: python
             :linenos:
@@ -395,7 +396,7 @@ class Funding(KrakenBaseSpotAPI):
         asset: str,
         from_: str,
         to_: str,
-        amount: Union[str, float],
+        amount: str | float,
     ) -> dict:
         """
         Transfer assets between the Spot and Futures wallet.

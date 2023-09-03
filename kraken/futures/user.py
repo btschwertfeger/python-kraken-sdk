@@ -8,7 +8,7 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Optional, TypeVar, Union
+from typing import TYPE_CHECKING, Optional, TypeVar
 
 from kraken.base_api import KrakenBaseFuturesAPI, defined
 
@@ -56,6 +56,7 @@ class User(KrakenBaseFuturesAPI):
         key: str = "",
         secret: str = "",
         url: str = "",
+        *,
         sandbox: bool = False,
     ) -> None:
         super().__init__(key=key, secret=secret, url=url, sandbox=sandbox)
@@ -251,11 +252,11 @@ class User(KrakenBaseFuturesAPI):
 
     def get_account_log(
         self: User,
-        before: Optional[Union[str, int]] = None,
-        count: Optional[Union[str, int]] = None,
-        from_: Optional[Union[str, int]] = None,
+        before: Optional[str | int] = None,
+        count: Optional[str | int] = None,
+        from_: Optional[str | int] = None,
         info: Optional[str] = None,
-        since: Optional[Union[str, int]] = None,
+        since: Optional[str | int] = None,
         sort: Optional[str] = None,
         to: Optional[str] = None,
     ) -> dict:
@@ -862,6 +863,7 @@ class User(KrakenBaseFuturesAPI):
     def set_trading_on_subaccount(
         self: User,
         subaccountUid: str,
+        *,
         trading_enabled: bool,
     ) -> dict:
         """

@@ -9,7 +9,7 @@
 from __future__ import annotations
 
 from decimal import Decimal
-from typing import List, Optional, TypeVar, Union
+from typing import Optional, TypeVar
 
 from kraken.base_api import KrakenBaseSpotAPI, defined, ensure_string
 
@@ -218,8 +218,9 @@ class User(KrakenBaseSpotAPI):
 
     def get_open_orders(
         self: User,
-        trades: Optional[bool] = False,
         userref: Optional[int] = None,
+        *,
+        trades: Optional[bool] = False,
     ) -> dict:
         """
         Get information about the open orders.
@@ -229,11 +230,11 @@ class User(KrakenBaseSpotAPI):
 
         - https://docs.kraken.com/rest/#operation/getOpenOrders
 
+        :param userref: Filter the results by user reference id
+        :type userref: int, optional
         :param trades: Include trades related to position or not into the
             response (default: ``False``)
         :type trades: bool
-        :param userref: Filter the results by user reference id
-        :type userref: int, optional
 
         .. code-block:: python
             :linenos:
@@ -289,12 +290,13 @@ class User(KrakenBaseSpotAPI):
 
     def get_closed_orders(
         self: User,
-        trades: Optional[bool] = False,
         userref: Optional[int] = None,
         start: Optional[int] = None,
         end: Optional[int] = None,
         ofs: Optional[int] = None,
         closetime: Optional[str] = "both",
+        *,
+        trades: Optional[bool] = False,
     ) -> dict:
         """
         Get the 50 latest closed (filled or canceled) orders.
@@ -304,9 +306,6 @@ class User(KrakenBaseSpotAPI):
 
         - https://docs.kraken.com/rest/#operation/getClosedOrders
 
-        :param trades: Include trades related to position into the response or
-        not (default: ``False``)
-        :type trades: bool
         :param userref: Filter the results by user reference id
         :type userref: int, optional
         :param start: Unix timestamp to start the search from
@@ -318,6 +317,9 @@ class User(KrakenBaseSpotAPI):
         :param closetime: Specify the exact time frame, one of: ``both``,
             ``open``, ``close`` (default: ``both``)
         :type closetime: str, optional
+        :param trades: Include trades related to position into the response or
+            not (default: ``False``)
+        :type trades: bool
 
         .. code-block:: python
             :linenos:
@@ -382,9 +384,10 @@ class User(KrakenBaseSpotAPI):
     @ensure_string("txid")
     def get_orders_info(
         self: User,
-        txid: Union[List[str], str],
-        trades: Optional[bool] = False,
+        txid: list[str] | str,
         userref: Optional[int] = None,
+        *,
+        trades: Optional[bool] = False,
         consolidate_taker: Optional[bool] = True,
     ) -> dict:
         """
@@ -397,11 +400,11 @@ class User(KrakenBaseSpotAPI):
 
         :param txid: A transaction id of a specific order, a list of txids or a
             string containing a comma delimited list of txids
-        :type txid: str | List[str]
-        :param trades: Include trades in the result or not (default: ``False``)
-        :type trades: bool, optional
+        :type txid: str | list[str]
         :param userref: Filter results by user reference id
         :type userref: int, optional
+        :param trades: Include trades in the result or not (default: ``False``)
+        :type trades: bool, optional
         :param consolidate_taker: Consolidate trades by individual taker trades
             (default: ``True``)
         :type consolidate_taker: bool, optional
@@ -492,10 +495,11 @@ class User(KrakenBaseSpotAPI):
     def get_trades_history(
         self: User,
         type_: Optional[str] = "all",
-        trades: Optional[bool] = False,
         start: Optional[int] = None,
         end: Optional[int] = None,
         ofs: Optional[int] = None,
+        *,
+        trades: Optional[bool] = False,
         consolidate_taker: bool = True,
     ) -> dict:
         """
@@ -509,12 +513,12 @@ class User(KrakenBaseSpotAPI):
             ``any position``, ``closed position``, ``closing position``, and
             ``no position`` (default: ``all``)
         :type type_: str, optional
-        :param trades: Include trades related to a position or not (default: ``False``)
-        :type trades: bool, optional
         :param start: Timestamp or txid to start the search
         :type start: int, optional
         :param end: Timestamp or txid to define the last included result
         :type end: int, optional
+        :param trades: Include trades related to a position or not (default: ``False``)
+        :type trades: bool, optional
         :param consolidate_taker: Consolidate trades by individual taker trades (default: ``True``)
         :type consolidate_taker: bool
 
@@ -569,7 +573,8 @@ class User(KrakenBaseSpotAPI):
     @ensure_string("txid")
     def get_trades_info(
         self: User,
-        txid: Union[str, List[str]],
+        txid: str | list[str],
+        *,
         trades: Optional[bool] = False,
     ) -> dict:
         """
@@ -581,7 +586,7 @@ class User(KrakenBaseSpotAPI):
         - https://docs.kraken.com/rest/#operation/getTradesInfo
 
         :param txid: txid or list of txids or comma delimited list of txids as string
-        :type txid: str | List[str]
+        :type txid: str | list[str]
         :param trades: Include trades related to position in result (default: ``False``)
         :type trades: bool
 
@@ -623,9 +628,10 @@ class User(KrakenBaseSpotAPI):
     @ensure_string("txid")
     def get_open_positions(
         self: User,
-        txid: Optional[Union[str, List[str]]] = None,
-        docalcs: Optional[bool] = False,
+        txid: Optional[str | list[str]] = None,
         consolidation: Optional[str] = "market",
+        *,
+        docalcs: Optional[bool] = False,
     ) -> dict:
         """
         Get information about the open margin positions.
@@ -635,11 +641,11 @@ class User(KrakenBaseSpotAPI):
         - https://docs.kraken.com/rest/#operation/getOpenPositions
 
         :param txid: Filter by txid or list of txids or comma delimited list of txids as string
-        :type txid: str | List[str], optional
-        :param docalcs: Include profit and loss calculation into the result (default: ``False``)
-        :type docalcs: bool, optional
+        :type txid: str | list[str], optional
         :param consolidation: Consolidate positions by market/pair (default: ``market``)
         :type consolidation: str, optional
+        :param docalcs: Include profit and loss calculation into the result (default: ``False``)
+        :type docalcs: bool, optional
         :return: List of open positions
         :rtype: dict
 
@@ -684,7 +690,7 @@ class User(KrakenBaseSpotAPI):
     @ensure_string("asset")
     def get_ledgers_info(
         self: User,
-        asset: Optional[Union[str, List[str]]] = "all",
+        asset: Optional[str | list[str]] = "all",
         aclass: Optional[str] = "currency",
         type_: Optional[str] = "all",
         start: Optional[int] = None,
@@ -700,7 +706,7 @@ class User(KrakenBaseSpotAPI):
         - https://docs.kraken.com/rest/#operation/getLedgers
 
         :param asset: The asset(s) to filter for (default: ``all``)
-        :type asset: str | List[str]
+        :type asset: str | list[str]
         :param aclass: The asset class (default: ``currency`` )
         :type aclass: str
         :param type_: Ledger type, one of: ``all``, ``deposit``, ``withdrawal``,
@@ -756,7 +762,8 @@ class User(KrakenBaseSpotAPI):
     @ensure_string("id_")
     def get_ledgers(
         self: User,
-        id_: Union[str, List[str]],
+        id_: str | list[str],
+        *,
         trades: Optional[bool] = False,
     ) -> dict:
         """
@@ -769,7 +776,7 @@ class User(KrakenBaseSpotAPI):
 
         :param id_: Ledger id as string, list of strings, or comma delimited
             list of ledger ids as string
-        :type id_: str | List[str]
+        :type id_: str | list[str]
         :param trades: Include trades related to a position or not
             (default: ``False``)
         :type trades: bool, optional
@@ -804,7 +811,8 @@ class User(KrakenBaseSpotAPI):
     @ensure_string("pair")
     def get_trade_volume(
         self: User,
-        pair: Optional[Union[str, List[str]]] = None,
+        pair: Optional[str | list[str]] = None,
+        *,
         fee_info: bool = True,
     ) -> dict:
         """
@@ -816,7 +824,7 @@ class User(KrakenBaseSpotAPI):
 
         :param pair: Asset pair, list of asset pairs or comma delimited list
             (as string) of asset pairs to filter
-        :type pair: str | List[str], optional
+        :type pair: str | list[str], optional
         :param fee_info: Include fee information or not (default: ``True``)
         :type fee_info: bool, optional
 
@@ -875,7 +883,7 @@ class User(KrakenBaseSpotAPI):
         report: str,
         description: str,
         format_: Optional[str] = "CSV",
-        fields: Optional[Union[str, List[str]]] = "all",
+        fields: Optional[str | list[str]] = "all",
         starttm: Optional[int] = None,
         endtm: Optional[int] = None,
         **kwargs: dict,
@@ -896,7 +904,7 @@ class User(KrakenBaseSpotAPI):
             ``CSV`` and ``TSV`` (default: ``CSV``)
         :type format_: str
         :param fields: Fields to include in the report (default: ``all``)
-        :type fields: str | List[str], optional
+        :type fields: str | list[str], optional
         :param starttm: Unix timestamp to start
         :type starttm: int, optional
         :param endtm: Unix timestamp of the last result
@@ -949,7 +957,7 @@ class User(KrakenBaseSpotAPI):
         :param report: Kind of report, one of: ``trades``, ``ledgers``
         :type report: str
         :return: Information about the pending report
-        :rtype: List[dict]
+        :rtype: list[dict]
 
         .. code-block:: python
             :linenos:
@@ -1101,7 +1109,7 @@ class User(KrakenBaseSpotAPI):
     def account_transfer(
         self: "User",
         asset: str,
-        amount: Union[str, float],
+        amount: str | float,
         from_: str,
         to_: str,
     ) -> dict:

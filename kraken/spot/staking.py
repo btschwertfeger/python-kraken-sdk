@@ -8,7 +8,7 @@
 
 from __future__ import annotations
 
-from typing import List, Optional, TypeVar, Union
+from typing import Optional, TypeVar
 
 from kraken.base_api import KrakenBaseSpotAPI, defined
 
@@ -61,7 +61,7 @@ class Staking(KrakenBaseSpotAPI):
     def stake_asset(
         self: Staking,
         asset: str,
-        amount: Union[str, float],
+        amount: str | float,
         method: str,
     ) -> dict:
         """
@@ -106,7 +106,7 @@ class Staking(KrakenBaseSpotAPI):
     def unstake_asset(
         self: Staking,
         asset: str,
-        amount: Union[str, float],
+        amount: str | float,
         method: Optional[str] = None,
     ) -> dict:
         """
@@ -152,7 +152,7 @@ class Staking(KrakenBaseSpotAPI):
             auth=True,
         )
 
-    def list_stakeable_assets(self: Staking) -> List[dict]:
+    def list_stakeable_assets(self: Staking) -> list[dict]:
         """
         Get a list of stakeable assets. Only assets that the user is able to stake
         will be shown.
@@ -211,7 +211,7 @@ class Staking(KrakenBaseSpotAPI):
             auth=True,
         )
 
-    def get_pending_staking_transactions(self: Staking) -> List[dict]:
+    def get_pending_staking_transactions(self: Staking) -> list[dict]:
         """
         Get the list of pending staking transactions of the user.
 
@@ -249,7 +249,7 @@ class Staking(KrakenBaseSpotAPI):
             auth=True,
         )
 
-    def list_staking_transactions(self: Staking) -> List[dict]:
+    def list_staking_transactions(self: Staking) -> list[dict]:
         """
         List the last 1000 staking transactions of the past 90 days.
 

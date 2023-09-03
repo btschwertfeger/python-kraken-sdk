@@ -13,7 +13,7 @@ import hashlib
 import hmac
 import logging
 from copy import deepcopy
-from typing import Any, Dict, List, Optional, TypeVar
+from typing import Any, Optional, TypeVar
 
 from kraken.base_api import KrakenBaseFuturesAPI
 from kraken.exceptions import KrakenException
@@ -116,6 +116,7 @@ class KrakenFuturesWSClient(KrakenBaseFuturesAPI):
         secret: str = "",
         url: str = "",
         callback: Optional[Any] = None,
+        *,
         sandbox: bool = False,
     ):
         super().__init__(key=key, secret=secret, url=url, sandbox=sandbox)
@@ -185,7 +186,7 @@ class KrakenFuturesWSClient(KrakenBaseFuturesAPI):
     async def subscribe(
         self: KrakenFuturesWSClient,
         feed: str,
-        products: Optional[List[str]] = None,
+        products: Optional[list[str]] = None,
     ) -> None:
         """
         Subscribe to a Futures websocket channel/feed. For some feeds authentication is required.
@@ -242,7 +243,7 @@ class KrakenFuturesWSClient(KrakenBaseFuturesAPI):
     async def unsubscribe(
         self: KrakenFuturesWSClient,
         feed: str,
-        products: Optional[List[str]] = None,
+        products: Optional[list[str]] = None,
     ) -> None:
         """
         Subscribe to a Futures websocket channel/feed. For some feeds
@@ -299,7 +300,7 @@ class KrakenFuturesWSClient(KrakenBaseFuturesAPI):
             raise ValueError(f"Feed: {feed} not found. Not unsubscribing it.")
 
     @staticmethod
-    def get_available_public_subscription_feeds() -> List[str]:
+    def get_available_public_subscription_feeds() -> list[str]:
         """
         Return all available public feeds that can be un-/subscribed using the
         Kraken Futures API.
@@ -321,7 +322,7 @@ class KrakenFuturesWSClient(KrakenBaseFuturesAPI):
         return ["trade", "book", "ticker", "ticker_lite", "heartbeat"]
 
     @staticmethod
-    def get_available_private_subscription_feeds() -> List[str]:
+    def get_available_private_subscription_feeds() -> list[str]:
         """
         Return all available private feeds that can be un-/subscribed to/from
         using the Kraken Futures API
@@ -377,7 +378,7 @@ class KrakenFuturesWSClient(KrakenBaseFuturesAPI):
             and self.__secret != ""
         )
 
-    def get_active_subscriptions(self: KrakenFuturesWSClient) -> List[dict]:
+    def get_active_subscriptions(self: KrakenFuturesWSClient) -> list[dict]:
         """
         Returns the list of active subscriptions.
 
@@ -414,7 +415,7 @@ class KrakenFuturesWSClient(KrakenBaseFuturesAPI):
     async def __aexit__(
         self: KrakenFuturesWSClient,
         *exc: object,
-        **kwargs: Dict[str, Any],
+        **kwargs: dict[str, Any],
     ) -> None:
         pass
 
