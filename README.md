@@ -127,7 +127,7 @@ in `examples/spot_trading_bot_template_v2.py`.
 
 For those who need a realtime order book - a script that demonstrates how to
 maintain a valid order book using the Orderbook client can be found in
-`examples/spot_orderbook.py`.
+`examples/spot_orderbook_v2.py`.
 
 <a name="spotrest"></a>
 

@@ -143,7 +143,7 @@ def test_add_book(caplog: Any) -> None:
         assert isinstance(book["ask"], OrderedDict)
         assert isinstance(book["bid"], OrderedDict)
 
-        for ask, bid in zip(book["ask"], book["bid"]):
+        for ask, bid in zip(book["ask"], book["bid"], strict=True):
             assert isinstance(ask, str)
             assert isinstance(bid, str)
 
