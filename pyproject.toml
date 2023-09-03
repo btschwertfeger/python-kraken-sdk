@@ -221,6 +221,7 @@ select = [
   # "PTH", # flake8-use-pathlib # maybe
   # "TD",  # flake8-todos # !
   # "TRY", # tryceratops # todo: during update of the exceptions (fix in v2.0.0)
+  "FURB", # refurb
 ]
 fixable = ["I", "C4", "Q", "PT", "ICN", "COM", "RSE", "PT", "FA"]
 

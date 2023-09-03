@@ -65,7 +65,7 @@ repos:
           - --rcfile=pyproject.toml
           - -d=R0801 # ignore duplicate code
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.0.286
+    rev: v0.0.287
     hooks:
       - id: ruff
         args:
