@@ -20,7 +20,7 @@ import traceback
 from copy import deepcopy
 from random import random
 from time import time
-from typing import TYPE_CHECKING, Any, List, Optional, Union
+from typing import TYPE_CHECKING, Any, Optional
 
 import websockets
 
@@ -63,6 +63,7 @@ class ConnectSpotWebsocketBase:
         client: KrakenSpotWSClientBase,
         endpoint: str,
         callback: Any,
+        *,
         is_auth: bool = False,
     ):
         self.__client: KrakenSpotWSClientBase = client
@@ -74,9 +75,9 @@ class ConnectSpotWebsocketBase:
 
         self.__is_auth: bool = is_auth
 
-        self._last_ping: Optional[Union[int, float]] = None
+        self._last_ping: Optional[int | float] = None
         self.socket: Optional[Any] = None
-        self._subscriptions: List[dict] = []
+        self._subscriptions: list[dict] = []
         self.task: asyncio.Task = asyncio.create_task(self.__run_forever())
 
     @property
@@ -90,7 +91,7 @@ class ConnectSpotWebsocketBase:
         return self.__client
 
     @property
-    def subscriptions(self: ConnectSpotWebsocketBase) -> List[dict]:
+    def subscriptions(self: ConnectSpotWebsocketBase) -> list[dict]:
         """Returns a copy of active subscriptions"""
         return deepcopy(self._subscriptions)
 
@@ -200,7 +201,7 @@ class ConnectSpotWebsocketBase:
         await asyncio.sleep(reconnect_wait)
 
         event: asyncio.Event = asyncio.Event()
-        tasks: List[asyncio.Task] = [
+        tasks: list[asyncio.Task] = [
             asyncio.create_task(self._recover_subscriptions(event)),
             asyncio.create_task(self.__run(event)),
         ]
@@ -231,7 +232,7 @@ class ConnectSpotWebsocketBase:
     def __get_reconnect_wait(
         self: ConnectSpotWebsocketBase,
         attempts: int,
-    ) -> Union[float, Any]:
+    ) -> float | Any:
         """
         Get some random wait time that increases by any attempt.
 
@@ -258,7 +259,7 @@ class ConnectSpotWebsocketBase:
 
     def _manage_subscriptions(
         self: ConnectSpotWebsocketBase,
-        message: Union[dict, list],
+        message: dict | list,
     ) -> None:
         """Function that is to be overloaded.
 
@@ -308,6 +309,7 @@ class ConnectSpotWebsocketV1(ConnectSpotWebsocketBase):
         client: KrakenSpotWSClientBase,
         endpoint: str,
         callback: Any,
+        *,
         is_auth: bool = False,
     ) -> None:
         super().__init__(
@@ -364,7 +366,7 @@ class ConnectSpotWebsocketV1(ConnectSpotWebsocketBase):
 
     def _manage_subscriptions(
         self: ConnectSpotWebsocketV1,
-        message: Union[dict, list],
+        message: dict | list,
     ) -> None:
         """
         Checks if the message contains events about un-/subscriptions
@@ -470,6 +472,7 @@ class ConnectSpotWebsocketV2(ConnectSpotWebsocketBase):
         client: KrakenSpotWSClientBase,
         endpoint: str,
         callback: Any,
+        *,
         is_auth: bool = False,
     ) -> None:
         super().__init__(

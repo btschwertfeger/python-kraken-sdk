@@ -16,7 +16,7 @@ authors = [
 description = "Collection of REST and websocket clients to interact with the Kraken cryptocurrency exchange."
 readme = "README.md"
 license = { file = "LICENSE" }
-requires-python = ">=3.7"
+requires-python = ">=3.11"
 dependencies = ["asyncio>=3.4", "requests", "websockets"]
 keywords = ["crypto", "trading", "kraken", "exchange", "api"]
 classifiers = [
@@ -28,10 +28,6 @@ classifiers = [
   "Topic :: Internet :: WWW/HTTP",
   "Topic :: Utilities",
   "Programming Language :: Python",
-  "Programming Language :: Python :: 3.7",
-  "Programming Language :: Python :: 3.8",
-  "Programming Language :: Python :: 3.9",
-  "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
   "Framework :: AsyncIO",
   "Natural Language :: English",
@@ -83,6 +79,7 @@ junit_family = "xunit2"
 testpaths = ["tests"]
 
 [tool.pytest.ini_options]
+cache_dir = ".cache/pytest"
 markers = [
   "wip: Used to run a specific test by hand.",
   "spot: … Spot endpoint.",
@@ -116,13 +113,13 @@ skip_empty = true
 # ========= T Y P I N G =======================================================
 #
 [tool.mypy]
-python_version = "3.7"
+python_version = "3.11"
 
 # junit_xml = "mypy.xml"
 files = ["kraken/**/*.py"]
 exclude = ["tests/*/*.py"]
 
-cache_dir = ".mypy_cache"
+cache_dir = ".cache/mypy"
 sqlite_cache = true
 cache_fine_grained = true
 
@@ -219,11 +216,12 @@ select = [
   "TID",   # flake8-tidy-imports
   # "ARG", # flake8-unused-arguments # todo: after the exceptions were updated (fix in v2.0.0)
   # "ERA", # eradicate # !(commented-out code)
-  # "FBT", # boolean trap # todo: fix in v2.0.0
+  "FBT", # boolean trap
   # "FIX", # flake8-fixme # !
   # "PTH", # flake8-use-pathlib # maybe
   # "TD",  # flake8-todos # !
   # "TRY", # tryceratops # todo: during update of the exceptions (fix in v2.0.0)
+  "FURB", # refurb
 ]
 fixable = ["I", "C4", "Q", "PT", "ICN", "COM", "RSE", "PT", "FA", "FA100"]
 

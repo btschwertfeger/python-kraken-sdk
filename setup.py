@@ -3,7 +3,7 @@
 # Copyright (C) 2023 Benjamin Thomas Schwertfeger
 # GitHub: https://github.com/btschwertfeger
 #
-# This file is only for legacy installation and will be removed in the future.
+# This file is is required for the documentation build process.
 
 import setuptools_scm  # pylint: disable=unused-import
 from setuptools import setup

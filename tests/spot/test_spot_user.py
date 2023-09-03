@@ -152,6 +152,7 @@ def test_get_trades_info(spot_auth_user: User) -> None:
             spot_auth_user.get_trades_info,
             spot_auth_user.get_trades_info,
         ),
+        strict=True,
     ):
         try:
             assert is_not_error(method(**params))
@@ -182,6 +183,7 @@ def test_get_orders_info(spot_auth_user: User) -> None:
             spot_auth_user.get_orders_info,
             spot_auth_user.get_orders_info,
         ),
+        strict=True,
     ):
         try:
             assert is_not_error(method(**params))

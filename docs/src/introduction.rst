@@ -65,6 +65,7 @@ General:
 - extensive examples
 - tested using the `pytest <https://docs.pytest.org/en/7.3.x/>`_ framework
 - releases are permanently archived at `Zenodo <https://zenodo.org/badge/latestdoi/510751854>`_
+- releases before v2.0.0 also support Python 3.7+
 
 
 Important Notice

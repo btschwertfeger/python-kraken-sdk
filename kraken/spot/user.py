@@ -9,7 +9,7 @@
 from __future__ import annotations
 
 from decimal import Decimal
-from typing import List, Optional, TypeVar, Union
+from typing import Optional, TypeVar
 
 from kraken.base_api import KrakenBaseSpotAPI, defined, ensure_string
 
@@ -60,7 +60,11 @@ class User(KrakenBaseSpotAPI):
         super().__enter__()
         return self
 
-    def get_account_balance(self: User) -> dict:
+    def get_account_balance(
+        self: User,
+        *,
+        extra_params: Optional[dict] = None,
+    ) -> dict:
         """
         Get the current balances of the user.
 
@@ -89,9 +93,14 @@ class User(KrakenBaseSpotAPI):
         return self._request(  # type: ignore[return-value]
             method="POST",
             uri="/private/Balance",
+            extra_params=extra_params,
         )
 
-    def get_balances(self: User) -> dict:
+    def get_balances(
+        self: User,
+        *,
+        extra_params: Optional[dict] = None,
+    ) -> dict:
         """
         Retrieve the user's asset balances and the
         the corresponding amount held by open orders.
@@ -131,6 +140,7 @@ class User(KrakenBaseSpotAPI):
         return self._request(  # type: ignore[return-value]
             method="POST",
             uri="/private/BalanceEx",
+            extra_params=extra_params,
         )
 
     def get_balance(self: User, currency: str) -> dict:
@@ -176,7 +186,12 @@ class User(KrakenBaseSpotAPI):
             "available_balance": float(available_balance),
         }
 
-    def get_trade_balance(self: User, asset: Optional[str] = "ZUSD") -> dict:
+    def get_trade_balance(
+        self: User,
+        asset: Optional[str] = "ZUSD",
+        *,
+        extra_params: Optional[dict] = None,
+    ) -> dict:
         """
         Get the summary of all collateral balances.
 
@@ -214,12 +229,15 @@ class User(KrakenBaseSpotAPI):
             method="POST",
             uri="/private/TradeBalance",
             params=params,
+            extra_params=extra_params,
         )
 
     def get_open_orders(
         self: User,
-        trades: Optional[bool] = False,
         userref: Optional[int] = None,
+        *,
+        trades: Optional[bool] = False,
+        extra_params: Optional[dict] = None,
     ) -> dict:
         """
         Get information about the open orders.
@@ -229,11 +247,11 @@ class User(KrakenBaseSpotAPI):
 
         - https://docs.kraken.com/rest/#operation/getOpenOrders
 
+        :param userref: Filter the results by user reference id
+        :type userref: int, optional
         :param trades: Include trades related to position or not into the
             response (default: ``False``)
         :type trades: bool
-        :param userref: Filter the results by user reference id
-        :type userref: int, optional
 
         .. code-block:: python
             :linenos:
@@ -285,16 +303,19 @@ class User(KrakenBaseSpotAPI):
             method="POST",
             uri="/private/OpenOrders",
             params=params,
+            extra_params=extra_params,
         )
 
     def get_closed_orders(
         self: User,
-        trades: Optional[bool] = False,
         userref: Optional[int] = None,
         start: Optional[int] = None,
         end: Optional[int] = None,
         ofs: Optional[int] = None,
         closetime: Optional[str] = "both",
+        *,
+        trades: Optional[bool] = False,
+        extra_params: Optional[dict] = None,
     ) -> dict:
         """
         Get the 50 latest closed (filled or canceled) orders.
@@ -304,9 +325,6 @@ class User(KrakenBaseSpotAPI):
 
         - https://docs.kraken.com/rest/#operation/getClosedOrders
 
-        :param trades: Include trades related to position into the response or
-        not (default: ``False``)
-        :type trades: bool
         :param userref: Filter the results by user reference id
         :type userref: int, optional
         :param start: Unix timestamp to start the search from
@@ -318,6 +336,9 @@ class User(KrakenBaseSpotAPI):
         :param closetime: Specify the exact time frame, one of: ``both``,
             ``open``, ``close`` (default: ``both``)
         :type closetime: str, optional
+        :param trades: Include trades related to position into the response or
+            not (default: ``False``)
+        :type trades: bool
 
         .. code-block:: python
             :linenos:
@@ -377,15 +398,18 @@ class User(KrakenBaseSpotAPI):
             method="POST",
             uri="/private/ClosedOrders",
             params=params,
+            extra_params=extra_params,
         )
 
     @ensure_string("txid")
     def get_orders_info(
         self: User,
-        txid: Union[List[str], str],
-        trades: Optional[bool] = False,
+        txid: list[str] | str,
         userref: Optional[int] = None,
+        *,
+        trades: Optional[bool] = False,
         consolidate_taker: Optional[bool] = True,
+        extra_params: Optional[dict] = None,
     ) -> dict:
         """
         Get information about one or more orders.
@@ -397,11 +421,11 @@ class User(KrakenBaseSpotAPI):
 
         :param txid: A transaction id of a specific order, a list of txids or a
             string containing a comma delimited list of txids
-        :type txid: str | List[str]
-        :param trades: Include trades in the result or not (default: ``False``)
-        :type trades: bool, optional
+        :type txid: str | list[str]
         :param userref: Filter results by user reference id
         :type userref: int, optional
+        :param trades: Include trades in the result or not (default: ``False``)
+        :type trades: bool, optional
         :param consolidate_taker: Consolidate trades by individual taker trades
             (default: ``True``)
         :type consolidate_taker: bool, optional
@@ -487,16 +511,19 @@ class User(KrakenBaseSpotAPI):
             method="POST",
             uri="/private/QueryOrders",
             params=params,
+            extra_params=extra_params,
         )
 
     def get_trades_history(
         self: User,
         type_: Optional[str] = "all",
-        trades: Optional[bool] = False,
         start: Optional[int] = None,
         end: Optional[int] = None,
         ofs: Optional[int] = None,
+        *,
+        trades: Optional[bool] = False,
         consolidate_taker: bool = True,
+        extra_params: Optional[dict] = None,
     ) -> dict:
         """
         Get information about the latest 50 trades and fills. Can be paginated.
@@ -509,12 +536,12 @@ class User(KrakenBaseSpotAPI):
             ``any position``, ``closed position``, ``closing position``, and
             ``no position`` (default: ``all``)
         :type type_: str, optional
-        :param trades: Include trades related to a position or not (default: ``False``)
-        :type trades: bool, optional
         :param start: Timestamp or txid to start the search
         :type start: int, optional
         :param end: Timestamp or txid to define the last included result
         :type end: int, optional
+        :param trades: Include trades related to a position or not (default: ``False``)
+        :type trades: bool, optional
         :param consolidate_taker: Consolidate trades by individual taker trades (default: ``True``)
         :type consolidate_taker: bool
 
@@ -564,13 +591,16 @@ class User(KrakenBaseSpotAPI):
             method="POST",
             uri="/private/TradesHistory",
             params=params,
+            extra_params=extra_params,
         )
 
     @ensure_string("txid")
     def get_trades_info(
         self: User,
-        txid: Union[str, List[str]],
+        txid: str | list[str],
+        *,
         trades: Optional[bool] = False,
+        extra_params: Optional[dict] = None,
     ) -> dict:
         """
         Get information about specific trades/filled orders. 20 txids can be queried maximum.
@@ -581,7 +611,7 @@ class User(KrakenBaseSpotAPI):
         - https://docs.kraken.com/rest/#operation/getTradesInfo
 
         :param txid: txid or list of txids or comma delimited list of txids as string
-        :type txid: str | List[str]
+        :type txid: str | list[str]
         :param trades: Include trades related to position in result (default: ``False``)
         :type trades: bool
 
@@ -618,14 +648,17 @@ class User(KrakenBaseSpotAPI):
                 "trades": trades,
                 "txid": txid,
             },
+            extra_params=extra_params,
         )
 
     @ensure_string("txid")
     def get_open_positions(
         self: User,
-        txid: Optional[Union[str, List[str]]] = None,
-        docalcs: Optional[bool] = False,
+        txid: Optional[str | list[str]] = None,
         consolidation: Optional[str] = "market",
+        *,
+        docalcs: Optional[bool] = False,
+        extra_params: Optional[dict] = None,
     ) -> dict:
         """
         Get information about the open margin positions.
@@ -635,11 +668,11 @@ class User(KrakenBaseSpotAPI):
         - https://docs.kraken.com/rest/#operation/getOpenPositions
 
         :param txid: Filter by txid or list of txids or comma delimited list of txids as string
-        :type txid: str | List[str], optional
-        :param docalcs: Include profit and loss calculation into the result (default: ``False``)
-        :type docalcs: bool, optional
+        :type txid: str | list[str], optional
         :param consolidation: Consolidate positions by market/pair (default: ``market``)
         :type consolidation: str, optional
+        :param docalcs: Include profit and loss calculation into the result (default: ``False``)
+        :type docalcs: bool, optional
         :return: List of open positions
         :rtype: dict
 
@@ -679,17 +712,20 @@ class User(KrakenBaseSpotAPI):
             method="POST",
             uri="/private/OpenPositions",
             params=params,
+            extra_params=extra_params,
         )
 
     @ensure_string("asset")
     def get_ledgers_info(
         self: User,
-        asset: Optional[Union[str, List[str]]] = "all",
+        asset: Optional[str | list[str]] = "all",
         aclass: Optional[str] = "currency",
         type_: Optional[str] = "all",
         start: Optional[int] = None,
         end: Optional[int] = None,
         ofs: Optional[int] = None,
+        *,
+        extra_params: Optional[dict] = None,
     ) -> dict:
         """
         Get information about the users ledger entries. 50 results can be returned at a time.
@@ -700,7 +736,7 @@ class User(KrakenBaseSpotAPI):
         - https://docs.kraken.com/rest/#operation/getLedgers
 
         :param asset: The asset(s) to filter for (default: ``all``)
-        :type asset: str | List[str]
+        :type asset: str | list[str]
         :param aclass: The asset class (default: ``currency`` )
         :type aclass: str
         :param type_: Ledger type, one of: ``all``, ``deposit``, ``withdrawal``,
@@ -751,13 +787,16 @@ class User(KrakenBaseSpotAPI):
             method="POST",
             uri="/private/Ledgers",
             params=params,
+            extra_params=extra_params,
         )
 
     @ensure_string("id_")
     def get_ledgers(
         self: User,
-        id_: Union[str, List[str]],
+        id_: str | list[str],
+        *,
         trades: Optional[bool] = False,
+        extra_params: Optional[dict] = None,
     ) -> dict:
         """
         Get information about specific ledeger entries.
@@ -769,7 +808,7 @@ class User(KrakenBaseSpotAPI):
 
         :param id_: Ledger id as string, list of strings, or comma delimited
             list of ledger ids as string
-        :type id_: str | List[str]
+        :type id_: str | list[str]
         :param trades: Include trades related to a position or not
             (default: ``False``)
         :type trades: bool, optional
@@ -799,13 +838,16 @@ class User(KrakenBaseSpotAPI):
             method="POST",
             uri="/private/QueryLedgers",
             params={"trades": trades, "id": id_},
+            extra_params=extra_params,
         )
 
     @ensure_string("pair")
     def get_trade_volume(
         self: User,
-        pair: Optional[Union[str, List[str]]] = None,
+        pair: Optional[str | list[str]] = None,
+        *,
         fee_info: bool = True,
+        extra_params: Optional[dict] = None,
     ) -> dict:
         """
         Get the 30-day user specific trading volume in USD.
@@ -816,7 +858,7 @@ class User(KrakenBaseSpotAPI):
 
         :param pair: Asset pair, list of asset pairs or comma delimited list
             (as string) of asset pairs to filter
-        :type pair: str | List[str], optional
+        :type pair: str | list[str], optional
         :param fee_info: Include fee information or not (default: ``True``)
         :type fee_info: bool, optional
 
@@ -867,6 +909,7 @@ class User(KrakenBaseSpotAPI):
             method="POST",
             uri="/private/TradeVolume",
             params=params,
+            extra_params=extra_params,
         )
 
     @ensure_string("fields")
@@ -875,11 +918,11 @@ class User(KrakenBaseSpotAPI):
         report: str,
         description: str,
         format_: Optional[str] = "CSV",
-        fields: Optional[Union[str, List[str]]] = "all",
+        fields: Optional[str | list[str]] = "all",
         starttm: Optional[int] = None,
         endtm: Optional[int] = None,
-        timeout: int = 10,
-        **kwargs: dict,
+        *,
+        extra_params: Optional[dict] = None,
     ) -> dict:
         """
         Request to export the trades or ledgers of the user.
@@ -897,7 +940,7 @@ class User(KrakenBaseSpotAPI):
             ``CSV`` and ``TSV`` (default: ``CSV``)
         :type format_: str
         :param fields: Fields to include in the report (default: ``all``)
-        :type fields: str | List[str], optional
+        :type fields: str | list[str], optional
         :param starttm: Unix timestamp to start
         :type starttm: int, optional
         :param endtm: Unix timestamp of the last result
@@ -927,7 +970,6 @@ class User(KrakenBaseSpotAPI):
             "format": format_,
             "fields": fields,
         }
-        params.update(kwargs)
         if defined(starttm):
             params["starttm"] = starttm
         if defined(endtm):
@@ -936,10 +978,15 @@ class User(KrakenBaseSpotAPI):
             method="POST",
             uri="/private/AddExport",
             params=params,
-            timeout=timeout,
+            extra_params=extra_params,
         )
 
-    def get_export_report_status(self: User, report: str) -> dict:
+    def get_export_report_status(
+        self: User,
+        report: str,
+        *,
+        extra_params: Optional[dict] = None,
+    ) -> dict:
         """
         Get the status of the current pending report.
 
@@ -953,7 +1000,7 @@ class User(KrakenBaseSpotAPI):
         :param report: Kind of report, one of: ``trades``, ``ledgers``
         :type report: str
         :return: Information about the pending report
-        :rtype: List[dict]
+        :rtype: list[dict]
 
         .. code-block:: python
             :linenos:
@@ -994,9 +1041,15 @@ class User(KrakenBaseSpotAPI):
             method="POST",
             uri="/private/ExportStatus",
             params={"report": report},
+            extra_params=extra_params,
         )
 
-    def retrieve_export(self: User, id_: str) -> dict:
+    def retrieve_export(
+        self: User,
+        id_: str,
+        *,
+        extra_params: Optional[dict] = None,
+    ) -> dict:
         """
         Retrieve the requested report export.
 
@@ -1034,12 +1087,15 @@ class User(KrakenBaseSpotAPI):
             uri="/private/RetrieveExport",
             params={"id": id_},
             return_raw=True,
+            extra_params=extra_params,
         )
 
     def delete_export_report(
         self: User,
         id_: str,
         type_: Optional[str] = "delete",
+        *,
+        extra_params: Optional[dict] = None,
     ) -> dict:
         """
         Delete a report from the Kraken server.
@@ -1071,9 +1127,16 @@ class User(KrakenBaseSpotAPI):
             method="POST",
             uri="/private/RemoveExport",
             params={"id": id_, "type": type_},
+            extra_params=extra_params,
         )
 
-    def create_subaccount(self: User, username: str, email: str) -> dict:
+    def create_subaccount(
+        self: User,
+        username: str,
+        email: str,
+        *,
+        extra_params: Optional[dict] = None,
+    ) -> dict:
         """
         Create a subaccount for trading. This is currently *only available
         for institutional clients*.
@@ -1100,14 +1163,17 @@ class User(KrakenBaseSpotAPI):
             method="POST",
             uri="/private/CreateSubaccount",
             params={"username": username, "email": email},
+            extra_params=extra_params,
         )
 
     def account_transfer(
         self: "User",
         asset: str,
-        amount: Union[str, float],
+        amount: str | float,
         from_: str,
         to_: str,
+        *,
+        extra_params: Optional[dict] = None,
     ) -> dict:
         """
         Transfer funds between master and subaccounts. This is currently *only
@@ -1150,6 +1216,7 @@ class User(KrakenBaseSpotAPI):
             method="POST",
             uri="/private/AccountTransfer",
             params={"asset": asset, "amount": amount, "from": from_, "to": to_},
+            extra_params=extra_params,
         )
 
 

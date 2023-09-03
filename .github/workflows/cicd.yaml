@@ -66,8 +66,7 @@ jobs:
     uses: ./.github/workflows/_codeql.yaml
 
   ## ===========================================================================
-  ##    Builds the package on multiple OS for multiple
-  ##    Python versions
+  ##    Builds the package on multiple OS
   ##
   Build:
     needs: [Pre-Commit]
@@ -76,7 +75,7 @@ jobs:
       fail-fast: true
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
-        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
+        python-version: ["3.11"]
     with:
       os: ${{ matrix.os }}
       python-version: ${{ matrix.python-version }}
@@ -92,7 +91,7 @@ jobs:
       python-version: "3.11"
 
   ## ===========================================================================
-  ##          Run the Spot tests for Python 3.7 until 3.11
+  ##          Run the Spot tests
   ##
   ##  (public endpoints)
   ##
@@ -103,7 +102,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest]
-        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
+        python-version: ["3.11"]
     with:
       os: ${{ matrix.os }}
       python-version: ${{ matrix.python-version }}
@@ -117,14 +116,14 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest] # only ubuntu since this takes to much time ATM
-        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
+        python-version: ["3.11"]
     with:
       os: ${{ matrix.os }}
       python-version: ${{ matrix.python-version }}
     secrets: inherit
 
   ## ===========================================================================
-  ##        Run the Futures tests for Python 3.7 until 3.11
+  ##        Run the Futures tests
   ##
   ##  (public endpoints)
   Test-Futures-Public:
@@ -134,7 +133,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest]
-        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
+        python-version: ["3.11"]
     with:
       os: ${{ matrix.os }}
       python-version: ${{ matrix.python-version }}
@@ -148,7 +147,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest]
-        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
+        python-version: ["3.11"]
     with:
       os: ${{ matrix.os }}
       python-version: ${{ matrix.python-version }}

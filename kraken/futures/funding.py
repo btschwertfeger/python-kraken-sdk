@@ -7,7 +7,7 @@
 
 from __future__ import annotations
 
-from typing import Optional, TypeVar, Union
+from typing import Optional, TypeVar
 
 from kraken.base_api import KrakenBaseFuturesAPI
 
@@ -52,6 +52,7 @@ class Funding(KrakenBaseFuturesAPI):
         key: str = "",
         secret: str = "",
         url: str = "",
+        *,
         sandbox: bool = False,
     ) -> None:
         super().__init__(key=key, secret=secret, url=url, sandbox=sandbox)
@@ -60,7 +61,12 @@ class Funding(KrakenBaseFuturesAPI):
         super().__enter__()
         return self
 
-    def get_historical_funding_rates(self: Funding, symbol: str) -> dict:
+    def get_historical_funding_rates(
+        self: Funding,
+        symbol: str,
+        *,
+        extra_params: Optional[dict] = None,
+    ) -> dict:
         """
         Retrieve information about the historical funding rates of a specific ``symbol``
 
@@ -96,14 +102,17 @@ class Funding(KrakenBaseFuturesAPI):
             uri="/derivatives/api/v4/historicalfundingrates",
             query_params={"symbol": symbol},
             auth=False,
+            extra_params=extra_params,
         )
 
     def initiate_wallet_transfer(
         self: Funding,
-        amount: Union[str, float],
+        amount: str | float,
         fromAccount: str,
         toAccount: str,
         unit: str,
+        *,
+        extra_params: Optional[dict] = None,
     ) -> dict:
         """
         Submit a wallet transfer request to transfer funds between margin accounts.
@@ -149,16 +158,19 @@ class Funding(KrakenBaseFuturesAPI):
                 "unit": unit,
             },
             auth=True,
+            extra_params=extra_params,
         )
 
     def initiate_subaccount_transfer(
         self: Funding,
-        amount: Union[str, float],
+        amount: str | float,
         fromAccount: str,
         fromUser: str,
         toAccount: str,
         toUser: str,
         unit: str,
+        *,
+        extra_params: Optional[dict] = None,
     ) -> dict:
         """
         Submit a request to transfer funds between the regular and subaccount.
@@ -206,14 +218,16 @@ class Funding(KrakenBaseFuturesAPI):
                 "unit": unit,
             },
             auth=True,
+            extra_params=extra_params,
         )
 
     def initiate_withdrawal_to_spot_wallet(
         self: Funding,
-        amount: Union[str, float],
+        amount: str | float,
         currency: str,
         sourceWallet: Optional[str] = None,
-        **kwargs: dict,
+        *,
+        extra_params: Optional[dict] = None,
     ) -> dict:
         """
         Enables the transfer of funds between the futures and spot wallet.
@@ -251,12 +265,13 @@ class Funding(KrakenBaseFuturesAPI):
         }
         if sourceWallet is not None:
             params["sourceWallet"] = sourceWallet
-        params.update(kwargs)
+
         return self._request(  # type: ignore[return-value]
             method="POST",
             uri="/derivatives/api/v3/withdrawal",
             post_params=params,
             auth=True,
+            extra_params=extra_params,
         )
 
 

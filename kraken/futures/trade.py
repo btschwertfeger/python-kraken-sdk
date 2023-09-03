@@ -8,7 +8,7 @@
 
 from __future__ import annotations
 
-from typing import List, Optional, Tuple, TypeVar, Union
+from typing import Optional, TypeVar
 
 from kraken.base_api import KrakenBaseFuturesAPI, defined
 
@@ -53,6 +53,7 @@ class Trade(KrakenBaseFuturesAPI):
         key: str = "",
         secret: str = "",
         url: str = "",
+        *,
         sandbox: bool = False,
     ) -> None:
         super().__init__(key=key, secret=secret, url=url, sandbox=sandbox)
@@ -61,7 +62,12 @@ class Trade(KrakenBaseFuturesAPI):
         super().__enter__()
         return self
 
-    def get_fills(self: Trade, lastFillTime: Optional[str] = None) -> dict:
+    def get_fills(
+        self: Trade,
+        lastFillTime: Optional[str] = None,
+        *,
+        extra_params: Optional[dict] = None,
+    ) -> dict:
         """
         Return the current fills of the user.
 
@@ -104,9 +110,15 @@ class Trade(KrakenBaseFuturesAPI):
             uri="/derivatives/api/v3/fills",
             query_params=query_params,
             auth=True,
+            extra_params=extra_params,
         )
 
-    def create_batch_order(self: Trade, batchorder_list: List[dict]) -> dict:
+    def create_batch_order(
+        self: Trade,
+        batchorder_list: list[dict],
+        *,
+        extra_params: Optional[dict] = None,
+    ) -> dict:
         """
         Create multiple orders at once using the batch order endpoint.
 
@@ -115,7 +127,7 @@ class Trade(KrakenBaseFuturesAPI):
         - https://docs.futures.kraken.com/#http-api-trading-v3-api-order-management-batch-order-management
 
         :param batchorder_list: List of order instructions (see example below - or the linked official Kraken documentation)
-        :type batchorder_list: List[dict]
+        :type batchorder_list: list[dict]
         :return: Information about the submitted request
         :rtype: dict
 
@@ -211,9 +223,15 @@ class Trade(KrakenBaseFuturesAPI):
             uri="/derivatives/api/v3/batchorder",
             post_params={"json": f"{batchorder}"},
             auth=True,
+            extra_params=extra_params,
         )
 
-    def cancel_all_orders(self: Trade, symbol: Optional[str] = None) -> dict:
+    def cancel_all_orders(
+        self: Trade,
+        symbol: Optional[str] = None,
+        *,
+        extra_params: Optional[dict] = None,
+    ) -> dict:
         """
         Cancels all open orders, can be filtered by symbol.
 
@@ -259,9 +277,15 @@ class Trade(KrakenBaseFuturesAPI):
             uri="/derivatives/api/v3/cancelallorders",
             post_params=params,
             auth=True,
+            extra_params=extra_params,
         )
 
-    def dead_mans_switch(self: Trade, timeout: Optional[int] = 0) -> dict:
+    def dead_mans_switch(
+        self: Trade,
+        timeout: Optional[int] = 0,
+        *,
+        extra_params: Optional[dict] = None,
+    ) -> dict:
         """
         The Death Man's Switch can be used to cancel all orders after a specific timeout.
         If the timeout is set to 60, all orders will be cancelled after 60 seconds. The timeout
@@ -297,12 +321,15 @@ class Trade(KrakenBaseFuturesAPI):
             method="POST",
             uri="/derivatives/api/v3/cancelallordersafter",
             post_params={"timeout": timeout},
+            extra_params=extra_params,
         )
 
     def cancel_order(
         self: Trade,
         order_id: Optional[str] = None,
         cliOrdId: Optional[str] = None,
+        *,
+        extra_params: Optional[dict] = None,
     ) -> dict:
         """
         This endpoint can be used to cancel a specific order by ``order_id`` or ``cliOrdId``.
@@ -349,15 +376,18 @@ class Trade(KrakenBaseFuturesAPI):
             uri="/derivatives/api/v3/cancelorder",
             post_params=params,
             auth=True,
+            extra_params=extra_params,
         )
 
     def edit_order(
         self: Trade,
         orderId: Optional[str] = None,
         cliOrdId: Optional[str] = None,
-        limitPrice: Optional[Union[str, int, float]] = None,
-        size: Optional[Union[str, int, float]] = None,
-        stopPrice: Optional[Union[str, int, float]] = None,
+        limitPrice: Optional[str | float] = None,
+        size: Optional[str | float] = None,
+        stopPrice: Optional[str | float] = None,
+        *,
+        extra_params: Optional[dict] = None,
     ) -> dict:
         """
         Edit an open order.
@@ -371,11 +401,11 @@ class Trade(KrakenBaseFuturesAPI):
         :param cliOrdId: The client defined order id
         :type cliOrdId: str, optional
         :param limitPrice: The new limit price
-        :type limitPrice: str | int | float None
+        :type limitPrice: str | float None
         :param size: The new size of the position
-        :type size: str | int | float, optional
+        :type size: str | float, optional
         :param stopPrice: The stop price
-        :type stopPrice: str | int | float, optional
+        :type stopPrice: str | float, optional
         :raises ValueError: If both ``orderId`` and ``cliOrdId`` are not set
         :return: Success or failure
         :rtype: dict
@@ -419,12 +449,15 @@ class Trade(KrakenBaseFuturesAPI):
             uri="/derivatives/api/v3/editorder",
             post_params=params,
             auth=True,
+            extra_params=extra_params,
         )
 
     def get_orders_status(
         self: Trade,
-        orderIds: Optional[Union[str, List[str]]] = None,
-        cliOrdIds: Optional[Union[str, List[str]]] = None,
+        orderIds: Optional[str | list[str]] = None,
+        cliOrdIds: Optional[str | list[str]] = None,
+        *,
+        extra_params: Optional[dict] = None,
     ) -> dict:
         """
         Get the status of multiple orders.
@@ -434,9 +467,9 @@ class Trade(KrakenBaseFuturesAPI):
         - https://docs.futures.kraken.com/#http-api-trading-v3-api-order-management-get-the-current-status-for-specific-orders
 
         :param orderIds: The order ids to cancel
-        :type orderIds: str | List[str], optional
+        :type orderIds: str | list[str], optional
         :param cliOrdId: The client defined order ids
-        :type cliOrdId: str | List[str], optional
+        :type cliOrdId: str | list[str], optional
         :return: Success or failure
         :rtype: dict
 
@@ -464,21 +497,24 @@ class Trade(KrakenBaseFuturesAPI):
             uri="/derivatives/api/v3/orders/status",
             post_params=params,
             auth=True,
+            extra_params=extra_params,
         )
 
     def create_order(  # noqa: PLR0913
         self: Trade,
         orderType: str,
-        size: Union[str, float],
+        size: str | float,
         symbol: str,
         side: str,
         cliOrdId: Optional[str] = None,
-        limitPrice: Optional[Union[str, float]] = None,
+        limitPrice: Optional[str | float] = None,
         reduceOnly: Optional[bool] = None,
-        stopPrice: Optional[Union[str, float]] = None,
+        stopPrice: Optional[str | float] = None,
         triggerSignal: Optional[str] = None,
         trailingStopDeviationUnit: Optional[str] = None,
         trailingStopMaxDeviation: Optional[str] = None,
+        *,
+        extra_params: Optional[dict] = None,
     ) -> dict:
         """
         Create and place an order on the futures market.
@@ -499,7 +535,7 @@ class Trade(KrakenBaseFuturesAPI):
         :param cliOrdId: A user defined order id
         :type cliOrdId: str, optional
         :param limitPrice: Define a custom limit price
-        :type limitPrice: str |float
+        :type limitPrice: str | float, optional
         :param reduceOnly: Reduces existing positions if set to ``True``
         :type reduceOnly: bool, optional
         :param stopPrice: Define a price when to exit the order. Required for specific order types
@@ -643,7 +679,7 @@ class Trade(KrakenBaseFuturesAPI):
             }
         """
 
-        sides: Tuple[str, str] = ("buy", "sell")
+        sides: tuple[str, str] = ("buy", "sell")
         if side not in sides:
             raise ValueError(f"Invalid side. One of [{sides}] is required!")
 
@@ -676,6 +712,7 @@ class Trade(KrakenBaseFuturesAPI):
             uri="/derivatives/api/v3/sendorder",
             post_params=params,
             auth=True,
+            extra_params=extra_params,
         )
 
 
