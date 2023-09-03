@@ -1,0 +1,3 @@
+asyncio>=3.4
+requests
+websockets
