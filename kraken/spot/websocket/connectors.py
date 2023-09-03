@@ -63,6 +63,7 @@ class ConnectSpotWebsocketBase:
         client: KrakenSpotWSClientBase,
         endpoint: str,
         callback: Any,
+        *,
         is_auth: bool = False,
     ):
         self.__client: KrakenSpotWSClientBase = client
@@ -308,6 +309,7 @@ class ConnectSpotWebsocketV1(ConnectSpotWebsocketBase):
         client: KrakenSpotWSClientBase,
         endpoint: str,
         callback: Any,
+        *,
         is_auth: bool = False,
     ) -> None:
         super().__init__(
@@ -470,6 +472,7 @@ class ConnectSpotWebsocketV2(ConnectSpotWebsocketBase):
         client: KrakenSpotWSClientBase,
         endpoint: str,
         callback: Any,
+        *,
         is_auth: bool = False,
     ) -> None:
         super().__init__(

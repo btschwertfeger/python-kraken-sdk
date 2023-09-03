@@ -160,6 +160,7 @@ class KrakenSpotWSClient(KrakenSpotWSClientBase):
         key: str = "",
         secret: str = "",
         callback: Optional[Callable] = None,
+        *,
         no_public: bool = False,
         beta: bool = False,
     ):
@@ -175,6 +176,7 @@ class KrakenSpotWSClient(KrakenSpotWSClientBase):
     async def send_message(  # pylint: disable=arguments-differ
         self: KrakenSpotWSClient,
         message: dict,
+        *,
         private: bool = False,
         raw: bool = False,
     ) -> None:
@@ -387,18 +389,19 @@ class KrakenSpotWSClient(KrakenSpotWSClientBase):
         volume: str | float,
         price: Optional[str | float] = None,
         price2: Optional[str | float] = None,
-        truncate: bool = False,
         leverage: Optional[str | float] = None,
         oflags: Optional[str | list[str]] = None,
         starttm: Optional[str | int] = None,
         expiretm: Optional[str | int] = None,
         deadline: Optional[str] = None,
         userref: Optional[str | int] = None,
-        validate: bool = False,
         close_ordertype: Optional[str] = None,
         close_price: Optional[str | float] = None,
         close_price2: Optional[str | float] = None,
         timeinforce: Optional[str | int] = None,
+        *,
+        truncate: bool = False,
+        validate: bool = False,
     ) -> None:
         """
         Create an order and submit it.
@@ -427,11 +430,6 @@ class KrakenSpotWSClient(KrakenSpotWSClientBase):
             ``take-profit-limit`` orders (see the referenced Kraken
             documentation for more information)
         :type price2: str | float, optional
-        :param truncate: If enabled: round the ``price`` and ``volume`` to
-            Kraken's maximum allowed decimal places. See
-            https://support.kraken.com/hc/en-us/articles/4521313131540
-            fore more information about decimals.
-        :type truncate: bool, optional
         :param leverage: The leverage
         :type leverage: str | float, optional
         :param oflags: Order flags like ``post``, ``fcib``, ``fciq``, ``nomp``,
@@ -449,9 +447,6 @@ class KrakenSpotWSClient(KrakenSpotWSClientBase):
         :type deadline: str
         :param userref: User reference id for example to group orders
         :type userref: int
-        :param validate: Validate the order without placing on the market
-            (default: ``False``)
-        :type validate: bool, optional
         :param close_ordertype:  Conditional close order type, one of:
             ``limit``, ``stop-loss``, ``take-profit``, ``stop-loss-limit``,
             ``take-profit-limit``
@@ -464,6 +459,14 @@ class KrakenSpotWSClient(KrakenSpotWSClientBase):
             ``GTC``, ``IOC``, ``GTD`` (see the referenced Kraken documentation
             for more information)
         :type timeinforce: str, optional
+        :param truncate: If enabled: round the ``price`` and ``volume`` to
+            Kraken's maximum allowed decimal places. See
+            https://support.kraken.com/hc/en-us/articles/4521313131540
+            fore more information about decimals.
+        :type truncate: bool, optional
+        :param validate: Validate the order without placing on the market
+            (default: ``False``)
+        :type validate: bool, optional
         :raises KrakenAuthenticationError: If the websocket is not connected or
             the connection is not authenticated
         :raises ValueError: If input is not correct
@@ -552,10 +555,11 @@ class KrakenSpotWSClient(KrakenSpotWSClientBase):
         pair: Optional[str] = None,
         price: Optional[str | float] = None,
         price2: Optional[str | float] = None,
-        truncate: bool = False,
         volume: Optional[str | float] = None,
         oflags: Optional[str | list[str]] = None,
         newuserref: Optional[str | int] = None,
+        *,
+        truncate: bool = False,
         validate: bool = False,
     ) -> None:
         """
@@ -576,17 +580,17 @@ class KrakenSpotWSClient(KrakenSpotWSClientBase):
         :type price: str | int | float, optional
         :param price2: Set a new second price
         :type price2: str | int | float, optional
-        :param truncate: If enabled: round the ``price`` and ``volume`` to Kraken's
-            maximum allowed decimal places. See
-            https://support.kraken.com/hc/en-us/articles/4521313131540 fore more
-            information about decimals.
-        :type truncate: bool, optional
         :param volume: Set a new volume
         :type volume: str | int | float, optional
         :param oflags: Set new oflags (overwrite old ones)
         :type oflags: str | list[str], optional
         :param newuserref: Set a new user reference id
         :type newuserref: str | int, optional
+        :param truncate: If enabled: round the ``price`` and ``volume`` to Kraken's
+            maximum allowed decimal places. See
+            https://support.kraken.com/hc/en-us/articles/4521313131540 fore more
+            information about decimals.
+        :type truncate: bool, optional
         :param validate: Validate the input without applying the changes
             (default: ``False``)
         :type validate: bool, optional

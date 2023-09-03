@@ -56,6 +56,7 @@ class User(KrakenBaseFuturesAPI):
         key: str = "",
         secret: str = "",
         url: str = "",
+        *,
         sandbox: bool = False,
     ) -> None:
         super().__init__(key=key, secret=secret, url=url, sandbox=sandbox)
@@ -862,6 +863,7 @@ class User(KrakenBaseFuturesAPI):
     def set_trading_on_subaccount(
         self: User,
         subaccountUid: str,
+        *,
         trading_enabled: bool,
     ) -> dict:
         """

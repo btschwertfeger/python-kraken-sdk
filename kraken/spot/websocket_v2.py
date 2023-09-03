@@ -158,6 +158,7 @@ class KrakenSpotWSClientV2(KrakenSpotWSClientBase):
         key: str = "",
         secret: str = "",
         callback: Optional[Callable] = None,
+        *,
         no_public: bool = False,
         beta: bool = False,
     ):
@@ -173,6 +174,7 @@ class KrakenSpotWSClientV2(KrakenSpotWSClientBase):
     async def send_message(  # noqa: PLR0912 # pylint: disable=arguments-differ
         self: KrakenSpotWSClientV2,
         message: dict,
+        *,
         raw: bool = False,
     ) -> None:
         """

@@ -116,6 +116,7 @@ class KrakenFuturesWSClient(KrakenBaseFuturesAPI):
         secret: str = "",
         url: str = "",
         callback: Optional[Any] = None,
+        *,
         sandbox: bool = False,
     ):
         super().__init__(key=key, secret=secret, url=url, sandbox=sandbox)

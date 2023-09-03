@@ -72,10 +72,8 @@ class Trade(KrakenBaseSpotAPI):
         volume: str | float,
         price: Optional[str | float] = None,
         price2: Optional[str | float] = None,
-        truncate: bool = False,
         trigger: Optional[str] = None,
         leverage: Optional[str] = None,
-        reduce_only: Optional[bool] = False,
         stptype: Optional[str] = "cancel-newest",
         oflags: Optional[str | list[str]] = None,
         timeinforce: Optional[str] = None,
@@ -86,8 +84,11 @@ class Trade(KrakenBaseSpotAPI):
         close_price: Optional[str | float] = None,
         close_price2: Optional[str | float] = None,
         deadline: Optional[str] = None,
-        validate: bool = False,
         userref: Optional[int] = None,
+        *,
+        truncate: bool = False,
+        reduce_only: Optional[bool] = False,
+        validate: bool = False,
     ) -> dict:
         """
         Create a new order and place it on the market.
@@ -116,18 +117,12 @@ class Trade(KrakenBaseSpotAPI):
                 * Prefixed by # is the same as ``+`` and ``-`` but the sign is set automatically
                 * The percentage sign ``%`` can be used to define relative changes.
         :type price2: str | float, optional
-        :param truncate: If enabled: round the ``price`` and ``volume`` to Kraken's
-            maximum allowed decimal places. See https://support.kraken.com/hc/en-us/articles/4521313131540
-            fore more information about decimals.
-        :type truncate: bool, optional
         :param trigger: What triggers the position of ``stop-loss``, ``stop-loss-limit``, ``take-profit``, and
             ``take-profit-limit`` orders. Will also be used for associated conditional close orders.
             Kraken will use ``last`` if nothing is specified.
         :type trigger: str, optional
         :param leverage: The leverage
         :type leverage: str | float, optional
-        :param reduce_only: Reduce existing orders (default: ``False``)
-        :type reduce_only: bool, optional
         :param stptype: Define what cancels the order, one of ``cancel-newest``,
             ``cancel-oldest``, ``cancel-both`` (default: ``cancel-newest``)
         :type stptype: str, optional
@@ -155,6 +150,12 @@ class Trade(KrakenBaseSpotAPI):
         :param deadline: RFC3339 timestamp + {0..60} seconds that defines when the matching
             engine should reject the order.
         :type deadline: str, optional
+        :param truncate: If enabled: round the ``price`` and ``volume`` to Kraken's
+            maximum allowed decimal places. See https://support.kraken.com/hc/en-us/articles/4521313131540
+            fore more information about decimals.
+        :type truncate: bool, optional
+        :param reduce_only: Reduce existing orders (default: ``False``)
+        :type reduce_only: bool, optional
         :param validate: Validate the order without placing on the market (default: ``False``)
         :type validate: bool, optional
         :param userref: User reference id for example to group orders
@@ -367,6 +368,7 @@ class Trade(KrakenBaseSpotAPI):
         orders: list[dict],
         pair: str,
         deadline: Optional[str] = None,
+        *,
         validate: bool = False,
     ) -> dict:
         """
@@ -448,12 +450,13 @@ class Trade(KrakenBaseSpotAPI):
         volume: Optional[str | float] = None,
         price: Optional[str | float] = None,
         price2: Optional[str | float] = None,
-        truncate: bool = False,
         oflags: Optional[str] = None,
         deadline: Optional[str] = None,
         cancel_response: Optional[bool] = None,
-        validate: bool = False,
         userref: Optional[int] = None,
+        *,
+        truncate: bool = False,
+        validate: bool = False,
     ) -> dict:
         """
         Edit an open order.
@@ -473,10 +476,6 @@ class Trade(KrakenBaseSpotAPI):
         :type price: str | float, optional
         :param price2: Set a new second price
         :type price2: str | float, optional
-        :param truncate: If enabled: round the ``price`` and ``volume`` to Kraken's
-            maximum allowed decimal places. See https://support.kraken.com/hc/en-us/articles/4521313131540
-            fore more information about decimals.
-        :type truncate: bool, optional
         :param oflags: Order flags like ``post``, ``fcib``, ``fciq``, ``nomp``,
             ``viqc`` (see the referenced Kraken documentation for more information)
         :type oflags: str | List[str], optional
@@ -484,6 +483,10 @@ class Trade(KrakenBaseSpotAPI):
         :type deadline: string
         :param cancel_response: See the referenced Kraken documentation for more information
         :type cancel_response: bool, optional
+        :param truncate: If enabled: round the ``price`` and ``volume`` to Kraken's
+            maximum allowed decimal places. See https://support.kraken.com/hc/en-us/articles/4521313131540
+            fore more information about decimals.
+        :type truncate: bool, optional
         :param validate: Validate the order without placing on the market (default: ``False``)
         :type validate: bool, optional
         :param userref: User reference id for example to group orders

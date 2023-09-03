@@ -186,6 +186,7 @@ class KrakenBaseSpotAPI:
         key: str = "",
         secret: str = "",
         url: str = "",
+        *,
         sandbox: bool = False,
         use_custom_exceptions: bool = True,
     ):
@@ -208,9 +209,10 @@ class KrakenBaseSpotAPI:
         self: KrakenBaseSpotAPI,
         method: str,
         uri: str,
-        timeout: int = 10,
-        auth: bool = True,
         params: Optional[dict] = None,
+        timeout: int = 10,
+        *,
+        auth: bool = True,
         do_json: bool = False,
         return_raw: bool = False,
     ) -> dict[str, Any] | list[str] | list[dict[str, Any]] | requests.Response:
@@ -223,13 +225,13 @@ class KrakenBaseSpotAPI:
         :type method: str
         :param uri: The endpoint to send the message
         :type uri: str
+        :param params: The query or post parameter of the request (default:
+            ``None``)
+        :type params: dict, optional
         :param timeout: Timeout for the request (default: ``10``)
         :type timeout: int
         :param auth: If the requests needs authentication (default: ``True``)
         :type auth: bool
-        :param params: The query or post parameter of the request (default:
-            ``None``)
-        :type params: dict, optional
         :param do_json: If the ``params`` must be "jsonified" - in case of
             nested dict style
         :type do_json: bool
@@ -287,36 +289,36 @@ class KrakenBaseSpotAPI:
         url: str = f"{self.url}{uri}"
         if method in ("GET", "DELETE"):
             return self.__check_response_data(
-                self.__session.request(
+                response=self.__session.request(
                     method=method,
                     url=url,
                     headers=headers,
                     timeout=timeout,
                 ),
-                return_raw,
+                return_raw=return_raw,
             )
 
         if do_json:
             return self.__check_response_data(
-                self.__session.request(
+                response=self.__session.request(
                     method=method,
                     url=url,
                     headers=headers,
                     json=params,
                     timeout=timeout,
                 ),
-                return_raw,
+                return_raw=return_raw,
             )
 
         return self.__check_response_data(
-            self.__session.request(
+            response=self.__session.request(
                 method=method,
                 url=url,
                 headers=headers,
                 data=params,
                 timeout=timeout,
             ),
-            return_raw,
+            return_raw=return_raw,
         )
 
     def _get_kraken_signature(
@@ -350,6 +352,7 @@ class KrakenBaseSpotAPI:
     def __check_response_data(
         self: KrakenBaseSpotAPI,
         response: requests.Response,
+        *,
         return_raw: bool = False,
     ) -> dict | list | requests.Response:
         """
@@ -426,6 +429,7 @@ class KrakenBaseFuturesAPI:
         key: str = "",
         secret: str = "",
         url: str = "",
+        *,
         sandbox: bool = False,
         use_custom_exceptions: bool = True,
     ):
@@ -450,10 +454,11 @@ class KrakenBaseFuturesAPI:
         self: KrakenBaseFuturesAPI,
         method: str,
         uri: str,
-        timeout: int = 10,
-        auth: bool = True,
-        post_params: Optional[dict] = None,
         query_params: Optional[dict] = None,
+        post_params: Optional[dict] = None,
+        timeout: int = 10,
+        *,
+        auth: bool = True,
         return_raw: bool = False,
     ) -> dict[str, Any] | list[dict[str, Any]] | list[str] | requests.Response:
         """
@@ -465,16 +470,16 @@ class KrakenBaseFuturesAPI:
         :type method: str
         :param uri: The endpoint to send the message
         :type uri: str
+        :param query_params: The query parameter of the request (default:
+            ``None``)
+        :type query_params: dict, optional
+        :param post_params: The query parameter of the request (default:
+            ``None``)
+        :type post_params: dict, optional
         :param timeout: Timeout for the request (default: ``10``)
         :type timeout: int
         :param auth: If the request needs authentication (default: ``True``)
         :type auth: bool
-        :param post_params: The query parameter of the request (default:
-            ``None``)
-        :type post_params: dict, optional
-        :param query_params: The query parameter of the request (default:
-            ``None``)
-        :type query_params: dict, optional
         :param do_json: If the ``post_params`` must be "jsonified" - in case of
             nested dict style
         :type do_json: bool, optional
@@ -529,7 +534,7 @@ class KrakenBaseFuturesAPI:
 
         if method in ("GET", "DELETE"):
             return self.__check_response_data(
-                self.__session.request(
+                response=self.__session.request(
                     method=method,
                     url=f"{self.url}{uri}"
                     if query_string == ""
@@ -537,30 +542,30 @@ class KrakenBaseFuturesAPI:
                     headers=headers,
                     timeout=timeout,
                 ),
-                return_raw,
+                return_raw=return_raw,
             )
 
         if method == "PUT":
             return self.__check_response_data(
-                self.__session.request(
+                response=self.__session.request(
                     method=method,
                     url=f"{self.url}{uri}",
                     params=str.encode(post_string),
                     headers=headers,
                     timeout=timeout,
                 ),
-                return_raw,
+                return_raw=return_raw,
             )
 
         return self.__check_response_data(
-            self.__session.request(
+            response=self.__session.request(
                 method=method,
                 url=f"{self.url}{uri}?{post_string}",
                 data=str.encode(post_string),
                 headers=headers,
                 timeout=timeout,
             ),
-            return_raw,
+            return_raw=return_raw,
         )
 
     def _get_kraken_futures_signature(
@@ -598,6 +603,7 @@ class KrakenBaseFuturesAPI:
     def __check_response_data(
         self: KrakenBaseFuturesAPI,
         response: requests.Response,
+        *,
         return_raw: bool = False,
     ) -> dict | requests.Response:
         """

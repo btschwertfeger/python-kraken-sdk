@@ -58,9 +58,10 @@ class KrakenSpotWSClientBase(KrakenBaseSpotAPI):
         key: str = "",
         secret: str = "",
         callback: Optional[Callable] = None,
+        api_version: str = "v2",
+        *,
         no_public: bool = False,
         beta: bool = False,
-        api_version: str = "v2",
     ) -> None:
         super().__init__(key=key, secret=secret, sandbox=beta)
 
@@ -79,6 +80,7 @@ class KrakenSpotWSClientBase(KrakenBaseSpotAPI):
     def __connect(
         self: KrakenSpotWSClientBase,
         version: str,
+        *,
         beta: bool,
         no_public: bool,
     ) -> None:
@@ -182,7 +184,7 @@ class KrakenSpotWSClientBase(KrakenBaseSpotAPI):
             "/private/GetWebSocketsToken",
         )
 
-    def _get_socket(self: KrakenSpotWSClientBase, private: bool) -> Any:
+    def _get_socket(self: KrakenSpotWSClientBase, *, private: bool) -> Any:
         """
         Returns the socket or ``None`` if not connected.
 

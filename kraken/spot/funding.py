@@ -98,6 +98,7 @@ class Funding(KrakenBaseSpotAPI):
         self: Funding,
         asset: str,
         method: str,
+        *,
         new: Optional[bool] = False,
     ) -> list[dict]:
         """

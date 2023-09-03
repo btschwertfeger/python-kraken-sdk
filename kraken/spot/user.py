@@ -218,8 +218,9 @@ class User(KrakenBaseSpotAPI):
 
     def get_open_orders(
         self: User,
-        trades: Optional[bool] = False,
         userref: Optional[int] = None,
+        *,
+        trades: Optional[bool] = False,
     ) -> dict:
         """
         Get information about the open orders.
@@ -229,11 +230,11 @@ class User(KrakenBaseSpotAPI):
 
         - https://docs.kraken.com/rest/#operation/getOpenOrders
 
+        :param userref: Filter the results by user reference id
+        :type userref: int, optional
         :param trades: Include trades related to position or not into the
             response (default: ``False``)
         :type trades: bool
-        :param userref: Filter the results by user reference id
-        :type userref: int, optional
 
         .. code-block:: python
             :linenos:
@@ -289,12 +290,13 @@ class User(KrakenBaseSpotAPI):
 
     def get_closed_orders(
         self: User,
-        trades: Optional[bool] = False,
         userref: Optional[int] = None,
         start: Optional[int] = None,
         end: Optional[int] = None,
         ofs: Optional[int] = None,
         closetime: Optional[str] = "both",
+        *,
+        trades: Optional[bool] = False,
     ) -> dict:
         """
         Get the 50 latest closed (filled or canceled) orders.
@@ -304,9 +306,6 @@ class User(KrakenBaseSpotAPI):
 
         - https://docs.kraken.com/rest/#operation/getClosedOrders
 
-        :param trades: Include trades related to position into the response or
-        not (default: ``False``)
-        :type trades: bool
         :param userref: Filter the results by user reference id
         :type userref: int, optional
         :param start: Unix timestamp to start the search from
@@ -318,6 +317,9 @@ class User(KrakenBaseSpotAPI):
         :param closetime: Specify the exact time frame, one of: ``both``,
             ``open``, ``close`` (default: ``both``)
         :type closetime: str, optional
+        :param trades: Include trades related to position into the response or
+            not (default: ``False``)
+        :type trades: bool
 
         .. code-block:: python
             :linenos:
@@ -383,8 +385,9 @@ class User(KrakenBaseSpotAPI):
     def get_orders_info(
         self: User,
         txid: list[str] | str,
-        trades: Optional[bool] = False,
         userref: Optional[int] = None,
+        *,
+        trades: Optional[bool] = False,
         consolidate_taker: Optional[bool] = True,
     ) -> dict:
         """
@@ -398,10 +401,10 @@ class User(KrakenBaseSpotAPI):
         :param txid: A transaction id of a specific order, a list of txids or a
             string containing a comma delimited list of txids
         :type txid: str | list[str]
-        :param trades: Include trades in the result or not (default: ``False``)
-        :type trades: bool, optional
         :param userref: Filter results by user reference id
         :type userref: int, optional
+        :param trades: Include trades in the result or not (default: ``False``)
+        :type trades: bool, optional
         :param consolidate_taker: Consolidate trades by individual taker trades
             (default: ``True``)
         :type consolidate_taker: bool, optional
@@ -492,10 +495,11 @@ class User(KrakenBaseSpotAPI):
     def get_trades_history(
         self: User,
         type_: Optional[str] = "all",
-        trades: Optional[bool] = False,
         start: Optional[int] = None,
         end: Optional[int] = None,
         ofs: Optional[int] = None,
+        *,
+        trades: Optional[bool] = False,
         consolidate_taker: bool = True,
     ) -> dict:
         """
@@ -509,12 +513,12 @@ class User(KrakenBaseSpotAPI):
             ``any position``, ``closed position``, ``closing position``, and
             ``no position`` (default: ``all``)
         :type type_: str, optional
-        :param trades: Include trades related to a position or not (default: ``False``)
-        :type trades: bool, optional
         :param start: Timestamp or txid to start the search
         :type start: int, optional
         :param end: Timestamp or txid to define the last included result
         :type end: int, optional
+        :param trades: Include trades related to a position or not (default: ``False``)
+        :type trades: bool, optional
         :param consolidate_taker: Consolidate trades by individual taker trades (default: ``True``)
         :type consolidate_taker: bool
 
@@ -570,6 +574,7 @@ class User(KrakenBaseSpotAPI):
     def get_trades_info(
         self: User,
         txid: str | list[str],
+        *,
         trades: Optional[bool] = False,
     ) -> dict:
         """
@@ -624,8 +629,9 @@ class User(KrakenBaseSpotAPI):
     def get_open_positions(
         self: User,
         txid: Optional[str | list[str]] = None,
-        docalcs: Optional[bool] = False,
         consolidation: Optional[str] = "market",
+        *,
+        docalcs: Optional[bool] = False,
     ) -> dict:
         """
         Get information about the open margin positions.
@@ -636,10 +642,10 @@ class User(KrakenBaseSpotAPI):
 
         :param txid: Filter by txid or list of txids or comma delimited list of txids as string
         :type txid: str | list[str], optional
-        :param docalcs: Include profit and loss calculation into the result (default: ``False``)
-        :type docalcs: bool, optional
         :param consolidation: Consolidate positions by market/pair (default: ``market``)
         :type consolidation: str, optional
+        :param docalcs: Include profit and loss calculation into the result (default: ``False``)
+        :type docalcs: bool, optional
         :return: List of open positions
         :rtype: dict
 
@@ -757,6 +763,7 @@ class User(KrakenBaseSpotAPI):
     def get_ledgers(
         self: User,
         id_: str | list[str],
+        *,
         trades: Optional[bool] = False,
     ) -> dict:
         """
@@ -805,6 +812,7 @@ class User(KrakenBaseSpotAPI):
     def get_trade_volume(
         self: User,
         pair: Optional[str | list[str]] = None,
+        *,
         fee_info: bool = True,
     ) -> dict:
         """

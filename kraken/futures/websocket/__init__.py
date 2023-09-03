@@ -201,6 +201,7 @@ class ConnectFuturesWebsocket:
     async def send_message(
         self: ConnectFuturesWebsocket,
         msg: dict,
+        *,
         private: bool = False,
     ) -> None:
         """
