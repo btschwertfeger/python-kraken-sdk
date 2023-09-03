@@ -112,7 +112,7 @@ skip_empty = true
 # ========= T Y P I N G =======================================================
 #
 [tool.mypy]
-python_version = "3.12"
+python_version = "3.11"
 
 # junit_xml = "mypy.xml"
 files = ["kraken/**/*.py"]
