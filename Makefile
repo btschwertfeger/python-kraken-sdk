@@ -19,6 +19,7 @@ help:
 .PHONY: build
 build:
 	$(PYTHON) -m build .
+
 .PHONY: rebuild
 rebuild: clean build
 
@@ -109,13 +110,11 @@ changelog:
 ##
 .PHONY: clean
 clean:
-	rm -rf .pytest_cache build/ dist/ \
+	rm -rf build/ dist/ \
 		python_kraken_sdk.egg-info \
 		docs/_build \
 		.vscode \
-		.cache \
-		.mypy_cache \
-		.ruff_cache
+		.cache
 
 	rm -f .coverage coverage.xml pytest.xml mypy.xml \
 		kraken/_version.py \

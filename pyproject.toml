@@ -79,6 +79,7 @@ junit_family = "xunit2"
 testpaths = ["tests"]
 
 [tool.pytest.ini_options]
+cache_dir = ".cache/pytest"
 markers = [
   "wip: Used to run a specific test by hand.",
   "spot: … Spot endpoint.",
