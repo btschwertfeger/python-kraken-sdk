@@ -11,7 +11,7 @@ Module that provides the base class for the Kraken Websocket clients v1 and v2.
 from __future__ import annotations
 
 import logging
-from typing import Any, Callable, List, Optional, Type, TypeVar, Union
+from typing import Any, Callable, Optional, Type, TypeVar
 
 from kraken.base_api import KrakenBaseSpotAPI
 from kraken.spot.websocket.connectors import (
@@ -58,20 +58,19 @@ class KrakenSpotWSClientBase(KrakenBaseSpotAPI):
         key: str = "",
         secret: str = "",
         callback: Optional[Callable] = None,
+        api_version: str = "v2",
+        *,
         no_public: bool = False,
         beta: bool = False,
-        api_version: str = "v2",
     ) -> None:
         super().__init__(key=key, secret=secret, sandbox=beta)
 
         self._is_auth: bool = bool(key and secret)
         self.__callback: Optional[Callable] = callback
         self.exception_occur: bool = False
-        self._pub_conn: Optional[
-            Union[ConnectSpotWebsocketV1, ConnectSpotWebsocketV2]
-        ] = None
+        self._pub_conn: Optional[ConnectSpotWebsocketV1 | ConnectSpotWebsocketV2] = None
         self._priv_conn: Optional[
-            Union[ConnectSpotWebsocketV1, ConnectSpotWebsocketV2]
+            ConnectSpotWebsocketV1 | ConnectSpotWebsocketV2
         ] = None
 
         self.__connect(version=api_version, beta=beta, no_public=no_public)
@@ -79,8 +78,9 @@ class KrakenSpotWSClientBase(KrakenBaseSpotAPI):
     # --------------------------------------------------------------------------
     # Internals
     def __connect(
-        self: "KrakenSpotWSClientBase",
+        self: KrakenSpotWSClientBase,
         version: str,
+        *,
         beta: bool,
         no_public: bool,
     ) -> None:
@@ -90,9 +90,8 @@ class KrakenSpotWSClientBase(KrakenBaseSpotAPI):
         :param version: The Websocket API version to use (one of ``v1``, ``v2``)
         :type version: str
         """
-        ConnectSpotWebsocket: Union[
-            Type[ConnectSpotWebsocketV1],
-            Type[ConnectSpotWebsocketV2],
+        ConnectSpotWebsocket: Type[ConnectSpotWebsocketV1] | Type[
+            ConnectSpotWebsocketV2
         ]
 
         if version == "v1":
@@ -132,7 +131,7 @@ class KrakenSpotWSClientBase(KrakenBaseSpotAPI):
 
     async def on_message(
         self: KrakenSpotWSClientBase,
-        message: Union[dict, list],
+        message: dict | list,
     ) -> None:
         """
         Calls the defined callback function (if defined). In most cases you
@@ -185,7 +184,7 @@ class KrakenSpotWSClientBase(KrakenBaseSpotAPI):
             "/private/GetWebSocketsToken",
         )
 
-    def _get_socket(self: KrakenSpotWSClientBase, private: bool) -> Any:
+    def _get_socket(self: KrakenSpotWSClientBase, *, private: bool) -> Any:
         """
         Returns the socket or ``None`` if not connected.
 
@@ -203,7 +202,7 @@ class KrakenSpotWSClientBase(KrakenBaseSpotAPI):
     @property
     def active_public_subscriptions(
         self: KrakenSpotWSClientBase,
-    ) -> Union[List[dict], Any]:
+    ) -> list[dict] | Any:
         """
         Returns the active public subscriptions
 
@@ -218,7 +217,7 @@ class KrakenSpotWSClientBase(KrakenBaseSpotAPI):
     @property
     def active_private_subscriptions(
         self: KrakenSpotWSClientBase,
-    ) -> Union[List[dict], Any]:
+    ) -> list[dict] | Any:
         """
         Returns the active private subscriptions
 
@@ -267,7 +266,7 @@ class KrakenSpotWSClientBase(KrakenBaseSpotAPI):
         raise NotImplementedError("Must be overloaded!")  # coverage: disable
 
     @property
-    def public_channel_names(self: KrakenSpotWSClientBase) -> List[str]:
+    def public_channel_names(self: KrakenSpotWSClientBase) -> list[str]:
         """
         This function must be overloaded and return a list of names that can be
         subscribed to (for unauthenticated connections).
@@ -275,7 +274,7 @@ class KrakenSpotWSClientBase(KrakenBaseSpotAPI):
         raise NotImplementedError("Must be overloaded!")  # coverage: disable
 
     @property
-    def private_channel_names(self: KrakenSpotWSClientBase) -> List[str]:
+    def private_channel_names(self: KrakenSpotWSClientBase) -> list[str]:
         """
         This function must be overloaded and return a list of names that can be
         subscribed to (for authenticated connections).

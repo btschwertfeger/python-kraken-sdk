@@ -8,7 +8,7 @@
 
 from __future__ import annotations
 
-from typing import List, Optional, TypeVar, Union
+from typing import Optional, TypeVar
 
 from kraken.base_api import KrakenBaseSpotAPI, defined
 
@@ -63,7 +63,7 @@ class Funding(KrakenBaseSpotAPI):
         asset: str,
         *,
         extra_params: Optional[dict] = None,
-    ) -> List[dict]:
+    ) -> list[dict]:
         """
         Get the available deposit methods for a specific asset.
 
@@ -72,7 +72,7 @@ class Funding(KrakenBaseSpotAPI):
         :param asset: Asset being deposited
         :type asset: str
         :return: List of available deposit methods of the asset
-        :rtype: List[dict]
+        :rtype: list[dict]
 
         .. code-block:: python
             :linenos:
@@ -104,10 +104,10 @@ class Funding(KrakenBaseSpotAPI):
         self: Funding,
         asset: str,
         method: str,
-        new: Optional[bool] = False,
         *,
+        new: Optional[bool] = False,
         extra_params: Optional[dict] = None,
-    ) -> List[dict]:
+    ) -> list[dict]:
         """
         Get the deposit addresses for a specific asset. New deposit addresses can be generated.
 
@@ -158,7 +158,7 @@ class Funding(KrakenBaseSpotAPI):
         method: Optional[str] = None,
         *,
         extra_params: Optional[dict] = None,
-    ) -> List[dict]:
+    ) -> list[dict]:
         """
         Get information about the recent deposit status. The look back period is 90 days and
         only the last 25 deposits will be returned.
@@ -172,7 +172,7 @@ class Funding(KrakenBaseSpotAPI):
         :param method: Filter by deposit method
         :type method: str, optional
         :return: The user specific deposit history
-        :rtype: List[dict]
+        :rtype: list[dict]
 
         .. code-block:: python
             :linenos:
@@ -234,7 +234,7 @@ class Funding(KrakenBaseSpotAPI):
         self: Funding,
         asset: str,
         key: str,
-        amount: Union[str, float],
+        amount: str | float,
         *,
         extra_params: Optional[dict] = None,
     ) -> dict:
@@ -285,7 +285,7 @@ class Funding(KrakenBaseSpotAPI):
         self: Funding,
         asset: str,
         key: str,
-        amount: Union[str, float],
+        amount: str | float,
         *,
         extra_params: Optional[dict] = None,
     ) -> dict:
@@ -332,7 +332,7 @@ class Funding(KrakenBaseSpotAPI):
         method: Optional[str] = None,
         *,
         extra_params: Optional[dict] = None,
-    ) -> List[dict]:
+    ) -> list[dict]:
         """
         Get information about the recent withdraw status, including withdraws of the
         past 90 days but at max 500 results.
@@ -344,7 +344,7 @@ class Funding(KrakenBaseSpotAPI):
         :param method: Filter by withdraw method (default: ``None``)
         :type method: str, optional
         :return: Withdrawal information
-        :rtype: List[dict]
+        :rtype: list[dict]
 
         .. code-block:: python
             :linenos:
@@ -423,7 +423,7 @@ class Funding(KrakenBaseSpotAPI):
         asset: str,
         from_: str,
         to_: str,
-        amount: Union[str, float],
+        amount: str | float,
         *,
         extra_params: Optional[dict] = None,
     ) -> dict:

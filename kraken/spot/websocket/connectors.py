@@ -20,7 +20,7 @@ import traceback
 from copy import deepcopy
 from random import random
 from time import time
-from typing import TYPE_CHECKING, Any, List, Optional, Union
+from typing import TYPE_CHECKING, Any, Optional
 
 import websockets
 
@@ -63,6 +63,7 @@ class ConnectSpotWebsocketBase:
         client: KrakenSpotWSClientBase,
         endpoint: str,
         callback: Any,
+        *,
         is_auth: bool = False,
     ):
         self.__client: KrakenSpotWSClientBase = client
@@ -74,9 +75,9 @@ class ConnectSpotWebsocketBase:
 
         self.__is_auth: bool = is_auth
 
-        self._last_ping: Optional[Union[int, float]] = None
+        self._last_ping: Optional[int | float] = None
         self.socket: Optional[Any] = None
-        self._subscriptions: List[dict] = []
+        self._subscriptions: list[dict] = []
         self.task: asyncio.Task = asyncio.create_task(self.__run_forever())
 
     @property
@@ -90,7 +91,7 @@ class ConnectSpotWebsocketBase:
         return self.__client
 
     @property
-    def subscriptions(self: ConnectSpotWebsocketBase) -> List[dict]:
+    def subscriptions(self: ConnectSpotWebsocketBase) -> list[dict]:
         """Returns a copy of active subscriptions"""
         return deepcopy(self._subscriptions)
 
@@ -114,6 +115,7 @@ class ConnectSpotWebsocketBase:
 
         async with websockets.connect(  # pylint: disable=no-member
             f"wss://{self.__ws_endpoint}",
+            extra_headers={"User-Agent": "python-kraken-sdk"},
             ping_interval=30,
         ) as socket:
             self.LOG.info("Websocket connected!")
@@ -141,6 +143,7 @@ class ConnectSpotWebsocketBase:
                     except ValueError:
                         self.LOG.warning(_msg)
                     else:
+                        self.LOG.debug(message)
                         self._manage_subscriptions(message=message)
                         await self.__callback(message)
 
@@ -198,7 +201,7 @@ class ConnectSpotWebsocketBase:
         await asyncio.sleep(reconnect_wait)
 
         event: asyncio.Event = asyncio.Event()
-        tasks: List[asyncio.Task] = [
+        tasks: list[asyncio.Task] = [
             asyncio.create_task(self._recover_subscriptions(event)),
             asyncio.create_task(self.__run(event)),
         ]
@@ -229,7 +232,7 @@ class ConnectSpotWebsocketBase:
     def __get_reconnect_wait(
         self: ConnectSpotWebsocketBase,
         attempts: int,
-    ) -> Union[float, Any]:
+    ) -> float | Any:
         """
         Get some random wait time that increases by any attempt.
 
@@ -256,7 +259,7 @@ class ConnectSpotWebsocketBase:
 
     def _manage_subscriptions(
         self: ConnectSpotWebsocketBase,
-        message: Union[dict, list],
+        message: dict | list,
     ) -> None:
         """Function that is to be overloaded.
 
@@ -306,6 +309,7 @@ class ConnectSpotWebsocketV1(ConnectSpotWebsocketBase):
         client: KrakenSpotWSClientBase,
         endpoint: str,
         callback: Any,
+        *,
         is_auth: bool = False,
     ) -> None:
         super().__init__(
@@ -362,7 +366,7 @@ class ConnectSpotWebsocketV1(ConnectSpotWebsocketBase):
 
     def _manage_subscriptions(
         self: ConnectSpotWebsocketV1,
-        message: Union[dict, list],
+        message: dict | list,
     ) -> None:
         """
         Checks if the message contains events about un-/subscriptions
@@ -468,6 +472,7 @@ class ConnectSpotWebsocketV2(ConnectSpotWebsocketBase):
         client: KrakenSpotWSClientBase,
         endpoint: str,
         callback: Any,
+        *,
         is_auth: bool = False,
     ) -> None:
         super().__init__(
@@ -515,12 +520,14 @@ class ConnectSpotWebsocketV2(ConnectSpotWebsocketBase):
         """
         if message.get("method") == "subscribe":
             if message.get("success") and message.get("result"):
+                message = self.__transform_subscription(subscription=message)
                 self.__append_subscription(subscription=message["result"])
             else:
                 self.LOG.warning(message)
 
         elif message.get("method") == "unsubscribe":
             if message.get("success") and message.get("result"):
+                message = self.__transform_subscription(subscription=message)
                 self.__remove_subscription(subscription=message["result"])
             else:
                 self.LOG.warning(message)
@@ -549,6 +556,44 @@ class ConnectSpotWebsocketV2(ConnectSpotWebsocketBase):
             ):
                 del self._subscriptions[position]
                 return
+
+    def __transform_subscription(
+        self: ConnectSpotWebsocketV2,
+        subscription: dict,
+    ) -> dict:
+        """
+        Returns a dictionary that can be used to subscribe to a websocket feed.
+        This function is most likely used to parse incoming un-/subscription
+        messages.
+
+        :param subscription: The raw un-/subscription confirmation
+        :type subscription: dict
+        :return: The "corrected" subscription
+        :rtype: dict
+        """
+        # Without deepcopy, the passed message will be modified, which is *not*
+        # intended.
+        subscription_copy: dict = deepcopy(subscription)
+
+        # Subscriptions for specific symbols must contain the 'symbols' key with
+        # a value of type list[str]. The python-kraken-sdk is caching active
+        # subscriptions from that moment, the successful response arrives. These
+        # responses must be parsed to use them to resubscribe on connection
+        # losses.
+        if subscription["result"].get("channel", "") in (
+            "book",
+            "ticker",
+            "ohlc",
+            "trade",
+        ) and not isinstance(
+            subscription["result"].get("symbol"),
+            list,
+        ):
+            subscription_copy["result"]["symbol"] = [
+                subscription_copy["result"]["symbol"],
+            ]
+
+        return subscription_copy
 
 
 __all__ = [

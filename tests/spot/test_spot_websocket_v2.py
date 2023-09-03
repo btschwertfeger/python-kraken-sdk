@@ -20,11 +20,13 @@ todo: check recover subscriptions
 from __future__ import annotations
 
 from asyncio import run as asyncio_run
+from copy import deepcopy
 from typing import Any
 
 import pytest
 
 from kraken.exceptions import KrakenException
+from kraken.spot.websocket.connectors import ConnectSpotWebsocketV2
 
 from .helper import SpotWebsocketClientV2TestWrapper, async_wait
 
@@ -381,3 +383,78 @@ def test_private_unsubscribe(
         '{"method": "unsubscribe", "req_id": 987654321, "result": {"channel": "executions"}, "success": true, "time_in": ',
     ):
         assert expected in caplog.text
+
+
+@pytest.mark.spot()
+@pytest.mark.spot_websocket()
+@pytest.mark.spot_websocket_v2()
+def test___transform_subscription() -> None:
+    """
+    Checks if the subscription transformation works properly by checking
+    the condition for multiple channels. This test may be trivial but in case
+    Kraken changes anything on that implementation, this will break and makes it
+    easier to track down the change.
+    """
+
+    incoming_subscription: dict
+    target_subscription: dict
+    for channel in ("book", "ticker", "ohlc", "trade"):
+        incoming_subscription = {
+            "method": "subscribe",
+            "result": {
+                "channel": channel,
+                "depth": 10,
+                "snapshot": True,
+                "symbol": "BTC/USD",
+            },
+            "success": True,
+            "time_in": "2023-08-30T04:59:14.052226Z",
+            "time_out": "2023-08-30T04:59:14.052263Z",
+        }
+
+        target_subscription = deepcopy(incoming_subscription)
+        target_subscription["result"]["symbol"] = ["BTC/USD"]
+
+        assert (
+            ConnectSpotWebsocketV2._ConnectSpotWebsocketV2__transform_subscription(
+                ConnectSpotWebsocketV2,
+                subscription=incoming_subscription,
+            )
+            == target_subscription
+        )
+
+
+@pytest.mark.spot()
+@pytest.mark.spot_websocket()
+@pytest.mark.spot_websocket_v2()
+def test___transform_subscription_no_change() -> None:
+    """
+    Similar to the test above -- but verifying that messages that don't need an
+    adjustment remain unchanged.
+
+    This test must be extended in case Kraken decides to changes more
+    parameters.
+    """
+
+    incoming_subscription: dict
+    for channel in ("book", "ticker", "ohlc", "trade"):
+        incoming_subscription = {
+            "method": "subscribe",
+            "result": {
+                "channel": channel,
+                "depth": 10,
+                "snapshot": True,
+                "symbol": ["BTC/USD"],
+            },
+            "success": True,
+            "time_in": "2023-08-30T04:59:14.052226Z",
+            "time_out": "2023-08-30T04:59:14.052263Z",
+        }
+
+        assert (
+            ConnectSpotWebsocketV2._ConnectSpotWebsocketV2__transform_subscription(
+                ConnectSpotWebsocketV2,
+                subscription=incoming_subscription,
+            )
+            == incoming_subscription
+        )

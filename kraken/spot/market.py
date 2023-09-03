@@ -9,7 +9,7 @@
 from __future__ import annotations
 
 from functools import lru_cache
-from typing import List, Optional, TypeVar, Union
+from typing import Optional, TypeVar
 
 from kraken.base_api import KrakenBaseSpotAPI, defined, ensure_string
 
@@ -64,7 +64,7 @@ class Market(KrakenBaseSpotAPI):
     @lru_cache()
     def get_assets(
         self: Market,
-        assets: Optional[Union[str, List[str]]] = None,
+        assets: Optional[str | list[str]] = None,
         aclass: Optional[str] = None,
         *,
         extra_params: Optional[dict] = None,
@@ -78,7 +78,7 @@ class Market(KrakenBaseSpotAPI):
         This function uses caching. Run ``get_assets.cache_clear()`` to clear.
 
         :param assets: Filter by asset(s)
-        :type assets: str | List[str], optional
+        :type assets: str | list[str], optional
         :param aclass: Filter by asset class
         :type aclass: str, optional
         :return: Information about the requested assets
@@ -138,7 +138,7 @@ class Market(KrakenBaseSpotAPI):
     @lru_cache()
     def get_asset_pairs(
         self: Market,
-        pair: Optional[Union[str, List[str]]] = None,
+        pair: Optional[str | list[str]] = None,
         info: Optional[str] = None,
         *,
         extra_params: Optional[dict] = None,
@@ -152,7 +152,7 @@ class Market(KrakenBaseSpotAPI):
         This function uses caching. Run ``get_asset_pairs.cache_clear()`` to clear.
 
         :param pair: Filter by asset pair(s)
-        :type pair: str | List[str], optional
+        :type pair: str | list[str], optional
         :param info: Filter by info, can be one of: ``info`` (all info), ``leverage``
             (leverage info), ``fees`` (fee info), and ``margin`` (margin info)
         :type info: str, optional
@@ -218,7 +218,7 @@ class Market(KrakenBaseSpotAPI):
     @ensure_string("pair")
     def get_ticker(
         self: Market,
-        pair: Optional[Union[str, List[str]]] = None,
+        pair: Optional[str | list[str]] = None,
         *,
         extra_params: Optional[dict] = None,
     ) -> dict:
@@ -229,7 +229,7 @@ class Market(KrakenBaseSpotAPI):
         https://docs.kraken.com/rest/#operation/getTickerInformation
 
         :param pair: Filter by pair(s)
-        :type pair: str | List[str], optional
+        :type pair: str | list[str], optional
         :return: The ticker(s) including ask, bid, close, volume, vwap, high, low, todays open and more
         :rtype: dict
 
@@ -267,8 +267,8 @@ class Market(KrakenBaseSpotAPI):
     def get_ohlc(
         self: Market,
         pair: str,
-        interval: Union[int, str] = 1,
-        since: Optional[Union[int, str]] = None,
+        interval: int | str = 1,
+        since: Optional[int | str] = None,
         *,
         extra_params: Optional[dict] = None,
     ) -> dict:
@@ -369,7 +369,7 @@ class Market(KrakenBaseSpotAPI):
     def get_recent_trades(
         self: Market,
         pair: str,
-        since: Optional[Union[str, int]] = None,
+        since: Optional[str | int] = None,
         count: Optional[int] = None,
         *,
         extra_params: Optional[dict] = None,
@@ -420,7 +420,7 @@ class Market(KrakenBaseSpotAPI):
     def get_recent_spreads(
         self: Market,
         pair: str,
-        since: Optional[Union[str, int]] = None,
+        since: Optional[str | int] = None,
         *,
         extra_params: Optional[dict] = None,
     ) -> dict:

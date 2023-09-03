@@ -35,9 +35,18 @@ data and fast price movements are considered.
 from __future__ import annotations
 
 import asyncio
+import logging
 from typing import Any, Dict, List, Tuple
 
 from kraken.spot import OrderbookClient
+
+logging.basicConfig(
+    format="%(asctime)s %(module)s,line: %(lineno)d %(levelname)8s | %(message)s",
+    datefmt="%Y/%m/%d %H:%M:%S",
+    level=logging.INFO,
+)
+logging.getLogger().setLevel(logging.INFO)
+logging.getLogger("requests").setLevel(logging.WARNING)
 
 
 class Orderbook(OrderbookClient):

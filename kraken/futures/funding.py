@@ -7,7 +7,7 @@
 
 from __future__ import annotations
 
-from typing import Optional, TypeVar, Union
+from typing import Optional, TypeVar
 
 from kraken.base_api import KrakenBaseFuturesAPI
 
@@ -52,6 +52,7 @@ class Funding(KrakenBaseFuturesAPI):
         key: str = "",
         secret: str = "",
         url: str = "",
+        *,
         sandbox: bool = False,
     ) -> None:
         super().__init__(key=key, secret=secret, url=url, sandbox=sandbox)
@@ -106,7 +107,7 @@ class Funding(KrakenBaseFuturesAPI):
 
     def initiate_wallet_transfer(
         self: Funding,
-        amount: Union[str, float],
+        amount: str | float,
         fromAccount: str,
         toAccount: str,
         unit: str,
@@ -162,7 +163,7 @@ class Funding(KrakenBaseFuturesAPI):
 
     def initiate_subaccount_transfer(
         self: Funding,
-        amount: Union[str, float],
+        amount: str | float,
         fromAccount: str,
         fromUser: str,
         toAccount: str,
@@ -222,7 +223,7 @@ class Funding(KrakenBaseFuturesAPI):
 
     def initiate_withdrawal_to_spot_wallet(
         self: Funding,
-        amount: Union[str, float],
+        amount: str | float,
         currency: str,
         sourceWallet: Optional[str] = None,
         *,

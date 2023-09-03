@@ -13,7 +13,7 @@ from asyncio import sleep as asyncio_sleep
 from binascii import crc32
 from collections import OrderedDict
 from inspect import iscoroutinefunction
-from typing import Callable, Dict, List, Optional, Union
+from typing import Callable, Optional
 
 from kraken.spot import Market
 from kraken.spot.websocket_v2 import KrakenSpotWSClientV2
@@ -116,7 +116,7 @@ class OrderbookClient:
         callback: Optional[Callable] = None,
     ) -> None:
         super().__init__()
-        self.__book: Dict[str, dict] = {}
+        self.__book: dict[str, dict] = {}
         self.__depth: int = depth
         self.__callback: Optional[Callable] = callback
 
@@ -125,7 +125,7 @@ class OrderbookClient:
             callback=self.on_message,
         )
 
-    async def on_message(self: OrderbookClient, message: Union[list, dict]) -> None:
+    async def on_message(self: OrderbookClient, message: list | dict) -> None:
         """
         The on_message function is implemented within the KrakenSpotWSClient
         class and used as callback to receive all messages sent by the
@@ -133,18 +133,18 @@ class OrderbookClient:
 
         *This function must not be overloaded - it would break this client!*
         """
-
         if not isinstance(message, dict):
             return
 
         if (
-            message.get("method") == "unsubscribe"
+            message.get("method") in ("subscribe", "unsubscribe")
             and message.get("result")
             and message["result"].get("channel") == "book"
             and message.get("success")
             and message["result"]["symbol"] in self.__book
         ):
             del self.__book[message["result"]["symbol"]]
+            self.LOG.debug("Removed book for %s", message["result"]["symbol"])
             return
 
         if (  # pylint: disable=too-many-boolean-expressions)
@@ -162,6 +162,7 @@ class OrderbookClient:
         # ----------------------------------------------------------------------
         pair: str = message["data"][0]["symbol"]
         if pair not in self.__book:
+            self.LOG.debug("Add book for %s", pair)
             # retrieve the decimal places required for checksum calculation
             sym_info: dict = self.__market.get_asset_pairs(pair=pair)
 
@@ -234,7 +235,7 @@ class OrderbookClient:
         else:
             print(message)  # noqa: T201
 
-    async def add_book(self: OrderbookClient, pairs: List[str]) -> None:
+    async def add_book(self: OrderbookClient, pairs: list[str]) -> None:
         """
         Add an orderbook to this client. The feed will be subscribed
         and updates will be published to the :func:`on_book_update` function.
@@ -248,7 +249,7 @@ class OrderbookClient:
             params={"channel": "book", "depth": self.__depth, "symbol": pairs},
         )
 
-    async def remove_book(self: OrderbookClient, pairs: List[str]) -> None:
+    async def remove_book(self: OrderbookClient, pairs: list[str]) -> None:
         """
         Unsubscribe from a subscribed orderbook.
 
@@ -291,8 +292,6 @@ class OrderbookClient:
         :return: The orderbook of that ``pair``.
         :rtype: dict
 
-        todo: fix documentation
-
         .. code-block::python
             :linenos:
             :caption: Orderbook: Get ask and bid
@@ -315,7 +314,7 @@ class OrderbookClient:
 
     def __update_book(
         self: OrderbookClient,
-        orders: List[dict],
+        orders: list[dict],
         side: str,
         symbol: str,
         timestamp: Optional[str] = None,
@@ -335,11 +334,11 @@ class OrderbookClient:
         :type timestamp: str, optional
         """
         for order in orders:
-            volume = "{:.{}f}".format(  # pylint: disable=consider-using-f-string # noqa: PLE1300
+            volume = "{:.{}f}".format(  # pylint: disable=consider-using-f-string
                 order["qty"],
                 self.__book[symbol]["qty_decimals"],
             )
-            price = "{:.{}f}".format(  # pylint: disable=consider-using-f-string # noqa: PLE1300
+            price = "{:.{}f}".format(  # pylint: disable=consider-using-f-string
                 order["price"],
                 self.__book[symbol]["price_decimals"],
             )

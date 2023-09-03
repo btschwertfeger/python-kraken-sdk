@@ -8,7 +8,7 @@
 
 from __future__ import annotations
 
-from typing import List, Optional, Tuple, TypeVar, Union
+from typing import Optional, TypeVar
 
 from kraken.base_api import KrakenBaseFuturesAPI, defined
 
@@ -53,6 +53,7 @@ class Trade(KrakenBaseFuturesAPI):
         key: str = "",
         secret: str = "",
         url: str = "",
+        *,
         sandbox: bool = False,
     ) -> None:
         super().__init__(key=key, secret=secret, url=url, sandbox=sandbox)
@@ -114,7 +115,7 @@ class Trade(KrakenBaseFuturesAPI):
 
     def create_batch_order(
         self: Trade,
-        batchorder_list: List[dict],
+        batchorder_list: list[dict],
         *,
         extra_params: Optional[dict] = None,
     ) -> dict:
@@ -126,7 +127,7 @@ class Trade(KrakenBaseFuturesAPI):
         - https://docs.futures.kraken.com/#http-api-trading-v3-api-order-management-batch-order-management
 
         :param batchorder_list: List of order instructions (see example below - or the linked official Kraken documentation)
-        :type batchorder_list: List[dict]
+        :type batchorder_list: list[dict]
         :return: Information about the submitted request
         :rtype: dict
 
@@ -382,9 +383,9 @@ class Trade(KrakenBaseFuturesAPI):
         self: Trade,
         orderId: Optional[str] = None,
         cliOrdId: Optional[str] = None,
-        limitPrice: Optional[Union[str, int, float]] = None,
-        size: Optional[Union[str, int, float]] = None,
-        stopPrice: Optional[Union[str, int, float]] = None,
+        limitPrice: Optional[str | float] = None,
+        size: Optional[str | float] = None,
+        stopPrice: Optional[str | float] = None,
         *,
         extra_params: Optional[dict] = None,
     ) -> dict:
@@ -400,11 +401,11 @@ class Trade(KrakenBaseFuturesAPI):
         :param cliOrdId: The client defined order id
         :type cliOrdId: str, optional
         :param limitPrice: The new limit price
-        :type limitPrice: str | int | float None
+        :type limitPrice: str | float None
         :param size: The new size of the position
-        :type size: str | int | float, optional
+        :type size: str | float, optional
         :param stopPrice: The stop price
-        :type stopPrice: str | int | float, optional
+        :type stopPrice: str | float, optional
         :raises ValueError: If both ``orderId`` and ``cliOrdId`` are not set
         :return: Success or failure
         :rtype: dict
@@ -453,8 +454,8 @@ class Trade(KrakenBaseFuturesAPI):
 
     def get_orders_status(
         self: Trade,
-        orderIds: Optional[Union[str, List[str]]] = None,
-        cliOrdIds: Optional[Union[str, List[str]]] = None,
+        orderIds: Optional[str | list[str]] = None,
+        cliOrdIds: Optional[str | list[str]] = None,
         *,
         extra_params: Optional[dict] = None,
     ) -> dict:
@@ -466,9 +467,9 @@ class Trade(KrakenBaseFuturesAPI):
         - https://docs.futures.kraken.com/#http-api-trading-v3-api-order-management-get-the-current-status-for-specific-orders
 
         :param orderIds: The order ids to cancel
-        :type orderIds: str | List[str], optional
+        :type orderIds: str | list[str], optional
         :param cliOrdId: The client defined order ids
-        :type cliOrdId: str | List[str], optional
+        :type cliOrdId: str | list[str], optional
         :return: Success or failure
         :rtype: dict
 
@@ -502,13 +503,13 @@ class Trade(KrakenBaseFuturesAPI):
     def create_order(  # noqa: PLR0913
         self: Trade,
         orderType: str,
-        size: Union[str, float],
+        size: str | float,
         symbol: str,
         side: str,
         cliOrdId: Optional[str] = None,
-        limitPrice: Optional[Union[str, float]] = None,
+        limitPrice: Optional[str | float] = None,
         reduceOnly: Optional[bool] = None,
-        stopPrice: Optional[Union[str, float]] = None,
+        stopPrice: Optional[str | float] = None,
         triggerSignal: Optional[str] = None,
         trailingStopDeviationUnit: Optional[str] = None,
         trailingStopMaxDeviation: Optional[str] = None,
@@ -534,7 +535,7 @@ class Trade(KrakenBaseFuturesAPI):
         :param cliOrdId: A user defined order id
         :type cliOrdId: str, optional
         :param limitPrice: Define a custom limit price
-        :type limitPrice: str |float
+        :type limitPrice: str | float, optional
         :param reduceOnly: Reduces existing positions if set to ``True``
         :type reduceOnly: bool, optional
         :param stopPrice: Define a price when to exit the order. Required for specific order types
@@ -678,7 +679,7 @@ class Trade(KrakenBaseFuturesAPI):
             }
         """
 
-        sides: Tuple[str, str] = ("buy", "sell")
+        sides: tuple[str, str] = ("buy", "sell")
         if side not in sides:
             raise ValueError(f"Invalid side. One of [{sides}] is required!")
 

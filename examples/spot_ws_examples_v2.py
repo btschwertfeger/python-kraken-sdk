@@ -23,7 +23,6 @@ logging.basicConfig(
     datefmt="%Y/%m/%d %H:%M:%S",
     level=logging.INFO,
 )
-logging.getLogger().setLevel(logging.INFO)
 logging.getLogger("requests").setLevel(logging.WARNING)
 logging.getLogger("urllib3").setLevel(logging.WARNING)
 
@@ -71,7 +70,7 @@ async def main() -> None:
     await client.subscribe(
         params={"channel": "book", "depth": 25, "symbol": ["BTC/USD"]},
     )
-    await client.subscribe(params={"channel": "ohlc", "symbol": ["BTC/USD"]})
+    # await client.subscribe(params={"channel": "ohlc", "symbol": ["BTC/USD"]})
     await client.subscribe(
         params={
             "channel": "ohlc",

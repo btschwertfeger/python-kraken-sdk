@@ -1,5 +1,13 @@
 # Changelog
 
+## [Unreleased](https://github.com/btschwertfeger/python-kraken-sdk/tree/HEAD)
+
+[Full Changelog](https://github.com/btschwertfeger/python-kraken-sdk/compare/v1.6.1...HEAD)
+
+Uncategorized merged pull requests:
+
+- Bump Pre-Commit hook versions and adjust typing [\#146](https://github.com/btschwertfeger/python-kraken-sdk/pull/146) ([btschwertfeger](https://github.com/btschwertfeger))
+
 ## [v1.6.1](https://github.com/btschwertfeger/python-kraken-sdk/tree/v1.6.1) (2023-08-07)
 
 [Full Changelog](https://github.com/btschwertfeger/python-kraken-sdk/compare/v1.6.0...v1.6.1)

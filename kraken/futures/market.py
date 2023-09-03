@@ -8,7 +8,7 @@
 from __future__ import annotations
 
 from functools import lru_cache
-from typing import List, Optional, TypeVar, Union
+from typing import Optional, TypeVar
 
 from kraken.base_api import KrakenBaseFuturesAPI, defined, ensure_string
 
@@ -54,6 +54,7 @@ class Market(KrakenBaseFuturesAPI):
         key: str = "",
         secret: str = "",
         url: str = "",
+        *,
         sandbox: bool = False,
     ) -> None:
         super().__init__(key=key, secret=secret, url=url, sandbox=sandbox)
@@ -114,10 +115,10 @@ class Market(KrakenBaseFuturesAPI):
                 'more_candles': True
             }
         """
-        ttypes: tuple = ("spot", "mark", "trade")
+        tick_types: tuple = ("spot", "mark", "trade")
         resolutions: tuple = ("1m", "5m", "15m", "30m", "1h", "4h", "12h", "1d", "1w")
-        if tick_type not in ttypes:
-            raise ValueError(f"tick_type must be in {ttypes}")
+        if tick_type not in tick_types:
+            raise ValueError(f"tick_type must be in {tick_types}")
         if resolution is not None and resolution not in resolutions:
             raise ValueError(f"resolution must be in {resolutions}")
 
@@ -140,7 +141,7 @@ class Market(KrakenBaseFuturesAPI):
         self: Market,
         *,
         extra_params: Optional[dict] = None,
-    ) -> List[str]:
+    ) -> list[str]:
         """
         Retrieve the available tick types that can be used for example to access
         the :func:`kraken.futures.Market.get_ohlc` endpoint.
@@ -150,7 +151,7 @@ class Market(KrakenBaseFuturesAPI):
         This function uses caching. Run ``get_tick_types.cache_clear()`` to clear.
 
         :return: List of available tick types
-        :rtype: List[str]
+        :rtype: list[str]
 
         .. code-block:: python
             :linenos:
@@ -174,7 +175,7 @@ class Market(KrakenBaseFuturesAPI):
         tick_type: str,
         *,
         extra_params: Optional[dict] = None,
-    ) -> List[str]:
+    ) -> list[str]:
         """
         Retrieve a list containing the tradeable assets on the futures market.
 
@@ -185,7 +186,7 @@ class Market(KrakenBaseFuturesAPI):
         :param tick_type: The kind of data, based on ``mark``, ``spot``, or ``trade``
         :type tick_type: str
         :return: List of tradeable assets
-        :type: List[str]
+        :type: list[str]
 
         .. code-block:: python
             :linenos:
@@ -210,7 +211,7 @@ class Market(KrakenBaseFuturesAPI):
         tradeable: str,
         *,
         extra_params: Optional[dict] = None,
-    ) -> List[str]:
+    ) -> list[str]:
         """
         Retrieve the list of available resolutions for a specific asset.
 
@@ -223,7 +224,7 @@ class Market(KrakenBaseFuturesAPI):
         :param tick_type: The asset of interest
         :type tick_type: str
         :return: List of resolutions
-        :type: List[str]
+        :type: list[str]
 
         .. code-block:: python
             :linenos:
@@ -714,7 +715,7 @@ class Market(KrakenBaseFuturesAPI):
     def set_leverage_preference(
         self: Market,
         symbol: str,
-        maxLeverage: Optional[Union[str, int, float]] = None,
+        maxLeverage: Optional[str | float] = None,
         *,
         extra_params: Optional[dict] = None,
     ) -> dict:
@@ -728,7 +729,7 @@ class Market(KrakenBaseFuturesAPI):
         :param symbol: The symbol to set the preference
         :type symbol: str, optional
         :param maxLeverage: The maximum allowed leverage for a futures contract
-        :type maxLeverage: str | int | float, optional
+        :type maxLeverage: str | float, optional
         :return: Information about the success or fail
         :rtype: dict
 
