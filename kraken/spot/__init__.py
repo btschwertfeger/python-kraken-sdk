@@ -13,7 +13,7 @@ from kraken.spot.orderbook_v2 import OrderbookClientV2
 from kraken.spot.staking import Staking
 from kraken.spot.trade import Trade
 from kraken.spot.user import User
-from kraken.spot.websocket_v1 import KrakenSpotWSClient
+from kraken.spot.websocket_v1 import KrakenSpotWSClientV1
 from kraken.spot.websocket_v2 import KrakenSpotWSClientV2
 
 __all__ = [
@@ -24,6 +24,6 @@ __all__ = [
     "User",
     "OrderbookClientV1",
     "OrderbookClientV2",
-    "KrakenSpotWSClient",
+    "KrakenSpotWSClientV1",
     "KrakenSpotWSClientV2",
 ]

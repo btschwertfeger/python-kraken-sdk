@@ -32,7 +32,7 @@ and documented.
   initialized with valid credentials.
 - For Futures there is only one websocket client -
   :class:`kraken.futures.KrakenFuturesWSClient`. For Spot there are two:
-  :class:`kraken.spot.KrakenSpotWSClient` (for API version 1) and
+  :class:`kraken.spot.KrakenSpotWSClientV1` (for API version 1) and
   :class:`kraken.spot.KrakenSpotWSClientV2` (for API version 2).
 
 

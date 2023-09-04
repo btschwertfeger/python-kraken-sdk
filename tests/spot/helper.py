@@ -19,7 +19,7 @@ from time import time
 from typing import Any, Union
 
 from kraken.spot import (
-    KrakenSpotWSClient,
+    KrakenSpotWSClientV1,
     KrakenSpotWSClientV2,
     OrderbookClientV1,
     OrderbookClientV2,
@@ -40,9 +40,9 @@ async def async_wait(seconds: float = 1.0) -> None:
         await sleep(0.2)
 
 
-class SpotWebsocketClientV1TestWrapper(KrakenSpotWSClient):
+class SpotWebsocketClientV1TestWrapper(KrakenSpotWSClientV1):
     """
-    Class that creates an instance to test the KrakenSpotWSClient.
+    Class that creates an instance to test the KrakenSpotWSClientV1.
 
     It writes the messages to the log and a file. The log is used
     within the tests, the log file is for local debugging.

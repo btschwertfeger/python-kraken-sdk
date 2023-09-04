@@ -48,7 +48,7 @@ class Orderbook(OrderbookClientV1):
     This is a wrapper class that is used to overload the :func:`on_book_update`
     function. It can also be used as a base for trading strategy. Since the
     :class:`kraken.spot.OrderbookClientV1` is derived from
-    :class:`kraken.spot.KrakenSpotWSClient` it can also be used to access the
+    :class:`kraken.spot.KrakenSpotWSClientV1` it can also be used to access the
     :func:`subscribe` function and any other provided utility.
     """
 

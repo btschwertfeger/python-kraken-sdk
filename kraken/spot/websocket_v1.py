@@ -22,7 +22,7 @@ from kraken.spot.trade import Trade
 from kraken.spot.websocket import KrakenSpotWSClientBase
 
 
-class KrakenSpotWSClient(KrakenSpotWSClientBase):
+class KrakenSpotWSClientV1(KrakenSpotWSClientBase):
     """
     Class to access public and private/authenticated websocket connections.
 
@@ -61,10 +61,10 @@ class KrakenSpotWSClient(KrakenSpotWSClientBase):
         :caption: HowTo: Use the Kraken Spot websocket client (v1)
 
         import asyncio
-        from kraken.spot import KrakenSpotWSClient
+        from kraken.spot import KrakenSpotWSClientV1
 
 
-        class Client(KrakenSpotWSClient):
+        class Client(KrakenSpotWSClientV1):
 
             async def on_message(self, message):
                 print(message)
@@ -99,14 +99,14 @@ class KrakenSpotWSClient(KrakenSpotWSClientBase):
         :caption: HowTo: Use the websocket client (v1) as instance
 
         import asyncio
-        from kraken.spot import KrakenSpotWSClient
+        from kraken.spot import KrakenSpotWSClientV1
 
 
         async def main() -> None:
             async def on_message(message) -> None:
                 print(message)
 
-            client = KrakenSpotWSClient(callback=on_message)
+            client = KrakenSpotWSClientV1(callback=on_message)
             await client.subscribe(
                 subscription={"name": "ticker"},
                 pair=["XBT/USD"]
@@ -128,13 +128,13 @@ class KrakenSpotWSClient(KrakenSpotWSClientBase):
         :caption: HowTo: Use the websocket client (v1) as context manager
 
         import asyncio
-        from kraken.spot import KrakenSpotWSClient
+        from kraken.spot import KrakenSpotWSClientV1
 
         async def on_message(message):
             print(message)
 
         async def main() -> None:
-            async with KrakenSpotWSClient(
+            async with KrakenSpotWSClientV1(
                 key="api-key",
                 secret="secret-key",
                 callback=on_message
@@ -156,7 +156,7 @@ class KrakenSpotWSClient(KrakenSpotWSClientBase):
     """
 
     def __init__(
-        self: KrakenSpotWSClient,
+        self: KrakenSpotWSClientV1,
         key: str = "",
         secret: str = "",
         callback: Optional[Callable] = None,
@@ -174,7 +174,7 @@ class KrakenSpotWSClient(KrakenSpotWSClientBase):
         )
 
     async def send_message(  # pylint: disable=arguments-differ
-        self: KrakenSpotWSClient,
+        self: KrakenSpotWSClientV1,
         message: dict,
         *,
         private: bool = False,
@@ -215,7 +215,7 @@ class KrakenSpotWSClient(KrakenSpotWSClientBase):
         await socket.send(json.dumps(message))
 
     async def subscribe(  # pylint: disable=arguments-differ
-        self: KrakenSpotWSClient,
+        self: KrakenSpotWSClientV1,
         subscription: dict,
         pair: Optional[list[str]] = None,
     ) -> None:
@@ -237,7 +237,7 @@ class KrakenSpotWSClient(KrakenSpotWSClientBase):
         :type pair: list[str], optional
 
         Initialize your client as described in
-        :class:`kraken.spot.KrakenSpotWSClient` to run the following example:
+        :class:`kraken.spot.KrakenSpotWSClientV1` to run the following example:
 
         .. code-block:: python
             :linenos:
@@ -287,7 +287,7 @@ class KrakenSpotWSClient(KrakenSpotWSClientBase):
             # await self.send_message(payload, private=False)
 
     async def unsubscribe(  # pylint: disable=arguments-differ
-        self: KrakenSpotWSClient,
+        self: KrakenSpotWSClientV1,
         subscription: dict,
         pair: Optional[list[str]] = None,
     ) -> None:
@@ -309,7 +309,7 @@ class KrakenSpotWSClient(KrakenSpotWSClientBase):
         :type pair: list[str], optional
 
         Initialize your client as described in
-        :class:`kraken.spot.KrakenSpotWSClient` to run the following example:
+        :class:`kraken.spot.KrakenSpotWSClientV1` to run the following example:
 
         .. code-block:: python
             :linenos:
@@ -359,7 +359,7 @@ class KrakenSpotWSClient(KrakenSpotWSClientBase):
             # await self.send_message(payload, private=False)
 
     @property
-    def public_channel_names(self: KrakenSpotWSClient) -> list[str]:
+    def public_channel_names(self: KrakenSpotWSClientV1) -> list[str]:
         """
         Returns the public subscription names
 
@@ -370,7 +370,7 @@ class KrakenSpotWSClient(KrakenSpotWSClientBase):
         return ["ticker", "spread", "book", "ohlc", "trade", "*"]
 
     @property
-    def private_channel_names(self: KrakenSpotWSClient) -> list[str]:
+    def private_channel_names(self: KrakenSpotWSClientV1) -> list[str]:
         """
         Returns the private subscription names
 
@@ -382,7 +382,7 @@ class KrakenSpotWSClient(KrakenSpotWSClientBase):
 
     @ensure_string("oflags")
     async def create_order(  # noqa: PLR0913
-        self: KrakenSpotWSClient,
+        self: KrakenSpotWSClientV1,
         ordertype: str,
         side: str,
         pair: str,
@@ -473,7 +473,7 @@ class KrakenSpotWSClient(KrakenSpotWSClientBase):
         :rtype: None
 
         Initialize your client as described in
-        :class:`kraken.spot.KrakenSpotWSClient` to run the following example:
+        :class:`kraken.spot.KrakenSpotWSClientV1` to run the following example:
 
         .. code-block:: python
             :linenos:
@@ -549,7 +549,7 @@ class KrakenSpotWSClient(KrakenSpotWSClientBase):
 
     @ensure_string("oflags")
     async def edit_order(  # noqa: PLR0913
-        self: KrakenSpotWSClient,
+        self: KrakenSpotWSClientV1,
         orderid: str,
         reqid: Optional[str | int] = None,
         pair: Optional[str] = None,
@@ -600,7 +600,7 @@ class KrakenSpotWSClient(KrakenSpotWSClientBase):
         :rtype: None
 
         Initialize your client as described in
-        :class:`kraken.spot.KrakenSpotWSClient` to run the following example:
+        :class:`kraken.spot.KrakenSpotWSClientV1` to run the following example:
 
         .. code-block:: python
             :linenos:
@@ -648,7 +648,7 @@ class KrakenSpotWSClient(KrakenSpotWSClientBase):
 
         await self.send_message(message=payload, private=True)
 
-    async def cancel_order(self: KrakenSpotWSClient, txid: list[str]) -> None:
+    async def cancel_order(self: KrakenSpotWSClientV1, txid: list[str]) -> None:
         """
         Cancel a specific order or a list of orders.
 
@@ -664,7 +664,7 @@ class KrakenSpotWSClient(KrakenSpotWSClientBase):
         :return: None
 
         Initialize your client as described in
-        :class:`kraken.spot.KrakenSpotWSClient` to run the following example:
+        :class:`kraken.spot.KrakenSpotWSClientV1` to run the following example:
 
         .. code-block:: python
             :linenos:
@@ -681,7 +681,7 @@ class KrakenSpotWSClient(KrakenSpotWSClientBase):
             private=True,
         )
 
-    async def cancel_all_orders(self: KrakenSpotWSClient) -> None:
+    async def cancel_all_orders(self: KrakenSpotWSClientV1) -> None:
         """
         Cancel all open Spot orders.
 
@@ -695,7 +695,7 @@ class KrakenSpotWSClient(KrakenSpotWSClientBase):
         :return: None
 
         Initialize your client as described in
-        :class:`kraken.spot.KrakenSpotWSClient` to run the following example:
+        :class:`kraken.spot.KrakenSpotWSClientV1` to run the following example:
 
         .. code-block:: python
             :linenos:
@@ -710,7 +710,7 @@ class KrakenSpotWSClient(KrakenSpotWSClientBase):
         await self.send_message(message={"event": "cancelAll"}, private=True)
 
     async def cancel_all_orders_after(
-        self: KrakenSpotWSClient,
+        self: KrakenSpotWSClientV1,
         timeout: int = 0,
     ) -> None:
         """
@@ -729,7 +729,7 @@ class KrakenSpotWSClient(KrakenSpotWSClientBase):
         :return: None
 
         Initialize your client as described in
-        :class:`kraken.spot.KrakenSpotWSClient` to run the following example:
+        :class:`kraken.spot.KrakenSpotWSClientV1` to run the following example:
 
         .. code-block:: python
             :linenos:
@@ -747,4 +747,4 @@ class KrakenSpotWSClient(KrakenSpotWSClientBase):
         )
 
 
-__all__ = ["KrakenSpotWSClient"]
+__all__ = ["KrakenSpotWSClientV1"]

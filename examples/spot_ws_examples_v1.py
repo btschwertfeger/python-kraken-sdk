@@ -18,7 +18,7 @@ import os
 from contextlib import suppress
 from typing import Union
 
-from kraken.spot import KrakenSpotWSClient
+from kraken.spot import KrakenSpotWSClientV1
 
 logging.basicConfig(
     format="%(asctime)s %(module)s,line: %(lineno)d %(levelname)8s | %(message)s",
@@ -35,7 +35,7 @@ async def main() -> None:
     key: str = os.getenv("SPOT_API_KEY")
     secret: str = os.getenv("SPOT_SECRET_KEY")
 
-    class Client(KrakenSpotWSClient):
+    class Client(KrakenSpotWSClientV1):
         """Can be used to create a custom trading strategy"""
 
         async def on_message(self: Client, message: Union[list, dict]) -> None:
@@ -107,14 +107,14 @@ if __name__ == "__main__":
 # ============================================================
 # Alternative - as ContextManager:
 
-# from kraken.spot import KrakenSpotWSClient
+# from kraken.spot import KrakenSpotWSClientV1
 # import asyncio
 
 # async def on_message(msg):
 #     print(msg)
 
 # async def main() -> None:
-#     async with KrakenSpotWSClient(callback=on_message) as session:
+#     async with KrakenSpotWSClientV1(callback=on_message) as session:
 #         await session.subscribe(subscription={"name": "ticker"}, pair=["XBT/USD"])
 
 #     while True:
