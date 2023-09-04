@@ -1047,6 +1047,7 @@ class User(KrakenBaseSpotAPI):
     def retrieve_export(
         self: User,
         id_: str,
+        timeout: int = 10,
         *,
         extra_params: Optional[dict] = None,
     ) -> dict:
@@ -1062,6 +1063,8 @@ class User(KrakenBaseSpotAPI):
 
         :param id_: Id of the report that was requested
         :type id_: str
+        :param timeout: Timeout for that request, default: ``10`` seconds
+        :type timeout: int, optional
         :return: The reponse - a zipped report
         :rtype: requests.Response
 
@@ -1086,6 +1089,7 @@ class User(KrakenBaseSpotAPI):
             method="POST",
             uri="/private/RetrieveExport",
             params={"id": id_},
+            timeout=timeout,
             return_raw=True,
             extra_params=extra_params,
         )
