@@ -172,7 +172,7 @@ class Staking(KrakenBaseSpotAPI):
         https://docs.kraken.com/rest/#operation/getStakingAssetInfo
 
         :return: Information for all assets that can be staked on Kraken
-        :rtype: List[dict]
+        :rtype: list[dict]
 
         .. code-block:: python
             :linenos:
@@ -235,7 +235,7 @@ class Staking(KrakenBaseSpotAPI):
         - https://docs.kraken.com/rest/#operation/getStakingPendingDeposits
 
         :return: List of pending staking transactions
-        :rtype: List[dict]
+        :rtype: list[dict]
 
         .. code-block:: python
             :linenos:
@@ -278,7 +278,7 @@ class Staking(KrakenBaseSpotAPI):
         - https://docs.kraken.com/rest/#operation/getStakingTransactions
 
         :return: List of historical staking transactions
-        :rtype: List[dict]
+        :rtype: list[dict]
 
         .. code-block:: python
             :linenos:

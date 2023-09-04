@@ -48,7 +48,7 @@ class OrderbookClientV1:
         :linenos:
         :caption: Example: Create and maintain a Spot orderbook as custom class
 
-        from typing import Any, Dict, List, Tuple
+        from typing import Any
         from kraken.spot import OrderbookClientV1
         import asyncio
 
@@ -56,8 +56,8 @@ class OrderbookClientV1:
             async def on_book_update(self: "OrderBook", pair: str, message: list) -> None:
                 '''This function must be overloaded to get the recent
                 updates.''' book: Dict[str, Any] = self.get(pair=pair) bid:
-                List[Tuple[str, str]] = list(book["bid"].items()) ask:
-                List[Tuple[str, str]] = list(book["ask"].items())
+                list[tuple[str, str]] = list(book["bid"].items()) ask:
+                list[tuple[str, str]] = list(book["ask"].items())
 
                 print("Bid         Volume\t\t Ask         Volume") for level in
                 range(self.depth):
@@ -86,7 +86,7 @@ class OrderbookClientV1:
         :linenos:
         :caption: Example: Create and maintain a Spot orderbook using a callback
 
-        from typing import Any, Dict, List, Tuple
+        from typing import Any
         from kraken.spot import OrderbookClientV1
         import asyncio
 
@@ -124,23 +124,20 @@ class OrderbookClientV1:
         self.__callback: Optional[Callable] = callback
 
         self.ws_client: KrakenSpotWSClient = KrakenSpotWSClient(
-            callback=self.__on_message,
+            callback=self.on_message,
         )
 
-    async def __on_message(self: OrderbookClientV1, message: list | dict) -> None:
+    async def on_message(self: OrderbookClientV1, message: list | dict) -> None:
         """
-        The on_message function is implemented in the KrakenSpotWSClient
-        class and used as callback to receive all messages sent by the
-        Kraken API.
-
         *This function should not be overloaded - this would break this client!*
+
+        It receives and processes the book related websocket messages and is
+        only publicly visible for those who understand and are willing to mock
+        it.
         """
         if "errorMessage" in message:
             self.LOG.warning(message)
 
-        # ignore heartbeat / ping - pong messages / any event message
-        # ignore errors since they are handled by the parent class
-        # just handle the removal of an orderbook
         if (
             isinstance(message, dict)
             and message.get("event", "") == "subscriptionStatus"
@@ -151,7 +148,7 @@ class OrderbookClientV1:
             return
 
         if not isinstance(message, list):
-            # The orderbook feed only sends messages with type list,
+            # The orderbook feed only sends messages of type list,
             # so we can ignore anything else.
             return
 
@@ -164,14 +161,13 @@ class OrderbookClientV1:
             }
 
         if "as" in message[1]:
-            # This will be triggered initially when the
-            # first message comes in that provides the initial snapshot
-            # of the current orderbook.
+            # Will be triggered initially when the first message comes in that
+            # provides the initial snapshot of the current orderbook.
             self.__update_book(pair=pair, side="ask", snapshot=message[1]["as"])
             self.__update_book(pair=pair, side="bid", snapshot=message[1]["bs"])
         else:
             checksum: Optional[str] = None
-            # This is executed every time a new update comes in.
+            # Executed every time a new update comes in.
             for data in message[1 : len(message) - 2]:
                 if "a" in data:
                     self.__update_book(pair=pair, side="ask", snapshot=data["a"])
@@ -191,7 +187,8 @@ class OrderbookClientV1:
                     },
                 ],
             )
-            # if the orderbook's checksum is invalid, we need re-add the orderbook
+            # If the orderbook's checksum is invalid, we need re-add the
+            # orderbook.
             await self.remove_book(pairs=[pair])
 
             await asyncio_sleep(3)
@@ -202,13 +199,14 @@ class OrderbookClientV1:
 
     async def on_book_update(self: OrderbookClientV1, pair: str, message: list) -> None:
         """
-        This function will be called every time the orderbook gets updated.
-        It needs to be overloaded if no callback function was defined
-        during the instantiation of this class.
+        This function will be called every time the orderbook gets updated. It
+        needs to be overloaded if no callback function was defined during the
+        instantiation of this class.
 
-        :param pair: The currency pair of the orderbook that has
-            been updated.
+        :param pair: The currency pair of the orderbook that has been updated.
         :type pair: str
+        :param message: The message sent by Kraken causing the orderbook to update.
+        :type message: str
         """
 
         if self.__callback:
@@ -290,9 +288,9 @@ class OrderbookClientV1:
                     pair: str,
                     message: list
                 ) -> None:
-                    book: Dict[str, Any] = self.get(pair="XBT/USD")
-                    ask: List[Tuple[str, str]] = list(book["ask"].items())
-                    bid: List[Tuple[str, str]] = list(book["bid"].items())
+                    book: dict[str, Any] = self.get(pair="XBT/USD")
+                    ask: list[tuple[str, str]] = list(book["ask"].items())
+                    bid: list[tuple[str, str]] = list(book["bid"].items())
                     # ask and bid are now in format [price, (volume, timestamp)]
                     # … and include the whole orderbook
         """

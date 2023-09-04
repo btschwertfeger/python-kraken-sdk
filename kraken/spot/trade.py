@@ -129,7 +129,7 @@ class Trade(KrakenBaseSpotAPI):
         :type stptype: str, optional
         :param oflags: Order flags like ``post``, ``fcib``, ``fciq``, ``nomp``,
             ``viqc`` (see the referenced Kraken documentation for more information)
-        :type oflags: str | List[str], optional
+        :type oflags: str | list[str], optional
         :param timeinforce: how long the order remains in the orderbook, one of:
             ``GTC``, ``IOC``, ``GTD`` (see the referenced Kraken documentation for more information)
         :type timeinforce: str, optional
@@ -383,7 +383,7 @@ class Trade(KrakenBaseSpotAPI):
         - https://docs.kraken.com/rest/#operation/addOrderBatch
 
         :param orders: Dictionary of order objects (see the referenced Kraken documentation for more information)
-        :type orders: List[dict]
+        :type orders: list[dict]
         :param pair: Asset pair to place the orders for
         :type pair: str
         :param deadline: RFC3339 timestamp + {0..60} seconds that defines when the matching engine should reject the order.
@@ -483,7 +483,7 @@ class Trade(KrakenBaseSpotAPI):
         :type price2: str | float, optional
         :param oflags: Order flags like ``post``, ``fcib``, ``fciq``, ``nomp``,
             ``viqc`` (see the referenced Kraken documentation for more information)
-        :type oflags: str | List[str], optional
+        :type oflags: str | list[str], optional
         :param deadline: (see the referenced Kraken documentation for more information)
         :type deadline: string
         :param cancel_response: See the referenced Kraken documentation for more information

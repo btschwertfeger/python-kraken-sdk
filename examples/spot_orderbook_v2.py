@@ -39,7 +39,7 @@ from __future__ import annotations
 
 import asyncio
 import logging
-from typing import Any, Dict, List, Tuple
+from typing import Any
 
 from kraken.spot import OrderbookClientV2
 
@@ -74,9 +74,9 @@ class Orderbook(OrderbookClientV2):
         :param message: The message sent by Kraken (not needed in most cases)
         :type message: list
         """
-        book: Dict[str, Any] = self.get(pair=pair)
-        bid: List[Tuple[str, str]] = list(book["bid"].items())
-        ask: List[Tuple[str, str]] = list(book["ask"].items())
+        book: dict[str, Any] = self.get(pair=pair)
+        bid: list[tuple[str, str]] = list(book["bid"].items())
+        ask: list[tuple[str, str]] = list(book["ask"].items())
 
         print("Bid     Volume\t\t  Ask     Volume")
         for level in range(self.depth):

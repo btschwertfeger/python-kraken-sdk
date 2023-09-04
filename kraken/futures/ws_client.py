@@ -254,7 +254,7 @@ class KrakenFuturesWSClient(KrakenBaseFuturesAPI):
         :param feed: The websocket feed/channel to unsubscribe from
         :type feed: str
         :param products: The products/futures contracts to unsubscribe from
-        :type products: List[str], optional
+        :type products: list[str], optional
         :raises TypeError: If the parameters don't match the requirements set
             by the Kraken API
 
@@ -306,7 +306,7 @@ class KrakenFuturesWSClient(KrakenBaseFuturesAPI):
         Kraken Futures API.
 
         :return: List of available public feeds
-        :rtype: List[str]
+        :rtype: list[str]
 
         .. code-block:: python
             :linenos:
@@ -328,7 +328,7 @@ class KrakenFuturesWSClient(KrakenBaseFuturesAPI):
         using the Kraken Futures API
 
         :return: List of available private feeds
-        :rtype: List[str]
+        :rtype: list[str]
 
         .. code-block:: python
             :linenos:
@@ -384,7 +384,7 @@ class KrakenFuturesWSClient(KrakenBaseFuturesAPI):
 
         :return: List of active subscriptions including the feed names, products
             and additional information.
-        :rtype: List[dict]
+        :rtype: list[dict]
 
         Initialize your client as described in :class:`kraken.futures.KrakenFuturesWSClient` to
         run the following example:

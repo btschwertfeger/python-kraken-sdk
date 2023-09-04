@@ -49,17 +49,17 @@ class OrderbookClientV2:
         :linenos:
         :caption: Example: Create and maintain a Spot orderbook as custom class
 
-        from typing import Any, Dict, List, Tuple
+        from typing import Any
         from kraken.spot import OrderbookClientV2
         import asyncio
 
         class OrderBook(OrderbookClientV2):
             async def on_book_update(self: "OrderBook", pair: str, message:
             list) -> None:
-                '''This function must be overloaded to get the recent
-                updates.''' book: Dict[str, Any] = self.get(pair=pair) bid:
-                List[Tuple[str, str]] = list(book["bid"].items()) ask:
-                List[Tuple[str, str]] = list(book["ask"].items())
+                '''This function must be overloaded to get the recent updates.'''
+                book: dict[str, Any] = self.get(pair=pair) bid:s
+                list[tuple[str, str]] = list(book["bid"].items()) ask:
+                list[tuple[str, str]] = list(book["ask"].items())
 
                 print("Bid         Volume\t\t Ask         Volume") for level in
                 range(self.depth):
@@ -88,13 +88,13 @@ class OrderbookClientV2:
         :linenos:
         :caption: Example: Create and maintain a Spot orderbook using a callback
 
-        from typing import Any, Dict, List, Tuple
+        from typing import Any
         from kraken.spot import OrderbookClientV2
         import asyncio
 
-        async def my_callback(self: "OrderBook", pair: str, message: list) ->
-        None:
-            '''This function do not need to be async.''' print(message)
+        async def my_callback(self: "OrderBook", pair: str, message: dict) -> None:
+            '''This function do not need to be async.'''
+            print(message)
 
         async def main() -> None:
             orderbook: OrderBook = OrderBook(depth=100, callback=my_callback)
@@ -127,16 +127,16 @@ class OrderbookClientV2:
 
         self.__market: Market = Market()
         self.ws_client: KrakenSpotWSClientV2 = KrakenSpotWSClientV2(
-            callback=self.__on_message,
+            callback=self.on_message,
         )
 
-    async def __on_message(self: OrderbookClientV2, message: list | dict) -> None:
+    async def on_message(self: OrderbookClientV2, message: list | dict) -> None:
         """
-        The on_message function is implemented within the KrakenSpotWSClient
-        class and used as callback to receive all messages sent by the
-        Kraken API.
-
         *This function must not be overloaded - it would break this client!*
+
+        It receives and processes the book related websocket messages and is
+        only publicly visible for those who understand and are willing to mock
+        it.
         """
         if not isinstance(message, dict):
             return
@@ -221,12 +221,11 @@ class OrderbookClientV2:
 
     async def on_book_update(self: OrderbookClientV2, pair: str, message: dict) -> None:
         """
-        This function will be called every time the orderbook gets updated.
-        It needs to be overloaded if no callback function was defined
-        during the instantiation of this class.
+        This function will be called every time the orderbook gets updated. It
+        needs to be overloaded if no callback function was defined during the
+        instantiation of this class.
 
-        :param pair: The currency pair of the orderbook that has
-            been updated.
+        :param pair: The currency pair of the orderbook that has been updated.
         :type pair: str
         :param message: The book message sent by Kraken
         :type message: dict
@@ -242,8 +241,8 @@ class OrderbookClientV2:
 
     async def add_book(self: OrderbookClientV2, pairs: list[str]) -> None:
         """
-        Add an orderbook to this client. The feed will be subscribed
-        and updates will be published to the :func:`on_book_update` function.
+        Add an orderbook to this client. The feed will be subscribed and updates
+        will be published to the :func:`on_book_update` function.
 
         :param pairs: The pair(s) to subscribe to
         :type pairs: list[str]

@@ -96,11 +96,11 @@ def test_passing_msg_and_validate_checksum(
     async def assign() -> None:
         client: OrderbookClientV2 = OrderbookClientV2(depth=10)
 
-        await client.__on_message(message=orderbook["init"])
+        await client.on_message(message=orderbook["init"])
         assert client.get(pair="BTC/USD")["valid"]
 
         for update in orderbook["updates"]:
-            await client.__on_message(message=update)
+            await client.on_message(message=update)
             assert client.get(pair="BTC/USD")["valid"]
 
         bad_message: dict = {
@@ -116,7 +116,7 @@ def test_passing_msg_and_validate_checksum(
                 },
             ],
         }
-        await client.__on_message(message=bad_message)
+        await client.on_message(message=bad_message)
         assert not client.get(pair="BTC/USD")["valid"]
 
     asyncio.run(assign())

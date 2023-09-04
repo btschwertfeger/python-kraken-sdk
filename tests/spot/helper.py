@@ -116,12 +116,12 @@ class OrderbookClientV1Wrapper(OrderbookClientV1):
         super().__init__()
         self.LOG.setLevel(logging.INFO)
 
-    async def __on_message(
+    async def on_message(
         self: OrderbookClientV1Wrapper,
         message: Union[list, dict],
     ) -> None:
         self.ensure_log(message)
-        await super().__on_message(message=message)
+        await super().on_message(message=message)
 
     async def on_book_update(
         self: OrderbookClientV1Wrapper,
@@ -168,9 +168,9 @@ class OrderbookClientV2Wrapper(OrderbookClientV2):
         super().__init__()
         self.LOG.setLevel(logging.INFO)
 
-    async def __on_message(self: OrderbookClientV2Wrapper, message: dict) -> None:
+    async def on_message(self: OrderbookClientV2Wrapper, message: dict) -> None:
         self.ensure_log(message)
-        await super().__on_message(message=message)
+        await super().on_message(message=message)
 
     async def on_book_update(
         self: OrderbookClientV2Wrapper,

@@ -9,7 +9,7 @@
 from __future__ import annotations
 
 import asyncio
-from typing import Any, List
+from typing import Any
 
 import pytest
 
@@ -68,7 +68,7 @@ def test_get_available_public_subscriptions() -> None:
     Checks the ``get_available_public_subscription_feeds`` function.
     """
 
-    expected: List[str] = [
+    expected: list[str] = [
         "trade",
         "book",
         "ticker",
@@ -88,7 +88,7 @@ def test_get_available_private_subscriptions() -> None:
     Checks the ``get_available_private_subscription_feeds`` function.
     """
 
-    expected: List[str] = [
+    expected: list[str] = [
         "fills",
         "open_positions",
         "open_orders",
@@ -125,10 +125,10 @@ def test_subscribe_public(caplog: Any) -> None:
         await client.subscribe(feed="ticker", products=["PI_XBTUSD", "PF_SOLUSD"])
         await async_wait(seconds=2)
 
-        subs: List[dict] = client.get_active_subscriptions()
+        subs: list[dict] = client.get_active_subscriptions()
         assert isinstance(subs, list)
 
-        expected_subscriptions: List[dict] = [
+        expected_subscriptions: list[dict] = [
             {"event": "subscribe", "feed": "ticker", "product_ids": ["PI_XBTUSD"]},
             {"event": "subscribe", "feed": "ticker", "product_ids": ["PF_SOLUSD"]},
         ]
@@ -190,7 +190,7 @@ def test_unsubscribe_public(caplog: Any) -> None:
 
     async def execute_unsubscribe() -> None:
         client: FuturesWebsocketClientTestWrapper = FuturesWebsocketClientTestWrapper()
-        products: List[str] = ["PI_XBTUSD", "PF_SOLUSD"]
+        products: list[str] = ["PI_XBTUSD", "PF_SOLUSD"]
 
         await client.subscribe(feed="ticker", products=products)
         await async_wait(seconds=2)
