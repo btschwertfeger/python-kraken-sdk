@@ -15,14 +15,14 @@ import logging
 from copy import deepcopy
 from typing import Any, Optional, TypeVar
 
-from kraken.base_api import KrakenBaseFuturesAPI
+from kraken.base_api import KrakenFuturesBaseAPI
 from kraken.exceptions import KrakenException
 from kraken.futures.websocket import ConnectFuturesWebsocket
 
 Self = TypeVar("Self")
 
 
-class KrakenFuturesWSClient(KrakenBaseFuturesAPI):
+class KrakenFuturesWSClient(KrakenFuturesBaseAPI):
     """
     Class to access public and (optional)
     private/authenticated websocket connection.
@@ -137,7 +137,7 @@ class KrakenFuturesWSClient(KrakenBaseFuturesAPI):
         )
 
     @property
-    def key(self: KrakenBaseFuturesAPI) -> str:
+    def key(self: KrakenFuturesBaseAPI) -> str:
         """Returns the API key"""
         return self.__key
 

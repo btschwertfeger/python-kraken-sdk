@@ -10,7 +10,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Optional, TypeVar
 
-from kraken.base_api import KrakenBaseFuturesAPI, defined
+from kraken.base_api import KrakenFuturesBaseAPI, defined
 
 if TYPE_CHECKING:
     import requests
@@ -18,7 +18,7 @@ if TYPE_CHECKING:
 Self = TypeVar("Self")
 
 
-class User(KrakenBaseFuturesAPI):
+class User(KrakenFuturesBaseAPI):
     """
     Class that implements the Kraken Futures user client
 

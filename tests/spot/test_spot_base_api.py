@@ -8,7 +8,7 @@
 
 import pytest
 
-from kraken.base_api import KrakenBaseSpotAPI
+from kraken.base_api import KrakenSpotBaseAPI
 from kraken.exceptions import KrakenException
 from kraken.spot import Funding, Market, Staking, Trade, User
 
@@ -16,20 +16,20 @@ from .helper import is_not_error
 
 
 @pytest.mark.spot()
-def test_KrakenBaseSpotAPI_without_exception() -> None:
+def test_KrakenSpotBaseAPI_without_exception() -> None:
     """
     Checks first if the expected error will be raised and than
-    creates a new KrakenBaseSpotAPI instance that do not raise
+    creates a new KrakenSpotBaseAPI instance that do not raise
     the custom Kraken exceptions. This new instance than executes
     the same request and the returned response gets evaluated.
     """
     with pytest.raises(KrakenException.KrakenInvalidAPIKeyError):
-        KrakenBaseSpotAPI(
+        KrakenSpotBaseAPI(
             key="fake",
             secret="fake",
         )._request(method="POST", uri="/private/AddOrder", auth=True)
 
-    assert KrakenBaseSpotAPI(
+    assert KrakenSpotBaseAPI(
         key="fake",
         secret="fake",
         use_custom_exceptions=False,

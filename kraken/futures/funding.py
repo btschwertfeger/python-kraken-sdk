@@ -9,12 +9,12 @@ from __future__ import annotations
 
 from typing import Optional, TypeVar
 
-from kraken.base_api import KrakenBaseFuturesAPI
+from kraken.base_api import KrakenFuturesBaseAPI
 
 Self = TypeVar("Self")
 
 
-class Funding(KrakenBaseFuturesAPI):
+class Funding(KrakenFuturesBaseAPI):
     """
     Class that implements the Kraken Futures Funding client
 

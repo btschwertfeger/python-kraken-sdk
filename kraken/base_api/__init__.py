@@ -166,7 +166,7 @@ class KrakenErrorHandler:
         return data
 
 
-class KrakenBaseSpotAPI:
+class KrakenSpotBaseAPI:
     """
     This class the the base for all Spot clients, handles un-/signed
     requests and returns exception handled results.
@@ -186,7 +186,7 @@ class KrakenBaseSpotAPI:
     API_V: str = "/0"
 
     def __init__(
-        self: KrakenBaseSpotAPI,
+        self: KrakenSpotBaseAPI,
         key: str = "",
         secret: str = "",
         url: str = "",
@@ -210,7 +210,7 @@ class KrakenBaseSpotAPI:
         self.__session.headers.update({"User-Agent": "python-kraken-sdk"})
 
     def _request(  # noqa: PLR0913
-        self: KrakenBaseSpotAPI,
+        self: KrakenSpotBaseAPI,
         method: str,
         uri: str,
         params: Optional[dict] = None,
@@ -337,7 +337,7 @@ class KrakenBaseSpotAPI:
         )
 
     def _get_kraken_signature(
-        self: KrakenBaseSpotAPI,
+        self: KrakenSpotBaseAPI,
         url_path: str,
         data: str,
         nonce: int,
@@ -365,7 +365,7 @@ class KrakenBaseSpotAPI:
         ).decode()
 
     def __check_response_data(
-        self: KrakenBaseSpotAPI,
+        self: KrakenSpotBaseAPI,
         response: requests.Response,
         *,
         return_raw: bool = False,
@@ -399,7 +399,7 @@ class KrakenBaseSpotAPI:
         raise Exception(f"{response.status_code} - {response.text}")
 
     @property
-    def return_unique_id(self: KrakenBaseSpotAPI) -> str:
+    def return_unique_id(self: KrakenSpotBaseAPI) -> str:
         """Returns a unique uuid string
 
         :return: uuid
@@ -411,14 +411,14 @@ class KrakenBaseSpotAPI:
         return self
 
     def __exit__(
-        self: KrakenBaseSpotAPI,
+        self: KrakenSpotBaseAPI,
         *exc: object,
         **kwargs: dict[str, Any],
     ) -> None:
         pass
 
 
-class KrakenBaseFuturesAPI:
+class KrakenFuturesBaseAPI:
     """
     The base class for all Futures clients handles un-/signed requests
     and returns exception handled results.
@@ -440,7 +440,7 @@ class KrakenBaseFuturesAPI:
     SANDBOX_URL: str = "https://demo-futures.kraken.com"
 
     def __init__(
-        self: KrakenBaseFuturesAPI,
+        self: KrakenFuturesBaseAPI,
         key: str = "",
         secret: str = "",
         url: str = "",
@@ -466,7 +466,7 @@ class KrakenBaseFuturesAPI:
         self.__session.headers.update({"User-Agent": "python-kraken-sdk"})
 
     def _request(  # noqa: PLR0913
-        self: KrakenBaseFuturesAPI,
+        self: KrakenFuturesBaseAPI,
         method: str,
         uri: str,
         post_params: Optional[dict] = None,
@@ -598,7 +598,7 @@ class KrakenBaseFuturesAPI:
         )
 
     def _get_kraken_futures_signature(
-        self: KrakenBaseFuturesAPI,
+        self: KrakenFuturesBaseAPI,
         endpoint: str,
         data: str,
         nonce: str,
@@ -630,7 +630,7 @@ class KrakenBaseFuturesAPI:
         ).decode()
 
     def __check_response_data(
-        self: KrakenBaseFuturesAPI,
+        self: KrakenFuturesBaseAPI,
         response: requests.Response,
         *,
         return_raw: bool = False,
@@ -678,4 +678,4 @@ class KrakenBaseFuturesAPI:
         pass
 
 
-__all__ = ["defined", "ensure_string", "KrakenBaseSpotAPI", "KrakenBaseFuturesAPI"]
+__all__ = ["defined", "ensure_string", "KrakenSpotBaseAPI", "KrakenFuturesBaseAPI"]

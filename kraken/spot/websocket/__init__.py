@@ -13,7 +13,7 @@ from __future__ import annotations
 import logging
 from typing import Any, Callable, Optional, Type, TypeVar
 
-from kraken.base_api import KrakenBaseSpotAPI
+from kraken.base_api import KrakenSpotBaseAPI
 from kraken.spot.websocket.connectors import (
     ConnectSpotWebsocketV1,
     ConnectSpotWebsocketV2,
@@ -22,7 +22,7 @@ from kraken.spot.websocket.connectors import (
 Self = TypeVar("Self")
 
 
-class KrakenSpotWSClientBase(KrakenBaseSpotAPI):
+class KrakenSpotWSClientBase(KrakenSpotBaseAPI):
     """
     This is the base class for :class:`kraken.spot.KrakenSpotWSClient` and
     :class:`kraken.spot.KrakenSpotWSClientV2`. It extends the REST API base

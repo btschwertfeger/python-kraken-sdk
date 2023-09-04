@@ -11,12 +11,12 @@ from __future__ import annotations
 from functools import lru_cache
 from typing import Optional, TypeVar
 
-from kraken.base_api import KrakenBaseSpotAPI, defined, ensure_string
+from kraken.base_api import KrakenSpotBaseAPI, defined, ensure_string
 
 Self = TypeVar("Self")
 
 
-class Market(KrakenBaseSpotAPI):
+class Market(KrakenSpotBaseAPI):
     """
     Class that implements the Kraken Spot Market client. Can be used to access
     the Kraken Spot market data.
