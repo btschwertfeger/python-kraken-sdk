@@ -28,7 +28,7 @@ class KrakenSpotWSClientV2(KrakenSpotWSClientBase):
 
     - https://docs.kraken.com/websockets-v2
 
-    … please use :class:`KrakenSpotWSClient` for accessing the Kraken's
+    … please use :class:`kraken.spot.KrakenSpotWSClientV1` for accessing the Kraken's
     Websocket API v1.
 
     This class holds up to two websocket connections, one private

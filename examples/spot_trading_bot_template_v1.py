@@ -22,7 +22,7 @@ import requests
 import urllib3
 
 from kraken.exceptions import KrakenException
-from kraken.spot import Funding, KrakenSpotWSClient, Market, Staking, Trade, User
+from kraken.spot import Funding, KrakenSpotWSClientV1, Market, Staking, Trade, User
 
 logging.basicConfig(
     format="%(asctime)s %(module)s,line: %(lineno)d %(levelname)8s | %(message)s",
@@ -33,7 +33,7 @@ logging.getLogger("requests").setLevel(logging.WARNING)
 logging.getLogger("urllib3").setLevel(logging.WARNING)
 
 
-class TradingBot(KrakenSpotWSClient):
+class TradingBot(KrakenSpotWSClientV1):
     """
     Class that implements the trading strategy
 
@@ -52,7 +52,7 @@ class TradingBot(KrakenSpotWSClient):
     """
 
     def __init__(self: TradingBot, config: dict) -> None:
-        super().__init__(  # initialize the KrakenSpotWSClient
+        super().__init__(  # initialize the KrakenSpotWSClientV1
             key=config["key"],
             secret=config["secret"],
         )
@@ -160,7 +160,7 @@ class ManagedBot:
         run the loop.
 
         This variable `exception_occur` which is an attribute of the
-        KrakenSpotWSClient can be set individually but is also being set to
+        KrakenSpotWSClientV1 can be set individually but is also being set to
         `True` if the websocket connection has some fatal error. This is used to
         exit the asyncio loop - but you can also apply your own reconnect rules.
         """

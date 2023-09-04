@@ -15,7 +15,7 @@ from collections import OrderedDict
 from inspect import iscoroutinefunction
 from typing import Callable, Optional
 
-from kraken.spot.websocket_v1 import KrakenSpotWSClient
+from kraken.spot.websocket_v1 import KrakenSpotWSClientV1
 
 
 class OrderbookClientV1:
@@ -123,7 +123,7 @@ class OrderbookClientV1:
         self.__depth: int = depth
         self.__callback: Optional[Callable] = callback
 
-        self.ws_client: KrakenSpotWSClient = KrakenSpotWSClient(
+        self.ws_client: KrakenSpotWSClientV1 = KrakenSpotWSClientV1(
             callback=self.on_message,
         )
 

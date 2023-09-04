@@ -24,7 +24,7 @@ Self = TypeVar("Self")
 
 class KrakenSpotWSClientBase(KrakenSpotBaseAPI):
     """
-    This is the base class for :class:`kraken.spot.KrakenSpotWSClient` and
+    This is the base class for :class:`kraken.spot.KrakenSpotWSClientV1` and
     :class:`kraken.spot.KrakenSpotWSClientV2`. It extends the REST API base
     class and is used to provide the base functionalities that are used
     for Kraken Websocket API v1 and v2.
@@ -138,7 +138,7 @@ class KrakenSpotWSClientBase(KrakenSpotBaseAPI):
         have to overwrite this function since it will receive all incoming
         messages that will be sent by Kraken.
 
-        See :class:`kraken.spot.KrakenSpotWSClient` and
+        See :class:`kraken.spot.KrakenSpotWSClientV1` and
         :class:`kraken.spot.KrakenSpotWSClientV2` for examples to use this
         function.
 

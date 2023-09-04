@@ -167,7 +167,7 @@ class ManagedBot:
         loop.
 
         The variable `exception_occur` which is an attribute of the
-        KrakenSpotWSClient can be set individually but is also being set to
+        KrakenSpotWSClientV2 can be set individually but is also being set to
         `True` if the websocket connection has some fatal error. This is used to
         exit the asyncio loop - but you can also apply your own reconnect rules.
         """
