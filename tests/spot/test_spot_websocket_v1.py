@@ -24,7 +24,7 @@ todo: check recover subscriptions
 from __future__ import annotations
 
 from asyncio import run as asyncio_run
-from typing import Any, Dict, List
+from typing import Any
 
 import pytest
 
@@ -175,7 +175,7 @@ def test_public_subscribe(caplog: Any) -> None:
 
     async def test_subscription() -> None:
         client: SpotWebsocketClientV1TestWrapper = SpotWebsocketClientV1TestWrapper()
-        subscription: Dict[str, str] = {"name": "ticker"}
+        subscription: dict[str, str] = {"name": "ticker"}
 
         with pytest.raises(AttributeError):
             # Invalid subscription format
@@ -232,7 +232,7 @@ def test_private_subscribe(
     """
 
     async def test_subscription() -> None:
-        subscription: Dict[str, str] = {"name": "ownTrades"}
+        subscription: dict[str, str] = {"name": "ownTrades"}
 
         client: SpotWebsocketClientV1TestWrapper = SpotWebsocketClientV1TestWrapper()
         with pytest.raises(
@@ -281,8 +281,8 @@ def test_public_unsubscribe(caplog: Any) -> None:
     async def test_unsubscribe() -> None:
         client: SpotWebsocketClientV1TestWrapper = SpotWebsocketClientV1TestWrapper()
 
-        subscription: Dict[str, str] = {"name": "ticker"}
-        pair: List[str] = ["XBT/USD"]
+        subscription: dict[str, str] = {"name": "ticker"}
+        pair: list[str] = ["XBT/USD"]
         await client.subscribe(subscription=subscription, pair=pair)
         await async_wait(seconds=3)
 

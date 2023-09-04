@@ -5,6 +5,9 @@
 #
 
 """
+
+**For websocket API v2**
+
 This module provides an example on how to use the Spot Orderbook client of the
 python-kraken-sdk (https://github.com/btschwertfeger/python-kraken-sdk) to
 retrieve and maintain a valid Spot order book for (a) specific asset pair(s).
@@ -36,9 +39,9 @@ from __future__ import annotations
 
 import asyncio
 import logging
-from typing import Any, Dict, List, Tuple
+from typing import Any
 
-from kraken.spot import OrderbookClient
+from kraken.spot import OrderbookClientV2
 
 logging.basicConfig(
     format="%(asctime)s %(module)s,line: %(lineno)d %(levelname)8s | %(message)s",
@@ -49,13 +52,13 @@ logging.getLogger().setLevel(logging.INFO)
 logging.getLogger("requests").setLevel(logging.WARNING)
 
 
-class Orderbook(OrderbookClient):
+class Orderbook(OrderbookClientV2):
     """
     This is a wrapper class that is used to overload the :func:`on_book_update`
     function. It can also be used as a base for trading strategy. Since the
-    :class:`OrderbookClient` is derived from :class:`KrakenSpotWSClient`
-    it can also be used to access the :func:`subscribe` function and any
-    other provided utility.
+    :class:`kraken.spot.OrderbookClientV2` is derived from
+    :class:`kraken.spot.KrakenSpotWSClientV2` it can also be used to access the
+    :func:`subscribe` function and any other provided utility.
     """
 
     async def on_book_update(self: Orderbook, pair: str, message: list) -> None:
@@ -71,9 +74,9 @@ class Orderbook(OrderbookClient):
         :param message: The message sent by Kraken (not needed in most cases)
         :type message: list
         """
-        book: Dict[str, Any] = self.get(pair=pair)
-        bid: List[Tuple[str, str]] = list(book["bid"].items())
-        ask: List[Tuple[str, str]] = list(book["ask"].items())
+        book: dict[str, Any] = self.get(pair=pair)
+        bid: list[tuple[str, str]] = list(book["bid"].items())
+        ask: list[tuple[str, str]] = list(book["ask"].items())
 
         print("Bid     Volume\t\t  Ask     Volume")
         for level in range(self.depth):

@@ -351,7 +351,7 @@ def test_request_save_export_report(spot_auth_user: User) -> None:
         assert isinstance(status, list)
         sleep(5)
 
-        result = spot_auth_user.retrieve_export(id_=response["id"])
+        result = spot_auth_user.retrieve_export(id_=response["id"], timeout=30)
         with tempfile.TemporaryDirectory() as tmp_dir, open(
             os.path.join(tmp_dir, f"{export_descr}.zip"),
             "wb",

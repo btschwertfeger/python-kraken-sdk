@@ -945,6 +945,8 @@ class User(KrakenSpotBaseAPI):
         :type starttm: int, optional
         :param endtm: Unix timestamp of the last result
         :type endtm: int, optional
+        :param timeout: The timeout for that request
+        :type timeout: int
         :return: A dictionary containing the export id
         :rtype: dict
 
@@ -1045,6 +1047,7 @@ class User(KrakenSpotBaseAPI):
     def retrieve_export(
         self: User,
         id_: str,
+        timeout: int = 10,
         *,
         extra_params: Optional[dict] = None,
     ) -> dict:
@@ -1060,6 +1063,8 @@ class User(KrakenSpotBaseAPI):
 
         :param id_: Id of the report that was requested
         :type id_: str
+        :param timeout: Timeout for that request, default: ``10`` seconds
+        :type timeout: int, optional
         :return: The reponse - a zipped report
         :rtype: requests.Response
 
@@ -1084,6 +1089,7 @@ class User(KrakenSpotBaseAPI):
             method="POST",
             uri="/private/RetrieveExport",
             params={"id": id_},
+            timeout=timeout,
             return_raw=True,
             extra_params=extra_params,
         )

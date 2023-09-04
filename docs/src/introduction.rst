@@ -54,7 +54,7 @@ Available Clients:
 
 - Spot REST Clients
 - Spot Websocket Clients (Websocket API v1 and v2)
-- Spot Orderbook Client
+- Spot Orderbook Client (Websocket API v1 and v2)
 - Futures REST Clients
 - Futures Websocket Client
 
