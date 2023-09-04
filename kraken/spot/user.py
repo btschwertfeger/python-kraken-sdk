@@ -11,12 +11,12 @@ from __future__ import annotations
 from decimal import Decimal
 from typing import Optional, TypeVar
 
-from kraken.base_api import KrakenBaseSpotAPI, defined, ensure_string
+from kraken.base_api import KrakenSpotBaseAPI, defined, ensure_string
 
 Self = TypeVar("Self")
 
 
-class User(KrakenBaseSpotAPI):
+class User(KrakenSpotBaseAPI):
     """
     Class that implements the Kraken Spot User client
 

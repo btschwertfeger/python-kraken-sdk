@@ -13,13 +13,13 @@ from functools import lru_cache
 from math import floor
 from typing import Optional, TypeVar
 
-from kraken.base_api import KrakenBaseSpotAPI, defined, ensure_string
+from kraken.base_api import KrakenSpotBaseAPI, defined, ensure_string
 from kraken.spot.market import Market
 
 Self = TypeVar("Self")
 
 
-class Trade(KrakenBaseSpotAPI):
+class Trade(KrakenSpotBaseAPI):
     """
     Class that implements the Kraken Trade Spot client
 

@@ -8,7 +8,7 @@
 
 import pytest
 
-from kraken.base_api import KrakenBaseFuturesAPI
+from kraken.base_api import KrakenFuturesBaseAPI
 from kraken.exceptions import KrakenException
 from kraken.futures import Funding, Market, Trade, User
 
@@ -16,21 +16,21 @@ from .helper import is_success
 
 
 @pytest.mark.futures()
-def test_KrakenBaseFuturesAPI_without_exception() -> None:
+def test_KrakenFuturesBaseAPI_without_exception() -> None:
     """
     Checks first if the expected error will be raised and than
-    creates a new KrakenBaseFuturesAPI instance that do not raise
+    creates a new KrakenFuturesBaseAPI instance that do not raise
     the custom Kraken exceptions. This new instance than executes
     the same request and the returned response gets evaluated.
     """
     with pytest.raises(KrakenException.KrakenRequiredArgumentMissingError):
-        KrakenBaseFuturesAPI(
+        KrakenFuturesBaseAPI(
             key="fake",
             secret="fake",
         )._request(method="POST", uri="/derivatives/api/v3/sendorder", auth=True)
 
     result: dict = (
-        KrakenBaseFuturesAPI(key="fake", secret="fake", use_custom_exceptions=False)  # type: ignore[union-attr]
+        KrakenFuturesBaseAPI(key="fake", secret="fake", use_custom_exceptions=False)  # type: ignore[union-attr]
         ._request(method="POST", uri="/derivatives/api/v3/sendorder", auth=True)
         .json()
     )

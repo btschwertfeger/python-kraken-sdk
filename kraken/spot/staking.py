@@ -10,12 +10,12 @@ from __future__ import annotations
 
 from typing import Optional, TypeVar
 
-from kraken.base_api import KrakenBaseSpotAPI, defined
+from kraken.base_api import KrakenSpotBaseAPI, defined
 
 Self = TypeVar("Self")
 
 
-class Staking(KrakenBaseSpotAPI):
+class Staking(KrakenSpotBaseAPI):
     """
     Class that implements the Kraken Spot Staking client. Currently there
     are no staking endpoints that could be accesses without authentication.
