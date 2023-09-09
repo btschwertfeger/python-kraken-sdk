@@ -8,7 +8,9 @@
 # https://www.sphinx-doc.org/en/master/usage/configuration.html
 # pylint: disable=invalid-name
 
-"""This module is the configuration for the Sphinx documentation building process"""
+"""
+This module is the configuration for the Sphinx documentation building process.
+"""
 
 import sys
 from pathlib import Path

@@ -381,7 +381,7 @@ class KrakenSpotWSClientV1(KrakenSpotWSClientBase):
         return ["ownTrades", "openOrders"]
 
     @ensure_string("oflags")
-    async def create_order(  # noqa: PLR0913
+    async def create_order(  # pylint: disable=too-many-arguments # noqa: PLR0913
         self: KrakenSpotWSClientV1,
         ordertype: str,
         side: str,
@@ -548,7 +548,7 @@ class KrakenSpotWSClientV1(KrakenSpotWSClientBase):
         await self.send_message(message=payload, private=True)
 
     @ensure_string("oflags")
-    async def edit_order(  # noqa: PLR0913
+    async def edit_order(  # pylint: disable=too-many-arguments # noqa: PLR0913
         self: KrakenSpotWSClientV1,
         orderid: str,
         reqid: Optional[str | int] = None,
