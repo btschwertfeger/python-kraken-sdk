@@ -16,7 +16,6 @@ import logging
 import logging.config
 import os
 from contextlib import suppress
-from typing import Union
 
 from kraken.spot import KrakenSpotWSClientV1
 
@@ -38,7 +37,7 @@ async def main() -> None:
     class Client(KrakenSpotWSClientV1):
         """Can be used to create a custom trading strategy"""
 
-        async def on_message(self: Client, message: Union[list, dict]) -> None:
+        async def on_message(self: Client, message: list | dict) -> None:
             """Receives the websocket messages"""
             if isinstance(message, dict) and "event" in message:
                 topic = message["event"]

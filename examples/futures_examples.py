@@ -89,7 +89,7 @@ def user_examples() -> None:
 def trade_examples() -> None:
     """Example Trade client usage"""
     raise ValueError(
-        "Attention: Please check if you really want to test the trade endpoints!",
+        "Attention: Please check if you really want to execute the trade endpoints!",
     )
     trade = Trade(key=key, secret=secret, sandbox=True)
     print(trade.get_fills())
