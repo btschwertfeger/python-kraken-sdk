@@ -7,6 +7,10 @@
 Usage Examples
 ==============
 
+The repository of the `python-kraken-sdk`_ provides some example scripts that
+demonstrate some of the implemented methods. Please see the sections below for
+more information.
+
 .. toctree::
     :maxdepth: 2
 
