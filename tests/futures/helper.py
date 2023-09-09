@@ -70,6 +70,6 @@ class FuturesWebsocketClientTestWrapper(KrakenFuturesWSClient):
                 log = logfile.read()
         except FileNotFoundError:
             pass
-          
+
         with Path("futures_ws.log").open("w", encoding="utf-8") as logfile:
-            logfile.write(f"{log}\n{msg}")
+            logfile.write(f"{log}\n{message}")
