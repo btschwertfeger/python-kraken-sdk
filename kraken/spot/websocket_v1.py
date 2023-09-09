@@ -17,7 +17,7 @@ from copy import deepcopy
 from typing import Any, Callable, Optional
 
 from kraken.base_api import defined, ensure_string
-from kraken.exceptions import KrakenException
+from kraken.exceptions import KrakenAuthenticationError
 from kraken.spot.trade import Trade
 from kraken.spot.websocket import KrakenSpotWSClientBase
 
@@ -197,7 +197,7 @@ class KrakenSpotWSClientV1(KrakenSpotWSClientBase):
         """
 
         if private and not self._is_auth:
-            raise KrakenException.KrakenAuthenticationError
+            raise KrakenAuthenticationError
 
         socket: Any = self._get_socket(private=private)
         while not socket:
@@ -263,7 +263,7 @@ class KrakenSpotWSClientV1(KrakenSpotWSClientBase):
 
         if private:  # private == without pair
             if not self._is_auth:
-                raise KrakenException.KrakenAuthenticationError(
+                raise KrakenAuthenticationError(
                     "Cannot subscribe to private feeds without valid credentials!",
                 )
             if pair is not None:
@@ -334,7 +334,7 @@ class KrakenSpotWSClientV1(KrakenSpotWSClientBase):
 
         if private:  # private == without pair
             if not self._is_auth:
-                raise KrakenException.KrakenAuthenticationError(
+                raise KrakenAuthenticationError(
                     "Cannot unsubscribe from private feeds without valid credentials!",
                 )
             if pair is not None:
@@ -497,7 +497,7 @@ class KrakenSpotWSClientV1(KrakenSpotWSClientBase):
 
         """
         if not self._priv_conn or not self._priv_conn.is_auth:
-            raise KrakenException.KrakenAuthenticationError(
+            raise KrakenAuthenticationError(
                 "Can't place order - Authenticated websocket not connected!",
             )
 
@@ -614,7 +614,7 @@ class KrakenSpotWSClientV1(KrakenSpotWSClientBase):
             ... )
         """
         if not self._priv_conn or not self._priv_conn.is_auth:
-            raise KrakenException.KrakenAuthenticationError(
+            raise KrakenAuthenticationError(
                 "Can't edit order - Authenticated websocket not connected!",
             )
 
@@ -673,7 +673,7 @@ class KrakenSpotWSClientV1(KrakenSpotWSClientBase):
             >>> await client_auth.cancel_order(txid=["OBGFYP-XVQNL-P4GMWF"])
         """
         if not self._priv_conn or not self._priv_conn.is_auth:
-            raise KrakenException.KrakenAuthenticationError(
+            raise KrakenAuthenticationError(
                 "Can't cancel order - Authenticated websocket not connected!",
             )
         await self.send_message(
@@ -704,7 +704,7 @@ class KrakenSpotWSClientV1(KrakenSpotWSClientBase):
             >>> await client_auth.cancel_all_orders()
         """
         if not self._priv_conn or not self._priv_conn.is_auth:
-            raise KrakenException.KrakenAuthenticationError(
+            raise KrakenAuthenticationError(
                 "Can't cancel all orders - Authenticated websocket not connected!",
             )
         await self.send_message(message={"event": "cancelAll"}, private=True)
@@ -738,7 +738,7 @@ class KrakenSpotWSClientV1(KrakenSpotWSClientBase):
             >>> await client_auth.cancel_all_orders_after(timeout=60)
         """
         if not self._priv_conn or not self._priv_conn.is_auth:
-            raise KrakenException.KrakenAuthenticationError(
+            raise KrakenAuthenticationError(
                 "Can't cancel all orders after - Authenticated websocket not connected!",
             )
         await self.send_message(

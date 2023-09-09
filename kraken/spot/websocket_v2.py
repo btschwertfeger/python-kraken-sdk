@@ -16,7 +16,7 @@ import json
 from typing import Any, Callable, Optional
 
 from kraken.base_api import defined
-from kraken.exceptions import KrakenException
+from kraken.exceptions import KrakenAuthenticationError
 from kraken.spot.websocket import KrakenSpotWSClientBase
 
 
@@ -394,7 +394,7 @@ class KrakenSpotWSClientV2(KrakenSpotWSClientBase):
             and message["params"]["channel"] in self.private_channel_names
         )
         if private and not self._is_auth:
-            raise KrakenException.KrakenAuthenticationError
+            raise KrakenAuthenticationError
 
         retries: int = 0
         socket: Any = self._get_socket(private=private)

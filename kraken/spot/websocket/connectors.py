@@ -24,7 +24,7 @@ from typing import TYPE_CHECKING, Any, Optional
 
 import websockets
 
-from kraken.exceptions import KrakenException
+from kraken.exceptions import MaxReconnectError
 
 if TYPE_CHECKING:
     from kraken.spot.websocket import KrakenSpotWSClientBase
@@ -158,9 +158,9 @@ class ConnectSpotWebsocketBase:
         try:
             while True:
                 await self.__reconnect()
-        except KrakenException.MaxReconnectError:
+        except MaxReconnectError:
             await self.__callback(
-                {"error": "kraken.exceptions.KrakenException.MaxReconnectError"},
+                {"error": "kraken.exceptions.MaxReconnectError"},
             )
         except Exception as exc:
             traceback_: str = traceback.format_exc()
@@ -188,8 +188,8 @@ class ConnectSpotWebsocketBase:
 
         self.__reconnect_num += 1
         if self.__reconnect_num >= self.MAX_RECONNECT_NUM:
-            raise KrakenException.MaxReconnectError(
-                "The KrakenSpotWebsocketClient encountered to many reconnects!",
+            raise MaxReconnectError(
+                "The Kraken Spot websocket client encountered to many reconnects!",
             )
 
         reconnect_wait: float = self.__get_reconnect_wait(self.__reconnect_num)

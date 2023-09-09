@@ -25,7 +25,7 @@ from typing import Any
 
 import pytest
 
-from kraken.exceptions import KrakenException
+from kraken.exceptions import KrakenAuthenticationError
 from kraken.spot.websocket.connectors import ConnectSpotWebsocketV2
 
 from .helper import SpotWebsocketClientV2TestWrapper, async_wait
@@ -251,7 +251,7 @@ def test_private_subscribe_failing_on_public_connection() -> None:
 
     async def test_subscription() -> None:
         client: SpotWebsocketClientV2TestWrapper = SpotWebsocketClientV2TestWrapper()
-        with pytest.raises(KrakenException.KrakenAuthenticationError):
+        with pytest.raises(KrakenAuthenticationError):
             await client.subscribe(params={"channel": "executions"}, req_id=123456789)
 
         await async_wait(seconds=2)

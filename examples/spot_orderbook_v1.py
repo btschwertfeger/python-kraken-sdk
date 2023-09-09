@@ -52,7 +52,11 @@ class Orderbook(OrderbookClientV1):
     :func:`subscribe` function and any other provided utility.
     """
 
-    async def on_book_update(self: Orderbook, pair: str, message: list) -> None:
+    async def on_book_update(
+        self: Orderbook,
+        pair: str,
+        message: list,  # noqa: ARG002
+    ) -> None:
         """
         This function is called every time the order book of ``pair`` gets
         updated.

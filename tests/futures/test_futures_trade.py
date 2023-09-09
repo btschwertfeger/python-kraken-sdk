@@ -11,7 +11,7 @@ from time import sleep
 
 import pytest
 
-from kraken.exceptions import KrakenException
+from kraken.exceptions import KrakenInsufficientAvailableFundsError
 
 from .helper import is_success
 
@@ -88,7 +88,7 @@ def test_create_order(futures_demo_trade) -> None:
     """
     Checks the ``create_order`` endpoint.
     """
-    with suppress(KrakenException.KrakenInsufficientAvailableFundsError):
+    with suppress(KrakenInsufficientAvailableFundsError):
         futures_demo_trade.create_order(
             orderType="lmt",
             size=10,
@@ -99,7 +99,7 @@ def test_create_order(futures_demo_trade) -> None:
             reduceOnly=True,
         )
 
-    with suppress(KrakenException.KrakenInsufficientAvailableFundsError):
+    with suppress(KrakenInsufficientAvailableFundsError):
         futures_demo_trade.create_order(
             orderType="take_profit",
             size=10,
@@ -169,7 +169,7 @@ def test_create_batch_order(futures_demo_trade) -> None:
     """
     Checks the ``create_order_batch`` endpoint.
     """
-    with suppress(KrakenException.KrakenInsufficientAvailableFundsError):
+    with suppress(KrakenInsufficientAvailableFundsError):
         assert is_success(
             futures_demo_trade.create_batch_order(
                 batchorder_list=[

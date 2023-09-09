@@ -28,7 +28,7 @@ from typing import Any
 
 import pytest
 
-from kraken.exceptions import KrakenException
+from kraken.exceptions import KrakenAuthenticationError
 
 from .helper import SpotWebsocketClientV1TestWrapper, async_wait
 
@@ -236,13 +236,13 @@ def test_private_subscribe(
 
         client: SpotWebsocketClientV1TestWrapper = SpotWebsocketClientV1TestWrapper()
         with pytest.raises(
-            KrakenException.KrakenAuthenticationError,
+            KrakenAuthenticationError,
             match=r"Credentials are invalid.",
         ):
             await client.subscribe(subscription=subscription)
 
         with pytest.raises(
-            KrakenException.KrakenAuthenticationError,
+            KrakenAuthenticationError,
             match=r"Credentials are invalid.",
         ):
             # same here also using a pair for coverage ...
@@ -418,7 +418,7 @@ def test_private_unsubscribe_failing(spot_api_key: str, spot_secret_key: str) ->
         )
 
         with pytest.raises(
-            KrakenException.KrakenAuthenticationError,
+            KrakenAuthenticationError,
             match=r"Credentials are invalid.",
         ):
             # private feed on unauthenticated client
@@ -481,7 +481,7 @@ def test_send_private_message_from_public_connection_failing() -> None:
 
     async def test_send_message() -> None:
         client: SpotWebsocketClientV1TestWrapper = SpotWebsocketClientV1TestWrapper()
-        with pytest.raises(KrakenException.KrakenAuthenticationError):
+        with pytest.raises(KrakenAuthenticationError):
             await client.send_message(message={}, private=True)
 
         await async_wait(seconds=2)
@@ -594,7 +594,7 @@ def test_create_order_failing_no_connection(caplog: Any) -> None:
 
     async def execute_create_order() -> None:
         client: SpotWebsocketClientV1TestWrapper = SpotWebsocketClientV1TestWrapper()
-        with pytest.raises(KrakenException.KrakenAuthenticationError):
+        with pytest.raises(KrakenAuthenticationError):
             await client.create_order(
                 ordertype="limit",
                 side="buy",
@@ -674,7 +674,7 @@ def test_edit_order_failing_no_connection(caplog: Any) -> None:
 
     async def execute_edit_order() -> None:
         client: SpotWebsocketClientV1TestWrapper = SpotWebsocketClientV1TestWrapper()
-        with pytest.raises(KrakenException.KrakenAuthenticationError):
+        with pytest.raises(KrakenAuthenticationError):
             await client.edit_order(
                 orderid="OHSAUDZ-ASJKGD-EPAFUIH",
                 reqid=1244,
@@ -745,7 +745,7 @@ def test_cancel_order_failing_no_connection(caplog: Any) -> None:
 
     async def execute_cancel_order() -> None:
         client: SpotWebsocketClientV1TestWrapper = SpotWebsocketClientV1TestWrapper()
-        with pytest.raises(KrakenException.KrakenAuthenticationError):
+        with pytest.raises(KrakenAuthenticationError):
             await client.cancel_order(txid=["AOUEHF-ASLBD-A6B4A"])
         await async_wait(seconds=2)
 
@@ -803,7 +803,7 @@ def test_cancel_all_orders_failing_no_connection(caplog: Any) -> None:
 
     async def execute_cancel_all_orders() -> None:
         client: SpotWebsocketClientV1TestWrapper = SpotWebsocketClientV1TestWrapper()
-        with pytest.raises(KrakenException.KrakenAuthenticationError):
+        with pytest.raises(KrakenAuthenticationError):
             await client.cancel_all_orders()
         await async_wait(seconds=2)
 
@@ -867,7 +867,7 @@ def test_cancel_all_orders_after_failing_no_connection(caplog: Any) -> None:
 
     async def execute_cancel_all_orders() -> None:
         client: SpotWebsocketClientV1TestWrapper = SpotWebsocketClientV1TestWrapper()
-        with pytest.raises(KrakenException.KrakenAuthenticationError):
+        with pytest.raises(KrakenAuthenticationError):
             await client.cancel_all_orders_after()
         await async_wait(seconds=2)
 
