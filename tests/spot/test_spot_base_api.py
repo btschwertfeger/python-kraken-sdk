@@ -9,7 +9,7 @@
 import pytest
 
 from kraken.base_api import KrakenSpotBaseAPI
-from kraken.exceptions import KrakenException
+from kraken.exceptions import KrakenInvalidAPIKeyError, KrakenPermissionDeniedError
 from kraken.spot import Funding, Market, Staking, Trade, User
 
 from .helper import is_not_error
@@ -18,12 +18,12 @@ from .helper import is_not_error
 @pytest.mark.spot()
 def test_KrakenSpotBaseAPI_without_exception() -> None:
     """
-    Checks first if the expected error will be raised and than
-    creates a new KrakenSpotBaseAPI instance that do not raise
-    the custom Kraken exceptions. This new instance than executes
-    the same request and the returned response gets evaluated.
+    Checks first if the expected error will be raised and than creates a new
+    KrakenSpotBaseAPI instance that do not raise the custom Kraken exceptions.
+    This new instance than executes the same request and the returned response
+    gets evaluated.
     """
-    with pytest.raises(KrakenException.KrakenInvalidAPIKeyError):
+    with pytest.raises(KrakenInvalidAPIKeyError):
         KrakenSpotBaseAPI(
             key="fake",
             secret="fake",
@@ -63,7 +63,5 @@ def test_spot_rest_contextmanager(
     with spot_auth_staking as staking:
         assert isinstance(staking.get_pending_staking_transactions(), list)
 
-    with spot_auth_trade as trade, pytest.raises(
-        KrakenException.KrakenPermissionDeniedError,
-    ):
+    with spot_auth_trade as trade, pytest.raises(KrakenPermissionDeniedError):
         trade.cancel_order(txid="OB6JJR-7NZ5P-N5SKCB")

@@ -16,7 +16,7 @@ from copy import deepcopy
 from typing import Any, Optional, TypeVar
 
 from kraken.base_api import KrakenFuturesBaseAPI
-from kraken.exceptions import KrakenException
+from kraken.exceptions import KrakenAuthenticationError
 from kraken.futures.websocket import ConnectFuturesWebsocket
 
 Self = TypeVar("Self")
@@ -152,7 +152,7 @@ class KrakenFuturesWSClient(KrakenFuturesBaseAPI):
         :rtype: str
         """
         if not self.is_auth:
-            raise KrakenException.KrakenAuthenticationError
+            raise KrakenAuthenticationError
 
         sha256_hash = hashlib.sha256()
         sha256_hash.update(challenge.encode("utf-8"))

@@ -77,9 +77,9 @@ def test_get_first() -> None:
     return_value=mock.AsyncMock(),
 )
 def test_assign_msg_and_validate_checksum(
-    mock_add_book: mock.MagicMock,
-    mock_remove_book: mock.MagicMock,
-    mock_ws_client: mock.MagicMock,
+    mock_add_book: mock.MagicMock,  # noqa: ARG001
+    mock_remove_book: mock.MagicMock,  # noqa: ARG001
+    mock_ws_client: mock.MagicMock,  # noqa: ARG001
 ) -> None:
     """
     This function checks if the initial snapshot and the book updates are

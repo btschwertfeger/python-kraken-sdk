@@ -9,7 +9,7 @@
 import pytest
 
 from kraken.base_api import KrakenFuturesBaseAPI
-from kraken.exceptions import KrakenException
+from kraken.exceptions import KrakenRequiredArgumentMissingError
 from kraken.futures import Funding, Market, Trade, User
 
 from .helper import is_success
@@ -23,7 +23,7 @@ def test_KrakenFuturesBaseAPI_without_exception() -> None:
     the custom Kraken exceptions. This new instance than executes
     the same request and the returned response gets evaluated.
     """
-    with pytest.raises(KrakenException.KrakenRequiredArgumentMissingError):
+    with pytest.raises(KrakenRequiredArgumentMissingError):
         KrakenFuturesBaseAPI(
             key="fake",
             secret="fake",

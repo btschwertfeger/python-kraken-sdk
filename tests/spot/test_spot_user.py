@@ -15,7 +15,11 @@ from unittest import mock
 
 import pytest
 
-from kraken.exceptions import KrakenException
+from kraken.exceptions import (
+    KrakenAuthenticationFailedError,
+    KrakenInvalidOrderError,
+    KrakenPermissionDeniedError,
+)
 from kraken.spot import User
 
 from .helper import is_not_error
@@ -58,7 +62,10 @@ def test_get_balances(spot_auth_user: User) -> None:
         "KFEE": {"balance": "7407.73", "hold_trade": "0.00"},
     },
 )
-def test_get_balance(mock_user: mock.MagicMock, spot_auth_user: User) -> None:
+def test_get_balance(
+    mock_user: mock.MagicMock,  # noqa: ARG001
+    spot_auth_user: User,
+) -> None:
     """
     Checks the ``get_balances`` function by mocking the internal API call
     (which is already covered by :func:`test_get_balances`) and checking the
@@ -156,7 +163,7 @@ def test_get_trades_info(spot_auth_user: User) -> None:
     ):
         try:
             assert is_not_error(method(**params))
-        except KrakenException.KrakenInvalidOrderError:
+        except KrakenInvalidOrderError:
             pass
         finally:
             sleep(2)
@@ -187,7 +194,7 @@ def test_get_orders_info(spot_auth_user: User) -> None:
     ):
         try:
             assert is_not_error(method(**params))
-        except KrakenException.KrakenInvalidOrderError:
+        except KrakenInvalidOrderError:
             pass
         finally:
             sleep(2)
@@ -403,7 +410,7 @@ def test_create_subaccount_failing(spot_auth_user: User) -> None:
 
     todo: test this using a valid account
     """
-    with pytest.raises(KrakenException.KrakenPermissionDeniedError):
+    with pytest.raises(KrakenPermissionDeniedError):
         spot_auth_user.create_subaccount(email="abc@welt.de", username="tomtucker")
 
 
@@ -420,7 +427,7 @@ def test_account_transfer_failing(spot_auth_user: User) -> None:
 
     todo: test this using a valid account
     """
-    with pytest.raises(KrakenException.KrakenAuthenticationFailedError):
+    with pytest.raises(KrakenAuthenticationFailedError):
         spot_auth_user.account_transfer(
             asset="XBT",
             amount=1.0,

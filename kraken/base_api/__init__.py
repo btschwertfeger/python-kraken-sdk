@@ -20,7 +20,7 @@ from uuid import uuid1
 
 import requests
 
-from kraken.exceptions import KrakenException
+from kraken.exceptions import _get_exception
 
 Self = TypeVar("Self")
 
@@ -90,15 +90,12 @@ class KrakenErrorHandler:
     KrakenException based on the error message.
     """
 
-    def __init__(self: KrakenErrorHandler) -> None:
-        self.__kexceptions: KrakenException = KrakenException()
-
-    def __get_exception(self: KrakenErrorHandler, msg: str) -> Optional[Any]:
+    def __get_exception(self: KrakenErrorHandler, data: str) -> Optional[Any]:
         """
         Must be called when an error was found in the message, so the corresponding
         KrakenException will be returned.
         """
-        return self.__kexceptions.get_exception(msg)
+        return _get_exception(data=data)
 
     def check(self: KrakenErrorHandler, data: dict) -> dict | Any:
         """
@@ -118,7 +115,7 @@ class KrakenErrorHandler:
         if len(data.get("error", [])) == 0 and "result" in data:
             return data["result"]
 
-        exception = self.__get_exception(data["error"])
+        exception: Type[Exception] = self.__get_exception(data=data["error"])
         if exception:
             raise exception(data)
         return data
@@ -135,7 +132,7 @@ class KrakenErrorHandler:
         :rtype: dict
         """
         if "sendStatus" in data and "status" in data["sendStatus"]:
-            exception: Type[KrakenException] = self.__get_exception(
+            exception: Type[Exception] = self.__get_exception(
                 data["sendStatus"]["status"],
             )
             if exception:
@@ -158,7 +155,7 @@ class KrakenErrorHandler:
             batch_status: list[dict[str, Any]] = data["batchStatus"]
             for status in batch_status:
                 if "status" in status:
-                    exception: Type[KrakenException] = self.__get_exception(
+                    exception: Type[Exception] = self.__get_exception(
                         status["status"],
                     )
                     if exception:
@@ -263,9 +260,10 @@ class KrakenSpotBaseAPI:
             )
 
         method = method.upper()
-        data_json: str = ""
         if method in ("GET", "DELETE") and params:
-            data_json = "&".join([f"{key}={params[key]}" for key in sorted(params)])
+            data_json: str = "&".join(
+                [f"{key}={params[key]}" for key in sorted(params)],
+            )
             uri += f"?{data_json}".replace(" ", "%20")
 
         headers: dict = {}

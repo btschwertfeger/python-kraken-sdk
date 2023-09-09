@@ -11,7 +11,7 @@ from time import sleep
 
 import pytest
 
-from kraken.exceptions import KrakenException
+from kraken.exceptions import KrakenPermissionDeniedError
 from kraken.spot import Trade
 
 # todo: Mock skipped tests - or is this to dangerous?
@@ -22,12 +22,12 @@ from kraken.spot import Trade
 @pytest.mark.spot_trade()
 def test_create_order(spot_auth_trade: Trade) -> None:
     """
-    This test checks the ``create_order`` function by performing
-    calls to create an order - but in validate mode - so that
-    no real order is placed. The KrakenException.KrakenPermissionDeniedError
-    will be raised since the CI does not have trade permission.
+    This test checks the ``create_order`` function by performing calls to create
+    an order - but in validate mode - so that no real order is placed. The
+    KrakenPermissionDeniedError will be raised since the CI does not have trade
+    permission.
     """
-    with pytest.raises(KrakenException.KrakenPermissionDeniedError):
+    with pytest.raises(KrakenPermissionDeniedError):
         assert isinstance(
             spot_auth_trade.create_order(
                 ordertype="limit",
@@ -43,7 +43,7 @@ def test_create_order(spot_auth_trade: Trade) -> None:
             dict,
         )
 
-    with pytest.raises(KrakenException.KrakenPermissionDeniedError):
+    with pytest.raises(KrakenPermissionDeniedError):
         assert isinstance(
             spot_auth_trade.create_order(
                 ordertype="limit",
@@ -59,7 +59,7 @@ def test_create_order(spot_auth_trade: Trade) -> None:
             dict,
         )
 
-    with pytest.raises(KrakenException.KrakenPermissionDeniedError):
+    with pytest.raises(KrakenPermissionDeniedError):
         assert isinstance(
             spot_auth_trade.create_order(
                 ordertype="stop-loss",
@@ -81,7 +81,7 @@ def test_create_order(spot_auth_trade: Trade) -> None:
 
     deadline = (datetime.now(timezone.utc) + timedelta(seconds=20)).isoformat()
     with pytest.raises(
-        KrakenException.KrakenPermissionDeniedError,
+        KrakenPermissionDeniedError,
         match=r"API key doesn't have permission to make this request.",
     ):
         spot_auth_trade.create_order(
@@ -133,7 +133,7 @@ def test_create_order_batch(spot_auth_trade: Trade) -> None:
     a batch order in validate mode. (Permission denied,
     since the CI does not have trade permissions)
     """
-    with pytest.raises(KrakenException.KrakenPermissionDeniedError):
+    with pytest.raises(KrakenPermissionDeniedError):
         spot_auth_trade.create_order_batch(
             orders=[
                 {
@@ -171,11 +171,10 @@ def test_edit_order(spot_auth_trade: Trade) -> None:
     """
     Test the ``edit_order`` function by editing an order.
 
-    KrakenException.KrakenPermissionDeniedError: since CI does not have
-    trade permissions. If the request would be malformed, another
-    exception could be observed.
+    KrakenPermissionDeniedError: since CI does not have trade permissions. If
+    the request would be malformed, another exception could be observed.
     """
-    with pytest.raises(KrakenException.KrakenPermissionDeniedError):
+    with pytest.raises(KrakenPermissionDeniedError):
         spot_auth_trade.edit_order(
             txid="OHYO67-6LP66-HMQ437",
             userref="12345678",
@@ -197,10 +196,10 @@ def test_cancel_order(spot_auth_trade: Trade) -> None:
     """
     Checks the ``cancel_order`` function by canceling an order.
 
-    A KrakenException.KrakenPermissionDeniedError is expected since CI keys are
+    A KrakenPermissionDeniedError is expected since CI keys are
     not allowed to trade/cancel/withdraw/stake.
     """
-    with pytest.raises(KrakenException.KrakenPermissionDeniedError):
+    with pytest.raises(KrakenPermissionDeniedError):
         spot_auth_trade.cancel_order(txid="OB6JJR-7NZ5P-N5SKCB")
 
 
@@ -211,10 +210,10 @@ def test_cancel_order(spot_auth_trade: Trade) -> None:
 def test_cancel_all_orders(spot_auth_trade: Trade) -> None:
     """
     Checks the ``cancel_all_orders`` endpoint by executing the function.
-    A KrakenException.KrakenPermissionDeniedError will be raised since the CI API keys
+    A KrakenPermissionDeniedError will be raised since the CI API keys
     do not have cancel permission.
     """
-    with pytest.raises(KrakenException.KrakenPermissionDeniedError):
+    with pytest.raises(KrakenPermissionDeniedError):
         assert isinstance(spot_auth_trade.cancel_all_orders(), dict)
 
 
@@ -224,13 +223,13 @@ def test_cancel_all_orders(spot_auth_trade: Trade) -> None:
 @pytest.mark.skip(reason="CI does not have trade/cancel permission")
 def test_cancel_all_orders_after_x(spot_auth_trade: Trade) -> None:
     """
-    Checks the ``cancel_all_orders_after_x`` function by validating its response data
-    type.
+    Checks the ``cancel_all_orders_after_x`` function by validating its response
+    data type.
 
-    THe KrakenException.KrakenPermissionDeniedError will be caught since the CI API keys are not
+    THe KrakenPermissionDeniedError will be caught since the CI API keys are not
     allowed to cancel orders.
     """
-    with pytest.raises(KrakenException.KrakenPermissionDeniedError):
+    with pytest.raises(KrakenPermissionDeniedError):
         assert isinstance(spot_auth_trade.cancel_all_orders_after_x(timeout=0), dict)
 
 
@@ -243,7 +242,7 @@ def test_cancel_order_batch(spot_auth_trade: Trade) -> None:
     do not exist anymore. Error will be raised since the CI do not have trade
     permissions.
     """
-    with pytest.raises(KrakenException.KrakenPermissionDeniedError):
+    with pytest.raises(KrakenPermissionDeniedError):
         assert isinstance(
             spot_auth_trade.cancel_order_batch(
                 orders=[
@@ -261,11 +260,11 @@ def test_cancel_order_batch(spot_auth_trade: Trade) -> None:
 @pytest.mark.spot_trade()
 def test_truncate_price(spot_trade: Trade) -> None:
     """
-    Checks if the truncate function returns the expected results by
-    checking different inputs for price.
+    Checks if the truncate function returns the expected results by checking
+    different inputs for price.
 
-    NOTE: This test may break in the future since the lot_decimals, pair_decimals,
-    ordermin and costmin attributes could change.
+    NOTE: This test may break in the future since the lot_decimals,
+          pair_decimals, ordermin and costmin attributes could change.
     """
     for price, expected in (
         (10000, "10000.0"),
@@ -296,11 +295,11 @@ def test_truncate_price(spot_trade: Trade) -> None:
 @pytest.mark.spot_trade()
 def test_truncate_volume(spot_trade: Trade) -> None:
     """
-    Checks if the truncate function returns the expected results by
-    checking different inputs for volume.
+    Checks if the truncate function returns the expected results by checking
+    different inputs for volume.
 
-    NOTE: This test may break in the future since the lot_decimals, pair_decimals,
-    ordermin and costmin attributes could change.
+    NOTE: This test may break in the future since the lot_decimals,
+          pair_decimals, ordermin and costmin attributes could change.
     """
     for volume, expected in (
         (1, "1.00000000"),
@@ -333,8 +332,8 @@ def test_truncate_fail_price_costmin(spot_trade: Trade) -> None:
     """
     Checks if the truncate function fails if the price is less than the costmin.
 
-    NOTE: This test may break in the future since the lot_decimals, pair_decimals,
-    ordermin and costmin attributes could change.
+    NOTE: This test may break in the future since the lot_decimals,
+          pair_decimals, ordermin and costmin attributes could change.
     """
     with pytest.raises(ValueError, match=r"Price is less than the costmin: 0.5!"):
         spot_trade.truncate(amount=0.001, amount_type="price", pair="XBTUSD")
@@ -344,10 +343,11 @@ def test_truncate_fail_price_costmin(spot_trade: Trade) -> None:
 @pytest.mark.spot_trade()
 def test_truncate_fail_volume_ordermin(spot_trade: Trade) -> None:
     """
-    Checks if the truncate function fails if the volume is less than the ordermin.
+    Checks if the truncate function fails if the volume is less than the
+    ordermin.
 
-    NOTE: This test may break in the future since the lot_decimals, pair_decimals,
-    ordermin and costmin attributes could change.
+    NOTE: This test may break in the future since the lot_decimals,
+          pair_decimals, ordermin and costmin attributes could change.
     """
     with pytest.raises(ValueError, match=r"Volume is less than the ordermin: 0.0001!"):
         spot_trade.truncate(amount=0.00001, amount_type="volume", pair="XBTUSD")
@@ -357,7 +357,8 @@ def test_truncate_fail_volume_ordermin(spot_trade: Trade) -> None:
 @pytest.mark.spot_trade()
 def test_truncate_fail_invalid_amount_type(spot_trade: Trade) -> None:
     """
-    Checks if the truncate function fails when no valid ``amount_type`` was specified.
+    Checks if the truncate function fails when no valid ``amount_type`` was
+    specified.
     """
     with pytest.raises(ValueError, match=r"Amount type must be 'volume' or 'price'!"):
         spot_trade.truncate(amount=1, amount_type="invalid", pair="XBTUSD")

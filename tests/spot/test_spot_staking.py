@@ -8,7 +8,6 @@
 
 import pytest
 
-from kraken.exceptions import KrakenException  # noqa: F401
 from kraken.spot import Staking
 
 from .helper import is_not_error  # noqa: F401
@@ -23,7 +22,7 @@ from .helper import is_not_error  # noqa: F401
 def test_list_stakeable_assets(spot_auth_staking: Staking) -> None:
     """
     Checks if the ``list_stakeable_assets`` endpoint returns the
-    expected data type or raises the KrakenException.KrakenPermissionDeniedError.
+    expected data type or raises the KrakenPermissionDeniedError.
 
     The error will be raised if some permissions of the API keys are not set.
     """
@@ -34,7 +33,7 @@ def test_list_stakeable_assets(spot_auth_staking: Staking) -> None:
 @pytest.mark.spot_auth()
 @pytest.mark.spot_staking()
 @pytest.mark.skip(reason="CI does not have withdraw/stake permission")
-def test_stake_asset(spot_auth_staking: Staking) -> None:
+def test_stake_asset(spot_auth_staking: Staking) -> None:  # noqa: ARG001
     """
     Checks the ``stake_asset`` endpoint by requesting a stake.
 
@@ -53,7 +52,7 @@ def test_stake_asset(spot_auth_staking: Staking) -> None:
 @pytest.mark.spot_auth()
 @pytest.mark.spot_staking()
 @pytest.mark.skip(reason="CI does not have withdraw/stake permission")
-def test_unstake_asset(spot_auth_staking: Staking) -> None:
+def test_unstake_asset(spot_auth_staking: Staking) -> None:  # noqa: ARG001
     """
     Checks if the ``unstake_asset`` endpoints returns a response that does
     not contain the error key.

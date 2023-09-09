@@ -18,7 +18,7 @@ from typing import TYPE_CHECKING, Any, Optional
 
 import websockets
 
-from kraken.exceptions import KrakenException
+from kraken.exceptions import MaxReconnectError
 
 if TYPE_CHECKING:
     from kraken.futures import KrakenFuturesWSClient
@@ -119,9 +119,9 @@ class ConnectFuturesWebsocket:
         try:
             while True:
                 await self.__reconnect()
-        except KrakenException.MaxReconnectError:
+        except MaxReconnectError:
             await self.__callback(
-                {"error": "kraken.exceptions.KrakenException.MaxReconnectError"},
+                {"error": "kraken.exceptions.MaxReconnectError"},
             )
         except Exception:
             logging.exception(traceback.format_exc())
@@ -133,7 +133,7 @@ class ConnectFuturesWebsocket:
 
         self.__reconnect_num += 1
         if self.__reconnect_num >= self.MAX_RECONNECT_NUM:
-            raise KrakenException.MaxReconnectError
+            raise MaxReconnectError
 
         reconnect_wait: float = self.__get_reconnect_wait(self.__reconnect_num)
         logging.debug(

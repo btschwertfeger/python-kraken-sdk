@@ -8,7 +8,7 @@
 
 import pytest
 
-from kraken.exceptions import KrakenException
+from kraken.exceptions import KrakenInvalidArgumentsError, KrakenPermissionDeniedError
 from kraken.spot import Funding
 
 from .helper import is_not_error
@@ -73,7 +73,7 @@ def test_withdraw_funds(spot_auth_funding: Funding) -> None:
     a real withdraw which is not what should be done here. Also the
     API keys for testing are not allowed to withdraw or trade.
     """
-    with pytest.raises(KrakenException.KrakenPermissionDeniedError):
+    with pytest.raises(KrakenPermissionDeniedError):
         assert is_not_error(
             spot_auth_funding.withdraw_funds(
                 asset="XLM",
@@ -94,7 +94,7 @@ def test_get_withdrawal_info(spot_auth_funding: Funding) -> None:
     This test is disabled, because the API keys for testing are not
     allowed to withdraw or trade or even get withdraw information.
     """
-    with pytest.raises(KrakenException.KrakenPermissionDeniedError):
+    with pytest.raises(KrakenPermissionDeniedError):
         assert is_not_error(
             spot_auth_funding.get_withdrawal_info(
                 asset="XLM",
@@ -141,7 +141,7 @@ def test_wallet_transfer(spot_auth_funding: Funding) -> None:
 
     This endpoint is broken, even the provided example on the kraken doc does not work.
     """
-    with pytest.raises(KrakenException.KrakenInvalidArgumentsError):
+    with pytest.raises(KrakenInvalidArgumentsError):
         assert is_not_error(
             spot_auth_funding.wallet_transfer(
                 asset="XLM",
