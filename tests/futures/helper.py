@@ -55,13 +55,13 @@ class FuturesWebsocketClientTestWrapper(KrakenFuturesWSClient):
 
     async def on_message(
         self: "FuturesWebsocketClientTestWrapper",
-        msg: Union[list, dict],
+        message: Union[list, dict],
     ) -> None:
         """
         This is the callback function that must be implemented
         to handle custom websocket messages.
         """
-        self.LOG.info(msg)  # the log is read within the tests
+        self.LOG.info(message)  # the log is read within the tests
 
         log: str = ""
         try:
@@ -71,4 +71,4 @@ class FuturesWebsocketClientTestWrapper(KrakenFuturesWSClient):
             pass
 
         with open("futures_ws.log", "w", encoding="utf-8") as logfile:
-            logfile.write(f"{log}\n{msg}")
+            logfile.write(f"{log}\n{message}")

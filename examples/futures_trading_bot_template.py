@@ -64,9 +64,9 @@ class TradingBot(KrakenFuturesWSClient):
         self.__market: Market = Market(key=config["key"], secret=config["secret"])
         self.__funding: Funding = Funding(key=config["key"], secret=config["secret"])
 
-    async def on_message(self: TradingBot, msg: Union[list, dict]) -> None:
+    async def on_message(self: TradingBot, message: Union[list, dict]) -> None:
         """Receives all messages that came form the websocket feed(s)"""
-        logging.info(msg)
+        logging.info(message)
 
         # == apply your trading strategy here ==
 

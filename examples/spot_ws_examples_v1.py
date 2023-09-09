@@ -110,8 +110,8 @@ if __name__ == "__main__":
 # from kraken.spot import KrakenSpotWSClientV1
 # import asyncio
 
-# async def on_message(msg):
-#     print(msg)
+# async def on_message(message):
+#     print(message)
 
 # async def main() -> None:
 #     async with KrakenSpotWSClientV1(callback=on_message) as session:

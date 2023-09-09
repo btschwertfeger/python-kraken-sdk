@@ -39,9 +39,9 @@ async def main() -> None:
     class Client(KrakenFuturesWSClient):
         """Can be used to create a custom trading strategy"""
 
-        async def on_message(self: "Client", msg: Union[list, dict]) -> None:
+        async def on_message(self: Client, message: Union[list, dict]) -> None:
             """Receives the websocket messages"""
-            logging.info(msg)
+            logging.info(message)
             # … apply your trading strategy here
             # … you can also combine this with the Futures REST clients
 
@@ -106,8 +106,8 @@ if __name__ == "__main__":
 # from kraken.futures import KrakenFuturesWSClient
 # import asyncio
 
-# async def on_message(msg):
-#     print(msg)
+# async def on_message(message):
+#     print(message)
 
 # async def main() -> None:
 #     async with KrakenFuturesWSClient(callback=on_message) as session:
