@@ -913,7 +913,7 @@ class User(KrakenSpotBaseAPI):
         )
 
     @ensure_string("fields")
-    def request_export_report(
+    def request_export_report(  # noqa: PLR0913
         self: User,
         report: str,
         description: str,
@@ -922,6 +922,7 @@ class User(KrakenSpotBaseAPI):
         starttm: Optional[int] = None,
         endtm: Optional[int] = None,
         *,
+        timeout: Optional[int] = 10,
         extra_params: Optional[dict] = None,
     ) -> dict:
         """
@@ -945,7 +946,7 @@ class User(KrakenSpotBaseAPI):
         :type starttm: int, optional
         :param endtm: Unix timestamp of the last result
         :type endtm: int, optional
-        :param timeout: The timeout for that request
+        :param timeout: The timeout for that request (default: ``10``)
         :type timeout: int
         :return: A dictionary containing the export id
         :rtype: dict
@@ -979,6 +980,7 @@ class User(KrakenSpotBaseAPI):
             uri="/private/AddExport",
             params=params,
             extra_params=extra_params,
+            timeout=timeout,
         )
 
     def get_export_report_status(

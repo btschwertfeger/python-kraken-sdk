@@ -347,8 +347,9 @@ def test_request_save_export_report(spot_auth_user: User) -> None:
             description=export_descr,
             fields=fields,
             format_="CSV",
-            starttm="1662100592",
+            starttm="1692100592",
             endtm=int(1000 * time()),
+            timeout=30,
         )
         assert is_not_error(response)
         assert "id" in response
@@ -361,7 +362,7 @@ def test_request_save_export_report(spot_auth_user: User) -> None:
         result = spot_auth_user.retrieve_export(id_=response["id"], timeout=30)
 
         with tempfile.TemporaryDirectory() as tmp_dir:
-            file_path = Path(tmp_dir) / f"{export_descr}.zip"
+            file_path: Path = Path(tmp_dir) / f"{export_descr}.zip"
 
             with file_path.open("wb") as file:
                 for chunk in result.iter_content(chunk_size=512):
