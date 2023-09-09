@@ -130,7 +130,7 @@ class ConnectSpotWebsocketBase:
                 if time() - self._last_ping > self.PING_INTERVAL:
                     await self.send_ping()
                 try:
-                    _msg = await asyncio.wait_for(self.socket.recv(), timeout=15)
+                    _message = await asyncio.wait_for(self.socket.recv(), timeout=15)
                 except asyncio.TimeoutError:  # important
                     await self.send_ping()
                 except asyncio.CancelledError:
@@ -139,9 +139,9 @@ class ConnectSpotWebsocketBase:
                     await self.__callback({"error": "asyncio.CancelledError"})
                 else:
                     try:
-                        message: dict = json.loads(_msg)
+                        message: dict = json.loads(_message)
                     except ValueError:
-                        self.LOG.warning(_msg)
+                        self.LOG.warning(_message)
                     else:
                         self.LOG.debug(message)
                         self._manage_subscriptions(message=message)
