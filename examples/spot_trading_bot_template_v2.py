@@ -21,7 +21,7 @@ from typing import Any, Optional
 import requests
 import urllib3
 
-from kraken.exceptions import KrakenException
+from kraken.exceptions import KrakenAuthenticationError  # , KrakenPermissionDeniedError
 from kraken.spot import Funding, KrakenSpotWSClientV2, Market, Staking, Trade, User
 
 logging.basicConfig(
@@ -86,7 +86,7 @@ class TradingBot(KrakenSpotWSClientV2):
         #         pair='XBTUSD',
         #         price=12000
         #     ))
-        # except KrakenException.KrakenPermissionDeniedError:
+        # except KrakenPermissionDeniedError:
         #    # … handle exceptions
         #    pass
 
@@ -128,7 +128,7 @@ class TradingBot(KrakenSpotWSClientV2):
         sys.exit(1)
 
 
-class ManagedBot:
+class Manager:
     """
     Class to manage the trading strategy
 
@@ -144,11 +144,11 @@ class ManagedBot:
         }
     """
 
-    def __init__(self: ManagedBot, config: dict):
+    def __init__(self: Manager, config: dict):
         self.__config: dict = config
         self.__trading_strategy: Optional[TradingBot] = None
 
-    def run(self: ManagedBot) -> None:
+    def run(self: Manager) -> None:
         """Starts the event loop and bot"""
         if not self.__check_credentials():
             sys.exit(1)
@@ -160,7 +160,7 @@ class ManagedBot:
         else:
             self.save_exit(reason="Asyncio loop left")
 
-    async def __main(self: ManagedBot) -> None:
+    async def __main(self: Manager) -> None:
         """
         Instantiates the trading strategy and subscribes to the desired
         websocket feeds. While no exception within the strategy occur run the
@@ -203,7 +203,7 @@ class ManagedBot:
             reason="Left main loop because of exception in strategy.",
         )
 
-    def __check_credentials(self: ManagedBot) -> bool:
+    def __check_credentials(self: Manager) -> bool:
         """Checks the user credentials and the connection to Kraken"""
         try:
             User(self.__config["key"], self.__config["secret"]).get_account_balance()
@@ -215,11 +215,11 @@ class ManagedBot:
         except requests.exceptions.ConnectionError:
             logging.error("ConnectionError, Kraken not available.")
             return False
-        except KrakenException.KrakenAuthenticationError:
+        except KrakenAuthenticationError:
             logging.error("Invalid credentials!")
             return False
 
-    def save_exit(self: ManagedBot, reason: str = "") -> None:
+    def save_exit(self: Manager, reason: str = "") -> None:
         """Invoke the save exit function of the trading strategy"""
         print(f"Save exit triggered - {reason}")
         if self.__trading_strategy is not None:
@@ -230,7 +230,7 @@ class ManagedBot:
 
 def main() -> None:
     """Example main - load environment variables and run the strategy."""
-    managed_bot: ManagedBot = ManagedBot(
+    manager: Manager = Manager(
         config={
             "key": os.getenv("SPOT_API_KEY"),
             "secret": os.getenv("SPOT_SECRET_KEY"),
@@ -239,9 +239,9 @@ def main() -> None:
     )
 
     try:
-        managed_bot.run()
+        manager.run()
     except Exception:
-        managed_bot.save_exit(
+        manager.save_exit(
             reason=f"manageBot.run() has ended: {traceback.format_exc()}",
         )
 

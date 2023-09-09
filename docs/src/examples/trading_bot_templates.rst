@@ -20,6 +20,6 @@ For questions, feedback, additions, suggestions or problems
 .. toctree::
     :maxdepth: 2
 
-    spot_bot_templates.rst
-    spot_orderbook.rst
-    futures_bot_template.rst
+    trading_bot_templates/spot_bot_templates.rst
+    trading_bot_templates/spot_orderbook.rst
+    trading_bot_templates/futures_bot_template.rst

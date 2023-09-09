@@ -4,7 +4,12 @@
 # GitHub: https://github.com/btschwertfeger
 #
 
-"""Module that implements some example usage for the Kraken Futures REST clients."""
+"""
+Module that implements some example usage for the Kraken Futures REST clients.
+
+This module may not be maintained on a regular basis, so please refer to the
+unit tests of this package as they provide a much deeper dive into the usage.
+"""
 
 import logging
 import os
@@ -23,15 +28,6 @@ logging.getLogger("urllib3").setLevel(logging.WARNING)
 
 key = os.getenv("FUTURES_SANDBOX_KEY")
 secret = os.getenv("FUTURES_SANDBOX_SECRET")
-
-#  _   _  ___ _____ _____
-# | \ | |/ _ \_   _| ____|_
-# |  \| | | | || | |  _| (_)
-# | |\  | |_| || | | |___ _
-# |_| \_|\___/ |_| |_____(_)
-# ----> More examples can be found in kraken/tests/*.py
-#
-# Examples may not be updated regularly
 
 
 def market_examples() -> None:
@@ -83,7 +79,7 @@ def user_examples() -> None:
     print(user.get_account_log(info="futures liquidation"))
     time.sleep(2)
     response = user.get_account_log_csv()
-    assert response.status_code in [200, "200"]
+    assert response.status_code in (200, "200")
     with Path("account_log.csv").open("wb") as file:
         for chunk in response.iter_content(chunk_size=512):
             if chunk:

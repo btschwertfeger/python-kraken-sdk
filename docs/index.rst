@@ -21,6 +21,7 @@ Welcome to Python Kraken SDK's documentation!
 
    src/introduction.rst
    src/getting_started/getting_started.rst
+   src/examples/sample_usage.rst
    src/examples/trading_bot_templates.rst
    src/issues.rst
    src/spot/rest.rst

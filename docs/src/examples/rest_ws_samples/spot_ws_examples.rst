@@ -4,12 +4,12 @@
 
 .. The Spot websocket examples
 
-Spot Websocket Usage Examples
------------------------------
+Spot Websocket
+--------------
 
 The examples presented below serve to demonstrate the usage of the Spot
 websocket clients provided by `python-kraken-sdk`_ to access `Kraken`_'s
-Websocket API v1 and v2 .
+Websocket API v1 and v2.
 
 For questions, feedback, additions, suggestions for improvement or problems
 `python-kraken-sdk/discussions`_ or `python-kraken-sdk/issues`_ may be helpful.
@@ -19,7 +19,7 @@ For questions, feedback, additions, suggestions for improvement or problems
    :linenos:
    :caption: Example access and usage for Kraken Spot Websocket API v2
 
-.. literalinclude:: ../../../examples/spot_ws_examples_v2.py
+.. literalinclude:: ../../../examples/spot_ws_examples_v1.py
    :language: python
    :linenos:
    :caption: Example access and usage for Kraken Spot Websocket API v1

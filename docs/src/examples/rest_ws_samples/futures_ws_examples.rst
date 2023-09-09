@@ -2,10 +2,9 @@
 .. Copyright (C) 2023 Benjamin Thomas Schwertfeger
 .. GitHub: https://github.com/btschwertfeger
 
-.. The Futures websocket examples
 
-Futures Websocket Usage Examples
---------------------------------
+Futures Websocket
+-----------------
 
 The examples presented below serve to demonstrate the usage of the Futures
 websocket clients provided by `python-kraken-sdk`_ to access `Kraken`_'s
