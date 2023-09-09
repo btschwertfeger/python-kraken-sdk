@@ -86,7 +86,7 @@ class ConnectFuturesWebsocket:
 
             while keep_alive:
                 try:
-                    _msg = await asyncio.wait_for(self.__socket.recv(), timeout=15)
+                    _message = await asyncio.wait_for(self.__socket.recv(), timeout=15)
                 except asyncio.TimeoutError:
                     logging.debug(  # important
                         "Timeout error in %s",
@@ -98,9 +98,9 @@ class ConnectFuturesWebsocket:
                     await self.__callback({"error": "asyncio.CancelledError"})
                 else:
                     try:
-                        message: dict = json.loads(_msg)
+                        message: dict = json.loads(_message)
                     except ValueError:
-                        logging.warning(_msg)
+                        logging.warning(_message)
                     else:
                         forward: bool = True
                         if "event" in message:
@@ -200,15 +200,15 @@ class ConnectFuturesWebsocket:
 
     async def send_message(
         self: ConnectFuturesWebsocket,
-        msg: dict,
+        message: dict,
         *,
         private: bool = False,
     ) -> None:
         """
         Enables sending a message via the websocket connection
 
-        :param msg: The message as dictionary
-        :type msg: dict
+        :param message: The message as dictionary
+        :type message: dict
         :param private: If the message requires authentication (default: ``False``)
         :type private: bool, optional
         :rtype: Coroutine
@@ -224,14 +224,14 @@ class ConnectFuturesWebsocket:
             if not self.__challenge_ready:
                 await self.__check_challenge_ready()
 
-            msg["api_key"] = self.__client.key
-            msg["original_challenge"] = self.__last_challenge
-            msg["signed_challenge"] = self.__new_challenge
+            message["api_key"] = self.__client.key
+            message["original_challenge"] = self.__last_challenge
+            message["signed_challenge"] = self.__new_challenge
 
-        await self.__socket.send(json.dumps(msg))
+        await self.__socket.send(json.dumps(message))
 
-    def __handle_new_challenge(self: ConnectFuturesWebsocket, msg: dict) -> None:
-        self.__last_challenge = msg["message"]
+    def __handle_new_challenge(self: ConnectFuturesWebsocket, message: dict) -> None:
+        self.__last_challenge = message["message"]
         self.__new_challenge = self.__client.get_sign_challenge(self.__last_challenge)
         self.__challenge_ready = True
 
@@ -249,13 +249,15 @@ class ConnectFuturesWebsocket:
             random() * min(60 * 3, (2**attempts) - 1) + 1,  # noqa: S311
         )
 
-    def __append_subscription(self: ConnectFuturesWebsocket, msg: dict) -> None:
-        self.__remove_subscription(msg=msg)  # remove from list, to avoid duplicates
-        sub: dict = self.__build_subscription(msg)
+    def __append_subscription(self: ConnectFuturesWebsocket, message: dict) -> None:
+        self.__remove_subscription(
+            message=message,
+        )  # remove from list, to avoid duplicates
+        sub: dict = self.__build_subscription(message)
         self.__subscriptions.append(sub)
 
-    def __remove_subscription(self: ConnectFuturesWebsocket, msg: dict) -> None:
-        sub: dict = self.__build_subscription(msg)
+    def __remove_subscription(self: ConnectFuturesWebsocket, message: dict) -> None:
+        sub: dict = self.__build_subscription(message)
         self.__subscriptions = [x for x in self.__subscriptions if x != sub]
 
     def __build_subscription(

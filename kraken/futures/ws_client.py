@@ -86,8 +86,8 @@ class KrakenFuturesWSClient(KrakenFuturesBaseAPI):
         import asyncio
         from kraken.futures import KrakenFuturesWSClient
 
-        async def on_message(msg):
-            print(msg)
+        async def on_messageessage):
+            print(message)
 
         async def main() -> None:
             async with KrakenFuturesWSClient(callback=on_message) as session:
@@ -164,7 +164,7 @@ class KrakenFuturesWSClient(KrakenFuturesBaseAPI):
             ).digest(),
         ).decode("utf-8")
 
-    async def on_message(self: KrakenFuturesWSClient, msg: dict) -> None:
+    async def on_message(self: KrakenFuturesWSClient, message: dict) -> None:
         """
         Method that serves as the default callback function Calls the defined callback function (if defined)
         or overload this function.
@@ -172,16 +172,15 @@ class KrakenFuturesWSClient(KrakenFuturesBaseAPI):
         This is the default method  which just logs the messages. In production you want to overload this
         with your custom methods, as shown in the Example of :class:`kraken.futures.KrakenFuturesWSClient`.
 
-        :param msg: The message that was send by Kraken via the websocket connection.
-        :type msg: dict
-        :rtype: NOne
+        :param message: The message that was send by Kraken via the websocket connection.
+        :type message: dict
+        :rtype: None
         """
-        # todo: rename the msg parameter to message
         if self.__callback is not None:
-            await self.__callback(msg)
+            await self.__callback(message)
         else:
             logging.warning("Received event but no callback is defined")
-            logging.info(msg)
+            logging.info(message)
 
     async def subscribe(
         self: KrakenFuturesWSClient,
