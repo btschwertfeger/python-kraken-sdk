@@ -29,12 +29,15 @@
 
 ## 📌 Disclaimer
 
-There is no guarantee that this software will work flawlessly at this or later
-times. Of course, no responsibility is taken for possible profits or losses.
-This software probably has some errors in it, so use it at your own risk. Also
-no one should be motivated or tempted to invest assets in speculative forms of
-investment. By using this software you release the authors from any liability
-regarding the use of this software.
+This is an unofficial collection of REST and websocket clients for Spot and
+Futures trading on the Kraken cryptocurrency exchange using Python. Payward Ltd.
+and Kraken are in no way associated with the authors of this module and
+documentation.
+
+Please note that this project is independent and not endorsed by Kraken or
+Payward Ltd. Users should be aware that they are using third-party software, and
+the authors of this project are not responsible for any issues, losses, or risks
+associated with its usage.
 
 ---
 

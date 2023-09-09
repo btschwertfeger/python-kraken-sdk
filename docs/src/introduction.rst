@@ -11,8 +11,13 @@ Introduction
 
 
 **This is the documentation of the unofficial Python SDK to interact with the
-Kraken cryptocurrency exchange. Payward Ltd. and Kraken are in no way associated
-with the authors of this module and documentation.**
+Kraken cryptocurrency exchange.**
+
+*Payward Ltd. and Kraken are in no way associated with the authors of this
+module and documentation. Please note that this project is independent and not
+endorsed by Kraken or Payward Ltd. Users should be aware that they are using
+third-party software, and the authors of this project are not responsible for
+any issues, losses, or risks associated with its usage.*
 
 This documentation refers to the `python-kraken-sdk`_ and serves to simplify the
 application of trading strategies, in which as far as possible all interaction
