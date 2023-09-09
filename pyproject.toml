@@ -65,6 +65,7 @@ include-package-data = false
 
 [tool.setuptools.packages.find]
 include = ["kraken*"]
+# excluded anyway because of 'include'
 exclude = ["docs*", "tests*", "examples*", "venv", ".env"]
 
 [tool.setuptools_scm]
@@ -228,7 +229,6 @@ fixable = ["I", "C4", "Q", "PT", "ICN", "COM", "RSE", "PT", "FA", "FA100"]
 
 ignore = [
   "B019",    # use of lru_cache or cache
-  "PERF203", # try-except in loop (todo: check that from time to time)
   "PLR2004", # magic value in comparison
 ]
 
