@@ -23,13 +23,13 @@ Welcome to Python Kraken SDK's documentation!
    src/getting_started/getting_started.rst
    src/examples/rest_sample_usage.rst
    src/examples/trading_bot_templates.rst
-   src/issues.rst
    src/spot/rest.rst
    src/spot/websockets.rst
    src/futures/rest.rst
    src/futures/websockets.rst
    src/base_api/base_api.rst
-   src/krakenexceptions/krakenexceptions.rst
+   src/exceptions/exceptions.rst
+   src/issues.rst
    src/about/license.rst
 
 Indices and tables

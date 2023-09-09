@@ -15,7 +15,7 @@ The trading strategy can be implemented in the ``TradingBot`` class. This class
 has access to all REST clients and receives all messages that are sent via the
 subscribed websocket feeds via the ``on_message`` function.
 
-.. literalinclude:: ../../../examples/futures_trading_bot_template.py
+.. literalinclude:: ../../../../examples/futures_trading_bot_template.py
    :language: python
    :linenos:
    :caption: Template to build a trading bot using the Kraken Futures Websocket API

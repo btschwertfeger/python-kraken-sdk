@@ -16,7 +16,7 @@ These examples are not maintained on a regular basis. They serve only for
 demonstration purposes - make sure to checkout the documentation of the
 individual functions.
 
-.. literalinclude:: ../../../examples/futures_examples.py
+.. literalinclude:: ../../../../examples/futures_examples.py
    :language: python
    :linenos:
    :caption: Example usages of the REST clients

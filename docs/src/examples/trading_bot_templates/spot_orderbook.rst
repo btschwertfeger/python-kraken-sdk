@@ -13,13 +13,13 @@ valid realtime orderbooks. The current implementation of the
 :class:`kraken.spot.OrderbookClientV1` provides the legacy support for websocket
 API v2.
 
-.. literalinclude:: ../../../examples/spot_orderbook_v2.py
+.. literalinclude:: ../../../../examples/spot_orderbook_v2.py
    :language: python
    :linenos:
    :caption: Sample on how to maintain a valid orderbook w/ websocket API v2
 
 
-.. literalinclude:: ../../../examples/spot_orderbook_v1.py
+.. literalinclude:: ../../../../examples/spot_orderbook_v1.py
    :language: python
    :linenos:
    :caption: Sample on how to maintain a valid orderbook w/ websocket API v1
