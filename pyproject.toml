@@ -65,7 +65,7 @@ include-package-data = false
 
 [tool.setuptools.packages.find]
 include = ["kraken*"]
-exclude = ["docs*", "tests*", "examples*", ".env"]
+exclude = ["docs*", "tests*", "examples*", "venv", ".env"]
 
 [tool.setuptools_scm]
 write_to = "kraken/_version.py"
@@ -200,7 +200,7 @@ select = [
   "PERF",  # Perflint # maybe
   "PGH",   # pygrep-hooks
   "PIE",   # flake8-pie
-  "PL",    # Pylint
+  "PL",    # PyLint
   "PT",    # flake8-pytest-style
   "PYI",   # flake8-pyi
   "Q",     # flake8-quotes
@@ -215,13 +215,13 @@ select = [
   "TCH",   # flake8-type-checking
   "TID",   # flake8-tidy-imports
   "ARG",   # flake8-unused-arguments
-  # "ERA", # eradicate # !(commented-out code)
-  "FBT", # boolean trap
+  "FBT",   # boolean trap
+  "PTH",   # flake8-use-pathlib
+  "FURB",  # refurb
+  # "ERA",   # eradicate # commented-out code
   # "FIX", # flake8-fixme # !
-  "PTH", # flake8-use-pathlib # maybe
   # "TD",  # flake8-todos # !
   # "TRY",  # tryceratops # specify exception messages in class; not important
-  "FURB", # refurb
 ]
 fixable = ["I", "C4", "Q", "PT", "ICN", "COM", "RSE", "PT", "FA", "FA100"]
 
@@ -249,7 +249,7 @@ task-tags = ["todo", "TODO"]
 ]
 "tests/*.py" = [
   "ASYNC101", # no open call on async function
-  "E501",     # Line to long
+  "E501",     # line to long
   "F841",     # unused variable
   "N802",     # PEP8 naming
   "S101",     # assert use
