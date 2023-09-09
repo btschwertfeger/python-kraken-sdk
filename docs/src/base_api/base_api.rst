@@ -6,7 +6,7 @@ The Base Clients and Internals
 ==============================
 
 The following classes and data structures are listed for completeness. Please
-avoid using them, since these are internals and may change without any warning.
+avoid using them since these are internals and may change without any warning.
 
 They are the base classes for Spot and Futures REST and websocket clients.
 

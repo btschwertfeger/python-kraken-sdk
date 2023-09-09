@@ -14,7 +14,7 @@ Introduction
 Kraken cryptocurrency exchange.**
 
 *Payward Ltd. and Kraken are in no way associated with the authors of this
-module and documentation. Please note that this project is independent and not
+package and documentation. Please note that this project is independent and not
 endorsed by Kraken or Payward Ltd. Users should be aware that they are using
 third-party software, and the authors of this project are not responsible for
 any issues, losses, or risks associated with its usage.*
@@ -78,6 +78,9 @@ Important Notice
 **ONLY tagged releases are available at PyPI**. The content of the master branch
 may not match with the content of the latest release. - Please have a look at
 the release specific READMEs and changelogs.
+
+It is also recommended to **pin the used version** to avoid unexpected behavior
+on new releases.
 
 .. _section-troubleshooting:
 
