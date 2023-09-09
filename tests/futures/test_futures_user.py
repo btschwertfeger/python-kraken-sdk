@@ -6,9 +6,9 @@
 
 """Module that implements the unit tests for the Futures user client."""
 
-import os
 import random
 import tempfile
+from pathlib import Path
 from typing import TYPE_CHECKING
 
 import pytest
@@ -85,13 +85,13 @@ def test_get_account_log_csv(futures_auth_user: User) -> None:
     response: requests.Response = futures_auth_user.get_account_log_csv()
     assert response.status_code in (200, "200")
 
-    with tempfile.TemporaryDirectory() as tmp_dir, open(
-        os.path.join(tmp_dir, f"account_log-{random.randint(0, 10000)}.csv"),
-        "wb",
-    ) as file:
-        for chunk in response.iter_content(chunk_size=512):
-            if chunk:
-                file.write(chunk)
+    with tempfile.TemporaryDirectory() as tmp_dir:
+        file_path: Path = Path(tmp_dir) / f"account_log-{random.randint(0, 10000)}.csv"
+
+        with file_path.open("wb") as file:
+            for chunk in response.iter_content(chunk_size=512):
+                if chunk:
+                    file.write(chunk)
 
 
 @pytest.mark.futures()

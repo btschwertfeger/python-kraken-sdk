@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import logging
 from asyncio import sleep
+from pathlib import Path
 from time import time
 from typing import Any, Union
 
@@ -65,10 +66,10 @@ class FuturesWebsocketClientTestWrapper(KrakenFuturesWSClient):
 
         log: str = ""
         try:
-            with open("futures_ws.log", "r", encoding="utf-8") as logfile:
+            with Path("futures_ws.log").open("r", encoding="utf-8") as logfile:
                 log = logfile.read()
         except FileNotFoundError:
             pass
 
-        with open("futures_ws.log", "w", encoding="utf-8") as logfile:
+        with Path("futures_ws.log").open("w", encoding="utf-8") as logfile:
             logfile.write(f"{log}\n{msg}")

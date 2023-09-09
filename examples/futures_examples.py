@@ -9,6 +9,7 @@
 import logging
 import os
 import time
+from pathlib import Path
 
 from kraken.futures import Funding, Market, Trade, User
 
@@ -83,7 +84,7 @@ def user_examples() -> None:
     time.sleep(2)
     response = user.get_account_log_csv()
     assert response.status_code in [200, "200"]
-    with open("account_log.csv", "wb") as file:
+    with Path("account_log.csv").open("wb") as file:
         for chunk in response.iter_content(chunk_size=512):
             if chunk:
                 file.write(chunk)

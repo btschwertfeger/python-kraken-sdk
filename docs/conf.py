@@ -10,8 +10,8 @@
 
 """This module is the configuration for the Sphinx documentation building process"""
 
-import os
 import sys
+from pathlib import Path
 
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
@@ -21,11 +21,12 @@ copyright = "2023, Benjamin Thomas Schwertfeger"  # noqa: A001 # pylint: disable
 author = "Benjamin Thomas Schwertfeger"
 
 # to import the package
-sys.path.insert(0, os.path.abspath(".."))
+parent_directory: Path = Path("..").resolve()
+sys.path.insert(0, str(parent_directory))
 
 rst_epilog = ""
 # Read link all targets from file
-with open("links.rst", encoding="utf-8") as f:
+with Path("links.rst").open(encoding="utf-8") as f:
     rst_epilog += f.read()
 
 # -- General configuration ---------------------------------------------------

@@ -10,6 +10,7 @@ import logging
 import logging.config
 import os
 import time
+from pathlib import Path
 
 from kraken.spot import Funding, Market, Staking, Trade, User
 
@@ -67,7 +68,7 @@ def user_examples() -> None:
 
     # save report to file
     response_data = user.retrieve_export(id_=response["id"])
-    with open("myExport.zip", "wb") as file:
+    with Path("myExport.zip").open("wb") as file:
         for chunk in response_data.iter_content(chunk_size=512):
             if chunk:
                 file.write(chunk)

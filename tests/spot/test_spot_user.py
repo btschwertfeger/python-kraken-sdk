@@ -6,10 +6,10 @@
 
 """Module that implements the unit tests for the Spot user client."""
 
-import os
 import random
 import tempfile
 from contextlib import suppress
+from pathlib import Path
 from time import sleep, time
 from unittest import mock
 
@@ -359,13 +359,14 @@ def test_request_save_export_report(spot_auth_user: User) -> None:
         sleep(5)
 
         result = spot_auth_user.retrieve_export(id_=response["id"], timeout=30)
-        with tempfile.TemporaryDirectory() as tmp_dir, open(
-            os.path.join(tmp_dir, f"{export_descr}.zip"),
-            "wb",
-        ) as file:
-            for chunk in result.iter_content(chunk_size=512):
-                if chunk:
-                    file.write(chunk)
+
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            file_path = Path(tmp_dir) / f"{export_descr}.zip"
+
+            with file_path.open("wb") as file:
+                for chunk in result.iter_content(chunk_size=512):
+                    if chunk:
+                        file.write(chunk)
 
         status = spot_auth_user.get_export_report_status(report=report)
         assert isinstance(status, list)

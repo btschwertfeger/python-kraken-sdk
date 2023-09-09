@@ -218,7 +218,7 @@ select = [
   # "ERA", # eradicate # !(commented-out code)
   "FBT", # boolean trap
   # "FIX", # flake8-fixme # !
-  # "PTH", # flake8-use-pathlib # maybe
+  "PTH", # flake8-use-pathlib # maybe
   # "TD",  # flake8-todos # !
   # "TRY",  # tryceratops # specify exception messages in class; not important
   "FURB", # refurb
