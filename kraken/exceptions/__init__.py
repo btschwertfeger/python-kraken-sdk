@@ -273,6 +273,11 @@ class KrakenTemporaryLockoutError(Exception):
 
 
 @docstring_message
+class KrakenMaxFeeExceededError(Exception):
+    """The fee was higher than the defined maximum."""
+
+
+@docstring_message
 class MaxReconnectError(Exception):
     """To many reconnect tries."""
 
@@ -286,6 +291,7 @@ EXCEPTION_ASSIGNMENT: dict[str, Any] = {
     "EGeneral:Permission denied": KrakenPermissionDeniedError,
     "EGeneral:Unknown method": KrakenUnknownMethodError,
     "EGeneral:Temporary lockout": KrakenTemporaryLockoutError,
+    "EFunding:Max fee exceeded": KrakenMaxFeeExceededError,
     "EService:Unavailable": KrakenServiceUnavailableError,
     "EService:Market in cancel_only mode": KrakenMarketInOnlyCancelModeError,
     "EService:Market in post_only mode": KrakenMarketInOnlyPostModeError,
@@ -379,6 +385,7 @@ __all__ = [
     "KrakenMarginPositionSizeExceededError",
     "KrakenMarketInOnlyCancelModeError",
     "KrakenMarketInOnlyPostModeError",
+    "KrakenMaxFeeExceededError",
     "KrakenNotFoundError",
     "KrakenOrderForEditNotFoundError",
     "KrakenOrderLimitsExceededError",

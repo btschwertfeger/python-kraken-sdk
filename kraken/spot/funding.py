@@ -301,6 +301,7 @@ class Funding(KrakenSpotBaseAPI):
         asset: str,
         key: str,
         amount: str | float,
+        max_fee: Optional[str] = None,
         *,
         extra_params: Optional[dict] = None,
     ) -> dict:
@@ -318,6 +319,9 @@ class Funding(KrakenSpotBaseAPI):
         :type key: str
         :param amount: The amount to withdraw
         :type amount: str | float
+        :param max_fee: Fail withdraw if the fee will be higher than the
+            specified max_fee.
+        :type max_fee: str
         :return: The reference id of the withdraw
         :rtype: dict
 
@@ -334,10 +338,14 @@ class Funding(KrakenSpotBaseAPI):
             ... )
             { 'refid': 'I7KGS6-UFMTTQ-AGBSO6T'}
         """
+        params: dict = {"asset": asset, "key": str(key), "amount": str(amount)}
+        if defined(max_fee):
+            params["max_fee"] = max_fee
+
         return self._request(  # type: ignore[return-value]
             method="POST",
             uri="/private/Withdraw",
-            params={"asset": asset, "key": str(key), "amount": str(amount)},
+            params=params,
             extra_params=extra_params,
         )
 

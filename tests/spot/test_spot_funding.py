@@ -89,6 +89,7 @@ def test_withdraw_funds(spot_auth_funding: Funding) -> None:
                 asset="XLM",
                 key="enter-withdraw-key",
                 amount=10000000,
+                max_fee=20,
             ),
         )
 
