@@ -64,7 +64,6 @@ def test_get_first() -> None:
     )
 
 
-@pytest.mark.wip()
 @pytest.mark.spot()
 @pytest.mark.spot_orderbook()
 @mock.patch("kraken.spot.orderbook_v2.KrakenSpotWSClientV2", return_value=None)

@@ -156,9 +156,12 @@ class Funding(KrakenSpotBaseAPI):
         self: Funding,
         asset: Optional[str] = None,
         method: Optional[str] = None,
+        start: Optional[str] = None,
+        end: Optional[str] = None,
+        cursor: bool | str = False,  # noqa: FBT002
         *,
         extra_params: Optional[dict] = None,
-    ) -> list[dict]:
+    ) -> list[dict] | dict:
         """
         Get information about the recent deposit status. The look back period is 90 days and
         only the last 25 deposits will be returned.
@@ -171,8 +174,15 @@ class Funding(KrakenSpotBaseAPI):
         :type asset: str, optional
         :param method: Filter by deposit method
         :type method: str, optional
+        :param start: Start timestamp
+        :type start: str, optional
+        :param end: End timestamp
+        :type end: str, optional
+        :param cursor: If bool: dis-/enable paginated responses; if str: cursor
+            for next page
+        :type cursor: bool | str, default: ``False``
         :return: The user specific deposit history
-        :rtype: list[dict]
+        :rtype: list[dict] | dict
 
         .. code-block:: python
             :linenos:
@@ -218,11 +228,16 @@ class Funding(KrakenSpotBaseAPI):
                 }, ...
             ]
         """
-        params: dict = {}
+        params: dict = {"cursor": cursor}
         if defined(asset):
             params["asset"] = asset
         if defined(method):
             params["method"] = method
+        if defined(start):
+            params["start"] = start
+        if defined(end):
+            params["end"] = end
+
         return self._request(  # type: ignore[return-value]
             method="POST",
             uri="/private/DepositStatus",
