@@ -59,6 +59,16 @@ def test_get_recent_deposits_status(spot_auth_funding: Funding) -> None:
         spot_auth_funding.get_recent_deposits_status(asset="XLM", method="Stellar XLM"),
         list,
     )
+    assert isinstance(
+        spot_auth_funding.get_recent_deposits_status(
+            asset="XLM",
+            method="Stellar XLM",
+            start=1688992722,
+            end=1688999722,
+            cursor=True,
+        ),
+        dict,
+    )
 
 
 @pytest.mark.spot()
