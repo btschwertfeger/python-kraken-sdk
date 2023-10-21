@@ -20,9 +20,10 @@ Getting Started
 
 3. Start using the provided example scripts
 
-The examples can be found within the repository of the `python-kraken-sdk`_ and
-obviously in this documentation. For trading algorithms templates see the
-:ref:`section-trading-bot-templates` section.
+Examples can be found within the repository of the `python-kraken-sdk`_ and
+obviously in this documentation. See the :ref:`section-examples` section for
+basic usage examples and :ref:`section-trading-bot-templates` to get impressed
+by orderbook clients, as well as boilerplates for trading bots using the SDK.
 
 4. Error handling
 

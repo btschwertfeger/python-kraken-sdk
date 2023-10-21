@@ -279,8 +279,8 @@ class MaxReconnectError(Exception):
 
 # https://docs.kraken.com/rest/#section/General-Usage/Requests-Responses-and-Errors
 EXCEPTION_ASSIGNMENT: dict[str, Any] = {
-    ##      Spot, Margin, and Futures trading Errors
-    ##
+    #      Spot, Margin, and Futures trading Errors
+    #
     "EGeneral:Invalid arguments": KrakenInvalidArgumentsError,
     "EGeneral:Invalid arguments:Index unavailable": KrakenInvalidArgumentsIndexUnavailableError,
     "EGeneral:Permission denied": KrakenPermissionDeniedError,
@@ -322,8 +322,8 @@ EXCEPTION_ASSIGNMENT: dict[str, Any] = {
     "EQuery:Unknown asset": KrakenUnknownAssetError,
     "EQuery:Unknown asset pair": KrakenUnknownAssetPairError,
     # "WDatabase:No change": ,
-    ##      Futures Trading Errors
-    ##
+    #      Futures Trading Errors
+    #
     "authenticationError": KrakenAuthenticationError,
     "insufficientAvailableFunds": KrakenInsufficientAvailableFundsError,
     "requiredArgumentMissing": KrakenRequiredArgumentMissingError,

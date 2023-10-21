@@ -268,7 +268,7 @@ class ConnectFuturesWebsocket:
 
         if (
             "event" not in subscription
-            or subscription["event"] not in ["subscribed", "unsubscribed"]
+            or subscription["event"] not in {"subscribed", "unsubscribed"}
             or "feed" not in subscription
         ):
             raise AttributeError(

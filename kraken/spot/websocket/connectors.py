@@ -580,12 +580,12 @@ class ConnectSpotWebsocketV2(ConnectSpotWebsocketBase):
         # subscriptions from that moment, the successful response arrives. These
         # responses must be parsed to use them to resubscribe on connection
         # losses.
-        if subscription["result"].get("channel", "") in (
+        if subscription["result"].get("channel", "") in {
             "book",
             "ticker",
             "ohlc",
             "trade",
-        ) and not isinstance(
+        } and not isinstance(
             subscription["result"].get("symbol"),
             list,
         ):

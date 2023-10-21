@@ -1,7 +1,7 @@
 .. -*- coding: utf-8 -*-
 .. Copyright (C) 2023 Benjamin Thomas Schwertfeger
 .. GitHub: https://github.com/btschwertfeger
-
+..
 .. LINKS
 
 .. _Kraken:                            https://kraken.com
@@ -17,7 +17,7 @@
 .. |License badge|             image:: https://img.shields.io/badge/License-GPLv3-orange.svg
                               :target: https://www.gnu.org/licenses/gpl-3.0
                               :alt:    License
-.. |PyVersions badge|          image:: https://img.shields.io/badge/python-3.11-blue.svg
+.. |PyVersions badge|          image:: https://img.shields.io/badge/python-3.11+-blue.svg
                               :target: https://github.com/btschwertfeger/python-kraken-sdk
                               :alt:    Supported Python Versions
 .. |Downloads badge|           image:: https://static.pepy.tech/personalized-badge/python-kraken-sdk?period=total&units=abbreviation&left_color=grey&right_color=orange&left_text=downloads

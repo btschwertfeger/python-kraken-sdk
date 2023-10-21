@@ -141,7 +141,7 @@ class OrderbookClientV1:
         if (
             isinstance(message, dict)
             and message.get("event", "") == "subscriptionStatus"
-            and message.get("status", "") in ("subscribed", "unsubscribed")
+            and message.get("status", "") in {"subscribed", "unsubscribed"}
             and message.get("pair", "") in self.__book
         ):
             del self.__book[message["pair"]]

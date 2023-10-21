@@ -129,7 +129,7 @@ class KrakenFuturesWSClient(KrakenFuturesBaseAPI):
         self._conn: ConnectFuturesWebsocket = ConnectFuturesWebsocket(
             client=self,
             endpoint=url
-            if url != ""
+            if url
             else self.DEMO_ENV_URL
             if sandbox
             else self.PROD_ENV_URL,
@@ -370,12 +370,7 @@ class KrakenFuturesWSClient(KrakenFuturesBaseAPI):
             >>> KrakenFuturesWSClient().is_auth()
             False
         """
-        return (
-            self.__key is not None
-            and self.__key != ""
-            and self.__secret is not None
-            and self.__secret != ""
-        )
+        return bool(self.__key and self.__secret)
 
     def get_active_subscriptions(self: KrakenFuturesWSClient) -> list[dict]:
         """

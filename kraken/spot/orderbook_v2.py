@@ -3,6 +3,10 @@
 # Copyright (C) 2023 Benjamin Thomas Schwertfeger
 # GitHub: https://github.com/btschwertfeger
 #
+# TODO: move this to the respective line as soon as pylint + ruff ignore work
+#       together
+# (PLR0916): Too many Boolean expressions
+# ruff: noqa: PLR0916
 
 """Module that implements the Kraken Spot Orderbook client"""
 
@@ -142,7 +146,7 @@ class OrderbookClientV2:
             return
 
         if (
-            message.get("method") in ("subscribe", "unsubscribe")
+            message.get("method") in {"subscribe", "unsubscribe"}
             and message.get("result")
             and message["result"].get("channel") == "book"
             and message.get("success")
@@ -152,7 +156,7 @@ class OrderbookClientV2:
             self.LOG.debug("Removed book for %s", message["result"]["symbol"])
             return
 
-        if (  # pylint: disable=too-many-boolean-expressions)
+        if (  # pylint: disable=too-many-boolean-expressions
             message.get("channel") != "book"
             or not message.get("data")
             or not message.get("type")

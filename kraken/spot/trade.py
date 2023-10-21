@@ -64,7 +64,7 @@ class Trade(KrakenSpotBaseAPI):
         return self
 
     @ensure_string("oflags")
-    def create_order(  # pylint: disable=too-many-branches # noqa: PLR0913 PLR0912
+    def create_order(  # pylint: disable=too-many-branches,too-many-arguments # noqa: PLR0913 PLR0912
         self: Trade,
         ordertype: str,
         side: str,
@@ -331,7 +331,7 @@ class Trade(KrakenSpotBaseAPI):
                 if not truncate
                 else self.truncate(amount=price, amount_type="price", pair=pair)
             )
-        if ordertype in ("stop-loss-limit", "take-profit-limit"):
+        if ordertype in {"stop-loss-limit", "take-profit-limit"}:
             if not defined(price2):
                 raise ValueError(
                     f"Ordertype {ordertype} requires a secondary price (price2)!",
@@ -447,7 +447,7 @@ class Trade(KrakenSpotBaseAPI):
         )
 
     @ensure_string("oflags")
-    def edit_order(  # noqa: PLR0913
+    def edit_order(  # pylint: disable=too-many-arguments # noqa: PLR0913
         self: Trade,
         txid: str,
         pair: str,
@@ -760,7 +760,7 @@ class Trade(KrakenSpotBaseAPI):
             ... ))
             21123.0
         """
-        if amount_type not in ("price", "volume"):
+        if amount_type not in {"price", "volume"}:
             raise ValueError("Amount type must be 'volume' or 'price'!")
 
         pair_data: dict = self.__market.get_asset_pairs(pair=pair)

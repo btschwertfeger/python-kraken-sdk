@@ -4,7 +4,7 @@
 
 [![GitHub](https://badgen.net/badge/icon/github?icon=github&label)](https://github.com/btschwertfeger/python-kraken-sdk)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-orange.svg)](https://www.gnu.org/licenses/gpl-3.0)
-[![Generic badge](https://img.shields.io/badge/python-3.11-blue.svg)](https://shields.io/)
+[![Generic badge](https://img.shields.io/badge/python-3.11+-blue.svg)](https://shields.io/)
 [![Downloads](https://static.pepy.tech/personalized-badge/python-kraken-sdk?period=total&units=abbreviation&left_color=grey&right_color=orange&left_text=downloads)](https://pepy.tech/project/python-kraken-sdk)
 
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
@@ -22,10 +22,13 @@
 
 > ⚠️ This is an unofficial collection of REST and websocket clients for Spot and
 > Futures trading on the Kraken cryptocurrency exchange using Python. Payward
-> Ltd. and Kraken are in no way associated with the authors of this module and
+> Ltd. and Kraken are in no way associated with the authors of this package and
 > documentation.
-
----
+>
+> Please note that this project is independent and not endorsed by Kraken or
+> Payward Ltd. Users should be aware that they are using third-party software,
+> and the authors of this project are not responsible for any issues, losses, or
+> risks associated with its usage.
 
 ## 📌 Disclaimer
 
@@ -33,7 +36,7 @@ There is no guarantee that this software will work flawlessly at this or later
 times. Of course, no responsibility is taken for possible profits or losses.
 This software probably has some errors in it, so use it at your own risk. Also
 no one should be motivated or tempted to invest assets in speculative forms of
-investment. By using this software you release the authors from any liability
+investment. By using this software you release the author(s) from any liability
 regarding the use of this software.
 
 ---
@@ -44,7 +47,7 @@ Available Clients:
 
 - Spot REST Clients
 - Spot Websocket Clients (Websocket API v1 and v2)
-- Spot Orderbook Client (Websocket API v1 and v2)
+- Spot Orderbook Clients (Websocket API v1 and v2)
 - Futures REST Clients
 - Futures Websocket Client
 

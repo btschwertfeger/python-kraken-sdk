@@ -13,8 +13,8 @@ from __future__ import annotations
 
 import json
 import logging
-import os
 from asyncio import sleep
+from pathlib import Path
 from time import time
 from typing import Any, Union
 
@@ -25,7 +25,7 @@ from kraken.spot import (
     OrderbookClientV2,
 )
 
-FIXTURE_DIR: str = os.path.join(os.path.dirname(__file__), "fixture")
+FIXTURE_DIR: Path = Path(__file__).resolve().parent / "fixture"
 
 
 def is_not_error(value: Any) -> bool:
@@ -145,12 +145,12 @@ class OrderbookClientV1Wrapper(OrderbookClientV1):
 
         log: str = ""
         try:
-            with open("spot_orderbook-v1.log", "r", encoding="utf-8") as logfile:
+            with Path("spot_orderbook-v1.log").open("r", encoding="utf-8") as logfile:
                 log = logfile.read()
         except FileNotFoundError:
             pass
 
-        with open("spot_orderbook.log", "w", encoding="utf-8") as logfile:
+        with Path("spot_orderbook.log").open("w", encoding="utf-8") as logfile:
             logfile.write(f"{log}\n{content}")
 
 
@@ -194,10 +194,10 @@ class OrderbookClientV2Wrapper(OrderbookClientV2):
 
         log: str = ""
         try:
-            with open("spot_orderbook-2.log", "r", encoding="utf-8") as logfile:
+            with Path("spot_orderbook-2.log").open("r", encoding="utf-8") as logfile:
                 log = logfile.read()
         except FileNotFoundError:
             pass
 
-        with open("spot_orderbook.log", "w", encoding="utf-8") as logfile:
+        with Path("spot_orderbook.log").open("w", encoding="utf-8") as logfile:
             logfile.write(f"{log}\n{json.dumps(content)}")

@@ -11,8 +11,13 @@ Introduction
 
 
 **This is the documentation of the unofficial Python SDK to interact with the
-Kraken cryptocurrency exchange. Payward Ltd. and Kraken are in no way associated
-with the authors of this module and documentation.**
+Kraken cryptocurrency exchange.**
+
+*Payward Ltd. and Kraken are in no way associated with the authors of this
+package and documentation. Please note that this project is independent and not
+endorsed by Kraken or Payward Ltd. Users should be aware that they are using
+third-party software, and the authors of this project are not responsible for
+any issues, losses, or risks associated with its usage.*
 
 This documentation refers to the `python-kraken-sdk`_ and serves to simplify the
 application of trading strategies, in which as far as possible all interaction
@@ -54,7 +59,7 @@ Available Clients:
 
 - Spot REST Clients
 - Spot Websocket Clients (Websocket API v1 and v2)
-- Spot Orderbook Client (Websocket API v1 and v2)
+- Spot Orderbook Clients (Websocket API v1 and v2)
 - Futures REST Clients
 - Futures Websocket Client
 
@@ -73,6 +78,9 @@ Important Notice
 **ONLY tagged releases are available at PyPI**. The content of the master branch
 may not match with the content of the latest release. - Please have a look at
 the release specific READMEs and changelogs.
+
+It is also recommended to **pin the used version** to avoid unexpected behavior
+on new releases.
 
 .. _section-troubleshooting:
 

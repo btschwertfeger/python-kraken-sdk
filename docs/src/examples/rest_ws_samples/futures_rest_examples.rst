@@ -1,20 +1,22 @@
+
 .. -*- coding: utf-8 -*-
 .. Copyright (C) 2023 Benjamin Thomas Schwertfeger
 .. GitHub: https://github.com/btschwertfeger
 
-.. The Futures websocket examples
-
-Futures Websocket Usage Examples
---------------------------------
+Futures Rest
+------------
 
 The examples presented below serve to demonstrate the usage of the Futures
-websocket clients provided by `python-kraken-sdk`_ to access `Kraken`_'s
-Websocket API v1 and v2 .
+REST clients provided by `python-kraken-sdk`_ to access `Kraken`_'s REST API.
 
 For questions, feedback, additions, suggestions for improvement or problems
 `python-kraken-sdk/discussions`_ or `python-kraken-sdk/issues`_ may be helpful.
 
-.. literalinclude:: ../../../examples/futures_ws_examples.py
+These examples are not maintained on a regular basis. They serve only for
+demonstration purposes - make sure to checkout the documentation of the
+individual functions.
+
+.. literalinclude:: ../../../../examples/futures_examples.py
    :language: python
    :linenos:
-   :caption: Example access and usage for Kraken Futures Websocket API
+   :caption: Example usages of the REST clients

@@ -40,12 +40,24 @@ repos:
     rev: 23.7.0
     hooks:
       - id: black
+  - repo: https://github.com/pre-commit/mirrors-prettier
+    rev: v3.0.2
+    hooks:
+      - id: prettier
   - repo: https://github.com/PyCQA/isort
     rev: 5.12.0
     hooks:
       - id: isort
         args:
           - --profile=black
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.1.1
+    hooks:
+      - id: ruff
+        args:
+          - --preview
+          - --fix
+          - --exit-non-zero-on-fix
   - repo: https://github.com/pycqa/flake8
     rev: 6.1.0
     hooks:
@@ -64,13 +76,6 @@ repos:
         args:
           - --rcfile=pyproject.toml
           - -d=R0801 # ignore duplicate code
-  - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.0.287
-    hooks:
-      - id: ruff
-        args:
-          - --fix
-          - --exit-non-zero-on-fix
   - repo: https://github.com/pre-commit/mirrors-mypy
     rev: v1.5.1
     hooks:
@@ -81,7 +86,3 @@ repos:
         args:
           - --config-file=pyproject.toml
           - kraken
-  - repo: https://github.com/pre-commit/mirrors-prettier
-    rev: v3.0.2
-    hooks:
-      - id: prettier

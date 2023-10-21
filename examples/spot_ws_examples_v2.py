@@ -8,6 +8,7 @@
 Module that provides an example usage for the KrakenSpotWebsocketClient.
 It uses the Kraken Websocket API v2.
 """
+
 from __future__ import annotations
 
 import asyncio

@@ -115,7 +115,7 @@ jobs:
       max-parallel: 1 # to avoid failing tests because of API Rate limits
       fail-fast: false
       matrix:
-        os: [ubuntu-latest] # only ubuntu since this takes to much time ATM
+        os: [ubuntu-latest, windows-latest]
         python-version: ["3.11"]
     with:
       os: ${{ matrix.os }}

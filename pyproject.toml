@@ -57,6 +57,7 @@ dev = [
   "types-requests",
   # linting
   "ruff",
+  "pylint",
 ]
 examples = ["matplotlib"]
 
@@ -65,7 +66,8 @@ include-package-data = false
 
 [tool.setuptools.packages.find]
 include = ["kraken*"]
-exclude = ["docs*", "tests*", "examples*", ".env"]
+# excluded anyway because of 'include'
+exclude = ["docs*", "tests*", "examples*", "venv", ".env"]
 
 [tool.setuptools_scm]
 write_to = "kraken/_version.py"
@@ -177,8 +179,6 @@ strict = true
 [tool.ruff]
 # src = ["kraken"]
 
-# https://beta.ruff.rs/docs/rules/
-# https://beta.ruff.rs/docs/settings/
 select = [
   "A",     # flake8-builtins
   "AIR",   # Airflow
@@ -196,11 +196,12 @@ select = [
   "ICN",   # flake8-import-conventions
   "INT",   # flake8-gettext
   "ISC",   # flake8-implicit-string-concat
+  "LOG",   # flake8-logging
   "N",     # PEP8 naming
   "PERF",  # Perflint # maybe
   "PGH",   # pygrep-hooks
   "PIE",   # flake8-pie
-  "PL",    # Pylint
+  "PL",    # PyLint
   "PT",    # flake8-pytest-style
   "PYI",   # flake8-pyi
   "Q",     # flake8-quotes
@@ -215,20 +216,35 @@ select = [
   "TCH",   # flake8-type-checking
   "TID",   # flake8-tidy-imports
   "ARG",   # flake8-unused-arguments
-  # "ERA", # eradicate # !(commented-out code)
-  "FBT", # boolean trap
-  # "FIX", # flake8-fixme # !
-  # "PTH", # flake8-use-pathlib # maybe
-  # "TD",  # flake8-todos # !
+  "CPY",   # flake8-copyright
+  "FBT",   # boolean trap
+  "PTH",   # flake8-use-pathlib
+  "FURB",  # refurb
+  # "ERA",   # eradicate # commented-out code
+  # "FIX", # flake8-fixme
+  # "TD",  # flake8-todos
   # "TRY",  # tryceratops # specify exception messages in class; not important
-  "FURB", # refurb
+] # https://beta.ruff.rs/docs/rules/
+# https://beta.ruff.rs/docs/settings/
+fixable = [
+  "I",
+  "C4",
+  "Q",
+  "PT",
+  "ICN",
+  "COM",
+  "RSE",
+  "PT",
+  "FA",
+  "FA100",
+  "PLR6201",
 ]
-fixable = ["I", "C4", "Q", "PT", "ICN", "COM", "RSE", "PT", "FA", "FA100"]
 
 ignore = [
   "B019",    # use of lru_cache or cache
-  "PERF203", # try-except in loop (todo: check that from time to time)
   "PLR2004", # magic value in comparison
+  "E203",    # Whitespace before ':' # false positive on list slices
+  "PLR6301", # Method `…` could be a function or static method # false positive for no-self-use
 ]
 
 respect-gitignore = true
@@ -239,7 +255,6 @@ cache-dir = ".cache/ruff"
 task-tags = ["todo", "TODO"]
 
 [tool.ruff.per-file-ignores]
-"setup.py" = ["F401"] # unused import
 "examples/*.py" = [
   "ASYNC101", # no open call on async function
   "BLE001",   # blind exception
@@ -249,7 +264,7 @@ task-tags = ["todo", "TODO"]
 ]
 "tests/*.py" = [
   "ASYNC101", # no open call on async function
-  "E501",     # Line to long
+  "E501",     # line to long
   "F841",     # unused variable
   "N802",     # PEP8 naming
   "S101",     # assert use
@@ -260,6 +275,11 @@ task-tags = ["todo", "TODO"]
   "TID252",   # ban relative imports
 ]
 
+[tool.ruff.flake8-copyright]
+author = "Benjamin Thomas Schwertfeger"
+notice-rgx = "(?i)Copyright \\(C\\) \\d{4}"
+min-file-size = 1024
+
 [tool.ruff.flake8-quotes]
 docstring-quotes = "double"
 
@@ -268,6 +288,9 @@ ban-relative-imports = "all"
 
 [tool.ruff.flake8-bandit]
 check-typed-exception = true
+
+[tool.ruff.flake8-type-checking]
+strict = true
 
 [tool.ruff.pep8-naming]
 ignore-names = [
@@ -304,6 +327,9 @@ ignore-names = [
 [tool.ruff.pylint]
 max-args = 8
 max-branches = 15
+max-returns = 6
+max-statements = 50
+allow-magic-value-types = ["int"]
 
 [tool.pylint.main]
 # Analyse import fallback blocks. This can be used to support both Python 2 and 3
@@ -585,7 +611,7 @@ valid-metaclass-classmethod-first-arg = ["cls"]
 # ignored-parents =
 
 # Maximum number of arguments for function / method.
-max-args = 23
+max-args = 8
 
 # Maximum number of attributes for a class (see R0902).
 max-attributes = 10

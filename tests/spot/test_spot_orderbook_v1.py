@@ -12,9 +12,8 @@ from __future__ import annotations
 
 import asyncio
 import json
-import os
 from collections import OrderedDict
-from typing import Any, Optional
+from typing import TYPE_CHECKING, Any, Optional
 from unittest import mock
 
 import pytest
@@ -22,6 +21,9 @@ import pytest
 from kraken.spot import OrderbookClientV1
 
 from .helper import FIXTURE_DIR, OrderbookClientV1Wrapper, async_wait
+
+if TYPE_CHECKING:
+    from pathlib import Path
 
 
 @pytest.mark.spot()
@@ -86,11 +88,9 @@ def test_assign_msg_and_validate_checksum(
     assigned correctly so that the checksum calculation can validate the
     assigned book updates and values.
     """
-    with open(
-        os.path.join(FIXTURE_DIR, "orderbook-v1.json"),
-        "r",
-        encoding="utf-8",
-    ) as json_file:
+    json_file_path: Path = FIXTURE_DIR / "orderbook-v1.json"
+
+    with json_file_path.open("r", encoding="utf-8") as json_file:
         orderbook: dict = json.load(json_file)
 
     async def assign() -> None:
