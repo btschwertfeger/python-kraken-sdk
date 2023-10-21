@@ -41,7 +41,6 @@ def test_get_deposit_address(spot_auth_funding: Funding) -> None:
     )
 
 
-@pytest.mark.wip()
 @pytest.mark.spot()
 @pytest.mark.spot_auth()
 @pytest.mark.spot_funding()
