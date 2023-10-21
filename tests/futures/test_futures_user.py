@@ -83,7 +83,7 @@ def test_get_account_log_csv(futures_auth_user: User) -> None:
     Checks the ``get_account_log_csv`` endpoint.
     """
     response: requests.Response = futures_auth_user.get_account_log_csv()
-    assert response.status_code in (200, "200")
+    assert response.status_code in {200, "200"}
 
     with tempfile.TemporaryDirectory() as tmp_dir:
         file_path: Path = Path(tmp_dir) / f"account_log-{random.randint(0, 10000)}.csv"

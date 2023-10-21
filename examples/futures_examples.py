@@ -79,7 +79,7 @@ def user_examples() -> None:
     print(user.get_account_log(info="futures liquidation"))
     time.sleep(2)
     response = user.get_account_log_csv()
-    assert response.status_code in (200, "200")
+    assert response.status_code in {200, "200"}
     with Path("account_log.csv").open("wb") as file:
         for chunk in response.iter_content(chunk_size=512):
             if chunk:

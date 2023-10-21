@@ -3,6 +3,8 @@
 # Copyright (C) 2023 Benjamin Thomas Schwertfeger
 # GitHub: https://github.com/btschwertfeger
 #
+# (PLR0904): Too many public methods
+# ruff: noqa: PLR0904
 
 """ Module that implements the Kraken Spot User client"""
 
@@ -962,7 +964,7 @@ class User(KrakenSpotBaseAPI):
             ... )
             { 'id': 'GEHI' }
         """
-        if report not in ("trades", "ledgers"):
+        if report not in {"trades", "ledgers"}:
             raise ValueError('`report` must be either "trades" or "ledgers".')
 
         params: dict = {
@@ -1037,7 +1039,7 @@ class User(KrakenSpotBaseAPI):
                 }
             ]
         """
-        if report not in ("trades", "ledgers"):
+        if report not in {"trades", "ledgers"}:
             raise ValueError('report must be one of "trades", "ledgers"')
         return self._request(  # type: ignore[return-value]
             method="POST",

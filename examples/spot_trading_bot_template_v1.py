@@ -67,7 +67,7 @@ class TradingBot(KrakenSpotWSClientV1):
     async def on_message(self: TradingBot, message: Union[dict, list]) -> None:
         """Receives all messages of the websocket connection(s)"""
         if isinstance(message, dict) and "event" in message:
-            if message["event"] in ("heartbeat", "pong"):
+            if message["event"] in {"heartbeat", "pong"}:
                 return
             if "error" in message:
                 # handle exceptions/errors sent by websocket connection …

@@ -331,7 +331,7 @@ class Trade(KrakenSpotBaseAPI):
                 if not truncate
                 else self.truncate(amount=price, amount_type="price", pair=pair)
             )
-        if ordertype in ("stop-loss-limit", "take-profit-limit"):
+        if ordertype in {"stop-loss-limit", "take-profit-limit"}:
             if not defined(price2):
                 raise ValueError(
                     f"Ordertype {ordertype} requires a secondary price (price2)!",
@@ -760,7 +760,7 @@ class Trade(KrakenSpotBaseAPI):
             ... ))
             21123.0
         """
-        if amount_type not in ("price", "volume"):
+        if amount_type not in {"price", "volume"}:
             raise ValueError("Amount type must be 'volume' or 'price'!")
 
         pair_data: dict = self.__market.get_asset_pairs(pair=pair)

@@ -57,6 +57,7 @@ dev = [
   "types-requests",
   # linting
   "ruff",
+  "pylint",
 ]
 examples = ["matplotlib"]
 
@@ -178,8 +179,6 @@ strict = true
 [tool.ruff]
 # src = ["kraken"]
 
-# https://beta.ruff.rs/docs/rules/
-# https://beta.ruff.rs/docs/settings/
 select = [
   "A",     # flake8-builtins
   "AIR",   # Airflow
@@ -197,6 +196,7 @@ select = [
   "ICN",   # flake8-import-conventions
   "INT",   # flake8-gettext
   "ISC",   # flake8-implicit-string-concat
+  "LOG",   # flake8-logging
   "N",     # PEP8 naming
   "PERF",  # Perflint # maybe
   "PGH",   # pygrep-hooks
@@ -224,12 +224,27 @@ select = [
   # "FIX", # flake8-fixme
   # "TD",  # flake8-todos
   # "TRY",  # tryceratops # specify exception messages in class; not important
+] # https://beta.ruff.rs/docs/rules/
+# https://beta.ruff.rs/docs/settings/
+fixable = [
+  "I",
+  "C4",
+  "Q",
+  "PT",
+  "ICN",
+  "COM",
+  "RSE",
+  "PT",
+  "FA",
+  "FA100",
+  "PLR6201",
 ]
-fixable = ["I", "C4", "Q", "PT", "ICN", "COM", "RSE", "PT", "FA", "FA100"]
 
 ignore = [
   "B019",    # use of lru_cache or cache
   "PLR2004", # magic value in comparison
+  "E203",    # Whitespace before ':' # false positive on list slices
+  "PLR6301", # Method `…` could be a function or static method # false positive for no-self-use
 ]
 
 respect-gitignore = true

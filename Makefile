@@ -83,13 +83,13 @@ pre-commit:
 ## ruff 	Run ruff without fix
 .PHONY: ruff
 ruff:
-	ruff check .
+	ruff check --preview .
 
 ## ruff-fix 	Run ruff with fix
 ##
 .PHONY: ruff-fix
 ruff-fix:
-	ruff check . --fix
+	ruff check --fix --preview .
 
 ## changelog	Generate the changelog
 ##

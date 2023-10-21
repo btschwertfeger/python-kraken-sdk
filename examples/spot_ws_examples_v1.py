@@ -41,7 +41,7 @@ async def main() -> None:
             """Receives the websocket messages"""
             if isinstance(message, dict) and "event" in message:
                 topic = message["event"]
-                if topic in ("heartbeat", "pong"):
+                if topic in {"heartbeat", "pong"}:
                     return
 
             print(message)

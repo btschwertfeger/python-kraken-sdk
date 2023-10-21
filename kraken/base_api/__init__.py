@@ -193,7 +193,7 @@ class KrakenSpotBaseAPI:
     ):
         if sandbox:
             raise ValueError("Sandbox not available for Kraken Spot trading.")
-        if url != "":
+        if url:
             self.url = url
         else:
             self.url = urljoin(self.URL, self.API_V)
@@ -260,7 +260,7 @@ class KrakenSpotBaseAPI:
             )
 
         method = method.upper()
-        if method in ("GET", "DELETE") and params:
+        if method in {"GET", "DELETE"} and params:
             data_json: str = "&".join(
                 [f"{key}={params[key]}" for key in sorted(params)],
             )
@@ -268,12 +268,7 @@ class KrakenSpotBaseAPI:
 
         headers: dict = {}
         if auth:
-            if (
-                not self.__key
-                or self.__key == ""
-                or not self.__secret
-                or self.__secret == ""
-            ):
+            if not self.__key or not self.__secret:
                 raise ValueError("Missing credentials.")
 
             params["nonce"] = str(int(time.time() * 100_000_000))
@@ -300,7 +295,7 @@ class KrakenSpotBaseAPI:
             )
 
         url: str = f"{self.url}{uri}"
-        if method in ("GET", "DELETE"):
+        if method in {"GET", "DELETE"}:
             return self.__check_response_data(
                 response=self.__session.request(
                     method=method,
@@ -381,7 +376,7 @@ class KrakenSpotBaseAPI:
         if not self.__use_custom_exceptions:
             return response
 
-        if response.status_code in ("200", 200):
+        if response.status_code in {"200", 200}:
             if return_raw:
                 return response
             try:
@@ -538,12 +533,7 @@ class KrakenFuturesBaseAPI:
 
         headers: dict = {}
         if auth:
-            if (
-                not self.__key
-                or self.__key == ""
-                or not self.__secret
-                or self.__secret == ""
-            ):
+            if not self.__key or not self.__secret:
                 raise ValueError("Missing credentials")
             nonce: str = str(int(time.time() * 100_000_000))
             headers.update(
@@ -559,12 +549,12 @@ class KrakenFuturesBaseAPI:
                 },
             )
 
-        if method in ("GET", "DELETE"):
+        if method in {"GET", "DELETE"}:
             return self.__check_response_data(
                 response=self.__session.request(
                     method=method,
                     url=f"{self.url}{uri}"
-                    if query_string == ""
+                    if not query_string
                     else f"{self.url}{uri}?{query_string}",
                     headers=headers,
                     timeout=timeout,
@@ -651,7 +641,7 @@ class KrakenFuturesBaseAPI:
         if not self.__use_custom_exceptions:
             return response
 
-        if response.status_code in ("200", 200):
+        if response.status_code in {"200", 200}:
             if return_raw:
                 return response
             try:
