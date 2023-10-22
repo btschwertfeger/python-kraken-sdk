@@ -1,12 +1,42 @@
 # Changelog
 
-## [Unreleased](https://github.com/btschwertfeger/python-kraken-sdk/tree/HEAD)
+## [v2.0.0](https://github.com/btschwertfeger/python-kraken-sdk/tree/v2.0.0) (2023-10-22)
 
-[Full Changelog](https://github.com/btschwertfeger/python-kraken-sdk/compare/v1.6.1...HEAD)
+[Full Changelog](https://github.com/btschwertfeger/python-kraken-sdk/compare/v1.6.2...v2.0.0)
+
+**Breaking changes:**
+
+- Resolve "Extract the Kraken\* exception classes from `kraken.exceptions.KrakenException`" [\#162](https://github.com/btschwertfeger/python-kraken-sdk/pull/162) ([btschwertfeger](https://github.com/btschwertfeger))
+- Resolve "Rename `kraken.spot.KrakenSpotWSClient` to `kraken.spot.KrakenSpotWSClientV1`" [\#160](https://github.com/btschwertfeger/python-kraken-sdk/pull/160) ([btschwertfeger](https://github.com/btschwertfeger))
+- Resolve "Rename `KrakenBaseSpotAPI` to `KrakenSpotBaseAPI` and `KrakenBaseFuturesAPI` to `KrakenFuturesBaseAPI`" [\#159](https://github.com/btschwertfeger/python-kraken-sdk/pull/159) ([btschwertfeger](https://github.com/btschwertfeger))
+- Resolve "Drop Support for Python \< 3.11" [\#157](https://github.com/btschwertfeger/python-kraken-sdk/pull/157) ([btschwertfeger](https://github.com/btschwertfeger))
+
+**Implemented enhancements:**
+
+- Resolve "Add `max_fee` parameter to `kraken.spot.Funding.withdraw_funds`" [\#171](https://github.com/btschwertfeger/python-kraken-sdk/pull/171) ([btschwertfeger](https://github.com/btschwertfeger))
+- Resolve "Add `start`, `end`, and `cursor` parameters to `kraken.spot.Funding.get_recent_deposits_status`" [\#170](https://github.com/btschwertfeger/python-kraken-sdk/pull/170) ([btschwertfeger](https://github.com/btschwertfeger))
+- Resolve "Add optional `extra_params` to any requesting function" [\#155](https://github.com/btschwertfeger/python-kraken-sdk/pull/155) ([btschwertfeger](https://github.com/btschwertfeger))
+- Resolve "150 add the legacy OrderbookClient for Krakens websocket API v1" [\#151](https://github.com/btschwertfeger/python-kraken-sdk/pull/151) ([btschwertfeger](https://github.com/btschwertfeger))
+
+Uncategorized merged pull requests:
+
+- Adjust docstrings and documentation [\#172](https://github.com/btschwertfeger/python-kraken-sdk/pull/172) ([btschwertfeger](https://github.com/btschwertfeger))
+- Resolve "Use Apache 2.0 license instead of GNU GPLv3" [\#167](https://github.com/btschwertfeger/python-kraken-sdk/pull/167) ([btschwertfeger](https://github.com/btschwertfeger))
+- Apply hints suggested by the ruff linter [\#165](https://github.com/btschwertfeger/python-kraken-sdk/pull/165) ([btschwertfeger](https://github.com/btschwertfeger))
+- Resolve "163 uniform the msg parameter" [\#164](https://github.com/btschwertfeger/python-kraken-sdk/pull/164) ([btschwertfeger](https://github.com/btschwertfeger))
+
+## [v1.6.2](https://github.com/btschwertfeger/python-kraken-sdk/tree/v1.6.2) (2023-08-31)
+
+[Full Changelog](https://github.com/btschwertfeger/python-kraken-sdk/compare/v1.6.1...v1.6.2)
+
+**Fixed bugs:**
+
+- `kraken.spot.OrderbookClient` is not able to resubscribe to book feeds after connection lost [\#148](https://github.com/btschwertfeger/python-kraken-sdk/issues/148)
 
 Uncategorized merged pull requests:
 
 - Bump Pre-Commit hook versions and adjust typing [\#146](https://github.com/btschwertfeger/python-kraken-sdk/pull/146) ([btschwertfeger](https://github.com/btschwertfeger))
+- Fix "`kraken.spot.OrderbookClient` is not able to resubscribe to book feeds after connection lost" [\#149](https://github.com/btschwertfeger/python-kraken-sdk/pull/149) ([btschwertfeger](https://github.com/btschwertfeger))
 
 ## [v1.6.1](https://github.com/btschwertfeger/python-kraken-sdk/tree/v1.6.1) (2023-08-07)
 
