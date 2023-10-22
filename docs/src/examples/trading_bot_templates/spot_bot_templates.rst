@@ -5,7 +5,7 @@
 .. The spot trading bot templates
 
 Spot Trading Bot Templates
--------------------------
+--------------------------
 
 The templates presented below serve as starting points for the development of
 a trading algorithms for Spot trading on the cryptocurrency exchange `Kraken`_

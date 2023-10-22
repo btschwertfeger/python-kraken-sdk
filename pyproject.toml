@@ -74,7 +74,7 @@ write_to = "kraken/_version.py"
 version_scheme = "guess-next-dev"
 local_scheme = "no-local-version"
 
-# ========= T E S T I N G =====================================================
+# ========= T E S T I N G ======================================================
 #
 [tool.pytest]
 junit_family = "xunit2"
@@ -112,7 +112,7 @@ omit = ["*tests*"]
 exclude_lines = ["coverage: disable", "if TYPE_CHECKING:"]
 skip_empty = true
 
-# ========= T Y P I N G =======================================================
+# ========= T Y P I N G ========================================================
 #
 [tool.mypy]
 python_version = "3.11"
@@ -177,6 +177,8 @@ strict = true
 # ========= L I N T I N G ======================================================
 #
 [tool.ruff]
+# https://beta.ruff.rs/docs/rules/
+# https://beta.ruff.rs/docs/settings/
 # src = ["kraken"]
 
 select = [
@@ -224,8 +226,7 @@ select = [
   # "FIX", # flake8-fixme
   # "TD",  # flake8-todos
   # "TRY",  # tryceratops # specify exception messages in class; not important
-] # https://beta.ruff.rs/docs/rules/
-# https://beta.ruff.rs/docs/settings/
+]
 fixable = [
   "I",
   "C4",
@@ -337,7 +338,7 @@ allow-magic-value-types = ["int"]
 # one or another interpreter, leading to false positives when analyzed.
 # analyse-fallback-blocks =
 
-# Clear in-memory caches upon conclusion of linting. Useful if running pylint in
+# Clear in-memory caches upon conclusion of linting. Useful if running PyLint in
 # a server-like mode.
 # clear-cache-post-run =
 
@@ -394,7 +395,7 @@ ignore-patterns = ["^\\.#"]
 # pygtk.require().
 # init-hook =
 
-# Use multiple processes to speed up Pylint. Specifying 0 will auto-detect the
+# Use multiple processes to speed up PyLint. Specifying 0 will auto-detect the
 # number of processors available to use, and will cap the count on Windows to
 # avoid hangs.
 jobs = 2
@@ -412,7 +413,7 @@ limit-inference-results = 100
 persistent = true
 
 # Minimum Python version to use for version dependent checks. Will default to the
-# version used to run pylint.
+# version used to run PyLint.
 py-version = "3.11"
 
 # Discover python modules and packages in the file system subtree.
@@ -424,7 +425,7 @@ py-version = "3.11"
 # source root.
 # source-roots =
 
-# When enabled, pylint would attempt to guess common misconfiguration and emit
+# When enabled, PyLint would attempt to guess common misconfiguration and emit
 # user-friendly hints instead of false-positive error messages.
 suggestion-mode = true
 
@@ -808,7 +809,7 @@ evaluation = "max(0, 0 if fatal else 10.0 - ((float(5 * error + warning + refact
 # used to format the message information. See doc for all details.
 # msg-template =
 
-# Set the output format. Available formats are text, parseable, colorized, json
+# Set the output format. Available formats are text, parsable, colorized, json
 # and msvs (visual studio). You can also give a reporter class, e.g.
 # mypackage.mymodule.MyReporterClass.
 # output-format =

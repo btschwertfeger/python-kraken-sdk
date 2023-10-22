@@ -17,16 +17,18 @@ Self = TypeVar("Self")
 
 class Staking(KrakenSpotBaseAPI):
     """
-    Class that implements the Kraken Spot Staking client. Currently there
-    are no staking endpoints that could be accesses without authentication.
+    Class that implements the Kraken Spot Staking client. Currently there are no
+    staking endpoints that could be accesses without authentication.
 
     :param key: Spot API public key (default: ``""``)
     :type key: str, optional
     :param secret: Spot API secret key (default: ``""``)
     :type secret: str, optional
-    :param url: Alternative URL to access the Kraken API (default: https://api.kraken.com)
+    :param url: Alternative URL to access the Kraken API (default:
+        https://api.kraken.com)
     :type url: str, optional
-    :param sandbox: Use the sandbox (not supported for Spot trading so far, default: ``False``)
+    :param sandbox: Use the sandbox (not supported for Spot trading so far,
+        default: ``False``)
     :type sandbox: bool, optional
 
     .. code-block:: python
@@ -164,8 +166,8 @@ class Staking(KrakenSpotBaseAPI):
         extra_params: Optional[dict] = None,
     ) -> list[dict]:
         """
-        Get a list of stakeable assets. Only assets that the user is able to stake
-        will be shown.
+        Get a list of stakeable assets. Only assets that the user is able to
+        stake will be shown.
 
         Requires the ``Withdraw funds`` and ``Query funds`` API key permissions.
 

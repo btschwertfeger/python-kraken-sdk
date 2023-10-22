@@ -33,11 +33,11 @@ class KrakenSpotWSClientV1(KrakenSpotWSClientBase):
     … please use :class:`KrakenSpotWSClientV2` for accessing the Kraken
     Websockets API v2.
 
-    This class holds up to two websocket connections, one private
-    and one public.
+    This class holds up to two websocket connections, one private and one
+    public.
 
-    When accessing private endpoints that need authentication make sure,
-    that the ``Access WebSockets API`` API key permission is set in the user's
+    When accessing private endpoints that need authentication make sure, that
+    the ``Access WebSockets API`` API key permission is set in the user's
     account. To place or cancel orders, querying ledger information or accessing
     live portfolio changes (fills, new orders, ...) there are separate
     permissions that must be enabled if required.
@@ -48,10 +48,10 @@ class KrakenSpotWSClientV1(KrakenSpotWSClientBase):
     :type secret: str, optional
     :param url: Set a specific URL to access the Kraken REST API
     :type url: str, optional
-    :param no_public: Disables public connection (default: ``False``).
-        If not set or set to ``False``, the client will create a public and
-        a private connection per default. If only a private connection is
-        required, this parameter should be set to ``True``.
+    :param no_public: Disables public connection (default: ``False``). If not
+        set or set to ``False``, the client will create a public and a private
+        connection per default. If only a private connection is required, this
+        parameter should be set to ``True``.
     :param beta: Use the beta websocket channels (maybe not supported anymore,
         default: ``False``)
     :type beta: bool
@@ -181,9 +181,8 @@ class KrakenSpotWSClientV1(KrakenSpotWSClientBase):
         raw: bool = False,
     ) -> None:
         """
-        Sends a message via the websocket connection. For private messages
-        the authentication token will be assigned automatically if
-        ``raw=False``.
+        Sends a message via the websocket connection. For private messages the
+        authentication token will be assigned automatically if ``raw=False``.
 
         The user can specify a ``reqid`` within the message to identify
         corresponding responses via websocket feed.
@@ -461,8 +460,8 @@ class KrakenSpotWSClientV1(KrakenSpotWSClientBase):
         :type timeinforce: str, optional
         :param truncate: If enabled: round the ``price`` and ``volume`` to
             Kraken's maximum allowed decimal places. See
-            https://support.kraken.com/hc/en-us/articles/4521313131540
-            fore more information about decimals.
+            https://support.kraken.com/hc/en-us/articles/4521313131540 fore more
+            information about decimals.
         :type truncate: bool, optional
         :param validate: Validate the order without placing on the market
             (default: ``False``)
@@ -586,8 +585,8 @@ class KrakenSpotWSClientV1(KrakenSpotWSClientBase):
         :type oflags: str | list[str], optional
         :param newuserref: Set a new user reference id
         :type newuserref: str | int, optional
-        :param truncate: If enabled: round the ``price`` and ``volume`` to Kraken's
-            maximum allowed decimal places. See
+        :param truncate: If enabled: round the ``price`` and ``volume`` to
+            Kraken's maximum allowed decimal places. See
             https://support.kraken.com/hc/en-us/articles/4521313131540 fore more
             information about decimals.
         :type truncate: bool, optional

@@ -31,12 +31,10 @@ class OrderbookClientV2:
     multiple order books for Spot trading on the Kraken cryptocurrency exchange.
     It uses websockets to subscribe to book feeds and receives book updates,
     calculates the checksum and will publish the raw message to the
-    :func:`on_book_update` function or to the specified callback
-    function.
+    :func:`on_book_update` function or to the specified callback function.
 
-    :func:`get` can be used to access a specific book of this
-    client - they will always be up-to date when used from within
-    :func:`on_book_update`.
+    :func:`get` can be used to access a specific book of this client - they will
+    always be up-to date when used from within :func:`on_book_update`.
 
     The client will resubscribe to the book feed(s) if any errors occur and
     publish the changes to the mentioned function(s). This is required to
@@ -281,10 +279,10 @@ class OrderbookClientV2:
     def exception_occur(self: OrderbookClientV2) -> bool:
         """
         Can be used to determine if any critical error occurred within the
-        websocket connection. If so, the function will return ``True``
-        and the client instance is most likely not useable anymore. So this
-        is the switch lets the user know, when to delete the current one and
-        create a new one.
+        websocket connection. If so, the function will return ``True`` and the
+        client instance is most likely not useable anymore. So this is the
+        switch lets the user know, when to delete the current one and create a
+        new one.
 
         :return: ``True`` if any critical error occurred else ``False``
         :rtype: bool
@@ -328,9 +326,9 @@ class OrderbookClientV2:
         timestamp: Optional[str] = None,
     ) -> None:
         """
-        This functions updates the local orderbook based on the
-        information provided in ``orders`` and assigns or updates the
-        asks and bids of the book.
+        This functions updates the local orderbook based on the information
+        provided in ``orders`` and assigns or updates the asks and bids of the
+        book.
 
         :param orders: List of asks or bids like [{"price":1, "qty": 2}]
         :type orders: list[dict]

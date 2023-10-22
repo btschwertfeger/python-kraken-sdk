@@ -29,9 +29,11 @@ class User(KrakenFuturesBaseAPI):
     :type key: str, optional
     :param secret: Futures API secret key (default: ``""``)
     :type secret: str, optional
-    :param url: Alternative URL to access the Futures Kraken API (default: https://futures.kraken.com)
+    :param url: Alternative URL to access the Futures Kraken API (default:
+        https://futures.kraken.com)
     :type url: str, optional
-    :param sandbox: If set to ``True`` the URL will be https://demo-futures.kraken.com (default: ``False``)
+    :param sandbox: If set to ``True`` the URL will be
+        https://demo-futures.kraken.com (default: ``False``)
     :type sandbox: bool, optional
 
     .. code-block:: python
@@ -73,7 +75,8 @@ class User(KrakenFuturesBaseAPI):
         """
         Lists the current wallet balances of the user.
 
-        Requires at least the ``General API - Read Only`` permission in the API key settings.
+        Requires at least the ``General API - Read Only`` permission in the API
+        key settings.
 
         - https://docs.futures.kraken.com/#http-api-trading-v3-api-account-information-get-wallets
 
@@ -166,7 +169,8 @@ class User(KrakenFuturesBaseAPI):
         """
         List the subaccounts of the user.
 
-        Requires at least the ``General API - Read Only`` permission in the API key settings.
+        Requires at least the ``General API - Read Only`` permission in the API
+        key settings.
 
         - https://docs.futures.kraken.com/#http-api-trading-v3-api-account-information-get-subaccounts
 
@@ -200,9 +204,11 @@ class User(KrakenFuturesBaseAPI):
         extra_params: Optional[dict] = None,
     ) -> dict:
         """
-        Retrieve information about the percentile of the open position in case of unwinding.
+        Retrieve information about the percentile of the open position in case
+        of unwinding.
 
-        Requires at least the ``General API - Read Only`` permission in the API key settings.
+        Requires at least the ``General API - Read Only`` permission in the API
+        key settings.
 
         - https://docs.futures.kraken.com/#http-api-trading-v3-api-account-information-get-position-percentile-of-unwind-queue
 
@@ -239,7 +245,8 @@ class User(KrakenFuturesBaseAPI):
         """
         Retrieve the latest notifications from the Kraken Futures API
 
-        Requires at least the ``General API - Read Only`` permission in the API key settings.
+        Requires at least the ``General API - Read Only`` permission in the API
+        key settings.
 
         - https://docs.futures.kraken.com/#http-api-trading-v3-api-general-get-notifications
 
@@ -283,14 +290,16 @@ class User(KrakenFuturesBaseAPI):
         extra_params: Optional[dict] = None,
     ) -> dict:
         """
-        Get the historical events of the user's account. This is not available in the
-        Kraken demo/sandbox environment.
+        Get the historical events of the user's account. This is not available
+        in the Kraken demo/sandbox environment.
 
-        Requires at least the ``General API - Read Only`` permission in the API key settings.
+        Requires at least the ``General API - Read Only`` permission in the API
+        key settings.
 
         - https://docs.futures.kraken.com/#http-api-history-account-history-get-account-log
 
-        :param before: Filter to only return results before a specific timestamp or date
+        :param before: Filter to only return results before a specific timestamp
+            or date
         :type before: str | int, optional
         :param count: Defines the maximum number of results (max: ``500``)
         :type count: str | int, optional
@@ -373,10 +382,11 @@ class User(KrakenFuturesBaseAPI):
         extra_params: Optional[dict] = None,
     ) -> requests.Response:
         """
-        Return the account log as csv, for example to export it. This is not available in the
-        Kraken demo/sandbox environment.
+        Return the account log as csv, for example to export it. This is not
+        available in the Kraken demo/sandbox environment.
 
-        Requires at least the ``General API - Read Only`` permission in the API key settings.
+        Requires at least the ``General API - Read Only`` permission in the API
+        key settings.
 
         - https://docs.futures.kraken.com/#http-api-history-account-log-get-recent-account-log-csv
 
@@ -413,7 +423,8 @@ class User(KrakenFuturesBaseAPI):
         extra_params: Optional[dict] = None,
     ) -> dict:
         """
-        Method that uses as a gateway for the methods :func:`kraken.futures.User.get_execution_events`,
+        Method that uses as a gateway for the methods
+        :func:`kraken.futures.User.get_execution_events`,
         :func:`kraken.futures.User.get_order_events`, and
         :func:`kraken.futures.User.get_trigger_events`
 
@@ -421,7 +432,8 @@ class User(KrakenFuturesBaseAPI):
         :type endpoint: str
         :param before: Filter by time
         :type before: int, optional
-        :param continuation_token: Token that can be used to continue requesting historical events
+        :param continuation_token: Token that can be used to continue requesting
+            historical events
         :type continuation_token: str, optional
         :param since: Filter by a specifying a start point
         :type since: int, optional
@@ -429,7 +441,8 @@ class User(KrakenFuturesBaseAPI):
         :type sort: str, optional
         :param tradeable: The asset to filter for
         :type tradeable: str, optional
-        :param auth: If the request is accessing a private endpoint (default: ``True``)
+        :param auth: If the request is accessing a private endpoint (default:
+            ``True``)
         :type auth: bool
         """
         params: dict = {}
@@ -463,16 +476,18 @@ class User(KrakenFuturesBaseAPI):
         extra_params: Optional[dict] = None,
     ) -> dict:
         """
-        Retrieve the order/position execution events of this user. The returned ``continuation_token``
-        can be used to request more data.
+        Retrieve the order/position execution events of this user. The returned
+        ``continuation_token`` can be used to request more data.
 
-        Requires at least the ``General API - Read Only`` permission in the API key settings.
+        Requires at least the ``General API - Read Only`` permission in the API
+        key settings.
 
         - https://docs.futures.kraken.com/#http-api-history-account-history-get-execution-events
 
         :param before: Filter by time
         :type before: int, optional
-        :param continuation_token: Token that can be used to continue requesting historical events
+        :param continuation_token: Token that can be used to continue requesting
+            historical events
         :type continuation_token: str, optional
         :param since: Filter by a specifying a start point
         :type since: int, optional
@@ -557,15 +572,14 @@ class User(KrakenFuturesBaseAPI):
                                 'uid': 'f7d5571c-6d10-4cf1-944a-048d25682ed0',
                                 'usdValue': '2301.56789'
                             },
-                            }
-                        },
+                        }
+                    },
                     'timestamp': 1605126171852,
                     'uid': 'f7d5571c-6d10-4cf1-944a-048d25682ed0'
-                }, ...
-            ],
-            'len': 0,
-            'serverTime': '2023-04-06T21:11:31.677Z'
-        }
+                }, ...],
+                'len': 0,
+                'serverTime': '2023-04-06T21:11:31.677Z'
+            }
         """
         return self._get_historical_events(
             endpoint="/api/history/v2/executions",
@@ -588,16 +602,19 @@ class User(KrakenFuturesBaseAPI):
         extra_params: Optional[dict] = None,
     ) -> dict:
         """
-        Retriev information about the user-specific order events including opened, closed, filled, etc.
-        The returned ``continuation_token`` can be used to request more data.
+        Retriev information about the user-specific order events including
+        opened, closed, filled, etc. The returned ``continuation_token`` can be
+        used to request more data.
 
-        Requires at least the ``General API - Read Only`` permission in the API key settings.
+        Requires at least the ``General API - Read Only`` permission in the API
+        key settings.
 
         - https://docs.futures.kraken.com/#http-api-history-market-history-get-order-events
 
         :param before: Filter by time
         :type before: int, optional
-        :param continuation_token: Token that can be used to continue requesting historical events
+        :param continuation_token: Token that can be used to continue requesting
+            historical events
         :type continuation_token: str, optional
         :param since: Filter by a specifying a start point
         :type since: int, optional
@@ -640,11 +657,10 @@ class User(KrakenFuturesBaseAPI):
                     },
                     'timestamp': 1605126171852,
                     'uid': 'f7d5571c-6d10-4cf1-944a-048d25682ed0'
-                }, ...
-            ],
-            'len': 10,
-            'serverTime': '2023-04-05T12:31:42.677Z'
-        }
+                }, ...],
+                'len': 10,
+                'serverTime': '2023-04-05T12:31:42.677Z'
+            }
         """
         return self._get_historical_events(
             endpoint="/api/history/v2/orders",
@@ -671,13 +687,15 @@ class User(KrakenFuturesBaseAPI):
 
         The returned ``continuation_token`` can be used to request more data.
 
-        Requires at least the ``General API - Read Only`` permission in the API key settings.
+        Requires at least the ``General API - Read Only`` permission in the API
+        key settings.
 
         - https://docs.futures.kraken.com/#http-api-history-market-history-get-trigger-events
 
         :param before: Filter by time
         :type before: int, optional
-        :param continuation_token: Token that can be used to continue requesting historical events
+        :param continuation_token: Token that can be used to continue requesting
+            historical events
         :type continuation_token: str, optional
         :param since: Filter by a specifying a start point
         :type since: int, optional
@@ -694,7 +712,12 @@ class User(KrakenFuturesBaseAPI):
 
             >>> from kraken.futures import User
             >>> user = User(key="api-key", secret="secret-key")
-            >>> user.get_trigger_events(tradeable="PF_SOLUSD", since=1668989233, before=1668999999, sort="asc")
+            >>> user.get_trigger_events(
+            ...     tradeable="PF_SOLUSD",
+            ...     since=1668989233,
+            ...     before=1668999999,
+            ...     sort="asc"
+            ... )
             {
                 "accountUid": "f7d5571c-6d10-4cf1-944a-048d25682ed0",
                 "continuationToken": "c3RyaW5n",
@@ -728,11 +751,10 @@ class User(KrakenFuturesBaseAPI):
                     },
                     "timestamp": 1605126171852,
                     "uid": "f7d5571c-6d10-4cf1-944a-048d25682ed0"
-                }, ...
-            ],
-            "len": 10,
-            "serverTime": "2022-03-31T20:38:53.677Z"
-        }
+                }, ...],
+                "len": 10,
+                "serverTime": "2022-03-31T20:38:53.677Z"
+            }
         """
         return self._get_historical_events(
             endpoint="/api/history/v2/triggers",
@@ -752,7 +774,8 @@ class User(KrakenFuturesBaseAPI):
         """
         List the open positions of the user.
 
-        Requires at least the ``General API - Read Only`` permission in the API key settings.
+        Requires at least the ``General API - Read Only`` permission in the API
+        key settings.
 
         - https://docs.futures.kraken.com/#http-api-trading-v3-api-account-information-get-open-positions
 
@@ -796,7 +819,8 @@ class User(KrakenFuturesBaseAPI):
         """
         Retrieve the open orders.
 
-        Requires at least the ``General API - Read Only`` permission in the API key settings.
+        Requires at least the ``General API - Read Only`` permission in the API
+        key settings.
 
         - https://docs.futures.kraken.com/#http-api-trading-v3-api-order-management-get-open-orders
 
@@ -886,10 +910,11 @@ class User(KrakenFuturesBaseAPI):
         """
         Checks if trading is enabled or disabled on the specified subaccount.
 
-        Requires the ``General API - Full Access`` permission in the API key settings.
+        Requires the ``General API - Full Access`` permission in the API key
+        settings.
 
-        This endpoint is only available for institutional clients and is not tested so far and
-        results in ``KrakenAuthenticationError``.
+        This endpoint is only available for institutional clients and is not
+        tested so far and results in ``KrakenAuthenticationError``.
 
         - https://docs.futures.kraken.com/#http-api-trading-v3-api-other-check-if-a-subaccount-has-trading-enabled-or-disabled
 
@@ -926,10 +951,11 @@ class User(KrakenFuturesBaseAPI):
         """
         Enable or disable trading on a subaccount.
 
-        Requires the ``General API - Full Access`` permission in the API key settings.
+        Requires the ``General API - Full Access`` permission in the API key
+        settings.
 
-        This endpoint is only available for institutional clients and is not tested so far and
-        always results in ``INTERNAL_SERVER_ERROR``.
+        This endpoint is only available for institutional clients and is not
+        tested so far and always results in ``INTERNAL_SERVER_ERROR``.
 
         - https://docs.futures.kraken.com/#http-api-trading-v3-api-other-enable-or-disable-trading-on-a-subaccount
 

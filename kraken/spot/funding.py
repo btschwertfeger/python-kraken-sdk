@@ -17,16 +17,18 @@ Self = TypeVar("Self")
 
 class Funding(KrakenSpotBaseAPI):
     """
-    Class that implements the Spot Funding client. Currently there
-    are no funding endpoints that could be accesses without authentication.
+    Class that implements the Spot Funding client. Currently there are no
+    funding endpoints that could be accesses without authentication.
 
     :param key: Spot API public key (default: ``""``)
     :type key: str, optional
     :param secret: Spot API secret key (default: ``""``)
     :type secret: str, optional
-    :param url: Alternative URL to access the Kraken API (default: https://api.kraken.com)
+    :param url: Alternative URL to access the Kraken API (default:
+        https://api.kraken.com)
     :type url: str, optional
-    :param sandbox: Use the sandbox (not supported for Spot trading so far, default: ``False``)
+    :param sandbox: Use the sandbox (not supported for Spot trading so far,
+        default: ``False``)
     :type sandbox: bool, optional
 
     .. code-block:: python
@@ -109,7 +111,8 @@ class Funding(KrakenSpotBaseAPI):
         extra_params: Optional[dict] = None,
     ) -> list[dict]:
         """
-        Get the deposit addresses for a specific asset. New deposit addresses can be generated.
+        Get the deposit addresses for a specific asset. New deposit addresses
+        can be generated.
 
         Requires the ``Deposit funds`` API key permission.
 
@@ -163,8 +166,8 @@ class Funding(KrakenSpotBaseAPI):
         extra_params: Optional[dict] = None,
     ) -> list[dict] | dict:
         """
-        Get information about the recent deposit status. The look back period is 90 days and
-        only the last 25 deposits will be returned.
+        Get information about the recent deposit status. The look back period is
+        90 days and only the last 25 deposits will be returned.
 
         Requires the ``Query funds`` and ``Deposit funds`` API key permissions.
 
@@ -254,9 +257,10 @@ class Funding(KrakenSpotBaseAPI):
         extra_params: Optional[dict] = None,
     ) -> dict:
         """
-        Get information about a possible withdraw, including fee and limit information.
-        The ``key`` must be the name of the key defined in the account. You can add
-        a new key for any asset listed on Kraken here: https://www.kraken.com/u/funding/withdraw.
+        Get information about a possible withdraw, including fee and limit
+        information. The ``key`` must be the name of the key defined in the
+        account. You can add a new key for any asset listed on Kraken here:
+        https://www.kraken.com/u/funding/withdraw.
 
         Requires the ``Query funds`` and ``Withdraw funds`` API key permissions.
 
@@ -268,7 +272,8 @@ class Funding(KrakenSpotBaseAPI):
         :type key: str
         :param amount: The amount to withdraw
         :type amount: str | float
-        :return: Information about a possible withdraw including the fee and amount.
+        :return: Information about a possible withdraw including the fee and
+            amount.
         :rtype: dict
 
         .. code-block:: python
@@ -357,8 +362,8 @@ class Funding(KrakenSpotBaseAPI):
         extra_params: Optional[dict] = None,
     ) -> list[dict]:
         """
-        Get information about the recent withdraw status, including withdraws of the
-        past 90 days but at max 500 results.
+        Get information about the recent withdraw status, including withdraws of
+        the past 90 days but at max 500 results.
 
         - https://docs.kraken.com/rest/#operation/getStatusRecentWithdrawals
 
@@ -411,8 +416,8 @@ class Funding(KrakenSpotBaseAPI):
         extra_params: Optional[dict] = None,
     ) -> dict:
         """
-        Cancel a requested withdraw. This will only be successful if the withdraw
-        is not being processed so far.
+        Cancel a requested withdraw. This will only be successful if the
+        withdraw is not being processed so far.
 
         Requires the ``Withdraw funds`` API key permissions.
 

@@ -94,14 +94,15 @@ class Trade(KrakenSpotBaseAPI):
         """
         Create a new order and place it on the market.
 
-        Requires the ``Create and modify orders`` permission in
-        the API key settings.
+        Requires the ``Create and modify orders`` permission in the API key
+        settings.
 
         - https://docs.kraken.com/rest/#operation/addOrder
 
-        :param ordertype: The kind of the order, one of: ``market``, ``limit``, ``take-profit``,
-            ``stop-loss-limit``, ``take-profit-limit`` and ``settle-position``
-            (see: https://support.kraken.com/hc/en-us/sections/200577136-Order-types)
+        :param ordertype: The kind of the order, one of: ``market``, ``limit``,
+            ``take-profit``, ``stop-loss-limit``, ``take-profit-limit`` and
+            ``settle-position`` (see:
+            https://support.kraken.com/hc/en-us/sections/200577136-Order-types)
         :type ordertype: str
         :param side: ``buy`` or ``sell``
         :type side: str
@@ -109,17 +110,23 @@ class Trade(KrakenSpotBaseAPI):
         :type pair: str
         :param volume: The volume of the position to create
         :type volume: str | float
-        :param price: The limit price for ``limit`` orders and the trigger price for orders with
-            ``ordertype`` one of ``stop-loss``, ``stop-loss-limit``, ``take-profit``, and ``take-profit-limit``
+        :param price: The limit price for ``limit`` orders and the trigger price
+            for orders with ``ordertype`` one of ``stop-loss``,
+            ``stop-loss-limit``, ``take-profit``, and ``take-profit-limit``
         :type price: str | float, optional
-        :param price2: The limit price for ``stop-loss-limit`` and ``take-profit-limit`` orders
-            The price2 can also be set to absolut or relative changes.
-                * Prefixed using ``+`` or ``-`` defines the change in the quote asset
-                * Prefixed by # is the same as ``+`` and ``-`` but the sign is set automatically
-                * The percentage sign ``%`` can be used to define relative changes.
+        :param price2: The limit price for ``stop-loss-limit`` and
+            ``take-profit-limit`` orders The price2 can also be set to absolut
+            or relative changes.
+                * Prefixed using ``+`` or ``-`` defines the change in the quote
+                  asset
+                * Prefixed by ``#`` is the same as ``+`` or ``-`` but the sign
+                  is set automatically
+                * The percentage sign (``%``) can be used to define relative
+                  changes.
         :type price2: str | float, optional
-        :param trigger: What triggers the position of ``stop-loss``, ``stop-loss-limit``, ``take-profit``, and
-            ``take-profit-limit`` orders. Will also be used for associated conditional close orders.
+        :param trigger: What triggers the position of ``stop-loss``,
+            ``stop-loss-limit``, ``take-profit``, and ``take-profit-limit``
+            orders. Will also be used for associated conditional close orders.
             Kraken will use ``last`` if nothing is specified.
         :type trigger: str, optional
         :param leverage: The leverage
@@ -128,36 +135,44 @@ class Trade(KrakenSpotBaseAPI):
             ``cancel-oldest``, ``cancel-both`` (default: ``cancel-newest``)
         :type stptype: str, optional
         :param oflags: Order flags like ``post``, ``fcib``, ``fciq``, ``nomp``,
-            ``viqc`` (see the referenced Kraken documentation for more information)
+            ``viqc`` (see the referenced Kraken documentation for more
+            information)
         :type oflags: str | list[str], optional
         :param timeinforce: how long the order remains in the orderbook, one of:
-            ``GTC``, ``IOC``, ``GTD`` (see the referenced Kraken documentation for more information)
+            ``GTC``, ``IOC``, ``GTD`` (see the referenced Kraken documentation
+            for more information)
         :type timeinforce: str, optional
-        :param displayvol: Define how much of the volume is visible in the orderbook (iceberg)
+        :param displayvol: Define how much of the volume is visible in the
+            orderbook (iceberg)
         :type displayvol: str | float, optional
-        :param starttim: Unix timestamp or seconds defining the start time (default: ``"0"``)
+        :param starttim: Unix timestamp or seconds defining the start time
+            (default: ``"0"``)
         :type starttim: str, optional
-        :param expiretm: Unix timestamp or time in seconds defining the expiration of the order,
-            (default: ``"0"`` - i.e., no expiration)
+        :param expiretm: Unix timestamp or time in seconds defining the
+            expiration of the order, (default: ``"0"`` - i.e., no expiration)
         :type expiretm: str, optional
-        :param close_ordertype: Conditional close order type, one of: ``limit``, ``stop-loss``,
-            ``take-profit``, ``stop-loss-limit``, ``take-profit-limit``
-            (see the referenced Kraken documentation for more information)
+        :param close_ordertype: Conditional close order type, one of: ``limit``,
+            ``stop-loss``, ``take-profit``, ``stop-loss-limit``,
+            ``take-profit-limit`` (see the referenced Kraken documentation for
+            more information)
         :type close_ordertype: str, optional
         :param close_price: Conditional close price
         :type close_price: str | float, optional
-        :param close_price2: The price2 for the conditional order - see the price2 parameter description
+        :param close_price2: The price2 for the conditional order - see the
+            price2 parameter description
         :type close_price2: str | float, optional
-        :param deadline: RFC3339 timestamp + {0..60} seconds that defines when the matching
-            engine should reject the order.
+        :param deadline: RFC3339 timestamp + {0..60} seconds that defines when
+            the matching engine should reject the order.
         :type deadline: str, optional
-        :param truncate: If enabled: round the ``price`` and ``volume`` to Kraken's
-            maximum allowed decimal places. See https://support.kraken.com/hc/en-us/articles/4521313131540
-            fore more information about decimals.
+        :param truncate: If enabled: round the ``price`` and ``volume`` to
+            Kraken's maximum allowed decimal places. See
+            https://support.kraken.com/hc/en-us/articles/4521313131540 fore more
+            information about decimals.
         :type truncate: bool, optional
         :param reduce_only: Reduce existing orders (default: ``False``)
         :type reduce_only: bool, optional
-        :param validate: Validate the order without placing on the market (default: ``False``)
+        :param validate: Validate the order without placing on the market
+            (default: ``False``)
         :type validate: bool, optional
         :param userref: User reference id for example to group orders
         :type userref: int, optional
@@ -231,69 +246,50 @@ class Trade(KrakenSpotBaseAPI):
             :linenos:
             :caption: Spot Trade: Create stop-loss-limit and take-profit-limit orders
 
-            '''
-            When the price hits $25000:
+            ''' When the price hits $25000:
                1. A limit buy order will be placed at $24000 with 2x leverage.
-               2. When the limit order gets closed/filled at $24000
-                  The stop-loss-limit part is done and the tale-profit-limit
-                  part begins.
+               2. When the limit order gets closed/filled at $24000 The
+                  stop-loss-limit part is done and the tale-profit-limit part
+                  begins.
                3. When the price hits $27000 a limit order will be placed at
-                  $26800 to sell 1.2 BTC. This ensures that the asset will
-                  be sold for $26800 or better.
-            '''
-            >>> from kraken.spot import Trade
-            >>> trade = Trade(key="api-key", secret="secret-key")
-            >>> from datetime import datetime, timedelta, timezone
-            >>> deadline = (
-            ...     datetime.now(timezone.utc) + timedelta(seconds=20)
-            ... ).isoformat()
-            >>> trade.create_order(
-            ...     ordertype="stop-loss-limit",
-            ...     pair="XBTUSD",
-            ...     side="buy",
-            ...     volume=1.2,
-            ...     price=24000,
-            ...     price2=25000,
-            ...     validate=True, # just validate the input, do not place on the market
-            ...     trigger="last",
-            ...     timeinforce="GTC",
-            ...     leverage=4,
-            ...     deadline=deadline,
-            ...     close_ordertype="take-profit-limit",
-            ...     close_price=27000,
-            ...     close_price2=26800,
-            ... )
-            {
+                  $26800 to sell 1.2 BTC. This ensures that the asset will be
+                  sold for $26800 or better.
+            ''' >>> from kraken.spot import Trade >>> trade =
+            Trade(key="api-key", secret="secret-key") >>> from datetime import
+            datetime, timedelta, timezone >>> deadline = ( ...
+            datetime.now(timezone.utc) + timedelta(seconds=20) ... ).isoformat()
+            >>> trade.create_order( ...     ordertype="stop-loss-limit", ...
+            pair="XBTUSD", ...     side="buy", ...     volume=1.2, ...
+            price=24000, ...     price2=25000, ...     validate=True, # just
+            validate the input, do not place on the market ...
+            trigger="last", ...     timeinforce="GTC", ...     leverage=4, ...
+            deadline=deadline, ...     close_ordertype="take-profit-limit", ...
+            close_price=27000, ...     close_price2=26800, ... ) {
                 'descr': {
-                    'order': 'buy 0.00100000 XBTUSD @ stop loss 24000.0 -> limit 25000.0 with 2:1 leverage',
-                    'close': 'close position @ take profit 27000.0 -> limit 26800.0'
+                    'order': 'buy 0.00100000 XBTUSD @ stop loss 24000.0 -> limit
+                    25000.0 with 2:1 leverage', 'close': 'close position @ take
+                    profit 27000.0 -> limit 26800.0'
                 }
             }
 
-            '''
-            The price2 and close_price2 can also be set to absolut or relative changes.
-                * Prefixed using "+" or "-" defines the change in the quote asset
-                * Prefixed by # is the same as "+" and "-" but the sign is set automatically
-                * The the percentage sign "%" can be used to define relative changes.
-            '''
-            >>> trade.create_order(
-            ...     ordertype="stop-loss-limit",
-            ...     pair="XBTUSD",
-            ...     side="buy",
-            ...     volume=1.2,
-            ...     price=24000,
-            ...     price2="+1000",
-            ...     validate=True,
-            ...     trigger="last",
-            ...     timeinforce="GTC",
-            ...     close_ordertype="take-profit-limit",
-            ...     close_price=27000,
-            ...     close_price2="#2%",
-            ... )
-            {
+            ''' The price2 and close_price2 can also be set to absolut or
+            relative changes.
+                * Prefixed using "+" or "-" defines the change in the quote
+                  asset
+                * Prefixed by # is the same as "+" and "-" but the sign is set
+                  automatically
+                * The the percentage sign "%" can be used to define relative
+                  changes.
+            ''' >>> trade.create_order( ...     ordertype="stop-loss-limit", ...
+            pair="XBTUSD", ...     side="buy", ...     volume=1.2, ...
+            price=24000, ...     price2="+1000", ...     validate=True, ...
+            trigger="last", ...     timeinforce="GTC", ...
+            close_ordertype="take-profit-limit", ...     close_price=27000, ...
+            close_price2="#2%", ... ) {
                 'descr': {
-                    'order': 'buy 0.00100000 XBTUSD @ stop loss 24000.0 -> limit +1000.0',
-                    'close': 'close position @ take profit 27000.0 -> limit -2.0000%'
+                    'order': 'buy 0.00100000 XBTUSD @ stop loss 24000.0 -> limit
+                    +1000.0', 'close': 'close position @ take profit 27000.0 ->
+                    limit -2.0000%'
                 }
             }
         """

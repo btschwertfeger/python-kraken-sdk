@@ -25,9 +25,11 @@ class Market(KrakenSpotBaseAPI):
     :type key: str, optional
     :param secret: Spot API secret key (default: ``""``)
     :type secret: str, optional
-    :param url: Alternative URL to access the Kraken API (default: https://api.kraken.com)
+    :param url: Alternative URL to access the Kraken API (default:
+        https://api.kraken.com)
     :type url: str, optional
-    :param sandbox: Use the sandbox (not supported for Spot trading so far, default: ``False``)
+    :param sandbox: Use the sandbox (not supported for Spot trading so far,
+        default: ``False``)
     :type sandbox: bool, optional
 
     .. code-block:: python
@@ -70,8 +72,8 @@ class Market(KrakenSpotBaseAPI):
         extra_params: Optional[dict] = None,
     ) -> dict:
         """
-        Get information about one or more assets.
-        If ``assets`` is not specified, all assets will be returned.
+        Get information about one or more assets. If ``assets`` is not
+        specified, all assets will be returned.
 
         - https://docs.kraken.com/rest/#operation/getAssetInfo
 
@@ -144,17 +146,19 @@ class Market(KrakenSpotBaseAPI):
         extra_params: Optional[dict] = None,
     ) -> dict:
         """
-        Get information about a single or multiple asset/currency pair(s).
-        If ``pair`` is left blank, all currency pairs will be returned.
+        Get information about a single or multiple asset/currency pair(s). If
+        ``pair`` is left blank, all currency pairs will be returned.
 
         - https://docs.kraken.com/rest/#operation/getTradableAssetPairs
 
-        This function uses caching. Run ``get_asset_pairs.cache_clear()`` to clear.
+        This function uses caching. Run ``get_asset_pairs.cache_clear()`` to
+        clear.
 
         :param pair: Filter by asset pair(s)
         :type pair: str | list[str], optional
-        :param info: Filter by info, can be one of: ``info`` (all info), ``leverage``
-            (leverage info), ``fees`` (fee info), and ``margin`` (margin info)
+        :param info: Filter by info, can be one of: ``info`` (all info),
+            ``leverage`` (leverage info), ``fees`` (fee info), and ``margin``
+            (margin info)
         :type info: str, optional
         :return: Information about the asset pair
         :rtype: dict
@@ -223,14 +227,15 @@ class Market(KrakenSpotBaseAPI):
         extra_params: Optional[dict] = None,
     ) -> dict:
         """
-        Returns all tickers if pair is not specified - else just
-        the ticker of the ``pair``. Multiple pairs can be specified.
+        Returns all tickers if pair is not specified - else just the ticker of
+        the ``pair``. Multiple pairs can be specified.
 
         https://docs.kraken.com/rest/#operation/getTickerInformation
 
         :param pair: Filter by pair(s)
         :type pair: str | list[str], optional
-        :return: The ticker(s) including ask, bid, close, volume, vwap, high, low, todays open and more
+        :return: The ticker(s) including ask, bid, close, volume, vwap, high,
+            low, todays open and more
         :rtype: dict
 
         .. code-block:: python
@@ -274,7 +279,7 @@ class Market(KrakenSpotBaseAPI):
     ) -> dict:
         """
         Get the open, high, low, and close data for a specific trading pair.
-        Returns at max 720 time stamps per request.
+        Returns at max 720 time steps per request.
 
         - https://docs.kraken.com/rest/#operation/getOHLCData
 
@@ -333,7 +338,8 @@ class Market(KrakenSpotBaseAPI):
 
         :param pair: The pair to get the orderbook from
         :type pair: str
-        :param count: Number of asks and bids, must be one of {1..500} (default: ``100``)
+        :param count: Number of asks and bids, must be one of {1..500} (default:
+            ``100``)
         :type count: int, optional
 
         :return:

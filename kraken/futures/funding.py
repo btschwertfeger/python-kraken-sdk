@@ -25,9 +25,11 @@ class Funding(KrakenFuturesBaseAPI):
     :type key: str, optional
     :param secret: Futures API secret key (default: ``""``)
     :type secret: str, optional
-    :param url: Alternative URL to access the Futures Kraken API (default: https://futures.kraken.com)
+    :param url: Alternative URL to access the Futures Kraken API (default:
+        https://futures.kraken.com)
     :type url: str, optional
-    :param sandbox: If set to ``True`` the URL will be https://demo-futures.kraken.com (default: ``False``)
+    :param sandbox: If set to ``True`` the URL will be
+        https://demo-futures.kraken.com (default: ``False``)
     :type sandbox: bool, optional
 
     .. code-block:: python
@@ -68,7 +70,8 @@ class Funding(KrakenFuturesBaseAPI):
         extra_params: Optional[dict] = None,
     ) -> dict:
         """
-        Retrieve information about the historical funding rates of a specific ``symbol``
+        Retrieve information about the historical funding rates of a specific
+        ``symbol``
 
         - https://docs.futures.kraken.com/#http-api-trading-v3-api-historical-funding-rates-historicalfundingrates
 
@@ -115,10 +118,11 @@ class Funding(KrakenFuturesBaseAPI):
         extra_params: Optional[dict] = None,
     ) -> dict:
         """
-        Submit a wallet transfer request to transfer funds between margin accounts.
+        Submit a wallet transfer request to transfer funds between margin
+        accounts.
 
-        Requires the ``General API - Full Access`` and ``Withdrawal API - Full access``
-        permissions in the API key settings.
+        Requires the ``General API - Full Access`` and ``Withdrawal API - Full
+        access`` permissions in the API key settings.
 
         - https://docs.futures.kraken.com/#http-api-trading-v3-api-transfers-initiate-wallet-transfer
 
@@ -175,8 +179,8 @@ class Funding(KrakenFuturesBaseAPI):
         """
         Submit a request to transfer funds between the regular and subaccount.
 
-        Requires the ``General API - Full Access`` and ``Withdrawal API - Full access``
-        permissions in the API key settings.
+        Requires the ``General API - Full Access`` and ``Withdrawal API - Full
+        access`` permissions in the API key settings.
 
         - https://docs.futures.kraken.com/#http-api-trading-v3-api-transfers-initiate-sub-account-transfer
 
@@ -232,8 +236,8 @@ class Funding(KrakenFuturesBaseAPI):
         """
         Enables the transfer of funds between the futures and spot wallet.
 
-        Requires the ``General API - Full Access`` and ``Withdrawal API - Full access``
-        permissions in the API key settings.
+        Requires the ``General API - Full Access`` and ``Withdrawal API - Full
+        access`` permissions in the API key settings.
 
         - https://docs.futures.kraken.com/#http-api-trading-v3-api-transfers-initiate-withdrawal-to-spot-wallet
 
@@ -243,7 +247,8 @@ class Funding(KrakenFuturesBaseAPI):
         :type currency: str
         :param sourceWallet: The wallet to withdraw from (default: ``cash``)
         :type sourceWallet: str, optional
-        :raises ValueError: If this function is called within the sandbox/demo environment
+        :raises ValueError: If this function is called within the sandbox/demo
+            environment
 
         .. code-block:: python
             :linenos:

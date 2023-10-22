@@ -26,9 +26,11 @@ class Trade(KrakenFuturesBaseAPI):
     :type key: str, optional
     :param secret: Futures API secret key (default: ``""``)
     :type secret: str, optional
-    :param url: Alternative URL to access the Futures Kraken API (default: https://futures.kraken.com)
+    :param url: Alternative URL to access the Futures Kraken API (default:
+        https://futures.kraken.com)
     :type url: str, optional
-    :param sandbox: If set to ``True`` the URL will be https://demo-futures.kraken.com (default: ``False``)
+    :param sandbox: If set to ``True`` the URL will be
+        https://demo-futures.kraken.com (default: ``False``)
     :type sandbox: bool, optional
 
     .. code-block:: python
@@ -71,7 +73,8 @@ class Trade(KrakenFuturesBaseAPI):
         """
         Return the current fills of the user.
 
-        Requires at least the ``General API - Read Only`` permission in the API key settings.
+        Requires at least the ``General API - Read Only`` permission in the API
+        key settings.
 
         - https://docs.futures.kraken.com/#http-api-trading-v3-api-historical-data-get-your-fills
 
@@ -122,11 +125,13 @@ class Trade(KrakenFuturesBaseAPI):
         """
         Create multiple orders at once using the batch order endpoint.
 
-        Requires the ``General API - Full Access`` permission in the API key settings.
+        Requires the ``General API - Full Access`` permission in the API key
+        settings.
 
         - https://docs.futures.kraken.com/#http-api-trading-v3-api-order-management-batch-order-management
 
-        :param batchorder_list: List of order instructions (see example below - or the linked official Kraken documentation)
+        :param batchorder_list: List of order instructions (see example below -
+            or the linked official Kraken documentation)
         :type batchorder_list: list[dict]
         :return: Information about the submitted request
         :rtype: dict
@@ -235,7 +240,8 @@ class Trade(KrakenFuturesBaseAPI):
         """
         Cancels all open orders, can be filtered by symbol.
 
-        Requires the ``General API - Full Access`` permission in the API key settings.
+        Requires the ``General API - Full Access`` permission in the API key
+        settings.
 
         - https://docs.futures.kraken.com/#http-api-trading-v3-api-order-management-cancel-all-orders
 
@@ -287,12 +293,13 @@ class Trade(KrakenFuturesBaseAPI):
         extra_params: Optional[dict] = None,
     ) -> dict:
         """
-        The Death Man's Switch can be used to cancel all orders after a specific timeout.
-        If the timeout is set to 60, all orders will be cancelled after 60 seconds. The timeout
-        can be pushed back by accessing this endpoint over and over again. Set the timeout to zero
-        to reset.
+        The Death Man's Switch can be used to cancel all orders after a specific
+        timeout. If the timeout is set to 60, all orders will be cancelled after
+        60 seconds. The timeout can be pushed back by accessing this endpoint
+        over and over again. Set the timeout to zero to reset.
 
-        Requires the ``General API - Full Access`` permission in the API key settings.
+        Requires the ``General API - Full Access`` permission in the API key
+        settings.
 
         - https://docs.futures.kraken.com/#http-api-trading-v3-api-order-management-dead-man-39-s-switch
 
@@ -332,9 +339,11 @@ class Trade(KrakenFuturesBaseAPI):
         extra_params: Optional[dict] = None,
     ) -> dict:
         """
-        This endpoint can be used to cancel a specific order by ``order_id`` or ``cliOrdId``.
+        This endpoint can be used to cancel a specific order by ``order_id`` or
+        ``cliOrdId``.
 
-        Requires the ``General API - Full Access`` permission in the API key settings.
+        Requires the ``General API - Full Access`` permission in the API key
+        settings.
 
         - https://docs.futures.kraken.com/#http-api-trading-v3-api-order-management-cancel-order
 
@@ -392,7 +401,8 @@ class Trade(KrakenFuturesBaseAPI):
         """
         Edit an open order.
 
-        Requires the ``General API - Full Access`` permission in the API key settings.
+        Requires the ``General API - Full Access`` permission in the API key
+        settings.
 
         - https://docs.futures.kraken.com/#http-api-trading-v3-api-order-management-send-order
 
@@ -462,7 +472,8 @@ class Trade(KrakenFuturesBaseAPI):
         """
         Get the status of multiple orders.
 
-        Requires at least the ``General API - Read Only`` permission in the API key settings.
+        Requires at least the ``General API - Read Only`` permission in the API
+        key settings.
 
         - https://docs.futures.kraken.com/#http-api-trading-v3-api-order-management-get-the-current-status-for-specific-orders
 
@@ -519,11 +530,13 @@ class Trade(KrakenFuturesBaseAPI):
         """
         Create and place an order on the futures market.
 
-        Requires the ``General API - Full Access`` permission in the API key settings.
+        Requires the ``General API - Full Access`` permission in the API key
+        settings.
 
         - https://docs.futures.kraken.com/#http-api-trading-v3-api-order-management-send-order
 
-        :param orderType: The order type, one of ``lmt``, ``post``, ``ioc``, ``mkt``, ``stp``, ``take_profit``, ``trailing_stop``
+        :param orderType: The order type, one of ``lmt``, ``post``, ``ioc``,
+            ``mkt``, ``stp``, ``take_profit``, ``trailing_stop``
             (https://support.kraken.com/hc/en-us/sections/200577136-Order-types)
         :type orderType: str
         :param size: The volume of the position
@@ -538,9 +551,11 @@ class Trade(KrakenFuturesBaseAPI):
         :type limitPrice: str | float, optional
         :param reduceOnly: Reduces existing positions if set to ``True``
         :type reduceOnly: bool, optional
-        :param stopPrice: Define a price when to exit the order. Required for specific order types
+        :param stopPrice: Define a price when to exit the order. Required for
+            specific order types
         :type stopPrice: str, optional
-        :param triggerSignal: Define a trigger for specific orders (must be one of ``mark``, ``index``, ``last``)
+        :param triggerSignal: Define a trigger for specific orders (must be one
+            of ``mark``, ``index``, ``last``)
         :type triggerSignal: str, optional
         :param trailingStopDeviationUnit: See referenced Kraken documentation
         :type trailingStopDeviationUnit: str, optional
