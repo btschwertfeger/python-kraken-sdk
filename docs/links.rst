@@ -14,8 +14,8 @@
 .. |GitHub badge|              image:: https://badgen.net/badge/icon/github?icon=github&label
                               :target: https://github.com/btschwertfeger/python-kraken-sdk
                               :alt:    GitHub
-.. |License badge|             image:: https://img.shields.io/badge/License-GPLv3-orange.svg
-                              :target: https://www.gnu.org/licenses/gpl-3.0
+.. |License badge|             image:: https://img.shields.io/badge/License-Apache_2.0-blue.svg
+                              :target: https://opensource.org/licenses/Apache-2.0
                               :alt:    License
 .. |PyVersions badge|          image:: https://img.shields.io/badge/python-3.11+-blue.svg
                               :target: https://github.com/btschwertfeger/python-kraken-sdk
