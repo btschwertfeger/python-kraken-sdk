@@ -2,7 +2,7 @@
 .. Copyright (C) 2023 Benjamin Thomas Schwertfeger
 .. GitHub: https://github.com/btschwertfeger
 
-Spot Rest
+Spot REST
 ---------
 
 The examples presented below serve to demonstrate the usage of the Spot
@@ -18,4 +18,4 @@ individual functions.
 .. literalinclude:: ../../../../examples/spot_examples.py
    :language: python
    :linenos:
-   :caption: Example usages of the REST clients
+   :caption: Example usage of Spot REST clients

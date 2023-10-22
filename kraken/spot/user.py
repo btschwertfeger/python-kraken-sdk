@@ -28,9 +28,11 @@ class User(KrakenSpotBaseAPI):
     :type key: str, optional
     :param secret: Spot API secret key (default: ``""``)
     :type secret: str, optional
-    :param url: The URL to access the Kraken API (default: https://api.kraken.com)
+    :param url: The URL to access the Kraken API (default:
+        https://api.kraken.com)
     :type url: str, optional
-    :param sandbox: Use the sandbox (not supported for Spot trading so far, default: ``False``)
+    :param sandbox: Use the sandbox (not supported for Spot trading so far,
+        default: ``False``)
     :type sandbox: bool, optional
 
     .. code-block:: python
@@ -104,16 +106,15 @@ class User(KrakenSpotBaseAPI):
         extra_params: Optional[dict] = None,
     ) -> dict:
         """
-        Retrieve the user's asset balances and the
-        the corresponding amount held by open orders.
+        Retrieve the user's asset balances and the the corresponding amount held
+        by open orders.
 
         Requires the ``Query funds`` permission in the API key settings.
 
-        :return: Dictionary containing the ``currency`` as keys, that
-            hold a dictionary containing the ``balance`` key
-            holding the actual balance including the value in orders
-            and the ``hold_trade`` key that represents the amount
-            held in open orders.
+        :return: Dictionary containing the ``currency`` as keys, that hold a
+            dictionary containing the ``balance`` key holding the actual balance
+            including the value in orders and the ``hold_trade`` key that
+            represents the amount held in open orders.
         :rtype: dict
 
         .. code-block:: python
@@ -197,12 +198,13 @@ class User(KrakenSpotBaseAPI):
         """
         Get the summary of all collateral balances.
 
-        Requires the ``Query funds``, ``Query open orders & trades``,
-        and ``Query closed orders & trades`` permissions in the API key settings.
+        Requires the ``Query funds``, ``Query open orders & trades``, and
+        ``Query closed orders & trades`` permissions in the API key settings.
 
         - https://docs.kraken.com/rest/#operation/getTradeBalance
 
-        :param asset: The base asset to determine the balances (default: ``ZUSD``)
+        :param asset: The base asset to determine the balances (default:
+            ``ZUSD``)
         :type asset: str, optional
 
         .. code-block:: python
@@ -416,8 +418,8 @@ class User(KrakenSpotBaseAPI):
         """
         Get information about one or more orders.
 
-        Requires the ``Query open orders & trades`` and
-        ``Query closed orders & trades`` permissions in the API key settings.
+        Requires the ``Query open orders & trades`` and ``Query closed orders &
+        trades`` permissions in the API key settings.
 
         - https://docs.kraken.com/rest/#tag/User-Data/operation/getOrdersInfo
 
@@ -530,21 +532,24 @@ class User(KrakenSpotBaseAPI):
         """
         Get information about the latest 50 trades and fills. Can be paginated.
 
-        Requires the ``Query closed orders & trades`` permission in the API key settings.
+        Requires the ``Query closed orders & trades`` permission in the API key
+        settings.
 
         - https://docs.kraken.com/rest/#operation/getTradeHistory
 
-        :param type_: Filter by type of trade, one of: ``all``,
-            ``any position``, ``closed position``, ``closing position``, and
-            ``no position`` (default: ``all``)
+        :param type_: Filter by type of trade, one of: ``all``, ``any
+            position``, ``closed position``, ``closing position``, and ``no
+            position`` (default: ``all``)
         :type type_: str, optional
         :param start: Timestamp or txid to start the search
         :type start: int, optional
         :param end: Timestamp or txid to define the last included result
         :type end: int, optional
-        :param trades: Include trades related to a position or not (default: ``False``)
+        :param trades: Include trades related to a position or not (default:
+            ``False``)
         :type trades: bool, optional
-        :param consolidate_taker: Consolidate trades by individual taker trades (default: ``True``)
+        :param consolidate_taker: Consolidate trades by individual taker trades
+            (default: ``True``)
         :type consolidate_taker: bool
 
         .. code-block:: python
@@ -605,16 +610,19 @@ class User(KrakenSpotBaseAPI):
         extra_params: Optional[dict] = None,
     ) -> dict:
         """
-        Get information about specific trades/filled orders. 20 txids can be queried maximum.
+        Get information about specific trades/filled orders. 20 txids can be
+        queried maximum.
 
-        Requires the ``Query open orders & trades`` and ``Query closed orders & trades``
-        permission in the API key settings.
+        Requires the ``Query open orders & trades`` and ``Query closed orders &
+        trades`` permission in the API key settings.
 
         - https://docs.kraken.com/rest/#operation/getTradesInfo
 
-        :param txid: txid or list of txids or comma delimited list of txids as string
+        :param txid: txid or list of txids or comma delimited list of txids as
+            string
         :type txid: str | list[str]
-        :param trades: Include trades related to position in result (default: ``False``)
+        :param trades: Include trades related to position in result (default:
+            ``False``)
         :type trades: bool
 
         .. code-block:: python
@@ -665,15 +673,19 @@ class User(KrakenSpotBaseAPI):
         """
         Get information about the open margin positions.
 
-        Requires the ``Query open orders & trades`` permission in the API key settings.
+        Requires the ``Query open orders & trades`` permission in the API key
+        settings.
 
         - https://docs.kraken.com/rest/#operation/getOpenPositions
 
-        :param txid: Filter by txid or list of txids or comma delimited list of txids as string
+        :param txid: Filter by txid or list of txids or comma delimited list of
+            txids as string
         :type txid: str | list[str], optional
-        :param consolidation: Consolidate positions by market/pair (default: ``market``)
+        :param consolidation: Consolidate positions by market/pair (default:
+            ``market``)
         :type consolidation: str, optional
-        :param docalcs: Include profit and loss calculation into the result (default: ``False``)
+        :param docalcs: Include profit and loss calculation into the result
+            (default: ``False``)
         :type docalcs: bool, optional
         :return: List of open positions
         :rtype: dict
@@ -730,7 +742,8 @@ class User(KrakenSpotBaseAPI):
         extra_params: Optional[dict] = None,
     ) -> dict:
         """
-        Get information about the users ledger entries. 50 results can be returned at a time.
+        Get information about the users ledger entries. 50 results can be
+        returned at a time.
 
         Requires the ``Query funds`` and ``Query ledger entries`` permissions in
         the API key settings.
@@ -742,8 +755,8 @@ class User(KrakenSpotBaseAPI):
         :param aclass: The asset class (default: ``currency`` )
         :type aclass: str
         :param type_: Ledger type, one of: ``all``, ``deposit``, ``withdrawal``,
-         ``trade``, ``margin``, ``rollover``, ``credit``, ``transfer``, ``settled``,
-         ``staking``, and ``sale`` (default: ``all``)
+         ``trade``, ``margin``, ``rollover``, ``credit``, ``transfer``,
+         ``settled``, ``staking``, and ``sale`` (default: ``all``)
         :type type_: str, optional
         :param start: Unix timestamp to start the search from
         :type start: int, optional
@@ -811,8 +824,8 @@ class User(KrakenSpotBaseAPI):
         :param id_: Ledger id as string, list of strings, or comma delimited
             list of ledger ids as string
         :type id_: str | list[str]
-        :param trades: Include trades related to a position or not
-            (default: ``False``)
+        :param trades: Include trades related to a position or not (default:
+            ``False``)
         :type trades: bool, optional
 
         .. code-block:: python
@@ -858,8 +871,8 @@ class User(KrakenSpotBaseAPI):
 
         - https://docs.kraken.com/rest/#operation/getTradeVolume
 
-        :param pair: Asset pair, list of asset pairs or comma delimited list
-            (as string) of asset pairs to filter
+        :param pair: Asset pair, list of asset pairs or comma delimited list (as
+            string) of asset pairs to filter
         :type pair: str | list[str], optional
         :param fee_info: Include fee information or not (default: ``True``)
         :type fee_info: bool, optional
@@ -930,10 +943,10 @@ class User(KrakenSpotBaseAPI):
         """
         Request to export the trades or ledgers of the user.
 
-        Requires the ``Export data`` permission. In addition for exporting trades
-        data the permissions ``Query open orders & trades`` and
-        ``Query closed orders & trades`` must be set. For exporting ledgers the
-        ``Query funds`` and ``Query ledger entries`` must be set.
+        Requires the ``Export data`` permission. In addition for exporting
+        trades data the permissions ``Query open orders & trades`` and ``Query
+        closed orders & trades`` must be set. For exporting ledgers the ``Query
+        funds`` and ``Query ledger entries`` must be set.
 
         - https://docs.kraken.com/rest/#operation/addExport
 
@@ -994,10 +1007,10 @@ class User(KrakenSpotBaseAPI):
         """
         Get the status of the current pending report.
 
-        Requires the ``Export data`` permission. In addition for exporting trades
-        data the permissions ``Query open orders & trades`` and
-        ``Query closed orders & trades`` must be set. For exporting ledgers the
-        ``Query funds`` and ``Query ledger entries`` must be set.
+        Requires the ``Export data`` permission. In addition for exporting
+        trades data the permissions ``Query open orders & trades`` and ``Query
+        closed orders & trades`` must be set. For exporting ledgers the ``Query
+        funds`` and ``Query ledger entries`` must be set.
 
         - https://docs.kraken.com/rest/#operation/exportStatus
 
@@ -1058,10 +1071,10 @@ class User(KrakenSpotBaseAPI):
         """
         Retrieve the requested report export.
 
-        Requires the ``Export data`` permission. In addition for exporting trades
-        data the permissions ``Query open orders & trades`` and
-        ``Query closed orders & trades`` must be set. For exporting ledgers the
-        ``Query funds`` and ``Query ledger entries`` must be set.
+        Requires the ``Export data`` permission. In addition for exporting
+        trades data the permissions ``Query open orders & trades`` and ``Query
+        closed orders & trades`` must be set. For exporting ledgers the ``Query
+        funds`` and ``Query ledger entries`` must be set.
 
         - https://docs.kraken.com/rest/#operation/retrieveExport
 
@@ -1108,16 +1121,17 @@ class User(KrakenSpotBaseAPI):
         """
         Delete a report from the Kraken server.
 
-        Requires the ``Export data`` permission. In addition for exporting trades
-        data the permissions ``Query open orders & trades`` and
-        ``Query closed orders & trades`` must be set. For exporting ledgers the
-        ``Query funds`` and ``Query ledger entries`` must be set.
+        Requires the ``Export data`` permission. In addition for exporting
+        trades data the permissions ``Query open orders & trades`` and ``Query
+        closed orders & trades`` must be set. For exporting ledgers the ``Query
+        funds`` and ``Query ledger entries`` must be set.
 
         - https://docs.kraken.com/rest/#operation/removeExport
 
         :param id_: The id of the report
         :type id_: str
-        :param type_: The type of the export, one of: ``cancel`` and ``delete`` (default: ``delete``)
+        :param type_: The type of the export, one of: ``cancel`` and ``delete``
+            (default: ``delete``)
         :type type_: str, optional
         :return: Success or failure
         :rtype: dict
@@ -1146,8 +1160,8 @@ class User(KrakenSpotBaseAPI):
         extra_params: Optional[dict] = None,
     ) -> dict:
         """
-        Create a subaccount for trading. This is currently *only available
-        for institutional clients*.
+        Create a subaccount for trading. This is currently *only available for
+        institutional clients*.
 
         - https://docs.kraken.com/rest/#tag/User-Subaccounts
 
@@ -1185,8 +1199,8 @@ class User(KrakenSpotBaseAPI):
     ) -> dict:
         """
         Transfer funds between master and subaccounts. This is currently *only
-        available for institutional clients and must be called by the
-        master account*.
+        available for institutional clients and must be called by the master
+        account*.
 
         - https://docs.kraken.com/rest/#tag/User-Subaccounts/operation/accountTransfer
 

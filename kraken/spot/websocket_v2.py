@@ -28,17 +28,16 @@ class KrakenSpotWSClientV2(KrakenSpotWSClientBase):
 
     - https://docs.kraken.com/websockets-v2
 
-    … please use :class:`kraken.spot.KrakenSpotWSClientV1` for accessing the Kraken's
-    Websocket API v1.
+    … please use :class:`kraken.spot.KrakenSpotWSClientV1` for accessing the
+    Kraken's Websocket API v1.
 
-    This class holds up to two websocket connections, one private
-    and one public. The core functionalities are un-/subscribing to websocket
-    feeds and sending messages.
-    See :func:`kraken.spot.KrakenSpotWSClientV2.subscribe` and
+    This class holds up to two websocket connections, one private and one
+    public. The core functionalities are un-/subscribing to websocket feeds and
+    sending messages. See :func:`kraken.spot.KrakenSpotWSClientV2.subscribe` and
     :func:`kraken.spot.KrakenSpotWSClientV2.send_message` for more information.
 
-    When accessing private endpoints that need authentication make sure,
-    that the ``Access WebSockets API`` API key permission is set in the user's
+    When accessing private endpoints that need authentication make sure, that
+    the ``Access WebSockets API`` API key permission is set in the user's
     account. To place or cancel orders, querying ledger information or accessing
     live portfolio changes (fills, new orders, ...) there are separate
     permissions that must be enabled if required.
@@ -49,10 +48,10 @@ class KrakenSpotWSClientV2(KrakenSpotWSClientBase):
     :type secret: str, optional
     :param url: Set a specific URL to access the Kraken REST API
     :type url: str, optional
-    :param no_public: Disables public connection (default: ``False``).
-        If not set or set to ``False``, the client will create a public and
-        a private connection per default. If only a private connection is
-        required, this parameter should be set to ``True``.
+    :param no_public: Disables public connection (default: ``False``). If not
+        set or set to ``False``, the client will create a public and a private
+        connection per default. If only a private connection is required, this
+        parameter should be set to ``True``.
     :param beta: Use the beta websocket channels (maybe not supported anymore,
         default: ``False``)
     :type beta: bool
@@ -450,6 +449,7 @@ class KrakenSpotWSClientV2(KrakenSpotWSClientBase):
         :param req_id: Identification number that will be added to the
             response message sent by the websocket feed.
         :type req_id: int, optional
+
         Initialize your client as described in
         :class:`kraken.spot.KrakenSpotWSClientV2` to run the following example:
 

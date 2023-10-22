@@ -450,9 +450,9 @@ class ConnectSpotWebsocketV1(ConnectSpotWebsocketBase):
 class ConnectSpotWebsocketV2(ConnectSpotWebsocketBase):
     """
     This class extends the
-    :class:`kraken.spot.websocket.connectors.ConnectSpotWebsocketBase` and
-    can be instantiated to create and maintain a websocket connection using
-    the Kraken Websocket API v2.
+    :class:`kraken.spot.websocket.connectors.ConnectSpotWebsocketBase` and can
+    be instantiated to create and maintain a websocket connection using the
+    Kraken Websocket API v2.
 
     **This is an internal class and should not be used outside.**
 
@@ -462,8 +462,8 @@ class ConnectSpotWebsocketV2(ConnectSpotWebsocketBase):
     :type endpoint: str
     :param callback: Callback function that receives the websocket messages
     :type callback: function
-    :param is_auth: If the websocket connects to endpoints that
-        require authentication (default: ``False``)
+    :param is_auth: If the websocket connects to endpoints that require
+        authentication (default: ``False``)
     :type is_auth: bool, optional
     """
 

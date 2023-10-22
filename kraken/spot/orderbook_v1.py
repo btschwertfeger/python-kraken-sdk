@@ -205,7 +205,8 @@ class OrderbookClientV1:
 
         :param pair: The currency pair of the orderbook that has been updated.
         :type pair: str
-        :param message: The message sent by Kraken causing the orderbook to update.
+        :param message: The message sent by Kraken causing the orderbook to
+            update.
         :type message: str
         """
 
@@ -219,8 +220,8 @@ class OrderbookClientV1:
 
     async def add_book(self: OrderbookClientV1, pairs: list[str]) -> None:
         """
-        Add an orderbook to this client. The feed will be subscribed
-        and updates will be published to the :func:`on_book_update` function.
+        Add an orderbook to this client. The feed will be subscribed and updates
+        will be published to the :func:`on_book_update` function.
 
         :param pairs: The pair(s) to subscribe to
         :type pairs: list[str]
@@ -257,10 +258,10 @@ class OrderbookClientV1:
     def exception_occur(self: OrderbookClientV1) -> bool:
         """
         Can be used to determine if any critical error occurred within the
-        websocket connection. If so, the function will return ``True``
-        and the client instance is most likely not useable anymore. So this
-        is the switch lets the user know, when to delete the current one and
-        create a new one.
+        websocket connection. If so, the function will return ``True`` and the
+        client instance is most likely not useable anymore. So this is the
+        switch lets the user know, when to delete the current one and create a
+        new one.
 
         :return: ``True`` if any critical error occurred else ``False``
         :rtype: bool
@@ -276,11 +277,11 @@ class OrderbookClientV1:
         :return: The orderbook of that ``pair``.
         :rtype: dict
 
-        .. code-block::python
+        .. code-block:: python
             :linenos:
             :caption: OrderbookClientV1: Get ask and bid
 
-            …
+            # …
             class Orderbook(OrderbookClientV1):
 
                 async def on_book_update(
@@ -303,9 +304,8 @@ class OrderbookClientV1:
         snapshot: list,
     ) -> None:
         """
-        This functions updates the local orderbook based on the
-        information provided in ``data`` and assigns/update the
-        asks and bids in book.
+        This functions updates the local orderbook based on the information
+        provided in ``data`` and assigns/update the asks and bids in book.
 
         The ``data`` here looks like:
         [
@@ -318,8 +318,7 @@ class OrderbookClientV1:
         … where the first value is the ask or bid price, the second
           represents the volume and the last one is the timestamp.
 
-        :param side: The side to assign the data to,
-            either ``ask`` or ``bid``
+        :param side: The side to assign the data to, either ``ask`` or ``bid``
         :type side: str
         :param data: The data that needs to be assigned.
         :type data: list
@@ -384,9 +383,9 @@ class OrderbookClientV1:
     @staticmethod
     def get_first(values: tuple) -> float:
         """
-        This function is used as callback for the ``sorted`` method
-        to sort a tuple/list by its first value and while ensuring
-        that the values are floats and comparable.
+        This function is used as callback for the ``sorted`` method to sort a
+        tuple/list by its first value and while ensuring that the values are
+        floats and comparable.
 
         :param values: A tuple of string values
         :type values: tuple

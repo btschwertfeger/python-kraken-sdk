@@ -26,12 +26,14 @@ if TYPE_CHECKING:
 
 class ConnectFuturesWebsocket:
     """
-    This class is only called by the :class:`kraken.futures.KrakenFuturesWSClient`
-    to establish the websocket connection.
+    This class is only called by the
+    :class:`kraken.futures.KrakenFuturesWSClient` to establish the websocket
+    connection.
 
     :param client: The Futures websocket client that instantiates this class
     :type client: :class:`kraken.futures.KrakenFuturesWSClient`
-    :param endpoint: The endpoint to access (either the live Kraken API or the sandbox environment)
+    :param endpoint: The endpoint to access (either the live Kraken API or the
+        sandbox environment)
     :type endpoint: str
     :param callback: The function that is used to receive the message objects
     :type callback: function
@@ -209,7 +211,8 @@ class ConnectFuturesWebsocket:
 
         :param message: The message as dictionary
         :type message: dict
-        :param private: If the message requires authentication (default: ``False``)
+        :param private: If the message requires authentication (default:
+            ``False``)
         :type private: bool, optional
         :rtype: Coroutine
         """

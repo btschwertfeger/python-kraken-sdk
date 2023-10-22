@@ -39,8 +39,8 @@ class KrakenFuturesWSClient(KrakenFuturesBaseAPI):
     :type secret: str, optional
     :param url: Set a custom URL (default: ``futures.kraken.com/ws/v1``)
     :type url: str, optional
-    :param sandbox: Use the Kraken Futures demo environment
-        (URL will switch to ``demo-futures.kraken.com/ws/v1``, default: ``False``)
+    :param sandbox: Use the Kraken Futures demo environment (URL will switch to
+        ``demo-futures.kraken.com/ws/v1``, default: ``False``)
     :type sandbox: bool, optional
 
     .. code-block:: python
@@ -148,7 +148,8 @@ class KrakenFuturesWSClient(KrakenFuturesBaseAPI):
         :param challenge: The challenge/message to sign
         :type challenge: str
         :return: The signed message
-        :raises kraken.exceptions.KrakenAuthenticationError: If the credentials are not valid
+        :raises kraken.exceptions.KrakenAuthenticationError: If the credentials
+            are not valid
         :rtype: str
         """
         if not self.is_auth:
@@ -166,13 +167,15 @@ class KrakenFuturesWSClient(KrakenFuturesBaseAPI):
 
     async def on_message(self: KrakenFuturesWSClient, message: dict) -> None:
         """
-        Method that serves as the default callback function Calls the defined callback function (if defined)
-        or overload this function.
+        Method that serves as the default callback function Calls the defined
+        callback function (if defined) or overload this function.
 
-        This is the default method  which just logs the messages. In production you want to overload this
-        with your custom methods, as shown in the Example of :class:`kraken.futures.KrakenFuturesWSClient`.
+        This is the default method  which just logs the messages. In production
+        you want to overload this with your custom methods, as shown in the
+        Example of :class:`kraken.futures.KrakenFuturesWSClient`.
 
-        :param message: The message that was send by Kraken via the websocket connection.
+        :param message: The message that was send by Kraken via the websocket
+            connection.
         :type message: dict
         :rtype: None
         """
@@ -188,7 +191,8 @@ class KrakenFuturesWSClient(KrakenFuturesBaseAPI):
         products: Optional[list[str]] = None,
     ) -> None:
         """
-        Subscribe to a Futures websocket channel/feed. For some feeds authentication is required.
+        Subscribe to a Futures websocket channel/feed. For some feeds
+        authentication is required.
 
         - https://docs.futures.kraken.com/#websocket-api-websocket-api-introduction-subscriptions
 
@@ -196,8 +200,8 @@ class KrakenFuturesWSClient(KrakenFuturesBaseAPI):
         :type feed: str
         :param products: The products/futures contracts to subscribe to
         :type products: list[str], optional
-        :raises TypeError: If the parameters don't match the requirements set
-            by the Kraken API
+        :raises TypeError: If the parameters don't match the requirements set by
+            the Kraken API
 
         Initialize your client as described in
         :class:`kraken.futures.KrakenFuturesWSClient` to run the following
@@ -210,8 +214,9 @@ class KrakenFuturesWSClient(KrakenFuturesBaseAPI):
             >>> await bot.subscribe(feed='ticker', products=["XBTUSD", "DOT/EUR"])
 
         Success or failures are sent over the websocket connection and can be
-        received via the default :func:`kraken.futures.KrakenFuturesWSClient.on_message`
-        or a custom callback function.
+        received via the default
+        :func:`kraken.futures.KrakenFuturesWSClient.on_message` or a custom
+        callback function.
         """
 
         message: dict = {"event": "subscribe", "feed": feed}

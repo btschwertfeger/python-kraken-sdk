@@ -2,8 +2,8 @@
 .. Copyright (C) 2023 Benjamin Thomas Schwertfeger
 .. GitHub: https://github.com/btschwertfeger
 
-The Base Clients and Internals
-==============================
+Base Clients and Internals
+==========================
 
 The following classes and data structures are listed for completeness. Please
 avoid using them since these are internals and may change without any warning.
