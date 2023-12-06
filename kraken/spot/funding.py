@@ -161,7 +161,7 @@ class Funding(KrakenSpotBaseAPI):
         method: Optional[str] = None,
         start: Optional[str] = None,
         end: Optional[str] = None,
-        cursor: bool | str = False,  # noqa: FBT002
+        cursor: bool | str = False,  # noqa: FBT001, FBT002
         *,
         extra_params: Optional[dict] = None,
     ) -> list[dict] | dict:
@@ -491,6 +491,90 @@ class Funding(KrakenSpotBaseAPI):
             method="POST",
             uri="/private/WalletTransfer",
             params={"asset": asset, "from": from_, "to": to_, "amount": str(amount)},
+            extra_params=extra_params,
+        )
+
+    def withdraw_methods(
+        self: Funding,
+        asset: Optional[str] = None,
+        aclass: Optional[str] = None,
+        network: Optional[str] = None,
+        *,
+        extra_params: Optional[dict] = None,
+    ) -> dict:
+        """
+        Returns the list of available withdraw methods for that user.
+
+        Requires the ``Funds permissions - Query`` and ``Funds permissions -
+        Withdraw`` API key permissions.
+
+        :param asset: Filter by asset
+        :type asset: Optional[str]
+        :param aclass: Filter by asset class (default: ``currency``)
+        :type aclass: Optional[str]
+        :param network: Filter by network
+        :type network: Optional[str]
+        :return: List of available withdraw methods
+        :rtype: list[dict]
+        """
+        params: dict = {}
+        if defined(asset):
+            params["asset"] = asset
+        if defined(aclass):
+            params["network"] = aclass
+        if defined(network):
+            params["network"] = network
+        return self._request(  # type: ignore[return-value]
+            method="POST",
+            uri="/private/WithdrawMethods",
+            params=params,
+            extra_params=extra_params,
+        )
+
+    def withdraw_addresses(
+        self: Funding,
+        asset: Optional[str] = None,
+        aclass: Optional[str] = None,
+        method: Optional[str] = None,
+        key: Optional[str] = None,
+        verified: Optional[bool] = None,  # noqa: FBT001
+        *,
+        extra_params: Optional[dict] = None,
+    ) -> dict:
+        """
+        Returns the list of available withdrawal addresses for that user.
+
+        Requires the ``Funds permissions - Query`` and ``Funds permissions -
+        Withdraw`` API key permissions.
+
+        :param asset: Filter by asset
+        :type asset: Optional[str]
+        :param aclass: Filter by asset class (default: ``currency``)
+        :type aclass: Optional[str]
+        :param method: Filter by method
+        :type method: Optional[str]
+        :param key: Filter by key
+        :type key: Optional[str]
+        :param verified: List only addresses which are confirmed via E-Mail
+        :type verified: Optional[str]
+        :return: List of available addresses for withdrawal
+        :rtype: list[dict]
+        """
+        params: dict = {}
+        if defined(asset):
+            params["asset"] = asset
+        if defined(aclass):
+            params["network"] = aclass
+        if defined(method):
+            params["method"] = method
+        if defined(key):
+            params["key"] = key
+        if defined(verified):
+            params["verified"] = verified
+        return self._request(  # type: ignore[return-value]
+            method="POST",
+            uri="/private/WithdrawMethods",
+            params=params,
             extra_params=extra_params,
         )
 

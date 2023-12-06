@@ -168,6 +168,9 @@ class KrakenSpotBaseAPI:
     This class the the base for all Spot clients, handles un-/signed
     requests and returns exception handled results.
 
+    If you are facing timeout errors on derived clients, you can make use of the
+    ``TIMEOUT`` attribute to deviate from the default ``10`` seconds.
+
     :param key: Spot API public key (default: ``""``)
     :type key: str, optional
     :param secret: Spot API secret key (default: ``""``)
@@ -181,6 +184,7 @@ class KrakenSpotBaseAPI:
 
     URL: str = "https://api.kraken.com"
     API_V: str = "/0"
+    TIMEOUT: int = 10
 
     def __init__(
         self: KrakenSpotBaseAPI,
@@ -206,7 +210,7 @@ class KrakenSpotBaseAPI:
         self.__session: requests.Session = requests.Session()
         self.__session.headers.update({"User-Agent": "python-kraken-sdk"})
 
-    def _request(  # noqa: PLR0913
+    def _request(  # noqa: PLR0913 # pylint: disable=too-many-arguments
         self: KrakenSpotBaseAPI,
         method: str,
         uri: str,
@@ -259,14 +263,16 @@ class KrakenSpotBaseAPI:
                 else extra_params
             )
 
-        method = method.upper()
-        if method in {"GET", "DELETE"} and params:
+        METHOD: str = method.upper()
+        if METHOD in {"GET", "DELETE"} and params:
             data_json: str = "&".join(
                 [f"{key}={params[key]}" for key in sorted(params)],
             )
             uri += f"?{data_json}".replace(" ", "%20")
 
-        headers: dict = {}
+        TIMEOUT: int = self.TIMEOUT if timeout != 10 else timeout
+        HEADERS: dict = {}
+
         if auth:
             if not self.__key or not self.__secret:
                 raise ValueError("Missing credentials.")
@@ -282,7 +288,7 @@ class KrakenSpotBaseAPI:
                 content_type = "application/x-www-form-urlencoded; charset=utf-8"
                 sign_data = urllib.parse.urlencode(params)
 
-            headers.update(
+            HEADERS.update(
                 {
                     "Content-Type": content_type,
                     "API-Key": self.__key,
@@ -294,14 +300,14 @@ class KrakenSpotBaseAPI:
                 },
             )
 
-        url: str = f"{self.url}{uri}"
-        if method in {"GET", "DELETE"}:
+        URL: str = f"{self.url}{uri}"
+        if METHOD in {"GET", "DELETE"}:
             return self.__check_response_data(
                 response=self.__session.request(
-                    method=method,
-                    url=url,
-                    headers=headers,
-                    timeout=timeout,
+                    method=METHOD,
+                    url=URL,
+                    headers=HEADERS,
+                    timeout=TIMEOUT,
                 ),
                 return_raw=return_raw,
             )
@@ -309,22 +315,22 @@ class KrakenSpotBaseAPI:
         if do_json:
             return self.__check_response_data(
                 response=self.__session.request(
-                    method=method,
-                    url=url,
-                    headers=headers,
+                    method=METHOD,
+                    url=URL,
+                    headers=HEADERS,
                     json=params,
-                    timeout=timeout,
+                    timeout=TIMEOUT,
                 ),
                 return_raw=return_raw,
             )
 
         return self.__check_response_data(
             response=self.__session.request(
-                method=method,
-                url=url,
-                headers=headers,
+                method=METHOD,
+                url=URL,
+                headers=HEADERS,
                 data=params,
-                timeout=timeout,
+                timeout=TIMEOUT,
             ),
             return_raw=return_raw,
         )
@@ -416,6 +422,9 @@ class KrakenFuturesBaseAPI:
     The base class for all Futures clients handles un-/signed requests
     and returns exception handled results.
 
+    If you are facing timeout errors on derived clients, you can make use of the
+    ``TIMEOUT`` attribute to deviate from the default ``10`` seconds.
+
     If the sandbox environment is chosen, the keys must be generated from here:
         https://demo-futures.kraken.com/settings/api
 
@@ -431,6 +440,7 @@ class KrakenFuturesBaseAPI:
 
     URL: str = "https://futures.kraken.com"
     SANDBOX_URL: str = "https://demo-futures.kraken.com"
+    TIMEOUT: int = 10
 
     def __init__(
         self: KrakenFuturesBaseAPI,
@@ -458,7 +468,7 @@ class KrakenFuturesBaseAPI:
         self.__session: requests.Session = requests.Session()
         self.__session.headers.update({"User-Agent": "python-kraken-sdk"})
 
-    def _request(  # noqa: PLR0913
+    def _request(  # noqa: PLR0913 # pylint: disable=too-many-arguments
         self: KrakenFuturesBaseAPI,
         method: str,
         uri: str,
@@ -468,7 +478,7 @@ class KrakenFuturesBaseAPI:
         *,
         auth: bool = True,
         return_raw: bool = False,
-        extra_params: Optional[dict] = None,
+        extra_params: Optional[str | dict] = None,
     ) -> dict[str, Any] | list[dict[str, Any]] | list[str] | requests.Response:
         """
         Handles the requested requests, by sending the request, handling the
@@ -501,7 +511,7 @@ class KrakenFuturesBaseAPI:
         :return: The response
         :rtype: dict[str, Any] | list[dict[str, Any]] | list[str] | requests.Response
         """
-        method = method.upper()
+        METHOD: str = method.upper()
 
         post_string: str = ""
         listed_params: list[str]
@@ -531,12 +541,13 @@ class KrakenFuturesBaseAPI:
         else:
             query_params = {}
 
-        headers: dict = {}
+        TIMEOUT: int = self.TIMEOUT if timeout == 10 else timeout
+        HEADERS: dict = {}
         if auth:
             if not self.__key or not self.__secret:
                 raise ValueError("Missing credentials")
             nonce: str = str(int(time.time() * 100_000_000))
-            headers.update(
+            HEADERS.update(
                 {
                     "Content-Type": "application/x-www-form-urlencoded; charset=utf-8",
                     "Nonce": nonce,
@@ -549,38 +560,38 @@ class KrakenFuturesBaseAPI:
                 },
             )
 
-        if method in {"GET", "DELETE"}:
+        if METHOD in {"GET", "DELETE"}:
             return self.__check_response_data(
                 response=self.__session.request(
-                    method=method,
+                    method=METHOD,
                     url=f"{self.url}{uri}"
                     if not query_string
                     else f"{self.url}{uri}?{query_string}",
-                    headers=headers,
-                    timeout=timeout,
+                    headers=HEADERS,
+                    timeout=TIMEOUT,
                 ),
                 return_raw=return_raw,
             )
 
-        if method == "PUT":
+        if METHOD == "PUT":
             return self.__check_response_data(
                 response=self.__session.request(
-                    method=method,
+                    method=METHOD,
                     url=f"{self.url}{uri}",
                     params=str.encode(post_string),
-                    headers=headers,
-                    timeout=timeout,
+                    headers=HEADERS,
+                    timeout=TIMEOUT,
                 ),
                 return_raw=return_raw,
             )
 
         return self.__check_response_data(
             response=self.__session.request(
-                method=method,
+                method=METHOD,
                 url=f"{self.url}{uri}?{post_string}",
                 data=str.encode(post_string),
-                headers=headers,
-                timeout=timeout,
+                headers=HEADERS,
+                timeout=TIMEOUT,
             ),
             return_raw=return_raw,
         )

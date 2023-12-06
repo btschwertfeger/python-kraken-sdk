@@ -64,7 +64,7 @@ class Trade(KrakenSpotBaseAPI):
         return self
 
     @ensure_string("oflags")
-    def create_order(  # pylint: disable=too-many-branches,too-many-arguments # noqa: PLR0913 PLR0912
+    def create_order(  # pylint: disable=too-many-branches,too-many-arguments # noqa: PLR0912, PLR0913, PLR0917
         self: Trade,
         ordertype: str,
         side: str,
@@ -443,7 +443,7 @@ class Trade(KrakenSpotBaseAPI):
         )
 
     @ensure_string("oflags")
-    def edit_order(  # pylint: disable=too-many-arguments # noqa: PLR0913
+    def edit_order(  # pylint: disable=too-many-arguments # noqa: PLR0913, PLR0917
         self: Trade,
         txid: str,
         pair: str,
@@ -452,7 +452,7 @@ class Trade(KrakenSpotBaseAPI):
         price2: Optional[str | float] = None,
         oflags: Optional[str] = None,
         deadline: Optional[str] = None,
-        cancel_response: Optional[bool] = None,
+        cancel_response: Optional[bool] = None,  # noqa: FBT001
         userref: Optional[int] = None,
         *,
         truncate: bool = False,

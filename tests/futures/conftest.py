@@ -62,7 +62,9 @@ def futures_user() -> User:
     """
     Fixture providing an unauthenticated Futures User client.
     """
-    return User()
+    user: User = User()
+    user.TIMEOUT = 30
+    return user
 
 
 @pytest.fixture()
@@ -70,7 +72,9 @@ def futures_auth_user() -> User:
     """
     Fixture providing an authenticated Futures User client.
     """
-    return User(key=FUTURES_API_KEY, secret=FUTURES_SECRET_KEY)
+    user: User = User(key=FUTURES_API_KEY, secret=FUTURES_SECRET_KEY)
+    User.TIMEOUT = 30
+    return user
 
 
 @pytest.fixture()

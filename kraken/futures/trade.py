@@ -511,7 +511,7 @@ class Trade(KrakenFuturesBaseAPI):
             extra_params=extra_params,
         )
 
-    def create_order(  # pylint: disable=too-many-arguments # noqa: PLR0913
+    def create_order(  # pylint: disable=too-many-arguments # noqa: PLR0913, PLR0917
         self: Trade,
         orderType: str,
         size: str | float,
@@ -519,7 +519,7 @@ class Trade(KrakenFuturesBaseAPI):
         side: str,
         cliOrdId: Optional[str] = None,
         limitPrice: Optional[str | float] = None,
-        reduceOnly: Optional[bool] = None,
+        reduceOnly: Optional[bool] = None,  # noqa: FBT001
         stopPrice: Optional[str | float] = None,
         triggerSignal: Optional[str] = None,
         trailingStopDeviationUnit: Optional[str] = None,

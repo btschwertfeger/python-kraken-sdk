@@ -277,7 +277,7 @@ class User(KrakenFuturesBaseAPI):
             extra_params=extra_params,
         )
 
-    def get_account_log(  # noqa: PLR0913
+    def get_account_log(  # noqa: PLR0913 # pylint: disable=too-many-arguments
         self: User,
         before: Optional[str | int] = None,
         count: Optional[str | int] = None,
@@ -483,6 +483,9 @@ class User(KrakenFuturesBaseAPI):
         key settings.
 
         - https://docs.futures.kraken.com/#http-api-history-account-history-get-execution-events
+
+        (If you are facing some timeout error, just set the clients attribute
+        ``TIMEOUT`` temporarily to the desired amount in seconds.)
 
         :param before: Filter by time
         :type before: int, optional
