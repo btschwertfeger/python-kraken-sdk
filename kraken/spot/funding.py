@@ -358,6 +358,9 @@ class Funding(KrakenSpotBaseAPI):
         self: Funding,
         asset: Optional[str] = None,
         method: Optional[str] = None,
+        start: Optional[str] = None,
+        end: Optional[str] = None,
+        cursor: Optional[str | bool] = None,
         *,
         extra_params: Optional[dict] = None,
     ) -> list[dict]:
@@ -371,6 +374,13 @@ class Funding(KrakenSpotBaseAPI):
         :type asset: str, optional
         :param method: Filter by withdraw method (default: ``None``)
         :type method: str, optional
+        :param start: Filter by start timestamp
+        :type start: str, optional
+        :param end: Filter by end timestamp
+        :type end: str, optional
+        :param cursor: en-/disable paginated responses via ``True``/``False`` or
+            define the page as str.
+        :type cursor: str | bool, optional
         :return: Withdrawal information
         :rtype: list[dict]
 
@@ -401,6 +411,12 @@ class Funding(KrakenSpotBaseAPI):
             params["asset"] = asset
         if defined(method):
             params["method"] = method
+        if defined(start):
+            params["start"] = start
+        if defined(end):
+            params["end"] = end
+        if defined(cursor):
+            params["cursor"] = cursor
         return self._request(  # type: ignore[return-value]
             method="POST",
             uri="/private/WithdrawStatus",
