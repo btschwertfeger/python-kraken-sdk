@@ -360,7 +360,7 @@ class Funding(KrakenSpotBaseAPI):
         method: Optional[str] = None,
         start: Optional[str] = None,
         end: Optional[str] = None,
-        cursor: Optional[str | bool] = None,
+        cursor: Optional[str | bool] = None,  # noqa: FBT001
         *,
         extra_params: Optional[dict] = None,
     ) -> list[dict]:
