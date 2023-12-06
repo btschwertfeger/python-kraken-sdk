@@ -928,7 +928,7 @@ class User(KrakenSpotBaseAPI):
         )
 
     @ensure_string("fields")
-    def request_export_report(  # noqa: PLR0913
+    def request_export_report(  # noqa: PLR0913 # pylint: disable=too-many-arguments
         self: User,
         report: str,
         description: str,

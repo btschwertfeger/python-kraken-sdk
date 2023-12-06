@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # Copyright (C) 2023 Benjamin Thomas Schwertfeger
 # GitHub: https://github.com/btschwertfeger
-# pylint: disable=unused-import
+# pylint: disable=unused-import,cyclic-import
 
 """Module that provides the Spot REST clients and utility functions."""
 

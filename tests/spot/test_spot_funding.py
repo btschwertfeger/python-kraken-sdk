@@ -161,3 +161,47 @@ def test_wallet_transfer(spot_auth_funding: Funding) -> None:
                 amount=10000,
             ),
         )
+
+
+@pytest.mark.spot()
+@pytest.mark.wip()
+@pytest.mark.spot_auth()
+@pytest.mark.spot_funding()
+@pytest.mark.skip(reason="CI does not have withdraw permission")
+def test_withdraw_methods(spot_auth_funding: Funding) -> None:
+    """
+    Checks the withdraw_methods function for retrieving the correct data type
+    which is sufficient to validate the functionality.
+    """
+    response: list[dict] = spot_auth_funding.withdraw_methods()
+    assert isinstance(response, list)
+    response = spot_auth_funding.withdraw_methods(
+        asset="ZUSD",
+        aclass="currency",
+    )
+    assert isinstance(response, list)
+    response = spot_auth_funding.withdraw_methods(asset="XBT", network="Bitcoin")
+    assert isinstance(response, list)
+    response = spot_auth_funding.withdraw_methods(aclass="forex")
+    assert isinstance(response, list)
+
+
+@pytest.mark.spot()
+@pytest.mark.wip()
+@pytest.mark.spot_auth()
+@pytest.mark.spot_funding()
+@pytest.mark.skip(reason="CI does not have withdraw permission")
+def test_withdraw_addresses(spot_auth_funding: Funding) -> None:
+    """
+    Checks the withdraw_addresses function for retrieving the correct data type
+    which is sufficient to validate the functionality.
+    """
+    response: list[dict] = spot_auth_funding.withdraw_addresses()
+    assert isinstance(response, list)
+    response = spot_auth_funding.withdraw_addresses(
+        asset="ZUSD",
+        method="Bank Frick (SWIFT)",
+    )
+    assert isinstance(response, list)
+    response = spot_auth_funding.withdraw_addresses(asset="XLM", verified=True)
+    assert isinstance(response, list)
