@@ -277,7 +277,7 @@ class User(KrakenFuturesBaseAPI):
             extra_params=extra_params,
         )
 
-    def get_account_log(  # noqa: PLR0913
+    def get_account_log(  # noqa: PLR0913 # pylint: disable=too-many-arguments
         self: User,
         before: Optional[str | int] = None,
         count: Optional[str | int] = None,

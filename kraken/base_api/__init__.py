@@ -206,7 +206,7 @@ class KrakenSpotBaseAPI:
         self.__session: requests.Session = requests.Session()
         self.__session.headers.update({"User-Agent": "python-kraken-sdk"})
 
-    def _request(  # noqa: PLR0913
+    def _request(  # noqa: PLR0913 # pylint: disable=too-many-arguments
         self: KrakenSpotBaseAPI,
         method: str,
         uri: str,
@@ -458,7 +458,7 @@ class KrakenFuturesBaseAPI:
         self.__session: requests.Session = requests.Session()
         self.__session.headers.update({"User-Agent": "python-kraken-sdk"})
 
-    def _request(  # noqa: PLR0913
+    def _request(  # noqa: PLR0913 # pylint: disable=too-many-arguments
         self: KrakenFuturesBaseAPI,
         method: str,
         uri: str,
