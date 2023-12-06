@@ -484,6 +484,9 @@ class User(KrakenFuturesBaseAPI):
 
         - https://docs.futures.kraken.com/#http-api-history-account-history-get-execution-events
 
+        (If you are facing some timeout error, just set the clients attribute
+        ``TIMEOUT`` temporarily to the desired amount in seconds.)
+
         :param before: Filter by time
         :type before: int, optional
         :param continuation_token: Token that can be used to continue requesting

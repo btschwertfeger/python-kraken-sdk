@@ -323,6 +323,10 @@ ignore-names = [
   "trailingStopMaxDeviation",
   "subaccountUid",
   "ConnectSpotWebsocket",
+  "METHOD",
+  "TIMEOUT",
+  "URL",
+  "HEADERS",
 ]
 
 [tool.ruff.pylint]
@@ -527,6 +531,10 @@ good-names = [
   "trailingStopMaxDeviation",
   "subaccountUid",
   "ConnectSpotWebsocket",
+  "METHOD",
+  "TIMEOUT",
+  "URL",
+  "HEADERS",
 ]
 
 # Good variable names regexes, separated by a comma. If names match any regex,

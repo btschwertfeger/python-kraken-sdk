@@ -112,6 +112,7 @@ def test_get_execution_events(futures_auth_user: User) -> None:
     assert "elements" in result
 
 
+@pytest.mark.wip()
 @pytest.mark.futures()
 @pytest.mark.futures_auth()
 @pytest.mark.futures_user()
@@ -119,6 +120,7 @@ def test_get_order_events(futures_auth_user: User) -> None:
     """
     Checks the ``get_order_events`` endpoint.
     """
+    futures_auth_user.TIMEOUT = 30
     result: dict = futures_auth_user.get_order_events(
         tradeable="PF_SOLUSD",
         since=1668989233,
@@ -127,6 +129,7 @@ def test_get_order_events(futures_auth_user: User) -> None:
     )
     assert isinstance(result, dict)
     assert "elements" in result
+    futures_auth_user.TIMEOUT = 10
 
 
 @pytest.mark.futures()
