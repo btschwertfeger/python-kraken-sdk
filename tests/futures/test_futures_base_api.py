@@ -27,11 +27,11 @@ def test_KrakenFuturesBaseAPI_without_exception() -> None:
         KrakenFuturesBaseAPI(
             key="fake",
             secret="fake",
-        )._request(METHOD="POST", uri="/derivatives/api/v3/sendorder", auth=True)
+        )._request(method="POST", uri="/derivatives/api/v3/sendorder", auth=True)
 
     result: dict = (
         KrakenFuturesBaseAPI(key="fake", secret="fake", use_custom_exceptions=False)  # type: ignore[union-attr]
-        ._request(METHOD="POST", uri="/derivatives/api/v3/sendorder", auth=True)
+        ._request(method="POST", uri="/derivatives/api/v3/sendorder", auth=True)
         .json()
     )
 

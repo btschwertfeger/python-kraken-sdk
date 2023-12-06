@@ -27,13 +27,13 @@ def test_KrakenSpotBaseAPI_without_exception() -> None:
         KrakenSpotBaseAPI(
             key="fake",
             secret="fake",
-        )._request(METHOD="POST", uri="/private/AddOrder", auth=True)
+        )._request(method="POST", uri="/private/AddOrder", auth=True)
 
     assert KrakenSpotBaseAPI(
         key="fake",
         secret="fake",
         use_custom_exceptions=False,
-    )._request(METHOD="POST", uri="/private/AddOrder", auth=True).json() == {
+    )._request(method="POST", uri="/private/AddOrder", auth=True).json() == {
         "error": ["EAPI:Invalid key"],
     }
 
