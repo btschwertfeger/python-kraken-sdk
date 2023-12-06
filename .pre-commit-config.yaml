@@ -67,7 +67,7 @@ repos:
           - --show-source
           - --statistics
   - repo: https://github.com/pycqa/pylint
-    rev: v3.0.2
+    rev: v2.17.7
     hooks:
       - id: pylint
         name: pylint
