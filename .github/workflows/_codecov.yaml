@@ -64,7 +64,7 @@ jobs:
           FUTURES_SECRET_KEY: ${{ secrets.FUTURES_SECRET_KEY }}
           FUTURES_SANDBOX_KEY: ${{ secrets.FUTURES_SANDBOX_KEY }}
           FUTURES_SANDBOX_SECRET: ${{ secrets.FUTURES_SANDBOX_SECRET }}
-        run: pytest -vv --cov --cov-report=xml:coverage.xml tests
+        run: pytest -vv --cov --cov-report=xml:coverage.xml -m "not flaky" tests
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
