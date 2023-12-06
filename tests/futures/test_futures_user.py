@@ -156,6 +156,8 @@ def test_get_open_positions(futures_auth_user: User) -> None:
     assert is_success(futures_auth_user.get_open_positions())
 
 
+# FIXME: They often encounter 500 status_codes - maybe an error in Kraken's API
+@pytest.mark.flaky()
 @pytest.mark.futures()
 @pytest.mark.futures_auth()
 @pytest.mark.futures_user()
