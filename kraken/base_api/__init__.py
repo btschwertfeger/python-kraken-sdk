@@ -168,6 +168,9 @@ class KrakenSpotBaseAPI:
     This class the the base for all Spot clients, handles un-/signed
     requests and returns exception handled results.
 
+    If you are facing timeout errors on derived clients, you can make use of the
+    ``TIMEOUT`` attribute to deviate from the default ``10`` seconds.
+
     :param key: Spot API public key (default: ``""``)
     :type key: str, optional
     :param secret: Spot API secret key (default: ``""``)
@@ -418,6 +421,9 @@ class KrakenFuturesBaseAPI:
     """
     The base class for all Futures clients handles un-/signed requests
     and returns exception handled results.
+
+    If you are facing timeout errors on derived clients, you can make use of the
+    ``TIMEOUT`` attribute to deviate from the default ``10`` seconds.
 
     If the sandbox environment is chosen, the keys must be generated from here:
         https://demo-futures.kraken.com/settings/api
