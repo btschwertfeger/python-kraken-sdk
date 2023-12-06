@@ -468,7 +468,7 @@ class KrakenFuturesBaseAPI:
         *,
         auth: bool = True,
         return_raw: bool = False,
-        extra_params: Optional[dict] = None,
+        extra_params: Optional[str | dict] = None,
     ) -> dict[str, Any] | list[dict[str, Any]] | list[str] | requests.Response:
         """
         Handles the requested requests, by sending the request, handling the

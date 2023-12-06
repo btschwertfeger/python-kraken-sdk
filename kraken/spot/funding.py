@@ -161,7 +161,7 @@ class Funding(KrakenSpotBaseAPI):
         method: Optional[str] = None,
         start: Optional[str] = None,
         end: Optional[str] = None,
-        cursor: bool | str = False,  # noqa: FBT002
+        cursor: bool | str = False,  # noqa: FBT001, FBT002
         *,
         extra_params: Optional[dict] = None,
     ) -> list[dict] | dict:
@@ -537,7 +537,7 @@ class Funding(KrakenSpotBaseAPI):
         aclass: Optional[str] = None,
         method: Optional[str] = None,
         key: Optional[str] = None,
-        verified: Optional[bool] = None,
+        verified: Optional[bool] = None,  # noqa: FBT001
         *,
         extra_params: Optional[dict] = None,
     ) -> dict:
