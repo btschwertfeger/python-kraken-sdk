@@ -84,6 +84,7 @@ testpaths = ["tests"]
 cache_dir = ".cache/pytest"
 markers = [
   "wip: Used to run a specific test by hand.",
+  "flaky: Flaky tests",
   "spot: … Spot endpoint.",
   "spot_auth: … authenticated Spot endpoint.",
   "spot_trade: … Spot Trade endpoint.",
