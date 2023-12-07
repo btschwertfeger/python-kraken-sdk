@@ -1,11 +1,27 @@
 # Changelog
 
+## [Unreleased](https://github.com/btschwertfeger/python-kraken-sdk/tree/HEAD)
+
+[Full Changelog](https://github.com/btschwertfeger/python-kraken-sdk/compare/v2.0.0...HEAD)
+
+**Implemented enhancements:**
+
+- Add `start`, `end`, and `cursor` parameters to `kraken.spot.Funding.get_recent_withdraw_status` [\#176](https://github.com/btschwertfeger/python-kraken-sdk/issues/176)
+- Add `withdraw_methods` and `withdraw_addresses` to `kraken.spot.Funding` [\#174](https://github.com/btschwertfeger/python-kraken-sdk/issues/174)
+- Add `start`, `end`, and `cursor` parameters to `kraken.spot.Funding.get_recent_withdraw_status` [\#177](https://github.com/btschwertfeger/python-kraken-sdk/pull/177) ([btschwertfeger](https://github.com/btschwertfeger))
+- Resolve "Add `withdraw_methods` and `withdraw_addresses` to `kraken.spot.Funding`" [\#175](https://github.com/btschwertfeger/python-kraken-sdk/pull/175) ([btschwertfeger](https://github.com/btschwertfeger))
+
 ## [v2.0.0](https://github.com/btschwertfeger/python-kraken-sdk/tree/v2.0.0) (2023-10-22)
 
 [Full Changelog](https://github.com/btschwertfeger/python-kraken-sdk/compare/v1.6.2...v2.0.0)
 
 **Breaking changes:**
 
+- Extract the Kraken\* exception classes from `kraken.exceptions.KrakenException` [\#161](https://github.com/btschwertfeger/python-kraken-sdk/issues/161)
+- Rename `KrakenBaseSpotAPI` to `KrakenSpotBaseAPI` and `KrakenBaseFuturesAPI` to `KrakenFuturesBaseAPI` [\#158](https://github.com/btschwertfeger/python-kraken-sdk/issues/158)
+- Rename `kraken.spot.KrakenSpotWSClient` to `kraken.spot.KrakenSpotWSClientV1` [\#152](https://github.com/btschwertfeger/python-kraken-sdk/issues/152)
+- Add the legacy OrderbookClient for Krakens websocket API v1 [\#150](https://github.com/btschwertfeger/python-kraken-sdk/issues/150)
+- Drop Support for Python \< 3.11 [\#132](https://github.com/btschwertfeger/python-kraken-sdk/issues/132)
 - Resolve "Extract the Kraken\* exception classes from `kraken.exceptions.KrakenException`" [\#162](https://github.com/btschwertfeger/python-kraken-sdk/pull/162) ([btschwertfeger](https://github.com/btschwertfeger))
 - Resolve "Rename `kraken.spot.KrakenSpotWSClient` to `kraken.spot.KrakenSpotWSClientV1`" [\#160](https://github.com/btschwertfeger/python-kraken-sdk/pull/160) ([btschwertfeger](https://github.com/btschwertfeger))
 - Resolve "Rename `KrakenBaseSpotAPI` to `KrakenSpotBaseAPI` and `KrakenBaseFuturesAPI` to `KrakenFuturesBaseAPI`" [\#159](https://github.com/btschwertfeger/python-kraken-sdk/pull/159) ([btschwertfeger](https://github.com/btschwertfeger))
@@ -13,10 +29,18 @@
 
 **Implemented enhancements:**
 
+- Add `max_fee` parameter to `kraken.spot.Funding.withdraw_funds` [\#169](https://github.com/btschwertfeger/python-kraken-sdk/issues/169)
+- Add `start`, `end`, and `cursor` parameters to `kraken.spot.Funding.get_recent_deposits_status` [\#168](https://github.com/btschwertfeger/python-kraken-sdk/issues/168)
+- Add optional `extra_params` to any requesting function [\#154](https://github.com/btschwertfeger/python-kraken-sdk/issues/154)
 - Resolve "Add `max_fee` parameter to `kraken.spot.Funding.withdraw_funds`" [\#171](https://github.com/btschwertfeger/python-kraken-sdk/pull/171) ([btschwertfeger](https://github.com/btschwertfeger))
 - Resolve "Add `start`, `end`, and `cursor` parameters to `kraken.spot.Funding.get_recent_deposits_status`" [\#170](https://github.com/btschwertfeger/python-kraken-sdk/pull/170) ([btschwertfeger](https://github.com/btschwertfeger))
 - Resolve "Add optional `extra_params` to any requesting function" [\#155](https://github.com/btschwertfeger/python-kraken-sdk/pull/155) ([btschwertfeger](https://github.com/btschwertfeger))
 - Resolve "150 add the legacy OrderbookClient for Krakens websocket API v1" [\#151](https://github.com/btschwertfeger/python-kraken-sdk/pull/151) ([btschwertfeger](https://github.com/btschwertfeger))
+
+**Closed issues:**
+
+- Use Apache 2.0 license instead of GNU GPLv3 [\#166](https://github.com/btschwertfeger/python-kraken-sdk/issues/166)
+- Uniform the "msg" parameter [\#163](https://github.com/btschwertfeger/python-kraken-sdk/issues/163)
 
 Uncategorized merged pull requests:
 
