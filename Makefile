@@ -40,7 +40,7 @@ install:
 ##
 .PHONY: dev
 dev:
-	$(PYTHON) -m pip install -e ".[dev]"
+	$(PYTHON) -m pip install -e ".[dev,test]"
 
 ## ======= T E S T I N G =======
 ## test		Run the unit tests

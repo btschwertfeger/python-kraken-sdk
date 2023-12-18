@@ -44,10 +44,6 @@ classifiers = [
 dev = [
   # building
   "build",
-  # testing
-  "pytest",
-  "pytest-cov",
-  "pytest-mock",
   # documentation
   "sphinx",
   "sphinx-rtd-theme",
@@ -60,6 +56,7 @@ dev = [
   "ruff",
   "pylint",
 ]
+test = ["pytest", "pytest-cov", "pytest-mock"]
 examples = ["matplotlib"]
 
 [tool.setuptools]
