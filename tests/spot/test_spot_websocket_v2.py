@@ -379,7 +379,7 @@ def test_private_unsubscribe(
     asyncio_run(check_unsubscribe())
 
     for expected in (
-        '{"method": "subscribe", "req_id": 123456789, "result": {"channel": "executions", "maxratecount": 180, "snapshot": true}, "success": true, "time_in": ',
+        '{"method": "subscribe", "req_id": 123456789, "result": {"channel": "executions", "maxratecount": 180, "snapshot": true", "success": true, "time_in": ',
         '{"method": "unsubscribe", "req_id": 987654321, "result": {"channel": "executions"}, "success": true, "time_in": ',
     ):
         assert expected in caplog.text
