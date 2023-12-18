@@ -287,7 +287,6 @@ def test_get_active_subscriptions(caplog: Any) -> None:
         assert expected in caplog.text
 
 
-@pytest.mark.wip()
 @pytest.mark.futures()
 @pytest.mark.futures_auth()
 @pytest.mark.futures_websocket()

@@ -18,11 +18,11 @@ NOTE:
     output.
 
 todo: check also if reqid matches
-todo: check recover subscriptions
 """
 
 from __future__ import annotations
 
+import logging
 from asyncio import run as asyncio_run
 from typing import Any
 
@@ -657,7 +657,6 @@ def test_edit_order(spot_api_key: str, spot_secret_key: str, caplog: Any) -> Non
 
 
 @pytest.mark.spot()
-@pytest.mark.spot_auth()
 @pytest.mark.spot_websocket()
 @pytest.mark.spot_websocket_v1()
 def test_edit_order_failing_no_connection(caplog: Any) -> None:
@@ -851,7 +850,6 @@ def test_cancel_all_orders_after(
 
 
 @pytest.mark.spot()
-@pytest.mark.spot_auth()
 @pytest.mark.spot_websocket()
 @pytest.mark.spot_websocket_v1()
 def test_cancel_all_orders_after_failing_no_connection(caplog: Any) -> None:
@@ -877,3 +875,62 @@ def test_cancel_all_orders_after_failing_no_connection(caplog: Any) -> None:
         "Can't cancel all orders after - Authenticated websocket not connected!"
         not in caplog.text
     )
+
+
+@pytest.mark.spot()
+@pytest.mark.spot_auth()
+@pytest.mark.spot_websocket()
+@pytest.mark.spot_websocket_v1()
+def test_reconnect(
+    spot_api_key: str,
+    spot_secret_key: str,
+    caplog: Any,
+    mocker: Any,
+) -> None:
+    """
+    Checks if the reconnect works properly when forcing a closed connection.
+    """
+    caplog.set_level(logging.INFO)
+
+    async def check_reconnect() -> None:
+        client: SpotWebsocketClientV1TestWrapper = SpotWebsocketClientV1TestWrapper(
+            key=spot_api_key,
+            secret=spot_secret_key,
+        )
+        await async_wait(seconds=2)
+
+        await client.subscribe(subscription={"name": "ticker"}, pair=["XBT/USD"])
+        await client.subscribe(subscription={"name": "openOrders"})
+        await async_wait(seconds=2)
+
+        for obj in (client._priv_conn, client._pub_conn):
+            mocker.patch.object(
+                obj,
+                "_ConnectSpotWebsocketBase__get_reconnect_wait",
+                return_value=2,
+            )
+        await client._pub_conn.close_connection()
+        await client._priv_conn.close_connection()
+
+        await async_wait(seconds=5)
+
+    asyncio_run(check_reconnect())
+
+    for phrase in (
+        "Recover public subscriptions []: waiting",
+        "Recover authenticated subscriptions []: waiting",
+        "Recover public subscriptions []: done",
+        "Recover authenticated subscriptions []: done",
+        "Websocket connected!",
+        "'event': 'systemStatus', 'status': 'online', 'version': '1.9.1'}",
+        "'openOrders', 'event': 'subscriptionStatus', 'status': 'subscribed',",
+        "'channelName': 'ticker', 'event': 'subscriptionStatus', 'pair': 'XBT/USD', 'status': 'subscribed', 'subscription': {'name': 'ticker'}",
+        "exception=ConnectionClosedOK(Close(code=1000, reason=''), Close(code=1000, reason=''), False)> got an exception sent 1000 (OK); then received 1000 (OK)",
+        "Recover public subscriptions [{'event': 'subscribe', 'pair': ['XBT/USD'], 'subscription': {'name': 'ticker'}}]: waiting",
+        "Recover authenticated subscriptions [{'event': 'subscribe', 'subscription': {'name': 'openOrders'}}]: waiting",
+        "{'event': 'subscribe', 'pair': ['XBT/USD'], 'subscription': {'name': 'ticker'}}: OK",
+        "{'event': 'subscribe', 'subscription': {'name': 'openOrders'}}: OK",
+        "Recover public subscriptions [{'event': 'subscribe', 'pair': ['XBT/USD'], 'subscription': {'name': 'ticker'}}]: done",
+        "Recover authenticated subscriptions [{'event': 'subscribe', 'subscription': {'name': 'openOrders'}}]: done",
+    ):
+        assert phrase in caplog.text

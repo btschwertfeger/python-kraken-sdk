@@ -88,7 +88,7 @@ class TradingBot(KrakenFuturesWSClient):
 
     # Add more functions to customize the trading strategy …
 
-    def save_exit(self: TradingBot, reason: Optional[str] = "") -> None:
+    def save_exit(self: TradingBot, reason: str = "") -> None:
         """Controlled shutdown of the strategy"""
         logging.warning("Save exit triggered, reason: %s", reason)
         # some ideas:
