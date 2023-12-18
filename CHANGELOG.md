@@ -1,14 +1,14 @@
 # Changelog
 
-## [Unreleased](https://github.com/btschwertfeger/python-kraken-sdk/tree/HEAD)
+## [v2.1.0](https://github.com/btschwertfeger/python-kraken-sdk/tree/v2.1.0) (2023-12-07)
 
-[Full Changelog](https://github.com/btschwertfeger/python-kraken-sdk/compare/v2.0.0...HEAD)
+[Full Changelog](https://github.com/btschwertfeger/python-kraken-sdk/compare/v2.0.0...v2.1.0)
 
 **Implemented enhancements:**
 
 - Add `start`, `end`, and `cursor` parameters to `kraken.spot.Funding.get_recent_withdraw_status` [\#176](https://github.com/btschwertfeger/python-kraken-sdk/issues/176)
 - Add `withdraw_methods` and `withdraw_addresses` to `kraken.spot.Funding` [\#174](https://github.com/btschwertfeger/python-kraken-sdk/issues/174)
-- Add `start`, `end`, and `cursor` parameters to `kraken.spot.Funding.get_recent_withdraw_status` [\#177](https://github.com/btschwertfeger/python-kraken-sdk/pull/177) ([btschwertfeger](https://github.com/btschwertfeger))
+- Resolve "Add `start`, `end`, and `cursor` parameters to `kraken.spot.Funding.get_recent_withdraw_status`" [\#177](https://github.com/btschwertfeger/python-kraken-sdk/pull/177) ([btschwertfeger](https://github.com/btschwertfeger))
 - Resolve "Add `withdraw_methods` and `withdraw_addresses` to `kraken.spot.Funding`" [\#175](https://github.com/btschwertfeger/python-kraken-sdk/pull/175) ([btschwertfeger](https://github.com/btschwertfeger))
 
 ## [v2.0.0](https://github.com/btschwertfeger/python-kraken-sdk/tree/v2.0.0) (2023-10-22)
