@@ -349,7 +349,6 @@ def test_public_unsubscribe_failure(caplog: Any) -> None:
     )
 
 
-@pytest.mark.wip()
 @pytest.mark.spot()
 @pytest.mark.spot_auth()
 @pytest.mark.spot_websocket()
@@ -375,7 +374,7 @@ def test_private_unsubscribe(
 
         await client.unsubscribe(params={"channel": "executions"}, req_id=987654321)
         await async_wait(seconds=2)
-        # todo: check if subs are removed from known list
+        # todo: check if subs are removed from known list - Dec 2023: obsolete?
 
     asyncio_run(check_unsubscribe())
 
