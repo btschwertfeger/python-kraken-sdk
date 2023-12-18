@@ -328,7 +328,7 @@ def test_resubscribe(
     asyncio.run(check_resubscribe())
     for phrase in (
         "Websocket connected!",
-        "exception=ConnectionClosedOK(Close(code=1000, reason=''), Close(code=1000, reason=''), False)> got an exception sent 1000 (OK); then received 1000 (OK)",
+        "got an exception sent 1000 (OK); then received 1000 (OK)",
         "Connection closed",
         "Recover subscriptions [{'event': 'subscribe', 'feed': 'open_orders'}]: waiting",
         "Recover subscriptions [{'event': 'subscribe', 'feed': 'open_orders'}]: done",

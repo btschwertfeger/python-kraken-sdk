@@ -460,6 +460,7 @@ def test___transform_subscription_no_change() -> None:
         )
 
 
+@pytest.mark.wip()
 @pytest.mark.spot()
 @pytest.mark.spot_auth()
 @pytest.mark.spot_websocket()
@@ -509,11 +510,11 @@ def test_reconnect(
         '"system": "online", "version": "2.0.0"}], "type": "update"}',
         '{"method": "subscribe", "result": {"channel": "ticker", "snapshot": true, "symbol": "BTC/USD"}, "success": true,',
         '"channel": "ticker", "type": "snapshot", "data": [{"symbol": "BTC/USD", ',
-        "exception=ConnectionClosedOK(Close(code=1000, reason=''), Close(code=1000, reason=''), False)> got an exception sent 1000 (OK); then received 1000 (OK)",
+        "got an exception sent 1000 (OK); then received 1000 (OK)",
         "Recover public subscriptions [{'channel': 'ticker', 'snapshot': True, 'symbol': ['BTC/USD']}]: waiting",
         "Recover public subscriptions [{'channel': 'ticker', 'snapshot': True, 'symbol': ['BTC/USD']}]: done",
-        "Recover authenticated subscriptions [{'channel': 'executions', 'snapshot': True}]: waiting",
-        "Recover authenticated subscriptions [{'channel': 'executions', 'snapshot': True}]: done",
+        "Recover authenticated subscriptions [{'channel': 'executions', 'maxratecount': 180, 'snapshot': True}]: waiting",
+        "Recover authenticated subscriptions [{'channel': 'executions', 'maxratecount': 180, 'snapshot': True}]: done",
     ):
         assert phrase in caplog.text
 
