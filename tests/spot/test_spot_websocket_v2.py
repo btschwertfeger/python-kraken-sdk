@@ -384,6 +384,7 @@ def test_private_unsubscribe(
         '{"method": "unsubscribe", "req_id": 987654321, "result": {"channel": "executions"}, "success": true, "time_in": ',
     ):
         assert expected in caplog.text
+    assert '"success": false' not in caplog.text
 
 
 @pytest.mark.spot()
