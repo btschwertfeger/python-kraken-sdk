@@ -164,7 +164,6 @@ def test_wallet_transfer(spot_auth_funding: Funding) -> None:
 
 
 @pytest.mark.spot()
-@pytest.mark.wip()
 @pytest.mark.spot_auth()
 @pytest.mark.spot_funding()
 @pytest.mark.skip(reason="CI does not have withdraw permission")
@@ -187,7 +186,6 @@ def test_withdraw_methods(spot_auth_funding: Funding) -> None:
 
 
 @pytest.mark.spot()
-@pytest.mark.wip()
 @pytest.mark.spot_auth()
 @pytest.mark.spot_funding()
 @pytest.mark.skip(reason="CI does not have withdraw permission")

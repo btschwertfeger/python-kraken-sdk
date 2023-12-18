@@ -47,6 +47,7 @@ dev = [
   # testing
   "pytest",
   "pytest-cov",
+  "pytest-mock",
   # documentation
   "sphinx",
   "sphinx-rtd-theme",

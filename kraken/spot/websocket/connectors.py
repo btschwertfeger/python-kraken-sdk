@@ -227,7 +227,7 @@ class ConnectSpotWebsocketBase:
                     await self.__callback({"error": message})
             if exception_occur:
                 break
-        self.LOG.warning("reconnect over")
+        self.LOG.warning("Connection closed")
 
     def __get_reconnect_wait(
         self: ConnectSpotWebsocketBase,
