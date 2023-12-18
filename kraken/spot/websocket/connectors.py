@@ -20,7 +20,7 @@ import traceback
 from copy import deepcopy
 from random import random
 from time import time
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any, Final, Optional
 
 import websockets
 
@@ -176,6 +176,10 @@ class ConnectSpotWebsocketBase:
             )
             self.__client.exception_occur = True
 
+    async def close_connection(self: ConnectSpotWebsocketBase) -> None:
+        """Closes the websocket connection and thus forces a reconnect"""
+        await self.socket.close()
+
     async def __reconnect(self: ConnectSpotWebsocketBase) -> None:
         """
         Handles the reconnect - before starting the connection and after an
@@ -227,7 +231,7 @@ class ConnectSpotWebsocketBase:
                     await self.__callback({"error": message})
             if exception_occur:
                 break
-        self.LOG.warning("reconnect over")
+        self.LOG.warning("Connection closed")
 
     def __get_reconnect_wait(
         self: ConnectSpotWebsocketBase,
@@ -345,7 +349,7 @@ class ConnectSpotWebsocketV1(ConnectSpotWebsocketBase):
         :type event: asyncio.Event
         """
         log_msg: str = f'Recover {"authenticated" if self.is_auth else "public"} subscriptions {self._subscriptions}'
-        self.LOG.info("%s waiting.", log_msg)
+        self.LOG.info("%s: waiting", log_msg)
         await event.wait()
 
         for sub in self._subscriptions:
@@ -362,7 +366,7 @@ class ConnectSpotWebsocketV1(ConnectSpotWebsocketBase):
             await self.client.send_message(cpy, private=private)
             self.LOG.info("%s: OK", sub)
 
-        self.LOG.info("%s done.", log_msg)
+        self.LOG.info("%s: done", log_msg)
 
     def _manage_subscriptions(
         self: ConnectSpotWebsocketV1,
@@ -501,14 +505,14 @@ class ConnectSpotWebsocketV2(ConnectSpotWebsocketBase):
         :type event: asyncio.Event
         """
         log_msg: str = f'Recover {"authenticated" if self.is_auth else "public"} subscriptions {self._subscriptions}'
-        self.LOG.info("%s waiting.", log_msg)
+        self.LOG.info("%s: waiting", log_msg)
         await event.wait()
 
         for subscription in self._subscriptions:
             await self.client.subscribe(params=subscription)
             self.LOG.info("%s: OK", subscription)
 
-        self.LOG.info("%s done.", log_msg)
+        self.LOG.info("%s: done", log_msg)
 
     def _manage_subscriptions(self: ConnectSpotWebsocketV2, message: dict) -> None:  # type: ignore[override]
         """
@@ -574,24 +578,35 @@ class ConnectSpotWebsocketV2(ConnectSpotWebsocketBase):
         # Without deepcopy, the passed message will be modified, which is *not*
         # intended.
         subscription_copy: dict = deepcopy(subscription)
+        channel: Final[str] = subscription["result"].get("channel", "")
 
-        # Subscriptions for specific symbols must contain the 'symbols' key with
-        # a value of type list[str]. The python-kraken-sdk is caching active
-        # subscriptions from that moment, the successful response arrives. These
-        # responses must be parsed to use them to resubscribe on connection
-        # losses.
-        if subscription["result"].get("channel", "") in {
-            "book",
-            "ticker",
-            "ohlc",
-            "trade",
-        } and not isinstance(
-            subscription["result"].get("symbol"),
-            list,
-        ):
-            subscription_copy["result"]["symbol"] = [
-                subscription_copy["result"]["symbol"],
-            ]
+        match channel:
+            case "book" | "ticker" | "ohlc" | "trade":
+                # Subscriptions for specific symbols must contain the 'symbols'
+                # key with a value of type list[str]. The python-kraken-sdk is
+                # caching active subscriptions from that moment, the successful
+                # response arrives. These responses must be parsed to use them
+                # to resubscribe on connection losses.
+                if not isinstance(
+                    subscription["result"].get("symbol"),
+                    list,
+                ):
+                    subscription_copy["result"]["symbol"] = [
+                        subscription_copy["result"]["symbol"],
+                    ]
+            case "executions":
+                # Kraken somehow responds with this key - but this is not
+                # accepted when subscribing (Dec 2023).
+                if (
+                    subscription_copy["method"] == "unsubscribe"
+                    and "maxratecount" in subscription["result"]
+                ):
+                    del subscription_copy["result"]["maxratecount"]
+
+        # Sometimes Kraken responds with hints about deprecation - we don't want
+        # to save those data as resubscribing would fail for those cases.
+        if "warnings" in subscription["result"]:
+            del subscription_copy["result"]["warnings"]
 
         return subscription_copy
 

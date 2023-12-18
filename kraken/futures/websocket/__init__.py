@@ -39,7 +39,7 @@ class ConnectFuturesWebsocket:
     :type callback: function
     """
 
-    MAX_RECONNECT_NUM: int = 2
+    MAX_RECONNECT_NUM: int = 3
 
     def __init__(
         self: ConnectFuturesWebsocket,
@@ -130,6 +130,10 @@ class ConnectFuturesWebsocket:
         finally:
             self.__client.exception_occur = True
 
+    async def close_connection(self: ConnectFuturesWebsocket) -> None:
+        """Closes the connection -/ will force reconnect"""
+        await self.__socket.close()
+
     async def __reconnect(self: ConnectFuturesWebsocket) -> None:
         logging.info("Websocket start connect/reconnect")
 
@@ -137,7 +141,7 @@ class ConnectFuturesWebsocket:
         if self.__reconnect_num >= self.MAX_RECONNECT_NUM:
             raise MaxReconnectError
 
-        reconnect_wait: float = self.__get_reconnect_wait(self.__reconnect_num)
+        reconnect_wait: float = self.__get_reconnect_wait(attempts=self.__reconnect_num)
         logging.debug(
             "asyncio sleep reconnect_wait=%f s reconnect_num=%d",
             reconnect_wait,
@@ -163,6 +167,7 @@ class ConnectFuturesWebsocket:
             for task in finished:
                 if task.exception():
                     exception_occur = True
+                    self.__challenge_ready = False
                     traceback.print_stack()
                     message = f"{task} got an exception {task.exception()}\n {task.get_stack()}"
                     logging.warning(message)
@@ -176,14 +181,14 @@ class ConnectFuturesWebsocket:
                     await self.__callback({"error": message})
             if exception_occur:
                 break
-        logging.warning("reconnect over")
+        logging.warning("Connection closed")
 
     async def __recover_subscription_req_msg(
         self: ConnectFuturesWebsocket,
         event: asyncio.Event,
     ) -> None:
         logging.info(
-            "Recover subscriptions %s waiting.",
+            "Recover subscriptions %s: waiting",
             self.__subscriptions,
         )
         await event.wait()
@@ -196,7 +201,7 @@ class ConnectFuturesWebsocket:
             logging.info("%s: OK", sub)
 
         logging.info(
-            "Recover subscriptions %s done.",
+            "Recover subscriptions %s: done",
             self.__subscriptions,
         )
 

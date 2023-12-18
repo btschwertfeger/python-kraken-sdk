@@ -3,7 +3,7 @@
 # Copyright (C) 2023 Benjamin Thomas Schwertfeger
 # GitHub: https://github.com/btschwertfeger
 
-PYTHON := python
+PYTHON := venv/bin/python
 PYTEST := $(PYTHON) -m pytest
 PYTEST_OPTS := -vv --junit-xml=pytest.xml
 PYTEST_COV_OPTS := $(PYTEST_OPTS) --cov --cov-report=xml:coverage.xml --cov-report=term
@@ -40,7 +40,7 @@ install:
 ##
 .PHONY: dev
 dev:
-	$(PYTHON) -m pip install -e ".[dev]"
+	$(PYTHON) -m pip install -e ".[dev,test]"
 
 ## ======= T E S T I N G =======
 ## test		Run the unit tests
@@ -53,10 +53,10 @@ test:
 .PHONY: tests
 tests: test
 
-## test-wip		Run tests marked as 'wip'
+## wip		Run tests marked as 'wip'
 ##
-.PHONY: test-wip
-test-wip:
+.PHONY: wip
+wip:
 	@rm *.log || true
 	$(PYTEST) -m "wip" -vv $(TEST_DIR)
 

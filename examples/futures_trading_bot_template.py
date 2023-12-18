@@ -17,12 +17,12 @@ import logging.config
 import os
 import sys
 import traceback
-from typing import Optional, Union
+from typing import Optional
 
 import requests
 import urllib3
 
-from kraken.exceptions import KrakenException
+from kraken.exceptions import KrakenAuthenticationError
 from kraken.futures import Funding, KrakenFuturesWSClient, Market, Trade, User
 
 logging.basicConfig(
@@ -64,7 +64,7 @@ class TradingBot(KrakenFuturesWSClient):
         self.__market: Market = Market(key=config["key"], secret=config["secret"])
         self.__funding: Funding = Funding(key=config["key"], secret=config["secret"])
 
-    async def on_message(self: TradingBot, message: Union[list, dict]) -> None:
+    async def on_message(self: TradingBot, message: list | dict) -> None:
         """Receives all messages that came form the websocket feed(s)"""
         logging.info(message)
 
@@ -88,12 +88,9 @@ class TradingBot(KrakenFuturesWSClient):
 
     # Add more functions to customize the trading strategy …
 
-    def save_exit(self: TradingBot, reason: Optional[str] = "") -> None:
+    def save_exit(self: TradingBot, reason: str = "") -> None:
         """Controlled shutdown of the strategy"""
-        logging.warning(
-            "Save exit triggered, reason: {reason}",
-            extra={"reason": reason},
-        )
+        logging.warning("Save exit triggered, reason: %s", reason)
         # some ideas:
         #   * save the bots data
         #   * maybe close trades
@@ -188,7 +185,7 @@ class ManagedBot:
         except requests.exceptions.ConnectionError:
             logging.error("ConnectionError, Kraken not available.")
             return False
-        except KrakenException.KrakenAuthenticationError:
+        except KrakenAuthenticationError:
             logging.error("Invalid credentials!")
             return False
 

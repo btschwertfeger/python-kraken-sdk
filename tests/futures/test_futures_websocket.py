@@ -9,6 +9,7 @@
 from __future__ import annotations
 
 import asyncio
+import logging
 from typing import Any
 
 import pytest
@@ -169,7 +170,10 @@ def test_subscribe_private(
             await client.subscribe(feed="fills", products=["PI_XBTUSD"])
 
         await client.subscribe(feed="open_orders")
-        await async_wait(2)
+        await async_wait(seconds=2)
+
+        assert len(client.get_active_subscriptions()) == 1
+        await async_wait(seconds=1)
 
     asyncio.run(submit_subscription())
 
@@ -281,3 +285,57 @@ def test_get_active_subscriptions(caplog: Any) -> None:
         "{'event': 'unsubscribed', 'feed': 'ticker', 'product_ids': ['PI_XBTUSD']}",
     ):
         assert expected in caplog.text
+
+
+@pytest.mark.futures()
+@pytest.mark.futures_auth()
+@pytest.mark.futures_websocket()
+def test_resubscribe(
+    futures_api_key: str,
+    futures_secret_key: str,
+    caplog: Any,
+    mocker: Any,
+) -> None:
+    """
+    Test that forces a reconnect by closing the connection to check if the
+    authenticated feeds will be resubscribed correctly.
+    """
+    caplog.set_level(logging.INFO)
+
+    async def check_resubscribe() -> None:
+        client: FuturesWebsocketClientTestWrapper = FuturesWebsocketClientTestWrapper(
+            key=futures_api_key,
+            secret=futures_secret_key,
+        )
+
+        assert client.get_active_subscriptions() == []
+        await async_wait(seconds=1)
+
+        await client.subscribe(feed="open_orders")
+        await async_wait(seconds=2)
+        assert len(client.get_active_subscriptions()) == 1
+
+        mocker.patch.object(
+            client._conn,
+            "_ConnectFuturesWebsocket__get_reconnect_wait",
+            return_value=2,
+        )
+
+        await client._conn.close_connection()
+        await async_wait(seconds=5)
+        assert len(client.get_active_subscriptions()) == 1
+
+    asyncio.run(check_resubscribe())
+    for phrase in (
+        "Websocket connected!",
+        "got an exception sent 1000 (OK); then received 1000 (OK)",
+        "Connection closed",
+        "Recover subscriptions [{'event': 'subscribe', 'feed': 'open_orders'}]: waiting",
+        "Recover subscriptions [{'event': 'subscribe', 'feed': 'open_orders'}]: done",
+    ):
+        assert phrase in caplog.text
+
+    assert (
+        "{'event': 'alert', 'message': 'Failed to subscribe to authenticated feed'}"
+        not in caplog.text
+    )
