@@ -789,9 +789,9 @@ class User(KrakenFuturesBaseAPI):
             :linenos:
             :caption: Futures Trade: Get the user's open positions
 
-            >>> from kraken.futures import Trade
-            >>> trade = Trade(key="api-key", secret="secret-key")
-            >>> trade.get_open_positions()
+            >>> from kraken.futures import User
+            >>> user = User(key="api-key", secret="secret-key")
+            >>> user.get_open_positions()
             {
                 'result': 'success',
                 'openPositions': [
@@ -834,9 +834,9 @@ class User(KrakenFuturesBaseAPI):
             :linenos:
             :caption: Futures Trade: Get open orders
 
-            >>> from kraken.futures import Trade
-            >>> trade = Trade(key="api-key", secret="secret-key")
-            >>> trade.get_open_orders()
+            >>> from kraken.futures import User
+            >>> user = User(key="api-key", secret="secret-key")
+            >>> user.get_open_orders()
             {
                 'result': 'success',
                 'openOrders': [{
