@@ -118,7 +118,7 @@ python_version = "3.11"
 
 # junit_xml = "mypy.xml"
 files = ["kraken/**/*.py"]
-exclude = ["tests/*/*.py"]
+exclude = ["tests/**/*.py"]
 
 cache_dir = ".cache/mypy"
 sqlite_cache = true
@@ -221,10 +221,10 @@ select = [
   "FBT",   # boolean trap
   "PTH",   # flake8-use-pathlib
   "FURB",  # refurb
-  # "ERA",   # eradicate # commented-out code
+  # "ERA", # eradicate # commented-out code
   # "FIX", # flake8-fixme
   # "TD",  # flake8-todos
-  # "TRY",  # tryceratops # specify exception messages in class; not important
+  # "TRY", # tryceratops # specify exception messages in class; not important
 ]
 fixable = [
   "I",

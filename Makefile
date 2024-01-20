@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 # Copyright (C) 2023 Benjamin Thomas Schwertfeger
 # GitHub: https://github.com/btschwertfeger
+#
 
 PYTHON := venv/bin/python
 PYTEST := $(PYTHON) -m pytest
@@ -27,7 +28,7 @@ rebuild: clean build
 ##
 .PHONY: doc
 doc:
-	cd docs && make html
+	cd doc && make html
 
 ## ======= I N S T A L L A T I O N =======
 ## install	Install the package
