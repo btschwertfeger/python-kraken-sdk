@@ -787,7 +787,7 @@ class User(KrakenFuturesBaseAPI):
 
         .. code-block:: python
             :linenos:
-            :caption: Futures Trade: Get the user's open positions
+            :caption: Futures User: Get the user's open positions
 
             >>> from kraken.futures import User
             >>> user = User(key="api-key", secret="secret-key")
@@ -832,7 +832,7 @@ class User(KrakenFuturesBaseAPI):
 
         .. code-block:: python
             :linenos:
-            :caption: Futures Trade: Get open orders
+            :caption: Futures User: Get open orders
 
             >>> from kraken.futures import User
             >>> user = User(key="api-key", secret="secret-key")
@@ -926,11 +926,11 @@ class User(KrakenFuturesBaseAPI):
 
         .. code-block:: python
             :linenos:
-            :caption: Futures Trade: Check if trading is enabled on a subaccount
+            :caption: Futures User: Check if trading is enabled on a subaccount
 
-            >>> from kraken.futures import Trade
-            >>> trade = Trade(key="api-key", secret="secret-key")
-            >>> trade.set_trading_on_subaccount(
+            >>> from kraken.futures import User
+            >>> user = User(key="api-key", secret="secret-key")
+            >>> user.set_trading_on_subaccount(
             ...    subaccountUid="778387bh61b-f990-4128-16a7-f4ab669a9b",
             ... )
             {
@@ -967,11 +967,11 @@ class User(KrakenFuturesBaseAPI):
 
         .. code-block:: python
             :linenos:
-            :caption: Futures Trade: Dis-/Enable trading on a subaccount
+            :caption: Futures User: Dis-/Enable trading on a subaccount
 
-            >>> from kraken.futures import Trade
-            >>> trade = Trade(key="api-key", secret="secret-key")
-            >>> trade.set_trading_on_subaccount(
+            >>> from kraken.futures import User
+            >>> user = User(key="api-key", secret="secret-key")
+            >>> user.set_trading_on_subaccount(
             ...    subaccountUid="778387bh61b-f990-4128-16a7-f4ab669a9b",
             ...    trading_enabled=True
             ... )
