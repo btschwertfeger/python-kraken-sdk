@@ -534,7 +534,7 @@ def test_reconnect(
         "Recover public subscriptions []: done",
         "Recover authenticated subscriptions []: done",
         "Websocket connected!",
-        "'event': 'systemStatus', 'status': 'online', 'version': '1.9.1'}",
+        "'event': 'systemStatus', 'status': 'online', 'version': ",  # '1.9.x'}
         "'openOrders', 'event': 'subscriptionStatus', 'status': 'subscribed',",
         "'channelName': 'ticker', 'event': 'subscriptionStatus', 'pair': 'XBT/USD', 'status': 'subscribed', 'subscription': {'name': 'ticker'}",
         "got an exception sent 1000 (OK); then received 1000 (OK)",

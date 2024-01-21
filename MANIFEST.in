@@ -2,4 +2,11 @@
 # Copyright (C) 2023 Benjamin Thomas Schwertfeger
 # GitHub: https://github.com/btschwertfeger
 #
+
 include README.md LICENSE pyproject.toml
+
+graft kraken
+
+prune doc
+prune examples
+prune tests

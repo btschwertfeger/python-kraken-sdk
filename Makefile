@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 # Copyright (C) 2023 Benjamin Thomas Schwertfeger
 # GitHub: https://github.com/btschwertfeger
+#
 
 PYTHON := venv/bin/python
 PYTEST := $(PYTHON) -m pytest
@@ -27,7 +28,7 @@ rebuild: clean build
 ##
 .PHONY: doc
 doc:
-	cd docs && make html
+	cd doc && make html
 
 ## ======= I N S T A L L A T I O N =======
 ## install	Install the package
@@ -47,7 +48,7 @@ dev:
 ##
 .PHONY: test
 test:
-	@rm *.log || true
+	@rm .cache/tests/*.log || true
 	$(PYTEST) $(PYTEST_OPTS) $(TEST_DIR)
 
 .PHONY: tests
@@ -57,14 +58,14 @@ tests: test
 ##
 .PHONY: wip
 wip:
-	@rm *.log || true
+	@rm .cache/tests/*.log || true
 	$(PYTEST) -m "wip" -vv $(TEST_DIR)
 
 ## coverage		Run all tests and generate the coverage report
 ##
 .PHONY: coverage
 coverage:
-	@rm *.log || true
+	@rm .cache/tests/*.log || true
 	$(PYTEST) $(PYTEST_COV_OPTS) $(TEST_DIR)
 
 ## doctest	Run the documentation related tests
@@ -110,17 +111,23 @@ changelog:
 ##
 .PHONY: clean
 clean:
-	rm -rf build/ dist/ \
-		python_kraken_sdk.egg-info \
-		docs/_build \
+	rm -rf .cache \
 		.vscode \
-		.cache
+		dist/ \
+		doc/_build \
+		python_kraken_sdk.egg-info \
+	    build/
 
-	rm -f .coverage coverage.xml pytest.xml mypy.xml \
+	rm -f .coverage \
+		*.csv \
+		*.log \
+		*.zip \
+		coverage.xml \
 		kraken/_version.py \
-		*.log *.csv *.zip \
-		tests/*.zip tests/.csv \
-		python_kraken_sdk-*.whl
+		mypy.xml \
+		pytest.xml \
+		python_kraken_sdk-*.whl \
+		tests/*.zip
 
 	find tests -name "__pycache__" | xargs rm -rf
 	find kraken -name "__pycache__" | xargs rm -rf

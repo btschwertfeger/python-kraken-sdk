@@ -1,5 +1,26 @@
 # Changelog
 
+## [Unreleased](https://github.com/btschwertfeger/python-kraken-sdk/tree/HEAD)
+
+[Full Changelog](https://github.com/btschwertfeger/python-kraken-sdk/compare/v2.1.1...HEAD)
+
+**Fixed bugs:**
+
+- Futures re-subscribe to authenticated feed doesn't work [\#179](https://github.com/btschwertfeger/python-kraken-sdk/issues/179)
+
+## [v2.1.1](https://github.com/btschwertfeger/python-kraken-sdk/tree/v2.1.1) (2023-12-18)
+
+[Full Changelog](https://github.com/btschwertfeger/python-kraken-sdk/compare/v2.1.0...v2.1.1)
+
+**Fixed bugs:**
+
+- Futures re-subscribe to authenticated feed doesn't work [\#179](https://github.com/btschwertfeger/python-kraken-sdk/issues/179)
+- Fix "Futures re-subscribe to authenticated feed doesn't work" [\#180](https://github.com/btschwertfeger/python-kraken-sdk/pull/180) ([btschwertfeger](https://github.com/btschwertfeger))
+
+**Closed issues:**
+
+- Add support for trailing-stop and trailing-stop-limit order types for Spot REST [\#181](https://github.com/btschwertfeger/python-kraken-sdk/issues/181)
+
 ## [v2.1.0](https://github.com/btschwertfeger/python-kraken-sdk/tree/v2.1.0) (2023-12-07)
 
 [Full Changelog](https://github.com/btschwertfeger/python-kraken-sdk/compare/v2.0.0...v2.1.0)

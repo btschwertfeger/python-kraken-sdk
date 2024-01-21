@@ -26,6 +26,8 @@ from kraken.spot import (
 )
 
 FIXTURE_DIR: Path = Path(__file__).resolve().parent / "fixture"
+CACHE_DIR: Path = Path(__file__).resolve().parent.parent.parent / ".cache" / "tests"
+CACHE_DIR.mkdir(parents=True, exist_ok=True)
 
 
 def is_not_error(value: Any) -> bool:
@@ -57,7 +59,7 @@ class SpotWebsocketClientV1TestWrapper(KrakenSpotWSClientV1):
     ) -> None:
         super().__init__(key=key, secret=secret, callback=self.on_message)
         self.LOG.setLevel(logging.INFO)
-        fh = logging.FileHandler("spot_ws-v1.log", mode="a")
+        fh = logging.FileHandler(filename=CACHE_DIR / "spot_ws-v1.log", mode="a")
         fh.setLevel(logging.INFO)
         self.LOG.addHandler(fh)
 
@@ -90,7 +92,7 @@ class SpotWebsocketClientV2TestWrapper(KrakenSpotWSClientV2):
     ) -> None:
         super().__init__(key=key, secret=secret, callback=self.on_message, **kwargs)
         self.LOG.setLevel(logging.INFO)
-        fh = logging.FileHandler("spot_ws-v2.log", mode="a")
+        fh = logging.FileHandler(filename=CACHE_DIR / "spot_ws-v2.log", mode="a")
         fh.setLevel(logging.INFO)
         self.LOG.addHandler(fh)
 
@@ -145,12 +147,18 @@ class OrderbookClientV1Wrapper(OrderbookClientV1):
 
         log: str = ""
         try:
-            with Path("spot_orderbook-v1.log").open("r", encoding="utf-8") as logfile:
+            with Path(CACHE_DIR / "spot_orderbook-v1.log").open(
+                mode="r",
+                encoding="utf-8",
+            ) as logfile:
                 log = logfile.read()
         except FileNotFoundError:
             pass
 
-        with Path("spot_orderbook.log").open("w", encoding="utf-8") as logfile:
+        with Path(CACHE_DIR / "spot_orderbook.log").open(
+            mode="w",
+            encoding="utf-8",
+        ) as logfile:
             logfile.write(f"{log}\n{content}")
 
 
@@ -194,10 +202,16 @@ class OrderbookClientV2Wrapper(OrderbookClientV2):
 
         log: str = ""
         try:
-            with Path("spot_orderbook-2.log").open("r", encoding="utf-8") as logfile:
+            with Path(CACHE_DIR / "spot_orderbook-2.log").open(
+                mode="r",
+                encoding="utf-8",
+            ) as logfile:
                 log = logfile.read()
         except FileNotFoundError:
             pass
 
-        with Path("spot_orderbook.log").open("w", encoding="utf-8") as logfile:
+        with Path(CACHE_DIR / "spot_orderbook.log").open(
+            mode="w",
+            encoding="utf-8",
+        ) as logfile:
             logfile.write(f"{log}\n{json.dumps(content)}")

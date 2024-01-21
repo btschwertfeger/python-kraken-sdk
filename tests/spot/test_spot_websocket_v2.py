@@ -507,7 +507,8 @@ def test_reconnect(
         "Recover authenticated subscriptions []: done",
         "Websocket connected!",
         '{"channel": "status", "data": [{"api_version": "v2", "connection_id": ',
-        '"system": "online", "version": "2.0.0"}], "type": "update"}',
+        '"system": "online", "version": ',  # "2.0.x"
+        '"type": "update"}',
         '{"method": "subscribe", "result": {"channel": "ticker", "snapshot": true, "symbol": "BTC/USD"}, "success": true,',
         '"channel": "ticker", "type": "snapshot", "data": [{"symbol": "BTC/USD", ',
         "got an exception sent 1000 (OK); then received 1000 (OK)",

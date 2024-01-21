@@ -463,7 +463,16 @@ if __name__ == "__main__":
 
 # 🆕 Contributions
 
-… are welcome! - Please have a look at [CONTRIBUTION.md](./CONTRIBUTING.md).
+… are welcome - but:
+
+- First check if there is an existing issue or PR that addresses your
+  problem/solution. If not - create one first - before creating a PR.
+- Typo fixes, project configuration, CI, documentation or style/formatting PRs
+  will be rejected. Please create an issue for that.
+- PRs must provide a reasonable, easy to understand and maintain solution for an
+  existing problem. You may want to propose a solution when creating the issue
+  to discuss the approach before creating a PR.
+- Please have a look at [CONTRIBUTION.md](./CONTRIBUTING.md).
 
 ---
 
@@ -490,12 +499,11 @@ if __name__ == "__main__":
 
 - The version scheme is `<Major>.<Minor>.<Service Level>` where:
 
-  - **Major** will affect everything and there will be breaking changes in any
-    case. This could be for example a change to Python 3.11+ only.
+  - **Major** will affect everything and there will be breaking changes.
   - **Minor** introduces features and enhancements which may bring breaking
     changes in some cases. These breaking changes could be renaming or addition
     of parameters, change in order of parameters or even renaming a function.
-  - **Service Level** includes bug fixes, documentation or CI related changes.
+  - **Service Level** includes bug fixes, documentation and CI related changes.
 
 - Coding standards are not always followed to make arguments and function names
   as similar as possible to those of the Kraken API documentations.
