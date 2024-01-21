@@ -14,6 +14,9 @@ from typing import Any
 
 from kraken.futures import KrakenFuturesWSClient
 
+CACHE_DIR: Path = Path(__file__).resolve().parent.parent.parent / ".cache" / "tests"
+CACHE_DIR.mkdir(parents=True, exist_ok=True)
+
 
 def is_success(value: Any) -> bool:
     """
@@ -66,10 +69,16 @@ class FuturesWebsocketClientTestWrapper(KrakenFuturesWSClient):
 
         log: str = ""
         try:
-            with Path("futures_ws.log").open("r", encoding="utf-8") as logfile:
+            with Path(CACHE_DIR / "futures_ws.log").open(
+                mode="r",
+                encoding="utf-8",
+            ) as logfile:
                 log = logfile.read()
         except FileNotFoundError:
             pass
 
-        with Path("futures_ws.log").open("w", encoding="utf-8") as logfile:
+        with Path(CACHE_DIR / "futures_ws.log").open(
+            mode="w",
+            encoding="utf-8",
+        ) as logfile:
             logfile.write(f"{log}\n{message}")
