@@ -180,6 +180,22 @@ jobs:
       API_TOKEN: ${{ secrets.TEST_PYPI_API_TOKEN }}
 
   ## ===========================================================================
+  ##    Upload the python-kraken-sdk to Production PyPI
+  ##
+  UploadPyPI:
+    if: |
+      success() &&
+      github.actor == 'btschwertfeger' &&
+      github.event_name == 'release'
+    needs: [UploadTestPyPI]
+    name: Upload the current release to PyPI
+    uses: ./.github/workflows/_pypi_publish.yaml
+    with:
+      REPOSITORY_URL: https://upload.pypi.org/legacy/
+    secrets:
+      API_TOKEN: ${{ secrets.PYPI_API_TOKEN }}
+
+  ## ===========================================================================
   ##    Generates and uploads the coverage statistics to codecov
   ##
   CodeCov:
@@ -197,19 +213,3 @@ jobs:
       os: "ubuntu-latest"
       python-version: "3.11"
     secrets: inherit
-
-  ## ===========================================================================
-  ##    Upload the python-kraken-sdk to Production PyPI
-  ##
-  UploadPyPI:
-    if: |
-      success() &&
-      github.actor == 'btschwertfeger' &&
-      github.event_name == 'release'
-    needs: [UploadTestPyPI]
-    name: Upload the current release to PyPI
-    uses: ./.github/workflows/_pypi_publish.yaml
-    with:
-      REPOSITORY_URL: https://upload.pypi.org/legacy/
-    secrets:
-      API_TOKEN: ${{ secrets.PYPI_API_TOKEN }}
