@@ -183,6 +183,8 @@ jobs:
       github.ref == 'refs/heads/master' &&
       github.event_name == 'push'
     needs:
+      - Build
+      - Build-Doc
       - Test-Spot-Public
       - Test-Spot-Private
       - Test-Futures-Public
@@ -202,7 +204,13 @@ jobs:
       success() &&
       github.actor == 'btschwertfeger' &&
       github.event_name == 'release'
-    needs: [Test]
+    needs:
+      - Build
+      - Build-Doc
+      - Test-Spot-Public
+      - Test-Spot-Private
+      - Test-Futures-Public
+      - Test-Futures-Private
     name: Upload release to PyPI
     uses: ./.github/workflows/_pypi_publish.yaml
     with:
