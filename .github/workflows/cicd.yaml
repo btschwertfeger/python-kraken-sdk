@@ -158,44 +158,6 @@ jobs:
     secrets: inherit
 
   ## ===========================================================================
-  ##    Uploads the package to test.pypi.org on master if triggered by
-  ##    a regular commit/push.
-  ##
-  UploadTestPyPI:
-    if: |
-      success() &&
-      github.actor == 'btschwertfeger' &&
-      github.ref == 'refs/heads/master' &&
-      github.event_name == 'push'
-    needs:
-      - Test-Spot-Public
-      - Test-Spot-Private
-      - Test-Futures-Public
-      - Test-Futures-Private
-    name: Upload current development version to Test PyPI
-    uses: ./.github/workflows/_pypi_publish.yaml
-    with:
-      REPOSITORY_URL: https://test.pypi.org/legacy/
-    secrets:
-      API_TOKEN: ${{ secrets.TEST_PYPI_API_TOKEN }}
-
-  ## ===========================================================================
-  ##    Upload the python-kraken-sdk to Production PyPI
-  ##
-  UploadPyPI:
-    if: |
-      success() &&
-      github.actor == 'btschwertfeger' &&
-      github.event_name == 'release'
-    needs: [UploadTestPyPI]
-    name: Upload the current release to PyPI
-    uses: ./.github/workflows/_pypi_publish.yaml
-    with:
-      REPOSITORY_URL: https://upload.pypi.org/legacy/
-    secrets:
-      API_TOKEN: ${{ secrets.PYPI_API_TOKEN }}
-
-  ## ===========================================================================
   ##    Generates and uploads the coverage statistics to codecov
   ##
   CodeCov:
@@ -213,3 +175,41 @@ jobs:
       os: "ubuntu-latest"
       python-version: "3.11"
     secrets: inherit
+
+  ## ===========================================================================
+  ##    Uploads the package to test.pypi.org on master if triggered by
+  ##    a regular commit/push.
+  ##
+  UploadTestPyPI:
+    if: |
+      success() &&
+      github.actor == 'btschwertfeger' &&
+      github.ref == 'refs/heads/master' &&
+      github.event_name == 'push'
+    needs:
+      - Test-Spot-Public
+      - Test-Spot-Private
+      - Test-Futures-Public
+      - Test-Futures-Private
+    name: Upload development version to Test PyPI
+    uses: ./.github/workflows/_pypi_publish.yaml
+    with:
+      REPOSITORY_URL: https://test.pypi.org/legacy/
+    secrets:
+      API_TOKEN: ${{ secrets.TEST_PYPI_API_TOKEN }}
+
+  ## ===========================================================================
+  ##    Upload the python-kraken-sdk to Production PyPI
+  ##
+  UploadPyPI:
+    if: |
+      success() &&
+      github.actor == 'btschwertfeger' &&
+      github.event_name == 'release'
+    needs: [Test]
+    name: Upload release to PyPI
+    uses: ./.github/workflows/_pypi_publish.yaml
+    with:
+      REPOSITORY_URL: https://upload.pypi.org/legacy/
+    secrets:
+      API_TOKEN: ${{ secrets.PYPI_API_TOKEN }}
