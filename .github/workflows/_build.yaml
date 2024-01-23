@@ -35,6 +35,16 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install build
 
+      - name: Check Git status / workspace cleanness
+        run: |
+          if [[ -z "$(git status --porcelain)" ]]; then
+            echo "No changes found."
+          else
+            echo "Changes detected. Please commit or discard changes before publishing."
+            git status --porcelain
+            exit 1
+          fi
+
       - name: Build the package
         run: python -m build --outdir .
 

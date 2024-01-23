@@ -100,7 +100,7 @@ jobs:
   ##  (public endpoints)
   ##
   Test-Spot-Public:
-    needs: [Build]
+    needs: [Pre-Commit]
     uses: ./.github/workflows/_test_spot_public.yaml
     strategy:
       fail-fast: false
@@ -113,7 +113,7 @@ jobs:
   ##
   ##  (private endpoints)
   Test-Spot-Private:
-    needs: [Build]
+    needs: [Pre-Commit]
     uses: ./.github/workflows/_test_spot_private.yaml
     strategy:
       max-parallel: 1 # to avoid failing tests because of API Rate limits
@@ -131,7 +131,7 @@ jobs:
   ##
   ##  (public endpoints)
   Test-Futures-Public:
-    needs: [Build]
+    needs: [Pre-Commit]
     uses: ./.github/workflows/_test_futures_public.yaml
     strategy:
       fail-fast: false
@@ -144,7 +144,7 @@ jobs:
   ##
   ##  (private endpoints)
   Test-Futures-Private:
-    needs: [Build]
+    needs: [Pre-Commit]
     uses: ./.github/workflows/_test_futures_private.yaml
     strategy:
       max-parallel: 1 # to avoid failing tests because of API Rate limits
@@ -165,11 +165,7 @@ jobs:
       success() &&
       github.actor == 'btschwertfeger' &&
       github.event_name == 'push'
-    needs:
-      - Test-Spot-Public
-      - Test-Spot-Private
-      - Test-Futures-Public
-      - Test-Futures-Private
+    needs: [Pre-Commit]
     uses: ./.github/workflows/_codecov.yaml
     with:
       os: "ubuntu-latest"
