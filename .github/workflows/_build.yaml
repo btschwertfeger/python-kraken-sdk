@@ -49,14 +49,13 @@ jobs:
       - name: Check git status (Windows)
         if: runner.os == 'Windows'
         run: |
-          git status --porcelain | findstr /R "^[ ]" > nul
-          if %errorlevel% equ 0 (
-            echo No changes found.
-          ) else (
-            echo Changes detected. Please commit or discard changes before publishing.
-            git status --porcelain
-            exit /b 1
-          )
+          if (-not (git status --porcelain)) {
+              Write-Output "No changes found."
+          } else {
+              Write-Output "Changes detected. Please commit or discard changes before publishing."
+              git status --porcelain
+              exit 1
+          }
 
       - name: Build the package
         run: python -m build --outdir .
