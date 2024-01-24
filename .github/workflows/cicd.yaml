@@ -162,9 +162,8 @@ jobs:
   ##
   CodeCov:
     if: |
-      success() &&
-      github.actor == 'btschwertfeger' &&
-      github.event_name == 'push'
+      (success() && github.actor == 'btschwertfeger')
+      && (github.event_name == 'push' || github.event_name == "release")
     needs: [Pre-Commit]
     uses: ./.github/workflows/_codecov.yaml
     with:
@@ -178,13 +177,16 @@ jobs:
   ##
   UploadTestPyPI:
     if: |
-      success() &&
-      github.actor == 'btschwertfeger' &&
-      github.ref == 'refs/heads/master' &&
-      github.event_name == 'push'
+      (
+        success()
+        && github.actor == 'btschwertfeger'
+        && github.ref == 'refs/heads/master'
+      )
+      && (github.event_name == 'push' || github.event_name == 'release')
     needs:
       - Build
       - Build-Doc
+      - CodeQL
       - Test-Spot-Public
       - Test-Spot-Private
       - Test-Futures-Public
@@ -207,6 +209,7 @@ jobs:
     needs:
       - Build
       - Build-Doc
+      - CodeQL
       - Test-Spot-Public
       - Test-Spot-Private
       - Test-Futures-Public

@@ -32,7 +32,7 @@ jobs:
         with:
           fetch-depth: 0 # IMPORTANT: otherwise the current tag does not get fetched and the build version gets worse
 
-      - name: Check Git status / workspace cleanness
+      - name: Check git status
         run: |
           if [[ -z "$(git status --porcelain)" ]]; then
             echo "No changes found."

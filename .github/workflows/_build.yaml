@@ -35,7 +35,8 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install build
 
-      - name: Check Git status / workspace cleanness
+      - name: Check git status (not Windows)
+        if: runner.os != 'Windows'
         run: |
           if [[ -z "$(git status --porcelain)" ]]; then
             echo "No changes found."
@@ -44,6 +45,18 @@ jobs:
             git status --porcelain
             exit 1
           fi
+
+      - name: Check git status (Windows)
+        if: runner.os == 'Windows'
+        run: |
+          git status --porcelain | findstr /R "^[ ]" > nul
+          if %errorlevel% equ 0 (
+            echo No changes found.
+          ) else (
+            echo Changes detected. Please commit or discard changes before publishing.
+            git status --porcelain
+            exit /b 1
+          )
 
       - name: Build the package
         run: python -m build --outdir .
