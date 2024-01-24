@@ -163,7 +163,7 @@ jobs:
   CodeCov:
     if: |
       (success() && github.actor == 'btschwertfeger')
-      && (github.event_name == 'push' || github.event_name == "release")
+      && (github.event_name == 'push' || github.event_name == 'release')
     needs: [Pre-Commit]
     uses: ./.github/workflows/_codecov.yaml
     with:
