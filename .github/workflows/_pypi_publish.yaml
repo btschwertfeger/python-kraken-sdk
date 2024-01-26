@@ -42,9 +42,6 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install build
 
-      - name: Build the package
-        run: python -m build .
-
       - name: Check git status
         run: |
           if [[ -z "$(git status --porcelain)" ]]; then
@@ -54,6 +51,9 @@ jobs:
             git status --porcelain
             exit 1
           fi
+
+      - name: Build the package
+        run: python -m build .
 
       - name: Publish package distributions to PyPI (optional - testpypi)
         uses: pypa/gh-action-pypi-publish@release/v1
