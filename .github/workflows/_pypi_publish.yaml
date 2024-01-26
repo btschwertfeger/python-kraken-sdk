@@ -32,16 +32,6 @@ jobs:
         with:
           fetch-depth: 0 # IMPORTANT: otherwise the current tag does not get fetched and the build version gets worse
 
-      - name: Check git status
-        run: |
-          if [[ -z "$(git status --porcelain)" ]]; then
-            echo "No changes found."
-          else
-            echo "Changes detected. Please commit or discard changes before publishing."
-            git status --porcelain
-            exit 1
-          fi
-
       - name: Set up Python 3.11
         uses: actions/setup-python@v5
         with:
@@ -54,6 +44,16 @@ jobs:
 
       - name: Build the package
         run: python -m build .
+
+      - name: Check git status
+        run: |
+          if [[ -z "$(git status --porcelain)" ]]; then
+            echo "No changes found."
+          else
+            echo "Changes detected. Please commit or discard changes before publishing."
+            git status --porcelain
+            exit 1
+          fi
 
       - name: Publish package distributions to PyPI (optional - testpypi)
         uses: pypa/gh-action-pypi-publish@release/v1
