@@ -164,7 +164,11 @@ jobs:
     if: |
       (success() && github.actor == 'btschwertfeger')
       && (github.event_name == 'push' || github.event_name == 'release')
-    needs: [Pre-Commit]
+    needs:
+      - Test-Spot-Public
+      - Test-Spot-Private
+      - Test-Futures-Public
+      - Test-Futures-Private
     uses: ./.github/workflows/_codecov.yaml
     with:
       os: "ubuntu-latest"
@@ -187,10 +191,7 @@ jobs:
       - Build
       - Build-Doc
       - CodeQL
-      - Test-Spot-Public
-      - Test-Spot-Private
-      - Test-Futures-Public
-      - Test-Futures-Private
+      - CodeCov
     name: Upload development version to Test PyPI
     uses: ./.github/workflows/_pypi_publish.yaml
     with:
@@ -210,10 +211,7 @@ jobs:
       - Build
       - Build-Doc
       - CodeQL
-      - Test-Spot-Public
-      - Test-Spot-Private
-      - Test-Futures-Public
-      - Test-Futures-Private
+      - CodeCov
     name: Upload release to PyPI
     uses: ./.github/workflows/_pypi_publish.yaml
     with:
