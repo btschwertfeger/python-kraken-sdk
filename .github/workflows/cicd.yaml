@@ -48,7 +48,7 @@ on:
     branches:
       - "**"
   schedule:
-    - cron: "24 7 */7 * *"
+    - cron: "20 16 */7 * *"
   release:
     types: [created]
 
