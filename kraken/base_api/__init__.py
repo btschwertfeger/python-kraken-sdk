@@ -506,7 +506,7 @@ class KrakenFuturesBaseAPI:
             This is used for example when requesting an export of the trade
             history as .zip archive.
         :type return_raw: bool, optional
-        :raise kraken.exceptions.KrakenException.*: If the response contains
+        :raise kraken.exceptions.*: If the response contains
             errors
         :return: The response
         :rtype: dict[str, Any] | list[dict[str, Any]] | list[str] | requests.Response
@@ -564,9 +564,11 @@ class KrakenFuturesBaseAPI:
             return self.__check_response_data(
                 response=self.__session.request(
                     method=METHOD,
-                    url=f"{self.url}{uri}"
-                    if not query_string
-                    else f"{self.url}{uri}?{query_string}",
+                    url=(
+                        f"{self.url}{uri}"
+                        if not query_string
+                        else f"{self.url}{uri}?{query_string}"
+                    ),
                     headers=HEADERS,
                     timeout=TIMEOUT,
                 ),
