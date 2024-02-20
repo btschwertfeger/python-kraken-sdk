@@ -69,9 +69,9 @@ class KrakenSpotWSClientBase(KrakenSpotBaseAPI):
         self.__callback: Optional[Callable] = callback
         self.exception_occur: bool = False
         self._pub_conn: Optional[ConnectSpotWebsocketV1 | ConnectSpotWebsocketV2] = None
-        self._priv_conn: Optional[
-            ConnectSpotWebsocketV1 | ConnectSpotWebsocketV2
-        ] = None
+        self._priv_conn: Optional[ConnectSpotWebsocketV1 | ConnectSpotWebsocketV2] = (
+            None
+        )
 
         self.__connect(version=api_version, beta=beta, no_public=no_public)
 
@@ -90,9 +90,9 @@ class KrakenSpotWSClientBase(KrakenSpotBaseAPI):
         :param version: The Websocket API version to use (one of ``v1``, ``v2``)
         :type version: str
         """
-        ConnectSpotWebsocket: Type[ConnectSpotWebsocketV1] | Type[
-            ConnectSpotWebsocketV2
-        ]
+        ConnectSpotWebsocket: (
+            Type[ConnectSpotWebsocketV1] | Type[ConnectSpotWebsocketV2]
+        )
 
         if version == "v1":
             ConnectSpotWebsocket = ConnectSpotWebsocketV1
@@ -171,7 +171,7 @@ class KrakenSpotWSClientBase(KrakenSpotBaseAPI):
     def get_ws_token(self: KrakenSpotWSClientBase) -> dict:
         """
         Get the authentication token to establish the authenticated
-        websocket connection. This is used internally ond in moste cases not
+        websocket connection. This is used internally and in most cases not
         needed outside.
 
         - https://docs.kraken.com/rest/#tag/Websockets-Authentication

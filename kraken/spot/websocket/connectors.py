@@ -220,7 +220,9 @@ class ConnectSpotWebsocketBase:
                 if task.exception():
                     exception_occur = True
                     traceback.print_stack()
-                    message: str = f"{task} got an exception {task.exception()}\n {task.get_stack()}"
+                    message: str = (
+                        f"{task} got an exception {task.exception()}\n {task.get_stack()}"
+                    )
                     self.LOG.warning(message)
                     for process in pending:
                         self.LOG.warning("pending %s", process)
@@ -348,7 +350,9 @@ class ConnectSpotWebsocketV1(ConnectSpotWebsocketBase):
             it is set to ``True`` - which is when the connection is ready)
         :type event: asyncio.Event
         """
-        log_msg: str = f'Recover {"authenticated" if self.is_auth else "public"} subscriptions {self._subscriptions}'
+        log_msg: str = (
+            f'Recover {"authenticated" if self.is_auth else "public"} subscriptions {self._subscriptions}'
+        )
         self.LOG.info("%s: waiting", log_msg)
         await event.wait()
 
@@ -504,7 +508,9 @@ class ConnectSpotWebsocketV2(ConnectSpotWebsocketBase):
             it is set to ``True`` - which is when the connection is ready)
         :type event: asyncio.Event
         """
-        log_msg: str = f'Recover {"authenticated" if self.is_auth else "public"} subscriptions {self._subscriptions}'
+        log_msg: str = (
+            f'Recover {"authenticated" if self.is_auth else "public"} subscriptions {self._subscriptions}'
+        )
         self.LOG.info("%s: waiting", log_msg)
         await event.wait()
 

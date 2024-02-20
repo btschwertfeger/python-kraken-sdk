@@ -115,7 +115,7 @@ class Trade(KrakenSpotBaseAPI):
             ``stop-loss-limit``, ``take-profit``, and ``take-profit-limit``
         :type price: str | float, optional
         :param price2: The limit price for ``stop-loss-limit`` and
-            ``take-profit-limit`` orders The price2 can also be set to absolut
+            ``take-profit-limit`` orders The price2 can also be set to absolute
             or relative changes.
                 * Prefixed using ``+`` or ``-`` defines the change in the quote
                   asset
@@ -272,7 +272,7 @@ class Trade(KrakenSpotBaseAPI):
                 }
             }
 
-            ''' The price2 and close_price2 can also be set to absolut or
+            ''' The price2 and close_price2 can also be set to absolute or
             relative changes.
                 * Prefixed using "+" or "-" defines the change in the quote
                   asset
@@ -297,9 +297,11 @@ class Trade(KrakenSpotBaseAPI):
             "ordertype": ordertype,
             "type": side,
             "pair": pair,
-            "volume": volume
-            if not truncate
-            else self.truncate(amount=volume, amount_type="volume", pair=pair),
+            "volume": (
+                volume
+                if not truncate
+                else self.truncate(amount=volume, amount_type="volume", pair=pair)
+            ),
             "stp_type": stptype,
             "starttm": starttm,
             "validate": validate,

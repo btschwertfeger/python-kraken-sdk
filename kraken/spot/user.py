@@ -1082,7 +1082,7 @@ class User(KrakenSpotBaseAPI):
         :type id_: str
         :param timeout: Timeout for that request, default: ``10`` seconds
         :type timeout: int, optional
-        :return: The reponse - a zipped report
+        :return: The response - a zipped report
         :rtype: requests.Response
 
         .. code-block:: python

@@ -12,4 +12,4 @@ from kraken.futures.trade import Trade
 from kraken.futures.user import User
 from kraken.futures.ws_client import KrakenFuturesWSClient
 
-__all__ = ["Funding", "Market", "Trade", "User", "KrakenFuturesWSClient"]
+__all__ = ["Funding", "KrakenFuturesWSClient", "Market", "Trade", "User"]
