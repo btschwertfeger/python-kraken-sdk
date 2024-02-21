@@ -97,6 +97,7 @@ def test_create_order(futures_demo_trade) -> None:
             limitPrice=1,
             stopPrice=10,
             reduceOnly=True,
+            processBefore="3033-11-08T19:56:35.441899Z",
         )
 
     with suppress(KrakenInsufficientAvailableFundsError):
@@ -202,6 +203,7 @@ def test_create_batch_order(futures_demo_trade) -> None:
                         "cliOrdId": "my_client_id",
                     },
                 ],
+                processBefore="3033-11-08T19:56:35.441899Z",
             ),
         )
 
@@ -223,6 +225,7 @@ def test_edit_order(futures_demo_trade) -> None:
             cliOrdId="myclientorderid",
             size=111.0,
             stopPrice=1000,
+            processBefore="3033-11-08T19:56:35.441899Z",
         ),
     )
 
@@ -246,7 +249,12 @@ def test_cancel_order(futures_demo_trade) -> None:
     """
     Checks the ``cancel_order`` endpoint.
     """
-    assert is_success(futures_demo_trade.cancel_order(cliOrdId="my_another_client_id"))
+    assert is_success(
+        futures_demo_trade.cancel_order(
+            cliOrdId="my_another_client_id",
+            processBefore="3033-11-08T19:56:35.441899Z",
+        ),
+    )
     assert is_success(futures_demo_trade.cancel_order(order_id="1234"))
 
 
