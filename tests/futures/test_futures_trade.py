@@ -271,3 +271,25 @@ def test_cancel_all_orders(futures_demo_trade) -> None:
     """
     assert is_success(futures_demo_trade.cancel_all_orders(symbol="pi_xbtusd"))
     assert is_success(futures_demo_trade.cancel_all_orders())
+
+
+@pytest.mark.futures()
+@pytest.mark.futures_auth()
+@pytest.mark.futures_trade()
+def test_get_max_order_size(futures_auth_trade) -> None:
+    """
+    Checks the ``cancel_all_orders`` endpoint.
+    """
+    assert is_success(
+        futures_auth_trade.get_max_order_size(
+            orderType="lmt",
+            symbol="PF_XBTUSD",
+            limitPrice=10000,
+        ),
+    )
+    assert is_success(
+        futures_auth_trade.get_max_order_size(
+            orderType="mkt",
+            symbol="PF_XBTUSD",
+        ),
+    )

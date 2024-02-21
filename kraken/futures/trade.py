@@ -730,5 +730,43 @@ class Trade(KrakenFuturesBaseAPI):
             extra_params=extra_params,
         )
 
+    def get_max_order_size(
+        self: Trade,
+        orderType: str,
+        symbol: str,
+        limitPrice: Optional[float] = None,
+        *,
+        extra_params: Optional[dict] = None,
+    ) -> dict:
+        """
+        Retrieve the maximum order price for a specific symbol. Can be adjusted
+        by ``limitPrice``. This endpoint only supports multi-collateral futures.
+
+        Requires at least the ``General API - Read Access`` permission in the
+        API key settings.
+
+        - https://docs.futures.kraken.com/#http-api-trading-v3-api-order-management-get-maximum-order-size
+
+        :param orderType: ``lmt`` or ``mkt``
+        :type orderType: str
+        :param symbol: The symbol to filter for
+        :type symbol: str
+        :param limitPrice: Limit price if ``orderType == lmt`` , defaults to
+            None
+        :type limitPrice: Optional[float], optional
+        """
+        params: dict = {"orderType": orderType, "symbol": symbol}
+
+        if defined(limitPrice) and orderType == "lmt":
+            params["limitPrice"] = limitPrice
+
+        return self._request(  # type: ignore[return-value]
+            method="GET",
+            uri="/derivatives/api/v3/initialmargin/maxordersize",
+            query_params=params,
+            auth=True,
+            extra_params=extra_params,
+        )
+
 
 __all__ = ["Trade"]
