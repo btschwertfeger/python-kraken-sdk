@@ -36,7 +36,7 @@ def is_not_error(value: Any) -> bool:
 
 
 async def async_wait(seconds: float = 1.0) -> None:
-    """Function that waits for ``seconds`` - asynchron."""
+    """Function that waits for ``seconds`` - asynchronous."""
     start: float = time()
     while time() - seconds < start:
         await sleep(0.2)

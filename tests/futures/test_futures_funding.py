@@ -18,12 +18,13 @@ from .helper import is_success
 @pytest.mark.futures()
 @pytest.mark.futures_auth()
 @pytest.mark.futures_funding()
+@pytest.mark.skip(reason="Too much data, read time out")
 def test_get_historical_funding_rates(futures_demo_funding: Funding) -> None:
     """
     Checks the ``get_historical_funding_rates`` function.
     """
     assert is_success(
-        futures_demo_funding.get_historical_funding_rates(symbol="PF_SOLUSD"),
+        futures_demo_funding.get_historical_funding_rates(symbol="PF_XBTUSD"),
     )
 
 

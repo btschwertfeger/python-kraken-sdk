@@ -316,7 +316,7 @@ The Kraken Futures API documentation can be found here:
 ## Futures REST API
 
 As the Spot API, Kraken also offers a REST API for Futures. Examples on how to
-use the python-kraken-sdk fot Futures are shown in
+use the python-kraken-sdk for Futures are shown in
 `examples/futures_examples.py` and listed in a shorter ways below.
 
 ```python

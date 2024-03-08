@@ -102,7 +102,7 @@ class Staking(KrakenSpotBaseAPI):
         """
         return self._request(  # type: ignore[return-value]
             method="POST",
-            uri="/private/Stake",
+            uri="/0/private/Stake",
             params={"asset": asset, "amount": amount, "method": method},
             auth=True,
             extra_params=extra_params,
@@ -154,7 +154,7 @@ class Staking(KrakenSpotBaseAPI):
 
         return self._request(  # type: ignore[return-value]
             method="POST",
-            uri="/private/Unstake",
+            uri="/0/private/Unstake",
             params=params,
             auth=True,
             extra_params=extra_params,
@@ -219,7 +219,7 @@ class Staking(KrakenSpotBaseAPI):
         """
         return self._request(  # type: ignore[return-value]
             method="POST",
-            uri="/private/Staking/Assets",
+            uri="/0/private/Staking/Assets",
             auth=True,
             extra_params=extra_params,
         )
@@ -262,7 +262,7 @@ class Staking(KrakenSpotBaseAPI):
         """
         return self._request(  # type: ignore[return-value]
             method="POST",
-            uri="/private/Staking/Pending",
+            uri="/0/private/Staking/Pending",
             auth=True,
             extra_params=extra_params,
         )
@@ -308,7 +308,7 @@ class Staking(KrakenSpotBaseAPI):
         """
         return self._request(  # type: ignore[return-value]
             method="POST",
-            uri="/private/Staking/Transactions",
+            uri="/0/private/Staking/Transactions",
             auth=True,
             extra_params=extra_params,
         )

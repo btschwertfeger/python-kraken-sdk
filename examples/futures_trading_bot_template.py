@@ -135,7 +135,7 @@ class ManagedBot:
         Instantiates the trading strategy/algorithm and subscribes to the
         desired websocket feeds. Run the loop while no exception occur.
 
-        Thi variable `exception_occur` which is an attribute of the
+        The variable `exception_occur` which is an attribute of the
         KrakenFuturesWSClient can be set individually but is also being set to
         `True` if the websocket connection has some fatal error. This is used to
         exit the asyncio loop - but you can also apply your own reconnect rules.

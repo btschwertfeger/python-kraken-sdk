@@ -18,12 +18,12 @@ from kraken.spot.websocket_v2 import KrakenSpotWSClientV2
 
 __all__ = [
     "Funding",
+    "KrakenSpotWSClientV1",
+    "KrakenSpotWSClientV2",
     "Market",
+    "OrderbookClientV1",
+    "OrderbookClientV2",
     "Staking",
     "Trade",
     "User",
-    "OrderbookClientV1",
-    "OrderbookClientV2",
-    "KrakenSpotWSClientV1",
-    "KrakenSpotWSClientV2",
 ]
