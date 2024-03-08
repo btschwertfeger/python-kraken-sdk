@@ -8,6 +8,7 @@
 
 from contextlib import suppress
 from time import sleep
+from typing import Generator
 
 import pytest
 
@@ -17,7 +18,7 @@ from .helper import is_success
 
 
 @pytest.fixture(autouse=True)
-def _run_before_and_after_tests(futures_demo_trade) -> None:
+def _run_before_and_after_tests(futures_demo_trade) -> Generator:
     """
     Fixture that ensures all orders are cancelled after test.
     """
@@ -65,22 +66,21 @@ def test_get_orders_status(futures_demo_trade) -> None:
     """
     assert is_success(
         futures_demo_trade.get_orders_status(
-            cliOrdIds=[
-                "2c611222-bfe6-42d1-9f55-77bddc01a313",
-                "fc589be9-5095-48f0-b6f1-a2dfad6d9677",
+            orderIds=[
+                "bcaaefce-27a3-44b4-b13a-19df21e3f087",
+                "685d5a1a-23eb-450c-bf17-1e4ab5c6fe8a",
             ],
         ),
     )
-    # FIXME: (Feb. 21, 2024) The Kraken documentation lists this as ok, but this
-    #        somehow returns 500 error.
-    # assert is_success(
-    #     futures_demo_trade.get_orders_status(
-    #         orderIds=[
-    #             "d47e7fb4-aed0-4f3d-987b-9e3ca78ba74e",
-    #             "fc589be9-5095-48f0-b6f1-a2dfad6d9677",
-    #         ],
-    #     ),
-    # )
+
+    assert is_success(
+        futures_demo_trade.get_orders_status(
+            cliOrdIds=[
+                "bcaaefce-27a3-44b4-b13a-19df21e3f087",
+                "685d5a1a-23eb-450c-bf17-1e4ab5c6fe8a",
+            ],
+        ),
+    )
 
 
 @pytest.mark.futures()
@@ -101,6 +101,7 @@ def test_create_order(futures_demo_trade) -> None:
             reduceOnly=True,
         )
 
+    # FIXME: why are these commented out?
     # with suppress(KrakenInsufficientAvailableFundsError):
     #     futures_demo_trade.create_order(
     #         orderType="take_profit",
@@ -135,8 +136,7 @@ def test_create_order(futures_demo_trade) -> None:
 @pytest.mark.futures_trade()
 def test_create_order_failing(futures_demo_trade) -> None:
     """
-    Checks ``create_order`` endpoint to fail when using invalid
-    parameters.
+    Checks ``create_order`` endpoint to fail when using invalid parameters.
     """
     with pytest.raises(
         ValueError,
@@ -215,15 +215,16 @@ def test_edit_order(futures_demo_trade) -> None:
     """
     Checks the ``edit_order`` endpoint.
     """
-    # FIXME: (Feb. 21, 2024) The Kraken documentation lists this as ok, but this
-    #        somehow returns 500 error.
-    # assert is_success(
-    #     futures_demo_trade.edit_order(orderId="my_another_client_id", limitPrice=3),
-    # )
+    assert is_success(
+        futures_demo_trade.edit_order(
+            orderId="685d5a1a-23eb-450c-bf17-1e4ab5c6fe8a",
+            limitPrice=3,
+        ),
+    )
 
     assert is_success(
         futures_demo_trade.edit_order(
-            cliOrdId="myclientorderid",
+            cliOrdId="685d5a1a-23eb-450c-bf17-1e4ab5c6fe8a",
             size=111.0,
             stopPrice=1000,
         ),
@@ -235,8 +236,7 @@ def test_edit_order(futures_demo_trade) -> None:
 @pytest.mark.futures_trade()
 def test_edit_order_failing(futures_demo_trade) -> None:
     """
-    Checks if the ``edit_order`` endpoint fails when using invalid
-    parameters.
+    Checks if the ``edit_order`` endpoint fails when using invalid parameters.
     """
     with pytest.raises(ValueError, match=r"Either orderId or cliOrdId must be set!"):
         futures_demo_trade.edit_order()
@@ -249,10 +249,16 @@ def test_cancel_order(futures_demo_trade) -> None:
     """
     Checks the ``cancel_order`` endpoint.
     """
-    assert is_success(futures_demo_trade.cancel_order(cliOrdId="my_another_client_id"))
-    # FIXME: (Feb. 21, 2024) The Kraken documentation lists this as ok, but this
-    #        somehow returns 500 error.
-    # assert is_success(futures_demo_trade.cancel_order(order_id="1234"))
+    assert is_success(
+        futures_demo_trade.cancel_order(
+            cliOrdId="685d5a1a-23eb-450c-bf17-1e4ab5c6fe8a",
+        ),
+    )
+    assert is_success(
+        futures_demo_trade.cancel_order(
+            order_id="685d5a1a-23eb-450c-bf17-1e4ab5c6fe8a",
+        ),
+    )
 
 
 @pytest.mark.futures()

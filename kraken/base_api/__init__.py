@@ -14,8 +14,8 @@ import json
 import time
 import urllib.parse
 from functools import wraps
-from typing import Any, Callable, Optional, Type, TypeVar
-from urllib.parse import urljoin
+from typing import Any, Callable, Final, Optional, Type, TypeVar
+from urllib.parse import urlencode, urljoin
 from uuid import uuid1
 
 import requests
@@ -182,9 +182,9 @@ class KrakenSpotBaseAPI:
     :type sandbox: bool, optional
     """
 
-    URL: str = "https://api.kraken.com"
-    API_V: str = "/0"
-    TIMEOUT: int = 10
+    URL: Final[str] = "https://api.kraken.com"
+    API_V: Final[str] = "/0"
+    TIMEOUT: Final[int] = 10
 
     def __init__(
         self: KrakenSpotBaseAPI,
@@ -511,10 +511,9 @@ class KrakenFuturesBaseAPI:
         :return: The response
         :rtype: dict[str, Any] | list[dict[str, Any]] | list[str] | requests.Response
         """
-        METHOD: str = method.upper()
+        METHOD: Final[str] = method.upper()
+        URL: Final[str] = urljoin(self.url, uri)
 
-        post_string: str = ""
-        listed_params: list[str]
         if defined(extra_params):
             extra_params = (
                 json.loads(extra_params)
@@ -524,22 +523,16 @@ class KrakenFuturesBaseAPI:
         else:
             extra_params = {}
 
-        if defined(post_params):
-            post_params |= extra_params
-            listed_params = [f"{key}={post_params[key]}" for key in sorted(post_params)]
-            post_string = "&".join(listed_params)
-        else:
+        if post_params is None:
             post_params = {}
             post_params |= extra_params
 
-        query_string: str = ""
-        if query_params is not None:
-            listed_params = [
-                f"{key}={query_params[key]}" for key in sorted(query_params)
-            ]
-            query_string = "&".join(listed_params).replace(" ", "%20")
-        else:
-            query_params = {}
+        encoded_payload: Final[str] = urlencode(post_params, doseq=True)
+
+        # post_string: Final[str] = json.dumps(post_params) if post_params else ""
+        query_string = (
+            "" if query_params is None else urlencode(query_params, doseq=True)
+        )
 
         TIMEOUT: int = self.TIMEOUT if timeout == 10 else timeout
         HEADERS: dict = {}
@@ -554,21 +547,17 @@ class KrakenFuturesBaseAPI:
                     "APIKey": self.__key,
                     "Authent": self._get_kraken_futures_signature(
                         uri,
-                        query_string + post_string,
+                        query_string + encoded_payload,
                         nonce,
                     ),
                 },
             )
-
         if METHOD in {"GET", "DELETE"}:
             return self.__check_response_data(
                 response=self.__session.request(
                     method=METHOD,
-                    url=(
-                        f"{self.url}{uri}"
-                        if not query_string
-                        else f"{self.url}{uri}?{query_string}"
-                    ),
+                    url=URL,
+                    params=query_string,
                     headers=HEADERS,
                     timeout=TIMEOUT,
                 ),
@@ -579,8 +568,8 @@ class KrakenFuturesBaseAPI:
             return self.__check_response_data(
                 response=self.__session.request(
                     method=METHOD,
-                    url=f"{self.url}{uri}",
-                    params=str.encode(post_string),
+                    url=URL,
+                    params=encoded_payload,
                     headers=HEADERS,
                     timeout=TIMEOUT,
                 ),
@@ -590,8 +579,8 @@ class KrakenFuturesBaseAPI:
         return self.__check_response_data(
             response=self.__session.request(
                 method=METHOD,
-                url=f"{self.url}{uri}?{post_string}",
-                data=str.encode(post_string),
+                url=URL,
+                data=encoded_payload,
                 headers=HEADERS,
                 timeout=TIMEOUT,
             ),
