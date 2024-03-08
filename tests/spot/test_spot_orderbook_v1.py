@@ -12,7 +12,6 @@ from __future__ import annotations
 
 import asyncio
 import json
-import sys
 from collections import OrderedDict
 from typing import TYPE_CHECKING, Any, Optional
 from unittest import mock
@@ -37,7 +36,7 @@ def test_create_public_bot(caplog: Any) -> None:
 
     async def create_bot() -> None:
         orderbook: OrderbookClientV1Wrapper = OrderbookClientV1Wrapper()
-        await async_wait(seconds=4 if sys.platform != "win32" else 10)
+        await async_wait(seconds=10)
 
         assert orderbook.depth == 10
 
