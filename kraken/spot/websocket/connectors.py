@@ -604,7 +604,7 @@ class ConnectSpotWebsocketV2(ConnectSpotWebsocketBase):
                 # Kraken somehow responds with this key - but this is not
                 # accepted when subscribing (Dec 2023).
                 if (
-                    subscription_copy["method"] == "unsubscribe"
+                    subscription_copy["method"] in {"subscribe", "unsubscribe"}
                     and "maxratecount" in subscription["result"]
                 ):
                     del subscription_copy["result"]["maxratecount"]
