@@ -605,7 +605,7 @@ class User(KrakenFuturesBaseAPI):
         extra_params: Optional[dict] = None,
     ) -> dict:
         """
-        Retriev information about the user-specific order events including
+        Retrieve information about the user-specific order events including
         opened, closed, filled, etc. The returned ``continuation_token`` can be
         used to request more data.
 

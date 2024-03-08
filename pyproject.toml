@@ -13,6 +13,9 @@ dynamic = ["version"]
 authors = [
   { name = "Benjamin Thomas Schwertfeger", email = "contact@b-schwertfeger.de" },
 ]
+maintainers = [
+  { name = "Benjamin Thomas Schwertfeger", email = "contact@b-schwertfeger.de" },
+]
 description = "Collection of REST and websocket clients to interact with the Kraken cryptocurrency exchange."
 readme = "README.md"
 license = { file = "LICENSE" }
@@ -29,6 +32,7 @@ classifiers = [
   "Topic :: Utilities",
   "Programming Language :: Python",
   "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
   "Framework :: AsyncIO",
   "Natural Language :: English",
   "Operating System :: MacOS",
@@ -111,6 +115,10 @@ omit = ["*tests*"]
 exclude_lines = ["coverage: disable", "if TYPE_CHECKING:"]
 skip_empty = true
 
+[tool.codespell]
+skip = "CHANGELOG.md,examples/market_client_example.ipynb"
+check-filenames = true
+
 # ========= T Y P I N G ========================================================
 #
 [tool.mypy]
@@ -179,7 +187,13 @@ strict = true
 # https://beta.ruff.rs/docs/rules/
 # https://beta.ruff.rs/docs/settings/
 # src = ["kraken"]
+cache-dir = ".cache/ruff"
 
+respect-gitignore = true
+exclude = []
+line-length = 130
+
+[tool.ruff.lint]
 select = [
   "A",     # flake8-builtins
   "AIR",   # Airflow
@@ -245,22 +259,21 @@ ignore = [
   "PLR2004", # magic value in comparison
   "E203",    # Whitespace before ':' # false positive on list slices
   "PLR6301", # Method `…` could be a function or static method # false positive for no-self-use
+  "RUF022",  # `__all__` is not sorted
 ]
 
-respect-gitignore = true
-exclude = []
-
-line-length = 130
-cache-dir = ".cache/ruff"
 task-tags = ["todo", "TODO"]
 
-[tool.ruff.per-file-ignores]
+[tool.ruff.lint.per-file-ignores]
 "examples/*.py" = [
   "ASYNC101", # no open call on async function
   "BLE001",   # blind exception
   "S101",     # assert use
   "S110",     # try-catch-pass without logging
   "T201",     # print
+]
+"examples/spot_trading_bot_template_v2.py" = [
+  "RUF027", # Possible f-string without an `f` prefix
 ]
 "tests/*.py" = [
   "ASYNC101", # no open call on async function
@@ -275,24 +288,24 @@ task-tags = ["todo", "TODO"]
   "TID252",   # ban relative imports
 ]
 
-[tool.ruff.flake8-copyright]
+[tool.ruff.lint.flake8-copyright]
 author = "Benjamin Thomas Schwertfeger"
 notice-rgx = "(?i)Copyright \\(C\\) \\d{4}"
 min-file-size = 1024
 
-[tool.ruff.flake8-quotes]
+[tool.ruff.lint.flake8-quotes]
 docstring-quotes = "double"
 
-[tool.ruff.flake8-tidy-imports]
+[tool.ruff.lint.flake8-tidy-imports]
 ban-relative-imports = "all"
 
-[tool.ruff.flake8-bandit]
+[tool.ruff.lint.flake8-bandit]
 check-typed-exception = true
 
-[tool.ruff.flake8-type-checking]
+[tool.ruff.lint.flake8-type-checking]
 strict = true
 
-[tool.ruff.pep8-naming]
+[tool.ruff.lint.pep8-naming]
 ignore-names = [
   "i",
   "j",
@@ -329,7 +342,7 @@ ignore-names = [
   "processBefore",
 ]
 
-[tool.ruff.pylint]
+[tool.ruff.lint.pylint]
 max-args = 8
 max-branches = 15
 max-returns = 6

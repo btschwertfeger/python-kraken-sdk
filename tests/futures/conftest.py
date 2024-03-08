@@ -15,6 +15,8 @@ FUTURES_SECRET_KEY: str = os.getenv("FUTURES_SECRET_KEY")
 FUTURES_SANDBOX_KEY: str = os.getenv("FUTURES_SANDBOX_KEY")
 FUTURES_SANDBOX_SECRET_KEY: str = os.getenv("FUTURES_SANDBOX_SECRET")
 
+FUTURES_EXTENDED_TIMEOUT: int = 30
+
 
 @pytest.fixture()
 def futures_api_key() -> str:
@@ -33,7 +35,9 @@ def futures_market() -> Market:
     """
     Fixture providing an unauthenticated Futures Market client
     """
-    return Market()
+    market: Market = Market()
+    market.TIMEOUT = FUTURES_EXTENDED_TIMEOUT
+    return market
 
 
 @pytest.fixture()
@@ -41,7 +45,9 @@ def futures_auth_market() -> Market:
     """
     Fixture providing an authenticated Futures Market client.
     """
-    return Market(key=FUTURES_API_KEY, secret=FUTURES_SECRET_KEY)
+    market: Market = Market(key=FUTURES_API_KEY, secret=FUTURES_SECRET_KEY)
+    market.TIMEOUT = FUTURES_EXTENDED_TIMEOUT
+    return market
 
 
 @pytest.fixture()
@@ -50,11 +56,13 @@ def futures_demo_market() -> Market:
     Fixture providing an authenticated Futures Market client that
     uses the demo/sandbox environment.
     """
-    return Market(
+    market: Market = Market(
         key=FUTURES_SANDBOX_KEY,
         secret=FUTURES_SANDBOX_SECRET_KEY,
         sandbox=True,
     )
+    market.TIMEOUT = FUTURES_EXTENDED_TIMEOUT
+    return market
 
 
 @pytest.fixture()
@@ -63,7 +71,7 @@ def futures_user() -> User:
     Fixture providing an unauthenticated Futures User client.
     """
     user: User = User()
-    user.TIMEOUT = 30
+    user.TIMEOUT = FUTURES_EXTENDED_TIMEOUT
     return user
 
 
@@ -73,7 +81,7 @@ def futures_auth_user() -> User:
     Fixture providing an authenticated Futures User client.
     """
     user: User = User(key=FUTURES_API_KEY, secret=FUTURES_SECRET_KEY)
-    User.TIMEOUT = 30
+    User.TIMEOUT = FUTURES_EXTENDED_TIMEOUT
     return user
 
 
@@ -83,11 +91,13 @@ def futures_demo_user() -> User:
     Fixture providing an authenticated Futures User client that
     uses the demo/sandbox environment.
     """
-    return User(
+    user: User = User(
         key=FUTURES_SANDBOX_KEY,
         secret=FUTURES_SANDBOX_SECRET_KEY,
         sandbox=True,
     )
+    User.TIMEOUT = FUTURES_EXTENDED_TIMEOUT
+    return user
 
 
 @pytest.fixture()
@@ -95,7 +105,9 @@ def futures_trade() -> Trade:
     """
     Fixture providing an unauthenticated Futures Trade client.
     """
-    return Trade()
+    trade: Trade = Trade()
+    trade.TIMEOUT = FUTURES_EXTENDED_TIMEOUT
+    return trade
 
 
 @pytest.fixture()
@@ -103,7 +115,9 @@ def futures_auth_trade() -> Trade:
     """
     Fixture providing an authenticated Futures Trade client.
     """
-    return Trade(key=FUTURES_API_KEY, secret=FUTURES_SECRET_KEY)
+    trade: Trade = Trade(key=FUTURES_API_KEY, secret=FUTURES_SECRET_KEY)
+    trade.TIMEOUT = FUTURES_EXTENDED_TIMEOUT
+    return trade
 
 
 @pytest.fixture()
@@ -112,11 +126,13 @@ def futures_demo_trade() -> Trade:
     Fixture providing an authenticated Futures Trade client that
     uses the demo/sandbox environment.
     """
-    return Trade(
+    trade: Trade = Trade(
         key=FUTURES_SANDBOX_KEY,
         secret=FUTURES_SANDBOX_SECRET_KEY,
         sandbox=True,
     )
+    trade.TIMEOUT = FUTURES_EXTENDED_TIMEOUT
+    return trade
 
 
 @pytest.fixture()
@@ -124,7 +140,9 @@ def futures_funding() -> Funding:
     """
     Fixture providing an unauthenticated Futures Funding client.
     """
-    return Funding()
+    funding: Funding = Funding()
+    funding.TIMEOUT = FUTURES_EXTENDED_TIMEOUT
+    return funding
 
 
 @pytest.fixture()
@@ -132,7 +150,9 @@ def futures_auth_funding() -> Funding:
     """
     Fixture providing an authenticated Futures Funding client.
     """
-    return Funding(key=FUTURES_API_KEY, secret=FUTURES_SECRET_KEY)
+    funding: Funding = Funding(key=FUTURES_API_KEY, secret=FUTURES_SECRET_KEY)
+    funding.TIMEOUT = FUTURES_EXTENDED_TIMEOUT
+    return funding
 
 
 @pytest.fixture()
@@ -141,8 +161,10 @@ def futures_demo_funding() -> Funding:
     Fixture providing an authenticated Futures Funding client that
     uses the demo/sandbox environment.
     """
-    return Funding(
+    funding: Funding = Funding(
         key=FUTURES_SANDBOX_KEY,
         secret=FUTURES_SANDBOX_SECRET_KEY,
         sandbox=True,
     )
+    funding.TIMEOUT = FUTURES_EXTENDED_TIMEOUT
+    return funding

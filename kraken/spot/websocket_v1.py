@@ -505,9 +505,11 @@ class KrakenSpotWSClientV1(KrakenSpotWSClientBase):
             "ordertype": str(ordertype),
             "type": str(side),
             "pair": str(pair),
-            "volume": str(volume)
-            if not truncate
-            else Trade().truncate(amount=volume, amount_type="volume", pair=pair),
+            "volume": (
+                str(volume)
+                if not truncate
+                else Trade().truncate(amount=volume, amount_type="volume", pair=pair)
+            ),
             "validate": str(validate),
         }
         if defined(price):
@@ -547,7 +549,7 @@ class KrakenSpotWSClientV1(KrakenSpotWSClientBase):
         await self.send_message(message=payload, private=True)
 
     @ensure_string("oflags")
-    async def edit_order(  # pylint: disable=too-many-arguments # noqa: PLR0913, PLR0917
+    async def edit_order(  # pylint: disable=too-many-arguments # noqa: PLR0913
         self: KrakenSpotWSClientV1,
         orderid: str,
         reqid: Optional[str | int] = None,

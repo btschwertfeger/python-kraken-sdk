@@ -67,7 +67,7 @@ def test_get_asset_pairs(spot_market: Market) -> None:
 def test_get_ticker(spot_market: Market) -> None:
     """
     Checks the ``get_ticker`` endpoint by performing multiple
-    requests with different paramaters and validating that the response
+    requests with different parameters and validating that the response
     does not contain the error key.
     """
     assert is_not_error(spot_market.get_ticker())
