@@ -12,7 +12,6 @@ import hashlib
 import hmac
 import json
 import time
-import urllib.parse
 from functools import wraps
 from typing import Any, Callable, Final, Optional, Type, TypeVar
 from urllib.parse import urlencode, urljoin
@@ -182,9 +181,8 @@ class KrakenSpotBaseAPI:
     :type sandbox: bool, optional
     """
 
-    URL: Final[str] = "https://api.kraken.com"
-    API_V: Final[str] = "/0"
-    TIMEOUT: Final[int] = 10
+    URL: str = "https://api.kraken.com"
+    TIMEOUT: int = 10
 
     def __init__(
         self: KrakenSpotBaseAPI,
@@ -198,9 +196,7 @@ class KrakenSpotBaseAPI:
         if sandbox:
             raise ValueError("Sandbox not available for Kraken Spot trading.")
         if url:
-            self.url = url
-        else:
-            self.url = urljoin(self.URL, self.API_V)
+            self.URL = url
 
         self.__key: str = key
         self.__secret: str = secret
@@ -254,6 +250,9 @@ class KrakenSpotBaseAPI:
         :rtype: dict[str, Any] | list[str] | list[dict[str, Any]] |
             requests.Response
         """
+        METHOD: str = method.upper()
+        URL: str = urljoin(self.URL, uri)
+
         if not defined(params):
             params = {}
         if defined(extra_params):
@@ -263,12 +262,11 @@ class KrakenSpotBaseAPI:
                 else extra_params
             )
 
-        METHOD: str = method.upper()
-        if METHOD in {"GET", "DELETE"} and params:
-            data_json: str = "&".join(
-                [f"{key}={params[key]}" for key in sorted(params)],
-            )
-            uri += f"?{data_json}".replace(" ", "%20")
+        query_params: str = (
+            urlencode(params, doseq=True)
+            if METHOD in {"GET", "DELETE"} and params
+            else ""
+        )
 
         TIMEOUT: int = self.TIMEOUT if timeout != 10 else timeout
         HEADERS: dict = {}
@@ -286,26 +284,25 @@ class KrakenSpotBaseAPI:
                 sign_data = json.dumps(params)
             else:
                 content_type = "application/x-www-form-urlencoded; charset=utf-8"
-                sign_data = urllib.parse.urlencode(params)
+                sign_data = urlencode(params, doseq=True)
 
             HEADERS.update(
                 {
                     "Content-Type": content_type,
                     "API-Key": self.__key,
                     "API-Sign": self._get_kraken_signature(
-                        url_path=f"{self.API_V}{uri}",
+                        url_path=f"{uri}{query_params}",
                         data=sign_data,
                         nonce=params["nonce"],
                     ),
                 },
             )
 
-        URL: str = f"{self.url}{uri}"
         if METHOD in {"GET", "DELETE"}:
             return self.__check_response_data(
                 response=self.__session.request(
                     method=METHOD,
-                    url=URL,
+                    url=f"{URL}?{query_params}",
                     headers=HEADERS,
                     timeout=TIMEOUT,
                 ),

@@ -218,6 +218,7 @@ def test_public_subscribe_without_pair_failing() -> None:
     asyncio_run(test_subscription())
 
 
+@pytest.mark.wip()
 @pytest.mark.spot()
 @pytest.mark.spot_auth()
 @pytest.mark.spot_websocket()

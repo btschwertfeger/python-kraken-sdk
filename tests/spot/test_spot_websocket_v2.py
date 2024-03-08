@@ -461,7 +461,6 @@ def test___transform_subscription_no_change() -> None:
         )
 
 
-@pytest.mark.wip()
 @pytest.mark.spot()
 @pytest.mark.spot_auth()
 @pytest.mark.spot_websocket()

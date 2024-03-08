@@ -358,7 +358,7 @@ class Trade(KrakenSpotBaseAPI):
 
         return self._request(  # type: ignore[return-value]
             method="POST",
-            uri="/private/AddOrder",
+            uri="/0/private/AddOrder",
             params=params,
             extra_params=extra_params,
         )
@@ -438,7 +438,7 @@ class Trade(KrakenSpotBaseAPI):
             params["deadline"] = deadline
         return self._request(  # type: ignore[return-value]
             method="POST",
-            uri="/private/AddOrderBatch",
+            uri="/0/private/AddOrderBatch",
             params=params,
             do_json=True,
             extra_params=extra_params,
@@ -545,7 +545,7 @@ class Trade(KrakenSpotBaseAPI):
             params["deadline"] = deadline
         return self._request(  # type: ignore[return-value]
             "POST",
-            uri="/private/EditOrder",
+            uri="/0/private/EditOrder",
             params=params,
             extra_params=extra_params,
         )
@@ -582,7 +582,7 @@ class Trade(KrakenSpotBaseAPI):
         """
         return self._request(  # type: ignore[return-value]
             method="POST",
-            uri="/private/CancelOrder",
+            uri="/0/private/CancelOrder",
             params={"txid": txid},
             extra_params=extra_params,
         )
@@ -614,7 +614,7 @@ class Trade(KrakenSpotBaseAPI):
         """
         return self._request(  # type: ignore[return-value]
             method="POST",
-            uri="/private/CancelAll",
+            uri="/0/private/CancelAll",
             extra_params=extra_params,
         )
 
@@ -651,7 +651,7 @@ class Trade(KrakenSpotBaseAPI):
         """
         return self._request(  # type: ignore[return-value]
             method="POST",
-            uri="/private/CancelAllOrdersAfter",
+            uri="/0/private/CancelAllOrdersAfter",
             params={"timeout": timeout},
             extra_params=extra_params,
         )
@@ -688,7 +688,7 @@ class Trade(KrakenSpotBaseAPI):
         """
         return self._request(  # type: ignore[return-value]
             method="POST",
-            uri="/private/CancelOrderBatch",
+            uri="/0/private/CancelOrderBatch",
             params={"orders": orders},
             do_json=True,
             extra_params=extra_params,

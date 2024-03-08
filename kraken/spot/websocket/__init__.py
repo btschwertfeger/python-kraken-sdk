@@ -180,8 +180,8 @@ class KrakenSpotWSClientBase(KrakenSpotBaseAPI):
         :rtype: dict
         """
         return self._request(  # type: ignore[return-value]
-            "POST",
-            "/private/GetWebSocketsToken",
+            method="POST",
+            uri="/0/private/GetWebSocketsToken",
         )
 
     def _get_socket(self: KrakenSpotWSClientBase, *, private: bool) -> Any:
