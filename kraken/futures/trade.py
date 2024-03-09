@@ -475,7 +475,7 @@ class Trade(KrakenFuturesBaseAPI):
         Requires at least the ``General API - Read Only`` permission in the API
         key settings.
 
-        - https://docs.futures.kraken.com/#http-api-trading-v3-api-order-management-get-the-current-status-for-specific-orders
+        - https://docs.futures.kraken.com/#http-api-trading-v3-api-order-management-get-specific-orders-39-status
 
         :param orderIds: The order ids to cancel
         :type orderIds: str | list[str], optional

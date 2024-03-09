@@ -234,7 +234,7 @@ def test_public_subscribe(caplog: Any) -> None:
     asyncio_run(test_subscription())
 
     assert (
-        '{"method": "subscribe", "req_id": 12345678, "result": {"channel": "ticker", "snapshot": true, "symbol": "BTC/USD"}, "success": true, "time_in":'
+        '{"method": "subscribe", "req_id": 12345678, "result": {"channel": "ticker", "event_trigger": "trades", "snapshot": true, "symbol": "BTC/USD"}, "success": true, "time_in":'
         in caplog.text
     )
 
@@ -313,9 +313,9 @@ def test_public_unsubscribe(caplog: Any) -> None:
     asyncio_run(test_unsubscribe())
 
     for expected in (
-        '{"method": "subscribe", "req_id": 123456789, "result": {"channel": "ticker", "snapshot": true, "symbol": "BTC/USD"}, "success": true, "time_in": ',
+        '{"method": "subscribe", "req_id": 123456789, "result": {"channel": "ticker", "event_trigger": "trades", "snapshot": true, "symbol": "BTC/USD"}, "success": true, "time_in": ',
         '{"channel": "ticker", "type": "snapshot", "data": [{"symbol": "BTC/USD", ',
-        '{"method": "unsubscribe", "req_id": 987654321, "result": {"channel": "ticker", "symbol": "BTC/USD"}, "success": true, "time_in": ',
+        '{"method": "unsubscribe", "req_id": 987654321, "result": {"channel": "ticker", "event_trigger": "trades", "symbol": "BTC/USD"}, "success": true, "time_in": ',
     ):
         assert expected in caplog.text
 
@@ -509,13 +509,13 @@ def test_reconnect(
         '{"channel": "status", "data": [{"api_version": "v2", "connection_id": ',
         '"system": "online", "version": ',  # "2.0.x"
         '"type": "update"}',
-        '{"method": "subscribe", "result": {"channel": "ticker", "snapshot": true, "symbol": "BTC/USD"}, "success": true,',
+        '{"method": "subscribe", "result": {"channel": "ticker", "event_trigger": "trades", "snapshot": true, "symbol": "BTC/USD"}, "success": true,',
         '"channel": "ticker", "type": "snapshot", "data": [{"symbol": "BTC/USD", ',
         "got an exception sent 1000 (OK); then received 1000 (OK)",
-        "Recover public subscriptions [{'channel': 'ticker', 'snapshot': True, 'symbol': ['BTC/USD']}]: waiting",
-        "Recover public subscriptions [{'channel': 'ticker', 'snapshot': True, 'symbol': ['BTC/USD']}]: done",
-        "Recover authenticated subscriptions [{'channel': 'executions', 'maxratecount': 180, 'snapshot': True}]: waiting",
-        "Recover authenticated subscriptions [{'channel': 'executions', 'maxratecount': 180, 'snapshot': True}]: done",
+        "Recover public subscriptions [{'channel': 'ticker', 'event_trigger': 'trades', 'snapshot': True, 'symbol': ['BTC/USD']}]: waiting",
+        "Recover public subscriptions [{'channel': 'ticker', 'event_trigger': 'trades', 'snapshot': True, 'symbol': ['BTC/USD']}]: done",
+        "Recover authenticated subscriptions [{'channel': 'executions', 'snapshot': True}]: waiting",
+        "Recover authenticated subscriptions [{'channel': 'executions', 'snapshot': True}]: done",
     ):
         assert phrase in caplog.text
 

@@ -36,7 +36,7 @@ def test_create_public_bot(caplog: Any) -> None:
 
     async def create_bot() -> None:
         orderbook: OrderbookClientV2Wrapper = OrderbookClientV2Wrapper()
-        await async_wait(seconds=4)
+        await async_wait(seconds=10)
 
         assert orderbook.depth == 10
 

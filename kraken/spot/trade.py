@@ -115,7 +115,7 @@ class Trade(KrakenSpotBaseAPI):
             ``stop-loss-limit``, ``take-profit``, and ``take-profit-limit``
         :type price: str | float, optional
         :param price2: The limit price for ``stop-loss-limit`` and
-            ``take-profit-limit`` orders The price2 can also be set to absolut
+            ``take-profit-limit`` orders The price2 can also be set to absolute
             or relative changes.
                 * Prefixed using ``+`` or ``-`` defines the change in the quote
                   asset
@@ -272,7 +272,7 @@ class Trade(KrakenSpotBaseAPI):
                 }
             }
 
-            ''' The price2 and close_price2 can also be set to absolut or
+            ''' The price2 and close_price2 can also be set to absolute or
             relative changes.
                 * Prefixed using "+" or "-" defines the change in the quote
                   asset
@@ -297,9 +297,11 @@ class Trade(KrakenSpotBaseAPI):
             "ordertype": ordertype,
             "type": side,
             "pair": pair,
-            "volume": volume
-            if not truncate
-            else self.truncate(amount=volume, amount_type="volume", pair=pair),
+            "volume": (
+                volume
+                if not truncate
+                else self.truncate(amount=volume, amount_type="volume", pair=pair)
+            ),
             "stp_type": stptype,
             "starttm": starttm,
             "validate": validate,
@@ -356,7 +358,7 @@ class Trade(KrakenSpotBaseAPI):
 
         return self._request(  # type: ignore[return-value]
             method="POST",
-            uri="/private/AddOrder",
+            uri="/0/private/AddOrder",
             params=params,
             extra_params=extra_params,
         )
@@ -436,7 +438,7 @@ class Trade(KrakenSpotBaseAPI):
             params["deadline"] = deadline
         return self._request(  # type: ignore[return-value]
             method="POST",
-            uri="/private/AddOrderBatch",
+            uri="/0/private/AddOrderBatch",
             params=params,
             do_json=True,
             extra_params=extra_params,
@@ -543,7 +545,7 @@ class Trade(KrakenSpotBaseAPI):
             params["deadline"] = deadline
         return self._request(  # type: ignore[return-value]
             "POST",
-            uri="/private/EditOrder",
+            uri="/0/private/EditOrder",
             params=params,
             extra_params=extra_params,
         )
@@ -580,7 +582,7 @@ class Trade(KrakenSpotBaseAPI):
         """
         return self._request(  # type: ignore[return-value]
             method="POST",
-            uri="/private/CancelOrder",
+            uri="/0/private/CancelOrder",
             params={"txid": txid},
             extra_params=extra_params,
         )
@@ -612,7 +614,7 @@ class Trade(KrakenSpotBaseAPI):
         """
         return self._request(  # type: ignore[return-value]
             method="POST",
-            uri="/private/CancelAll",
+            uri="/0/private/CancelAll",
             extra_params=extra_params,
         )
 
@@ -649,7 +651,7 @@ class Trade(KrakenSpotBaseAPI):
         """
         return self._request(  # type: ignore[return-value]
             method="POST",
-            uri="/private/CancelAllOrdersAfter",
+            uri="/0/private/CancelAllOrdersAfter",
             params={"timeout": timeout},
             extra_params=extra_params,
         )
@@ -686,7 +688,7 @@ class Trade(KrakenSpotBaseAPI):
         """
         return self._request(  # type: ignore[return-value]
             method="POST",
-            uri="/private/CancelOrderBatch",
+            uri="/0/private/CancelOrderBatch",
             params={"orders": orders},
             do_json=True,
             extra_params=extra_params,

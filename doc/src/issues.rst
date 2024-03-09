@@ -10,6 +10,8 @@ Issues listed here: `python-kraken-sdk/issues`_
 Futures Trading
 ---------------
 
+- The Kraken API returns 500 - INTERNAL_SERVER_ERROR for some endpoints if
+  ``order_id`` or ``orderId``, ``cliOrdId`` seems to work in all cases.
 - Kraken's API doesn't seem to know the ``trailing_stop`` order type and raises
   an error if this type is part of an order. This order type is documented here
   https://docs.futures.kraken.com/#http-api-trading-v3-api-order-management-send-order
