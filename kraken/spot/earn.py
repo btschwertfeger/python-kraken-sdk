@@ -19,7 +19,8 @@ class Earn(KrakenSpotBaseAPI):
     """
 
     Class that implements the Kraken Spot Earn client. Currently there are no
-    earn endpoints that could be accesses without authentication.
+    earn endpoints that could be accesses without authentication. The earn
+    endpoints replace the past staking endpoints.
 
     - https://docs.kraken.com/rest/#tag/Earn
 
@@ -223,8 +224,8 @@ class Earn(KrakenSpotBaseAPI):
         asset: Optional[str] = None,
         limit: Optional[int] = None,
         lock_type: Optional[list[str]] = None,
-        cursor: Optional[bool] = None,
-        ascending: bool = False,
+        cursor: Optional[bool] = None,  # noqa: FBT001
+        ascending: Optional[bool] = None,  # noqa: FBT001
         *,
         extra_params: Optional[dict] = None,
     ) -> dict:
@@ -234,6 +235,9 @@ class Earn(KrakenSpotBaseAPI):
         Requires an API key but no special permission set.
 
         - https://docs.kraken.com/rest/#tag/Earn/operation/listStrategies
+
+        (March 9, 2024): The endpoint is not fully implemented on the side of
+        Kraken. Some errors may happen.
 
         :param asset: Asset to filter for, defaults to None
         :type asset: Optional[str], optional
@@ -254,9 +258,53 @@ class Earn(KrakenSpotBaseAPI):
             >>> from kraken.earn import Earn
             >>> earn = Earn(key="api-key", secret="secret-key")
             >>> earn.list_earn_strategies(asset="DOT")
-
+            {
+                "next_cursor": None,
+                "items": [
+                    {
+                        "id": "ESMWVX6-JAPVY-23L3CV",
+                        "asset": "DOT",
+                        "lock_type": {
+                            "type": "bonded",
+                            "payout_frequency": 604800,
+                            "bonding_period": 0,
+                            "bonding_period_variable": False,
+                            "bonding_rewards": False,
+                            "unbonding_period": 2419200,
+                            "unbonding_period_variable": False,
+                            "unbonding_rewards": False,
+                            "exit_queue_period": 0,
+                        },
+                        "apr_estimate": {"low": "15.0000", "high": "21.0000"},
+                        "user_min_allocation": "0.01",
+                        "allocation_fee": "0.0000",
+                        "deallocation_fee": "0.0000",
+                        "auto_compound": {"type": "enabled"},
+                        "yield_source": {"type": "staking"},
+                        "can_allocate": True,
+                        "can_deallocate": True,
+                        "allocation_restriction_info": [],
+                    },
+                    {
+                        "id": "ESRFUO3-Q62XD-WIOIL7",
+                        "asset": "DOT",
+                        "lock_type": {"type": "instant", "payout_frequency": 604800},
+                        "apr_estimate": {"low": "7.0000", "high": "11.0000"},
+                        "user_min_allocation": "0.01",
+                        "allocation_fee": "0.0000",
+                        "deallocation_fee": "0.0000",
+                        "auto_compound": {"type": "enabled"},
+                        "yield_source": {"type": "staking"},
+                        "can_allocate": True,
+                        "can_deallocate": True,
+                        "allocation_restriction_info": [],
+                    },
+                ],
+            }
         """
-        params: dict = {"ascending": ascending}
+        params: dict = {}
+        if defined(ascending):
+            params["ascending"] = ascending
         if defined(asset):
             params["asset"] = asset
         if defined(limit):
@@ -276,8 +324,8 @@ class Earn(KrakenSpotBaseAPI):
 
     def list_earn_allocations(
         self: Earn,
-        ascending: bool = False,
-        hide_zero_allocations: bool = False,
+        ascending: Optional[str] = None,
+        hide_zero_allocations: Optional[str] = None,
         converted_asset: Optional[str] = None,
         *,
         extra_params: Optional[dict] = None,
@@ -288,6 +336,9 @@ class Earn(KrakenSpotBaseAPI):
         Requires the ``Query Funds`` API key permission.
 
         - https://docs.kraken.com/rest/#tag/Earn/operation/listAllocations
+
+        (March 9, 2024): The endpoint is not fully implemented on the side of
+        Kraken. Some errors may happen.
 
         :param ascending: Sort ascending, defaults to False
         :type ascending: bool, optional
@@ -305,14 +356,27 @@ class Earn(KrakenSpotBaseAPI):
             >>> from kraken.earn import Earn
             >>> earn = Earn(key="api-key", secret="secret-key")
             >>> earn.list_earn_allocations(asset="DOT")
-
-        """
-        params = {
-                "ascending": ascending,
-                "hide_zero_allocations": hide_zero_allocations,
+            {
+            "converted_asset": "USD",
+                "total_allocated": "49.2398",
+                "total_rewarded": "0.0675",
+                "next_cursor": "2",
+                "items": [{
+                    "strategy_id": "ESDQCOL-WTZEU-NU55QF",
+                    "native_asset": "ETH",
+                    "amount_allocated": {},
+                    "total_rewarded": {}
+                }]
             }
+        """
+        params: dict = {}
+        if defined(ascending):
+            params["ascending"] = ascending
+        if defined(hide_zero_allocations):
+            params["hide_zero_allocations"] = hide_zero_allocations
         if defined(converted_asset):
-            params["converted_asset"]= converted_asset
+            params["converted_asset"] = converted_asset
+
         return self._request(  # type: ignore[return-value]
             method="POST",
             uri="/0/private/Earn/Allocations",

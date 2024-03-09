@@ -25,6 +25,11 @@ Spot REST
    :show-inheritance:
    :inherited-members:
 
+.. autoclass:: kraken.spot.Earn
+   :members:
+   :show-inheritance:
+   :inherited-members:
+
 .. autoclass:: kraken.spot.Staking
    :members:
    :show-inheritance:

@@ -6,12 +6,12 @@
 
 """Module that provides the Spot REST clients."""
 
+from kraken.spot.earn import Earn
 from kraken.spot.funding import Funding
 from kraken.spot.market import Market
 from kraken.spot.orderbook_v1 import OrderbookClientV1
 from kraken.spot.orderbook_v2 import OrderbookClientV2
 from kraken.spot.staking import Staking
-from kraken.spot.earn import Earn
 from kraken.spot.trade import Trade
 from kraken.spot.user import User
 from kraken.spot.websocket_v1 import KrakenSpotWSClientV1

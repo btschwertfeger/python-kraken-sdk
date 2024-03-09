@@ -51,7 +51,6 @@ class Staking(KrakenSpotBaseAPI):
         ...     print(staking.stake_asset(asset="XLM", amount=200, method="Lumen Staked"))
     """
 
-    @deprecated
     def __init__(
         self,
         key: str = "",
