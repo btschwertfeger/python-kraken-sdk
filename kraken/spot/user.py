@@ -518,7 +518,7 @@ class User(KrakenSpotBaseAPI):
             extra_params=extra_params,
         )
 
-    def get_trades_history(
+    def get_trades_history(  # noqa: PLR0913 # pylint: disable=too-many-arguments
         self: User,
         type_: Optional[str] = "all",
         start: Optional[int] = None,
@@ -527,6 +527,7 @@ class User(KrakenSpotBaseAPI):
         *,
         trades: Optional[bool] = False,
         consolidate_taker: bool = True,
+        ledgers: bool = False,
         extra_params: Optional[dict] = None,
     ) -> dict:
         """
@@ -551,6 +552,9 @@ class User(KrakenSpotBaseAPI):
         :param consolidate_taker: Consolidate trades by individual taker trades
             (default: ``True``)
         :type consolidate_taker: bool
+        :param ledgers: Include related leger entries for filtered trade
+            (default: ``False``)
+        :type ledgers: bool
 
         .. code-block:: python
             :linenos:
@@ -586,6 +590,7 @@ class User(KrakenSpotBaseAPI):
         params: dict = {
             "type": type_,
             "trades": trades,
+            "ledgers": ledgers,
             "consolidate_taker": consolidate_taker,
         }
         if defined(start):
