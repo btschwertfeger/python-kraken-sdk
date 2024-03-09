@@ -20,6 +20,8 @@ class Funding(KrakenSpotBaseAPI):
     Class that implements the Spot Funding client. Currently there are no
     funding endpoints that could be accesses without authentication.
 
+    - https://docs.kraken.com/rest/#tag/Funding
+
     :param key: Spot API public key (default: ``""``)
     :type key: str, optional
     :param secret: Spot API secret key (default: ``""``)
@@ -27,9 +29,6 @@ class Funding(KrakenSpotBaseAPI):
     :param url: Alternative URL to access the Kraken API (default:
         https://api.kraken.com)
     :type url: str, optional
-    :param sandbox: Use the sandbox (not supported for Spot trading so far,
-        default: ``False``)
-    :type sandbox: bool, optional
 
     .. code-block:: python
         :linenos:

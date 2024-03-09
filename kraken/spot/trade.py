@@ -21,7 +21,9 @@ Self = TypeVar("Self")
 
 class Trade(KrakenSpotBaseAPI):
     """
-    Class that implements the Kraken Trade Spot client
+    Class that implements the Kraken Trade Spot client.
+
+    - https://docs.kraken.com/rest/#tag/Spot-Trading
 
     :param key: Spot API public key (default: ``""``)
     :type key: str, optional
@@ -29,8 +31,6 @@ class Trade(KrakenSpotBaseAPI):
     :type secret: str, optional
     :param url: The URL to access the Kraken API (default: https://api.kraken.com)
     :type url: str, optional
-    :param sandbox: Use the sandbox (not supported for Spot trading so far, default: ``False``)
-    :type sandbox: bool, optional
 
     .. code-block:: python
         :linenos:

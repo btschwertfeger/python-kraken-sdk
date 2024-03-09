@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Known Issues &mdash; python-kraken-sdk  documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="License" href="about/license.html" />
+    <link rel="prev" title="Custom Exceptions" href="exceptions/exceptions.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            python-kraken-sdk
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="getting_started/getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/rest_example_usage.html">Usage Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/trading_bot_templates.html">Trading Bot Templates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="spot/rest.html">Spot REST</a></li>
+<li class="toctree-l1"><a class="reference internal" href="spot/websockets.html">Spot Websockets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="futures/rest.html">Futures REST</a></li>
+<li class="toctree-l1"><a class="reference internal" href="futures/websockets.html">Futures Websockets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="base_api/base_api.html">Base Clients and Internals</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exceptions/exceptions.html">Custom Exceptions</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Known Issues</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#futures-trading">Futures Trading</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="about/license.html">License</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">python-kraken-sdk</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Known Issues</li>
+      <li class="wy-breadcrumbs-aside">
+              <a href="https://github.com/btschwertfeger/python-kraken-sdk/blob/master/docs/src/issues.rst" class="fa fa-github"> Edit on GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="known-issues">
+<h1>Known Issues<a class="headerlink" href="#known-issues" title="Link to this heading"></a></h1>
+<p>Issues listed here: <a class="reference external" href="https://github.com/btschwertfeger/python-kraken-sdk/issues">python-kraken-sdk/issues</a></p>
+<section id="futures-trading">
+<h2>Futures Trading<a class="headerlink" href="#futures-trading" title="Link to this heading"></a></h2>
+<ul>
+<li><p>The Kraken API returns 500 - INTERNAL_SERVER_ERROR for some endpoints if
+<code class="docutils literal notranslate"><span class="pre">order_id</span></code> or <code class="docutils literal notranslate"><span class="pre">orderId</span></code>, <code class="docutils literal notranslate"><span class="pre">cliOrdId</span></code> seems to work in all cases.</p></li>
+<li><p>Kraken’s API doesn’t seem to know the <code class="docutils literal notranslate"><span class="pre">trailing_stop</span></code> order type and raises
+an error if this type is part of an order. This order type is documented here
+<a class="reference external" href="https://docs.futures.kraken.com/#http-api-trading-v3-api-order-management-send-order">https://docs.futures.kraken.com/#http-api-trading-v3-api-order-management-send-order</a></p>
+<div class="literal-block-wrapper docutils container" id="id1">
+<div class="code-block-caption"><span class="caption-text"><code class="docutils literal notranslate"><span class="pre">trailing_stop</span></code> order type not working in Kraken Futures</span><a class="headerlink" href="#id1" title="Link to this code"></a></div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="kn">from</span> <span class="nn">kraken.futures</span> <span class="kn">import</span> <span class="n">Trade</span>
+<span class="linenos"> 2</span>
+<span class="linenos"> 3</span><span class="n">Trade</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s2">&quot;api-key&quot;</span><span class="p">,</span> <span class="n">secret</span><span class="o">=</span><span class="s2">&quot;secret-key&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">create_order</span><span class="p">(</span>
+<span class="linenos"> 4</span>    <span class="n">orderType</span><span class="o">=</span><span class="s2">&quot;trailing_stop&quot;</span><span class="p">,</span>
+<span class="linenos"> 5</span>    <span class="n">size</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+<span class="linenos"> 6</span>    <span class="n">side</span><span class="o">=</span><span class="s2">&quot;buy&quot;</span><span class="p">,</span>
+<span class="linenos"> 7</span>    <span class="n">symbol</span><span class="o">=</span><span class="s2">&quot;PI_XBTUSD&quot;</span><span class="p">,</span>
+<span class="linenos"> 8</span>    <span class="n">limitPrice</span><span class="o">=</span><span class="mi">12000</span><span class="p">,</span>
+<span class="linenos"> 9</span>    <span class="n">triggerSignal</span><span class="o">=</span><span class="s2">&quot;mark&quot;</span><span class="p">,</span>
+<span class="linenos">10</span>    <span class="n">trailingStopDeviationUnit</span><span class="o">=</span><span class="s2">&quot;PERCENT&quot;</span><span class="p">,</span>
+<span class="linenos">11</span>    <span class="n">trailingStopMaxDeviation</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+<span class="linenos">12</span><span class="p">)</span>
+<span class="linenos">13</span><span class="sd">&quot;&quot;&quot; Output:</span>
+<span class="linenos">14</span><span class="sd">{</span>
+<span class="linenos">15</span><span class="sd">    &quot;status&quot;: &quot;BAD_REQUEST&quot;,</span>
+<span class="linenos">16</span><span class="sd">    &quot;result&quot;: &quot;error&quot;,</span>
+<span class="linenos">17</span><span class="sd">    &quot;errors&quot;: [{</span>
+<span class="linenos">18</span><span class="sd">        &quot;code&quot;: 11,</span>
+<span class="linenos">19</span><span class="sd">        &quot;message&quot;: &quot;invalid order type&quot;</span>
+<span class="linenos">20</span><span class="sd">    }],</span>
+<span class="linenos">21</span><span class="sd">    &quot;serverTime&quot;:&quot;2023-04-07T19:26:41.299Z&quot;</span>
+<span class="linenos">22</span><span class="sd">}</span>
+<span class="linenos">23</span><span class="sd">&quot;&quot;&quot;</span><span class="s2">&quot;</span>
+</pre></div>
+</div>
+</div>
+</li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="exceptions/exceptions.html" class="btn btn-neutral float-left" title="Custom Exceptions" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="about/license.html" class="btn btn-neutral float-right" title="License" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Benjamin Thomas Schwertfeger.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

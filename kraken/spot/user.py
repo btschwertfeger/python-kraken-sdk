@@ -24,6 +24,9 @@ class User(KrakenSpotBaseAPI):
 
     Requires the ``Query funds`` permission in the API key settings.
 
+    - https://docs.kraken.com/rest/#tag/Account-Data
+    - https://docs.kraken.com/rest/#tag/Subaccounts
+
     :param key: Spot API public key (default: ``""``)
     :type key: str, optional
     :param secret: Spot API secret key (default: ``""``)
@@ -31,9 +34,6 @@ class User(KrakenSpotBaseAPI):
     :param url: The URL to access the Kraken API (default:
         https://api.kraken.com)
     :type url: str, optional
-    :param sandbox: Use the sandbox (not supported for Spot trading so far,
-        default: ``False``)
-    :type sandbox: bool, optional
 
     .. code-block:: python
         :linenos:

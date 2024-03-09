@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Futures Websockets &mdash; python-kraken-sdk  documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Base Clients and Internals" href="../base_api/base_api.html" />
+    <link rel="prev" title="Futures REST" href="rest.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            python-kraken-sdk
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/rest_example_usage.html">Usage Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/trading_bot_templates.html">Trading Bot Templates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spot/rest.html">Spot REST</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spot/websockets.html">Spot Websockets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rest.html">Futures REST</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Futures Websockets</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#kraken.futures.KrakenFuturesWSClient"><code class="docutils literal notranslate"><span class="pre">KrakenFuturesWSClient</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#kraken.futures.KrakenFuturesWSClient.get_active_subscriptions"><code class="docutils literal notranslate"><span class="pre">KrakenFuturesWSClient.get_active_subscriptions()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#kraken.futures.KrakenFuturesWSClient.get_available_private_subscription_feeds"><code class="docutils literal notranslate"><span class="pre">KrakenFuturesWSClient.get_available_private_subscription_feeds()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#kraken.futures.KrakenFuturesWSClient.get_available_public_subscription_feeds"><code class="docutils literal notranslate"><span class="pre">KrakenFuturesWSClient.get_available_public_subscription_feeds()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#kraken.futures.KrakenFuturesWSClient.get_sign_challenge"><code class="docutils literal notranslate"><span class="pre">KrakenFuturesWSClient.get_sign_challenge()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#kraken.futures.KrakenFuturesWSClient.is_auth"><code class="docutils literal notranslate"><span class="pre">KrakenFuturesWSClient.is_auth</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#kraken.futures.KrakenFuturesWSClient.key"><code class="docutils literal notranslate"><span class="pre">KrakenFuturesWSClient.key</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#kraken.futures.KrakenFuturesWSClient.on_message"><code class="docutils literal notranslate"><span class="pre">KrakenFuturesWSClient.on_message()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#kraken.futures.KrakenFuturesWSClient.subscribe"><code class="docutils literal notranslate"><span class="pre">KrakenFuturesWSClient.subscribe()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#kraken.futures.KrakenFuturesWSClient.unsubscribe"><code class="docutils literal notranslate"><span class="pre">KrakenFuturesWSClient.unsubscribe()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../base_api/base_api.html">Base Clients and Internals</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exceptions/exceptions.html">Custom Exceptions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../issues.html">Known Issues</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about/license.html">License</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">python-kraken-sdk</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Futures Websockets</li>
+      <li class="wy-breadcrumbs-aside">
+              <a href="https://github.com/btschwertfeger/python-kraken-sdk/blob/master/docs/src/futures/websockets.rst" class="fa fa-github"> Edit on GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="futures-websockets">
+<h1>Futures Websockets<a class="headerlink" href="#futures-websockets" title="Link to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="kraken.futures.KrakenFuturesWSClient">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">kraken.futures.</span></span><span class="sig-name descname"><span class="pre">KrakenFuturesWSClient</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">secret</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">url</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">callback</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sandbox</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kraken.futures.KrakenFuturesWSClient" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="../base_api/base_api.html#kraken.base_api.KrakenFuturesBaseAPI" title="kraken.base_api.KrakenFuturesBaseAPI"><code class="xref py py-class docutils literal notranslate"><span class="pre">KrakenFuturesBaseAPI</span></code></a></p>
+<p>Class to access public and (optional)
+private/authenticated websocket connection.</p>
+<p>So far there are no trade endpoints that can be accessed using the Futures
+Kraken API. If this has changed and is not implemented yet, please open an
+issue at <a class="reference external" href="https://github.com/btschwertfeger/python-kraken-sdk/issues">https://github.com/btschwertfeger/python-kraken-sdk/issues</a></p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://docs.futures.kraken.com/#websocket-api">https://docs.futures.kraken.com/#websocket-api</a></p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>key</strong> (<em>str</em><em>, </em><em>optional</em>) – The Kraken Futures API key to access private endpoints</p></li>
+<li><p><strong>secret</strong> (<em>str</em><em>, </em><em>optional</em>) – The Kraken Futures Secret key to access private endpoints</p></li>
+<li><p><strong>url</strong> (<em>str</em><em>, </em><em>optional</em>) – Set a custom URL (default: <code class="docutils literal notranslate"><span class="pre">futures.kraken.com/ws/v1</span></code>)</p></li>
+<li><p><strong>sandbox</strong> (<em>bool</em><em>, </em><em>optional</em>) – Use the Kraken Futures demo environment (URL will switch to
+<code class="docutils literal notranslate"><span class="pre">demo-futures.kraken.com/ws/v1</span></code>, default: <code class="docutils literal notranslate"><span class="pre">False</span></code>)</p></li>
+</ul>
+</dd>
+</dl>
+<div class="literal-block-wrapper docutils container" id="id1">
+<div class="code-block-caption"><span class="caption-text">Futures Websocket: Create the websocket client</span><a class="headerlink" href="#id1" title="Link to this code"></a></div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="kn">import</span> <span class="nn">asyncio</span>
+<span class="linenos"> 2</span><span class="kn">from</span> <span class="nn">kraken.futures</span> <span class="kn">import</span> <span class="n">KrakenFuturesWSClient</span>
+<span class="linenos"> 3</span>
+<span class="linenos"> 4</span><span class="k">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="linenos"> 5</span>
+<span class="linenos"> 6</span>    <span class="c1"># Create the custom client</span>
+<span class="linenos"> 7</span>    <span class="k">class</span> <span class="nc">Client</span><span class="p">(</span><span class="n">KrakenFuturesWSClient</span><span class="p">):</span>
+<span class="linenos"> 8</span>        <span class="k">async</span> <span class="k">def</span> <span class="nf">on_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="linenos"> 9</span>            <span class="nb">print</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+<span class="linenos">10</span>
+<span class="linenos">11</span>    <span class="n">client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">()</span>     <span class="c1"># unauthenticated</span>
+<span class="linenos">12</span>    <span class="n">auth_client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span> <span class="c1"># authenticated</span>
+<span class="linenos">13</span>        <span class="n">key</span><span class="o">=</span><span class="s2">&quot;api-key&quot;</span><span class="p">,</span>
+<span class="linenos">14</span>        <span class="n">secret</span><span class="o">=</span><span class="s2">&quot;secret-key&quot;</span>
+<span class="linenos">15</span>    <span class="p">)</span>
+<span class="linenos">16</span>
+<span class="linenos">17</span>    <span class="c1"># now you can subscribe to channels using</span>
+<span class="linenos">18</span>    <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">subscribe</span><span class="p">(</span>
+<span class="linenos">19</span>        <span class="n">feed</span><span class="o">=</span><span class="s1">&#39;ticker&#39;</span><span class="p">,</span>
+<span class="linenos">20</span>        <span class="n">products</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;XBTUSD&quot;</span><span class="p">,</span> <span class="s2">&quot;DOT/EUR&quot;</span><span class="p">]</span>
+<span class="linenos">21</span>    <span class="p">)</span>
+<span class="linenos">22</span>    <span class="c1"># the messages can be used within the `on_message` callback method</span>
+<span class="linenos">23</span>
+<span class="linenos">24</span>    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+<span class="linenos">25</span>        <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span>
+<span class="linenos">26</span>
+<span class="linenos">27</span><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+<span class="linenos">28</span>    <span class="k">try</span><span class="p">:</span>
+<span class="linenos">29</span>        <span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">main</span><span class="p">())</span>
+<span class="linenos">30</span>    <span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
+<span class="linenos">31</span>        <span class="k">pass</span>
+</pre></div>
+</div>
+</div>
+<div class="literal-block-wrapper docutils container" id="id2">
+<div class="code-block-caption"><span class="caption-text">Futures Websocket: Create the websocket client as context manager</span><a class="headerlink" href="#id2" title="Link to this code"></a></div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="kn">import</span> <span class="nn">asyncio</span>
+<span class="linenos"> 2</span><span class="kn">from</span> <span class="nn">kraken.futures</span> <span class="kn">import</span> <span class="n">KrakenFuturesWSClient</span>
+<span class="linenos"> 3</span>
+<span class="linenos"> 4</span><span class="k">async</span> <span class="k">def</span> <span class="nf">on_messageessage</span><span class="p">):</span>
+<span class="linenos"> 5</span>    <span class="nb">print</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+<span class="linenos"> 6</span>
+<span class="linenos"> 7</span><span class="k">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="linenos"> 8</span>    <span class="k">async</span> <span class="k">with</span> <span class="n">KrakenFuturesWSClient</span><span class="p">(</span><span class="n">callback</span><span class="o">=</span><span class="n">on_message</span><span class="p">)</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
+<span class="linenos"> 9</span>        <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">subscribe</span><span class="p">(</span><span class="n">feed</span><span class="o">=</span><span class="s2">&quot;ticker&quot;</span><span class="p">,</span> <span class="n">products</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;PF_XBTUSD&quot;</span><span class="p">])</span>
+<span class="linenos">10</span>
+<span class="linenos">11</span>    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+<span class="linenos">12</span>        <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span>
+<span class="linenos">13</span>
+<span class="linenos">14</span><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+<span class="linenos">15</span>    <span class="n">loop</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">new_event_loop</span><span class="p">()</span>
+<span class="linenos">16</span>    <span class="n">asyncio</span><span class="o">.</span><span class="n">set_event_loop</span><span class="p">(</span><span class="n">loop</span><span class="p">)</span>
+<span class="linenos">17</span>    <span class="k">try</span><span class="p">:</span>
+<span class="linenos">18</span>        <span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">main</span><span class="p">())</span>
+<span class="linenos">19</span>    <span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
+<span class="linenos">20</span>        <span class="k">pass</span>
+<span class="linenos">21</span>    <span class="k">finally</span><span class="p">:</span>
+<span class="linenos">22</span>        <span class="n">loop</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="kraken.futures.KrakenFuturesWSClient.get_active_subscriptions">
+<span class="sig-name descname"><span class="pre">get_active_subscriptions</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#kraken.futures.KrakenFuturesWSClient.get_active_subscriptions" title="Link to this definition"></a></dt>
+<dd><p>Returns the list of active subscriptions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List of active subscriptions including the feed names, products
+and additional information.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>list[dict]</p>
+</dd>
+</dl>
+<p>Initialize your client as described in <a class="reference internal" href="#kraken.futures.KrakenFuturesWSClient" title="kraken.futures.KrakenFuturesWSClient"><code class="xref py py-class docutils literal notranslate"><span class="pre">kraken.futures.KrakenFuturesWSClient</span></code></a> to
+run the following example:</p>
+<div class="literal-block-wrapper docutils container" id="id3">
+<div class="code-block-caption"><span class="caption-text">Futures Websocket: Get the active subscriptions</span><a class="headerlink" href="#id3" title="Link to this code"></a></div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">kraken.futures</span> <span class="kn">import</span> <span class="n">KrakenFuturesWSClient</span>
+<span class="linenos"> 2</span><span class="gp">...</span>
+<span class="linenos"> 3</span><span class="gp">&gt;&gt;&gt; </span><span class="n">KrakenFuturesWSClient</span><span class="o">.</span><span class="n">get_active_subscriptions</span><span class="p">()</span>
+<span class="linenos"> 4</span><span class="go">[</span>
+<span class="linenos"> 5</span><span class="go">    {</span>
+<span class="linenos"> 6</span><span class="go">        &quot;event&quot;: &quot;subscribe&quot;,</span>
+<span class="linenos"> 7</span><span class="go">        &quot;feed&quot;: &quot;ticker,</span>
+<span class="linenos"> 8</span><span class="go">        &quot;product_ids&quot;: [&quot;PI_XBTUSD&quot;]</span>
+<span class="linenos"> 9</span><span class="go">    }, {</span>
+<span class="linenos">10</span><span class="go">        &quot;event&quot;: &quot;subscribe&quot;,</span>
+<span class="linenos">11</span><span class="go">        &quot;feed&quot;: &quot;open_orders,</span>
+<span class="linenos">12</span><span class="go">    }, ...</span>
+<span class="linenos">13</span><span class="go">]</span>
+</pre></div>
+</div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="kraken.futures.KrakenFuturesWSClient.get_available_private_subscription_feeds">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_available_private_subscription_feeds</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#kraken.futures.KrakenFuturesWSClient.get_available_private_subscription_feeds" title="Link to this definition"></a></dt>
+<dd><p>Return all available private feeds that can be un-/subscribed to/from
+using the Kraken Futures API</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List of available private feeds</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>list[str]</p>
+</dd>
+</dl>
+<div class="literal-block-wrapper docutils container" id="id4">
+<div class="code-block-caption"><span class="caption-text">Futures Websocket: Get the available private subscription feeds</span><a class="headerlink" href="#id4" title="Link to this code"></a></div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">kraken.futures</span> <span class="kn">import</span> <span class="n">KrakenFuturesWSClient</span>
+<span class="linenos">2</span><span class="gp">&gt;&gt;&gt; </span><span class="n">KrakenFuturesWSClient</span><span class="o">.</span><span class="n">get_available_private_subscription_feeds</span><span class="p">()</span>
+<span class="linenos">3</span><span class="go">[</span>
+<span class="linenos">4</span><span class="go">    &quot;fills&quot;, &quot;open_positions&quot;, &quot;open_orders&quot;,</span>
+<span class="linenos">5</span><span class="go">    &quot;open_orders_verbose&quot;, &quot;balances&quot;,</span>
+<span class="linenos">6</span><span class="go">    &quot;deposits_withdrawals&quot;, &quot;account_balances_and_margins&quot;,</span>
+<span class="linenos">7</span><span class="go">    &quot;account_log&quot;, &quot;notifications_auth&quot;</span>
+<span class="linenos">8</span><span class="go">]</span>
+</pre></div>
+</div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="kraken.futures.KrakenFuturesWSClient.get_available_public_subscription_feeds">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_available_public_subscription_feeds</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#kraken.futures.KrakenFuturesWSClient.get_available_public_subscription_feeds" title="Link to this definition"></a></dt>
+<dd><p>Return all available public feeds that can be un-/subscribed using the
+Kraken Futures API.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List of available public feeds</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>list[str]</p>
+</dd>
+</dl>
+<div class="literal-block-wrapper docutils container" id="id5">
+<div class="code-block-caption"><span class="caption-text">Futures Websocket: Get the available public subscription feeds</span><a class="headerlink" href="#id5" title="Link to this code"></a></div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">kraken.futures</span> <span class="kn">import</span> <span class="n">KrakenFuturesWSClient</span>
+<span class="linenos">2</span><span class="gp">&gt;&gt;&gt; </span><span class="n">KrakenFuturesWSClient</span><span class="o">.</span><span class="n">get_available_private_subscription_feeds</span><span class="p">()</span>
+<span class="linenos">3</span><span class="go">[</span>
+<span class="linenos">4</span><span class="go">    &quot;trade&quot;, &quot;book&quot;, &quot;ticker&quot;,</span>
+<span class="linenos">5</span><span class="go">    &quot;ticker_lite&quot;, &quot;heartbeat&quot;</span>
+<span class="linenos">6</span><span class="go">]</span>
+</pre></div>
+</div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="kraken.futures.KrakenFuturesWSClient.get_sign_challenge">
+<span class="sig-name descname"><span class="pre">get_sign_challenge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">challenge</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#kraken.futures.KrakenFuturesWSClient.get_sign_challenge" title="Link to this definition"></a></dt>
+<dd><p>Sign the challenge/message using the secret key</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>challenge</strong> (<em>str</em>) – The challenge/message to sign</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The signed message</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="../exceptions/exceptions.html#kraken.exceptions.KrakenAuthenticationError" title="kraken.exceptions.KrakenAuthenticationError"><strong>kraken.exceptions.KrakenAuthenticationError</strong></a> – If the credentials
+are not valid</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="kraken.futures.KrakenFuturesWSClient.is_auth">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_auth</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#kraken.futures.KrakenFuturesWSClient.is_auth" title="Link to this definition"></a></dt>
+<dd><p>Checks if key and secret are set.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">True</span></code> if the credentials are set, else <code class="docutils literal notranslate"><span class="pre">False</span></code></p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+<div class="literal-block-wrapper docutils container" id="id6">
+<div class="code-block-caption"><span class="caption-text">Futures Websocket: Check if the credentials are set</span><a class="headerlink" href="#id6" title="Link to this code"></a></div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">kraken.futures</span> <span class="kn">import</span> <span class="n">KrakenFuturesWSClient</span>
+<span class="linenos">2</span><span class="gp">&gt;&gt;&gt; </span><span class="n">KrakenFuturesWSClient</span><span class="p">()</span><span class="o">.</span><span class="n">is_auth</span><span class="p">()</span>
+<span class="linenos">3</span><span class="go">False</span>
+</pre></div>
+</div>
+</div>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="kraken.futures.KrakenFuturesWSClient.key">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">key</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#kraken.futures.KrakenFuturesWSClient.key" title="Link to this definition"></a></dt>
+<dd><p>Returns the API key</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="kraken.futures.KrakenFuturesWSClient.on_message">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">on_message</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#kraken.futures.KrakenFuturesWSClient.on_message" title="Link to this definition"></a></dt>
+<dd><p>Method that serves as the default callback function Calls the defined
+callback function (if defined) or overload this function.</p>
+<p>This is the default method  which just logs the messages. In production
+you want to overload this with your custom methods, as shown in the
+Example of <a class="reference internal" href="#kraken.futures.KrakenFuturesWSClient" title="kraken.futures.KrakenFuturesWSClient"><code class="xref py py-class docutils literal notranslate"><span class="pre">kraken.futures.KrakenFuturesWSClient</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>message</strong> (<em>dict</em>) – The message that was send by Kraken via the websocket
+connection.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="kraken.futures.KrakenFuturesWSClient.subscribe">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">subscribe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">feed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">products</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#kraken.futures.KrakenFuturesWSClient.subscribe" title="Link to this definition"></a></dt>
+<dd><p>Subscribe to a Futures websocket channel/feed. For some feeds
+authentication is required.</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://docs.futures.kraken.com/#websocket-api-websocket-api-introduction-subscriptions">https://docs.futures.kraken.com/#websocket-api-websocket-api-introduction-subscriptions</a></p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>feed</strong> (<em>str</em>) – The websocket feed/channel to subscribe to</p></li>
+<li><p><strong>products</strong> (<em>list</em><em>[</em><em>str</em><em>]</em><em>, </em><em>optional</em>) – The products/futures contracts to subscribe to</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>TypeError</strong> – If the parameters don’t match the requirements set by
+the Kraken API</p>
+</dd>
+</dl>
+<p>Initialize your client as described in
+<a class="reference internal" href="#kraken.futures.KrakenFuturesWSClient" title="kraken.futures.KrakenFuturesWSClient"><code class="xref py py-class docutils literal notranslate"><span class="pre">kraken.futures.KrakenFuturesWSClient</span></code></a> to run the following
+example:</p>
+<div class="literal-block-wrapper docutils container" id="id7">
+<div class="code-block-caption"><span class="caption-text">Futures Websocket: Subscribe to a feed</span><a class="headerlink" href="#id7" title="Link to this code"></a></div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="gp">&gt;&gt;&gt; </span><span class="k">await</span> <span class="n">bot</span><span class="o">.</span><span class="n">subscribe</span><span class="p">(</span><span class="n">feed</span><span class="o">=</span><span class="s1">&#39;ticker&#39;</span><span class="p">,</span> <span class="n">products</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;XBTUSD&quot;</span><span class="p">,</span> <span class="s2">&quot;DOT/EUR&quot;</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<p>Success or failures are sent over the websocket connection and can be
+received via the default
+<a class="reference internal" href="#kraken.futures.KrakenFuturesWSClient.on_message" title="kraken.futures.KrakenFuturesWSClient.on_message"><code class="xref py py-func docutils literal notranslate"><span class="pre">kraken.futures.KrakenFuturesWSClient.on_message()</span></code></a> or a custom
+callback function.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="kraken.futures.KrakenFuturesWSClient.unsubscribe">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">unsubscribe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">feed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">products</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#kraken.futures.KrakenFuturesWSClient.unsubscribe" title="Link to this definition"></a></dt>
+<dd><p>Subscribe to a Futures websocket channel/feed. For some feeds
+authentication is required.</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://docs.futures.kraken.com/#websocket-api-websocket-api-introduction-subscriptions">https://docs.futures.kraken.com/#websocket-api-websocket-api-introduction-subscriptions</a></p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>feed</strong> (<em>str</em>) – The websocket feed/channel to unsubscribe from</p></li>
+<li><p><strong>products</strong> (<em>list</em><em>[</em><em>str</em><em>]</em><em>, </em><em>optional</em>) – The products/futures contracts to unsubscribe from</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>TypeError</strong> – If the parameters don’t match the requirements set
+by the Kraken API</p>
+</dd>
+</dl>
+<p>Initialize your client as described in
+<a class="reference internal" href="#kraken.futures.KrakenFuturesWSClient" title="kraken.futures.KrakenFuturesWSClient"><code class="xref py py-class docutils literal notranslate"><span class="pre">kraken.futures.KrakenFuturesWSClient</span></code></a> to run the following
+example:</p>
+<div class="literal-block-wrapper docutils container" id="id8">
+<div class="code-block-caption"><span class="caption-text">Futures Websocket: Unsubscribe from a feed</span><a class="headerlink" href="#id8" title="Link to this code"></a></div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="gp">&gt;&gt;&gt; </span><span class="k">await</span> <span class="n">bot</span><span class="o">.</span><span class="n">unsubscribe</span><span class="p">(</span><span class="n">feed</span><span class="o">=</span><span class="s1">&#39;ticker&#39;</span><span class="p">,</span> <span class="n">products</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;XBTUSD&quot;</span><span class="p">,</span> <span class="s2">&quot;DOT/EUR&quot;</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<p>Success or failures are sent over the websocket connection and can be
+received via the default
+<code class="xref py py-func docutils literal notranslate"><span class="pre">kraken.futures.KrakenFuturesWSClient.on_message`()</span></code> or a custom
+callback function.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="rest.html" class="btn btn-neutral float-left" title="Futures REST" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../base_api/base_api.html" class="btn btn-neutral float-right" title="Base Clients and Internals" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Benjamin Thomas Schwertfeger.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
