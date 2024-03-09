@@ -99,6 +99,7 @@ def test_create_order(futures_demo_trade) -> None:
             limitPrice=1,
             stopPrice=10,
             reduceOnly=True,
+            processBefore="3033-11-08T19:56:35.441899Z",
         )
 
     # FIXME: why are these commented out?
@@ -204,6 +205,7 @@ def test_create_batch_order(futures_demo_trade) -> None:
                         "cliOrdId": "my_client_id",
                     },
                 ],
+                processBefore="3033-11-08T19:56:35.441899Z",
             ),
         )
 
@@ -227,6 +229,7 @@ def test_edit_order(futures_demo_trade) -> None:
             cliOrdId="685d5a1a-23eb-450c-bf17-1e4ab5c6fe8a",
             size=111.0,
             stopPrice=1000,
+            processBefore="3033-11-08T19:56:35.441899Z",
         ),
     )
 
@@ -251,7 +254,8 @@ def test_cancel_order(futures_demo_trade) -> None:
     """
     assert is_success(
         futures_demo_trade.cancel_order(
-            cliOrdId="685d5a1a-23eb-450c-bf17-1e4ab5c6fe8a",
+            cliOrdId="my_another_client_id",
+            processBefore="3033-11-08T19:56:35.441899Z",
         ),
     )
     assert is_success(

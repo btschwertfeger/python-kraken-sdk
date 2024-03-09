@@ -339,6 +339,7 @@ ignore-names = [
   "TIMEOUT",
   "URL",
   "HEADERS",
+  "processBefore",
 ]
 
 [tool.ruff.lint.pylint]
@@ -547,6 +548,7 @@ good-names = [
   "TIMEOUT",
   "URL",
   "HEADERS",
+  "processBefore",
 ]
 
 # Good variable names regexes, separated by a comma. If names match any regex,
