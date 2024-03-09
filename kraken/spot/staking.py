@@ -11,12 +11,15 @@ from __future__ import annotations
 from typing import Optional, TypeVar
 
 from kraken.base_api import KrakenSpotBaseAPI, defined
+from kraken.utils import deprecated
 
 Self = TypeVar("Self")
 
 
 class Staking(KrakenSpotBaseAPI):
     """
+    .. deprecated:: v2.2.0
+
     Class that implements the Kraken Spot Staking client. Currently there are no
     staking endpoints that could be accesses without authentication.
 
@@ -56,10 +59,12 @@ class Staking(KrakenSpotBaseAPI):
     ) -> None:
         super().__init__(key=key, secret=secret, url=url)
 
+    @deprecated
     def __enter__(self: Self) -> Self:
         super().__enter__()
         return self
 
+    @deprecated
     def stake_asset(
         self: Staking,
         asset: str,
@@ -69,12 +74,14 @@ class Staking(KrakenSpotBaseAPI):
         extra_params: Optional[dict] = None,
     ) -> dict:
         """
+        .. deprecated:: v2.2.0
+
         Stake the specified asset from the Spot wallet.
 
         Requires the ``Withdraw funds`` permission in the API key settings.
 
         Have a look at :func:`kraken.spot.Staking.list_stakeable_assets` to get
-        information about the stakeable assets and methods.
+        information about the stakable assets and methods.
 
         - https://docs.kraken.com/rest/#operation/stake
 
@@ -108,6 +115,7 @@ class Staking(KrakenSpotBaseAPI):
             extra_params=extra_params,
         )
 
+    @deprecated
     def unstake_asset(
         self: Staking,
         asset: str,
@@ -117,6 +125,8 @@ class Staking(KrakenSpotBaseAPI):
         extra_params: Optional[dict] = None,
     ) -> dict:
         """
+        .. deprecated:: v2.2.0
+
         Unstake an asset and transfer the amount to the Spot wallet.
 
         Requires the ``Withdraw funds`` permission in the API key settings.
@@ -160,12 +170,15 @@ class Staking(KrakenSpotBaseAPI):
             extra_params=extra_params,
         )
 
+    @deprecated
     def list_stakeable_assets(
         self: Staking,
         *,
         extra_params: Optional[dict] = None,
     ) -> list[dict]:
         """
+        .. deprecated:: v2.2.0
+
         Get a list of stakeable assets. Only assets that the user is able to
         stake will be shown.
 
@@ -224,12 +237,15 @@ class Staking(KrakenSpotBaseAPI):
             extra_params=extra_params,
         )
 
+    @deprecated
     def get_pending_staking_transactions(
         self: Staking,
         *,
         extra_params: Optional[dict] = None,
     ) -> list[dict]:
         """
+        .. deprecated:: v2.2.0
+
         Get the list of pending staking transactions of the user.
 
         Requires the ``Withdraw funds`` and ``Query funds`` API key permissions.
@@ -267,12 +283,15 @@ class Staking(KrakenSpotBaseAPI):
             extra_params=extra_params,
         )
 
+    @deprecated
     def list_staking_transactions(
         self: Staking,
         *,
         extra_params: Optional[dict] = None,
     ) -> list[dict]:
         """
+        .. deprecated:: v2.2.0
+
         List the last 1000 staking transactions of the past 90 days.
 
         Requires the ``Query funds`` API key permission.

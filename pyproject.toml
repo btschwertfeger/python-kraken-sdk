@@ -89,6 +89,7 @@ markers = [
   "flaky: Flaky tests",
   "spot: … Spot endpoint.",
   "spot_auth: … authenticated Spot endpoint.",
+  "spot_earn: … Spot Earn endpoint.",
   "spot_trade: … Spot Trade endpoint.",
   "spot_user: … Spot User endpoint.",
   "spot_market: … Spot Market endpoint.",
@@ -247,6 +248,8 @@ fixable = [
   "PT",
   "ICN",
   "COM",
+  "E261",
+  "E231",    # Missing whitespace after ':'
   "RSE",
   "PT",
   "FA",

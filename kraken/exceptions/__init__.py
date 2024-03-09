@@ -273,6 +273,46 @@ class KrakenTemporaryLockoutError(Exception):
 
 
 @docstring_message
+class KrakenEarnMinimumAllocationError(Exception):
+    """(De)allocation operation amount less than minimum"""
+
+
+@docstring_message
+class KrakenEarnAllocationInProgressError(Exception):
+    """Another allocation is already in progress"""
+
+
+@docstring_message
+class KrakenEarnTemporaryUnavailableError(Exception):
+    """The Earn service is temporary unavailable, try again in a few minutes"""
+
+
+@docstring_message
+class KrakenEarnTierVerificationError(Exception):
+    """The user's tier is not high enough"""
+
+
+@docstring_message
+class KrakenEarnStrategyNotFoundError(Exception):
+    """Strategy not found"""
+
+
+@docstring_message
+class KrakenEarnInsufficientFundsError(Exception):
+    """Insufficient funds to complete the transaction"""
+
+
+@docstring_message
+class KrakenEarnAllocationExceededError(Exception):
+    """The allocation exceeds user limit for the strategy"""
+
+
+@docstring_message
+class KrakenEarnDeallocationExceededError(Exception):
+    """The deallocation exceeds user limit for the strategy"""
+
+
+@docstring_message
 class KrakenMaxFeeExceededError(Exception):
     """The fee was higher than the defined maximum."""
 
@@ -330,6 +370,14 @@ EXCEPTION_ASSIGNMENT: dict[str, Any] = {
     # "WDatabase:No change": ,
     #      Futures Trading Errors
     #
+    "EEarnings:Below min:(De)allocation operation amount less than minimum": KrakenEarnMinimumAllocationError,
+    "EEarnings:Busy:Another (de)allocation for the same strategy is in progress": KrakenEarnAllocationInProgressError,
+    "EEarnings:Busy": KrakenEarnTemporaryUnavailableError,
+    "EEarnings:Permission denied:The user's tier is not high enough": KrakenEarnTierVerificationError,
+    "EGeneral:Invalid arguments:Invalid strategy ID": KrakenEarnStrategyNotFoundError,
+    "EEarnings:Insufficient funds:Insufficient funds to complete the (de)allocation request": KrakenEarnInsufficientFundsError,
+    "EEarnings:Above max:The allocation exceeds user limit for the strategy": KrakenEarnAllocationExceededError,
+    "EEarnings:Above max:The allocation exceeds the total strategy limit": KrakenEarnDeallocationExceededError,
     "authenticationError": KrakenAuthenticationError,
     "insufficientAvailableFunds": KrakenInsufficientAvailableFundsError,
     "requiredArgumentMissing": KrakenRequiredArgumentMissingError,
