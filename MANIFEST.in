@@ -10,3 +10,6 @@ graft kraken
 prune doc
 prune examples
 prune tests
+prune venv
+prune .github
+prune .cache

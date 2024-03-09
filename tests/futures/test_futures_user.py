@@ -178,7 +178,7 @@ def test_get_trigger_events(futures_auth_user: User) -> None:
 @pytest.mark.futures()
 @pytest.mark.futures_auth()
 @pytest.mark.futures_user()
-@pytest.mark.skip("Subaccount actions are only available for insitutional clients")
+@pytest.mark.skip("Subaccount actions are only available for institutional clients")
 def test_check_trading_enabled_on_subaccount(futures_auth_user: User) -> None:
     """
     Checks the ``check_trading_enabled_on_subaccount`` function.
@@ -195,7 +195,7 @@ def test_check_trading_enabled_on_subaccount(futures_auth_user: User) -> None:
 @pytest.mark.futures()
 @pytest.mark.futures_auth()
 @pytest.mark.futures_user()
-@pytest.mark.skip("Subaccount actions are only available for insitutional clients")
+@pytest.mark.skip("Subaccount actions are only available for institutional clients")
 def test_set_trading_on_subaccount(futures_auth_user: User) -> None:
     """
     Checks the ``set_trading_on_subaccount`` function.

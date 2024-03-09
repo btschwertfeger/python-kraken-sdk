@@ -129,7 +129,7 @@ class Market(KrakenSpotBaseAPI):
             params["aclass"] = aclass
         return self._request(  # type: ignore[return-value]
             method="GET",
-            uri="/public/Assets",
+            uri="/0/public/Assets",
             params=params,
             auth=False,
             extra_params=extra_params,
@@ -213,7 +213,7 @@ class Market(KrakenSpotBaseAPI):
             params["info"] = info
         return self._request(  # type: ignore[return-value]
             method="GET",
-            uri="/public/AssetPairs",
+            uri="/0/public/AssetPairs",
             params=params,
             auth=False,
             extra_params=extra_params,
@@ -263,7 +263,7 @@ class Market(KrakenSpotBaseAPI):
             params["pair"] = pair
         return self._request(  # type: ignore[return-value]
             method="GET",
-            uri="/public/Ticker",
+            uri="/0/public/Ticker",
             params=params,
             auth=False,
             extra_params=extra_params,
@@ -318,7 +318,7 @@ class Market(KrakenSpotBaseAPI):
             params["since"] = since
         return self._request(  # type: ignore[return-value]
             method="GET",
-            uri="/public/OHLC",
+            uri="/0/public/OHLC",
             params=params,
             auth=False,
             extra_params=extra_params,
@@ -366,7 +366,7 @@ class Market(KrakenSpotBaseAPI):
         """
         return self._request(  # type: ignore[return-value]
             method="GET",
-            uri="/public/Depth",
+            uri="/0/public/Depth",
             params={"pair": pair, "count": count},
             auth=False,
             extra_params=extra_params,
@@ -417,7 +417,7 @@ class Market(KrakenSpotBaseAPI):
             params["count"] = count
         return self._request(  # type: ignore[return-value]
             method="GET",
-            uri="/public/Trades",
+            uri="/0/public/Trades",
             params=params,
             auth=False,
             extra_params=extra_params,
@@ -462,7 +462,7 @@ class Market(KrakenSpotBaseAPI):
             params["since"] = since
         return self._request(  # type: ignore[return-value]
             method="GET",
-            uri="/public/Spread",
+            uri="/0/public/Spread",
             params=params,
             auth=False,
             extra_params=extra_params,
@@ -491,7 +491,7 @@ class Market(KrakenSpotBaseAPI):
         """
         return self._request(  # type: ignore[return-value]
             method="GET",
-            uri="/public/SystemStatus",
+            uri="/0/public/SystemStatus",
             auth=False,
             extra_params=extra_params,
         )

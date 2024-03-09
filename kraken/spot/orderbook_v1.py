@@ -259,7 +259,7 @@ class OrderbookClientV1:
         """
         Can be used to determine if any critical error occurred within the
         websocket connection. If so, the function will return ``True`` and the
-        client instance is most likely not useable anymore. So this is the
+        client instance is most likely not usable anymore. So this is the
         switch lets the user know, when to delete the current one and create a
         new one.
 

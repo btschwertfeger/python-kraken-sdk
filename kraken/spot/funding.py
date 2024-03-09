@@ -97,7 +97,7 @@ class Funding(KrakenSpotBaseAPI):
         """
         return self._request(
             method="POST",
-            uri="/private/DepositMethods",
+            uri="/0/private/DepositMethods",
             params={"asset": asset},  # type: ignore[return-value]
             extra_params=extra_params,
         )
@@ -150,7 +150,7 @@ class Funding(KrakenSpotBaseAPI):
         """
         return self._request(  # type: ignore[return-value]
             method="POST",
-            uri="/private/DepositAddresses",
+            uri="/0/private/DepositAddresses",
             params={"asset": asset, "method": method, "new": new},
             extra_params=extra_params,
         )
@@ -243,7 +243,7 @@ class Funding(KrakenSpotBaseAPI):
 
         return self._request(  # type: ignore[return-value]
             method="POST",
-            uri="/private/DepositStatus",
+            uri="/0/private/DepositStatus",
             params=params,
             extra_params=extra_params,
         )
@@ -296,7 +296,7 @@ class Funding(KrakenSpotBaseAPI):
         """
         return self._request(  # type: ignore[return-value]
             method="POST",
-            uri="/private/WithdrawInfo",
+            uri="/0/private/WithdrawInfo",
             params={"asset": asset, "key": str(key), "amount": str(amount)},
             extra_params=extra_params,
         )
@@ -349,7 +349,7 @@ class Funding(KrakenSpotBaseAPI):
 
         return self._request(  # type: ignore[return-value]
             method="POST",
-            uri="/private/Withdraw",
+            uri="/0/private/Withdraw",
             params=params,
             extra_params=extra_params,
         )
@@ -419,7 +419,7 @@ class Funding(KrakenSpotBaseAPI):
             params["cursor"] = cursor
         return self._request(  # type: ignore[return-value]
             method="POST",
-            uri="/private/WithdrawStatus",
+            uri="/0/private/WithdrawStatus",
             params=params,
             extra_params=extra_params,
         )
@@ -457,7 +457,7 @@ class Funding(KrakenSpotBaseAPI):
         """
         return self._request(  # type: ignore[return-value]
             method="POST",
-            uri="/private/WithdrawCancel",
+            uri="/0/private/WithdrawCancel",
             params={"asset": asset, "refid": str(refid)},
             extra_params=extra_params,
         )
@@ -505,7 +505,7 @@ class Funding(KrakenSpotBaseAPI):
         """
         return self._request(  # type: ignore[return-value]
             method="POST",
-            uri="/private/WalletTransfer",
+            uri="/0/private/WalletTransfer",
             params={"asset": asset, "from": from_, "to": to_, "amount": str(amount)},
             extra_params=extra_params,
         )
@@ -542,7 +542,7 @@ class Funding(KrakenSpotBaseAPI):
             params["network"] = network
         return self._request(  # type: ignore[return-value]
             method="POST",
-            uri="/private/WithdrawMethods",
+            uri="/0/private/WithdrawMethods",
             params=params,
             extra_params=extra_params,
         )
@@ -589,7 +589,7 @@ class Funding(KrakenSpotBaseAPI):
             params["verified"] = verified
         return self._request(  # type: ignore[return-value]
             method="POST",
-            uri="/private/WithdrawMethods",
+            uri="/0/private/WithdrawMethods",
             params=params,
             extra_params=extra_params,
         )

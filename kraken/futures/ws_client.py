@@ -128,11 +128,9 @@ class KrakenFuturesWSClient(KrakenFuturesBaseAPI):
         self.__callback: Any = callback
         self._conn: ConnectFuturesWebsocket = ConnectFuturesWebsocket(
             client=self,
-            endpoint=url
-            if url
-            else self.DEMO_ENV_URL
-            if sandbox
-            else self.PROD_ENV_URL,
+            endpoint=(
+                url if url else self.DEMO_ENV_URL if sandbox else self.PROD_ENV_URL
+            ),
             callback=self.on_message,
         )
 

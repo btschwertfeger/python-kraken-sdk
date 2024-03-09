@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # Copyright (C) 2023 Benjamin Thomas Schwertfeger
 # GitHub: https://github.com/btschwertfeger
-
+# ruff: noqa: RUF027
 """
 Module that provides a template to build a Spot trading algorithm using the
 python-kraken-sdk and Kraken Spot websocket API v2.

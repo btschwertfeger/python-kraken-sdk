@@ -96,7 +96,7 @@ class User(KrakenSpotBaseAPI):
         """
         return self._request(  # type: ignore[return-value]
             method="POST",
-            uri="/private/Balance",
+            uri="/0/private/Balance",
             extra_params=extra_params,
         )
 
@@ -142,7 +142,7 @@ class User(KrakenSpotBaseAPI):
         """
         return self._request(  # type: ignore[return-value]
             method="POST",
-            uri="/private/BalanceEx",
+            uri="/0/private/BalanceEx",
             extra_params=extra_params,
         )
 
@@ -231,7 +231,7 @@ class User(KrakenSpotBaseAPI):
             params["asset"] = asset
         return self._request(  # type: ignore[return-value]
             method="POST",
-            uri="/private/TradeBalance",
+            uri="/0/private/TradeBalance",
             params=params,
             extra_params=extra_params,
         )
@@ -305,7 +305,7 @@ class User(KrakenSpotBaseAPI):
             params["userref"] = userref
         return self._request(  # type: ignore[return-value]
             method="POST",
-            uri="/private/OpenOrders",
+            uri="/0/private/OpenOrders",
             params=params,
             extra_params=extra_params,
         )
@@ -400,7 +400,7 @@ class User(KrakenSpotBaseAPI):
 
         return self._request(  # type: ignore[return-value]
             method="POST",
-            uri="/private/ClosedOrders",
+            uri="/0/private/ClosedOrders",
             params=params,
             extra_params=extra_params,
         )
@@ -513,7 +513,7 @@ class User(KrakenSpotBaseAPI):
             params["userref"] = userref
         return self._request(  # type: ignore[return-value]
             method="POST",
-            uri="/private/QueryOrders",
+            uri="/0/private/QueryOrders",
             params=params,
             extra_params=extra_params,
         )
@@ -601,7 +601,7 @@ class User(KrakenSpotBaseAPI):
             params["ofs"] = ofs
         return self._request(  # type: ignore[return-value]
             method="POST",
-            uri="/private/TradesHistory",
+            uri="/0/private/TradesHistory",
             params=params,
             extra_params=extra_params,
         )
@@ -658,7 +658,7 @@ class User(KrakenSpotBaseAPI):
         """
         return self._request(  # type: ignore[return-value]
             method="POST",
-            uri="/private/QueryTrades",
+            uri="/0/private/QueryTrades",
             params={
                 "trades": trades,
                 "txid": txid,
@@ -729,7 +729,7 @@ class User(KrakenSpotBaseAPI):
             params["txid"] = txid
         return self._request(  # type: ignore[return-value]
             method="POST",
-            uri="/private/OpenPositions",
+            uri="/0/private/OpenPositions",
             params=params,
             extra_params=extra_params,
         )
@@ -805,7 +805,7 @@ class User(KrakenSpotBaseAPI):
             params["ofs"] = ofs
         return self._request(  # type: ignore[return-value]
             method="POST",
-            uri="/private/Ledgers",
+            uri="/0/private/Ledgers",
             params=params,
             extra_params=extra_params,
         )
@@ -856,7 +856,7 @@ class User(KrakenSpotBaseAPI):
         """
         return self._request(  # type: ignore[return-value]
             method="POST",
-            uri="/private/QueryLedgers",
+            uri="/0/private/QueryLedgers",
             params={"trades": trades, "id": id_},
             extra_params=extra_params,
         )
@@ -927,7 +927,7 @@ class User(KrakenSpotBaseAPI):
             params["pair"] = pair
         return self._request(  # type: ignore[return-value]
             method="POST",
-            uri="/private/TradeVolume",
+            uri="/0/private/TradeVolume",
             params=params,
             extra_params=extra_params,
         )
@@ -997,7 +997,7 @@ class User(KrakenSpotBaseAPI):
             params["endtm"] = endtm
         return self._request(  # type: ignore[return-value]
             method="POST",
-            uri="/private/AddExport",
+            uri="/0/private/AddExport",
             params=params,
             extra_params=extra_params,
             timeout=timeout,
@@ -1061,7 +1061,7 @@ class User(KrakenSpotBaseAPI):
             raise ValueError('report must be one of "trades", "ledgers"')
         return self._request(  # type: ignore[return-value]
             method="POST",
-            uri="/private/ExportStatus",
+            uri="/0/private/ExportStatus",
             params={"report": report},
             extra_params=extra_params,
         )
@@ -1087,7 +1087,7 @@ class User(KrakenSpotBaseAPI):
         :type id_: str
         :param timeout: Timeout for that request, default: ``10`` seconds
         :type timeout: int, optional
-        :return: The reponse - a zipped report
+        :return: The response - a zipped report
         :rtype: requests.Response
 
         .. code-block:: python
@@ -1109,7 +1109,7 @@ class User(KrakenSpotBaseAPI):
         """
         return self._request(  # type: ignore[return-value]
             method="POST",
-            uri="/private/RetrieveExport",
+            uri="/0/private/RetrieveExport",
             params={"id": id_},
             timeout=timeout,
             return_raw=True,
@@ -1152,7 +1152,7 @@ class User(KrakenSpotBaseAPI):
         """
         return self._request(  # type: ignore[return-value]
             method="POST",
-            uri="/private/RemoveExport",
+            uri="/0/private/RemoveExport",
             params={"id": id_, "type": type_},
             extra_params=extra_params,
         )
@@ -1188,7 +1188,7 @@ class User(KrakenSpotBaseAPI):
         """
         return self._request(  # type: ignore[return-value]
             method="POST",
-            uri="/private/CreateSubaccount",
+            uri="/0/private/CreateSubaccount",
             params={"username": username, "email": email},
             extra_params=extra_params,
         )
@@ -1241,7 +1241,7 @@ class User(KrakenSpotBaseAPI):
         """
         return self._request(  # type: ignore[return-value]
             method="POST",
-            uri="/private/AccountTransfer",
+            uri="/0/private/AccountTransfer",
             params={"asset": asset, "amount": amount, "from": from_, "to": to_},
             extra_params=extra_params,
         )
