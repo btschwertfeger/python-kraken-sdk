@@ -7,9 +7,9 @@ include README.md LICENSE pyproject.toml
 
 graft kraken
 
+prune .cache
+prune .github
 prune doc
 prune examples
 prune tests
 prune venv
-prune .github
-prune .cache

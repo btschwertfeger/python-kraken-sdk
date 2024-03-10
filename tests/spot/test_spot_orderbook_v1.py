@@ -30,9 +30,7 @@ if TYPE_CHECKING:
 @pytest.mark.spot_websocket()
 @pytest.mark.spot_orderbook()
 def test_create_public_bot(caplog: Any) -> None:
-    """
-    Checks if the websocket client can be instantiated.
-    """
+    """Checks if the websocket client can be instantiated."""
 
     async def create_bot() -> None:
         orderbook: OrderbookClientV1Wrapper = OrderbookClientV1Wrapper()
