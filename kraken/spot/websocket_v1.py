@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import asyncio
 import json
+import warnings
 from copy import deepcopy
 from typing import Any, Callable, Optional
 
@@ -24,6 +25,8 @@ from kraken.spot.websocket import KrakenSpotWSClientBase
 
 class KrakenSpotWSClientV1(KrakenSpotWSClientBase):
     """
+    .. deprecated:: v2.2.0
+
     Class to access public and private/authenticated websocket connections.
 
     **This client only supports the Kraken Websocket API v1.**
@@ -164,6 +167,13 @@ class KrakenSpotWSClientV1(KrakenSpotWSClientBase):
         no_public: bool = False,
         beta: bool = False,
     ):
+        warnings.warn(
+            "The Kraken websocket API v1 is marked as deprecated and "
+            "its support could be removed in the future. "
+            "Please migrate to websocket API v2.",
+            category=DeprecationWarning,
+            stacklevel=2,
+        )
         super().__init__(
             key=key,
             secret=secret,

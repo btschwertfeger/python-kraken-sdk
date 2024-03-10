@@ -83,6 +83,10 @@ junit_family = "xunit2"
 testpaths = ["tests"]
 
 [tool.pytest.ini_options]
+filterwarnings = [
+  "ignore:The Kraken websocket API v1 is marked as deprecated*:DeprecationWarning",
+]
+
 cache_dir = ".cache/pytest"
 markers = [
   "wip: Used to run a specific test by hand.",
@@ -107,7 +111,6 @@ markers = [
   "futures_funding: … Futures Funding endpoint.",
   "futures_websocket: … Futures Websocket endpoint.",
 ]
-
 [tool.coverage.run]
 source = ["kraken"]
 omit = ["*tests*"]
@@ -119,6 +122,7 @@ skip_empty = true
 [tool.codespell]
 skip = "CHANGELOG.md,examples/market_client_example.ipynb"
 check-filenames = true
+
 
 # ========= T Y P I N G ========================================================
 #
