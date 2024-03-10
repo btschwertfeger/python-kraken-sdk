@@ -139,13 +139,13 @@ maintain a valid order book using the Orderbook client can be found in
 
 The Kraken Spot REST API offers many endpoints for almost every use-case. The
 python-kraken-sdk aims to provide all of them - split in User, Market, Trade,
-Funding and Staking related clients.
+Funding and Staking (Earn) related clients.
 
 The following code block demonstrates how to use some of them. More examples
 can be found in `examples/spot_examples.py`.
 
 ```python
-from kraken.spot import User, Market, Trade, Funding, Staking
+from kraken.spot import Earn, User, Market, Trade, Funding
 
 def main():
     key = "kraken-public-key"
@@ -183,14 +183,9 @@ def main():
     print(funding.cancel_withdraw(asset="DOT", refid="<some id>"))
     # …
 
-    # ____STAKING___________________________
-    staking = Staking(key=key, secret=secret)
-    print(staking.list_stakeable_assets())
-    print(
-        staking.stake_asset(
-            asset="DOT", amount=20, method="polkadot-staked"
-        )
-    )
+    # ____EARN________________________
+    earn = Earn(key=key, secret=secret)
+    print(earn.list_earn_strategies(asset="DOT"))
     # …
 
 if __name__ == "__main__":

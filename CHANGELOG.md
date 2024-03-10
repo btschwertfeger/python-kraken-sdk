@@ -6,6 +6,7 @@
 
 **Implemented enhancements:**
 
+- Resolve "Add NFT support: `kraken.nft.Trade` and `kraken.nft.Market`" [\#200](https://github.com/btschwertfeger/python-kraken-sdk/pull/200) ([btschwertfeger](https://github.com/btschwertfeger))
 - Resolve "Mark `kraken.spot.Staking` as deprecated and add `kraken.spot.Earn`" [\#199](https://github.com/btschwertfeger/python-kraken-sdk/pull/199) ([btschwertfeger](https://github.com/btschwertfeger))
 - Resolve "Add `ledger` parameter to `kraken.spot.User.get_trades_history`" [\#195](https://github.com/btschwertfeger/python-kraken-sdk/pull/195) ([btschwertfeger](https://github.com/btschwertfeger))
 - Resolve "Add `kraken.futures.Trade.get_max_order_size`" [\#193](https://github.com/btschwertfeger/python-kraken-sdk/pull/193) ([btschwertfeger](https://github.com/btschwertfeger))
@@ -13,6 +14,7 @@
 
 Uncategorized merged pull requests:
 
+- Resolve "Mark `kraken.spot.KrakenSpotWSClientV1` as deprecated" [\#201](https://github.com/btschwertfeger/python-kraken-sdk/pull/201) ([btschwertfeger](https://github.com/btschwertfeger))
 - Resolve "The POST and query parameters of KrakenSpotBaseAPI and KrakenFuturesBaseAPI are not proper encoded in some case" [\#189](https://github.com/btschwertfeger/python-kraken-sdk/pull/189) ([btschwertfeger](https://github.com/btschwertfeger))
 - adjust CI configuration [\#187](https://github.com/btschwertfeger/python-kraken-sdk/pull/187) ([btschwertfeger](https://github.com/btschwertfeger))
 - Merge the CI/CD and release workflow + fix scheduled execution [\#186](https://github.com/btschwertfeger/python-kraken-sdk/pull/186) ([btschwertfeger](https://github.com/btschwertfeger))

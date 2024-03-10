@@ -17,7 +17,7 @@ import os
 import time
 from pathlib import Path
 
-from kraken.spot import Funding, Market, Staking, Trade, User
+from kraken.spot import Earn, Funding, Market, Trade, User
 
 logging.basicConfig(
     format="%(asctime)s %(module)s,line: %(lineno)d %(levelname)8s | %(message)s",
@@ -185,19 +185,14 @@ def funding_examples() -> None:
         )
 
 
-def staking_examples() -> None:
-    """Example usage of the Staking client"""
-    staking = Staking(key=key, secret=secret)
-    print(staking.list_stakeable_assets())
-    print(staking.list_staking_transactions())
-    print(staking.get_pending_staking_transactions())
-    raise ValueError(
-        "Attention: Please check if you really want to execute staking functions.",
-    )
-    if False:
-        print(staking.stake_asset(asset="DOT", amount=2000, method="polkadot-staked"))
-        print(staking.unstake_asset(asset="DOT", amount=200, method="polkadot-staked"))
-        time.sleep(2)
+def earn_examples() -> None:
+    """
+    Example usage of the Funding client; not shown, since special API key
+    permissions must be set.
+    """
+    earn = Earn(key=key, secret=secret)  # noqa: F841
+    # ...
+    # see tests/spot/test_spot_earn.py for examples.
 
 
 def main() -> None:
@@ -205,7 +200,7 @@ def main() -> None:
     market_examples()
     trade_examples()
     funding_examples()
-    staking_examples()
+    earn_examples()
 
 
 if __name__ == "__main__":
