@@ -443,7 +443,7 @@ class Market(KrakenNFTBaseAPI):
             >>> market.get_auctions(
             ...     status="open"
             ...     filter_="nft_id[]=NTN63WS-PBAV3-FQDQDG"
-            )
+            ... )
         """
         params: dict = {}
         if defined(status):

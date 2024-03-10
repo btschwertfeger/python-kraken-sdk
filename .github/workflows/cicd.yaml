@@ -201,6 +201,8 @@ jobs:
       - Test-Spot-Private
       - Test-Futures-Public
       - Test-Futures-Private
+      - Test-NFT-Public
+      - Test-NFT-Private
     uses: ./.github/workflows/_codecov.yaml
     with:
       os: "ubuntu-latest"
