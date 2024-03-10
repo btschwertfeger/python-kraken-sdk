@@ -12,7 +12,7 @@ Welcome to Python Kraken SDK's documentation!
 =============================================
 
 |GitHub badge| |License badge| |PyVersions badge| |Downloads badge|
-|CodeQL badge| |CI/CD badge| |codecov badge| |Typing badge|
+|CI/CD badge| |codecov badge| |Typing badge|
 |Release date badge| |Release version badge| |DOI badge|
 
 .. toctree::
@@ -27,6 +27,7 @@ Welcome to Python Kraken SDK's documentation!
    src/spot/websockets.rst
    src/futures/rest.rst
    src/futures/websockets.rst
+   src/nft/rest.rst
    src/base_api/base_api.rst
    src/exceptions/exceptions.rst
    src/issues.rst

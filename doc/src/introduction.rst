@@ -6,7 +6,7 @@ Introduction
 =============
 
 |GitHub badge| |License badge| |PyVersions badge| |Downloads badge|
-|CodeQL badge| |CI/CD badge| |codecov badge| |Typing badge|
+|CI/CD badge| |codecov badge| |Typing badge|
 |Release date badge| |Release version badge| |DOI badge|
 
 
@@ -57,6 +57,7 @@ Features
 
 Available Clients:
 
+- NFT REST Clients
 - Spot REST Clients
 - Spot Websocket Clients (Websocket API v1 and v2)
 - Spot Orderbook Clients (Websocket API v1 and v2)

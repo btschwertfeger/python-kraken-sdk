@@ -110,6 +110,10 @@ markers = [
   "futures_trade: … Futures Trade endpoint.",
   "futures_funding: … Futures Funding endpoint.",
   "futures_websocket: … Futures Websocket endpoint.",
+  "nft: … NFT endpoint.",
+  "nft_auth: … authenticated NFT endpoint.",
+  "nft_market: … NFT Market endpoint.",
+  "nft_trade: … NFT Trade endpoint.",
 ]
 [tool.coverage.run]
 source = ["kraken"]
@@ -252,8 +256,12 @@ fixable = [
   "PT",
   "ICN",
   "COM",
-  "E261",
+  "E302",    # Expected 2 blank lines, found x
   "E231",    # Missing whitespace after ':'
+  "E701",    # Multiple statements on one line (colon)
+  "E303",    # Too many blank lines
+  "E225",    # Missing whitespace around operator
+  "E252",    # Missing whitespace around parameter equals
   "RSE",
   "PT",
   "FA",

@@ -1,4 +1,4 @@
-<h1 align="center">Futures and Spot - REST and Websocket API Python SDK for the Kraken Cryptocurrency Exchange 🐙</h1>
+<h1 align="center">Futures, Spot and NFT - REST and Websocket API Python SDK for the Kraken Cryptocurrency Exchange 🐙</h1>
 
 <div align="center">
 
@@ -44,6 +44,7 @@ regarding the use of this software.
 
 Available Clients:
 
+- NFT REST Clients
 - Spot REST Clients
 - Spot Websocket Clients (Websocket API v1 and v2)
 - Spot Orderbook Clients (Websocket API v1 and v2)
@@ -86,6 +87,7 @@ new releases.
 - [ Futures Clients ](#futuresusage)
   - [REST API](#futuresrest)
   - [Websocket API](#futuresws)
+- [ NFT Clients ](#nftusage)
 - [ Troubleshooting ](#trouble)
 - [ Contributions ](#contribution)
 - [ Notes ](#notes)
@@ -458,6 +460,44 @@ if __name__ == "__main__":
 
 ---
 
+<a name="nftusage"></a>
+
+# 📍 NFT REST Clients
+
+The Kraken NFT REST API offers endpoints for accessing the market and trade API
+provided by Kraken. To access the private (trade) endpoints, you have to provide
+API keys - same as for the Spot REST API.
+
+The following code excerpt demonstrates the usage. Please have a look into
+`tests/nft/*.py` for more examples.
+
+```python
+from kraken.nft import  Market, Trade
+
+def main():
+    key = "kraken-public-key"
+    secret = "kraken-secret-key"
+
+    market = Market()
+    print(market.get_nft(nft_id="NT4GUCU-SIJE2-YSQQG2", currency="USD"))
+
+    trade = Trade(key=key, secret=secret)
+    print(trade.create_auction(
+        auction_currency="ETH",
+        nft_id=["NT4EFBO-OWGI5-QLO7AG"],
+        auction_type="fixed",
+        auction_params={
+            "allow_offers": True,
+            "ask_price": 100000,
+        },
+    ))
+
+if __name__ == "__main__":
+    main()
+```
+
+---
+
 <a name="contribution"></a>
 
 # 🆕 Contributions
@@ -496,16 +536,20 @@ if __name__ == "__main__":
 
 # 📝 Notes
 
-- The version scheme is `<Major>.<Minor>.<Service Level>` where:
+The versioning scheme follows the pattern `v<Major>.<Minor>.<Patch>`. Here's what each part signifies:
 
-  - **Major** will affect everything and there will be breaking changes.
-  - **Minor** introduces features and enhancements which may bring breaking
-    changes in some cases. These breaking changes could be renaming or addition
-    of parameters, change in order of parameters or even renaming a function.
-  - **Service Level** includes bug fixes, documentation and CI related changes.
+- **Major**: This denotes significant changes that may introduce new features or
+  modify existing ones. It's possible for these changes to be breaking, meaning
+  backward compatibility is not guaranteed. To avoid unexpected behavior, it's
+  advisable to specify at least the major version when pinning dependencies.
+- **Minor**: This level indicates additions of new features or extensions to
+  existing ones. Typically, these changes do not break existing implementations.
+- **Patch**: Here, you'll find bug fixes, documentation updates, and changes
+  related to continuous integration (CI). These updates are intended to enhance
+  stability and reliability without altering existing functionality.
 
-- Coding standards are not always followed to make arguments and function names
-  as similar as possible to those of the Kraken API documentations.
+Coding standards are not always followed to make arguments and function names as
+similar as possible to those of the Kraken API documentations.
 
 <a name="references"></a>
 

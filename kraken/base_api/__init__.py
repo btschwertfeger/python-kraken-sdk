@@ -216,6 +216,7 @@ class KrakenSpotBaseAPI:
         auth: bool = True,
         do_json: bool = False,
         return_raw: bool = False,
+        query_str: Optional[str] = None,
         extra_params: Optional[str | dict] = None,
     ) -> dict[str, Any] | list[str] | list[dict[str, Any]] | requests.Response:
         """
@@ -223,7 +224,7 @@ class KrakenSpotBaseAPI:
         response, and returning the message or in case of an error the
         respective Exception.
 
-        :param method:  The request method, e.g., ``GET``, ``POST``, and ``PUT``
+        :param method: The request method, e.g., ``GET``, ``POST``, and ``PUT``
         :type method: str
         :param uri: The endpoint to send the message
         :type uri: str
@@ -244,6 +245,9 @@ class KrakenSpotBaseAPI:
             This is used for example when requesting an export of the trade
             history as .zip archive.
         :type return_raw: bool, optional
+        :param query_str: Add custom values to the query
+            /0/public/Nfts?filter%5Bcollection_id%5D=NCQNABO-XYCA7-JMMSDF&page_size=10
+        :type query_str: str, optional
         :raise kraken.exceptions.KrakenException.*: If the response contains
             errors
         :return: The response
@@ -266,6 +270,11 @@ class KrakenSpotBaseAPI:
             if METHOD in {"GET", "DELETE"} and params
             else ""
         )
+
+        if query_params and query_str:
+            query_params += f"&{query_str}"
+        elif query_str:
+            query_params = query_str
 
         TIMEOUT: int = self.TIMEOUT if timeout != 10 else timeout
         HEADERS: dict = {}
@@ -301,7 +310,7 @@ class KrakenSpotBaseAPI:
             return self.__check_response_data(
                 response=self.__session.request(
                     method=METHOD,
-                    url=f"{URL}?{query_params}",
+                    url=f"{URL}?{query_params}" if query_params else URL,
                     headers=HEADERS,
                     timeout=TIMEOUT,
                 ),
@@ -411,6 +420,10 @@ class KrakenSpotBaseAPI:
         **kwargs: dict[str, Any],
     ) -> None:
         pass
+
+
+class KrakenNFTBaseAPI(KrakenSpotBaseAPI):
+    """Inherits from KrakenSpotBaseAPI"""
 
 
 class KrakenFuturesBaseAPI:

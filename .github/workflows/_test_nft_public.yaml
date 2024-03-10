@@ -1,0 +1,44 @@
+# -*- coding: utf-8 -*-
+# Copyright (C) 2023 Benjamin Thomas Schwertfeger
+# GitHub: https://github.com/btschwertfeger
+#
+# Template workflow to test the public NFT endpoints
+# of the python-kraken-sdk.
+#
+
+name: Test NFT
+
+on:
+  workflow_call:
+    inputs:
+      os:
+        type: string
+        required: true
+      python-version:
+        type: string
+        required: true
+
+jobs:
+  Test-NFT:
+    name: Test ${{ inputs.os }} ${{ inputs.python-version }}
+    runs-on: ${{ inputs.os }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python ${{ inputs.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ inputs.python-version }}
+
+      - name: Update Pip
+        run: |
+          python -m pip install --upgrade pip
+
+      - name: Install package
+        run: python -m pip install ".[test]"
+
+      ##    Unit tests of the public Spot NFT clients and endpoints
+      ##
+      - name: Testing Spot NFT endpoints
+        run: pytest -vv -m "nft and not nft_auth" tests
