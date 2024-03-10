@@ -278,6 +278,36 @@ class KrakenMaxFeeExceededError(Exception):
 
 
 @docstring_message
+class KrakenNFTNotAvailableError(Exception):
+    """The user doesn't own the selected NFT."""
+
+
+@docstring_message
+class KrakenInvalidArgumentsStartTimeError(Exception):
+    """start_time must be < expire_time"""
+
+
+@docstring_message
+class KrakenInvalidArgumentsExpireTimeError(Exception):
+    """expire_time above max"""
+
+
+@docstring_message
+class KrakenAuctionNotOwnedByUserError(Exception):
+    """The Auction is not owned by the current user."""
+
+
+@docstring_message
+class KrakenInvalidArgumentBelowMinError(Exception):
+    """The defined price is lower than the required minimum."""
+
+
+@docstring_message
+class KrakenInvalidArgumentOfferNotFoundError(Exception):
+    """The requested offer was not found."""
+
+
+@docstring_message
 class MaxReconnectError(Exception):
     """To many reconnect tries."""
 
@@ -291,6 +321,8 @@ EXCEPTION_ASSIGNMENT: dict[str, Any] = {
     "EGeneral:Permission denied": KrakenPermissionDeniedError,
     "EGeneral:Unknown method": KrakenUnknownMethodError,
     "EGeneral:Temporary lockout": KrakenTemporaryLockoutError,
+    "EGeneral:No Balance:nfts not available": KrakenNFTNotAvailableError,
+    "EGeneral:Invalid User:auction owned by someone else": KrakenAuctionNotOwnedByUserError,
     "EFunding:Max fee exceeded": KrakenMaxFeeExceededError,
     "EService:Unavailable": KrakenServiceUnavailableError,
     "EService:Market in cancel_only mode": KrakenMarketInOnlyCancelModeError,
@@ -300,6 +332,10 @@ EXCEPTION_ASSIGNMENT: dict[str, Any] = {
     "EAPI:Invalid key": KrakenInvalidAPIKeyError,
     "EAPI:Invalid signature": KrakenInvalidSignatureError,
     "EAPI:Invalid nonce": KrakenInvalidNonceError,
+    "EAPI:Invalid arguments:start_time must be < expire_time": KrakenInvalidArgumentsStartTimeError,
+    "EAPI:Invalid arguments:expire_time above max": KrakenInvalidArgumentsExpireTimeError,
+    "EAPI:Invalid arguments:price below min": KrakenInvalidArgumentBelowMinError,
+    "EAPI:Invalid arguments:offer not found": KrakenInvalidArgumentOfferNotFoundError,
     "EAPI:Rate limit exceeded": KrakenApiLimitExceededError,
     "EAPI:Bad request": KrakenBadRequestError,
     "EOrder:Invalid order": KrakenInvalidOrderError,

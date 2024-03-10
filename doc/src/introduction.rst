@@ -57,6 +57,7 @@ Features
 
 Available Clients:
 
+- NFT REST Clients
 - Spot REST Clients
 - Spot Websocket Clients (Websocket API v1 and v2)
 - Spot Orderbook Clients (Websocket API v1 and v2)
