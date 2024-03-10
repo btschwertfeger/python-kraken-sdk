@@ -87,6 +87,7 @@ new releases.
 - [ Futures Clients ](#futuresusage)
   - [REST API](#futuresrest)
   - [Websocket API](#futuresws)
+- [ NFT Clients ](#nftusage)
 - [ Troubleshooting ](#trouble)
 - [ Contributions ](#contribution)
 - [ Notes ](#notes)
@@ -455,6 +456,44 @@ if __name__ == "__main__":
     except KeyboardInterrupt:
         # do some exception handling …
         pass
+```
+
+---
+
+<a name="nftusage"></a>
+
+# 📍 NFT REST Clients
+
+The Kraken NFT REST API offers endpoints for accessing the market and trade API
+provided by Kraken. To access the private (trade) endpoints, you have to provide
+API keys - same as for the Spot REST API.
+
+The following code excerpt demonstrates the usage. Please have a look into
+`tests/nft/*.py` for more examples.
+
+```python
+from kraken.nft import  Market, Trade
+
+def main():
+    key = "kraken-public-key"
+    secret = "kraken-secret-key"
+
+    market = Market()
+    print(market.get_nft(nft_id="NT4GUCU-SIJE2-YSQQG2", currency="USD"))
+
+    trade = Trade(key=key, secret=secret)
+    print(trade.create_auction(
+        auction_currency="ETH",
+        nft_id=["NT4EFBO-OWGI5-QLO7AG"],
+        auction_type="fixed",
+        auction_params={
+            "allow_offers": True,
+            "ask_price": 100000,
+        },
+    ))
+
+if __name__ == "__main__":
+    main()
 ```
 
 ---
