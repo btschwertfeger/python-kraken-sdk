@@ -12,7 +12,7 @@ import os
 
 import pytest
 
-from kraken.spot import Funding, Market, Staking, Trade, User
+from kraken.spot import Earn, Funding, Market, Staking, Trade, User
 
 SPOT_API_KEY: str = os.getenv("SPOT_API_KEY")
 SPOT_SECRET_KEY: str = os.getenv("SPOT_SECRET_KEY")
@@ -68,6 +68,23 @@ def spot_auth_trade() -> Trade:
     Fixture providing an authenticated Spot trade client.
     """
     return Trade(key=SPOT_API_KEY, secret=SPOT_SECRET_KEY)
+
+
+@pytest.fixture()
+def spot_earn() -> Earn:
+    """
+    Fixture providing an unauthenticated Spot earn client.
+    """
+    return Earn()
+
+
+@pytest.fixture()
+def spot_auth_earn() -> Earn:  # noqa: PT004
+    """
+    Fixture providing an authenticated Spot earn client.
+    """
+    raise ValueError("Do not use the authenticated Spot earn client for testing!")
+    # return Earn(key=SPOT_API_KEY, secret=SPOT_SECRET_KEY)
 
 
 @pytest.fixture()

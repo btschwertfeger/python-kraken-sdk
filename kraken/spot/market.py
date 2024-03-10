@@ -21,6 +21,8 @@ class Market(KrakenSpotBaseAPI):
     Class that implements the Kraken Spot Market client. Can be used to access
     the Kraken Spot market data.
 
+    - https://docs.kraken.com/rest/#tag/Spot-Market-Data
+
     :param key:  Spot API public key (default: ``""``)
     :type key: str, optional
     :param secret: Spot API secret key (default: ``""``)
@@ -28,9 +30,6 @@ class Market(KrakenSpotBaseAPI):
     :param url: Alternative URL to access the Kraken API (default:
         https://api.kraken.com)
     :type url: str, optional
-    :param sandbox: Use the sandbox (not supported for Spot trading so far,
-        default: ``False``)
-    :type sandbox: bool, optional
 
     .. code-block:: python
         :linenos:

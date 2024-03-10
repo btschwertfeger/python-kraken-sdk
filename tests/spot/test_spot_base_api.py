@@ -64,5 +64,9 @@ def test_spot_rest_contextmanager(
     # with spot_auth_staking as staking:
     #     assert isinstance(staking.get_pending_staking_transactions(), list)
 
+    # Disabled since there is no Earn support in CI
+    # with spot_auth_earn as earn:
+    #     assert isinstance(earn.list_earn_allocations(), dict)
+
     with spot_auth_trade as trade, pytest.raises(KrakenPermissionDeniedError):
         trade.cancel_order(txid="OB6JJR-7NZ5P-N5SKCB")

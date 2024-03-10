@@ -119,6 +119,7 @@ class Trade(KrakenFuturesBaseAPI):
     def create_batch_order(
         self: Trade,
         batchorder_list: list[dict],
+        processBefore: Optional[str] = None,
         *,
         extra_params: Optional[dict] = None,
     ) -> dict:
@@ -133,6 +134,8 @@ class Trade(KrakenFuturesBaseAPI):
         :param batchorder_list: List of order instructions (see example below -
             or the linked official Kraken documentation)
         :type batchorder_list: list[dict]
+        :param processBefore: Process before timestamp otherwise reject
+        :type processBefore: str, optional
         :return: Information about the submitted request
         :rtype: dict
 
@@ -223,10 +226,14 @@ class Trade(KrakenFuturesBaseAPI):
             }
         """
         batchorder: dict = {"batchOrder": batchorder_list}
+        params = {"json": f"{batchorder}"}
+        if processBefore:
+            params["processBefore"] = processBefore
+
         return self._request(  # type: ignore[return-value]
             method="POST",
             uri="/derivatives/api/v3/batchorder",
-            post_params={"json": f"{batchorder}"},
+            post_params=params,
             auth=True,
             extra_params=extra_params,
         )
@@ -335,6 +342,7 @@ class Trade(KrakenFuturesBaseAPI):
         self: Trade,
         order_id: Optional[str] = None,
         cliOrdId: Optional[str] = None,
+        processBefore: Optional[str] = None,
         *,
         extra_params: Optional[dict] = None,
     ) -> dict:
@@ -351,6 +359,8 @@ class Trade(KrakenFuturesBaseAPI):
         :type order_id: str, optional
         :param cliOrdId: The client defined order id
         :type cliOrdId: str, optional
+        :param processBefore: Process before timestamp otherwise reject
+        :type processBefore: str, optional
         :raises ValueError: If both ``order_id`` and ``cliOrdId`` are not set
         :return: Success or failure
         :rtype: dict
@@ -377,6 +387,8 @@ class Trade(KrakenFuturesBaseAPI):
             params["order_id"] = order_id
         elif defined(cliOrdId):
             params["cliOrdId"] = cliOrdId
+        elif defined(processBefore):
+            params["processBefore"] = processBefore
         else:
             raise ValueError("Either order_id or cliOrdId must be set!")
 
@@ -395,6 +407,7 @@ class Trade(KrakenFuturesBaseAPI):
         limitPrice: Optional[str | float] = None,
         size: Optional[str | float] = None,
         stopPrice: Optional[str | float] = None,
+        processBefore: Optional[str] = None,
         *,
         extra_params: Optional[dict] = None,
     ) -> dict:
@@ -416,6 +429,8 @@ class Trade(KrakenFuturesBaseAPI):
         :type size: str | float, optional
         :param stopPrice: The stop price
         :type stopPrice: str | float, optional
+        :param processBefore: Process before timestamp otherwise reject
+        :type processBefore: str, optional
         :raises ValueError: If both ``orderId`` and ``cliOrdId`` are not set
         :return: Success or failure
         :rtype: dict
@@ -453,6 +468,8 @@ class Trade(KrakenFuturesBaseAPI):
             params["size"] = size
         if defined(stopPrice):
             params["stopPrice"] = stopPrice
+        if defined(processBefore):
+            params["processBefore"] = processBefore
 
         return self._request(  # type: ignore[return-value]
             method="POST",
@@ -524,6 +541,7 @@ class Trade(KrakenFuturesBaseAPI):
         triggerSignal: Optional[str] = None,
         trailingStopDeviationUnit: Optional[str] = None,
         trailingStopMaxDeviation: Optional[str] = None,
+        processBefore: Optional[str] = None,
         *,
         extra_params: Optional[dict] = None,
     ) -> dict:
@@ -561,6 +579,8 @@ class Trade(KrakenFuturesBaseAPI):
         :type trailingStopDeviationUnit: str, optional
         :param trailingStopMaxDeviation: See referenced Kraken documentation
         :type trailingStopMaxDeviation: str, optional
+        :param processBefore: Process before timestamp otherwise reject
+        :type processBefore: str, optional
         :return: Success or failure
         :rtype: dict
 
@@ -721,11 +741,51 @@ class Trade(KrakenFuturesBaseAPI):
             params["trailingStopDeviationUnit"] = trailingStopDeviationUnit
         if defined(trailingStopMaxDeviation):
             params["trailingStopMaxDeviation"] = trailingStopMaxDeviation
+        if defined(processBefore):
+            params["processBefore"] = processBefore
 
         return self._request(  # type: ignore[return-value]
             method="POST",
             uri="/derivatives/api/v3/sendorder",
             post_params=params,
+            auth=True,
+            extra_params=extra_params,
+        )
+
+    def get_max_order_size(
+        self: Trade,
+        orderType: str,
+        symbol: str,
+        limitPrice: Optional[float] = None,
+        *,
+        extra_params: Optional[dict] = None,
+    ) -> dict:
+        """
+        Retrieve the maximum order price for a specific symbol. Can be adjusted
+        by ``limitPrice``. This endpoint only supports multi-collateral futures.
+
+        Requires at least the ``General API - Read Access`` permission in the
+        API key settings.
+
+        - https://docs.futures.kraken.com/#http-api-trading-v3-api-order-management-get-maximum-order-size
+
+        :param orderType: ``lmt`` or ``mkt``
+        :type orderType: str
+        :param symbol: The symbol to filter for
+        :type symbol: str
+        :param limitPrice: Limit price if ``orderType == lmt`` , defaults to
+            None
+        :type limitPrice: Optional[float], optional
+        """
+        params: dict = {"orderType": orderType, "symbol": symbol}
+
+        if defined(limitPrice) and orderType == "lmt":
+            params["limitPrice"] = limitPrice
+
+        return self._request(  # type: ignore[return-value]
+            method="GET",
+            uri="/derivatives/api/v3/initialmargin/maxordersize",
+            query_params=params,
             auth=True,
             extra_params=extra_params,
         )

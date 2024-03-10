@@ -265,7 +265,6 @@ class KrakenSpotBaseAPI:
                 if isinstance(extra_params, str)
                 else extra_params
             )
-
         query_params: str = (
             urlencode(params, doseq=True)
             if METHOD in {"GET", "DELETE"} and params

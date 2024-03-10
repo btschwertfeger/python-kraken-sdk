@@ -89,6 +89,7 @@ markers = [
   "flaky: Flaky tests",
   "spot: … Spot endpoint.",
   "spot_auth: … authenticated Spot endpoint.",
+  "spot_earn: … Spot Earn endpoint.",
   "spot_trade: … Spot Trade endpoint.",
   "spot_user: … Spot User endpoint.",
   "spot_market: … Spot Market endpoint.",
@@ -349,6 +350,7 @@ ignore-names = [
   "TIMEOUT",
   "URL",
   "HEADERS",
+  "processBefore",
 ]
 
 [tool.ruff.lint.pylint]
@@ -557,6 +559,7 @@ good-names = [
   "TIMEOUT",
   "URL",
   "HEADERS",
+  "processBefore",
 ]
 
 # Good variable names regexes, separated by a comma. If names match any regex,
