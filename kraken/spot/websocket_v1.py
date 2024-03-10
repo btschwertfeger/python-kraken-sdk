@@ -25,6 +25,8 @@ from kraken.spot.websocket import KrakenSpotWSClientBase
 
 class KrakenSpotWSClientV1(KrakenSpotWSClientBase):
     """
+    .. deprecated:: v2.2.0
+
     Class to access public and private/authenticated websocket connections.
 
     **This client only supports the Kraken Websocket API v1.**
