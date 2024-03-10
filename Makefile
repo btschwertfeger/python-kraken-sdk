@@ -103,6 +103,8 @@ changelog:
 		--project python-kraken-sdk \
 		--token $(GHTOKEN)  \
 		--breaking-labels Breaking \
+		--no-issues \
+		--no-issues-wo-labels \
 		--enhancement-labels Feature,enhancement \
 		--release-branch master \
 		--pr-label "Uncategorized merged pull requests:"
