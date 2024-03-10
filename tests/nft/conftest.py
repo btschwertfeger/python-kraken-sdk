@@ -40,22 +40,6 @@ def nft_market() -> Market:
 
 
 @pytest.fixture()
-def nft_auth_market() -> Market:
-    """
-    Fixture providing an unauthenticated NFT market client.
-    """
-    return Market(key=SPOT_API_KEY, secret=SPOT_SECRET_KEY)
-
-
-@pytest.fixture()
-def nft_trade() -> Trade:
-    """
-    Fixture providing an authenticated NFT trade client.
-    """
-    return Trade()
-
-
-@pytest.fixture()
 def nft_auth_trade() -> Trade:
     """
     Fixture providing an unauthenticated NFT trade client.
