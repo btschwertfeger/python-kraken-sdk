@@ -19,6 +19,11 @@ class Market(KrakenNFTBaseAPI):
     Class that implements the Kraken NFT Market client. Can be used to access
     the Kraken NFT market data.
 
+    Please note that these API endpoints are new and still under development at
+    Kraken. So the behavior and parameters may change unexpectedly. Please open
+    an issue at https://github.com/btschwertfeger/python-kraken-sdk for any
+    issues that can be addressed within this package.
+
     :param key: Spot API public key (default: ``""``)
     :type key: str, optional
     :param secret: Spot API secret key (default: ``""``)
@@ -34,11 +39,11 @@ class Market(KrakenNFTBaseAPI):
 
     .. code-block:: python
         :linenos:
-        :caption: NFT Market: Create the market client as context manager
+        :caption: NFT Market: List Blockchains
 
         >>> from kraken.nft import Market
         >>> with Market() as market:
-        ...     print(market.get_assets())
+        ...     print(market.list_blockchains())
     """
 
     def __init__(
@@ -140,7 +145,7 @@ class Market(KrakenNFTBaseAPI):
             >>> market = Market()
             >>> market.list_nfts(
             ...     page_size=1,
-            ...     filter_="filter%5Bcollection_id%5D%3DNCQNABO-XYCA7-JMMSDF"
+            ...     filter_="filter[collection_id]=NCQNABO-XYCA7-JMMSDF"
             ... )
         """
         params: dict = {"page_size": page_size}
@@ -281,7 +286,7 @@ class Market(KrakenNFTBaseAPI):
             >>> market.list_collections(
             ...         page_size=1,
             ...         currency="USD",
-            ...         filter_="filter%5Bsearch%5D=Williams",
+            ...         filter_="filter[search]=Williams",
             ...         sort="MostRelevant",
             ... )
         """
@@ -298,6 +303,227 @@ class Market(KrakenNFTBaseAPI):
             uri="/0/public/NftCollections",
             params=params,
             query_str=filter_,
+            auth=False,
+            extra_params=extra_params,
+        )
+
+    def get_creator(
+        self: Market,
+        creator_id: str,
+        *,
+        extra_params: Optional[dict] = None,
+    ) -> dict:
+        """
+        Retrieve information about a specific NFT creator
+
+        - https://docs.kraken.com/rest/#tag/NFT-Market-Data/operation/getCreator
+
+        :param creator_id: The ID of the creator
+        :type creator_id: str
+
+        .. code-block:: python
+            :linenos:
+            :caption: NFT Market: Get Creator
+
+            >>> from kraken.nft import Market
+            >>> market = Market()
+            >>> market.get_creator(creator_id="NA7NELE-FOQFZ-ODWOTV")
+        """
+        return self._request(  # type: ignore[return-value]
+            method="GET",
+            uri="/0/public/NftCreator",
+            params={"creator_id": creator_id},
+            auth=False,
+            extra_params=extra_params,
+        )
+
+    def list_creators(
+        self: Market,
+        page_size: int,
+        currency: Optional[str] = None,
+        cursor: Optional[str] = None,
+        filter_: Optional[str] = None,
+        sort: Optional[str] = None,
+        *,
+        extra_params: Optional[dict] = None,
+    ) -> dict:
+        """
+        List and filter for NFT creators
+
+        - https://docs.kraken.com/rest/#tag/NFT-Market-Data/operation/listCreators
+
+        :param page_size: Page size
+        :type page_size: int
+        :param currency: Fiat currency to display values, defaults to None
+        :type currency: Optional[str], optional
+        :param cursor: Cursor token received by last request, defaults to None
+        :type cursor: Optional[str], optional
+        :param filter_: Apply filter, defaults to None
+        :type filter_: Optional[str], optional
+        :param sort: Define sorting, defaults to None
+        :type sort: Optional[str], optional
+
+        .. code-block:: python
+            :linenos:
+            :caption: NFT Market: Get Creators
+
+            >>> from kraken.nft import Market
+            >>> market = Market()
+            >>> market.list_creators(
+            ...         page_size=1,
+            ...         currency="USD",
+            ...         filter_="filter[collection_search]=Williams",
+            ...         sort="MostRelevant",
+            ... )
+        """
+        params: dict = {"page_size": page_size}
+        if defined(currency):
+            params["currency"] = currency
+        if defined(cursor):
+            params["cursor"] = cursor
+        if defined(sort):
+            params["sort"] = sort
+
+        return self._request(  # type: ignore[return-value]
+            method="GET",
+            uri="/0/public/NftCreators",
+            params=params,
+            query_str=filter_,
+            auth=False,
+            extra_params=extra_params,
+        )
+
+    def list_blockchains(
+        self: Market,
+        *,
+        extra_params: Optional[dict] = None,
+    ) -> dict:
+        """
+        List the available blockchains
+
+        - https://docs.kraken.com/rest/#tag/NFT-Market-Data/operation/listBlockchains
+
+        .. code-block:: python
+            :linenos:
+            :caption: NFT Market: List Blockchains
+
+            >>> from kraken.nft import Market
+            >>> market = Market()
+            >>> market.list_blockchains()
+        """
+        return self._request(  # type: ignore[return-value]
+            method="GET",
+            uri="/0/public/NftBlockchains",
+            auth=False,
+            extra_params=extra_params,
+        )
+
+    def get_auctions(
+        self: Market,
+        status: str,
+        filter_: Optional[str] = None,
+        *,
+        extra_params: Optional[dict] = None,
+    ) -> dict:
+        """
+        List the available NFT auctions
+
+        - https://docs.kraken.com/rest/#tag/NFT-Market-Data/operation/getAuctions
+
+        :param status: The current status of the auction
+        :type status: str
+        :param filter_: Filter for auctions
+        :type filter_: str, optional
+        .. code-block:: python
+            :linenos:
+            :caption: NFT Market: Get Auctions
+
+            >>> from kraken.nft import Market
+            >>> market = Market()
+            >>> market.get_auctions(
+            ...     status="open"
+            ...     filter_="nft_id[]=NTN63WS-PBAV3-FQDQDG"
+            )
+        """
+        params: dict = {}
+        if defined(status):
+            params["status"] = status
+        return self._request(  # type: ignore[return-value]
+            method="GET",
+            uri="/0/public/NftAuctions",
+            params=params,
+            query_str=filter_,
+            auth=False,
+            extra_params=extra_params,
+        )
+
+    def get_offers(
+        self: Market,
+        nft_id: str,
+        *,
+        extra_params: Optional[dict] = None,
+    ) -> dict:
+        """
+        List the available NFT offers
+
+        - https://docs.kraken.com/rest/#tag/NFT-Market-Data/operation/getOffers
+
+        :param nft_id: The ID of the NFT
+        :type nft_id: str
+
+        .. code-block:: python
+            :linenos:
+            :caption: NFT Market: Get Offers
+
+            >>> from kraken.nft import Market
+            >>> market = Market()
+            >>> market.get_offers(nft_id="NT4GUCU-SIJE2-YSQQG2")
+        """
+        return self._request(  # type: ignore[return-value]
+            method="GET",
+            uri="/0/public/NftOffers",
+            params={"nft_id": nft_id},
+            auth=False,
+            extra_params=extra_params,
+        )
+
+    def get_nft_quotes(
+        self: Market,
+        filter_: str,
+        count: Optional[int] = None,
+        *,
+        extra_params: Optional[dict] = None,
+    ) -> dict:
+        """
+        List the available NFT quotes
+
+        - https://docs.kraken.com/rest/#tag/NFT-Market-Data/operation/getNftQuotes
+
+        :param filter: Apply specific filters
+        :type filter: str
+        :param count: Number of items to return
+        :type count: int, optional
+
+        .. code-block:: python
+            :linenos:
+            :caption: NFT Market: Get Quotes
+
+            >>> from kraken.nft import Market
+            >>> market = Market()
+            >>> market.get_nft_quotes(
+            ...     filter_="nft_id[]=NT4GUCU-SIJE2-YSQQG2",
+            ...     count=2
+            ... )
+        """
+        params: dict = {}
+        if defined(count):
+            params["count"] = count
+
+        return self._request(  # type: ignore[return-value]
+            method="GET",
+            uri="/0/public/NftQuotes",
+            query_str=filter_,
+            params=params,
             auth=False,
             extra_params=extra_params,
         )

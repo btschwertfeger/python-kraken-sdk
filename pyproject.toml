@@ -251,6 +251,12 @@ fixable = [
   "PT",
   "ICN",
   "COM",
+  "E302",    # Expected 2 blank lines, found x
+  "E231",    # Missing whitespace after ':'
+  "E701",    # Multiple statements on one line (colon)
+  "E303",    # Too many blank lines
+  "E225",    # Missing whitespace around operator
+  "E252",    # Missing whitespace around parameter equals
   "RSE",
   "PT",
   "FA",

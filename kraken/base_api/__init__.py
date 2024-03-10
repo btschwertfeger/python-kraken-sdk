@@ -14,7 +14,7 @@ import json
 import time
 from functools import wraps
 from typing import Any, Callable, Final, Optional, Type, TypeVar
-from urllib.parse import quote, urlencode, urljoin
+from urllib.parse import urlencode, urljoin
 from uuid import uuid1
 
 import requests
@@ -273,7 +273,7 @@ class KrakenSpotBaseAPI:
         )
 
         if query_params and query_str:
-            query_params += f"&{quote(query_str)}"
+            query_params += f"&{query_str}"
         elif query_str:
             query_params = query_str
 

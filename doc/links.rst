@@ -23,9 +23,6 @@
 .. |Downloads badge|           image:: https://static.pepy.tech/personalized-badge/python-kraken-sdk?period=total&units=abbreviation&left_color=grey&right_color=orange&left_text=downloads
                               :target: https://pepy.tech/project/python-kraken-sdk
                               :alt:    Downloads
-.. |CodeQL badge|              image:: https://github.com/btschwertfeger/Python-Kraken-SDK/actions/workflows/codeql.yaml/badge.svg?branch=master
-                              :target: https://github.com/btschwertfeger/Python-Kraken-SDK/actions/workflows/codeql.yaml
-                              :alt:    CodeQL
 .. |Typing badge|              image:: https://img.shields.io/badge/typing-mypy-informational
                               :target: https://mypy-lang.org/
                               :alt:    Typing: mypy

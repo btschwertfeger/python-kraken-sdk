@@ -1,4 +1,4 @@
-<h1 align="center">Futures and Spot - REST and Websocket API Python SDK for the Kraken Cryptocurrency Exchange 🐙</h1>
+<h1 align="center">Futures, Spot and NFT - REST and Websocket API Python SDK for the Kraken Cryptocurrency Exchange 🐙</h1>
 
 <div align="center">
 
@@ -9,7 +9,6 @@
 
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 [![Typing](https://img.shields.io/badge/typing-mypy-informational)](https://mypy-lang.org/)
-[![CodeQL](https://github.com/btschwertfeger/python-kraken-sdk/actions/workflows/codeql.yaml/badge.svg?branch=master)](https://github.com/btschwertfeger/python-kraken-sdk/actions/workflows/codeql.yaml)
 [![CI/CD](https://github.com/btschwertfeger/python-kraken-sdk/actions/workflows/cicd.yaml/badge.svg?branch=master)](https://github.com/btschwertfeger/python-kraken-sdk/actions/workflows/cicd.yaml)
 [![codecov](https://codecov.io/gh/btschwertfeger/python-kraken-sdk/branch/master/badge.svg)](https://app.codecov.io/gh/btschwertfeger/python-kraken-sdk)
 
@@ -45,6 +44,7 @@ regarding the use of this software.
 
 Available Clients:
 
+- NFT REST Clients
 - Spot REST Clients
 - Spot Websocket Clients (Websocket API v1 and v2)
 - Spot Orderbook Clients (Websocket API v1 and v2)
@@ -497,16 +497,20 @@ if __name__ == "__main__":
 
 # 📝 Notes
 
-- The version scheme is `<Major>.<Minor>.<Service Level>` where:
+The versioning scheme follows the pattern `v<Major>.<Minor>.<Patch>`. Here's what each part signifies:
 
-  - **Major** will affect everything and there will be breaking changes.
-  - **Minor** introduces features and enhancements which may bring breaking
-    changes in some cases. These breaking changes could be renaming or addition
-    of parameters, change in order of parameters or even renaming a function.
-  - **Service Level** includes bug fixes, documentation and CI related changes.
+- **Major**: This denotes significant changes that may introduce new features or
+  modify existing ones. It's possible for these changes to be breaking, meaning
+  backward compatibility is not guaranteed. To avoid unexpected behavior, it's
+  advisable to specify at least the major version when pinning dependencies.
+- **Minor**: This level indicates additions of new features or extensions to
+  existing ones. Typically, these changes do not break existing implementations.
+- **Patch**: Here, you'll find bug fixes, documentation updates, and changes
+  related to continuous integration (CI). These updates are intended to enhance
+  stability and reliability without altering existing functionality.
 
-- Coding standards are not always followed to make arguments and function names
-  as similar as possible to those of the Kraken API documentations.
+Coding standards are not always followed to make arguments and function names as
+similar as possible to those of the Kraken API documentations.
 
 <a name="references"></a>
 

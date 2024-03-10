@@ -6,7 +6,7 @@ Introduction
 =============
 
 |GitHub badge| |License badge| |PyVersions badge| |Downloads badge|
-|CodeQL badge| |CI/CD badge| |codecov badge| |Typing badge|
+|CI/CD badge| |codecov badge| |Typing badge|
 |Release date badge| |Release version badge| |DOI badge|
 
 
