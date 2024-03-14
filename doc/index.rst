@@ -13,6 +13,7 @@ Welcome to Python Kraken SDK's documentation!
 
 |GitHub badge| |License badge| |PyVersions badge| |Downloads badge|
 |CI/CD badge| |codecov badge| |Typing badge|
+|OSSF Scorecard| |OSSF Best Practices|
 |Release date badge| |Release version badge| |DOI badge|
 
 .. toctree::
