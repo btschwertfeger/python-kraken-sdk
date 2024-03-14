@@ -47,3 +47,11 @@
 .. |Docs stable|               image:: https://readthedocs.org/projects/python-kraken-sdk/badge/?version=stable
                               :target: https://python-kraken-sdk.readthedocs.io/en/stable
                               :alt:    Documentation status stable
+
+.. |OSSF Scorecard| image:: https://img.shields.io/ossf-scorecard/github.com/btschwertfeger/python-kraken-sdk?label=openssf%20scorecard&style=flat
+   :target: https://securityscorecards.dev/viewer/?uri=github.com/btschwertfeger/python-kraken-sdk
+   :alt: OSSF Scorecard
+
+.. |OSSF Best Practices| image:: https://www.bestpractices.dev/projects/8673/badge
+   :target: https://www.bestpractices.dev/projects/8673
+   :alt: OSSF Best Practices

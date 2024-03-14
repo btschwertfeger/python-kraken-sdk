@@ -13,25 +13,26 @@ Welcome to Python Kraken SDK's documentation!
 
 |GitHub badge| |License badge| |PyVersions badge| |Downloads badge|
 |CI/CD badge| |codecov badge| |Typing badge|
+|OSSF Scorecard| |OSSF Best Practices|
 |Release date badge| |Release version badge| |DOI badge|
 
 .. toctree::
    :caption: Contents:
    :maxdepth: 2
 
-   src/introduction.rst
-   src/getting_started/getting_started.rst
-   src/examples/rest_example_usage.rst
-   src/examples/trading_bot_templates.rst
-   src/spot/rest.rst
-   src/spot/websockets.rst
-   src/futures/rest.rst
-   src/futures/websockets.rst
-   src/nft/rest.rst
-   src/base_api/base_api.rst
-   src/exceptions/exceptions.rst
-   src/issues.rst
-   src/about/license.rst
+   introduction.rst
+   getting_started/getting_started.rst
+   examples/rest_example_usage.rst
+   examples/trading_bot_templates.rst
+   spot/rest.rst
+   spot/websockets.rst
+   futures/rest.rst
+   futures/websockets.rst
+   nft/rest.rst
+   base_api/base_api.rst
+   exceptions/exceptions.rst
+   issues.rst
+   about/license.rst
 
 Indices and tables
 ==================

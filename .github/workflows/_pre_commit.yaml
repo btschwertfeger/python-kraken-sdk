@@ -14,6 +14,6 @@ jobs:
   Pre-Commit:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@1e31de5234b9f8995739874a8ce0492dc87873e2 # v4.0.0
+      - uses: actions/setup-python@0a5c61591373683505ea898e09a3ea4f39ef2b9c # v5.0.0
       - uses: pre-commit/action@v3.0.0

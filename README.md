@@ -12,10 +12,13 @@
 [![CI/CD](https://github.com/btschwertfeger/python-kraken-sdk/actions/workflows/cicd.yaml/badge.svg?branch=master)](https://github.com/btschwertfeger/python-kraken-sdk/actions/workflows/cicd.yaml)
 [![codecov](https://codecov.io/gh/btschwertfeger/python-kraken-sdk/branch/master/badge.svg)](https://app.codecov.io/gh/btschwertfeger/python-kraken-sdk)
 
-![release](https://shields.io/github/release-date/btschwertfeger/python-kraken-sdk)
+[![OpenSSF ScoreCard](https://img.shields.io/ossf-scorecard/github.com/btschwertfeger/python-kraken-sdk?label=openssf%20scorecard&style=flat)](https://securityscorecards.dev/viewer/?uri=github.com/btschwertfeger/python-kraken-sdk)
+[![OpenSSF Best Practices](https://www.bestpractices.dev/projects/8673/badge)](https://www.bestpractices.dev/projects/8673)
+
+[![release](https://shields.io/github/release-date/btschwertfeger/python-kraken-sdk)](https://github.com/btschwertfeger/python-kraken-sdk/releases)
 [![release](https://img.shields.io/pypi/v/python-kraken-sdk)](https://pypi.org/project/python-kraken-sdk/)
 [![DOI](https://zenodo.org/badge/510751854.svg)](https://zenodo.org/badge/latestdoi/510751854)
-[![Documentation Status stable](https://readthedocs.org/projects/python-kraken-sdk/badge/?version=stable)](https://python-kraken-sdk.readthedocs.io/en/stable)
+[![Documentation Status Stable](https://readthedocs.org/projects/python-kraken-sdk/badge/?version=stable)](https://python-kraken-sdk.readthedocs.io/en/stable)
 
 </div>
 
