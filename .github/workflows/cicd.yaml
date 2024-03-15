@@ -52,8 +52,6 @@ on:
   release:
     types: [created]
 
-permissions: read-all
-
 concurrency:
   group: CICD-${{ github.ref }}
   cancel-in-progress: true
