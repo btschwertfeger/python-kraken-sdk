@@ -18,6 +18,8 @@ on:
         type: string
         required: true
 
+permissions: read-all
+
 jobs:
   Test-NFT:
     name: Test ${{ inputs.os }} ${{ inputs.python-version }}

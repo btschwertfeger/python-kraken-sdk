@@ -30,6 +30,8 @@ on:
       FUTURES_SANDBOX_SECRET:
         required: true
 
+permissions: read-all
+
 jobs:
   Test-Futures:
     name: Test ${{ inputs.os }} ${{ inputs.python-version }}

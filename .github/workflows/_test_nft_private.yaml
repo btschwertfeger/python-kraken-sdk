@@ -22,6 +22,8 @@ on:
       SPOT_SECRET_KEY:
         required: true
 
+permissions: read-all
+
 jobs:
   Test-NFT:
     name: Test ${{ inputs.os }} ${{ inputs.python-version }}

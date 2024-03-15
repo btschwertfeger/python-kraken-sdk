@@ -12,6 +12,8 @@ name: PR Manual CodeQL
 on:
   workflow_dispatch:
 
+permissions: read-all
+
 jobs:
   CodeQL:
     uses: ./.github/workflows/_codeql.yaml
