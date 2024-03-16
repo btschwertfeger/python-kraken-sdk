@@ -17,6 +17,8 @@ on:
         type: string
         required: true
 
+permissions: read-all
+
 jobs:
   Build:
     runs-on: ${{ inputs.os }}

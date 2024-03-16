@@ -12,6 +12,8 @@ name: PR Manual Build
 on:
   workflow_dispatch:
 
+permissions: read-all
+
 jobs:
   Build:
     uses: ./.github/workflows/_build.yaml

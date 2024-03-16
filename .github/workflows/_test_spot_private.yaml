@@ -27,6 +27,8 @@ on:
       SPOT_SECRET_KEY:
         required: true
 
+permissions: read-all
+
 jobs:
   Test-Spot:
     name: Test ${{ inputs.os }} ${{ inputs.python-version }}

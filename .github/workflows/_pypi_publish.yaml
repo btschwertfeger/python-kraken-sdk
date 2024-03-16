@@ -19,6 +19,8 @@ on:
       API_TOKEN:
         required: true
 
+permissions: read-all
+
 jobs:
   PyPI-Publish:
     name: Upload to ${{ inputs.REPOSITORY_URL }}

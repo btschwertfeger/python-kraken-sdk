@@ -10,6 +10,8 @@ name: Pre-Commit
 on:
   workflow_call:
 
+permissions: read-all
+
 jobs:
   Pre-Commit:
     runs-on: ubuntu-latest
