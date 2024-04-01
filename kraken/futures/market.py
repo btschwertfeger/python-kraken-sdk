@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 # Copyright (C) 2023 Benjamin Thomas Schwertfeger
 # GitHub: https://github.com/btschwertfeger
 # ruff: noqa:PLR0904
@@ -9,7 +8,7 @@
 from __future__ import annotations
 
 from functools import lru_cache
-from typing import Optional, TypeVar
+from typing import TypeVar
 
 from kraken.base_api import KrakenFuturesBaseAPI, defined, ensure_string
 
@@ -70,10 +69,10 @@ class Market(KrakenFuturesBaseAPI):
         tick_type: str,
         symbol: str,
         resolution: int,
-        from_: Optional[int] = None,
-        to: Optional[int] = None,
+        from_: int | None = None,
+        to: int | None = None,
         *,
-        extra_params: Optional[dict] = None,
+        extra_params: dict | None = None,
     ) -> dict:
         """
         Retrieve the open, high, low, and close data for a specific symbol and
@@ -139,11 +138,11 @@ class Market(KrakenFuturesBaseAPI):
         )
 
     @ensure_string("extra_params")
-    @lru_cache()
+    @lru_cache
     def get_tick_types(
         self: Market,
         *,
-        extra_params: Optional[dict] = None,
+        extra_params: dict | None = None,
     ) -> list[str]:
         """
         Retrieve the available tick types that can be used for example to access
@@ -173,12 +172,12 @@ class Market(KrakenFuturesBaseAPI):
         )
 
     @ensure_string("extra_params")
-    @lru_cache()
+    @lru_cache
     def get_tradeable_products(
         self: Market,
         tick_type: str,
         *,
-        extra_params: Optional[dict] = None,
+        extra_params: dict | None = None,
     ) -> list[str]:
         """
         Retrieve a list containing the tradeable assets on the futures market.
@@ -210,13 +209,13 @@ class Market(KrakenFuturesBaseAPI):
         )
 
     @ensure_string("extra_params")
-    @lru_cache()
+    @lru_cache
     def get_resolutions(
         self: Market,
         tick_type: str,
         tradeable: str,
         *,
-        extra_params: Optional[dict] = None,
+        extra_params: dict | None = None,
     ) -> list[str]:
         """
         Retrieve the list of available resolutions for a specific asset.
@@ -250,11 +249,11 @@ class Market(KrakenFuturesBaseAPI):
         )
 
     @ensure_string("extra_params")
-    @lru_cache()
+    @lru_cache
     def get_fee_schedules(
         self: Market,
         *,
-        extra_params: Optional[dict] = None,
+        extra_params: dict | None = None,
     ) -> dict:
         """
         Retrieve information about the current fees
@@ -303,7 +302,7 @@ class Market(KrakenFuturesBaseAPI):
     def get_fee_schedules_vol(
         self: Market,
         *,
-        extra_params: Optional[dict] = None,
+        extra_params: dict | None = None,
     ) -> dict:
         """
         Get the personal volumes per fee schedule
@@ -338,9 +337,9 @@ class Market(KrakenFuturesBaseAPI):
 
     def get_orderbook(
         self: Market,
-        symbol: Optional[str] = None,
+        symbol: str | None = None,
         *,
-        extra_params: Optional[dict] = None,
+        extra_params: dict | None = None,
     ) -> dict:
         """
         Get the orderbook of a specific asset/symbol. Even if the official
@@ -398,7 +397,7 @@ class Market(KrakenFuturesBaseAPI):
     def get_tickers(
         self: Market,
         *,
-        extra_params: Optional[dict] = None,
+        extra_params: dict | None = None,
     ) -> dict:
         """
         Retrieve information about the current tickers of all futures contracts.
@@ -451,7 +450,7 @@ class Market(KrakenFuturesBaseAPI):
     def get_instruments(
         self: Market,
         *,
-        extra_params: Optional[dict] = None,
+        extra_params: dict | None = None,
     ) -> dict:
         """
         Retrieve more specific information about the tradeable assets on the
@@ -540,9 +539,9 @@ class Market(KrakenFuturesBaseAPI):
 
     def get_instruments_status(
         self: Market,
-        instrument: Optional[str] = None,
+        instrument: str | None = None,
         *,
-        extra_params: Optional[dict] = None,
+        extra_params: dict | None = None,
     ) -> dict:
         """
         Retrieve status information of a specific or all futures contracts.
@@ -586,10 +585,10 @@ class Market(KrakenFuturesBaseAPI):
 
     def get_trade_history(
         self: Market,
-        symbol: Optional[str] = None,
-        lastTime: Optional[str] = None,
+        symbol: str | None = None,
+        lastTime: str | None = None,
         *,
-        extra_params: Optional[dict] = None,
+        extra_params: dict | None = None,
     ) -> dict:
         """
         Retrieve the trade history (max 100 entries), can be filtered using the
@@ -648,7 +647,7 @@ class Market(KrakenFuturesBaseAPI):
         self: Market,
         symbol: str,
         *,
-        extra_params: Optional[dict] = None,
+        extra_params: dict | None = None,
     ) -> dict:
         """
         Retrieve information about the historical funding rates for a specific
@@ -695,7 +694,7 @@ class Market(KrakenFuturesBaseAPI):
     def get_leverage_preference(
         self: Market,
         *,
-        extra_params: Optional[dict] = None,
+        extra_params: dict | None = None,
     ) -> dict:
         """
         Get the current leverage preferences of the user.
@@ -732,9 +731,9 @@ class Market(KrakenFuturesBaseAPI):
     def set_leverage_preference(
         self: Market,
         symbol: str,
-        maxLeverage: Optional[str | float] = None,
+        maxLeverage: str | float | None = None,
         *,
-        extra_params: Optional[dict] = None,
+        extra_params: dict | None = None,
     ) -> dict:
         """
         Set a new leverage preference for a specific futures contract.
@@ -775,7 +774,7 @@ class Market(KrakenFuturesBaseAPI):
     def get_pnl_preference(
         self: Market,
         *,
-        extra_params: Optional[dict] = None,
+        extra_params: dict | None = None,
     ) -> dict:
         """
         Get the current PNL (profit & loss) preferences. This can be used to
@@ -810,7 +809,7 @@ class Market(KrakenFuturesBaseAPI):
         symbol: str,
         pnlPreference: str,
         *,
-        extra_params: Optional[dict] = None,
+        extra_params: dict | None = None,
     ) -> dict:
         """
         Modify or set the current PNL preference of the user. This can be used
@@ -849,13 +848,13 @@ class Market(KrakenFuturesBaseAPI):
     def _get_historical_events(
         self: Market,
         endpoint: str,
-        before: Optional[int] = None,
-        continuation_token: Optional[str] = None,
-        since: Optional[int] = None,
-        sort: Optional[str] = None,
-        tradeable: Optional[str] = None,
+        before: int | None = None,
+        continuation_token: str | None = None,
+        since: int | None = None,
+        sort: str | None = None,
+        tradeable: str | None = None,
         *,
-        extra_params: Optional[dict] = None,
+        extra_params: dict | None = None,
     ) -> dict:
         """
         Method that uses as a gateway for the methods
@@ -903,12 +902,12 @@ class Market(KrakenFuturesBaseAPI):
     def get_public_execution_events(
         self: Market,
         tradeable: str,
-        before: Optional[int] = None,
-        continuation_token: Optional[str] = None,
-        since: Optional[int] = None,
-        sort: Optional[str] = None,
+        before: int | None = None,
+        continuation_token: str | None = None,
+        since: int | None = None,
+        sort: str | None = None,
         *,
-        extra_params: Optional[dict] = None,
+        extra_params: dict | None = None,
     ) -> dict:
         """
         Retrieve information about the public execution events. The returned
@@ -997,12 +996,12 @@ class Market(KrakenFuturesBaseAPI):
     def get_public_order_events(
         self: Market,
         tradeable: str,
-        before: Optional[int] = None,
-        continuation_token: Optional[str] = None,
-        since: Optional[int] = None,
-        sort: Optional[str] = None,
+        before: int | None = None,
+        continuation_token: str | None = None,
+        since: int | None = None,
+        sort: str | None = None,
         *,
-        extra_params: Optional[dict] = None,
+        extra_params: dict | None = None,
     ) -> dict:
         """
         Retrieve information about the public order events - filled, closed,
@@ -1073,12 +1072,12 @@ class Market(KrakenFuturesBaseAPI):
     def get_public_mark_price_events(
         self: Market,
         tradeable: str,
-        before: Optional[int] = None,
-        continuation_token: Optional[str] = None,
-        since: Optional[int] = None,
-        sort: Optional[str] = None,
+        before: int | None = None,
+        continuation_token: str | None = None,
+        since: int | None = None,
+        sort: str | None = None,
         *,
-        extra_params: Optional[dict] = None,
+        extra_params: dict | None = None,
     ) -> dict:
         """
         Retrieve information about public mark price events. The returned

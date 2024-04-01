@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 # Copyright (C) 2023 Benjamin Thomas Schwertfeger
 # GitHub: https://github.com/btschwertfeger
 #
@@ -16,7 +15,6 @@ import logging.config
 import os
 import time
 from contextlib import suppress
-from typing import Union
 
 from kraken.futures import KrakenFuturesWSClient
 
@@ -39,7 +37,7 @@ async def main() -> None:
     class Client(KrakenFuturesWSClient):
         """Can be used to create a custom trading strategy"""
 
-        async def on_message(self: Client, message: Union[list, dict]) -> None:
+        async def on_message(self: Client, message: list | dict) -> None:
             """Receives the websocket messages"""
             logging.info(message)
             # … apply your trading strategy here

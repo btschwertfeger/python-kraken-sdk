@@ -206,67 +206,81 @@ line-length = 130
 select = [
   "A",     # flake8-builtins
   "AIR",   # Airflow
+  "ANN",   # flake8-annotations
+  "ARG",   # flake8-unused-arguments
+  "ASYNC", # flake8-async
   "ASYNC", # flake8-async
   "B",     # flake8-bugbear
-  "BLE",   # blind-except
+  "B",     # flake8-bugbear
+  "BLE",   # flake8-blind-except
   "C4",    # flake8-comprehensions
   "COM",   # flake8-commas
-  "E",     # pycodestyle
-  "F",     # pyflakes
-  "FA",    # flake8-future-annotations
-  "FLY",   # flynt
-  "G",     # flake8-logging-format
-  "I",     # isort
-  "ICN",   # flake8-import-conventions
-  "INT",   # flake8-gettext
-  "ISC",   # flake8-implicit-string-concat
-  "LOG",   # flake8-logging
-  "N",     # PEP8 naming
-  "PERF",  # Perflint # maybe
-  "PGH",   # pygrep-hooks
-  "PIE",   # flake8-pie
-  "PL",    # PyLint
-  "PT",    # flake8-pytest-style
-  "PYI",   # flake8-pyi
-  "Q",     # flake8-quotes
-  "RET",   # flake8-return
-  "RSE",   # flake8-raise
-  "RUF",   # Ruff-specific rules
-  "S",     # flake8-bandit
-  "SIM",   # flake8-simplify
-  "SLF",   # flake8-self
-  "SLOT",  # flake8-slots
-  "T20",   # flake8-print
-  "TCH",   # flake8-type-checking
-  "TID",   # flake8-tidy-imports
-  "ARG",   # flake8-unused-arguments
   "CPY",   # flake8-copyright
-  "FBT",   # boolean trap
-  "PTH",   # flake8-use-pathlib
-  "FURB",  # refurb
+  # "D",     # pydocstyle | sphinx format not supported
+  "E",    # pycodestyle
+  "F",    # pyflakes
+  "FA",   # flake8-future-annotations
+  "FBT",  # flake8-boolean-trap
+  "FLY",  # flynt
+  "FURB", # refurb
+  "G",    # flake8-logging-format
+  "I",    # isort
+  "ICN",  # flake8-import-conventions
+  "INT",  # flake8-gettext
+  "ISC",  # flake8-implicit-string-concat
+  "LOG",  # flake8-logging
+  "N",    # PEP8 naming
+  "PERF", # Perflint # maybe
+  "PGH",  # pygrep-hooks
+  "PIE",  # flake8-pie
+  "PL",   # PyLint
+  "PT",   # flake8-pytest-style
+  "PTH",  # flake8-use-pathlib
+  "PYI",  # flake8-pyi
+  "Q",    # flake8-quotes
+  "RET",  # flake8-return
+  "RSE",  # flake8-raise
+  "RUF",  # Ruff-specific rules
+  "S",    # flake8-bandit
+  "SIM",  # flake8-simplify
+  "SLF",  # flake8-self
+  "SLOT", # flake8-slots
+  "T20",  # flake8-print
+  "TCH",  # flake8-type-checking
+  "TID",  # flake8-tidy-imports
+  "TRIO", # flake8-trio
+  "UP",   # pyupgrade
+  "W",    # pycodestyle
   # "ERA", # eradicate # commented-out code
   # "FIX", # flake8-fixme
   # "TD",  # flake8-todos
   # "TRY", # tryceratops # specify exception messages in class; not important
 ]
 fixable = [
-  "I",
   "C4",
-  "Q",
-  "PT",
-  "ICN",
   "COM",
-  "E302",    # Expected 2 blank lines, found x
-  "E231",    # Missing whitespace after ':'
-  "E701",    # Multiple statements on one line (colon)
-  "E303",    # Too many blank lines
-  "E225",    # Missing whitespace around operator
-  "E252",    # Missing whitespace around parameter equals
-  "RSE",
-  "PT",
+  "E221", # Multiple spaces before operator
+  "E202", # Missing Whitespace before ')'
+  "E225", # Missing whitespace around operator
+  "E227", # Missing whitespace around bitwise or shift operator
+  "E231", # Missing whitespace after ':'
+  "E252", # Missing whitespace around parameter equals
+  "E261", # Missing insert at least two spaces before inline comment
+  "E302", # Expected 2 blank lines, found x
+  "E303", # Too many blank lines
+  "E701", # Multiple statements on one line (colon)
+  "F401", # unused import
   "FA",
-  "FA100",
-  "PLR6201",
+  "I",
+  "ICN",
+  "PL",   # pylint
+  "PT",
+  "Q",
+  "RSE",
+  "UP",   # pyupgrade
+  "W292", # missing new line at end of file
+  "W293", # blank line with whitespace
+  "W391", # too many new lines at end of file
 ]
 
 ignore = [

@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 # Copyright (C) 2023 Benjamin Thomas Schwertfeger
 # GitHub: https://github.com/btschwertfeger
 #
@@ -14,13 +13,15 @@ import logging
 import traceback
 from copy import deepcopy
 from random import random
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
 import websockets
 
 from kraken.exceptions import MaxReconnectError
 
 if TYPE_CHECKING:
+    from collections.abc import Callable
+
     from kraken.futures import KrakenFuturesWSClient
 
 
@@ -45,16 +46,16 @@ class ConnectFuturesWebsocket:
         self: ConnectFuturesWebsocket,
         client: KrakenFuturesWSClient,
         endpoint: str,
-        callback: Any,
-    ):
+        callback: Callable,
+    ) -> None:
         self.__client: KrakenFuturesWSClient = client
         self.__ws_endpoint: str = endpoint
         self.__callback: Any = callback
 
         self.__reconnect_num: int = 0
 
-        self.__last_challenge: Optional[str] = None
-        self.__new_challenge: Optional[str] = None
+        self.__last_challenge: str | None = None
+        self.__new_challenge: str | None = None
         self.__challenge_ready: bool = False
 
         self.__socket: Any = None
@@ -89,7 +90,7 @@ class ConnectFuturesWebsocket:
             while keep_alive:
                 try:
                     _message = await asyncio.wait_for(self.__socket.recv(), timeout=15)
-                except asyncio.TimeoutError:
+                except TimeoutError:
                     logging.debug(  # important
                         "Timeout error in %s",
                         self.__ws_endpoint,

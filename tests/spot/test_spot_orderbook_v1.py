@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 # Copyright (C) 2023 Benjamin Thomas Schwertfeger
 # GitHub: https://github.com/btschwertfeger
 #
@@ -13,7 +12,7 @@ from __future__ import annotations
 import asyncio
 import json
 from collections import OrderedDict
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING
 from unittest import mock
 
 import pytest
@@ -29,7 +28,7 @@ if TYPE_CHECKING:
 @pytest.mark.spot()
 @pytest.mark.spot_websocket()
 @pytest.mark.spot_orderbook()
-def test_create_public_bot(caplog: Any) -> None:
+def test_create_public_bot(caplog: pytest.LogCaptureFixture) -> None:
     """Checks if the websocket client can be instantiated."""
 
     async def create_bot() -> None:
@@ -120,7 +119,7 @@ def test_assign_msg_and_validate_checksum(
 @pytest.mark.spot()
 @pytest.mark.spot_websocket()
 @pytest.mark.spot_orderbook()
-def test_add_book(caplog: Any) -> None:
+def test_add_book(caplog: pytest.LogCaptureFixture) -> None:
     """
     Checks if the orderbook client is able to add a book by subscribing.
     The logs are then checked for the expected results.
@@ -132,7 +131,7 @@ def test_add_book(caplog: Any) -> None:
         await orderbook.add_book(pairs=["XBT/USD"])
         await async_wait(seconds=2)
 
-        book: Optional[dict] = orderbook.get(pair="XBT/USD")
+        book: dict | None = orderbook.get(pair="XBT/USD")
         assert isinstance(book, dict)
 
         assert all(key in book for key in ("ask", "bid", "valid")), book
@@ -156,7 +155,7 @@ def test_add_book(caplog: Any) -> None:
 @pytest.mark.spot()
 @pytest.mark.spot_websocket()
 @pytest.mark.spot_orderbook()
-def test_remove_book(caplog: Any) -> None:
+def test_remove_book(caplog: pytest.LogCaptureFixture) -> None:
     """
     Checks if the orderbook client is able to add a book by subscribing to a book
     and unsubscribing right after + validating using the logs.

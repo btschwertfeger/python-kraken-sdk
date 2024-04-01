@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 # Copyright (C) 2023 Benjamin Thomas Schwertfeger
 # GitHub: https://github.com/btschwertfeger
 #
@@ -17,10 +16,13 @@ from asyncio import sleep as asyncio_sleep
 from binascii import crc32
 from collections import OrderedDict
 from inspect import iscoroutinefunction
-from typing import Callable, Optional
+from typing import TYPE_CHECKING
 
 from kraken.spot import Market
 from kraken.spot.websocket_v2 import KrakenSpotWSClientV2
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
 
 
 class OrderbookClientV2:
@@ -120,12 +122,12 @@ class OrderbookClientV2:
     def __init__(
         self: OrderbookClientV2,
         depth: int = 10,
-        callback: Optional[Callable] = None,
+        callback: Callable | None = None,
     ) -> None:
         super().__init__()
         self.__book: dict[str, dict] = {}
         self.__depth: int = depth
-        self.__callback: Optional[Callable] = callback
+        self.__callback: Callable | None = callback
 
         self.__market: Market = Market()
         self.ws_client: KrakenSpotWSClientV2 = KrakenSpotWSClientV2(
@@ -181,7 +183,7 @@ class OrderbookClientV2:
                 "qty_decimals": int(sym_info[pair]["lot_decimals"]),
             }
 
-        timestamp: Optional[str] = message["data"][0].get(
+        timestamp: str | None = message["data"][0].get(
             "timestamp",
             None,  # snapshot does not provide a timestamp
         )
@@ -289,7 +291,7 @@ class OrderbookClientV2:
         """
         return bool(self.ws_client.exception_occur)
 
-    def get(self: OrderbookClientV2, pair: str) -> Optional[dict]:
+    def get(self: OrderbookClientV2, pair: str) -> dict | None:
         """
         Returns the orderbook for a specific ``pair``.
 
@@ -323,7 +325,7 @@ class OrderbookClientV2:
         orders: list[dict],
         side: str,
         symbol: str,
-        timestamp: Optional[str] = None,
+        timestamp: str | None = None,
     ) -> None:
         """
         This functions updates the local orderbook based on the information

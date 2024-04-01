@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 # Copyright (C) 2023 Benjamin Thomas Schwertfeger
 # GitHub: https://github.com/btschwertfeger
 
@@ -8,12 +7,12 @@
 from __future__ import annotations
 
 import functools
-from typing import Any, Optional, TypeVar
+from typing import Any, TypeVar
 
 Self = TypeVar("Self")
 
 
-def docstring_message(cls: Any) -> Any:
+def docstring_message(cls: Any) -> Any:  # noqa: ANN401
     """
     Decorates an exception to make its docstring its default message.
 
@@ -24,7 +23,7 @@ def docstring_message(cls: Any) -> Any:
     @functools.wraps(cls.__init__)
     def wrapped_init(
         self: Self,
-        msg: Optional[str | dict] = None,
+        msg: str | dict | None = None,
         *args: tuple,
         **kwargs: dict[str, Any],
     ) -> None:
@@ -426,7 +425,7 @@ EXCEPTION_ASSIGNMENT: dict[str, Any] = {
 }
 
 
-def _get_exception(data: str | list[str]) -> Optional[Any]:
+def _get_exception(data: str | list[str]) -> Any | None:  # noqa: ANN401
     """Returns the exception given by name if available"""
     is_list: bool = isinstance(data, list)
     for name, exception in EXCEPTION_ASSIGNMENT.items():

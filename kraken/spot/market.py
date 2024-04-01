@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 # Copyright (C) 2023 Benjamin Thomas Schwertfeger
 # GitHub: https://github.com/btschwertfeger
 #
@@ -9,7 +8,7 @@
 from __future__ import annotations
 
 from functools import lru_cache
-from typing import Optional, TypeVar
+from typing import TypeVar
 
 from kraken.base_api import KrakenSpotBaseAPI, defined, ensure_string
 
@@ -62,13 +61,13 @@ class Market(KrakenSpotBaseAPI):
 
     @ensure_string("assets")
     @ensure_string("extra_params")
-    @lru_cache()
+    @lru_cache
     def get_assets(
         self: Market,
-        assets: Optional[str | list[str]] = None,
-        aclass: Optional[str] = None,
+        assets: str | list[str] | None = None,
+        aclass: str | None = None,
         *,
-        extra_params: Optional[dict] = None,
+        extra_params: dict | None = None,
     ) -> dict:
         """
         Get information about one or more assets. If ``assets`` is not
@@ -136,13 +135,13 @@ class Market(KrakenSpotBaseAPI):
 
     @ensure_string("pair")
     @ensure_string("extra_params")
-    @lru_cache()
+    @lru_cache
     def get_asset_pairs(
         self: Market,
-        pair: Optional[str | list[str]] = None,
-        info: Optional[str] = None,
+        pair: str | list[str] | None = None,
+        info: str | None = None,
         *,
-        extra_params: Optional[dict] = None,
+        extra_params: dict | None = None,
     ) -> dict:
         """
         Get information about a single or multiple asset/currency pair(s). If
@@ -221,9 +220,9 @@ class Market(KrakenSpotBaseAPI):
     @ensure_string("pair")
     def get_ticker(
         self: Market,
-        pair: Optional[str | list[str]] = None,
+        pair: str | list[str] | None = None,
         *,
-        extra_params: Optional[dict] = None,
+        extra_params: dict | None = None,
     ) -> dict:
         """
         Returns all tickers if pair is not specified - else just the ticker of
@@ -272,9 +271,9 @@ class Market(KrakenSpotBaseAPI):
         self: Market,
         pair: str,
         interval: int | str = 1,
-        since: Optional[int | str] = None,
+        since: int | str | None = None,
         *,
-        extra_params: Optional[dict] = None,
+        extra_params: dict | None = None,
     ) -> dict:
         """
         Get the open, high, low, and close data for a specific trading pair.
@@ -326,9 +325,9 @@ class Market(KrakenSpotBaseAPI):
     def get_order_book(
         self: Market,
         pair: str,
-        count: Optional[int] = 100,
+        count: int | None = 100,
         *,
-        extra_params: Optional[dict] = None,
+        extra_params: dict | None = None,
     ) -> dict:
         """
         Get the current orderbook of a specified trading pair.
@@ -374,10 +373,10 @@ class Market(KrakenSpotBaseAPI):
     def get_recent_trades(
         self: Market,
         pair: str,
-        since: Optional[str | int] = None,
-        count: Optional[int] = None,
+        since: str | int | None = None,
+        count: int | None = None,
         *,
-        extra_params: Optional[dict] = None,
+        extra_params: dict | None = None,
     ) -> dict:
         """
         Get the latest trades for a specific trading pair (up to 1000).
@@ -425,9 +424,9 @@ class Market(KrakenSpotBaseAPI):
     def get_recent_spreads(
         self: Market,
         pair: str,
-        since: Optional[str | int] = None,
+        since: str | int | None = None,
         *,
-        extra_params: Optional[dict] = None,
+        extra_params: dict | None = None,
     ) -> dict:
         """
         Get the latest spreads for a specific trading pair.
@@ -470,7 +469,7 @@ class Market(KrakenSpotBaseAPI):
     def get_system_status(
         self: Market,
         *,
-        extra_params: Optional[dict] = None,
+        extra_params: dict | None = None,
     ) -> dict:
         """
         Returns the system status of the Kraken Spot API.

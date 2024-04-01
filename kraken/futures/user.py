@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 # Copyright (C) 2023 Benjamin Thomas Schwertfeger
 # GitHub: https://github.com/btschwertfeger
 #
@@ -8,7 +7,7 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Optional, TypeVar
+from typing import TYPE_CHECKING, TypeVar
 
 from kraken.base_api import KrakenFuturesBaseAPI, defined
 
@@ -70,7 +69,7 @@ class User(KrakenFuturesBaseAPI):
     def get_wallets(
         self: User,
         *,
-        extra_params: Optional[dict] = None,
+        extra_params: dict | None = None,
     ) -> dict:
         """
         Lists the current wallet balances of the user.
@@ -164,7 +163,7 @@ class User(KrakenFuturesBaseAPI):
     def get_subaccounts(
         self: User,
         *,
-        extra_params: Optional[dict] = None,
+        extra_params: dict | None = None,
     ) -> dict:
         """
         List the subaccounts of the user.
@@ -201,7 +200,7 @@ class User(KrakenFuturesBaseAPI):
     def get_unwind_queue(
         self: User,
         *,
-        extra_params: Optional[dict] = None,
+        extra_params: dict | None = None,
     ) -> dict:
         """
         Retrieve information about the percentile of the open position in case
@@ -240,7 +239,7 @@ class User(KrakenFuturesBaseAPI):
     def get_notifications(
         self: User,
         *,
-        extra_params: Optional[dict] = None,
+        extra_params: dict | None = None,
     ) -> dict:
         """
         Retrieve the latest notifications from the Kraken Futures API
@@ -279,15 +278,15 @@ class User(KrakenFuturesBaseAPI):
 
     def get_account_log(  # noqa: PLR0913 # pylint: disable=too-many-arguments
         self: User,
-        before: Optional[str | int] = None,
-        count: Optional[str | int] = None,
-        from_: Optional[str | int] = None,
-        info: Optional[str] = None,
-        since: Optional[str | int] = None,
-        sort: Optional[str] = None,
-        to: Optional[str] = None,
+        before: str | int | None = None,
+        count: str | int | None = None,
+        from_: str | int | None = None,
+        info: str | None = None,
+        since: str | int | None = None,
+        sort: str | None = None,
+        to: str | None = None,
         *,
-        extra_params: Optional[dict] = None,
+        extra_params: dict | None = None,
     ) -> dict:
         """
         Get the historical events of the user's account. This is not available
@@ -379,7 +378,7 @@ class User(KrakenFuturesBaseAPI):
     def get_account_log_csv(
         self: User,
         *,
-        extra_params: Optional[dict] = None,
+        extra_params: dict | None = None,
     ) -> requests.Response:
         """
         Return the account log as csv, for example to export it. This is not
@@ -414,13 +413,13 @@ class User(KrakenFuturesBaseAPI):
     def _get_historical_events(
         self: User,
         endpoint: str,
-        before: Optional[int] = None,
-        continuation_token: Optional[str] = None,
-        since: Optional[int] = None,
-        sort: Optional[str] = None,
-        tradeable: Optional[str] = None,
+        before: int | None = None,
+        continuation_token: str | None = None,
+        since: int | None = None,
+        sort: str | None = None,
+        tradeable: str | None = None,
         *,
-        extra_params: Optional[dict] = None,
+        extra_params: dict | None = None,
     ) -> dict:
         """
         Method that uses as a gateway for the methods
@@ -467,13 +466,13 @@ class User(KrakenFuturesBaseAPI):
 
     def get_execution_events(
         self: User,
-        before: Optional[int] = None,
-        continuation_token: Optional[str] = None,
-        since: Optional[int] = None,
-        sort: Optional[str] = None,
-        tradeable: Optional[str] = None,
+        before: int | None = None,
+        continuation_token: str | None = None,
+        since: int | None = None,
+        sort: str | None = None,
+        tradeable: str | None = None,
         *,
-        extra_params: Optional[dict] = None,
+        extra_params: dict | None = None,
     ) -> dict:
         """
         Retrieve the order/position execution events of this user. The returned
@@ -596,13 +595,13 @@ class User(KrakenFuturesBaseAPI):
 
     def get_order_events(
         self: User,
-        before: Optional[int] = None,
-        continuation_token: Optional[str] = None,
-        since: Optional[int] = None,
-        sort: Optional[str] = None,
-        tradeable: Optional[str] = None,
+        before: int | None = None,
+        continuation_token: str | None = None,
+        since: int | None = None,
+        sort: str | None = None,
+        tradeable: str | None = None,
         *,
-        extra_params: Optional[dict] = None,
+        extra_params: dict | None = None,
     ) -> dict:
         """
         Retrieve information about the user-specific order events including
@@ -677,13 +676,13 @@ class User(KrakenFuturesBaseAPI):
 
     def get_trigger_events(
         self: User,
-        before: Optional[int] = None,
-        continuation_token: Optional[str] = None,
-        since: Optional[int] = None,
-        sort: Optional[str] = None,
-        tradeable: Optional[str] = None,
+        before: int | None = None,
+        continuation_token: str | None = None,
+        since: int | None = None,
+        sort: str | None = None,
+        tradeable: str | None = None,
         *,
-        extra_params: Optional[dict] = None,
+        extra_params: dict | None = None,
     ) -> dict:
         """
         Retrieve information about trigger events.
@@ -772,7 +771,7 @@ class User(KrakenFuturesBaseAPI):
     def get_open_positions(
         self: User,
         *,
-        extra_params: Optional[dict] = None,
+        extra_params: dict | None = None,
     ) -> dict:
         """
         List the open positions of the user.
@@ -817,7 +816,7 @@ class User(KrakenFuturesBaseAPI):
     def get_open_orders(
         self: User,
         *,
-        extra_params: Optional[dict] = None,
+        extra_params: dict | None = None,
     ) -> dict:
         """
         Retrieve the open orders.
@@ -908,7 +907,7 @@ class User(KrakenFuturesBaseAPI):
         self: User,
         subaccountUid: str,
         *,
-        extra_params: Optional[dict] = None,
+        extra_params: dict | None = None,
     ) -> dict:
         """
         Checks if trading is enabled or disabled on the specified subaccount.
@@ -949,7 +948,7 @@ class User(KrakenFuturesBaseAPI):
         subaccountUid: str,
         *,
         trading_enabled: bool,
-        extra_params: Optional[dict] = None,
+        extra_params: dict | None = None,
     ) -> dict:
         """
         Enable or disable trading on a subaccount.

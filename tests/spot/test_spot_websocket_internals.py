@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 # Copyright (C) 2023 Benjamin Thomas Schwertfeger
 # GitHub: https://github.com/btschwertfeger
 #
@@ -9,7 +8,6 @@
 from __future__ import annotations
 
 from asyncio import run as asyncio_run
-from typing import Any
 
 import pytest
 
@@ -56,7 +54,9 @@ def test_ws_base_client_context_manager() -> None:
 
 @pytest.mark.spot()
 @pytest.mark.spot_websocket()
-def test_ws_base_client_on_message_no_callback(caplog: Any) -> None:
+def test_ws_base_client_on_message_no_callback(
+    caplog: pytest.LogCaptureFixture,
+) -> None:
     """
     Checks that the KrakenSpotWSClientBase logs a message when no callback
     was defined.

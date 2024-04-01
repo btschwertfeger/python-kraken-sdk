@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 # Copyright (C) 2023 Benjamin Thomas Schwertfeger
 # GitHub: https://github.com/btschwertfeger
 #
@@ -10,7 +9,10 @@ from __future__ import annotations
 
 import asyncio
 import logging
-from typing import Any
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from pytest_mock import MockerFixture
 
 import pytest
 
@@ -19,7 +21,7 @@ from .helper import FuturesWebsocketClientTestWrapper, async_wait
 
 @pytest.mark.futures()
 @pytest.mark.futures_websocket()
-def test_create_public_client(caplog: Any) -> None:
+def test_create_public_client(caplog: pytest.LogCaptureFixture) -> None:
     """
     Checks if the unauthenticated websocket client
     can be instantiated.
@@ -42,7 +44,7 @@ def test_create_public_client(caplog: Any) -> None:
 def test_create_private_client(
     futures_api_key: str,
     futures_secret_key: str,
-    caplog: Any,
+    caplog: pytest.LogCaptureFixture,
 ) -> None:
     """
     Checks if the authenticated websocket client
@@ -108,7 +110,7 @@ def test_get_available_private_subscriptions() -> None:
 
 @pytest.mark.futures()
 @pytest.mark.futures_websocket()
-def test_subscribe_public(caplog: Any) -> None:
+def test_subscribe_public(caplog: pytest.LogCaptureFixture) -> None:
     """
     Checks if the client is able to subscribe to a public feed.
     """
@@ -150,7 +152,7 @@ def test_subscribe_public(caplog: Any) -> None:
 def test_subscribe_private(
     futures_api_key: str,
     futures_secret_key: str,
-    caplog: Any,
+    caplog: pytest.LogCaptureFixture,
 ) -> None:
     """
     Checks if the authenticated websocket client is able to subscribe
@@ -186,7 +188,7 @@ def test_subscribe_private(
 
 @pytest.mark.futures()
 @pytest.mark.futures_websocket()
-def test_unsubscribe_public(caplog: Any) -> None:
+def test_unsubscribe_public(caplog: pytest.LogCaptureFixture) -> None:
     """
     Checks if the unauthenticated websocket client is able to unsubscribe
     from public feeds.
@@ -225,7 +227,7 @@ def test_unsubscribe_public(caplog: Any) -> None:
 def test_unsubscribe_private(
     futures_api_key: str,
     futures_secret_key: str,
-    caplog: Any,
+    caplog: pytest.LogCaptureFixture,
 ) -> None:
     """
     Checks if the authenticated websocket client is able to unsubscribe
@@ -260,7 +262,7 @@ def test_unsubscribe_private(
 
 @pytest.mark.futures()
 @pytest.mark.futures_websocket()
-def test_get_active_subscriptions(caplog: Any) -> None:
+def test_get_active_subscriptions(caplog: pytest.LogCaptureFixture) -> None:
     """
     Checks the ``get_active_subscriptions`` function.
     """
@@ -293,8 +295,8 @@ def test_get_active_subscriptions(caplog: Any) -> None:
 def test_resubscribe(
     futures_api_key: str,
     futures_secret_key: str,
-    caplog: Any,
-    mocker: Any,
+    caplog: pytest.LogCaptureFixture,
+    mocker: MockerFixture,
 ) -> None:
     """
     Test that forces a reconnect by closing the connection to check if the

@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 # Copyright (C) 2024 Benjamin Thomas Schwertfeger
 # GitHub: https://github.com/btschwertfeger
 
@@ -7,7 +6,7 @@
 
 from __future__ import annotations
 
-from typing import Optional, TypeVar
+from typing import TypeVar
 
 from kraken.base_api import KrakenNFTBaseAPI, defined
 
@@ -61,9 +60,9 @@ class Market(KrakenNFTBaseAPI):
     def get_nft(
         self: Market,
         nft_id: str,
-        currency: Optional[str] = None,
+        currency: str | None = None,
         *,
-        extra_params: Optional[dict] = None,
+        extra_params: dict | None = None,
     ) -> dict:
         """
         Get an NFT by ID
@@ -117,11 +116,11 @@ class Market(KrakenNFTBaseAPI):
     def list_nfts(
         self: Market,
         page_size: int,
-        cursor: Optional[str] = None,
-        filter_: Optional[str] = None,
-        sort: Optional[str] = None,
+        cursor: str | None = None,
+        filter_: str | None = None,
+        sort: str | None = None,
         *,
-        extra_params: Optional[dict] = None,
+        extra_params: dict | None = None,
     ) -> dict:
         """
         Filter the database for NFTs.
@@ -168,9 +167,9 @@ class Market(KrakenNFTBaseAPI):
         nft_id: str,
         page: int = 1,
         per_page: int = 5,
-        currency: Optional[str] = None,
+        currency: str | None = None,
         *,
-        extra_params: Optional[dict] = None,
+        extra_params: dict | None = None,
     ) -> dict:
         """
         Retrieve the historical ownership of an NFT
@@ -215,9 +214,9 @@ class Market(KrakenNFTBaseAPI):
     def get_collection(
         self: Market,
         collection_id: str,
-        currency: Optional[str] = None,
+        currency: str | None = None,
         *,
-        extra_params: Optional[dict] = None,
+        extra_params: dict | None = None,
     ) -> dict:
         """
         Get an NFT collection by ID
@@ -254,12 +253,12 @@ class Market(KrakenNFTBaseAPI):
     def list_collections(
         self: Market,
         page_size: int,
-        currency: Optional[str] = None,
-        cursor: Optional[str] = None,
-        filter_: Optional[str] = None,
-        sort: Optional[str] = None,
+        currency: str | None = None,
+        cursor: str | None = None,
+        filter_: str | None = None,
+        sort: str | None = None,
         *,
-        extra_params: Optional[dict] = None,
+        extra_params: dict | None = None,
     ) -> dict:
         """
         List available NFT collections
@@ -311,7 +310,7 @@ class Market(KrakenNFTBaseAPI):
         self: Market,
         creator_id: str,
         *,
-        extra_params: Optional[dict] = None,
+        extra_params: dict | None = None,
     ) -> dict:
         """
         Retrieve information about a specific NFT creator
@@ -340,12 +339,12 @@ class Market(KrakenNFTBaseAPI):
     def list_creators(
         self: Market,
         page_size: int,
-        currency: Optional[str] = None,
-        cursor: Optional[str] = None,
-        filter_: Optional[str] = None,
-        sort: Optional[str] = None,
+        currency: str | None = None,
+        cursor: str | None = None,
+        filter_: str | None = None,
+        sort: str | None = None,
         *,
-        extra_params: Optional[dict] = None,
+        extra_params: dict | None = None,
     ) -> dict:
         """
         List and filter for NFT creators
@@ -396,7 +395,7 @@ class Market(KrakenNFTBaseAPI):
     def list_blockchains(
         self: Market,
         *,
-        extra_params: Optional[dict] = None,
+        extra_params: dict | None = None,
     ) -> dict:
         """
         List the available blockchains
@@ -421,9 +420,9 @@ class Market(KrakenNFTBaseAPI):
     def get_auctions(
         self: Market,
         status: str,
-        filter_: Optional[str] = None,
+        filter_: str | None = None,
         *,
-        extra_params: Optional[dict] = None,
+        extra_params: dict | None = None,
     ) -> dict:
         """
         List the available NFT auctions
@@ -461,7 +460,7 @@ class Market(KrakenNFTBaseAPI):
         self: Market,
         nft_id: str,
         *,
-        extra_params: Optional[dict] = None,
+        extra_params: dict | None = None,
     ) -> dict:
         """
         List the available NFT offers
@@ -490,9 +489,9 @@ class Market(KrakenNFTBaseAPI):
     def get_nft_quotes(
         self: Market,
         filter_: str,
-        count: Optional[int] = None,
+        count: int | None = None,
         *,
-        extra_params: Optional[dict] = None,
+        extra_params: dict | None = None,
     ) -> dict:
         """
         List the available NFT quotes

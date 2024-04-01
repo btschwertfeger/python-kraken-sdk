@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 # Copyright (C) 2023 Benjamin Thomas Schwertfeger
 # GitHub: https://github.com/btschwertfeger
 #
@@ -11,13 +10,16 @@ Module that provides the base class for the Kraken Websocket clients v1 and v2.
 from __future__ import annotations
 
 import logging
-from typing import Any, Callable, Optional, Type, TypeVar
+from typing import TYPE_CHECKING, Any, TypeVar
 
 from kraken.base_api import KrakenSpotBaseAPI
 from kraken.spot.websocket.connectors import (
     ConnectSpotWebsocketV1,
     ConnectSpotWebsocketV2,
 )
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
 
 Self = TypeVar("Self")
 
@@ -57,7 +59,7 @@ class KrakenSpotWSClientBase(KrakenSpotBaseAPI):
         self: KrakenSpotWSClientBase,
         key: str = "",
         secret: str = "",
-        callback: Optional[Callable] = None,
+        callback: Callable | None = None,
         api_version: str = "v2",
         *,
         no_public: bool = False,
@@ -66,12 +68,10 @@ class KrakenSpotWSClientBase(KrakenSpotBaseAPI):
         super().__init__(key=key, secret=secret, sandbox=beta)
 
         self._is_auth: bool = bool(key and secret)
-        self.__callback: Optional[Callable] = callback
+        self.__callback: Callable | None = callback
         self.exception_occur: bool = False
-        self._pub_conn: Optional[ConnectSpotWebsocketV1 | ConnectSpotWebsocketV2] = None
-        self._priv_conn: Optional[ConnectSpotWebsocketV1 | ConnectSpotWebsocketV2] = (
-            None
-        )
+        self._pub_conn: ConnectSpotWebsocketV1 | ConnectSpotWebsocketV2 | None = None
+        self._priv_conn: ConnectSpotWebsocketV1 | ConnectSpotWebsocketV2 | None = None
 
         self.__connect(version=api_version, beta=beta, no_public=no_public)
 
@@ -90,9 +90,7 @@ class KrakenSpotWSClientBase(KrakenSpotBaseAPI):
         :param version: The Websocket API version to use (one of ``v1``, ``v2``)
         :type version: str
         """
-        ConnectSpotWebsocket: (
-            Type[ConnectSpotWebsocketV1] | Type[ConnectSpotWebsocketV2]
-        )
+        ConnectSpotWebsocket: type[ConnectSpotWebsocketV1 | ConnectSpotWebsocketV2]
 
         if version == "v1":
             ConnectSpotWebsocket = ConnectSpotWebsocketV1
@@ -164,7 +162,7 @@ class KrakenSpotWSClientBase(KrakenSpotBaseAPI):
     async def __aexit__(
         self: KrakenSpotWSClientBase,
         *exc: object,
-        **kwargs: Any,
+        **kwargs: Any,  # noqa: ANN401
     ) -> None:
         """Exit if used as context manager"""
 
@@ -184,14 +182,17 @@ class KrakenSpotWSClientBase(KrakenSpotBaseAPI):
             uri="/0/private/GetWebSocketsToken",
         )
 
-    def _get_socket(self: KrakenSpotWSClientBase, *, private: bool) -> Any:
+    def _get_socket(
+        self: KrakenSpotWSClientBase,
+        *,
+        private: bool,
+    ) -> Any | None:  # noqa: ANN401
         """
         Returns the socket or ``None`` if not connected.
 
         :param private: Return the socket of the public or private connection
         :type private: bool
         :return: The socket
-        :rtype: Any
         """
         if private:
             return self._priv_conn.socket
@@ -202,12 +203,12 @@ class KrakenSpotWSClientBase(KrakenSpotBaseAPI):
     @property
     def active_public_subscriptions(
         self: KrakenSpotWSClientBase,
-    ) -> list[dict] | Any:
+    ) -> list[dict]:
         """
         Returns the active public subscriptions
 
         :return: List of active public subscriptions
-        :rtype: list[dict] | Any
+        :rtype: list[dict]
         :raises ConnectionError: If there is no active public connection.
         """
         if self._pub_conn is not None:
@@ -217,12 +218,12 @@ class KrakenSpotWSClientBase(KrakenSpotBaseAPI):
     @property
     def active_private_subscriptions(
         self: KrakenSpotWSClientBase,
-    ) -> list[dict] | Any:
+    ) -> list[dict]:
         """
         Returns the active private subscriptions
 
         :return: List of active private subscriptions
-        :rtype: list[dict] | Any
+        :rtype: list[dict]
         :raises ConnectionError: If there is no active private connection
         """
         if self._priv_conn is not None:
@@ -234,8 +235,8 @@ class KrakenSpotWSClientBase(KrakenSpotBaseAPI):
 
     async def send_message(
         self: KrakenSpotWSClientBase,
-        *args: Any,
-        **kwargs: Any,
+        *args: Any,  # noqa: ANN401
+        **kwargs: Any,  # noqa: ANN401
     ) -> None:
         """
         This functions must be overloaded and should be used to send messages
@@ -245,8 +246,8 @@ class KrakenSpotWSClientBase(KrakenSpotBaseAPI):
 
     async def subscribe(
         self: KrakenSpotWSClientBase,
-        *args: Any,
-        **kwargs: Any,
+        *args: Any,  # noqa: ANN401
+        **kwargs: Any,  # noqa: ANN401
     ) -> None:
         """
         This function must be overloaded and should be used to subscribe
@@ -256,8 +257,8 @@ class KrakenSpotWSClientBase(KrakenSpotBaseAPI):
 
     async def unsubscribe(
         self: KrakenSpotWSClientBase,
-        *args: Any,
-        **kwargs: Any,
+        *args: Any,  # noqa: ANN401
+        **kwargs: Any,  # noqa: ANN401
     ) -> None:
         """
         This function must be overloaded and should be used to unsubscribe

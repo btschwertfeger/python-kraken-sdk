@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 # Copyright (C) 2024 Benjamin Thomas Schwertfeger
 # GitHub: https://github.com/btschwertfeger
 
@@ -9,7 +8,10 @@ from __future__ import annotations
 
 import warnings
 from functools import wraps
-from typing import Any, Callable
+from typing import TYPE_CHECKING, Any
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
 
 
 def deprecated(func: Callable) -> Callable:
@@ -18,7 +20,10 @@ def deprecated(func: Callable) -> Callable:
     """
 
     @wraps(func)
-    def wrapper(*args: Any, **kwargs: Any) -> Any:
+    def wrapper(
+        *args: Any | None,  # noqa: ANN401
+        **kwargs: Any | None,  # noqa: ANN401
+    ) -> Any | None:  # noqa: ANN401
         warnings.warn(
             f"Call to deprecated function {func.__name__}.",
             category=DeprecationWarning,

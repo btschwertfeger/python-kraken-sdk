@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 # Copyright (C) 2023 Benjamin Thomas Schwertfeger
 # GitHub: https://github.com/btschwertfeger
 #
@@ -13,11 +12,14 @@ import hashlib
 import hmac
 import logging
 from copy import deepcopy
-from typing import Any, Optional, TypeVar
+from typing import TYPE_CHECKING, Any, TypeVar
 
 from kraken.base_api import KrakenFuturesBaseAPI
 from kraken.exceptions import KrakenAuthenticationError
 from kraken.futures.websocket import ConnectFuturesWebsocket
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
 
 Self = TypeVar("Self")
 
@@ -115,10 +117,10 @@ class KrakenFuturesWSClient(KrakenFuturesBaseAPI):
         key: str = "",
         secret: str = "",
         url: str = "",
-        callback: Optional[Any] = None,
+        callback: Callable | None = None,
         *,
         sandbox: bool = False,
-    ):
+    ) -> None:
         super().__init__(key=key, secret=secret, url=url, sandbox=sandbox)
 
         self.__key: str = key
@@ -186,7 +188,7 @@ class KrakenFuturesWSClient(KrakenFuturesBaseAPI):
     async def subscribe(
         self: KrakenFuturesWSClient,
         feed: str,
-        products: Optional[list[str]] = None,
+        products: list[str] | None = None,
     ) -> None:
         """
         Subscribe to a Futures websocket channel/feed. For some feeds
@@ -245,7 +247,7 @@ class KrakenFuturesWSClient(KrakenFuturesBaseAPI):
     async def unsubscribe(
         self: KrakenFuturesWSClient,
         feed: str,
-        products: Optional[list[str]] = None,
+        products: list[str] | None = None,
     ) -> None:
         """
         Subscribe to a Futures websocket channel/feed. For some feeds

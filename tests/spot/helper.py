@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 # Copyright (C) 2023 Benjamin Thomas Schwertfeger
 # GitHub: https://github.com/btschwertfeger
 #
@@ -16,7 +15,6 @@ import logging
 from asyncio import sleep
 from pathlib import Path
 from time import time
-from typing import Any, Union
 
 from kraken.spot import (
     KrakenSpotWSClientV1,
@@ -30,7 +28,9 @@ CACHE_DIR: Path = Path(__file__).resolve().parent.parent.parent / ".cache" / "te
 CACHE_DIR.mkdir(parents=True, exist_ok=True)
 
 
-def is_not_error(value: Any) -> bool:
+def is_not_error(
+    value: object | dict | set | tuple | list | str | float | None,
+) -> bool:
     """Returns True if 'error' as key not in dict."""
     return isinstance(value, dict) and "error" not in value
 
@@ -65,7 +65,7 @@ class SpotWebsocketClientV1TestWrapper(KrakenSpotWSClientV1):
 
     async def on_message(
         self: SpotWebsocketClientV1TestWrapper,
-        message: Union[list, dict],
+        message: list | dict,
     ) -> None:
         """
         This is the callback function that must be implemented
@@ -88,7 +88,7 @@ class SpotWebsocketClientV2TestWrapper(KrakenSpotWSClientV2):
         self: SpotWebsocketClientV2TestWrapper,
         key: str = "",
         secret: str = "",
-        **kwargs: Any,
+        **kwargs: dict | str | float | bool | None,
     ) -> None:
         super().__init__(key=key, secret=secret, callback=self.on_message, **kwargs)
         self.LOG.setLevel(logging.INFO)
@@ -120,7 +120,7 @@ class OrderbookClientV1Wrapper(OrderbookClientV1):
 
     async def on_message(
         self: OrderbookClientV1Wrapper,
-        message: Union[list, dict],
+        message: list | dict,
     ) -> None:
         self.ensure_log(message)
         await super().on_message(message=message)
@@ -137,7 +137,7 @@ class OrderbookClientV1Wrapper(OrderbookClientV1):
         self.ensure_log((pair, message))
 
     @classmethod
-    def ensure_log(cls, content: Any) -> None:
+    def ensure_log(cls, content: dict | list | str) -> None:
         """
         Ensures that the messages are logged.
         Into a file for debugging and general to the log
@@ -192,7 +192,7 @@ class OrderbookClientV2Wrapper(OrderbookClientV2):
         self.ensure_log((pair, message))
 
     @classmethod
-    def ensure_log(cls, content: Any) -> None:
+    def ensure_log(cls, content: dict | list) -> None:
         """
         Ensures that the messages are logged.
         Into a file for debugging and general to the log

@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 # Copyright (C) 2023 Benjamin Thomas Schwertfeger
 # GitHub: https://github.com/btschwertfeger
 #
@@ -20,13 +19,15 @@ import traceback
 from copy import deepcopy
 from random import random
 from time import time
-from typing import TYPE_CHECKING, Any, Final, Optional
+from typing import TYPE_CHECKING, Any, Final
 
 import websockets
 
 from kraken.exceptions import MaxReconnectError
 
 if TYPE_CHECKING:
+    from collections.abc import Callable
+
     from kraken.spot.websocket import KrakenSpotWSClientBase
 
 
@@ -62,21 +63,21 @@ class ConnectSpotWebsocketBase:
         self: ConnectSpotWebsocketBase,
         client: KrakenSpotWSClientBase,
         endpoint: str,
-        callback: Any,
+        callback: Callable,
         *,
         is_auth: bool = False,
-    ):
+    ) -> None:
         self.__client: KrakenSpotWSClientBase = client
         self.__ws_endpoint: str = endpoint
-        self.__callback: Any = callback
+        self.__callback: Callable = callback
 
         self.__reconnect_num: int = 0
-        self.ws_conn_details: Optional[dict] = None
+        self.ws_conn_details: dict | None = None
 
         self.__is_auth: bool = is_auth
 
-        self._last_ping: Optional[int | float] = None
-        self.socket: Optional[Any] = None
+        self._last_ping: int | float | None = None
+        self.socket: Any | None = None
         self._subscriptions: list[dict] = []
         self.task: asyncio.Task = asyncio.create_task(self.__run_forever())
 
@@ -131,7 +132,7 @@ class ConnectSpotWebsocketBase:
                     await self.send_ping()
                 try:
                     _message = await asyncio.wait_for(self.socket.recv(), timeout=15)
-                except asyncio.TimeoutError:  # important
+                except TimeoutError:  # important
                     await self.send_ping()
                 except asyncio.CancelledError:
                     self.LOG.exception("asyncio.CancelledError")
@@ -238,7 +239,7 @@ class ConnectSpotWebsocketBase:
     def __get_reconnect_wait(
         self: ConnectSpotWebsocketBase,
         attempts: int,
-    ) -> float | Any:
+    ) -> float | Any:  # noqa: ANN401
         """
         Get some random wait time that increases by any attempt.
 
@@ -314,7 +315,7 @@ class ConnectSpotWebsocketV1(ConnectSpotWebsocketBase):
         self: ConnectSpotWebsocketV1,
         client: KrakenSpotWSClientBase,
         endpoint: str,
-        callback: Any,
+        callback: Callable | None,
         *,
         is_auth: bool = False,
     ) -> None:
@@ -479,7 +480,7 @@ class ConnectSpotWebsocketV2(ConnectSpotWebsocketBase):
         self: ConnectSpotWebsocketV2,
         client: KrakenSpotWSClientBase,
         endpoint: str,
-        callback: Any,
+        callback: Callable | None,
         *,
         is_auth: bool = False,
     ) -> None:

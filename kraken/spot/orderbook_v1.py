@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 # Copyright (C) 2023 Benjamin Thomas Schwertfeger
 # GitHub: https://github.com/btschwertfeger
 #
@@ -13,9 +12,12 @@ from asyncio import sleep as asyncio_sleep
 from binascii import crc32
 from collections import OrderedDict
 from inspect import iscoroutinefunction
-from typing import Callable, Optional
+from typing import TYPE_CHECKING
 
 from kraken.spot.websocket_v1 import KrakenSpotWSClientV1
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
 
 
 class OrderbookClientV1:
@@ -116,12 +118,12 @@ class OrderbookClientV1:
     def __init__(
         self: OrderbookClientV1,
         depth: int = 10,
-        callback: Optional[Callable] = None,
+        callback: Callable | None = None,
     ) -> None:
         super().__init__()
         self.__book: dict[str, dict] = {}
         self.__depth: int = depth
-        self.__callback: Optional[Callable] = callback
+        self.__callback: Callable | None = callback
 
         self.ws_client: KrakenSpotWSClientV1 = KrakenSpotWSClientV1(
             callback=self.on_message,
@@ -166,7 +168,7 @@ class OrderbookClientV1:
             self.__update_book(pair=pair, side="ask", snapshot=message[1]["as"])
             self.__update_book(pair=pair, side="bid", snapshot=message[1]["bs"])
         else:
-            checksum: Optional[str] = None
+            checksum: str | None = None
             # Executed every time a new update comes in.
             for data in message[1 : len(message) - 2]:
                 if "a" in data:
@@ -268,7 +270,7 @@ class OrderbookClientV1:
         """
         return bool(self.ws_client.exception_occur)
 
-    def get(self: OrderbookClientV1, pair: str) -> Optional[dict]:
+    def get(self: OrderbookClientV1, pair: str) -> dict | None:
         """
         Returns the orderbook for a specific ``pair``.
 

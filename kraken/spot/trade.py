@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 # Copyright (C) 2023 Benjamin Thomas Schwertfeger
 # GitHub: https://github.com/btschwertfeger
 #
@@ -11,7 +10,7 @@ from __future__ import annotations
 from decimal import Decimal
 from functools import lru_cache
 from math import floor
-from typing import Optional, TypeVar
+from typing import TypeVar
 
 from kraken.base_api import KrakenSpotBaseAPI, defined, ensure_string
 from kraken.spot.market import Market
@@ -70,26 +69,26 @@ class Trade(KrakenSpotBaseAPI):
         side: str,
         pair: str,
         volume: str | float,
-        price: Optional[str | float] = None,
-        price2: Optional[str | float] = None,
-        trigger: Optional[str] = None,
-        leverage: Optional[str] = None,
-        stptype: Optional[str] = "cancel-newest",
-        oflags: Optional[str | list[str]] = None,
-        timeinforce: Optional[str] = None,
-        displayvol: Optional[str] = None,
-        starttm: Optional[str] = "0",
-        expiretm: Optional[str] = None,
-        close_ordertype: Optional[str] = None,
-        close_price: Optional[str | float] = None,
-        close_price2: Optional[str | float] = None,
-        deadline: Optional[str] = None,
-        userref: Optional[int] = None,
+        price: str | float | None = None,
+        price2: str | float | None = None,
+        trigger: str | None = None,
+        leverage: str | None = None,
+        stptype: str | None = "cancel-newest",
+        oflags: str | list[str] | None = None,
+        timeinforce: str | None = None,
+        displayvol: str | None = None,
+        starttm: str | None = "0",
+        expiretm: str | None = None,
+        close_ordertype: str | None = None,
+        close_price: str | float | None = None,
+        close_price2: str | float | None = None,
+        deadline: str | None = None,
+        userref: int | None = None,
         *,
         truncate: bool = False,
-        reduce_only: Optional[bool] = False,
+        reduce_only: bool | None = False,
         validate: bool = False,
-        extra_params: Optional[dict] = None,
+        extra_params: dict | None = None,
     ) -> dict:
         """
         Create a new order and place it on the market.
@@ -367,10 +366,10 @@ class Trade(KrakenSpotBaseAPI):
         self: Trade,
         orders: list[dict],
         pair: str,
-        deadline: Optional[str] = None,
+        deadline: str | None = None,
         *,
         validate: bool = False,
-        extra_params: Optional[dict] = None,
+        extra_params: dict | None = None,
     ) -> dict:
         """
         Create a batch of max 15 orders for a specific asset pair.
@@ -449,17 +448,17 @@ class Trade(KrakenSpotBaseAPI):
         self: Trade,
         txid: str,
         pair: str,
-        volume: Optional[str | float] = None,
-        price: Optional[str | float] = None,
-        price2: Optional[str | float] = None,
-        oflags: Optional[str] = None,
-        deadline: Optional[str] = None,
-        cancel_response: Optional[bool] = None,  # noqa: FBT001
-        userref: Optional[int] = None,
+        volume: str | float | None = None,
+        price: str | float | None = None,
+        price2: str | float | None = None,
+        oflags: str | None = None,
+        deadline: str | None = None,
+        cancel_response: bool | None = None,  # noqa: FBT001
+        userref: int | None = None,
         *,
         truncate: bool = False,
         validate: bool = False,
-        extra_params: Optional[dict] = None,
+        extra_params: dict | None = None,
     ) -> dict:
         """
         Edit an open order.
@@ -555,7 +554,7 @@ class Trade(KrakenSpotBaseAPI):
         self: Trade,
         txid: str,
         *,
-        extra_params: Optional[dict] = None,
+        extra_params: dict | None = None,
     ) -> dict:
         """
         Cancel a specific order by ``txid``. Instead of a transaction id
@@ -590,7 +589,7 @@ class Trade(KrakenSpotBaseAPI):
     def cancel_all_orders(
         self: Trade,
         *,
-        extra_params: Optional[dict] = None,
+        extra_params: dict | None = None,
     ) -> dict:
         """
         Cancel all open orders.
@@ -622,7 +621,7 @@ class Trade(KrakenSpotBaseAPI):
         self: Trade,
         timeout: int = 0,
         *,
-        extra_params: Optional[dict] = None,
+        extra_params: dict | None = None,
     ) -> dict:
         """
         Cancel all orders after a timeout. This can be used as Dead Man's Switch.
@@ -660,7 +659,7 @@ class Trade(KrakenSpotBaseAPI):
         self: Trade,
         orders: list[str | int],
         *,
-        extra_params: Optional[dict] = None,
+        extra_params: dict | None = None,
     ) -> dict:
         """
         Cancel a a list of orders by ``txid`` or ``userref``
@@ -694,7 +693,7 @@ class Trade(KrakenSpotBaseAPI):
             extra_params=extra_params,
         )
 
-    @lru_cache()
+    @lru_cache
     def truncate(
         self: Trade,
         amount: Decimal | float | str,

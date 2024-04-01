@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 # Copyright (C) 2023 Benjamin Thomas Schwertfeger
 # GitHub: https://github.com/btschwertfeger
 
@@ -13,7 +12,7 @@ import hmac
 import json
 import time
 from functools import wraps
-from typing import Any, Callable, Final, Optional, Type, TypeVar
+from typing import TYPE_CHECKING, Any, Final, TypeVar
 from urllib.parse import urlencode, urljoin
 from uuid import uuid1
 
@@ -21,10 +20,13 @@ import requests
 
 from kraken.exceptions import _get_exception
 
+if TYPE_CHECKING:
+    from collections.abc import Callable
+
 Self = TypeVar("Self")
 
 
-def defined(value: Any) -> bool:
+def defined(value: Any) -> bool:  # noqa: ANN401
     """Returns ``True`` if ``value`` is not ``None``"""
     return value is not None
 
@@ -59,7 +61,10 @@ def ensure_string(parameter_name: str) -> Callable:
 
     def decorator(func: Callable) -> Callable:
         @wraps(func)  # required for sphinx to discover the func
-        def wrapper(*args: Any, **kwargs: Any) -> Any:
+        def wrapper(
+            *args: Any | None,  # noqa: ANN401
+            **kwargs: Any | None,  # noqa: ANN401
+        ) -> Any | None:  # noqa: ANN401
             if parameter_name in kwargs:
                 value: Any = kwargs[parameter_name]
                 if parameter_name == "extra_params":
@@ -89,14 +94,17 @@ class KrakenErrorHandler:
     KrakenException based on the error message.
     """
 
-    def __get_exception(self: KrakenErrorHandler, data: str) -> Optional[Any]:
+    def __get_exception(
+        self: KrakenErrorHandler,
+        data: str,
+    ) -> Any | None:  # noqa: ANN401
         """
         Must be called when an error was found in the message, so the corresponding
         KrakenException will be returned.
         """
         return _get_exception(data=data)
 
-    def check(self: KrakenErrorHandler, data: dict) -> dict | Any:
+    def check(self: KrakenErrorHandler, data: dict) -> dict | Any:  # noqa: ANN401
         """
         Check if the error message is a known KrakenError response and than
         raise a custom exception or return the data containing the "error".
@@ -108,13 +116,13 @@ class KrakenErrorHandler:
         :raise kraken.exceptions.KrakenException.*: raises a KrakenError if the
             response contains an error
         :return: The response as dict
-        :rtype: dict
+        :rtype: Any
         :raises KrakenError: If is the error keyword in the response
         """
         if len(data.get("error", [])) == 0 and "result" in data:
             return data["result"]
 
-        exception: Type[Exception] = self.__get_exception(data=data["error"])
+        exception: type[Exception] = self.__get_exception(data=data["error"])
         if exception:
             raise exception(data)
         return data
@@ -131,7 +139,7 @@ class KrakenErrorHandler:
         :rtype: dict
         """
         if "sendStatus" in data and "status" in data["sendStatus"]:
-            exception: Type[Exception] = self.__get_exception(
+            exception: type[Exception] = self.__get_exception(
                 data["sendStatus"]["status"],
             )
             if exception:
@@ -154,7 +162,7 @@ class KrakenErrorHandler:
             batch_status: list[dict[str, Any]] = data["batchStatus"]
             for status in batch_status:
                 if "status" in status:
-                    exception: Type[Exception] = self.__get_exception(
+                    exception: type[Exception] = self.__get_exception(
                         status["status"],
                     )
                     if exception:
@@ -192,7 +200,7 @@ class KrakenSpotBaseAPI:
         *,
         sandbox: bool = False,
         use_custom_exceptions: bool = True,
-    ):
+    ) -> None:
         if sandbox:
             raise ValueError("Sandbox not available for Kraken Spot trading.")
         if url:
@@ -210,14 +218,14 @@ class KrakenSpotBaseAPI:
         self: KrakenSpotBaseAPI,
         method: str,
         uri: str,
-        params: Optional[dict] = None,
+        params: dict | None = None,
         timeout: int = 10,
         *,
         auth: bool = True,
         do_json: bool = False,
         return_raw: bool = False,
-        query_str: Optional[str] = None,
-        extra_params: Optional[str | dict] = None,
+        query_str: str | None = None,
+        extra_params: str | dict | None = None,
     ) -> dict[str, Any] | list[str] | list[dict[str, Any]] | requests.Response:
         """
         Handles the requested requests, by sending the request, handling the
@@ -459,7 +467,7 @@ class KrakenFuturesBaseAPI:
         *,
         sandbox: bool = False,
         use_custom_exceptions: bool = True,
-    ):
+    ) -> None:
         self.sandbox: bool = sandbox
         self.url: str
         if url:
@@ -481,13 +489,13 @@ class KrakenFuturesBaseAPI:
         self: KrakenFuturesBaseAPI,
         method: str,
         uri: str,
-        post_params: Optional[dict] = None,
-        query_params: Optional[dict] = None,
+        post_params: dict | None = None,
+        query_params: dict | None = None,
         timeout: int = 10,
         *,
         auth: bool = True,
         return_raw: bool = False,
-        extra_params: Optional[str | dict] = None,
+        extra_params: str | dict | None = None,
     ) -> dict[str, Any] | list[dict[str, Any]] | list[str] | requests.Response:
         """
         Handles the requested requests, by sending the request, handling the

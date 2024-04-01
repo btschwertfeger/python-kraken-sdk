@@ -4,7 +4,13 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+    reviewers:
+      - "btschwertfeger"
   - package-ecosystem: "pip"
     directory: "/"
     schedule:
       interval: "weekly"
+    reviewers:
+      - "btschwertfeger"
+    ignore:
+      - dependency-name: "ruff"
