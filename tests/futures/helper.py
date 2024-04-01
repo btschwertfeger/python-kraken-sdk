@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 # Copyright (C) 2023 Benjamin Thomas Schwertfeger
 # GitHub: https://github.com/btschwertfeger
 #
@@ -10,7 +9,6 @@ import logging
 from asyncio import sleep
 from pathlib import Path
 from time import time
-from typing import Any
 
 from kraken.futures import KrakenFuturesWSClient
 
@@ -18,7 +16,7 @@ CACHE_DIR: Path = Path(__file__).resolve().parent.parent.parent / ".cache" / "te
 CACHE_DIR.mkdir(parents=True, exist_ok=True)
 
 
-def is_success(value: Any) -> bool:
+def is_success(value: object | dict | set | tuple | list | str | float | None) -> bool:
     """
     Returns true if result is success, even if the order may not exist - but kraken received the correct request.
     """
@@ -27,7 +25,9 @@ def is_success(value: Any) -> bool:
     )
 
 
-def is_not_error(value: Any) -> bool:
+def is_not_error(
+    value: object | dict | set | tuple | list | str | float | None,
+) -> bool:
     """Returns true if result is not error"""
     return isinstance(value, dict) and "error" not in value
 

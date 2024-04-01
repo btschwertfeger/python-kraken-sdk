@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 # Copyright (C) 2023 Benjamin Thomas Schwertfeger
 # GitHub: https://github.com/btschwertfeger
 #
@@ -15,12 +14,15 @@ import asyncio
 import json
 import warnings
 from copy import deepcopy
-from typing import Any, Callable, Optional
+from typing import TYPE_CHECKING, Any
 
 from kraken.base_api import defined, ensure_string
 from kraken.exceptions import KrakenAuthenticationError
 from kraken.spot.trade import Trade
 from kraken.spot.websocket import KrakenSpotWSClientBase
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
 
 
 class KrakenSpotWSClientV1(KrakenSpotWSClientBase):
@@ -162,11 +164,11 @@ class KrakenSpotWSClientV1(KrakenSpotWSClientBase):
         self: KrakenSpotWSClientV1,
         key: str = "",
         secret: str = "",
-        callback: Optional[Callable] = None,
+        callback: Callable | None = None,
         *,
         no_public: bool = False,
         beta: bool = False,
-    ):
+    ) -> None:
         warnings.warn(
             "The Kraken websocket API v1 is marked as deprecated and "
             "its support could be removed in the future. "
@@ -226,7 +228,7 @@ class KrakenSpotWSClientV1(KrakenSpotWSClientBase):
     async def subscribe(  # pylint: disable=arguments-differ
         self: KrakenSpotWSClientV1,
         subscription: dict,
-        pair: Optional[list[str]] = None,
+        pair: list[str] | None = None,
     ) -> None:
         """
         Subscribe to a channel
@@ -298,7 +300,7 @@ class KrakenSpotWSClientV1(KrakenSpotWSClientBase):
     async def unsubscribe(  # pylint: disable=arguments-differ
         self: KrakenSpotWSClientV1,
         subscription: dict,
-        pair: Optional[list[str]] = None,
+        pair: list[str] | None = None,
     ) -> None:
         """
         Unsubscribe from a feed
@@ -396,18 +398,18 @@ class KrakenSpotWSClientV1(KrakenSpotWSClientBase):
         side: str,
         pair: str,
         volume: str | float,
-        price: Optional[str | float] = None,
-        price2: Optional[str | float] = None,
-        leverage: Optional[str | float] = None,
-        oflags: Optional[str | list[str]] = None,
-        starttm: Optional[str | int] = None,
-        expiretm: Optional[str | int] = None,
-        deadline: Optional[str] = None,
-        userref: Optional[str | int] = None,
-        close_ordertype: Optional[str] = None,
-        close_price: Optional[str | float] = None,
-        close_price2: Optional[str | float] = None,
-        timeinforce: Optional[str | int] = None,
+        price: str | float | None = None,
+        price2: str | float | None = None,
+        leverage: str | float | None = None,
+        oflags: str | list[str] | None = None,
+        starttm: str | int | None = None,
+        expiretm: str | int | None = None,
+        deadline: str | None = None,
+        userref: str | int | None = None,
+        close_ordertype: str | None = None,
+        close_price: str | float | None = None,
+        close_price2: str | float | None = None,
+        timeinforce: str | int | None = None,
         *,
         truncate: bool = False,
         validate: bool = False,
@@ -479,7 +481,6 @@ class KrakenSpotWSClientV1(KrakenSpotWSClientBase):
         :raises KrakenAuthenticationError: If the websocket is not connected or
             the connection is not authenticated
         :raises ValueError: If input is not correct
-        :rtype: None
 
         Initialize your client as described in
         :class:`kraken.spot.KrakenSpotWSClientV1` to run the following example:
@@ -562,13 +563,13 @@ class KrakenSpotWSClientV1(KrakenSpotWSClientBase):
     async def edit_order(  # pylint: disable=too-many-arguments # noqa: PLR0913
         self: KrakenSpotWSClientV1,
         orderid: str,
-        reqid: Optional[str | int] = None,
-        pair: Optional[str] = None,
-        price: Optional[str | float] = None,
-        price2: Optional[str | float] = None,
-        volume: Optional[str | float] = None,
-        oflags: Optional[str | list[str]] = None,
-        newuserref: Optional[str | int] = None,
+        reqid: str | int | None = None,
+        pair: str | None = None,
+        price: str | float | None = None,
+        price2: str | float | None = None,
+        volume: str | float | None = None,
+        oflags: str | list[str] | None = None,
+        newuserref: str | int | None = None,
         *,
         truncate: bool = False,
         validate: bool = False,
@@ -608,7 +609,6 @@ class KrakenSpotWSClientV1(KrakenSpotWSClientBase):
         :raises KrakenAuthenticationError: If the websocket is not connected or
             the connection is not authenticated
         :raises ValueError: If input is not correct
-        :rtype: None
 
         Initialize your client as described in
         :class:`kraken.spot.KrakenSpotWSClientV1` to run the following example:
@@ -672,7 +672,6 @@ class KrakenSpotWSClientV1(KrakenSpotWSClientBase):
         :type txid: list[str]
         :raises KrakenAuthenticationError: If the websocket is not connected or
             the connection is not authenticated
-        :return: None
 
         Initialize your client as described in
         :class:`kraken.spot.KrakenSpotWSClientV1` to run the following example:
@@ -703,7 +702,6 @@ class KrakenSpotWSClientV1(KrakenSpotWSClientBase):
 
         :raises KrakenAuthenticationError: If the websocket is not connected or
             the connection is not authenticated
-        :return: None
 
         Initialize your client as described in
         :class:`kraken.spot.KrakenSpotWSClientV1` to run the following example:
@@ -737,7 +735,6 @@ class KrakenSpotWSClientV1(KrakenSpotWSClientBase):
         :type timeout: int
         :raises KrakenAuthenticationError: If the websocket is not connected or
             the connection is not authenticated
-        :return: None
 
         Initialize your client as described in
         :class:`kraken.spot.KrakenSpotWSClientV1` to run the following example:

@@ -1,12 +1,11 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 # Copyright (C) 2023 Benjamin Thomas Schwertfeger
 # GitHub: https://github.com/btschwertfeger
 #
 
 """Module that implements the unit tests for the Spot trade client."""
 
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 from time import sleep
 
 import pytest
@@ -79,7 +78,7 @@ def test_create_order(spot_auth_trade: Trade) -> None:
             dict,
         )
 
-    deadline = (datetime.now(timezone.utc) + timedelta(seconds=20)).isoformat()
+    deadline = (datetime.now(UTC) + timedelta(seconds=20)).isoformat()
     with pytest.raises(
         KrakenPermissionDeniedError,
         match=r"API key doesn't have permission to make this request.",

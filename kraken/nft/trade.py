@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 # Copyright (C) 2024 Benjamin Thomas Schwertfeger
 # GitHub: https://github.com/btschwertfeger
 
@@ -7,7 +6,7 @@
 
 from __future__ import annotations
 
-from typing import Optional, TypeVar
+from typing import TypeVar
 
 from kraken.base_api import KrakenNFTBaseAPI, defined
 
@@ -64,11 +63,11 @@ class Trade(KrakenNFTBaseAPI):
         auction_params: dict,
         auction_type: str,
         nft_id: list[str],
-        offer_id: Optional[str] = None,
-        otp: Optional[str] = None,
-        start_time: Optional[int] = None,
+        offer_id: str | None = None,
+        otp: str | None = None,
+        start_time: int | None = None,
         *,
-        extra_params: Optional[dict] = None,
+        extra_params: dict | None = None,
     ) -> dict:
         """
         Create an NFT auction for the user owned NFTs.
@@ -128,11 +127,11 @@ class Trade(KrakenNFTBaseAPI):
     def modify_auction(
         self: Trade,
         auction_id: str,
-        ask_price: Optional[str | int] = None,
-        otp: Optional[str] = None,
-        reserve_price: Optional[str | int] = None,
+        ask_price: str | int | None = None,
+        otp: str | None = None,
+        reserve_price: str | int | None = None,
         *,
-        extra_params: Optional[dict] = None,
+        extra_params: dict | None = None,
     ) -> dict:
         """
         Modify an existing auction owned by the user
@@ -177,9 +176,9 @@ class Trade(KrakenNFTBaseAPI):
     def cancel_auction(
         self: Trade,
         auction_ids: list[str],
-        otp: Optional[str] = None,
+        otp: str | None = None,
         *,
-        extra_params: Optional[dict] = None,
+        extra_params: dict | None = None,
     ) -> dict:
         """
         Cancel an existing auction owned by the user
@@ -215,11 +214,11 @@ class Trade(KrakenNFTBaseAPI):
         nft_id: list[str],
         offer_amount: str | int,
         offer_currency: str,
-        quote_id: Optional[str] = None,
-        expire_time: Optional[int] = None,
-        otp: Optional[str] = None,
+        quote_id: str | None = None,
+        expire_time: int | None = None,
+        otp: str | None = None,
         *,
-        extra_params: Optional[dict] = None,
+        extra_params: dict | None = None,
     ) -> dict:
         """
         Place a new NFT offer.
@@ -277,10 +276,10 @@ class Trade(KrakenNFTBaseAPI):
         currency: str,
         ask_price: str | int,
         offer_id: str,
-        expire_time: Optional[int] = None,
-        otp: Optional[str] = None,
+        expire_time: int | None = None,
+        otp: str | None = None,
         *,
-        extra_params: Optional[dict] = None,
+        extra_params: dict | None = None,
     ) -> dict:
         """
         Create a counter offer for an existing offer.
@@ -331,9 +330,9 @@ class Trade(KrakenNFTBaseAPI):
     def accept_offer(
         self: Trade,
         offer_id: str,
-        otp: Optional[str] = None,
+        otp: str | None = None,
         *,
-        extra_params: Optional[dict] = None,
+        extra_params: dict | None = None,
     ) -> dict:
         """
         Accept a specific NFT offer.
@@ -367,13 +366,13 @@ class Trade(KrakenNFTBaseAPI):
 
     def get_auction_trades(
         self: Trade,
-        auction_id: Optional[list[str]] = None,
-        end_time: Optional[int] = None,
-        start_time: Optional[int] = None,
-        nft_id: Optional[str] = None,
-        otp: Optional[str] = None,
+        auction_id: list[str] | None = None,
+        end_time: int | None = None,
+        start_time: int | None = None,
+        nft_id: str | None = None,
+        otp: str | None = None,
         *,
-        extra_params: Optional[dict] = None,
+        extra_params: dict | None = None,
     ) -> dict:
         """
         Get and filter for NFT auctions trades.
@@ -424,17 +423,17 @@ class Trade(KrakenNFTBaseAPI):
         pos: int,
         scope: str,
         sort: str,
-        chain: Optional[list[str]] = None,
-        collection: Optional[list[str]] = None,
-        count: Optional[int] = None,
-        end_time: Optional[int] = None,
-        start_time: Optional[int] = None,
-        exclude_quotes: Optional[bool] = None,  # noqa: FBT001
-        nft_id: Optional[str] = None,
-        status: Optional[str] = None,
-        otp: Optional[str] = None,
+        chain: list[str] | None = None,
+        collection: list[str] | None = None,
+        count: int | None = None,
+        end_time: int | None = None,
+        start_time: int | None = None,
+        exclude_quotes: bool | None = None,  # noqa: FBT001
+        nft_id: str | None = None,
+        status: str | None = None,
+        otp: str | None = None,
         *,
-        extra_params: Optional[dict] = None,
+        extra_params: dict | None = None,
     ) -> dict:
         """
         Retrieve and filter the user specific offers
@@ -518,20 +517,20 @@ class Trade(KrakenNFTBaseAPI):
 
     def get_nft_wallet(  # noqa: PLR0913,PLR0917 # pylint: disable=too-many-arguments
         self: Trade,
-        chain: Optional[str] = None,
-        currency: Optional[str] = None,
-        custody: Optional[str] = None,
+        chain: str | None = None,
+        currency: str | None = None,
+        custody: str | None = None,
         page: int = 1,
         per_page: int = 5,
-        price_currency: Optional[str] = None,
-        price_high: Optional[str | float | int] = None,
-        price_low: Optional[str | float | int] = None,
-        search: Optional[str] = None,
-        sort: Optional[str] = None,
-        status: Optional[list[str]] = None,
-        otp: Optional[str] = None,
+        price_currency: str | None = None,
+        price_high: str | float | None = None,
+        price_low: str | float | None = None,
+        search: str | None = None,
+        sort: str | None = None,
+        status: list[str] | None = None,
+        otp: str | None = None,
         *,
-        extra_params: Optional[dict] = None,
+        extra_params: dict | None = None,
     ) -> dict:
         """
         Filter for user owned NFT wallets.
@@ -607,16 +606,16 @@ class Trade(KrakenNFTBaseAPI):
 
     def list_nft_transactions(  # noqa: PLR0913 # pylint: disable=too-many-arguments
         self: Trade,
-        end_time: Optional[int] = None,
-        start_time: Optional[int] = None,
-        nft_id: Optional[str] = None,
-        otp: Optional[str] = None,
+        end_time: int | None = None,
+        start_time: int | None = None,
+        nft_id: str | None = None,
+        otp: str | None = None,
         page: int = 1,
         per_page: int = 5,
         sort: str = "desc",
-        type_: Optional[str] = None,
+        type_: str | None = None,
         *,
-        extra_params: Optional[dict] = None,
+        extra_params: dict | None = None,
     ) -> dict:
         """
         Filter the users historical NFT transactions.

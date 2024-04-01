@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 # Copyright (C) 2023 Benjamin Thomas Schwertfeger
 # GitHub: https://github.com/btschwertfeger
 # ruff: noqa: RUF027
@@ -16,7 +15,6 @@ import logging.config
 import os
 import sys
 import traceback
-from typing import Any, Optional
 
 import requests
 import urllib3
@@ -51,7 +49,11 @@ class TradingBot(KrakenSpotWSClientV2):
         }
     """
 
-    def __init__(self: TradingBot, config: dict, **kwargs: Any) -> None:
+    def __init__(
+        self: TradingBot,
+        config: dict,
+        **kwargs: object | dict | set | tuple | list | str | float | None,
+    ) -> None:
         super().__init__(  # initialize the KrakenSpotWSClientV2
             key=config["key"],
             secret=config["secret"],
@@ -115,7 +117,7 @@ class TradingBot(KrakenSpotWSClientV2):
 
     # Add more functions to customize the trading strategy …
 
-    def save_exit(self: TradingBot, reason: Optional[str] = "") -> None:
+    def save_exit(self: TradingBot, reason: str | None = "") -> None:
         """controlled shutdown of the strategy"""
         logging.warning(
             "Save exit triggered, reason: {reason}",
@@ -144,9 +146,9 @@ class Manager:
         }
     """
 
-    def __init__(self: Manager, config: dict):
+    def __init__(self: Manager, config: dict) -> None:
         self.__config: dict = config
-        self.__trading_strategy: Optional[TradingBot] = None
+        self.__trading_strategy: TradingBot | None = None
 
     def run(self: Manager) -> None:
         """Starts the event loop and bot"""

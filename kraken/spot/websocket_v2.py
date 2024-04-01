@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 # Copyright (C) 2023 Benjamin Thomas Schwertfeger
 # GitHub: https://github.com/btschwertfeger
 #
@@ -13,11 +12,14 @@ from __future__ import annotations
 
 import asyncio
 import json
-from typing import Any, Callable, Optional
+from typing import TYPE_CHECKING, Any
 
 from kraken.base_api import defined
 from kraken.exceptions import KrakenAuthenticationError
 from kraken.spot.websocket import KrakenSpotWSClientBase
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
 
 
 class KrakenSpotWSClientV2(KrakenSpotWSClientBase):
@@ -156,11 +158,11 @@ class KrakenSpotWSClientV2(KrakenSpotWSClientBase):
         self: KrakenSpotWSClientV2,
         key: str = "",
         secret: str = "",
-        callback: Optional[Callable] = None,
+        callback: Callable | None = None,
         *,
         no_public: bool = False,
         beta: bool = False,
-    ):
+    ) -> None:
         super().__init__(
             key=key,
             secret=secret,
@@ -424,7 +426,7 @@ class KrakenSpotWSClientV2(KrakenSpotWSClientBase):
     async def subscribe(  # pylint: disable=arguments-differ
         self: KrakenSpotWSClientV2,
         params: dict,
-        req_id: Optional[int] = None,
+        req_id: int | None = None,
     ) -> None:
         """
         Subscribe to a channel/feed
@@ -473,7 +475,7 @@ class KrakenSpotWSClientV2(KrakenSpotWSClientBase):
     async def unsubscribe(  # pylint: disable=arguments-differ
         self: KrakenSpotWSClientV2,
         params: dict,
-        req_id: Optional[int] = None,
+        req_id: int | None = None,
     ) -> None:
         """
         Unsubscribe from a channel/feed

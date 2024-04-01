@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 # Copyright (C) 2023 Benjamin Thomas Schwertfeger
 # GitHub: https://github.com/btschwertfeger
 #
@@ -8,7 +7,7 @@
 
 from __future__ import annotations
 
-from typing import Optional, TypeVar
+from typing import TypeVar
 
 from kraken.base_api import KrakenSpotBaseAPI, defined
 
@@ -63,7 +62,7 @@ class Funding(KrakenSpotBaseAPI):
         self: Funding,
         asset: str,
         *,
-        extra_params: Optional[dict] = None,
+        extra_params: dict | None = None,
     ) -> list[dict]:
         """
         Get the available deposit methods for a specific asset.
@@ -106,8 +105,8 @@ class Funding(KrakenSpotBaseAPI):
         asset: str,
         method: str,
         *,
-        new: Optional[bool] = False,
-        extra_params: Optional[dict] = None,
+        new: bool | None = False,
+        extra_params: dict | None = None,
     ) -> list[dict]:
         """
         Get the deposit addresses for a specific asset. New deposit addresses
@@ -156,13 +155,13 @@ class Funding(KrakenSpotBaseAPI):
 
     def get_recent_deposits_status(
         self: Funding,
-        asset: Optional[str] = None,
-        method: Optional[str] = None,
-        start: Optional[str] = None,
-        end: Optional[str] = None,
+        asset: str | None = None,
+        method: str | None = None,
+        start: str | None = None,
+        end: str | None = None,
         cursor: bool | str = False,  # noqa: FBT001, FBT002
         *,
-        extra_params: Optional[dict] = None,
+        extra_params: dict | None = None,
     ) -> list[dict] | dict:
         """
         Get information about the recent deposit status. The look back period is
@@ -253,7 +252,7 @@ class Funding(KrakenSpotBaseAPI):
         key: str,
         amount: str | float,
         *,
-        extra_params: Optional[dict] = None,
+        extra_params: dict | None = None,
     ) -> dict:
         """
         Get information about a possible withdraw, including fee and limit
@@ -305,9 +304,9 @@ class Funding(KrakenSpotBaseAPI):
         asset: str,
         key: str,
         amount: str | float,
-        max_fee: Optional[str] = None,
+        max_fee: str | None = None,
         *,
-        extra_params: Optional[dict] = None,
+        extra_params: dict | None = None,
     ) -> dict:
         """
         Create a new withdraw. The key must be the name of the withdraw key
@@ -355,13 +354,13 @@ class Funding(KrakenSpotBaseAPI):
 
     def get_recent_withdraw_status(
         self: Funding,
-        asset: Optional[str] = None,
-        method: Optional[str] = None,
-        start: Optional[str] = None,
-        end: Optional[str] = None,
-        cursor: Optional[str | bool] = None,  # noqa: FBT001
+        asset: str | None = None,
+        method: str | None = None,
+        start: str | None = None,
+        end: str | None = None,
+        cursor: str | bool | None = None,  # noqa: FBT001
         *,
-        extra_params: Optional[dict] = None,
+        extra_params: dict | None = None,
     ) -> list[dict]:
         """
         Get information about the recent withdraw status, including withdraws of
@@ -428,7 +427,7 @@ class Funding(KrakenSpotBaseAPI):
         asset: str,
         refid: str,
         *,
-        extra_params: Optional[dict] = None,
+        extra_params: dict | None = None,
     ) -> dict:
         """
         Cancel a requested withdraw. This will only be successful if the
@@ -468,7 +467,7 @@ class Funding(KrakenSpotBaseAPI):
         to_: str,
         amount: str | float,
         *,
-        extra_params: Optional[dict] = None,
+        extra_params: dict | None = None,
     ) -> dict:
         """
         Transfer assets between the Spot and Futures wallet.
@@ -511,11 +510,11 @@ class Funding(KrakenSpotBaseAPI):
 
     def withdraw_methods(
         self: Funding,
-        asset: Optional[str] = None,
-        aclass: Optional[str] = None,
-        network: Optional[str] = None,
+        asset: str | None = None,
+        aclass: str | None = None,
+        network: str | None = None,
         *,
-        extra_params: Optional[dict] = None,
+        extra_params: dict | None = None,
     ) -> dict:
         """
         Returns the list of available withdraw methods for that user.
@@ -548,13 +547,13 @@ class Funding(KrakenSpotBaseAPI):
 
     def withdraw_addresses(
         self: Funding,
-        asset: Optional[str] = None,
-        aclass: Optional[str] = None,
-        method: Optional[str] = None,
-        key: Optional[str] = None,
-        verified: Optional[bool] = None,  # noqa: FBT001
+        asset: str | None = None,
+        aclass: str | None = None,
+        method: str | None = None,
+        key: str | None = None,
+        verified: bool | None = None,  # noqa: FBT001
         *,
-        extra_params: Optional[dict] = None,
+        extra_params: dict | None = None,
     ) -> dict:
         """
         Returns the list of available withdrawal addresses for that user.

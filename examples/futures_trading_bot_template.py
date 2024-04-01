@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 # Copyright (C) 2023 Benjamin Thomas Schwertfeger
 # GitHub: https://github.com/btschwertfeger
 #
@@ -17,7 +16,6 @@ import logging.config
 import os
 import sys
 import traceback
-from typing import Optional
 
 import requests
 import urllib3
@@ -116,7 +114,7 @@ class ManagedBot:
 
     def __init__(self: ManagedBot, config: dict) -> None:
         self.__config: dict = config
-        self.__trading_strategy: Optional[TradingBot] = None
+        self.__trading_strategy: TradingBot | None = None
 
     def run(self: ManagedBot) -> None:
         """Runner function"""

@@ -16,6 +16,7 @@ below.
 
     rest_ws_samples/spot_rest_examples.rst
     rest_ws_samples/spot_ws_examples.rst
+    market_client_example.ipynb
     rest_ws_samples/futures_ws_examples.rst
     rest_ws_samples/futures_rest_examples.rst
 

@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 # Copyright (C) 2023 Benjamin Thomas Schwertfeger
 # GitHub: https://github.com/btschwertfeger
 # ruff: noqa: RUF027
@@ -17,7 +16,6 @@ import logging.config
 import os
 import sys
 import traceback
-from typing import Optional, Union
 
 import requests
 import urllib3
@@ -65,7 +63,7 @@ class TradingBot(KrakenSpotWSClientV1):
         self.__funding: Funding = Funding(key=config["key"], secret=config["secret"])
         self.__staking: Staking = Staking(key=config["key"], secret=config["secret"])
 
-    async def on_message(self: TradingBot, message: Union[dict, list]) -> None:
+    async def on_message(self: TradingBot, message: dict | list) -> None:
         """Receives all messages of the websocket connection(s)"""
         if isinstance(message, dict) and "event" in message:
             if message["event"] in {"heartbeat", "pong"}:
@@ -109,7 +107,7 @@ class TradingBot(KrakenSpotWSClientV1):
 
     # Add more functions to customize the trading strategy …
 
-    def save_exit(self: TradingBot, reason: Optional[str] = "") -> None:
+    def save_exit(self: TradingBot, reason: str | None = "") -> None:
         """controlled shutdown of the strategy"""
         logging.warning(
             "Save exit triggered, reason: {reason}",
@@ -138,9 +136,9 @@ class Manager:
         }
     """
 
-    def __init__(self: Manager, config: dict):
+    def __init__(self: Manager, config: dict) -> None:
         self.__config: dict = config
-        self.__trading_strategy: Optional[TradingBot] = None
+        self.__trading_strategy: TradingBot | None = None
 
     def run(self: Manager) -> None:
         """Starts the event loop and bot"""

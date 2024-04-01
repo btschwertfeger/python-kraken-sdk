@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 # Copyright (C) 2023 Benjamin Thomas Schwertfeger
 # GitHub: https://github.com/btschwertfeger
 #
@@ -8,7 +7,7 @@
 
 from __future__ import annotations
 
-from typing import Optional, TypeVar
+from typing import TypeVar
 
 from kraken.base_api import KrakenSpotBaseAPI, defined
 from kraken.utils import deprecated
@@ -71,7 +70,7 @@ class Staking(KrakenSpotBaseAPI):
         amount: str | float,
         method: str,
         *,
-        extra_params: Optional[dict] = None,
+        extra_params: dict | None = None,
     ) -> dict:
         """
         .. deprecated:: v2.2.0
@@ -120,9 +119,9 @@ class Staking(KrakenSpotBaseAPI):
         self: Staking,
         asset: str,
         amount: str | float,
-        method: Optional[str] = None,
+        method: str | None = None,
         *,
-        extra_params: Optional[dict] = None,
+        extra_params: dict | None = None,
     ) -> dict:
         """
         .. deprecated:: v2.2.0
@@ -174,7 +173,7 @@ class Staking(KrakenSpotBaseAPI):
     def list_stakeable_assets(
         self: Staking,
         *,
-        extra_params: Optional[dict] = None,
+        extra_params: dict | None = None,
     ) -> list[dict]:
         """
         .. deprecated:: v2.2.0
@@ -241,7 +240,7 @@ class Staking(KrakenSpotBaseAPI):
     def get_pending_staking_transactions(
         self: Staking,
         *,
-        extra_params: Optional[dict] = None,
+        extra_params: dict | None = None,
     ) -> list[dict]:
         """
         .. deprecated:: v2.2.0
@@ -287,7 +286,7 @@ class Staking(KrakenSpotBaseAPI):
     def list_staking_transactions(
         self: Staking,
         *,
-        extra_params: Optional[dict] = None,
+        extra_params: dict | None = None,
     ) -> list[dict]:
         """
         .. deprecated:: v2.2.0

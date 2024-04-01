@@ -8,7 +8,7 @@
    contain the root ``toctree``` directive.
 
 
-Welcome to Python Kraken SDK's documentation!
+Welcome to python-kraken-sdk's documentation!
 =============================================
 
 |GitHub badge| |License badge| |PyVersions badge| |Downloads badge|

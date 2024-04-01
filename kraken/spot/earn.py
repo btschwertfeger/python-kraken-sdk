@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 # Copyright (C) 2024 Benjamin Thomas Schwertfeger
 # GitHub: https://github.com/btschwertfeger
 
@@ -8,7 +7,7 @@
 
 from __future__ import annotations
 
-from typing import Optional, TypeVar
+from typing import TypeVar
 
 from kraken.base_api import KrakenSpotBaseAPI, defined
 
@@ -66,7 +65,7 @@ class Earn(KrakenSpotBaseAPI):
         amount: str | float,
         strategy_id: str,
         *,
-        extra_params: Optional[dict] = None,
+        extra_params: dict | None = None,
     ) -> bool:
         """
         Allocate funds according to the defined strategy.
@@ -108,7 +107,7 @@ class Earn(KrakenSpotBaseAPI):
         amount: str | float,
         strategy_id: str,
         *,
-        extra_params: Optional[dict] = None,
+        extra_params: dict | None = None,
     ) -> bool:
         """
         Deallocate funds according to the defined strategy.
@@ -149,7 +148,7 @@ class Earn(KrakenSpotBaseAPI):
         self: Earn,
         strategy_id: str,
         *,
-        extra_params: Optional[dict] = None,
+        extra_params: dict | None = None,
     ) -> dict:
         """
         Retrieve the status of the last allocation request.
@@ -186,7 +185,7 @@ class Earn(KrakenSpotBaseAPI):
         self: Earn,
         strategy_id: str,
         *,
-        extra_params: Optional[dict] = None,
+        extra_params: dict | None = None,
     ) -> dict:
         """
         Retrieve the status of the last deallocation request.
@@ -221,13 +220,13 @@ class Earn(KrakenSpotBaseAPI):
 
     def list_earn_strategies(
         self: Earn,
-        asset: Optional[str] = None,
-        limit: Optional[int] = None,
-        lock_type: Optional[list[str]] = None,
-        cursor: Optional[bool] = None,  # noqa: FBT001
-        ascending: Optional[bool] = None,  # noqa: FBT001
+        asset: str | None = None,
+        limit: int | None = None,
+        lock_type: list[str] | None = None,
+        cursor: bool | None = None,  # noqa: FBT001
+        ascending: bool | None = None,  # noqa: FBT001
         *,
-        extra_params: Optional[dict] = None,
+        extra_params: dict | None = None,
     ) -> dict:
         """
         List the available earn strategies as well as additional information.
@@ -324,11 +323,11 @@ class Earn(KrakenSpotBaseAPI):
 
     def list_earn_allocations(
         self: Earn,
-        ascending: Optional[str] = None,
-        hide_zero_allocations: Optional[str] = None,
-        converted_asset: Optional[str] = None,
+        ascending: str | None = None,
+        hide_zero_allocations: str | None = None,
+        converted_asset: str | None = None,
         *,
-        extra_params: Optional[dict] = None,
+        extra_params: dict | None = None,
     ) -> dict:
         """
         List the user's allocations.

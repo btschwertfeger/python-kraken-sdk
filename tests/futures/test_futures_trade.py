@@ -1,24 +1,24 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 # Copyright (C) 2023 Benjamin Thomas Schwertfeger
 # GitHub: https://github.com/btschwertfeger
 #
 
 """Module that implements the unit tests for the Futures trade client"""
 
+from collections.abc import Generator
 from contextlib import suppress
 from time import sleep
-from typing import Generator
 
 import pytest
 
 from kraken.exceptions import KrakenInsufficientAvailableFundsError
+from kraken.futures import Trade
 
 from .helper import is_success
 
 
 @pytest.fixture(autouse=True)
-def _run_before_and_after_tests(futures_demo_trade) -> Generator:
+def _run_before_and_after_tests(futures_demo_trade: Trade) -> Generator:
     """
     Fixture that ensures all orders are cancelled after test.
     """
@@ -34,7 +34,7 @@ def _run_before_and_after_tests(futures_demo_trade) -> Generator:
 @pytest.mark.futures()
 @pytest.mark.futures_auth()
 @pytest.mark.futures_trade()
-def test_get_fills(futures_demo_trade) -> None:
+def test_get_fills(futures_demo_trade: Trade) -> None:
     """
     Checks the ``get_fills`` endpoint.
     """
@@ -47,7 +47,7 @@ def test_get_fills(futures_demo_trade) -> None:
 @pytest.mark.futures()
 @pytest.mark.futures_auth()
 @pytest.mark.futures_trade()
-def test_dead_mans_switch(futures_demo_trade) -> None:
+def test_dead_mans_switch(futures_demo_trade: Trade) -> None:
     """
     Checks the ``dead_mans_switch`` endpoint.
     """
@@ -60,7 +60,7 @@ def test_dead_mans_switch(futures_demo_trade) -> None:
 @pytest.mark.futures()
 @pytest.mark.futures_auth()
 @pytest.mark.futures_trade()
-def test_get_orders_status(futures_demo_trade) -> None:
+def test_get_orders_status(futures_demo_trade: Trade) -> None:
     """
     Checks the ``get_orders_status`` endpoint.
     """
@@ -86,7 +86,7 @@ def test_get_orders_status(futures_demo_trade) -> None:
 @pytest.mark.futures()
 @pytest.mark.futures_auth()
 @pytest.mark.futures_trade()
-def test_create_order(futures_demo_trade) -> None:
+def test_create_order(futures_demo_trade: Trade) -> None:
     """
     Checks the ``create_order`` endpoint.
     """
@@ -135,7 +135,7 @@ def test_create_order(futures_demo_trade) -> None:
 @pytest.mark.futures()
 @pytest.mark.futures_auth()
 @pytest.mark.futures_trade()
-def test_create_order_failing(futures_demo_trade) -> None:
+def test_create_order_failing(futures_demo_trade: Trade) -> None:
     """
     Checks ``create_order`` endpoint to fail when using invalid parameters.
     """
@@ -168,7 +168,7 @@ def test_create_order_failing(futures_demo_trade) -> None:
 @pytest.mark.futures()
 @pytest.mark.futures_auth()
 @pytest.mark.futures_trade()
-def test_create_batch_order(futures_demo_trade) -> None:
+def test_create_batch_order(futures_demo_trade: Trade) -> None:
     """
     Checks the ``create_order_batch`` endpoint.
     """
@@ -213,7 +213,7 @@ def test_create_batch_order(futures_demo_trade) -> None:
 @pytest.mark.futures()
 @pytest.mark.futures_auth()
 @pytest.mark.futures_trade()
-def test_edit_order(futures_demo_trade) -> None:
+def test_edit_order(futures_demo_trade: Trade) -> None:
     """
     Checks the ``edit_order`` endpoint.
     """
@@ -237,7 +237,7 @@ def test_edit_order(futures_demo_trade) -> None:
 @pytest.mark.futures()
 @pytest.mark.futures_auth()
 @pytest.mark.futures_trade()
-def test_edit_order_failing(futures_demo_trade) -> None:
+def test_edit_order_failing(futures_demo_trade: Trade) -> None:
     """
     Checks if the ``edit_order`` endpoint fails when using invalid parameters.
     """
@@ -248,7 +248,7 @@ def test_edit_order_failing(futures_demo_trade) -> None:
 @pytest.mark.futures()
 @pytest.mark.futures_auth()
 @pytest.mark.futures_trade()
-def test_cancel_order(futures_demo_trade) -> None:
+def test_cancel_order(futures_demo_trade: Trade) -> None:
     """
     Checks the ``cancel_order`` endpoint.
     """
@@ -268,7 +268,7 @@ def test_cancel_order(futures_demo_trade) -> None:
 @pytest.mark.futures()
 @pytest.mark.futures_auth()
 @pytest.mark.futures_trade()
-def test_cancel_order_failing(futures_demo_trade) -> None:
+def test_cancel_order_failing(futures_demo_trade: Trade) -> None:
     """
     Checks if the ``cancel_order`` endpoint is failing when
     passing invalid arguments.
@@ -280,7 +280,7 @@ def test_cancel_order_failing(futures_demo_trade) -> None:
 @pytest.mark.futures()
 @pytest.mark.futures_auth()
 @pytest.mark.futures_trade()
-def test_cancel_all_orders(futures_demo_trade) -> None:
+def test_cancel_all_orders(futures_demo_trade: Trade) -> None:
     """
     Checks the ``cancel_all_orders`` endpoint.
     """
@@ -291,7 +291,7 @@ def test_cancel_all_orders(futures_demo_trade) -> None:
 @pytest.mark.futures()
 @pytest.mark.futures_auth()
 @pytest.mark.futures_trade()
-def test_get_max_order_size(futures_auth_trade) -> None:
+def test_get_max_order_size(futures_auth_trade: Trade) -> None:
     """
     Checks the ``cancel_all_orders`` endpoint.
     """

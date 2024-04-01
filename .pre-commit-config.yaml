@@ -5,7 +5,7 @@
 
 repos:
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.2.2
+    rev: v0.3.4
     hooks:
       - id: ruff
         args:
@@ -63,7 +63,6 @@ repos:
       - id: check-executables-have-shebangs
       - id: trailing-whitespace
       - id: fix-byte-order-marker
-      - id: fix-encoding-pragma
       - id: mixed-line-ending
       - id: requirements-txt-fixer
       - id: end-of-file-fixer

@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 # Copyright (C) 2023 Benjamin Thomas Schwertfeger
 # GitHub: https://github.com/btschwertfeger
 #
@@ -8,7 +7,7 @@
 
 from __future__ import annotations
 
-from typing import Optional, TypeVar
+from typing import TypeVar
 
 from kraken.base_api import KrakenFuturesBaseAPI, defined
 
@@ -66,9 +65,9 @@ class Trade(KrakenFuturesBaseAPI):
 
     def get_fills(
         self: Trade,
-        lastFillTime: Optional[str] = None,
+        lastFillTime: str | None = None,
         *,
-        extra_params: Optional[dict] = None,
+        extra_params: dict | None = None,
     ) -> dict:
         """
         Return the current fills of the user.
@@ -119,9 +118,9 @@ class Trade(KrakenFuturesBaseAPI):
     def create_batch_order(
         self: Trade,
         batchorder_list: list[dict],
-        processBefore: Optional[str] = None,
+        processBefore: str | None = None,
         *,
-        extra_params: Optional[dict] = None,
+        extra_params: dict | None = None,
     ) -> dict:
         """
         Create multiple orders at once using the batch order endpoint.
@@ -240,9 +239,9 @@ class Trade(KrakenFuturesBaseAPI):
 
     def cancel_all_orders(
         self: Trade,
-        symbol: Optional[str] = None,
+        symbol: str | None = None,
         *,
-        extra_params: Optional[dict] = None,
+        extra_params: dict | None = None,
     ) -> dict:
         """
         Cancels all open orders, can be filtered by symbol.
@@ -295,9 +294,9 @@ class Trade(KrakenFuturesBaseAPI):
 
     def dead_mans_switch(
         self: Trade,
-        timeout: Optional[int] = 0,
+        timeout: int | None = 0,
         *,
-        extra_params: Optional[dict] = None,
+        extra_params: dict | None = None,
     ) -> dict:
         """
         The Death Man's Switch can be used to cancel all orders after a specific
@@ -340,11 +339,11 @@ class Trade(KrakenFuturesBaseAPI):
 
     def cancel_order(
         self: Trade,
-        order_id: Optional[str] = None,
-        cliOrdId: Optional[str] = None,
-        processBefore: Optional[str] = None,
+        order_id: str | None = None,
+        cliOrdId: str | None = None,
+        processBefore: str | None = None,
         *,
-        extra_params: Optional[dict] = None,
+        extra_params: dict | None = None,
     ) -> dict:
         """
         This endpoint can be used to cancel a specific order by ``order_id`` or
@@ -402,14 +401,14 @@ class Trade(KrakenFuturesBaseAPI):
 
     def edit_order(
         self: Trade,
-        orderId: Optional[str] = None,
-        cliOrdId: Optional[str] = None,
-        limitPrice: Optional[str | float] = None,
-        size: Optional[str | float] = None,
-        stopPrice: Optional[str | float] = None,
-        processBefore: Optional[str] = None,
+        orderId: str | None = None,
+        cliOrdId: str | None = None,
+        limitPrice: str | float | None = None,
+        size: str | float | None = None,
+        stopPrice: str | float | None = None,
+        processBefore: str | None = None,
         *,
-        extra_params: Optional[dict] = None,
+        extra_params: dict | None = None,
     ) -> dict:
         """
         Edit an open order.
@@ -481,10 +480,10 @@ class Trade(KrakenFuturesBaseAPI):
 
     def get_orders_status(
         self: Trade,
-        orderIds: Optional[str | list[str]] = None,
-        cliOrdIds: Optional[str | list[str]] = None,
+        orderIds: str | list[str] | None = None,
+        cliOrdIds: str | list[str] | None = None,
         *,
-        extra_params: Optional[dict] = None,
+        extra_params: dict | None = None,
     ) -> dict:
         """
         Get the status of multiple orders.
@@ -534,16 +533,16 @@ class Trade(KrakenFuturesBaseAPI):
         size: str | float,
         symbol: str,
         side: str,
-        cliOrdId: Optional[str] = None,
-        limitPrice: Optional[str | float] = None,
-        reduceOnly: Optional[bool] = None,  # noqa: FBT001
-        stopPrice: Optional[str | float] = None,
-        triggerSignal: Optional[str] = None,
-        trailingStopDeviationUnit: Optional[str] = None,
-        trailingStopMaxDeviation: Optional[str] = None,
-        processBefore: Optional[str] = None,
+        cliOrdId: str | None = None,
+        limitPrice: str | float | None = None,
+        reduceOnly: bool | None = None,  # noqa: FBT001
+        stopPrice: str | float | None = None,
+        triggerSignal: str | None = None,
+        trailingStopDeviationUnit: str | None = None,
+        trailingStopMaxDeviation: str | None = None,
+        processBefore: str | None = None,
         *,
-        extra_params: Optional[dict] = None,
+        extra_params: dict | None = None,
     ) -> dict:
         """
         Create and place an order on the futures market.
@@ -756,9 +755,9 @@ class Trade(KrakenFuturesBaseAPI):
         self: Trade,
         orderType: str,
         symbol: str,
-        limitPrice: Optional[float] = None,
+        limitPrice: float | None = None,
         *,
-        extra_params: Optional[dict] = None,
+        extra_params: dict | None = None,
     ) -> dict:
         """
         Retrieve the maximum order price for a specific symbol. Can be adjusted

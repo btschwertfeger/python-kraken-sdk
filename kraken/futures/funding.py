@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 # Copyright (C) 2023 Benjamin Thomas Schwertfeger
 # GitHub: https://github.com/btschwertfeger
 
@@ -7,7 +6,7 @@
 
 from __future__ import annotations
 
-from typing import Optional, TypeVar
+from typing import TypeVar
 
 from kraken.base_api import KrakenFuturesBaseAPI
 
@@ -67,7 +66,7 @@ class Funding(KrakenFuturesBaseAPI):
         self: Funding,
         symbol: str,
         *,
-        extra_params: Optional[dict] = None,
+        extra_params: dict | None = None,
     ) -> dict:
         """
         Retrieve information about the historical funding rates of a specific
@@ -115,7 +114,7 @@ class Funding(KrakenFuturesBaseAPI):
         toAccount: str,
         unit: str,
         *,
-        extra_params: Optional[dict] = None,
+        extra_params: dict | None = None,
     ) -> dict:
         """
         Submit a wallet transfer request to transfer funds between margin
@@ -174,7 +173,7 @@ class Funding(KrakenFuturesBaseAPI):
         toUser: str,
         unit: str,
         *,
-        extra_params: Optional[dict] = None,
+        extra_params: dict | None = None,
     ) -> dict:
         """
         Submit a request to transfer funds between the regular and subaccount.
@@ -229,9 +228,9 @@ class Funding(KrakenFuturesBaseAPI):
         self: Funding,
         amount: str | float,
         currency: str,
-        sourceWallet: Optional[str] = None,
+        sourceWallet: str | None = None,
         *,
-        extra_params: Optional[dict] = None,
+        extra_params: dict | None = None,
     ) -> dict:
         """
         Enables the transfer of funds between the futures and spot wallet.

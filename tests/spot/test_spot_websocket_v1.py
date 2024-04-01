@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 # Copyright (C) 2023 Benjamin Thomas Schwertfeger
 # GitHub: https://github.com/btschwertfeger
 #
@@ -24,9 +23,12 @@ from __future__ import annotations
 
 import logging
 from asyncio import run as asyncio_run
-from typing import Any
+from typing import TYPE_CHECKING
 
 import pytest
+
+if TYPE_CHECKING:
+    from pytest_mock import MockerFixture
 
 from kraken.exceptions import KrakenAuthenticationError
 
@@ -36,7 +38,7 @@ from .helper import SpotWebsocketClientV1TestWrapper, async_wait
 @pytest.mark.spot()
 @pytest.mark.spot_websocket()
 @pytest.mark.spot_websocket_v1()
-def test_create_public_client(caplog: Any) -> None:
+def test_create_public_client(caplog: pytest.LogCaptureFixture) -> None:
     """
     Checks if the websocket client can be instantiated.
     """
@@ -59,7 +61,9 @@ def test_create_public_client(caplog: Any) -> None:
 @pytest.mark.spot()
 @pytest.mark.spot_websocket()
 @pytest.mark.spot_websocket_v2()
-def test_create_public_client_as_context_manager(caplog: Any) -> None:
+def test_create_public_client_as_context_manager(
+    caplog: pytest.LogCaptureFixture,
+) -> None:
     """
     Checks if the websocket client can be instantiated as context manager.
     """
@@ -86,7 +90,7 @@ def test_create_public_client_as_context_manager(caplog: Any) -> None:
 def test_create_private_client(
     spot_api_key: str,
     spot_secret_key: str,
-    caplog: Any,
+    caplog: pytest.LogCaptureFixture,
 ) -> None:
     """
     Checks if the authenticated websocket client can be instantiated.
@@ -167,7 +171,7 @@ def test_access_private_client_attributes(
 @pytest.mark.spot()
 @pytest.mark.spot_websocket()
 @pytest.mark.spot_websocket_v1()
-def test_public_subscribe(caplog: Any) -> None:
+def test_public_subscribe(caplog: pytest.LogCaptureFixture) -> None:
     """
     Function that checks if the websocket client
     is able to subscribe to public feeds.
@@ -225,7 +229,7 @@ def test_public_subscribe_without_pair_failing() -> None:
 def test_private_subscribe(
     spot_api_key: str,
     spot_secret_key: str,
-    caplog: Any,
+    caplog: pytest.LogCaptureFixture,
 ) -> None:
     """
     Checks if the authenticated websocket client can subscribe to private feeds.
@@ -273,7 +277,7 @@ def test_private_subscribe(
 @pytest.mark.spot()
 @pytest.mark.spot_websocket()
 @pytest.mark.spot_websocket_v1()
-def test_public_unsubscribe(caplog: Any) -> None:
+def test_public_unsubscribe(caplog: pytest.LogCaptureFixture) -> None:
     """
     Checks if the websocket client can unsubscribe from public feeds.
     """
@@ -304,7 +308,7 @@ def test_public_unsubscribe(caplog: Any) -> None:
 @pytest.mark.spot()
 @pytest.mark.spot_websocket()
 @pytest.mark.spot_websocket_v1()
-def test_public_unsubscribe_failure(caplog: Any) -> None:
+def test_public_unsubscribe_failure(caplog: pytest.LogCaptureFixture) -> None:
     """
     Checks if the websocket client responses with failures
     when the ``unsubscribe`` function receives invalid parameters.
@@ -372,7 +376,7 @@ def test_public_unsubscribe_without_pair_failing() -> None:
 def test_private_unsubscribe(
     spot_api_key: str,
     spot_secret_key: str,
-    caplog: Any,
+    caplog: pytest.LogCaptureFixture,
 ) -> None:
     """
     Checks if private subscriptions are available.
@@ -442,7 +446,7 @@ def test_private_unsubscribe_failing(spot_api_key: str, spot_secret_key: str) ->
 @pytest.mark.spot_auth()
 @pytest.mark.spot_websocket()
 @pytest.mark.spot_websocket_v1()
-def test_send_private_message_raw(caplog: Any) -> None:
+def test_send_private_message_raw(caplog: pytest.LogCaptureFixture) -> None:
     """
     Checks that the send_message function is able to send raw messages.
     """
@@ -496,8 +500,8 @@ def test_send_private_message_from_public_connection_failing() -> None:
 def test_reconnect(
     spot_api_key: str,
     spot_secret_key: str,
-    caplog: Any,
-    mocker: Any,
+    caplog: pytest.LogCaptureFixture,
+    mocker: MockerFixture,
 ) -> None:
     """
     Checks if the reconnect works properly when forcing a closed connection.
@@ -556,7 +560,11 @@ def test_reconnect(
 @pytest.mark.spot_auth()
 @pytest.mark.spot_websocket()
 @pytest.mark.spot_websocket_v1()
-def test_create_order(spot_api_key: str, spot_secret_key: str, caplog: Any) -> None:
+def test_create_order(
+    spot_api_key: str,
+    spot_secret_key: str,
+    caplog: pytest.LogCaptureFixture,
+) -> None:
     """
     Checks the ``create_order`` function by submitting a
     new order - but in validate mode.
@@ -610,7 +618,7 @@ def test_create_order(spot_api_key: str, spot_secret_key: str, caplog: Any) -> N
 @pytest.mark.spot_auth()
 @pytest.mark.spot_websocket()
 @pytest.mark.spot_websocket_v1()
-def test_create_order_failing_no_connection(caplog: Any) -> None:
+def test_create_order_failing_no_connection(caplog: pytest.LogCaptureFixture) -> None:
     """
     Checks the ``create_order`` function by submitting a
     new order - it is intended to check what happens when there is no open
@@ -650,7 +658,11 @@ def test_create_order_failing_no_connection(caplog: Any) -> None:
 @pytest.mark.spot_auth()
 @pytest.mark.spot_websocket()
 @pytest.mark.spot_websocket_v1()
-def test_edit_order(spot_api_key: str, spot_secret_key: str, caplog: Any) -> None:
+def test_edit_order(
+    spot_api_key: str,
+    spot_secret_key: str,
+    caplog: pytest.LogCaptureFixture,
+) -> None:
     """
     Checks the edit order function by editing an order in validate mode.
 
@@ -693,7 +705,7 @@ def test_edit_order(spot_api_key: str, spot_secret_key: str, caplog: Any) -> Non
 @pytest.mark.spot()
 @pytest.mark.spot_websocket()
 @pytest.mark.spot_websocket_v1()
-def test_edit_order_failing_no_connection(caplog: Any) -> None:
+def test_edit_order_failing_no_connection(caplog: pytest.LogCaptureFixture) -> None:
     """
     Checks the ``edit_order`` function by editing an order - it is intended to
     check what happens when there is no open authenticated connection - it
@@ -732,7 +744,11 @@ def test_edit_order_failing_no_connection(caplog: Any) -> None:
 @pytest.mark.spot_auth()
 @pytest.mark.spot_websocket()
 @pytest.mark.spot_websocket_v1()
-def test_cancel_order(spot_api_key: str, spot_secret_key: str, caplog: Any) -> None:
+def test_cancel_order(
+    spot_api_key: str,
+    spot_secret_key: str,
+    caplog: pytest.LogCaptureFixture,
+) -> None:
     """
     Checks the ``cancel_order`` function by canceling some orders.
 
@@ -764,7 +780,7 @@ def test_cancel_order(spot_api_key: str, spot_secret_key: str, caplog: Any) -> N
 @pytest.mark.spot_auth()
 @pytest.mark.spot_websocket()
 @pytest.mark.spot_websocket_v1()
-def test_cancel_order_failing_no_connection(caplog: Any) -> None:
+def test_cancel_order_failing_no_connection(caplog: pytest.LogCaptureFixture) -> None:
     """
     Checks the ``cancel_order`` function - it is intended to check what happens
     when there is no open authenticated connection - it should fail.
@@ -797,7 +813,7 @@ def test_cancel_order_failing_no_connection(caplog: Any) -> None:
 def test_cancel_all_orders(
     spot_api_key: str,
     spot_secret_key: str,
-    caplog: Any,
+    caplog: pytest.LogCaptureFixture,
 ) -> None:
     """
     Check the ``cancel_all_orders`` function by executing the function.
@@ -826,7 +842,9 @@ def test_cancel_all_orders(
 @pytest.mark.spot_auth()
 @pytest.mark.spot_websocket()
 @pytest.mark.spot_websocket_v1()
-def test_cancel_all_orders_failing_no_connection(caplog: Any) -> None:
+def test_cancel_all_orders_failing_no_connection(
+    caplog: pytest.LogCaptureFixture,
+) -> None:
     """
     Checks the ``cancel_all_orders`` function - it is intended to check what
     happens when there is no open authenticated connection - it should fail.
@@ -855,7 +873,7 @@ def test_cancel_all_orders_failing_no_connection(caplog: Any) -> None:
 def test_cancel_all_orders_after(
     spot_api_key: str,
     spot_secret_key: str,
-    caplog: Any,
+    caplog: pytest.LogCaptureFixture,
 ) -> None:
     """
     Checking the ``cancel_all_orders_after`` function by
@@ -886,7 +904,9 @@ def test_cancel_all_orders_after(
 @pytest.mark.spot()
 @pytest.mark.spot_websocket()
 @pytest.mark.spot_websocket_v1()
-def test_cancel_all_orders_after_failing_no_connection(caplog: Any) -> None:
+def test_cancel_all_orders_after_failing_no_connection(
+    caplog: pytest.LogCaptureFixture,
+) -> None:
     """
     Checks the ``cancel_all_orders_after`` function - it is intended to check
     what happens when there is no open authenticated connection - it should
