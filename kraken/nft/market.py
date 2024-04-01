@@ -433,6 +433,7 @@ class Market(KrakenNFTBaseAPI):
         :type status: str
         :param filter_: Filter for auctions
         :type filter_: str, optional
+
         .. code-block:: python
             :linenos:
             :caption: NFT Market: Get Auctions

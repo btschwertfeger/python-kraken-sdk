@@ -51,6 +51,7 @@ dev = [
   # documentation
   "sphinx",
   "sphinx-rtd-theme",
+  "nbsphinx",
   # formatting
   "black",
   # typing
@@ -61,7 +62,8 @@ dev = [
   "pylint",
 ]
 test = ["pytest", "pytest-cov", "pytest-mock"]
-examples = ["matplotlib"]
+examples = ["matplotlib", "pandas", "numpy"]
+jupyter = ["ipykernel"] # python3 -m ipykernel install --user --name=kraken
 
 [tool.setuptools]
 include-package-data = false
@@ -124,7 +126,7 @@ exclude_lines = ["coverage: disable", "if TYPE_CHECKING:"]
 skip_empty = true
 
 [tool.codespell]
-skip = "CHANGELOG.md,examples/market_client_example.ipynb"
+skip = "CHANGELOG.md,examples/market_client_example.ipynb,doc/examples/market_client_example.ipynb"
 check-filenames = true
 
 
