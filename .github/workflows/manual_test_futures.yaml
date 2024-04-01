@@ -27,6 +27,8 @@ name: PR Manual Test Futures
 on:
   workflow_dispatch:
 
+permissions: read-all
+
 jobs:
   Test-Futures-Public:
     uses: ./.github/workflows/_test_futures_public.yaml

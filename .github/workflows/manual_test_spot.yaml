@@ -35,6 +35,8 @@ name: PR Manual Test Spot
 on:
   workflow_dispatch:
 
+permissions: read-all
+
 jobs:
   Test-Spot-Public:
     uses: ./.github/workflows/_test_spot_public.yaml

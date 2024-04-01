@@ -13,6 +13,8 @@ name: PR Manual Pre-Commit
 on:
   workflow_dispatch:
 
+permissions: read-all
+
 jobs:
   Pre-Commit:
     uses: ./.github/workflows/_pre_commit.yaml
