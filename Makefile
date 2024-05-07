@@ -4,7 +4,7 @@
 # GitHub: https://github.com/btschwertfeger
 #
 
-PYTHON := venv/bin/python
+PYTHON := python
 PYTEST := $(PYTHON) -m pytest
 PYTEST_OPTS := -vv --junit-xml=pytest.xml
 PYTEST_COV_OPTS := $(PYTEST_OPTS) --cov --cov-report=xml:coverage.xml --cov-report=term
