@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2023 Benjamin Thomas Schwertfeger
+# Copyright (C) 2024 Benjamin Thomas Schwertfeger
 # GitHub: https://github.com/btschwertfeger
 #
 # Template workflow to build the project and publish
-# the package to PyPI.
+# the package to test PyPI.
 #
 
 name: PyPI Publish
@@ -17,17 +17,14 @@ on:
 permissions: read-all
 
 jobs:
-  publish-to-pypi:
+  publish-to-test-pypi:
     name: Publish Python distribution to PyPI
     runs-on: ubuntu-latest
-
     permissions:
       id-token: write # IMPORTANT: this permission is mandatory for OIDC publishing
-
     environment:
-      name: pypi
-      url: https://pypi.org/p/python-cmethods
-
+      name: testpypi
+      url: https://test.pypi.org/p/python-cmethods
     steps:
       - name: Download all the distributions
         uses: actions/download-artifact@v4
@@ -39,4 +36,4 @@ jobs:
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           password: ${{ secrets.API_TOKEN }}
-          repository-url: https://upload.pypi.org/legacy/
+          repository-url: https://test.pypi.org/legacy/

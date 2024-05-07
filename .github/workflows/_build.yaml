@@ -26,6 +26,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b # v4.1.4
+        with:
+          fetch-depth: 0 # IMPORTANT: otherwise the current tag does not get fetched and the build version gets worse
 
       - name: Set up Python ${{ inputs.python-version }}
         uses: actions/setup-python@82c7e631bb3cdc910f68e0081d67478d79c6982d # v5.1.0
@@ -34,8 +36,8 @@ jobs:
 
       - name: Install dependencies
         run: |
-          python -m pip install --upgrade pip
-          python -m pip install build
+          python -m pip install --user --upgrade pip
+          python -m pip install --user build
 
       - name: Check git status (not Windows)
         if: runner.os != 'Windows'
@@ -59,19 +61,37 @@ jobs:
               exit 1
           }
 
-      - name: Build the package
-        run: python -m build --outdir .
+      - name: Build Linux
+        if: runner.os == 'linux'
+        run: python -m build
+
+      - name: Store the distribution packages
+        uses: actions/upload-artifact@v4
+        # upload artifacts with the oldest supported version
+        if: runner.os == 'linux' && inputs.python-version == '3.11'
+        with:
+          name: python-package-distributions
+          path: dist/
+
+      - name: Build macOS
+        if: runner.os == 'macOS'
+        run: python -m build
+
+      - name: Build Windows
+        if: runner.os == 'Windows'
+        # put it here to avoid more filtering
+        run: python -m build -o .
 
       - name: Install the package on Linux or MacOS
         if: runner.os != 'Windows'
-        run: python -m pip install python_kraken_sdk*.whl
+        run: python -m pip install --user dist/python_kraken_sdk*.whl
 
       - name: Install the package on Windows
         if: runner.os == 'Windows'
         run: |
           try {
               $WHEEL = Get-ChildItem -Path . -Filter "python_kraken_sdk*.whl" -ErrorAction Stop
-              python -m pip install $WHEEL
+              python -m pip install --user $WHEEL
           } catch {
               Write-Error "Error: .whl file not found in the current directory."
               exit 1
