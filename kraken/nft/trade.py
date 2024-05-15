@@ -136,6 +136,8 @@ class Trade(KrakenNFTBaseAPI):
         """
         Modify an existing auction owned by the user
 
+        - https://docs.kraken.com/rest/#tag/NFT-Trading/operation/modifyAuction
+
         :param auction_id: ID referencing the auction
         :type auction_id: str
         :param ask_price: New ask price (only for fixed price auction type),
@@ -182,6 +184,8 @@ class Trade(KrakenNFTBaseAPI):
     ) -> dict:
         """
         Cancel an existing auction owned by the user
+
+        - https://docs.kraken.com/rest/#tag/NFT-Trading/operation/cancelAuction
 
         :param auction_id: IDs referencing the auctions to cancel
         :type auction_id: list[str]
