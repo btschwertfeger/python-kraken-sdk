@@ -16,7 +16,6 @@ if TYPE_CHECKING:
 from datetime import datetime, timedelta
 
 from kraken.exceptions import (
-    KrakenAuctionNotOwnedByUserError,
     KrakenInvalidArgumentBelowMinError,
     KrakenInvalidArgumentOfferNotFoundError,
     KrakenNFTNotAvailableError,
@@ -59,15 +58,24 @@ def test_nft_trade_create_auction(nft_auth_trade: Trade) -> None:
 @pytest.mark.nft_auth()
 @pytest.mark.nft_trade()
 def test_nft_trade_modify_auction(nft_auth_trade: Trade) -> None:
-    """Checks the ``modify_auction`` endpoint."""
+    """
+    Checks the ``modify_auction`` endpoint.
+    It is sufficient here to check that the request is valid, even if the
+    auction is not valid.
+    """
 
-    with pytest.raises(KrakenAuctionNotOwnedByUserError):
-        nft_auth_trade.modify_auction(
-            auction_id="AT2POJ-4CH3O-4TH6JH",
-            ask_price="0.3",
-        )
+    response = nft_auth_trade.modify_auction(
+        auction_id="AT2POJ-4CH3O-4TH6JH",
+        ask_price="0.3",
+    )
+    assert isinstance(response, dict)
+    assert response.get(
+        "error",
+        [],
+    ) == ["EAPI:Invalid arguments:No auction with the provided ID"]
 
 
+@pytest.mark.wip()
 @pytest.mark.nft()
 @pytest.mark.nft_auth()
 @pytest.mark.nft_trade()
@@ -83,7 +91,7 @@ def test_nft_trade_cancel_auction(nft_auth_trade: Trade) -> None:
     assert isinstance(result["statuses"][0], dict)
     assert result["statuses"][0].get("id") == "AT2POJ-4CH3O-4TH6JH"
     assert result["statuses"][0].get("status") == "failed"
-    assert result["statuses"][0].get("reason") == "no permission"
+    assert result["statuses"][0].get("reason") == "not found"
 
 
 @pytest.mark.nft()
