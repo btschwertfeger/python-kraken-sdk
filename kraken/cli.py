@@ -22,8 +22,9 @@ from cloup import (
     HelpTheme,
     Style,
     argument,
-    command,
+    group,
     option,
+    pass_context,
 )
 from orjson import JSONDecodeError
 from orjson import loads as orloads
@@ -39,7 +40,7 @@ def print_version(ctx: Context, param: Any, value: Any) -> None:
     ctx.exit()
 
 
-@command(
+@group(
     context_settings={
         "auto_envvar_prefix": "KRAKEN",
         "help_option_names": ["-h", "--help"],
@@ -62,11 +63,31 @@ def print_version(ctx: Context, param: Any, value: Any) -> None:
     is_eager=True,
 )
 @option(
+    "-v",
+    "--verbose",
+    required=False,
+    is_flag=True,
+    help="Increase verbosity",
+)
+@pass_context
+def cli(ctx: Context, **kwargs: dict) -> None:
+    """Command-line tool to access the Kraken Cryptocurrency Exchange API"""
+
+    logging.basicConfig(
+        format="%(asctime)s %(levelname)8s | %(message)s",
+        datefmt="%Y/%m/%d %H:%M:%S",
+        level=logging.INFO if not kwargs["verbose"] else logging.DEBUG,
+    )
+
+
+@cli.command()
+@option(
     "-X",
     required=True,
     type=Choice(["GET", "POST", "PUT", "DELETE"]),
     default="GET",
-    help="Request type",
+    help="Request method",
+    show_default="GET",
 )
 @option(
     "-d",
@@ -83,12 +104,78 @@ def print_version(ctx: Context, param: Any, value: Any) -> None:
     help="Timeout in seconds",
 )
 @option(
-    "-m",
-    "--market",
+    "--api-key",
+    required=False,
+    type=str,
+    default="",
+    help="Kraken Public API Key",
+)
+@option(
+    "--secret-key",
+    required=False,
+    type=str,
+    default="",
+    help="Kraken Secret API Key",
+)
+@argument("url", type=str, required=True)
+@pass_context
+def spot(ctx: Context, url: str, **kwargs: dict) -> None:
+    """Access the Kraken Spot REST API"""
+    from kraken.base_api import KrakenSpotBaseAPI
+
+    logging.debug("Initialize the Kraken client")
+    client = KrakenSpotBaseAPI(
+        key=kwargs["api_key"],
+        secret=kwargs["secret_key"],
+    )
+
+    try:
+        response = client._request(  # type: ignore[call-arg] # pylint: disable=protected-access,no-value-for-parameter
+            method=kwargs["x"],
+            uri=(uri := re_sub(r"https:/\/S+\.com", "", url)),
+            params=orloads(kwargs.get("data") or "{}"),
+            timeout=kwargs["timeout"],
+            auth="private" in uri.lower(),
+        )
+    except JSONDecodeError as exc:
+        logging.error(f"Could not parse the passed data. {exc}")
+    except Exception as exc:
+        logging.error(f"Exception occurred: {exc}")
+        sys.exit(1)
+    else:
+        print(response)
+    sys.exit(0)
+
+
+@cli.command()
+@option(
+    "-X",
     required=True,
-    default="SPOT",
-    type=Choice(["SPOT", "FUTURES", "NFT"]),
-    help="Market to access",
+    type=Choice(["GET", "POST", "PUT", "DELETE"]),
+    default="GET",
+    help="Request method",
+    show_default="GET",
+)
+@option(
+    "-d",
+    "--data",
+    required=False,
+    type=str,
+    help="POST parameters as valid JSON",
+)
+@option(
+    "-q",
+    "--query",
+    required=False,
+    type=str,
+    help="Query parameters as valid JSON",
+)
+@option(
+    "--timeout",
+    required=False,
+    type=int,
+    default=10,
+    help="Timeout in seconds",
 )
 @option(
     "--api-key",
@@ -104,50 +191,26 @@ def print_version(ctx: Context, param: Any, value: Any) -> None:
     default="",
     help="Kraken Secret API Key",
 )
-@option(
-    "-v",
-    "--verbose",
-    required=False,
-    is_flag=True,
-    help="Increase verbosity",
-)
 @argument("url", type=str, required=True)
-def main(url: str, **kwargs: dict) -> None:
-    """Command-line tool to access the Kraken Cryptocurrency Exchange API"""
+@pass_context
+def futures(ctx: Context, url: str, **kwargs: dict) -> None:
+    """Access the Kraken Futures REST API"""
+    from kraken.base_api import KrakenFuturesBaseAPI
 
-    logging.basicConfig(
-        format="%(asctime)s %(levelname)8s | %(message)s",
-        datefmt="%Y/%m/%d %H:%M:%S",
-        level=logging.INFO if not kwargs["verbose"] else logging.DEBUG,
-    )
-
-    if (market := kwargs["market"].lower()) == "spot":  # type: ignore[attr-defined]
-        from kraken.base_api import KrakenSpotBaseAPI
-
-        client = KrakenSpotBaseAPI
-    elif market == "futures":
-        from kraken.base_api import KrakenFuturesBaseAPI
-
-        client = KrakenFuturesBaseAPI  # type: ignore[assignment]
-    else:  # market == "nft":
-        from kraken.base_api import KrakenNFTBaseAPI
-
-        client = KrakenNFTBaseAPI
-
-    logging.debug("Initializing Kraken Client")
-    client = client(  # type: ignore[assignment]
-        key=kwargs.get("api_key", None),  # type: ignore[arg-type]
-        secret=kwargs.get("secret_key", None),  # type: ignore[arg-type]
+    logging.debug("Initialize the Kraken client")
+    client = KrakenFuturesBaseAPI(
+        key=kwargs["api_key"],
+        secret=kwargs["secret_key"],
     )
 
     try:
-
         response = client._request(  # type: ignore[call-arg] # pylint: disable=protected-access,no-value-for-parameter
-            method=kwargs["x"],  # type: ignore[arg-type]
+            method=kwargs["x"],
             uri=(uri := re_sub(r"https:/\/S+\.com", "", url)),
-            params=orloads(kwargs.get("data") or "{}"),
-            timeout=kwargs["timeout"],  # type: ignore[arg-type]
-            auth="private" in uri.lower(),
+            post_params=orloads(kwargs.get("data") or "{}"),
+            query_params=orloads(kwargs.get("query") or "{}"),
+            timeout=kwargs["timeout"],
+            auth="derivatives" in uri.lower(),
         )
     except JSONDecodeError as exc:
         logging.error(f"Could not parse the passed data. {exc}")

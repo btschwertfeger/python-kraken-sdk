@@ -40,7 +40,7 @@ classifiers = [
 ]
 
 [project.scripts]
-kraken = "kraken.cli:main"
+kraken = "kraken.cli:cli"
 
 [project.urls]
 "Homepage" = "https://github.com/btschwertfeger/python-kraken-sdk"
