@@ -7,6 +7,25 @@
 Usage Examples
 ==============
 
+The python-kraken-sdk provides lots of functions to easily access most of the
+REST and websocket endpoints of the Kraken Cryptocurrency Exchange API. Since
+these endpoints and their parameters may change, all implemented endpoints are
+tested on a regular basis.
+
+If certain parameters or settings are not available, or specific endpoints are
+hidden and not implemented, it is always possible to execute requests to the
+endpoints directly using the ``_request`` method provided by all clients. This
+is demonstrated below.
+
+.. code-block:: python
+    :linenos:
+    :caption: Usage of the basic _request method
+
+    from kraken.spot import User
+
+    user = User(key="<your-api-key>", secret="<your-secret-key>")
+    print(user._request(method="POST", uri="/0/private/Balance"))
+
 The repository of the `python-kraken-sdk`_ provides some example scripts that
 demonstrate some of the implemented methods. Please see the sections listed
 below.

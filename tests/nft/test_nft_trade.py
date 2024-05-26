@@ -75,7 +75,6 @@ def test_nft_trade_modify_auction(nft_auth_trade: Trade) -> None:
     ) == ["EAPI:Invalid arguments:No auction with the provided ID"]
 
 
-@pytest.mark.wip()
 @pytest.mark.nft()
 @pytest.mark.nft_auth()
 @pytest.mark.nft_trade()

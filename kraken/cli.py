@@ -13,11 +13,11 @@ from __future__ import annotations
 import logging
 import sys
 from re import sub as re_sub
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
+from click import echo
 from cloup import (
     Choice,
-    Context,
     HelpFormatter,
     HelpTheme,
     Style,
@@ -29,14 +29,17 @@ from cloup import (
 from orjson import JSONDecodeError
 from orjson import loads as orloads
 
+if TYPE_CHECKING:
+    from cloup import Context
 
-def print_version(ctx: Context, param: Any, value: Any) -> None:
+
+def print_version(ctx: Context, param: Any, value: Any) -> None:  # noqa: ANN401, ARG001
     """Prints the version of the package"""
     if not value or ctx.resilient_parsing:
         return
-    from importlib.metadata import version
+    from importlib.metadata import version  # noqa: PLC0415
 
-    print(version("python-kraken-sdk"))
+    echo(version("python-kraken-sdk"))
     ctx.exit()
 
 
@@ -72,6 +75,7 @@ def print_version(ctx: Context, param: Any, value: Any) -> None:
 @pass_context
 def cli(ctx: Context, **kwargs: dict) -> None:
     """Command-line tool to access the Kraken Cryptocurrency Exchange API"""
+    ctx.obj = kwargs
 
     logging.basicConfig(
         format="%(asctime)s %(levelname)8s | %(message)s",
@@ -119,31 +123,31 @@ def cli(ctx: Context, **kwargs: dict) -> None:
 )
 @argument("url", type=str, required=True)
 @pass_context
-def spot(ctx: Context, url: str, **kwargs: dict) -> None:
+def spot(ctx: Context, url: str, **kwargs: dict) -> None:  # noqa: ARG001
     """Access the Kraken Spot REST API"""
-    from kraken.base_api import KrakenSpotBaseAPI
+    from kraken.base_api import KrakenSpotBaseAPI  # noqa: PLC0415
 
     logging.debug("Initialize the Kraken client")
     client = KrakenSpotBaseAPI(
-        key=kwargs["api_key"],
-        secret=kwargs["secret_key"],
+        key=kwargs["api_key"],  # type: ignore[arg-type]
+        secret=kwargs["secret_key"],  # type: ignore[arg-type]
     )
 
     try:
-        response = client._request(  # type: ignore[call-arg] # pylint: disable=protected-access,no-value-for-parameter
-            method=kwargs["x"],
-            uri=(uri := re_sub(r"https:/\/S+\.com", "", url)),
+        response = client._request(  # noqa: SLF001 # pylint: disable=protected-access,no-value-for-parameter
+            method=kwargs["x"],  # type: ignore[arg-type]
+            uri=(uri := re_sub(r"https://.*.com", "", url)),
             params=orloads(kwargs.get("data") or "{}"),
-            timeout=kwargs["timeout"],
+            timeout=kwargs["timeout"],  # type: ignore[arg-type]
             auth="private" in uri.lower(),
         )
     except JSONDecodeError as exc:
-        logging.error(f"Could not parse the passed data. {exc}")
-    except Exception as exc:
-        logging.error(f"Exception occurred: {exc}")
+        logging.error(f"Could not parse the passed data. {exc}")  # noqa: G004
+    except Exception as exc:  # noqa: BLE001
+        logging.error(f"Exception occurred: {exc}")  # noqa: G004
         sys.exit(1)
     else:
-        print(response)
+        echo(response)
     sys.exit(0)
 
 
@@ -161,14 +165,14 @@ def spot(ctx: Context, url: str, **kwargs: dict) -> None:
     "--data",
     required=False,
     type=str,
-    help="POST parameters as valid JSON",
+    help="POST parameters as valid JSON string",
 )
 @option(
     "-q",
     "--query",
     required=False,
     type=str,
-    help="Query parameters as valid JSON",
+    help="Query parameters as valid JSON string",
 )
 @option(
     "--timeout",
@@ -193,30 +197,30 @@ def spot(ctx: Context, url: str, **kwargs: dict) -> None:
 )
 @argument("url", type=str, required=True)
 @pass_context
-def futures(ctx: Context, url: str, **kwargs: dict) -> None:
+def futures(ctx: Context, url: str, **kwargs: dict) -> None:  # noqa: ARG001
     """Access the Kraken Futures REST API"""
-    from kraken.base_api import KrakenFuturesBaseAPI
+    from kraken.base_api import KrakenFuturesBaseAPI  # noqa: PLC0415
 
     logging.debug("Initialize the Kraken client")
     client = KrakenFuturesBaseAPI(
-        key=kwargs["api_key"],
-        secret=kwargs["secret_key"],
+        key=kwargs["api_key"],  # type: ignore[arg-type]
+        secret=kwargs["secret_key"],  # type: ignore[arg-type]
     )
 
     try:
-        response = client._request(  # type: ignore[call-arg] # pylint: disable=protected-access,no-value-for-parameter
-            method=kwargs["x"],
-            uri=(uri := re_sub(r"https:/\/S+\.com", "", url)),
+        response = client._request(  # noqa: SLF001 # pylint: disable=protected-access,no-value-for-parameter
+            method=kwargs["x"],  # type: ignore[arg-type]
+            uri=(uri := re_sub(r"https://.*.com", "", url)),
             post_params=orloads(kwargs.get("data") or "{}"),
             query_params=orloads(kwargs.get("query") or "{}"),
-            timeout=kwargs["timeout"],
+            timeout=kwargs["timeout"],  # type: ignore[arg-type]
             auth="derivatives" in uri.lower(),
         )
     except JSONDecodeError as exc:
-        logging.error(f"Could not parse the passed data. {exc}")
-    except Exception as exc:
-        logging.error(f"Exception occurred: {exc}")
+        logging.error(f"Could not parse the passed data. {exc}")  # noqa: G004
+    except Exception as exc:  # noqa: BLE001
+        logging.error(f"Exception occurred: {exc}")  # noqa: G004
         sys.exit(1)
     else:
-        print(response)
+        echo(response)
     sys.exit(0)

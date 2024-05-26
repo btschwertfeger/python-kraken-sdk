@@ -20,7 +20,14 @@ description = "Command-line tool and collection of REST and websocket clients to
 readme = "README.md"
 license = { file = "LICENSE" }
 requires-python = ">=3.11"
-dependencies = ["asyncio>=3.4", "requests", "websockets", "cloup", "orjson"]
+dependencies = [
+  "asyncio>=3.4",
+  "requests",
+  "websockets",
+  "click",
+  "cloup",
+  "orjson",
+]
 keywords = ["crypto", "trading", "kraken", "exchange", "api"]
 classifiers = [
   "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",

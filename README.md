@@ -45,6 +45,16 @@ regarding the use of this software.
 
 ## Features
 
+General:
+
+- command-line interface
+- access both public and private, REST and websocket endpoints
+- responsive error handling and custom exceptions
+- extensive example scripts (see `/examples` and `/tests`)
+- tested using the [pytest](https://docs.pytest.org/en/7.3.x/) framework
+- releases are permanently archived at [Zenodo](https://zenodo.org/badge/latestdoi/510751854)
+- releases before v2.0.0 also support Python 3.7+
+
 Available Clients:
 
 - NFT REST Clients
@@ -53,15 +63,6 @@ Available Clients:
 - Spot Orderbook Clients (Websocket API v1 and v2)
 - Futures REST Clients
 - Futures Websocket Client
-
-General:
-
-- access both public and private, REST and websocket endpoints
-- responsive error handling and custom exceptions
-- extensive example scripts (see `/examples` and `/tests`)
-- tested using the [pytest](https://docs.pytest.org/en/7.3.x/) framework
-- releases are permanently archived at [Zenodo](https://zenodo.org/badge/latestdoi/510751854)
-- releases before v2.0.0 also support Python 3.7+
 
 Documentation:
 
@@ -84,6 +85,8 @@ new releases.
 ## Table of Contents
 
 - [ Installation and setup ](#installation)
+- [ Command-line interface ](#cliusage)
+- [ SDK Usage Hints ](#sdkusage)
 - [ Spot Clients ](#spotusage)
   - [REST API](#spotrest)
   - [Websocket API V2](#spotws)
@@ -95,8 +98,6 @@ new releases.
 - [ Contributions ](#contribution)
 - [ Notes ](#notes)
 - [ References ](#references)
-
----
 
 <a name="installation"></a>
 
@@ -123,7 +124,59 @@ API permissions</b>, <b style="color: yellow">rate limits</b>, update the
 python-kraken-sdk, see the [Troubleshooting](#trouble) section, and if the error
 persists please open an issue.
 
----
+<a name="cliusage"></a>
+
+# 📍 Command-line interface
+
+The python-kraken-sdk provides a command-line interface to access the Kraken API
+using basic instructions while performing authentication tasks in the
+background. The Spot, NFT and Futures API are accessible and follow the pattern
+`kraken {spot,futures} [OPTIONS] URL`. See examples below.
+
+```bash
+# get server time
+kraken spot https://api.kraken.com/0/public/Time
+{'unixtime': 1716707589, 'rfc1123': 'Sun, 26 May 24 07:13:09 +0000'}
+
+# get user's balances
+kraken spot --api-key=<api-key> --secret-key=<secret-key> -X POST https://api.kraken.com/0/private/Balance
+{'ATOM': '17.28229999', 'BCH': '0.0000077100', 'ZUSD': '1000.0000'}
+
+# get user's trade balances
+kraken spot --api-key=<api-key> --secret-key=<secret-key> -X POST https://api.kraken.com/0/private/TradeBalance --data '{"asset": "DOT"}'
+{'eb': '2.8987347115', 'tb': '1.1694303513', 'm': '0.0000000000', 'uv': '0', 'n': '0.0000000000', 'c': '0.0000000000', 'v': '0.0000000000', 'e': '1.1694303513', 'mf': '1.1694303513'}
+
+# get 1D candles for a futures instrument
+kraken futures https://futures.kraken.com/api/charts/v1/spot/PI_XBTUSD/1d
+{'candles': [{'time': 1625616000000, 'open': '34557.84000000000', 'high': '34803.20000000000', 'low': '33816.32000000000', 'close': '33880.22000000000', 'volume': '0' ...
+
+# get user's open futures positions
+kraken futures --api-key=<api-key> --secret-key=<secret-key> https://futures.kraken.com/derivatives/api/v3/openpositions
+{'result': 'success', 'openPositions': [], 'serverTime': '2024-05-26T07:15:38.91Z'}
+```
+
+... All endpoints of the Kraken Spot and Futurs API can be accessed like that.
+
+<a name="sdkusage"></a>
+
+# 📍 SDK Usage Hints
+
+The python-kraken-sdk provides lots of functions to easily access most of the
+REST and websocket endpoints of the Kraken Cryptocurrency Exchange API. Since
+these endpoints and their parameters may change, all implemented endpoints are
+tested on a regular basis.
+
+If certain parameters or settings are not available, or
+specific endpoints are hidden and not implemented, it is always possible to
+execute requests to the endpoints directly using the `_request` method provided
+by any client. This is demonstrated below.
+
+```python
+from kraken.spot import User
+
+user = User(key="<your-api-key>", secret="<your-secret-key>")
+print(user._request(method="POST", uri="/0/private/Balance"))
+```
 
 <a name="spotusage"></a>
 
