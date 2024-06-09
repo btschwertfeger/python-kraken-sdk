@@ -149,7 +149,7 @@ def test_access_private_client_attributes(
         auth_client: SpotWebsocketClientV2TestWrapper = (
             SpotWebsocketClientV2TestWrapper(key=spot_api_key, secret=spot_secret_key)
         )
-        assert auth_client.private_channel_names == ["executions"]
+        assert auth_client.private_channel_names == ["executions", "balances"]
         assert auth_client.private_methods == [
             "add_order",
             "batch_add",
