@@ -547,7 +547,7 @@ class KrakenSpotWSClientV2(KrakenSpotWSClientBase):
         :return: List of available private channel names
         :rtype: list[str]
         """
-        return ["executions"]
+        return ["executions", "balances"]
 
     @property
     def private_methods(self: KrakenSpotWSClientV2) -> list[str]:
