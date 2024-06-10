@@ -355,7 +355,7 @@ class Trade(KrakenSpotBaseAPI):
         if defined(displayvol):
             params["displayvol"] = str(displayvol)
 
-        return self._request(  # type: ignore[return-value]
+        return self.request(  # type: ignore[return-value]
             method="POST",
             uri="/0/private/AddOrder",
             params=params,
@@ -435,7 +435,7 @@ class Trade(KrakenSpotBaseAPI):
         params: dict = {"orders": orders, "pair": pair, "validate": validate}
         if defined(deadline):
             params["deadline"] = deadline
-        return self._request(  # type: ignore[return-value]
+        return self.request(  # type: ignore[return-value]
             method="POST",
             uri="/0/private/AddOrderBatch",
             params=params,
@@ -542,7 +542,7 @@ class Trade(KrakenSpotBaseAPI):
             params["cancel_response"] = cancel_response
         if defined(deadline):
             params["deadline"] = deadline
-        return self._request(  # type: ignore[return-value]
+        return self.request(  # type: ignore[return-value]
             "POST",
             uri="/0/private/EditOrder",
             params=params,
@@ -579,7 +579,7 @@ class Trade(KrakenSpotBaseAPI):
             >>> trade.cancel_order(txid="OAUHYR-YCVK6-P22G6P")
             { 'count': 1 }
         """
-        return self._request(  # type: ignore[return-value]
+        return self.request(  # type: ignore[return-value]
             method="POST",
             uri="/0/private/CancelOrder",
             params={"txid": txid},
@@ -611,7 +611,7 @@ class Trade(KrakenSpotBaseAPI):
             >>> trade.cancel_all_orders()
             { 'count': 2 }
         """
-        return self._request(  # type: ignore[return-value]
+        return self.request(  # type: ignore[return-value]
             method="POST",
             uri="/0/private/CancelAll",
             extra_params=extra_params,
@@ -648,7 +648,7 @@ class Trade(KrakenSpotBaseAPI):
                 'triggerTime': '2023-04-06T06:52:56Z'
             }
         """
-        return self._request(  # type: ignore[return-value]
+        return self.request(  # type: ignore[return-value]
             method="POST",
             uri="/0/private/CancelAllOrdersAfter",
             params={"timeout": timeout},
@@ -685,7 +685,7 @@ class Trade(KrakenSpotBaseAPI):
             ... )
             { count': 2 }
         """
-        return self._request(  # type: ignore[return-value]
+        return self.request(  # type: ignore[return-value]
             method="POST",
             uri="/0/private/CancelOrderBatch",
             params={"orders": orders},

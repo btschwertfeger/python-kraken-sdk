@@ -134,12 +134,14 @@ def spot(ctx: Context, url: str, **kwargs: dict) -> None:  # noqa: ARG001
     )
 
     try:
-        response = client._request(  # noqa: SLF001 # pylint: disable=protected-access,no-value-for-parameter
-            method=kwargs["x"],  # type: ignore[arg-type]
-            uri=(uri := re_sub(r"https://.*.com", "", url)),
-            params=orloads(kwargs.get("data") or "{}"),
-            timeout=kwargs["timeout"],  # type: ignore[arg-type]
-            auth="private" in uri.lower(),
+        response = (
+            client.request(  # pylint: disable=protected-access,no-value-for-parameter
+                method=kwargs["x"],  # type: ignore[arg-type]
+                uri=(uri := re_sub(r"https://.*.com", "", url)),
+                params=orloads(kwargs.get("data") or "{}"),
+                timeout=kwargs["timeout"],  # type: ignore[arg-type]
+                auth="private" in uri.lower(),
+            )
         )
     except JSONDecodeError as exc:
         logging.error(f"Could not parse the passed data. {exc}")  # noqa: G004

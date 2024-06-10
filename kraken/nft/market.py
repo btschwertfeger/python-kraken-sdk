@@ -105,7 +105,7 @@ class Market(KrakenNFTBaseAPI):
         params: dict = {"nft_id": nft_id}
         if defined(currency):
             params["currency"] = currency
-        return self._request(  # type: ignore[return-value]
+        return self.request(  # type: ignore[return-value]
             method="GET",
             uri="/0/public/Nft",
             params=params,
@@ -153,7 +153,7 @@ class Market(KrakenNFTBaseAPI):
         if defined(sort):
             params["sort"] = sort
 
-        return self._request(  # type: ignore[return-value]
+        return self.request(  # type: ignore[return-value]
             method="GET",
             uri="/0/public/Nfts",
             params=params,
@@ -203,7 +203,7 @@ class Market(KrakenNFTBaseAPI):
         }
         if defined(currency):
             params["currency"] = currency
-        return self._request(  # type: ignore[return-value]
+        return self.request(  # type: ignore[return-value]
             method="GET",
             uri="/0/public/NftProvenance",
             params=params,
@@ -242,7 +242,7 @@ class Market(KrakenNFTBaseAPI):
 
         if defined(currency):
             params["currency"] = currency
-        return self._request(  # type: ignore[return-value]
+        return self.request(  # type: ignore[return-value]
             method="GET",
             uri="/0/public/NftCollection",
             params=params,
@@ -297,7 +297,7 @@ class Market(KrakenNFTBaseAPI):
         if defined(sort):
             params["sort"] = sort
 
-        return self._request(  # type: ignore[return-value]
+        return self.request(  # type: ignore[return-value]
             method="GET",
             uri="/0/public/NftCollections",
             params=params,
@@ -328,7 +328,7 @@ class Market(KrakenNFTBaseAPI):
             >>> market = Market()
             >>> market.get_creator(creator_id="NA7NELE-FOQFZ-ODWOTV")
         """
-        return self._request(  # type: ignore[return-value]
+        return self.request(  # type: ignore[return-value]
             method="GET",
             uri="/0/public/NftCreator",
             params={"creator_id": creator_id},
@@ -383,7 +383,7 @@ class Market(KrakenNFTBaseAPI):
         if defined(sort):
             params["sort"] = sort
 
-        return self._request(  # type: ignore[return-value]
+        return self.request(  # type: ignore[return-value]
             method="GET",
             uri="/0/public/NftCreators",
             params=params,
@@ -410,7 +410,7 @@ class Market(KrakenNFTBaseAPI):
             >>> market = Market()
             >>> market.list_blockchains()
         """
-        return self._request(  # type: ignore[return-value]
+        return self.request(  # type: ignore[return-value]
             method="GET",
             uri="/0/public/NftBlockchains",
             auth=False,
@@ -448,7 +448,7 @@ class Market(KrakenNFTBaseAPI):
         params: dict = {}
         if defined(status):
             params["status"] = status
-        return self._request(  # type: ignore[return-value]
+        return self.request(  # type: ignore[return-value]
             method="GET",
             uri="/0/public/NftAuctions",
             params=params,
@@ -479,7 +479,7 @@ class Market(KrakenNFTBaseAPI):
             >>> market = Market()
             >>> market.get_offers(nft_id="NT4GUCU-SIJE2-YSQQG2")
         """
-        return self._request(  # type: ignore[return-value]
+        return self.request(  # type: ignore[return-value]
             method="GET",
             uri="/0/public/NftOffers",
             params={"nft_id": nft_id},
@@ -519,7 +519,7 @@ class Market(KrakenNFTBaseAPI):
         if defined(count):
             params["count"] = count
 
-        return self._request(  # type: ignore[return-value]
+        return self.request(  # type: ignore[return-value]
             method="GET",
             uri="/0/public/NftQuotes",
             query_str=filter_,

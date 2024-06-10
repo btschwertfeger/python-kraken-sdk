@@ -65,7 +65,7 @@ class KrakenSpotWSClientBase(KrakenSpotBaseAPI):
         no_public: bool = False,
         beta: bool = False,
     ) -> None:
-        super().__init__(key=key, secret=secret, sandbox=beta)
+        super().__init__(key=key, secret=secret)
 
         self._is_auth: bool = bool(key and secret)
         self.__callback: Callable | None = callback
@@ -177,7 +177,7 @@ class KrakenSpotWSClientBase(KrakenSpotBaseAPI):
         :returns: The authentication token
         :rtype: dict
         """
-        return self._request(  # type: ignore[return-value]
+        return self.request(  # type: ignore[return-value]
             method="POST",
             uri="/0/private/GetWebSocketsToken",
         )

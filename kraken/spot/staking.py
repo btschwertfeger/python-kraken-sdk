@@ -106,7 +106,7 @@ class Staking(KrakenSpotBaseAPI):
             ... )
             { 'refid': 'BOG5AE5-KSCNR4-VPNPEV' }
         """
-        return self._request(  # type: ignore[return-value]
+        return self.request(  # type: ignore[return-value]
             method="POST",
             uri="/0/private/Stake",
             params={"asset": asset, "amount": amount, "method": method},
@@ -161,7 +161,7 @@ class Staking(KrakenSpotBaseAPI):
         if defined(method):
             params["method"] = method
 
-        return self._request(  # type: ignore[return-value]
+        return self.request(  # type: ignore[return-value]
             method="POST",
             uri="/0/private/Unstake",
             params=params,
@@ -229,7 +229,7 @@ class Staking(KrakenSpotBaseAPI):
                 }, ...
             ]
         """
-        return self._request(  # type: ignore[return-value]
+        return self.request(  # type: ignore[return-value]
             method="POST",
             uri="/0/private/Staking/Assets",
             auth=True,
@@ -275,7 +275,7 @@ class Staking(KrakenSpotBaseAPI):
                 }, ...
             ]
         """
-        return self._request(  # type: ignore[return-value]
+        return self.request(  # type: ignore[return-value]
             method="POST",
             uri="/0/private/Staking/Pending",
             auth=True,
@@ -324,7 +324,7 @@ class Staking(KrakenSpotBaseAPI):
             ]
 
         """
-        return self._request(  # type: ignore[return-value]
+        return self.request(  # type: ignore[return-value]
             method="POST",
             uri="/0/private/Staking/Transactions",
             auth=True,

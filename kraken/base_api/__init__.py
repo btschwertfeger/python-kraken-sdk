@@ -12,16 +12,18 @@ import hmac
 import json
 import time
 from functools import wraps
-from typing import TYPE_CHECKING, Any, Final, TypeVar
+from typing import TYPE_CHECKING, Any, TypeVar
 from urllib.parse import urlencode, urljoin
 from uuid import uuid1
 
+import aiohttp
 import requests
 
 from kraken.exceptions import _get_exception
 
 if TYPE_CHECKING:
-    from collections.abc import Callable
+    from collections.abc import Callable, Coroutine
+    from typing import Final
 
 Self = TypeVar("Self")
 
@@ -172,7 +174,7 @@ class KrakenErrorHandler:
 
 class KrakenSpotBaseAPI:
     """
-    This class the the base for all Spot clients, handles un-/signed
+    This class is the base for all Spot clients, handles un-/signed
     requests and returns exception handled results.
 
     If you are facing timeout errors on derived clients, you can make use of the
@@ -184,13 +186,14 @@ class KrakenSpotBaseAPI:
     :type secret: str, optional
     :param url: URL to access the Kraken API (default: https://api.kraken.com)
     :type url: str, optional
-    :param sandbox: Use the sandbox (not supported for Spot trading so far,
-        default: ``False``)
-    :type sandbox: bool, optional
     """
 
     URL: str = "https://api.kraken.com"
     TIMEOUT: int = 10
+    HEADERS: Final[dict] = {
+        "User-Agent": "python-kraken-sdk"
+        " (https://github.com/btschwertfeger/python-kraken-sdk)",
+    }
 
     def __init__(
         self: KrakenSpotBaseAPI,
@@ -198,28 +201,82 @@ class KrakenSpotBaseAPI:
         secret: str = "",
         url: str = "",
         *,
-        sandbox: bool = False,
         use_custom_exceptions: bool = True,
     ) -> None:
-        if sandbox:
-            raise ValueError("Sandbox not available for Kraken Spot trading.")
         if url:
             self.URL = url
 
-        self.__key: str = key
-        self.__secret: str = secret
-        self.__use_custom_exceptions: bool = use_custom_exceptions
-
-        self.__err_handler: KrakenErrorHandler = KrakenErrorHandler()
+        self._key: str = key
+        self._secret: str = secret
+        self._use_custom_exceptions: bool = use_custom_exceptions
+        self._err_handler: KrakenErrorHandler = KrakenErrorHandler()
         self.__session: requests.Session = requests.Session()
-        self.__session.headers.update(
-            {
-                "User-Agent": "python-kraken-sdk"
-                " (https://github.com/btschwertfeger/python-kraken-sdk)",
-            },
+        self.__session.headers.update(self.HEADERS)
+
+    def _prepare_request(
+        self: KrakenSpotBaseAPI,
+        *,
+        method: str,
+        uri: str,
+        params: dict | None = None,
+        auth: bool = True,
+        do_json: bool = False,
+        query_str: str | None = None,
+        extra_params: str | dict | None = None,
+    ) -> tuple[str, str, dict, dict, str]:
+        METHOD: str = method.upper()
+        URL: str = urljoin(self.URL, uri)
+
+        if not defined(params):
+            params = {}
+        if defined(extra_params):
+            params |= (
+                json.loads(extra_params)
+                if isinstance(extra_params, str)
+                else extra_params
+            )
+        query_params: str = (
+            urlencode(params, doseq=True)
+            if METHOD in {"GET", "DELETE"} and params
+            else ""
         )
 
-    def _request(  # noqa: PLR0913 # pylint: disable=too-many-arguments
+        if query_params and query_str:
+            query_params += f"&{query_str}"
+        elif query_str:
+            query_params = query_str
+
+        HEADERS: dict = {}
+
+        if auth:
+            if not self._key or not self._secret:
+                raise ValueError("Missing credentials.")
+
+            params["nonce"] = str(int(time.time() * 100_000_000))
+            content_type: str
+            sign_data: str
+
+            if do_json:
+                content_type = "application/json; charset=utf-8"
+                sign_data = json.dumps(params)
+            else:
+                content_type = "application/x-www-form-urlencoded; charset=utf-8"
+                sign_data = urlencode(params, doseq=True)
+
+            HEADERS.update(
+                {
+                    "Content-Type": content_type,
+                    "API-Key": self._key,
+                    "API-Sign": self._get_kraken_signature(
+                        url_path=f"{uri}{query_params}",
+                        data=sign_data,
+                        nonce=params["nonce"],
+                    ),
+                },
+            )
+        return METHOD, URL, HEADERS, params, query_params
+
+    def request(  # noqa: PLR0913 # pylint: disable=too-many-arguments
         self: KrakenSpotBaseAPI,
         method: str,
         uri: str,
@@ -237,7 +294,7 @@ class KrakenSpotBaseAPI:
         response, and returning the message or in case of an error the
         respective Exception.
 
-        :param method: The request method, e.g., ``GET``, ``POST``, and ``PUT``
+        :param method: The request method, e.g., ``GET``, ``POST``, ``PUT``, ...
         :type method: str
         :param uri: The endpoint to send the message
         :type uri: str
@@ -264,60 +321,18 @@ class KrakenSpotBaseAPI:
         :raise kraken.exceptions.KrakenException.*: If the response contains
             errors
         :return: The response
-        :rtype: dict[str, Any] | list[str] | list[dict[str, Any]] |
-            requests.Response
+        :rtype: dict | list | requests.Response
         """
-        METHOD: str = method.upper()
-        URL: str = urljoin(self.URL, uri)
-
-        if not defined(params):
-            params = {}
-        if defined(extra_params):
-            params |= (
-                json.loads(extra_params)
-                if isinstance(extra_params, str)
-                else extra_params
-            )
-        query_params: str = (
-            urlencode(params, doseq=True)
-            if METHOD in {"GET", "DELETE"} and params
-            else ""
+        METHOD, URL, HEADERS, params, query_params = self._prepare_request(
+            method=method,
+            uri=uri,
+            params=params,
+            auth=auth,
+            do_json=do_json,
+            query_str=query_str,
+            extra_params=extra_params,
         )
-
-        if query_params and query_str:
-            query_params += f"&{query_str}"
-        elif query_str:
-            query_params = query_str
-
         TIMEOUT: int = self.TIMEOUT if timeout != 10 else timeout
-        HEADERS: dict = {}
-
-        if auth:
-            if not self.__key or not self.__secret:
-                raise ValueError("Missing credentials.")
-
-            params["nonce"] = str(int(time.time() * 100_000_000))
-            content_type: str
-            sign_data: str
-
-            if do_json:
-                content_type = "application/json; charset=utf-8"
-                sign_data = json.dumps(params)
-            else:
-                content_type = "application/x-www-form-urlencoded; charset=utf-8"
-                sign_data = urlencode(params, doseq=True)
-
-            HEADERS.update(
-                {
-                    "Content-Type": content_type,
-                    "API-Key": self.__key,
-                    "API-Sign": self._get_kraken_signature(
-                        url_path=f"{uri}{query_params}",
-                        data=sign_data,
-                        nonce=params["nonce"],
-                    ),
-                },
-            )
 
         if METHOD in {"GET", "DELETE"}:
             return self.__check_response_data(
@@ -374,7 +389,7 @@ class KrakenSpotBaseAPI:
         """
         return base64.b64encode(
             hmac.new(
-                base64.b64decode(self.__secret),
+                base64.b64decode(self._secret),
                 url_path.encode()
                 + hashlib.sha256((str(nonce) + data).encode()).digest(),
                 hashlib.sha512,
@@ -397,7 +412,7 @@ class KrakenSpotBaseAPI:
         :return: The response in raw or parsed to dict
         :rtype: dict | list | requests.Response
         """
-        if not self.__use_custom_exceptions:
+        if not self._use_custom_exceptions:
             return response
 
         if response.status_code in {"200", 200}:
@@ -410,7 +425,7 @@ class KrakenSpotBaseAPI:
 
             if "error" in data:
                 # can only be dict if error is present:
-                return self.__err_handler.check(data)  # type: ignore[arg-type]
+                return self._err_handler.check(data)  # type: ignore[arg-type]
             return data
 
         raise Exception(f"{response.status_code} - {response.text}")
@@ -433,6 +448,177 @@ class KrakenSpotBaseAPI:
         **kwargs: dict[str, Any],
     ) -> None:
         pass
+
+
+class KrakenSpotAsyncClient(KrakenSpotBaseAPI):
+    """
+    This class provides the base client for accessing the Kraken Spot and NFT
+    API using asynchronous requests.
+
+    If you are facing timeout errors on derived clients, you can make use of the
+    ``TIMEOUT`` attribute to deviate from the default ``10`` seconds.
+
+    :param key: Spot API public key (default: ``""``)
+    :type key: str, optional
+    :param secret: Spot API secret key (default: ``""``)
+    :type secret: str, optional
+    :param url: URL to access the Kraken API (default: https://api.kraken.com)
+    :type url: str, optional
+    """
+
+    def __init__(
+        self: KrakenSpotAsyncClient,
+        key: str = "",
+        secret: str = "",
+        url: str = "",
+        *,
+        use_custom_exceptions: bool = True,
+    ) -> None:
+        super().__init__(
+            key=key,
+            secret=secret,
+            url=url,
+            use_custom_exceptions=use_custom_exceptions,
+        )
+        self.__async_session = aiohttp.ClientSession(headers=self.HEADERS)
+
+    async def request(  # type: ignore[override] # pylint: disable=invalid-overridden-method,too-many-arguments # noqa: PLR0913
+        self: KrakenSpotAsyncClient,
+        method: str,
+        uri: str,
+        params: dict | None = None,
+        timeout: int = 10,
+        *,
+        auth: bool = True,
+        do_json: bool = False,
+        return_raw: bool = False,
+        query_str: str | None = None,
+        extra_params: str | dict | None = None,
+    ) -> Coroutine:
+        """
+        Handles the requested requests, by sending the request, handling the
+        response, and returning the message or in case of an error the
+        respective Exception.
+
+        :param method: The request method, e.g., ``GET``, ``POST``, ``PUT``, ...
+        :type method: str
+        :param uri: The endpoint to send the message
+        :type uri: str
+        :param auth: If the requests needs authentication (default: ``True``)
+        :type auth: bool
+        :param params: The query or post parameter of the request (default:
+            ``None``)
+        :type params: dict, optional
+        :param extra_params: Additional query or post parameter of the request
+            (default: ``None``)
+        :type extra_params: str | dict, optional
+        :param timeout: Timeout for the request (default: ``10``)
+        :type timeout: int
+        :param do_json: If the ``params`` must be "jsonified" - in case of
+            nested dict style
+        :type do_json: bool
+        :param return_raw: If the response should be returned without parsing.
+            This is used for example when requesting an export of the trade
+            history as .zip archive.
+        :type return_raw: bool, optional
+        :param query_str: Add custom values to the query
+            /0/public/Nfts?filter%5Bcollection_id%5D=NCQNABO-XYCA7-JMMSDF&page_size=10
+        :type query_str: str, optional
+        :raise kraken.exceptions.KrakenException.*: If the response contains
+            errors
+        :return: The response
+        :rtype: dict | list | aiohttp.ClientResponse
+        """
+        METHOD, URL, HEADERS, params, query_params = self._prepare_request(
+            method=method,
+            uri=uri,
+            params=params,
+            auth=auth,
+            do_json=do_json,
+            query_str=query_str,
+            extra_params=extra_params,
+        )
+        TIMEOUT: int = self.TIMEOUT if timeout != 10 else timeout
+
+        if METHOD in {"GET", "DELETE"}:
+            return await self.__check_response_data(  # type: ignore[return-value]
+                response=await self.__async_session.request(
+                    method=METHOD,
+                    url=f"{URL}?{query_params}" if query_params else URL,
+                    headers=HEADERS,
+                    timeout=TIMEOUT,
+                ),
+                return_raw=return_raw,
+            )
+
+        if do_json:
+            return await self.__check_response_data(  # type: ignore[return-value]
+                response=await self.__async_session.request(
+                    method=METHOD,
+                    url=URL,
+                    headers=HEADERS,
+                    json=params,
+                    timeout=TIMEOUT,
+                ),
+                return_raw=return_raw,
+            )
+
+        return await self.__check_response_data(  # type: ignore[return-value]
+            response=await self.__async_session.request(
+                method=METHOD,
+                url=URL,
+                headers=HEADERS,
+                data=params,
+                timeout=TIMEOUT,
+            ),
+            return_raw=return_raw,
+        )
+
+    async def __check_response_data(  # pylint: disable=invalid-overridden-method
+        self: KrakenSpotAsyncClient,
+        response: aiohttp.ClientResponse,
+        *,
+        return_raw: bool = False,
+    ) -> dict | list | aiohttp.ClientResponse:
+        """
+        Checks the response, handles the error (if exists) and returns the
+        response data.
+
+        :param response: The response of a request, requested by the requests
+            module
+        :type response: aiohttp.ClientResponse
+        :param return_raw: Defines if the return should be the raw response if
+            there is no error
+        :type data: bool, optional
+        :return: The response in raw or parsed to dict
+        :rtype: dict | list | aiohttp.ClientResponse
+        """
+        if not self._use_custom_exceptions:
+            return response
+
+        if response.status in {"200", 200}:
+            if return_raw:
+                return response
+            try:
+                data: dict | list = await response.json()
+            except ValueError as exc:
+                raise ValueError(response.content) from exc
+
+            if "error" in data:
+                return self._err_handler.check(data)  # type: ignore[arg-type]
+            return data
+
+        raise Exception(f"{response.status_code} - {response.text}")
+
+    async def async_close(self: KrakenSpotAsyncClient) -> None:
+        """Closes the iohttp session"""
+        await self.__async_session.close()
+
+    async def __aenter__(self: Self) -> Self:
+        return self
+
+    async def __aexit__(self: KrakenSpotAsyncClient, *args: object) -> None:
+        await self.async_close()
 
 
 class KrakenNFTBaseAPI(KrakenSpotBaseAPI):
@@ -695,4 +881,12 @@ class KrakenFuturesBaseAPI:
         pass
 
 
-__all__ = ["defined", "ensure_string", "KrakenSpotBaseAPI", "KrakenFuturesBaseAPI"]
+__all__ = [
+    "defined",
+    "ensure_string",
+    "KrakenSpotBaseAPI",
+    "KrakenSpotAsyncClient",
+    "KrakenNFTBaseAPI",
+    "KrakenFuturesBaseAPI",
+    # "KrakenFuturesAsyncClient",
+]

@@ -5,6 +5,7 @@
 
 """Module that provides the Spot REST clients."""
 
+from kraken.base_api import KrakenSpotAsyncClient as SpotAsyncClient
 from kraken.spot.earn import Earn
 from kraken.spot.funding import Funding
 from kraken.spot.market import Market
@@ -24,6 +25,7 @@ __all__ = [
     "Market",
     "OrderbookClientV1",
     "OrderbookClientV2",
+    "SpotAsyncClient",
     "Staking",
     "Trade",
     "User",
