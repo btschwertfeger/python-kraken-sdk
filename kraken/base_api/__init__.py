@@ -212,7 +212,12 @@ class KrakenSpotBaseAPI:
 
         self.__err_handler: KrakenErrorHandler = KrakenErrorHandler()
         self.__session: requests.Session = requests.Session()
-        self.__session.headers.update({"User-Agent": "python-kraken-sdk"})
+        self.__session.headers.update(
+            {
+                "User-Agent": "python-kraken-sdk"
+                " (https://github.com/btschwertfeger/python-kraken-sdk)",
+            },
+        )
 
     def _request(  # noqa: PLR0913 # pylint: disable=too-many-arguments
         self: KrakenSpotBaseAPI,
@@ -483,7 +488,12 @@ class KrakenFuturesBaseAPI:
 
         self.__err_handler: KrakenErrorHandler = KrakenErrorHandler()
         self.__session: requests.Session = requests.Session()
-        self.__session.headers.update({"User-Agent": "python-kraken-sdk"})
+        self.__session.headers.update(
+            {
+                "User-Agent": "python-kraken-sdk"
+                " (https://github.com/btschwertfeger/python-kraken-sdk)",
+            },
+        )
 
     def _request(  # noqa: PLR0913 # pylint: disable=too-many-arguments
         self: KrakenFuturesBaseAPI,

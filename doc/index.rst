@@ -22,6 +22,7 @@ Welcome to python-kraken-sdk's documentation!
 
    introduction.rst
    getting_started/getting_started.rst
+   examples/command_line_interface.rst
    examples/rest_example_usage.rst
    examples/trading_bot_templates.rst
    spot/rest.rst

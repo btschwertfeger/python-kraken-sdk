@@ -56,6 +56,16 @@ regarding the use of this software.
 Features
 --------
 
+General:
+
+- command-line interface
+- access both public and private, REST and websocket endpoints
+- responsive error handling and custom exceptions
+- extensive examples
+- tested using the `pytest <https://docs.pytest.org/en/7.3.x/>`_ framework
+- releases are permanently archived at `Zenodo <https://zenodo.org/badge/latestdoi/510751854>`_
+- releases before v2.0.0 also support Python 3.7+
+
 Available Clients:
 
 - NFT REST Clients
@@ -64,16 +74,6 @@ Available Clients:
 - Spot Orderbook Clients (Websocket API v1 and v2)
 - Futures REST Clients
 - Futures Websocket Client
-
-General:
-
-- access both public and private, REST and websocket endpoints
-- responsive error handling and custom exceptions
-- extensive examples
-- tested using the `pytest <https://docs.pytest.org/en/7.3.x/>`_ framework
-- releases are permanently archived at `Zenodo <https://zenodo.org/badge/latestdoi/510751854>`_
-- releases before v2.0.0 also support Python 3.7+
-
 
 Important Notice
 -----------------
