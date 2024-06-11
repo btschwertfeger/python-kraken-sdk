@@ -450,7 +450,7 @@ class KrakenSpotBaseAPI:
         pass
 
 
-class KrakenSpotAsyncClient(KrakenSpotBaseAPI):
+class SpotAsyncClient(KrakenSpotBaseAPI):
     """
     This class provides the base client for accessing the Kraken Spot and NFT
     API using asynchronous requests.
@@ -467,7 +467,7 @@ class KrakenSpotAsyncClient(KrakenSpotBaseAPI):
     """
 
     def __init__(
-        self: KrakenSpotAsyncClient,
+        self: SpotAsyncClient,
         key: str = "",
         secret: str = "",
         url: str = "",
@@ -483,7 +483,7 @@ class KrakenSpotAsyncClient(KrakenSpotBaseAPI):
         self.__async_session = aiohttp.ClientSession(headers=self.HEADERS)
 
     async def request(  # type: ignore[override] # pylint: disable=invalid-overridden-method,too-many-arguments # noqa: PLR0913
-        self: KrakenSpotAsyncClient,
+        self: SpotAsyncClient,
         method: str,
         uri: str,
         params: dict | None = None,
@@ -575,7 +575,7 @@ class KrakenSpotAsyncClient(KrakenSpotBaseAPI):
         )
 
     async def __check_response_data(  # pylint: disable=invalid-overridden-method
-        self: KrakenSpotAsyncClient,
+        self: SpotAsyncClient,
         response: aiohttp.ClientResponse,
         *,
         return_raw: bool = False,
@@ -610,14 +610,14 @@ class KrakenSpotAsyncClient(KrakenSpotBaseAPI):
 
         raise Exception(f"{response.status_code} - {response.text}")
 
-    async def async_close(self: KrakenSpotAsyncClient) -> None:
+    async def async_close(self: SpotAsyncClient) -> None:
         """Closes the iohttp session"""
         await self.__async_session.close()
 
     async def __aenter__(self: Self) -> Self:
         return self
 
-    async def __aexit__(self: KrakenSpotAsyncClient, *args: object) -> None:
+    async def __aexit__(self: SpotAsyncClient, *args: object) -> None:
         await self.async_close()
 
 
@@ -885,7 +885,7 @@ __all__ = [
     "defined",
     "ensure_string",
     "KrakenSpotBaseAPI",
-    "KrakenSpotAsyncClient",
+    "SpotAsyncClient",
     "KrakenNFTBaseAPI",
     "KrakenFuturesBaseAPI",
     # "KrakenFuturesAsyncClient",

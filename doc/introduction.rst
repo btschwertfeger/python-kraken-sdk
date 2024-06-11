@@ -30,8 +30,8 @@ and documented.
 - The output in the examples may differ, as these are only intended as examples
   and may change in the future.
 - If a certain endpoint is not reachable, the function
-  :func:`kraken.base_api.KrakenSpotBaseAPI._request` or
-  :func:`kraken.base_api.KrakenFuturesBaseAPI._request`,
+  :func:`kraken.base_api.KrakenSpotBaseAPI.request` or
+  :func:`kraken.base_api.KrakenFuturesBaseAPI.request`,
   which is also available in all derived REST clients, can be used to reach an
   endpoint with the appropriate parameters. Here private content can also be
   accessed, provided that either the base class or one of the clients has been

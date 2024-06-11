@@ -168,14 +168,14 @@ tested on a regular basis.
 
 If certain parameters or settings are not available, or
 specific endpoints are hidden and not implemented, it is always possible to
-execute requests to the endpoints directly using the `_request` method provided
+execute requests to the endpoints directly using the `request` method provided
 by any client. This is demonstrated below.
 
 ```python
-from kraken.spot import User
+    from kraken.spot import KrakenSpotBaseAPI
 
-user = User(key="<your-api-key>", secret="<your-secret-key>")
-print(user._request(method="POST", uri="/0/private/Balance"))
+    client = KrakenSpotBaseAPI(key="<your-api-key>", secret="<your-secret-key>")
+    print(client.request(method="POST", uri="/0/private/Balance"))
 ```
 
 <a name="spotusage"></a>
