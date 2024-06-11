@@ -12,7 +12,7 @@ from __future__ import annotations
 import logging
 from typing import TYPE_CHECKING, Any, TypeVar
 
-from kraken.base_api import KrakenSpotBaseAPI
+from kraken.spot import SpotClient
 from kraken.spot.websocket.connectors import (
     ConnectSpotWebsocketV1,
     ConnectSpotWebsocketV2,
@@ -24,10 +24,10 @@ if TYPE_CHECKING:
 Self = TypeVar("Self")
 
 
-class KrakenSpotWSClientBase(KrakenSpotBaseAPI):
+class SpotWSClientBase(SpotClient):
     """
-    This is the base class for :class:`kraken.spot.KrakenSpotWSClientV1` and
-    :class:`kraken.spot.KrakenSpotWSClientV2`. It extends the REST API base
+    This is the base class for :class:`kraken.spot.SpotWSClientV1` and
+    :class:`kraken.spot.SpotWSClientV2`. It extends the REST API base
     class and is used to provide the base functionalities that are used
     for Kraken Websocket API v1 and v2.
 
@@ -49,21 +49,17 @@ class KrakenSpotWSClientBase(KrakenSpotBaseAPI):
     """
 
     LOG: logging.Logger = logging.getLogger(__name__)
-
     PROD_ENV_URL: str = "ws.kraken.com"
     AUTH_PROD_ENV_URL: str = "ws-auth.kraken.com"
-    BETA_ENV_URL: str = "beta-ws.kraken.com"
-    AUTH_BETA_ENV_URL: str = "beta-ws-auth.kraken.com"
 
     def __init__(
-        self: KrakenSpotWSClientBase,
+        self: SpotWSClientBase,
         key: str = "",
         secret: str = "",
         callback: Callable | None = None,
         api_version: str = "v2",
         *,
         no_public: bool = False,
-        beta: bool = False,
     ) -> None:
         super().__init__(key=key, secret=secret)
 
@@ -72,16 +68,14 @@ class KrakenSpotWSClientBase(KrakenSpotBaseAPI):
         self.exception_occur: bool = False
         self._pub_conn: ConnectSpotWebsocketV1 | ConnectSpotWebsocketV2 | None = None
         self._priv_conn: ConnectSpotWebsocketV1 | ConnectSpotWebsocketV2 | None = None
-
-        self.__connect(version=api_version, beta=beta, no_public=no_public)
+        self.__connect(version=api_version, no_public=no_public)
 
     # --------------------------------------------------------------------------
     # Internals
     def __connect(
-        self: KrakenSpotWSClientBase,
+        self: SpotWSClientBase,
         version: str,
         *,
-        beta: bool,
         no_public: bool,
     ) -> None:
         """
@@ -99,8 +93,6 @@ class KrakenSpotWSClientBase(KrakenSpotBaseAPI):
             # pylint: disable=invalid-name
             self.PROD_ENV_URL += "/v2"
             self.AUTH_PROD_ENV_URL += "/v2"
-            self.BETA_ENV_URL += "/v2"
-            self.AUTH_BETA_ENV_URL += "/v2"
             ConnectSpotWebsocket = ConnectSpotWebsocketV2
         else:
             raise ValueError("Websocket API version must be one of ``v1``, ``v2``")
@@ -108,7 +100,7 @@ class KrakenSpotWSClientBase(KrakenSpotBaseAPI):
         self._pub_conn = (
             ConnectSpotWebsocket(
                 client=self,
-                endpoint=self.PROD_ENV_URL if not beta else self.BETA_ENV_URL,
+                endpoint=self.PROD_ENV_URL,
                 is_auth=False,
                 callback=self.on_message,
             )
@@ -119,7 +111,7 @@ class KrakenSpotWSClientBase(KrakenSpotBaseAPI):
         self._priv_conn = (
             ConnectSpotWebsocket(
                 client=self,
-                endpoint=self.AUTH_PROD_ENV_URL if not beta else self.AUTH_BETA_ENV_URL,
+                endpoint=self.AUTH_PROD_ENV_URL,
                 is_auth=True,
                 callback=self.on_message,
             )
@@ -128,7 +120,7 @@ class KrakenSpotWSClientBase(KrakenSpotBaseAPI):
         )
 
     async def on_message(
-        self: KrakenSpotWSClientBase,
+        self: SpotWSClientBase,
         message: dict | list,
     ) -> None:
         """
@@ -136,8 +128,8 @@ class KrakenSpotWSClientBase(KrakenSpotBaseAPI):
         have to overwrite this function since it will receive all incoming
         messages that will be sent by Kraken.
 
-        See :class:`kraken.spot.KrakenSpotWSClientV1` and
-        :class:`kraken.spot.KrakenSpotWSClientV2` for examples to use this
+        See :class:`kraken.spot.SpotWSClientV1` and
+        :class:`kraken.spot.SpotWSClientV2` for examples to use this
         function.
 
         :param message: The message received sent by Kraken via the websocket connection
@@ -160,13 +152,13 @@ class KrakenSpotWSClientBase(KrakenSpotBaseAPI):
         return self
 
     async def __aexit__(
-        self: KrakenSpotWSClientBase,
+        self: SpotWSClientBase,
         *exc: object,
         **kwargs: Any,  # noqa: ANN401
     ) -> None:
         """Exit if used as context manager"""
 
-    def get_ws_token(self: KrakenSpotWSClientBase) -> dict:
+    def get_ws_token(self: SpotWSClientBase) -> dict:
         """
         Get the authentication token to establish the authenticated
         websocket connection. This is used internally and in most cases not
@@ -183,7 +175,7 @@ class KrakenSpotWSClientBase(KrakenSpotBaseAPI):
         )
 
     def _get_socket(
-        self: KrakenSpotWSClientBase,
+        self: SpotWSClientBase,
         *,
         private: bool,
     ) -> Any | None:  # noqa: ANN401
@@ -202,7 +194,7 @@ class KrakenSpotWSClientBase(KrakenSpotBaseAPI):
 
     @property
     def active_public_subscriptions(
-        self: KrakenSpotWSClientBase,
+        self: SpotWSClientBase,
     ) -> list[dict]:
         """
         Returns the active public subscriptions
@@ -217,7 +209,7 @@ class KrakenSpotWSClientBase(KrakenSpotBaseAPI):
 
     @property
     def active_private_subscriptions(
-        self: KrakenSpotWSClientBase,
+        self: SpotWSClientBase,
     ) -> list[dict]:
         """
         Returns the active private subscriptions
@@ -234,7 +226,7 @@ class KrakenSpotWSClientBase(KrakenSpotBaseAPI):
     # Functions and attributes to overload
 
     async def send_message(
-        self: KrakenSpotWSClientBase,
+        self: SpotWSClientBase,
         *args: Any,  # noqa: ANN401
         **kwargs: Any,  # noqa: ANN401
     ) -> None:
@@ -245,7 +237,7 @@ class KrakenSpotWSClientBase(KrakenSpotBaseAPI):
         raise NotImplementedError("Must be overloaded!")  # coverage: disable
 
     async def subscribe(
-        self: KrakenSpotWSClientBase,
+        self: SpotWSClientBase,
         *args: Any,  # noqa: ANN401
         **kwargs: Any,  # noqa: ANN401
     ) -> None:
@@ -256,7 +248,7 @@ class KrakenSpotWSClientBase(KrakenSpotBaseAPI):
         raise NotImplementedError("Must be overloaded!")  # coverage: disable
 
     async def unsubscribe(
-        self: KrakenSpotWSClientBase,
+        self: SpotWSClientBase,
         *args: Any,  # noqa: ANN401
         **kwargs: Any,  # noqa: ANN401
     ) -> None:
@@ -267,7 +259,7 @@ class KrakenSpotWSClientBase(KrakenSpotBaseAPI):
         raise NotImplementedError("Must be overloaded!")  # coverage: disable
 
     @property
-    def public_channel_names(self: KrakenSpotWSClientBase) -> list[str]:
+    def public_channel_names(self: SpotWSClientBase) -> list[str]:
         """
         This function must be overloaded and return a list of names that can be
         subscribed to (for unauthenticated connections).
@@ -275,7 +267,7 @@ class KrakenSpotWSClientBase(KrakenSpotBaseAPI):
         raise NotImplementedError("Must be overloaded!")  # coverage: disable
 
     @property
-    def private_channel_names(self: KrakenSpotWSClientBase) -> list[str]:
+    def private_channel_names(self: SpotWSClientBase) -> list[str]:
         """
         This function must be overloaded and return a list of names that can be
         subscribed to (for authenticated connections).
@@ -283,4 +275,4 @@ class KrakenSpotWSClientBase(KrakenSpotBaseAPI):
         raise NotImplementedError("Must be overloaded!")  # coverage: disable
 
 
-__all__ = ["KrakenSpotWSClientBase"]
+__all__ = ["SpotWSClientBase"]

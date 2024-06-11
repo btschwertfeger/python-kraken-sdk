@@ -16,7 +16,7 @@ import logging.config
 import os
 from contextlib import suppress
 
-from kraken.spot import KrakenSpotWSClientV2
+from kraken.spot import SpotWSClientV2
 
 logging.basicConfig(
     format="%(asctime)s %(module)s,line: %(lineno)d %(levelname)8s | %(message)s",
@@ -31,7 +31,7 @@ async def main() -> None:
     key: str = os.getenv("SPOT_API_KEY")
     secret: str = os.getenv("SPOT_SECRET_KEY")
 
-    class Client(KrakenSpotWSClientV2):
+    class Client(SpotWSClientV2):
         """Can be used to create a custom trading strategy"""
 
         async def on_message(self: Client, message: dict) -> None:

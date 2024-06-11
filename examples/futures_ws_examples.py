@@ -16,7 +16,7 @@ import os
 import time
 from contextlib import suppress
 
-from kraken.futures import KrakenFuturesWSClient
+from kraken.futures import FuturesWSClient
 
 logging.basicConfig(
     format="%(asctime)s %(module)s,line: %(lineno)d %(levelname)8s | %(message)s",
@@ -34,7 +34,7 @@ async def main() -> None:
     secret = os.getenv("FUTURES_SECRET_KEY")
 
     # Custom client
-    class Client(KrakenFuturesWSClient):
+    class Client(FuturesWSClient):
         """Can be used to create a custom trading strategy"""
 
         async def on_message(self: Client, message: list | dict) -> None:

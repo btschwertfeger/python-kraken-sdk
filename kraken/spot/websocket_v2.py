@@ -16,13 +16,13 @@ from typing import TYPE_CHECKING, Any
 
 from kraken.base_api import defined
 from kraken.exceptions import KrakenAuthenticationError
-from kraken.spot.websocket import KrakenSpotWSClientBase
+from kraken.spot.websocket import SpotWSClientBase
 
 if TYPE_CHECKING:
     from collections.abc import Callable
 
 
-class KrakenSpotWSClientV2(KrakenSpotWSClientBase):
+class SpotWSClientV2(SpotWSClientBase):
     """
     **This client only supports the Kraken Websocket API v2.**
 
@@ -30,13 +30,13 @@ class KrakenSpotWSClientV2(KrakenSpotWSClientBase):
 
     - https://docs.kraken.com/websockets-v2
 
-    … please use :class:`kraken.spot.KrakenSpotWSClientV1` for accessing the
+    … please use :class:`kraken.spot.SpotWSClientV1` for accessing the
     Kraken's Websocket API v1.
 
     This class holds up to two websocket connections, one private and one
     public. The core functionalities are un-/subscribing to websocket feeds and
-    sending messages. See :func:`kraken.spot.KrakenSpotWSClientV2.subscribe` and
-    :func:`kraken.spot.KrakenSpotWSClientV2.send_message` for more information.
+    sending messages. See :func:`kraken.spot.SpotWSClientV2.subscribe` and
+    :func:`kraken.spot.SpotWSClientV2.send_message` for more information.
 
     When accessing private endpoints that need authentication make sure, that
     the ``Access WebSockets API`` API key permission is set in the user's
@@ -63,10 +63,10 @@ class KrakenSpotWSClientV2(KrakenSpotWSClientBase):
         :caption: HowTo: Use the Kraken Spot websocket client (v2)
 
         import asyncio
-        from kraken.spot import KrakenSpotWSClientV2
+        from kraken.spot import SpotWSClientV2
 
 
-        class Client(KrakenSpotWSClientV2):
+        class Client(SpotWSClientV2):
 
             async def on_message(self, message):
                 print(message)
@@ -100,14 +100,14 @@ class KrakenSpotWSClientV2(KrakenSpotWSClientBase):
         :caption: HowTo: Use the websocket client (v2) as instance
 
         import asyncio
-        from kraken.spot import KrakenSpotWSClientV2
+        from kraken.spot import SpotWSClientV2
 
 
         async def main():
             async def on_message(message):
                 print(message)
 
-            client = KrakenSpotWSClientV2(callback=on_message)
+            client = SpotWSClientV2(callback=on_message)
             await client.subscribe(
                 params={"channel": "ticker", "symbol": ["BTC/USD"]}
             )
@@ -128,13 +128,13 @@ class KrakenSpotWSClientV2(KrakenSpotWSClientBase):
         :caption: HowTo: Use the websocket client (v2) as context manager
 
         import asyncio
-        from kraken.spot import KrakenSpotWSClientV2
+        from kraken.spot import SpotWSClientV2
 
         async def on_message(message):
             print(message)
 
         async def main():
-            async with KrakenSpotWSClientV2(
+            async with SpotWSClientV2(
                 key="api-key",
                 secret="secret-key",
                 callback=on_message
@@ -155,25 +155,23 @@ class KrakenSpotWSClientV2(KrakenSpotWSClientBase):
     """
 
     def __init__(
-        self: KrakenSpotWSClientV2,
+        self: SpotWSClientV2,
         key: str = "",
         secret: str = "",
         callback: Callable | None = None,
         *,
         no_public: bool = False,
-        beta: bool = False,
     ) -> None:
         super().__init__(
             key=key,
             secret=secret,
             callback=callback,
             no_public=no_public,
-            beta=beta,
             api_version="v2",
         )
 
     async def send_message(  # pylint: disable=arguments-differ
-        self: KrakenSpotWSClientV2,
+        self: SpotWSClientV2,
         message: dict,
         *,
         raw: bool = False,
@@ -192,9 +190,9 @@ class KrakenSpotWSClientV2(KrakenSpotWSClientBase):
         :type raw: bool, optional
 
         The following examples demonstrate how to use the
-        :func:`kraken.spot.KrakenSpotWSClientV2.send_message` function. The
+        :func:`kraken.spot.SpotWSClientV2.send_message` function. The
         client must be instantiated as described in
-        :class:`kraken.spot.KrakenSpotWSClientV2` where ``client`` uses
+        :class:`kraken.spot.SpotWSClientV2` where ``client`` uses
         public connections (without authentication) and ``client_auth`` must
         be instantiated using valid credentials since only this way placing or
         canceling orders can be done.
@@ -349,7 +347,7 @@ class KrakenSpotWSClientV2(KrakenSpotWSClientBase):
 
         **Subscribing** to websocket feeds can be done using the send_message
         function but it is recommended to use
-        :func:`kraken.spot.KrakenSpotWSClientV2.subscribe` instead.
+        :func:`kraken.spot.SpotWSClientV2.subscribe` instead.
 
         .. code-block:: python
             :linenos:
@@ -424,7 +422,7 @@ class KrakenSpotWSClientV2(KrakenSpotWSClientBase):
         await socket.send(json.dumps(message))
 
     async def subscribe(  # pylint: disable=arguments-differ
-        self: KrakenSpotWSClientV2,
+        self: SpotWSClientV2,
         params: dict,
         req_id: int | None = None,
     ) -> None:
@@ -453,7 +451,7 @@ class KrakenSpotWSClientV2(KrakenSpotWSClientBase):
         :type req_id: int, optional
 
         Initialize your client as described in
-        :class:`kraken.spot.KrakenSpotWSClientV2` to run the following example:
+        :class:`kraken.spot.SpotWSClientV2` to run the following example:
 
         .. code-block:: python
             :linenos:
@@ -473,7 +471,7 @@ class KrakenSpotWSClientV2(KrakenSpotWSClientBase):
         await self.send_message(message=payload)
 
     async def unsubscribe(  # pylint: disable=arguments-differ
-        self: KrakenSpotWSClientV2,
+        self: SpotWSClientV2,
         params: dict,
         req_id: int | None = None,
     ) -> None:
@@ -493,7 +491,7 @@ class KrakenSpotWSClientV2(KrakenSpotWSClientBase):
         :type params: dict
 
         Initialize your client as described in
-        :class:`kraken.spot.KrakenSpotWSClientV2` to run the following example:
+        :class:`kraken.spot.SpotWSClientV2` to run the following example:
 
         .. code-block:: python
             :linenos:
@@ -512,7 +510,7 @@ class KrakenSpotWSClientV2(KrakenSpotWSClientBase):
         await self.send_message(message=payload)
 
     @property
-    def public_channel_names(self: KrakenSpotWSClientV2) -> list[str]:
+    def public_channel_names(self: SpotWSClientV2) -> list[str]:
         """
         Returns the list of valid values for ``channel`` when un-/subscribing
         from/to public feeds without authentication.
@@ -533,7 +531,7 @@ class KrakenSpotWSClientV2(KrakenSpotWSClientBase):
         return ["book", "instrument", "ohlc", "ticker", "trade"]
 
     @property
-    def private_channel_names(self: KrakenSpotWSClientV2) -> list[str]:
+    def private_channel_names(self: SpotWSClientV2) -> list[str]:
         """
         Returns the list of valid values for ``channel`` when un-/subscribing
         from/to private feeds that need authentication.
@@ -550,7 +548,7 @@ class KrakenSpotWSClientV2(KrakenSpotWSClientBase):
         return ["executions", "balances"]
 
     @property
-    def private_methods(self: KrakenSpotWSClientV2) -> list[str]:
+    def private_methods(self: SpotWSClientV2) -> list[str]:
         """
         Returns the list of available methods - parameters are  similar to the
         REST API trade methods.
@@ -580,4 +578,4 @@ class KrakenSpotWSClientV2(KrakenSpotWSClientBase):
         ]
 
 
-__all__ = ["KrakenSpotWSClientV2"]
+__all__ = ["SpotWSClientV2"]

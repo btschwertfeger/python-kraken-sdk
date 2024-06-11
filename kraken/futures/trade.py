@@ -9,12 +9,12 @@ from __future__ import annotations
 
 from typing import TypeVar
 
-from kraken.base_api import KrakenFuturesBaseAPI, defined
+from kraken.base_api import FuturesClient, defined
 
 Self = TypeVar("Self")
 
 
-class Trade(KrakenFuturesBaseAPI):
+class Trade(FuturesClient):
     """
     Class that implements the Kraken Futures trade client
 
@@ -107,7 +107,7 @@ class Trade(KrakenFuturesBaseAPI):
         query_params: dict = {}
         if defined(lastFillTime):
             query_params["lastFillTime"] = lastFillTime
-        return self._request(  # type: ignore[return-value]
+        return self.request(  # type: ignore[return-value]
             method="GET",
             uri="/derivatives/api/v3/fills",
             query_params=query_params,
@@ -229,7 +229,7 @@ class Trade(KrakenFuturesBaseAPI):
         if processBefore:
             params["processBefore"] = processBefore
 
-        return self._request(  # type: ignore[return-value]
+        return self.request(  # type: ignore[return-value]
             method="POST",
             uri="/derivatives/api/v3/batchorder",
             post_params=params,
@@ -284,7 +284,7 @@ class Trade(KrakenFuturesBaseAPI):
         params: dict = {}
         if defined(symbol):
             params["symbol"] = symbol
-        return self._request(  # type: ignore[return-value]
+        return self.request(  # type: ignore[return-value]
             method="POST",
             uri="/derivatives/api/v3/cancelallorders",
             post_params=params,
@@ -330,7 +330,7 @@ class Trade(KrakenFuturesBaseAPI):
                 }
             }
         """
-        return self._request(  # type: ignore[return-value]
+        return self.request(  # type: ignore[return-value]
             method="POST",
             uri="/derivatives/api/v3/cancelallordersafter",
             post_params={"timeout": timeout},
@@ -391,7 +391,7 @@ class Trade(KrakenFuturesBaseAPI):
         else:
             raise ValueError("Either order_id or cliOrdId must be set!")
 
-        return self._request(  # type: ignore[return-value]
+        return self.request(  # type: ignore[return-value]
             method="POST",
             uri="/derivatives/api/v3/cancelorder",
             post_params=params,
@@ -470,7 +470,7 @@ class Trade(KrakenFuturesBaseAPI):
         if defined(processBefore):
             params["processBefore"] = processBefore
 
-        return self._request(  # type: ignore[return-value]
+        return self.request(  # type: ignore[return-value]
             method="POST",
             uri="/derivatives/api/v3/editorder",
             post_params=params,
@@ -519,7 +519,7 @@ class Trade(KrakenFuturesBaseAPI):
         elif defined(cliOrdIds):
             params["cliOrdIds"] = cliOrdIds
 
-        return self._request(  # type: ignore[return-value]
+        return self.request(  # type: ignore[return-value]
             method="POST",
             uri="/derivatives/api/v3/orders/status",
             post_params=params,
@@ -743,7 +743,7 @@ class Trade(KrakenFuturesBaseAPI):
         if defined(processBefore):
             params["processBefore"] = processBefore
 
-        return self._request(  # type: ignore[return-value]
+        return self.request(  # type: ignore[return-value]
             method="POST",
             uri="/derivatives/api/v3/sendorder",
             post_params=params,
@@ -781,7 +781,7 @@ class Trade(KrakenFuturesBaseAPI):
         if defined(limitPrice) and orderType == "lmt":
             params["limitPrice"] = limitPrice
 
-        return self._request(  # type: ignore[return-value]
+        return self.request(  # type: ignore[return-value]
             method="GET",
             uri="/derivatives/api/v3/initialmargin/maxordersize",
             query_params=params,

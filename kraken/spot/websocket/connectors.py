@@ -28,7 +28,7 @@ from kraken.exceptions import MaxReconnectError
 if TYPE_CHECKING:
     from collections.abc import Callable
 
-    from kraken.spot.websocket import KrakenSpotWSClientBase
+    from kraken.spot.websocket import SpotWSClientBase
 
 
 class ConnectSpotWebsocketBase:
@@ -45,7 +45,7 @@ class ConnectSpotWebsocketBase:
     **This is an internal class and should not be used outside.**
 
     :param client: The websocket client that wants to connect
-    :type client: :class:`kraken.spot.KrakenSpotWSClientBase`
+    :type client: :class:`kraken.spot.SpotWSClientBase`
     :param endpoint: The websocket endpoint
     :type endpoint: str
     :param callback: Callback function that receives the websocket messages
@@ -61,13 +61,13 @@ class ConnectSpotWebsocketBase:
 
     def __init__(
         self: ConnectSpotWebsocketBase,
-        client: KrakenSpotWSClientBase,
+        client: SpotWSClientBase,
         endpoint: str,
         callback: Callable,
         *,
         is_auth: bool = False,
     ) -> None:
-        self.__client: KrakenSpotWSClientBase = client
+        self.__client: SpotWSClientBase = client
         self.__ws_endpoint: str = endpoint
         self.__callback: Callable = callback
 
@@ -87,7 +87,7 @@ class ConnectSpotWebsocketBase:
         return self.__is_auth
 
     @property
-    def client(self: ConnectSpotWebsocketBase) -> KrakenSpotWSClientBase:
+    def client(self: ConnectSpotWebsocketBase) -> SpotWSClientBase:
         """Return the websocket client"""
         return self.__client
 
@@ -301,7 +301,7 @@ class ConnectSpotWebsocketV1(ConnectSpotWebsocketBase):
     **This is an internal class and should not be used outside.**
 
     :param client: The websocket client that wants to connect
-    :type client: :class:`kraken.spot.KrakenSpotWSClientBase`
+    :type client: :class:`kraken.spot.SpotWSClientBase`
     :param endpoint: The websocket endpoint
     :type endpoint: str
     :param callback: Callback function that receives the websocket messages
@@ -313,7 +313,7 @@ class ConnectSpotWebsocketV1(ConnectSpotWebsocketBase):
 
     def __init__(
         self: ConnectSpotWebsocketV1,
-        client: KrakenSpotWSClientBase,
+        client: SpotWSClientBase,
         endpoint: str,
         callback: Callable | None,
         *,
@@ -466,7 +466,7 @@ class ConnectSpotWebsocketV2(ConnectSpotWebsocketBase):
     **This is an internal class and should not be used outside.**
 
     :param client: The websocket client that wants to connect
-    :type client: :class:`kraken.spot.KrakenSpotWSClientBase`
+    :type client: :class:`kraken.spot.SpotWSClientBase`
     :param endpoint: The websocket endpoint
     :type endpoint: str
     :param callback: Callback function that receives the websocket messages
@@ -478,7 +478,7 @@ class ConnectSpotWebsocketV2(ConnectSpotWebsocketBase):
 
     def __init__(
         self: ConnectSpotWebsocketV2,
-        client: KrakenSpotWSClientBase,
+        client: SpotWSClientBase,
         endpoint: str,
         callback: Callable | None,
         *,

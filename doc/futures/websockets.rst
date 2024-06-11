@@ -5,7 +5,7 @@
 Futures Websockets
 ==================
 
-.. autoclass:: kraken.futures.KrakenFuturesWSClient
+.. autoclass:: kraken.futures.FuturesWSClient
    :members:
    :show-inheritance:
    :inherited-members:

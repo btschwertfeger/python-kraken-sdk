@@ -1,8 +1,43 @@
 # Changelog
 
-## [Unreleased](https://github.com/btschwertfeger/python-kraken-sdk/tree/HEAD)
+## [v2.3.0](https://github.com/btschwertfeger/python-kraken-sdk/tree/v2.3.0) (2024-06-10)
 
-[Full Changelog](https://github.com/btschwertfeger/python-kraken-sdk/compare/v2.1.1...HEAD)
+[Full Changelog](https://github.com/btschwertfeger/python-kraken-sdk/compare/v2.2.0...v2.3.0)
+
+**Implemented enhancements:**
+
+- Resolve "Add command-line interface" [\#224](https://github.com/btschwertfeger/python-kraken-sdk/pull/224) ([btschwertfeger](https://github.com/btschwertfeger))
+
+**Fixed bugs:**
+
+- Resolve "Subscribing to "balances" channel using KrakenSpotWSClientV2 fails" [\#229](https://github.com/btschwertfeger/python-kraken-sdk/pull/229) ([btschwertfeger](https://github.com/btschwertfeger))
+
+Uncategorized merged pull requests:
+
+- Bump dependabot/fetch-metadata from 1.1.1 to 2.1.0 [\#222](https://github.com/btschwertfeger/python-kraken-sdk/pull/222) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump actions/checkout from 4.1.5 to 4.1.6 [\#221](https://github.com/btschwertfeger/python-kraken-sdk/pull/221) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump ossf/scorecard-action from 2.3.1 to 2.3.3 [\#219](https://github.com/btschwertfeger/python-kraken-sdk/pull/219) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump actions/checkout from 4.1.4 to 4.1.5 [\#218](https://github.com/btschwertfeger/python-kraken-sdk/pull/218) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump actions/upload-artifact from 4.3.2 to 4.3.3 [\#216](https://github.com/btschwertfeger/python-kraken-sdk/pull/216) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump actions/checkout from 4.1.3 to 4.1.4 [\#215](https://github.com/btschwertfeger/python-kraken-sdk/pull/215) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump actions/upload-artifact from 4.3.1 to 4.3.2 [\#214](https://github.com/btschwertfeger/python-kraken-sdk/pull/214) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump actions/checkout from 4.1.2 to 4.1.3 [\#213](https://github.com/btschwertfeger/python-kraken-sdk/pull/213) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump actions/setup-python from 5.0.0 to 5.1.0 [\#211](https://github.com/btschwertfeger/python-kraken-sdk/pull/211) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump actions/checkout from 3.1.0 to 4.1.2 [\#210](https://github.com/btschwertfeger/python-kraken-sdk/pull/210) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump actions/upload-artifact from 3.1.0 to 4.3.1 [\#209](https://github.com/btschwertfeger/python-kraken-sdk/pull/209) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump ossf/scorecard-action from 2.1.2 to 2.3.1 [\#208](https://github.com/btschwertfeger/python-kraken-sdk/pull/208) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Adjust permissions in GitHub Actions [\#207](https://github.com/btschwertfeger/python-kraken-sdk/pull/207) ([btschwertfeger](https://github.com/btschwertfeger))
+- Bump actions/checkout from 4.0.0 to 4.1.2 [\#206](https://github.com/btschwertfeger/python-kraken-sdk/pull/206) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump codecov/codecov-action from 3 to 4 [\#205](https://github.com/btschwertfeger/python-kraken-sdk/pull/205) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump pre-commit/action from 3.0.0 to 3.0.1 [\#204](https://github.com/btschwertfeger/python-kraken-sdk/pull/204) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Add dependabot automerge [\#220](https://github.com/btschwertfeger/python-kraken-sdk/pull/220) ([btschwertfeger](https://github.com/btschwertfeger))
+- Update the publishing process [\#217](https://github.com/btschwertfeger/python-kraken-sdk/pull/217) ([btschwertfeger](https://github.com/btschwertfeger))
+- Update ruff and apply new rules [\#212](https://github.com/btschwertfeger/python-kraken-sdk/pull/212) ([btschwertfeger](https://github.com/btschwertfeger))
+- Project Maintenance [\#203](https://github.com/btschwertfeger/python-kraken-sdk/pull/203) ([btschwertfeger](https://github.com/btschwertfeger))
+
+## [v2.2.0](https://github.com/btschwertfeger/python-kraken-sdk/tree/v2.2.0) (2024-03-10)
+
+[Full Changelog](https://github.com/btschwertfeger/python-kraken-sdk/compare/v2.1.1...v2.2.0)
 
 **Implemented enhancements:**
 
@@ -14,9 +49,9 @@
 
 Uncategorized merged pull requests:
 
+- adjust CI configuration [\#187](https://github.com/btschwertfeger/python-kraken-sdk/pull/187) ([btschwertfeger](https://github.com/btschwertfeger))
 - Resolve "Mark `kraken.spot.KrakenSpotWSClientV1` as deprecated" [\#201](https://github.com/btschwertfeger/python-kraken-sdk/pull/201) ([btschwertfeger](https://github.com/btschwertfeger))
 - Resolve "The POST and query parameters of KrakenSpotBaseAPI and KrakenFuturesBaseAPI are not proper encoded in some case" [\#189](https://github.com/btschwertfeger/python-kraken-sdk/pull/189) ([btschwertfeger](https://github.com/btschwertfeger))
-- adjust CI configuration [\#187](https://github.com/btschwertfeger/python-kraken-sdk/pull/187) ([btschwertfeger](https://github.com/btschwertfeger))
 - Merge the CI/CD and release workflow + fix scheduled execution [\#186](https://github.com/btschwertfeger/python-kraken-sdk/pull/186) ([btschwertfeger](https://github.com/btschwertfeger))
 - Adjust the `kraken.futures.User` documentation [\#185](https://github.com/btschwertfeger/python-kraken-sdk/pull/185) ([btschwertfeger](https://github.com/btschwertfeger))
 - Project Housekeeping [\#184](https://github.com/btschwertfeger/python-kraken-sdk/pull/184) ([btschwertfeger](https://github.com/btschwertfeger))

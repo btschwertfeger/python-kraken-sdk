@@ -19,13 +19,13 @@ from typing import TYPE_CHECKING, Any
 from kraken.base_api import defined, ensure_string
 from kraken.exceptions import KrakenAuthenticationError
 from kraken.spot.trade import Trade
-from kraken.spot.websocket import KrakenSpotWSClientBase
+from kraken.spot.websocket import SpotWSClientBase
 
 if TYPE_CHECKING:
     from collections.abc import Callable
 
 
-class KrakenSpotWSClientV1(KrakenSpotWSClientBase):
+class SpotWSClientV1(SpotWSClientBase):
     """
     .. deprecated:: v2.2.0
 
@@ -35,7 +35,7 @@ class KrakenSpotWSClientV1(KrakenSpotWSClientBase):
 
     - https://docs.kraken.com/websockets
 
-    … please use :class:`KrakenSpotWSClientV2` for accessing the Kraken
+    … please use :class:`SpotWSClientV2` for accessing the Kraken
     Websockets API v2.
 
     This class holds up to two websocket connections, one private and one
@@ -66,10 +66,10 @@ class KrakenSpotWSClientV1(KrakenSpotWSClientBase):
         :caption: HowTo: Use the Kraken Spot websocket client (v1)
 
         import asyncio
-        from kraken.spot import KrakenSpotWSClientV1
+        from kraken.spot import SpotWSClientV1
 
 
-        class Client(KrakenSpotWSClientV1):
+        class Client(SpotWSClientV1):
 
             async def on_message(self, message):
                 print(message)
@@ -104,14 +104,14 @@ class KrakenSpotWSClientV1(KrakenSpotWSClientBase):
         :caption: HowTo: Use the websocket client (v1) as instance
 
         import asyncio
-        from kraken.spot import KrakenSpotWSClientV1
+        from kraken.spot import SpotWSClientV1
 
 
         async def main() -> None:
             async def on_message(message) -> None:
                 print(message)
 
-            client = KrakenSpotWSClientV1(callback=on_message)
+            client = SpotWSClientV1(callback=on_message)
             await client.subscribe(
                 subscription={"name": "ticker"},
                 pair=["XBT/USD"]
@@ -133,13 +133,13 @@ class KrakenSpotWSClientV1(KrakenSpotWSClientBase):
         :caption: HowTo: Use the websocket client (v1) as context manager
 
         import asyncio
-        from kraken.spot import KrakenSpotWSClientV1
+        from kraken.spot import SpotWSClientV1
 
         async def on_message(message):
             print(message)
 
         async def main() -> None:
-            async with KrakenSpotWSClientV1(
+            async with SpotWSClientV1(
                 key="api-key",
                 secret="secret-key",
                 callback=on_message
@@ -161,13 +161,12 @@ class KrakenSpotWSClientV1(KrakenSpotWSClientBase):
     """
 
     def __init__(
-        self: KrakenSpotWSClientV1,
+        self: SpotWSClientV1,
         key: str = "",
         secret: str = "",
         callback: Callable | None = None,
         *,
         no_public: bool = False,
-        beta: bool = False,
     ) -> None:
         warnings.warn(
             "The Kraken websocket API v1 is marked as deprecated and "
@@ -181,12 +180,11 @@ class KrakenSpotWSClientV1(KrakenSpotWSClientBase):
             secret=secret,
             callback=callback,
             no_public=no_public,
-            beta=beta,
             api_version="v1",
         )
 
     async def send_message(  # pylint: disable=arguments-differ
-        self: KrakenSpotWSClientV1,
+        self: SpotWSClientV1,
         message: dict,
         *,
         private: bool = False,
@@ -226,7 +224,7 @@ class KrakenSpotWSClientV1(KrakenSpotWSClientBase):
         await socket.send(json.dumps(message))
 
     async def subscribe(  # pylint: disable=arguments-differ
-        self: KrakenSpotWSClientV1,
+        self: SpotWSClientV1,
         subscription: dict,
         pair: list[str] | None = None,
     ) -> None:
@@ -248,7 +246,7 @@ class KrakenSpotWSClientV1(KrakenSpotWSClientBase):
         :type pair: list[str], optional
 
         Initialize your client as described in
-        :class:`kraken.spot.KrakenSpotWSClientV1` to run the following example:
+        :class:`kraken.spot.SpotWSClientV1` to run the following example:
 
         .. code-block:: python
             :linenos:
@@ -298,7 +296,7 @@ class KrakenSpotWSClientV1(KrakenSpotWSClientBase):
             # await self.send_message(payload, private=False)
 
     async def unsubscribe(  # pylint: disable=arguments-differ
-        self: KrakenSpotWSClientV1,
+        self: SpotWSClientV1,
         subscription: dict,
         pair: list[str] | None = None,
     ) -> None:
@@ -320,7 +318,7 @@ class KrakenSpotWSClientV1(KrakenSpotWSClientBase):
         :type pair: list[str], optional
 
         Initialize your client as described in
-        :class:`kraken.spot.KrakenSpotWSClientV1` to run the following example:
+        :class:`kraken.spot.SpotWSClientV1` to run the following example:
 
         .. code-block:: python
             :linenos:
@@ -370,7 +368,7 @@ class KrakenSpotWSClientV1(KrakenSpotWSClientBase):
             # await self.send_message(payload, private=False)
 
     @property
-    def public_channel_names(self: KrakenSpotWSClientV1) -> list[str]:
+    def public_channel_names(self: SpotWSClientV1) -> list[str]:
         """
         Returns the public subscription names
 
@@ -381,7 +379,7 @@ class KrakenSpotWSClientV1(KrakenSpotWSClientBase):
         return ["ticker", "spread", "book", "ohlc", "trade", "*"]
 
     @property
-    def private_channel_names(self: KrakenSpotWSClientV1) -> list[str]:
+    def private_channel_names(self: SpotWSClientV1) -> list[str]:
         """
         Returns the private subscription names
 
@@ -393,7 +391,7 @@ class KrakenSpotWSClientV1(KrakenSpotWSClientBase):
 
     @ensure_string("oflags")
     async def create_order(  # pylint: disable=too-many-arguments # noqa: PLR0913, PLR0917
-        self: KrakenSpotWSClientV1,
+        self: SpotWSClientV1,
         ordertype: str,
         side: str,
         pair: str,
@@ -483,7 +481,7 @@ class KrakenSpotWSClientV1(KrakenSpotWSClientBase):
         :raises ValueError: If input is not correct
 
         Initialize your client as described in
-        :class:`kraken.spot.KrakenSpotWSClientV1` to run the following example:
+        :class:`kraken.spot.SpotWSClientV1` to run the following example:
 
         .. code-block:: python
             :linenos:
@@ -561,7 +559,7 @@ class KrakenSpotWSClientV1(KrakenSpotWSClientBase):
 
     @ensure_string("oflags")
     async def edit_order(  # pylint: disable=too-many-arguments # noqa: PLR0913
-        self: KrakenSpotWSClientV1,
+        self: SpotWSClientV1,
         orderid: str,
         reqid: str | int | None = None,
         pair: str | None = None,
@@ -611,7 +609,7 @@ class KrakenSpotWSClientV1(KrakenSpotWSClientBase):
         :raises ValueError: If input is not correct
 
         Initialize your client as described in
-        :class:`kraken.spot.KrakenSpotWSClientV1` to run the following example:
+        :class:`kraken.spot.SpotWSClientV1` to run the following example:
 
         .. code-block:: python
             :linenos:
@@ -659,7 +657,7 @@ class KrakenSpotWSClientV1(KrakenSpotWSClientBase):
 
         await self.send_message(message=payload, private=True)
 
-    async def cancel_order(self: KrakenSpotWSClientV1, txid: list[str]) -> None:
+    async def cancel_order(self: SpotWSClientV1, txid: list[str]) -> None:
         """
         Cancel a specific order or a list of orders.
 
@@ -674,7 +672,7 @@ class KrakenSpotWSClientV1(KrakenSpotWSClientBase):
             the connection is not authenticated
 
         Initialize your client as described in
-        :class:`kraken.spot.KrakenSpotWSClientV1` to run the following example:
+        :class:`kraken.spot.SpotWSClientV1` to run the following example:
 
         .. code-block:: python
             :linenos:
@@ -691,7 +689,7 @@ class KrakenSpotWSClientV1(KrakenSpotWSClientBase):
             private=True,
         )
 
-    async def cancel_all_orders(self: KrakenSpotWSClientV1) -> None:
+    async def cancel_all_orders(self: SpotWSClientV1) -> None:
         """
         Cancel all open Spot orders.
 
@@ -704,7 +702,7 @@ class KrakenSpotWSClientV1(KrakenSpotWSClientBase):
             the connection is not authenticated
 
         Initialize your client as described in
-        :class:`kraken.spot.KrakenSpotWSClientV1` to run the following example:
+        :class:`kraken.spot.SpotWSClientV1` to run the following example:
 
         .. code-block:: python
             :linenos:
@@ -719,7 +717,7 @@ class KrakenSpotWSClientV1(KrakenSpotWSClientBase):
         await self.send_message(message={"event": "cancelAll"}, private=True)
 
     async def cancel_all_orders_after(
-        self: KrakenSpotWSClientV1,
+        self: SpotWSClientV1,
         timeout: int = 0,
     ) -> None:
         """
@@ -737,7 +735,7 @@ class KrakenSpotWSClientV1(KrakenSpotWSClientBase):
             the connection is not authenticated
 
         Initialize your client as described in
-        :class:`kraken.spot.KrakenSpotWSClientV1` to run the following example:
+        :class:`kraken.spot.SpotWSClientV1` to run the following example:
 
         .. code-block:: python
             :linenos:
@@ -755,4 +753,4 @@ class KrakenSpotWSClientV1(KrakenSpotWSClientBase):
         )
 
 
-__all__ = ["KrakenSpotWSClientV1"]
+__all__ = ["SpotWSClientV1"]

@@ -17,10 +17,10 @@ from pathlib import Path
 from time import time
 
 from kraken.spot import (
-    KrakenSpotWSClientV1,
-    KrakenSpotWSClientV2,
     OrderbookClientV1,
     OrderbookClientV2,
+    SpotWSClientV1,
+    SpotWSClientV2,
 )
 
 FIXTURE_DIR: Path = Path(__file__).resolve().parent / "fixture"
@@ -42,7 +42,7 @@ async def async_wait(seconds: float = 1.0) -> None:
         await sleep(0.2)
 
 
-class SpotWebsocketClientV1TestWrapper(KrakenSpotWSClientV1):
+class SpotWebsocketClientV1TestWrapper(SpotWSClientV1):
     """
     Class that creates an instance to test the KrakenSpotWSClientV1.
 
@@ -74,7 +74,7 @@ class SpotWebsocketClientV1TestWrapper(KrakenSpotWSClientV1):
         self.LOG.info(message)  # the log is read within the tests
 
 
-class SpotWebsocketClientV2TestWrapper(KrakenSpotWSClientV2):
+class SpotWebsocketClientV2TestWrapper(SpotWSClientV2):
     """
     Class that creates an instance to test the KrakenSpotWSClientV2.
 

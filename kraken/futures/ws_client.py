@@ -14,7 +14,7 @@ import logging
 from copy import deepcopy
 from typing import TYPE_CHECKING, Any, TypeVar
 
-from kraken.base_api import KrakenFuturesBaseAPI
+from kraken.base_api import FuturesClient
 from kraken.exceptions import KrakenAuthenticationError
 from kraken.futures.websocket import ConnectFuturesWebsocket
 
@@ -24,7 +24,7 @@ if TYPE_CHECKING:
 Self = TypeVar("Self")
 
 
-class KrakenFuturesWSClient(KrakenFuturesBaseAPI):
+class FuturesWSClient(FuturesClient):
     """
     Class to access public and (optional)
     private/authenticated websocket connection.
@@ -50,12 +50,12 @@ class KrakenFuturesWSClient(KrakenFuturesBaseAPI):
         :caption: Futures Websocket: Create the websocket client
 
         import asyncio
-        from kraken.futures import KrakenFuturesWSClient
+        from kraken.futures import FuturesWSClient
 
         async def main() -> None:
 
             # Create the custom client
-            class Client(KrakenFuturesWSClient):
+            class Client(FuturesWSClient):
                 async def on_message(self, event: dict) -> None:
                     print(event)
 
@@ -86,13 +86,13 @@ class KrakenFuturesWSClient(KrakenFuturesBaseAPI):
         :caption: Futures Websocket: Create the websocket client as context manager
 
         import asyncio
-        from kraken.futures import KrakenFuturesWSClient
+        from kraken.futures import FuturesWSClient
 
-        async def on_messageessage):
+        async def on_message(message):
             print(message)
 
         async def main() -> None:
-            async with KrakenFuturesWSClient(callback=on_message) as session:
+            async with FuturesWSClient(callback=on_message) as session:
                 await session.subscribe(feed="ticker", products=["PF_XBTUSD"])
 
             while True:
@@ -113,7 +113,7 @@ class KrakenFuturesWSClient(KrakenFuturesBaseAPI):
     DEMO_ENV_URL: str = "demo-futures.kraken.com/ws/v1"
 
     def __init__(
-        self: KrakenFuturesWSClient,
+        self: FuturesWSClient,
         key: str = "",
         secret: str = "",
         url: str = "",
@@ -137,11 +137,11 @@ class KrakenFuturesWSClient(KrakenFuturesBaseAPI):
         )
 
     @property
-    def key(self: KrakenFuturesBaseAPI) -> str:
+    def key(self: FuturesClient) -> str:
         """Returns the API key"""
-        return self.__key
+        return self._key
 
-    def get_sign_challenge(self: KrakenFuturesWSClient, challenge: str) -> str:
+    def get_sign_challenge(self: FuturesWSClient, challenge: str) -> str:
         """
         Sign the challenge/message using the secret key
 
@@ -165,14 +165,14 @@ class KrakenFuturesWSClient(KrakenFuturesBaseAPI):
             ).digest(),
         ).decode("utf-8")
 
-    async def on_message(self: KrakenFuturesWSClient, message: dict) -> None:
+    async def on_message(self: FuturesWSClient, message: dict) -> None:
         """
         Method that serves as the default callback function Calls the defined
         callback function (if defined) or overload this function.
 
         This is the default method  which just logs the messages. In production
         you want to overload this with your custom methods, as shown in the
-        Example of :class:`kraken.futures.KrakenFuturesWSClient`.
+        Example of :class:`kraken.futures.FuturesWSClient`.
 
         :param message: The message that was send by Kraken via the websocket
             connection.
@@ -186,7 +186,7 @@ class KrakenFuturesWSClient(KrakenFuturesBaseAPI):
             logging.info(message)
 
     async def subscribe(
-        self: KrakenFuturesWSClient,
+        self: FuturesWSClient,
         feed: str,
         products: list[str] | None = None,
     ) -> None:
@@ -204,7 +204,7 @@ class KrakenFuturesWSClient(KrakenFuturesBaseAPI):
             the Kraken API
 
         Initialize your client as described in
-        :class:`kraken.futures.KrakenFuturesWSClient` to run the following
+        :class:`kraken.futures.FuturesWSClient` to run the following
         example:
 
         .. code-block:: python
@@ -215,7 +215,7 @@ class KrakenFuturesWSClient(KrakenFuturesBaseAPI):
 
         Success or failures are sent over the websocket connection and can be
         received via the default
-        :func:`kraken.futures.KrakenFuturesWSClient.on_message` or a custom
+        :func:`kraken.futures.FuturesWSClient.on_message` or a custom
         callback function.
         """
 
@@ -245,7 +245,7 @@ class KrakenFuturesWSClient(KrakenFuturesBaseAPI):
             raise ValueError(f"Feed: {feed} not found. Not subscribing to it.")
 
     async def unsubscribe(
-        self: KrakenFuturesWSClient,
+        self: FuturesWSClient,
         feed: str,
         products: list[str] | None = None,
     ) -> None:
@@ -263,7 +263,7 @@ class KrakenFuturesWSClient(KrakenFuturesBaseAPI):
             by the Kraken API
 
         Initialize your client as described in
-        :class:`kraken.futures.KrakenFuturesWSClient` to run the following
+        :class:`kraken.futures.FuturesWSClient` to run the following
         example:
 
         .. code-block:: python
@@ -274,7 +274,7 @@ class KrakenFuturesWSClient(KrakenFuturesBaseAPI):
 
         Success or failures are sent over the websocket connection and can be
         received via the default
-        :func:`kraken.futures.KrakenFuturesWSClient.on_message`` or a custom
+        :func:`kraken.futures.FuturesWSClient.on_message`` or a custom
         callback function.
         """
 
@@ -316,8 +316,8 @@ class KrakenFuturesWSClient(KrakenFuturesBaseAPI):
             :linenos:
             :caption: Futures Websocket: Get the available public subscription feeds
 
-            >>> from kraken.futures import KrakenFuturesWSClient
-            >>> KrakenFuturesWSClient.get_available_private_subscription_feeds()
+            >>> from kraken.futures import FuturesWSClient
+            >>> FuturesWSClient.get_available_private_subscription_feeds()
             [
                 "trade", "book", "ticker",
                 "ticker_lite", "heartbeat"
@@ -338,8 +338,8 @@ class KrakenFuturesWSClient(KrakenFuturesBaseAPI):
             :linenos:
             :caption: Futures Websocket: Get the available private subscription feeds
 
-            >>> from kraken.futures import KrakenFuturesWSClient
-            >>> KrakenFuturesWSClient.get_available_private_subscription_feeds()
+            >>> from kraken.futures import FuturesWSClient
+            >>> FuturesWSClient.get_available_private_subscription_feeds()
             [
                 "fills", "open_positions", "open_orders",
                 "open_orders_verbose", "balances",
@@ -360,7 +360,7 @@ class KrakenFuturesWSClient(KrakenFuturesBaseAPI):
         ]
 
     @property
-    def is_auth(self: KrakenFuturesWSClient) -> bool:
+    def is_auth(self: FuturesWSClient) -> bool:
         """
         Checks if key and secret are set.
 
@@ -371,13 +371,13 @@ class KrakenFuturesWSClient(KrakenFuturesBaseAPI):
             :linenos:
             :caption: Futures Websocket: Check if the credentials are set
 
-            >>> from kraken.futures import KrakenFuturesWSClient
-            >>> KrakenFuturesWSClient().is_auth()
+            >>> from kraken.futures import FuturesWSClient
+            >>> FuturesWSClient().is_auth()
             False
         """
         return bool(self.__key and self.__secret)
 
-    def get_active_subscriptions(self: KrakenFuturesWSClient) -> list[dict]:
+    def get_active_subscriptions(self: FuturesWSClient) -> list[dict]:
         """
         Returns the list of active subscriptions.
 
@@ -385,16 +385,16 @@ class KrakenFuturesWSClient(KrakenFuturesBaseAPI):
             and additional information.
         :rtype: list[dict]
 
-        Initialize your client as described in :class:`kraken.futures.KrakenFuturesWSClient` to
+        Initialize your client as described in :class:`kraken.futures.FuturesWSClient` to
         run the following example:
 
         .. code-block:: python
             :linenos:
             :caption: Futures Websocket: Get the active subscriptions
 
-            >>> from kraken.futures import KrakenFuturesWSClient
+            >>> from kraken.futures import FuturesWSClient
             ...
-            >>> KrakenFuturesWSClient.get_active_subscriptions()
+            >>> FuturesWSClient.get_active_subscriptions()
             [
                 {
                     "event": "subscribe",
@@ -412,11 +412,11 @@ class KrakenFuturesWSClient(KrakenFuturesBaseAPI):
         return self
 
     async def __aexit__(
-        self: KrakenFuturesWSClient,
+        self: FuturesWSClient,
         *exc: object,
         **kwargs: dict[str, Any],
     ) -> None:
         pass
 
 
-__all__ = ["KrakenFuturesWSClient"]
+__all__ = ["FuturesWSClient"]

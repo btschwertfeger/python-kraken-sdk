@@ -14,7 +14,7 @@ from collections import OrderedDict
 from inspect import iscoroutinefunction
 from typing import TYPE_CHECKING
 
-from kraken.spot.websocket_v1 import KrakenSpotWSClientV1
+from kraken.spot.websocket_v1 import SpotWSClientV1
 
 if TYPE_CHECKING:
     from collections.abc import Callable
@@ -125,7 +125,7 @@ class OrderbookClientV1:
         self.__depth: int = depth
         self.__callback: Callable | None = callback
 
-        self.ws_client: KrakenSpotWSClientV1 = KrakenSpotWSClientV1(
+        self.ws_client: SpotWSClientV1 = SpotWSClientV1(
             callback=self.on_message,
         )
 

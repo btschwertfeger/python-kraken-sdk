@@ -10,7 +10,7 @@ from asyncio import sleep
 from pathlib import Path
 from time import time
 
-from kraken.futures import KrakenFuturesWSClient
+from kraken.futures import FuturesWSClient
 
 CACHE_DIR: Path = Path(__file__).resolve().parent.parent.parent / ".cache" / "tests"
 CACHE_DIR.mkdir(parents=True, exist_ok=True)
@@ -39,7 +39,7 @@ async def async_wait(seconds: float = 1.0) -> None:
         await sleep(0.2)
 
 
-class FuturesWebsocketClientTestWrapper(KrakenFuturesWSClient):
+class FuturesWebsocketClientTestWrapper(FuturesWSClient):
     """
     Class that creates an instance to test the KrakenFuturesWSClient.
 

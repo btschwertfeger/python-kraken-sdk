@@ -8,12 +8,12 @@ from __future__ import annotations
 
 from typing import TypeVar
 
-from kraken.base_api import KrakenNFTBaseAPI, defined
+from kraken.base_api import NFTClient, defined
 
 Self = TypeVar("Self")
 
 
-class Trade(KrakenNFTBaseAPI):
+class Trade(NFTClient):
     """
     Class that implements the Kraken NFT Trade client. Can be used to access
     the Kraken NFT market data.

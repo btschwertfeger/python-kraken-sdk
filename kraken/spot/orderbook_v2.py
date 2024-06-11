@@ -19,7 +19,7 @@ from inspect import iscoroutinefunction
 from typing import TYPE_CHECKING
 
 from kraken.spot import Market
-from kraken.spot.websocket_v2 import KrakenSpotWSClientV2
+from kraken.spot.websocket_v2 import SpotWSClientV2
 
 if TYPE_CHECKING:
     from collections.abc import Callable
@@ -130,7 +130,7 @@ class OrderbookClientV2:
         self.__callback: Callable | None = callback
 
         self.__market: Market = Market()
-        self.ws_client: KrakenSpotWSClientV2 = KrakenSpotWSClientV2(
+        self.ws_client: SpotWSClientV2 = SpotWSClientV2(
             callback=self.on_message,
         )
 

@@ -22,17 +22,17 @@ from kraken.exceptions import MaxReconnectError
 if TYPE_CHECKING:
     from collections.abc import Callable
 
-    from kraken.futures import KrakenFuturesWSClient
+    from kraken.futures import FuturesWSClient
 
 
 class ConnectFuturesWebsocket:
     """
     This class is only called by the
-    :class:`kraken.futures.KrakenFuturesWSClient` to establish the websocket
+    :class:`kraken.futures.FuturesWSClient` to establish the websocket
     connection.
 
     :param client: The Futures websocket client that instantiates this class
-    :type client: :class:`kraken.futures.KrakenFuturesWSClient`
+    :type client: :class:`kraken.futures.FuturesWSClient`
     :param endpoint: The endpoint to access (either the live Kraken API or the
         sandbox environment)
     :type endpoint: str
@@ -44,11 +44,11 @@ class ConnectFuturesWebsocket:
 
     def __init__(
         self: ConnectFuturesWebsocket,
-        client: KrakenFuturesWSClient,
+        client: FuturesWSClient,
         endpoint: str,
         callback: Callable,
     ) -> None:
-        self.__client: KrakenFuturesWSClient = client
+        self.__client: FuturesWSClient = client
         self.__ws_endpoint: str = endpoint
         self.__callback: Any = callback
 

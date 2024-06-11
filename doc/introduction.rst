@@ -30,16 +30,16 @@ and documented.
 - The output in the examples may differ, as these are only intended as examples
   and may change in the future.
 - If a certain endpoint is not reachable, the function
-  :func:`kraken.base_api.KrakenSpotBaseAPI.request` or
-  :func:`kraken.base_api.KrakenFuturesBaseAPI.request`,
+  :func:`kraken.base_api.SpotClient.request` or
+  :func:`kraken.base_api.FuturesClient.request`,
   which is also available in all derived REST clients, can be used to reach an
   endpoint with the appropriate parameters. Here private content can also be
   accessed, provided that either the base class or one of the clients has been
   initialized with valid credentials.
 - For Futures there is only one websocket client -
-  :class:`kraken.futures.KrakenFuturesWSClient`. For Spot there are two:
-  :class:`kraken.spot.KrakenSpotWSClientV1` (for API version 1) and
-  :class:`kraken.spot.KrakenSpotWSClientV2` (for API version 2).
+  :class:`kraken.futures.FuturesWSClient`. For Spot there are two:
+  :class:`kraken.spot.SpotWSClientV1` (for API version 1) and
+  :class:`kraken.spot.SpotWSClientV2` (for API version 2).
 
 
 Disclaimer

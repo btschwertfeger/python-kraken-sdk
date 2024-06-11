@@ -21,7 +21,7 @@ import requests
 import urllib3
 
 from kraken.exceptions import KrakenAuthenticationError
-from kraken.futures import Funding, KrakenFuturesWSClient, Market, Trade, User
+from kraken.futures import Funding, FuturesWSClient, Market, Trade, User
 
 logging.basicConfig(
     format="%(asctime)s %(module)s,line: %(lineno)d %(levelname)8s | %(message)s",
@@ -32,7 +32,7 @@ logging.getLogger("requests").setLevel(logging.WARNING)
 logging.getLogger("urllib3").setLevel(logging.WARNING)
 
 
-class TradingBot(KrakenFuturesWSClient):
+class TradingBot(FuturesWSClient):
     """
     Class that implements the trading strategy
 

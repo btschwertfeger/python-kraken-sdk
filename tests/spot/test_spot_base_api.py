@@ -19,7 +19,7 @@ from typing import TYPE_CHECKING
 import pytest
 
 from kraken.exceptions import KrakenInvalidAPIKeyError, KrakenPermissionDeniedError
-from kraken.spot import KrakenSpotBaseAPI, SpotAsyncClient
+from kraken.spot import SpotAsyncClient, SpotClient
 
 if TYPE_CHECKING:
     from kraken.spot import Funding, Market, Trade, User
@@ -35,12 +35,12 @@ def test_KrakenSpotBaseAPI_without_exception() -> None:
     gets evaluated.
     """
     with pytest.raises(KrakenInvalidAPIKeyError):
-        KrakenSpotBaseAPI(
+        SpotClient(
             key="fake",
             secret="fake",
         ).request(method="POST", uri="/0/private/AddOrder", auth=True)
 
-    assert KrakenSpotBaseAPI(
+    assert SpotClient(
         key="fake",
         secret="fake",
         use_custom_exceptions=False,
@@ -101,7 +101,6 @@ def test_spot_rest_async_client_get() -> None:
     run(check())
 
 
-@pytest.mark.wip()
 @pytest.mark.spot()
 def test_spot_async_rest_contextmanager(
     spot_api_key: str,
@@ -112,7 +111,7 @@ def test_spot_async_rest_contextmanager(
     """
 
     async def check() -> None:
-        with SpotAsyncClient(spot_api_key, spot_secret_key) as client:
+        async with SpotAsyncClient(spot_api_key, spot_secret_key) as client:
             result = await client.request("GET", "/0/public/Time", auth=False)
             assert is_not_error(result), result
 

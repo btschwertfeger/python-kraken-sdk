@@ -21,9 +21,9 @@ is demonstrated below.
     :linenos:
     :caption: Usage of the basic request method
 
-    from kraken.spot import KrakenSpotBaseAPI
+    from kraken.spot import SpotClient
 
-    client = KrakenSpotBaseAPI(key="<your-api-key>", secret="<your-secret-key>")
+    client = SpotClient(key="<your-api-key>", secret="<your-secret-key>")
     print(client.request(method="POST", uri="/0/private/Balance"))
 
 The repository of the `python-kraken-sdk`_ provides some example scripts that

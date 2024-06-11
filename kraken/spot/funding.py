@@ -9,12 +9,12 @@ from __future__ import annotations
 
 from typing import TypeVar
 
-from kraken.base_api import KrakenSpotBaseAPI, defined
+from kraken.base_api import SpotClient, defined
 
 Self = TypeVar("Self")
 
 
-class Funding(KrakenSpotBaseAPI):
+class Funding(SpotClient):
     """
     Class that implements the Spot Funding client. Currently there are no
     funding endpoints that could be accesses without authentication.

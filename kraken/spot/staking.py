@@ -9,13 +9,13 @@ from __future__ import annotations
 
 from typing import TypeVar
 
-from kraken.base_api import KrakenSpotBaseAPI, defined
+from kraken.base_api import SpotClient, defined
 from kraken.utils import deprecated
 
 Self = TypeVar("Self")
 
 
-class Staking(KrakenSpotBaseAPI):
+class Staking(SpotClient):
     """
     .. deprecated:: v2.2.0
 

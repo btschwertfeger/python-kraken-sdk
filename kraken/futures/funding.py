@@ -8,12 +8,12 @@ from __future__ import annotations
 
 from typing import TypeVar
 
-from kraken.base_api import KrakenFuturesBaseAPI
+from kraken.base_api import FuturesClient
 
 Self = TypeVar("Self")
 
 
-class Funding(KrakenFuturesBaseAPI):
+class Funding(FuturesClient):
     """
     Class that implements the Kraken Futures Funding client
 
@@ -99,7 +99,7 @@ class Funding(KrakenFuturesBaseAPI):
                 ]
             }
         """
-        return self._request(  # type: ignore[return-value]
+        return self.request(  # type: ignore[return-value]
             method="GET",
             uri="/derivatives/api/v4/historicalfundingrates",
             query_params={"symbol": symbol},
@@ -151,7 +151,7 @@ class Funding(KrakenFuturesBaseAPI):
                 'serverTime': '2023-04-07T15:23:45.196Z"
             }
         """
-        return self._request(  # type: ignore[return-value]
+        return self.request(  # type: ignore[return-value]
             method="POST",
             uri="/derivatives/api/v3/transfer",
             post_params={
@@ -209,7 +209,7 @@ class Funding(KrakenFuturesBaseAPI):
             ...     unit='XBT'
             ... ))
         """
-        return self._request(  # type: ignore[return-value]
+        return self.request(  # type: ignore[return-value]
             method="POST",
             uri="/derivatives/api/v3/transfer/subaccount",
             post_params={
@@ -270,7 +270,7 @@ class Funding(KrakenFuturesBaseAPI):
         if sourceWallet is not None:
             params["sourceWallet"] = sourceWallet
 
-        return self._request(  # type: ignore[return-value]
+        return self.request(  # type: ignore[return-value]
             method="POST",
             uri="/derivatives/api/v3/withdrawal",
             post_params=params,

@@ -20,8 +20,8 @@ import traceback
 import requests
 import urllib3
 
-from kraken.exceptions import KrakenAuthenticationError  # , KrakenPermissionDeniedError
-from kraken.spot import Funding, KrakenSpotWSClientV1, Market, Staking, Trade, User
+from kraken.exceptions import KrakenAuthenticationError
+from kraken.spot import Funding, Market, SpotWSClientV1, Staking, Trade, User
 
 logging.basicConfig(
     format="%(asctime)s %(module)s,line: %(lineno)d %(levelname)8s | %(message)s",
@@ -32,7 +32,7 @@ logging.getLogger("requests").setLevel(logging.WARNING)
 logging.getLogger("urllib3").setLevel(logging.WARNING)
 
 
-class TradingBot(KrakenSpotWSClientV1):
+class TradingBot(SpotWSClientV1):
     """
     Class that implements the trading strategy
 
