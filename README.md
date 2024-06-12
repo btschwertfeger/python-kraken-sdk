@@ -78,16 +78,6 @@ release specific READMEs and changelogs.
 It is also recommended to _pin the used version_ to avoid unexpected behavior on
 new releases.
 
-**Changes since v3.0.0**: The tool aims to be fast, easy to use and maintain. In
-the past, lots of clients were implemented, that provided functions for "all"
-available endpoints of the Kraken API. The effort to maintain this collection
-grew to a level where it was not possible to check various changelogs to apply
-new updates on a regular basis. **Instead, it was decided to concentrate on the
-`request` functions of the `SpotClient`, `SpotAsyncClient`, `FuturesClient` and
-the `FuturesAsyncClient` (as well as their websocket client implementations).
-All those clients named "User", "Trade", "Market", "Funding" and so on will no
-longer be extended, but maintained to a certain degree.**
-
 ---
 
 ## Table of Contents
@@ -95,11 +85,7 @@ longer be extended, but maintained to a certain degree.**
 - [ Installation and setup ](#installation)
 - [ Command-line interface ](#cliusage)
 - [ Spot Clients ](#spotusage)
-  - [REST API](#spotrest)
-  - [Websocket API V2](#spotws)
 - [ Futures Clients ](#futuresusage)
-  - [REST API](#futuresrest)
-  - [Websocket API](#futuresws)
 - [ Troubleshooting ](#trouble)
 - [ Contributions ](#contribution)
 - [ Notes ](#notes)
@@ -176,7 +162,13 @@ The Kraken Spot API can be accessed by executing requests to the endpoints
 directly using the `request` method provided by any client. This is demonstrated
 below.
 
+See https://docs.kraken.com/api/docs/guides/global-intro for information about
+the available endpoints and their usage.
+
 ### `SpotClient`
+
+The Spot client provides access to all un-and authenticated endpoints of
+Kraken's Spot and NFT API.
 
 ```python
 from kraken.spot import SpotClient
@@ -186,6 +178,11 @@ print(client.request("POST", "/0/private/Balance"))
 ```
 
 ### `SpotAsyncClient`
+
+The async Spot client allows for asynchronous access to Kraken's Spot and NFT API endpoints. Below are two examples demonstrating its usage.
+
+Using SpotAsyncClient without a context manager; In this example, the client is manually closed after the request is made.
+
 
 ```python
 import asyncio
@@ -201,6 +198,8 @@ async def main():
 
 asyncio.run(main())
 ```
+
+Using SpotAsyncClient as a context manager; This example demonstrates the use of the context manager, which ensures the client is automatically closed after the request is completed.
 
 ```python
 import asyncio
@@ -225,6 +224,7 @@ are shown below. For using the websocket API V1 please have a look into the
 
 The documentation for both API versions can be found here:
 
+- https://docs.kraken.com/api/docs/guides/global-intro
 - https://docs.kraken.com/websockets
 - https://docs.kraken.com/websockets-v2
 
@@ -317,7 +317,12 @@ The Kraken Spot API can be accessed by executing requests to the endpoints
 directly using the `request` method provided by any client. This is demonstrated
 below.
 
+See https://docs.kraken.com/api/docs/guides/global-intro for information about
+the available endpoints and their usage.
+
 ### `FuturesClient`
+
+The simple Futures client provides access to all un-and authenticated endpoints.
 
 ```python
 from kraken.futures import FuturesClient
@@ -327,6 +332,11 @@ print(client.request("GET", "/derivatives/api/v3/accounts"))
 ```
 
 ### `FuturesAsyncClient`
+The async Futures client allows for asynchronous access to Kraken's Futures
+endpoints. Below are two examples demonstrating its usage.
+
+Using FuturesAsyncClient without a context manager; In this example, the client
+is manually closed after the request is made.
 
 ```python
 import asyncio
@@ -343,10 +353,14 @@ async def main():
 asyncio.run(main())
 ```
 
+Using FuturesAsyncClient as context manager; This example demonstrates the use
+of the context manager, which ensures the client is automatically closed after
+the request is completed.
+
+
 ```python
 import asyncio
 from kraken.futures import FuturesAsyncClient
-
 
 async def main():
     async with FuturesAsyncClient(key="<your-api-key>", secret="<your-secret-key>") as client:
@@ -470,11 +484,22 @@ The versioning scheme follows the pattern `v<Major>.<Minor>.<Patch>`. Here's wha
 Coding standards are not always followed to make arguments and function names as
 similar as possible to those of the Kraken API documentations.
 
+**Changes since v3.0.0**: The tool aims to be fast, easy to use and maintain. In
+the past, lots of clients were implemented, that provided functions for "all"
+available endpoints of the Kraken API. The effort to maintain this collection
+grew to a level where it was not possible to check various changelogs to apply
+new updates on a regular basis. **Instead, it was decided to concentrate on the
+`request` functions of the `SpotClient`, `SpotAsyncClient`, `FuturesClient` and
+the `FuturesAsyncClient` (as well as their websocket client implementations).
+All those clients named "User", "Trade", "Market", "Funding" and so on will no
+longer be extended, but maintained to a certain degree.**
 <a name="references"></a>
 
 # 🔭 References
 
 - https://python-kraken-sdk.readthedocs.io/en/stable
+- https://docs.kraken.com/api/
+- https://docs.kraken.com/api/docs/guides/global-intro
 - https://docs.kraken.com/rest
 - https://docs.kraken.com/websockets
 - https://docs.kraken.com/websockets-v2

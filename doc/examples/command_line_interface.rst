@@ -5,7 +5,7 @@
 .. _section-command-line-interface-examples:
 
 Command-line Interface
-======================
+----------------------
 
 The python-kraken-sdk provides a command-line interface to access the Kraken API
 using basic instructions while performing authentication tasks in the
