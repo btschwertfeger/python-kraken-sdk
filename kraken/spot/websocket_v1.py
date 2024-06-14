@@ -257,7 +257,6 @@ class SpotWSClientV1(SpotWSClientBase):
             ...     pair=["XBTUSD", "DOT/EUR"]
             ... )
         """
-
         if "name" not in subscription:
             raise AttributeError('Subscription requires a "name" key."')
         private: bool = bool(subscription["name"] in self.private_channel_names)

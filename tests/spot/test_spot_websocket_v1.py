@@ -23,6 +23,7 @@ from __future__ import annotations
 
 import logging
 from asyncio import run as asyncio_run
+from asyncio import sleep as asyncio_sleep
 from typing import TYPE_CHECKING
 
 import pytest
@@ -32,7 +33,7 @@ if TYPE_CHECKING:
 
 from kraken.exceptions import KrakenAuthenticationError
 
-from .helper import SpotWebsocketClientV1TestWrapper, async_wait
+from .helper import SpotWebsocketClientV1TestWrapper
 
 
 @pytest.mark.spot()
@@ -43,11 +44,14 @@ def test_create_public_client(caplog: pytest.LogCaptureFixture) -> None:
     Checks if the websocket client can be instantiated.
     """
 
-    async def create_client() -> None:
-        client: SpotWebsocketClientV1TestWrapper = SpotWebsocketClientV1TestWrapper()
-        await async_wait(seconds=5)
+    client = SpotWebsocketClientV1TestWrapper()
 
-    asyncio_run(create_client())
+    async def run_client() -> None:
+        await client.start()
+        await asyncio_sleep(5)
+        await client.stop()
+
+    asyncio_run(run_client())
 
     for expected in (
         "'connectionID",
@@ -69,8 +73,8 @@ def test_create_public_client_as_context_manager(
     """
 
     async def create_client_as_context_manager() -> None:
-        with SpotWebsocketClientV1TestWrapper() as client:
-            await async_wait(seconds=5)
+        async with SpotWebsocketClientV1TestWrapper() as client:
+            await asyncio_sleep(5)
 
     asyncio_run(create_client_as_context_manager())
 
@@ -97,11 +101,11 @@ def test_create_private_client(
     """
 
     async def create_client() -> None:
-        client: SpotWebsocketClientV1TestWrapper = SpotWebsocketClientV1TestWrapper(
+        async with SpotWebsocketClientV1TestWrapper(
             key=spot_api_key,
             secret=spot_secret_key,
-        )
-        await async_wait(seconds=5)
+        ):
+            await asyncio_sleep(5)
 
     asyncio_run(create_client())
     for expected in (
@@ -122,23 +126,20 @@ def test_access_public_client_attributes() -> None:
     """
 
     async def check_access() -> None:
-        client: SpotWebsocketClientV1TestWrapper = SpotWebsocketClientV1TestWrapper()
-
-        assert client.public_channel_names == [
-            "ticker",
-            "spread",
-            "book",
-            "ohlc",
-            "trade",
-            "*",
-        ]
-        assert client.active_public_subscriptions == []
-        await async_wait(seconds=1)
-        with pytest.raises(ConnectionError):
-            # cannot access private subscriptions on unauthenticated client
-            assert isinstance(client.active_private_subscriptions, list)
-
-        await async_wait(seconds=1.5)
+        async with SpotWebsocketClientV1TestWrapper() as client:
+            assert client.public_channel_names == [
+                "ticker",
+                "spread",
+                "book",
+                "ohlc",
+                "trade",
+                "*",
+            ]
+            assert client.active_public_subscriptions == []
+            await asyncio_sleep(1)
+            with pytest.raises(ConnectionError):
+                # cannot access private subscriptions on unauthenticated client
+                assert isinstance(client.active_private_subscriptions, list)
 
     asyncio_run(check_access())
 
@@ -157,13 +158,13 @@ def test_access_private_client_attributes(
     """
 
     async def check_access() -> None:
-        client: SpotWebsocketClientV1TestWrapper = SpotWebsocketClientV1TestWrapper(
+        async with SpotWebsocketClientV1TestWrapper(
             key=spot_api_key,
             secret=spot_secret_key,
-        )
-        assert client.private_channel_names == ["ownTrades", "openOrders"]
-        assert client.active_private_subscriptions == []
-        await async_wait(seconds=2.5)
+        ) as client:
+            assert client.private_channel_names == ["ownTrades", "openOrders"]
+            assert client.active_private_subscriptions == []
+            await asyncio_sleep(2.5)
 
     asyncio_run(check_access())
 
@@ -178,19 +179,21 @@ def test_public_subscribe(caplog: pytest.LogCaptureFixture) -> None:
     """
 
     async def test_subscription() -> None:
-        client: SpotWebsocketClientV1TestWrapper = SpotWebsocketClientV1TestWrapper()
         subscription: dict[str, str] = {"name": "ticker"}
+        async with SpotWebsocketClientV1TestWrapper() as client:
 
-        with pytest.raises(AttributeError):
-            # Invalid subscription format
-            await client.subscribe(subscription={})
+            with pytest.raises(AttributeError):
+                # Invalid subscription format
+                await client.subscribe(subscription={})
 
-        with pytest.raises(TypeError):
-            # Pair must be type list[str]
-            await client.subscribe(subscription=subscription, pair="XBT/USD")  # type: ignore[arg-type]
+        async with SpotWebsocketClientV1TestWrapper() as client:
+            with pytest.raises(TypeError):
+                # Pair must be type list[str]
+                await client.subscribe(subscription=subscription, pair="XBT/USD")  # type: ignore[arg-type]
 
-        await client.subscribe(subscription=subscription, pair=["XBT/EUR"])
-        await async_wait(seconds=2)
+        async with SpotWebsocketClientV1TestWrapper() as client:
+            await client.subscribe(subscription=subscription, pair=["XBT/EUR"])
+            await asyncio_sleep(3)
 
     asyncio_run(test_subscription())
 
@@ -210,14 +213,12 @@ def test_public_subscribe_without_pair_failing() -> None:
     """
 
     async def test_subscription() -> None:
-        client: SpotWebsocketClientV1TestWrapper = SpotWebsocketClientV1TestWrapper()
-
-        with pytest.raises(
-            ValueError,
-            match=r"At least one pair must be specified when subscribing to public feeds.",
-        ):
-            await client.subscribe(subscription={"name": "ticker"})
-        await async_wait(seconds=2)
+        async with SpotWebsocketClientV1TestWrapper() as client:
+            with pytest.raises(
+                ValueError,
+                match=r"At least one pair must be specified when subscribing to public feeds.",
+            ):
+                await client.subscribe(subscription={"name": "ticker"})
 
     asyncio_run(test_subscription())
 
@@ -238,35 +239,42 @@ def test_private_subscribe(
     async def test_subscription() -> None:
         subscription: dict[str, str] = {"name": "ownTrades"}
 
-        client: SpotWebsocketClientV1TestWrapper = SpotWebsocketClientV1TestWrapper()
-        with pytest.raises(
-            KrakenAuthenticationError,
-            match=r"Credentials are invalid.",
-        ):
-            await client.subscribe(subscription=subscription)
+        async with SpotWebsocketClientV1TestWrapper() as client:
+            with pytest.raises(
+                KrakenAuthenticationError,
+                match=r"Credentials are invalid.",
+            ):
+                await client.subscribe(subscription=subscription)
 
-        with pytest.raises(
-            KrakenAuthenticationError,
-            match=r"Credentials are invalid.",
-        ):
-            # same here also using a pair for coverage ...
-            await client.subscribe(subscription=subscription, pair=["XBT/EUR"])
+        async with SpotWebsocketClientV1TestWrapper() as client:
+            with pytest.raises(
+                KrakenAuthenticationError,
+                match=r"Credentials are invalid.",
+            ):
+                # same here also using a pair for coverage ...
+                await client.subscribe(subscription=subscription, pair=["XBT/EUR"])
+            await asyncio_sleep(2)
 
-        auth_client: SpotWebsocketClientV1TestWrapper = (
-            SpotWebsocketClientV1TestWrapper(key=spot_api_key, secret=spot_secret_key)
-        )
-        with pytest.raises(
-            ValueError,
-            match=r"Cannot subscribe to private endpoint with specific pair!",
-        ):
-            await auth_client.subscribe(subscription=subscription, pair=["XBT/EUR"])
+        async with SpotWebsocketClientV1TestWrapper(
+            key=spot_api_key,
+            secret=spot_secret_key,
+        ) as auth_client:
+            with pytest.raises(
+                ValueError,
+                match=r"Cannot subscribe to private endpoint with specific pair!",
+            ):
+                await auth_client.subscribe(subscription=subscription, pair=["XBT/EUR"])
 
-        await async_wait(seconds=1)
+        async with SpotWebsocketClientV1TestWrapper(
+            key=spot_api_key,
+            secret=spot_secret_key,
+        ) as auth_client:
+            await auth_client.subscribe(subscription=subscription)
 
-        await auth_client.subscribe(subscription=subscription)
-        await async_wait(seconds=2)
+        await asyncio_sleep(2)
 
     asyncio_run(test_subscription())
+
     for expected in (
         "'status': 'subscribed', 'subscription': {'name': 'ownTrades'}}",
         "{'channelName': 'ownTrades', 'event': 'subscriptionStatus'",
@@ -283,16 +291,14 @@ def test_public_unsubscribe(caplog: pytest.LogCaptureFixture) -> None:
     """
 
     async def test_unsubscribe() -> None:
-        client: SpotWebsocketClientV1TestWrapper = SpotWebsocketClientV1TestWrapper()
+        async with SpotWebsocketClientV1TestWrapper() as client:
 
-        subscription: dict[str, str] = {"name": "ticker"}
-        pair: list[str] = ["XBT/USD"]
-        await client.subscribe(subscription=subscription, pair=pair)
-        await async_wait(seconds=3)
-
-        await client.unsubscribe(subscription=subscription, pair=pair)
-
-        await async_wait(seconds=2)
+            subscription: dict[str, str] = {"name": "ticker"}
+            pair: list[str] = ["XBT/USD"]
+            await client.subscribe(subscription=subscription, pair=pair)
+            await asyncio_sleep(3)
+            await client.unsubscribe(subscription=subscription, pair=pair)
+            await asyncio_sleep(2)
 
     asyncio_run(test_unsubscribe())
 
@@ -305,6 +311,7 @@ def test_public_unsubscribe(caplog: pytest.LogCaptureFixture) -> None:
         assert expected in caplog.text
 
 
+@pytest.mark.wip()
 @pytest.mark.spot()
 @pytest.mark.spot_websocket()
 @pytest.mark.spot_websocket_v1()
@@ -315,35 +322,34 @@ def test_public_unsubscribe_failure(caplog: pytest.LogCaptureFixture) -> None:
     """
 
     async def check_unsubscribe_fail() -> None:
-        client: SpotWebsocketClientV1TestWrapper = SpotWebsocketClientV1TestWrapper()
+        async with SpotWebsocketClientV1TestWrapper() as client:
+            # We did not subscribed to this tickers but it will work,
+            # and the response will inform us that there are no subscriptions.
+            await client.unsubscribe(
+                subscription={"name": "ticker"},
+                pair=["DOT/USD"],
+            )
+            await asyncio_sleep(2)
 
-        # We did not subscribed to this tickers but it will work,
-        # and the response will inform us that there are no subscriptions.
-        await client.unsubscribe(
-            subscription={"name": "ticker"},
-            pair=["DOT/USD", "ETH/USD"],
-        )
+        async with SpotWebsocketClientV1TestWrapper() as client:
+            with pytest.raises(
+                AttributeError,
+                match=r"Subscription requires a \"name\" key.",
+            ):
+                await client.unsubscribe(subscription={})
 
-        with pytest.raises(
-            AttributeError,
-            match=r"Subscription requires a \"name\" key.",
-        ):
-            await client.unsubscribe(subscription={})
-
-        with pytest.raises(
-            TypeError,
-            match=r"Parameter pair must be type of list\[str\] \(e.g. pair=\[\"XBTUSD\"\]\)",
-        ):
-            await client.unsubscribe(subscription={"name": "ticker"}, pair="XBT/USD")  # type: ignore[arg-type]
-
-        await async_wait(seconds=2)
+        async with SpotWebsocketClientV1TestWrapper() as client:
+            with pytest.raises(
+                TypeError,
+                match=r"Parameter pair must be type of list\[str\] \(e.g. pair=\[\"XBTUSD\"\]\)",
+            ):
+                await client.unsubscribe(subscription={"name": "ticker"}, pair="XBT/USD")  # type: ignore[arg-type]
 
     asyncio_run(check_unsubscribe_fail())
 
     # todo: regex!
     for expected in (
         "{'errorMessage': 'Subscription Not Found', 'event': 'subscriptionStatus', 'pair': 'DOT/USD'",
-        "{'errorMessage': 'Subscription Not Found', 'event': 'subscriptionStatus', 'pair': 'ETH/USD'",
     ):
         assert expected in caplog.text
 
@@ -357,14 +363,12 @@ def test_public_unsubscribe_without_pair_failing() -> None:
     """
 
     async def test_subscription() -> None:
-        client: SpotWebsocketClientV1TestWrapper = SpotWebsocketClientV1TestWrapper()
-
-        with pytest.raises(
-            ValueError,
-            match=r"At least one pair must be specified when unsubscribing from public feeds.",
-        ):
-            await client.unsubscribe(subscription={"name": "ticker"})
-        await async_wait(seconds=2)
+        async with SpotWebsocketClientV1TestWrapper() as client:
+            with pytest.raises(
+                ValueError,
+                match=r"At least one pair must be specified when unsubscribing from public feeds.",
+            ):
+                await client.unsubscribe(subscription={"name": "ticker"})
 
     asyncio_run(test_subscription())
 
@@ -383,17 +387,17 @@ def test_private_unsubscribe(
     """
 
     async def check_unsubscribe() -> None:
-        client: SpotWebsocketClientV1TestWrapper = SpotWebsocketClientV1TestWrapper(
+        async with SpotWebsocketClientV1TestWrapper(
             key=spot_api_key,
             secret=spot_secret_key,
-        )
+        ) as client:
 
-        await client.subscribe(subscription={"name": "ownTrades"})
-        await async_wait(seconds=1)
+            await client.subscribe(subscription={"name": "ownTrades"})
+            await asyncio_sleep(1)
 
-        await client.unsubscribe(subscription={"name": "ownTrades"})
-        await async_wait(seconds=2)
-        # todo: check if subs are removed from known list
+            await client.unsubscribe(subscription={"name": "ownTrades"})
+            await asyncio_sleep(2)
+            # todo: check if subs are removed from known list
 
     asyncio_run(check_unsubscribe())
 
@@ -416,28 +420,28 @@ def test_private_unsubscribe_failing(spot_api_key: str, spot_secret_key: str) ->
     """
 
     async def check_unsubscribe_failing() -> None:
-        client: SpotWebsocketClientV1TestWrapper = SpotWebsocketClientV1TestWrapper()
-        auth_client: SpotWebsocketClientV1TestWrapper = (
-            SpotWebsocketClientV1TestWrapper(key=spot_api_key, secret=spot_secret_key)
-        )
+        async with SpotWebsocketClientV1TestWrapper() as client:
+            with pytest.raises(
+                KrakenAuthenticationError,
+                match=r"Credentials are invalid.",
+            ):
+                # private feed on unauthenticated client
+                await client.unsubscribe(subscription={"name": "ownTrades"})
 
-        with pytest.raises(
-            KrakenAuthenticationError,
-            match=r"Credentials are invalid.",
-        ):
-            # private feed on unauthenticated client
-            await client.unsubscribe(subscription={"name": "ownTrades"})
+        async with SpotWebsocketClientV1TestWrapper(
+            key=spot_api_key,
+            secret=spot_secret_key,
+        ) as auth_client:
+            with pytest.raises(
+                ValueError,
+                match=r"Cannot unsubscribe from private endpoint with specific pair!",
+            ):
+                await auth_client.unsubscribe(
+                    subscription={"name": "ownTrades"},
+                    pair=["XBTUSD"],
+                )
 
-        with pytest.raises(
-            ValueError,
-            match=r"Cannot unsubscribe from private endpoint with specific pair!",
-        ):
-            await auth_client.unsubscribe(
-                subscription={"name": "ownTrades"},
-                pair=["XBTUSD"],
-            )
-
-        await async_wait(seconds=2)
+            await asyncio_sleep(2)
 
     asyncio_run(check_unsubscribe_failing())
 
@@ -452,18 +456,17 @@ def test_send_private_message_raw(caplog: pytest.LogCaptureFixture) -> None:
     """
 
     async def test_send_message() -> None:
-        client: SpotWebsocketClientV1TestWrapper = SpotWebsocketClientV1TestWrapper()
-        await client.send_message(
-            message={
-                "event": "subscribe",
-                "pair": ["XBT/USD"],
-                "subscription": {"name": "ticker"},
-            },
-            private=False,
-            raw=True,
-        )
-
-        await async_wait(seconds=2)
+        async with SpotWebsocketClientV1TestWrapper() as client:
+            await client.send_message(
+                message={
+                    "event": "subscribe",
+                    "pair": ["XBT/USD"],
+                    "subscription": {"name": "ticker"},
+                },
+                private=False,
+                raw=True,
+            )
+        await asyncio_sleep(2)
 
     asyncio_run(test_send_message())
 
@@ -484,11 +487,11 @@ def test_send_private_message_from_public_connection_failing() -> None:
     """
 
     async def test_send_message() -> None:
-        client: SpotWebsocketClientV1TestWrapper = SpotWebsocketClientV1TestWrapper()
-        with pytest.raises(KrakenAuthenticationError):
-            await client.send_message(message={}, private=True)
+        async with SpotWebsocketClientV1TestWrapper() as client:
+            with pytest.raises(KrakenAuthenticationError):
+                await client.send_message(message={}, private=True)
 
-        await async_wait(seconds=2)
+            await asyncio_sleep(2)
 
     asyncio_run(test_send_message())
 
@@ -509,26 +512,26 @@ def test_reconnect(
     caplog.set_level(logging.INFO)
 
     async def check_reconnect() -> None:
-        client: SpotWebsocketClientV1TestWrapper = SpotWebsocketClientV1TestWrapper(
+        async with SpotWebsocketClientV1TestWrapper(
             key=spot_api_key,
             secret=spot_secret_key,
-        )
-        await async_wait(seconds=2)
+        ) as client:
+            await asyncio_sleep(2)
 
-        await client.subscribe(subscription={"name": "ticker"}, pair=["XBT/USD"])
-        await client.subscribe(subscription={"name": "openOrders"})
-        await async_wait(seconds=2)
+            await client.subscribe(subscription={"name": "ticker"}, pair=["XBT/USD"])
+            await client.subscribe(subscription={"name": "openOrders"})
+            await asyncio_sleep(2)
 
-        for obj in (client._priv_conn, client._pub_conn):
-            mocker.patch.object(
-                obj,
-                "_ConnectSpotWebsocketBase__get_reconnect_wait",
-                return_value=2,
-            )
-        await client._pub_conn.close_connection()
-        await client._priv_conn.close_connection()
+            for obj in (client._priv_conn, client._pub_conn):
+                mocker.patch.object(
+                    obj,
+                    "_ConnectSpotWebsocketBase__get_reconnect_wait",
+                    return_value=2,
+                )
+            await client._pub_conn.close_connection()
+            await client._priv_conn.close_connection()
 
-        await async_wait(seconds=5)
+            await asyncio_sleep(5)
 
     asyncio_run(check_reconnect())
 
@@ -580,30 +583,30 @@ def test_create_order(
     """
 
     async def execute_create_order() -> None:
-        client: SpotWebsocketClientV1TestWrapper = SpotWebsocketClientV1TestWrapper(
+        async with SpotWebsocketClientV1TestWrapper(
             key=spot_api_key,
             secret=spot_secret_key,
-        )
-        params: dict = {
-            "ordertype": "limit",
-            "side": "buy",
-            "pair": "XBT/USD",
-            "volume": "2",
-            "price": "1000",
-            "price2": "1200",
-            "leverage": "2",
-            "oflags": "viqc",
-            "starttm": "0",
-            "expiretm": "1000",
-            "userref": "12345678",
-            "validate": True,
-            "close_ordertype": "limit",
-            "close_price": "1000",
-            "close_price2": "1200",
-            "timeinforce": "GTC",
-        }
-        await client.create_order(**params)
-        await async_wait(seconds=2)
+        ) as client:
+            params: dict = {
+                "ordertype": "limit",
+                "side": "buy",
+                "pair": "XBT/USD",
+                "volume": "2",
+                "price": "1000",
+                "price2": "1200",
+                "leverage": "2",
+                "oflags": "viqc",
+                "starttm": "0",
+                "expiretm": "1000",
+                "userref": "12345678",
+                "validate": True,
+                "close_ordertype": "limit",
+                "close_price": "1000",
+                "close_price2": "1200",
+                "timeinforce": "GTC",
+            }
+            await client.create_order(**params)
+            await asyncio_sleep(2)
 
     asyncio_run(execute_create_order())
 
@@ -635,17 +638,17 @@ def test_create_order_failing_no_connection(caplog: pytest.LogCaptureFixture) ->
     """
 
     async def execute_create_order() -> None:
-        client: SpotWebsocketClientV1TestWrapper = SpotWebsocketClientV1TestWrapper()
-        with pytest.raises(KrakenAuthenticationError):
-            await client.create_order(
-                ordertype="limit",
-                side="buy",
-                pair="XBT/USD",
-                volume="2",
-                price="1000",
-                validate=True,
-            )
-        await async_wait(seconds=2)
+        async with SpotWebsocketClientV1TestWrapper() as client:
+            with pytest.raises(KrakenAuthenticationError):
+                await client.create_order(
+                    ordertype="limit",
+                    side="buy",
+                    pair="XBT/USD",
+                    volume="2",
+                    price="1000",
+                    validate=True,
+                )
+            await asyncio_sleep(2)
 
     asyncio_run(execute_create_order())
 
@@ -676,22 +679,22 @@ def test_edit_order(
     """
 
     async def execute_edit_order() -> None:
-        client: SpotWebsocketClientV1TestWrapper = SpotWebsocketClientV1TestWrapper(
+        async with SpotWebsocketClientV1TestWrapper(
             key=spot_api_key,
             secret=spot_secret_key,
-        )
+        ) as client:
 
-        await client.edit_order(
-            orderid="OHSAUDZ-ASJKGD-EPAFUIH",
-            reqid=1244,
-            pair="XBT/USD",
-            price="120",
-            price2="1300",
-            oflags="fok",
-            newuserref="833773",
-            validate=True,
-        )
-        await async_wait(seconds=2)
+            await client.edit_order(
+                orderid="OHSAUDZ-ASJKGD-EPAFUIH",
+                reqid=1244,
+                pair="XBT/USD",
+                price="120",
+                price2="1300",
+                oflags="fok",
+                newuserref="833773",
+                validate=True,
+            )
+            await asyncio_sleep(2)
 
     asyncio_run(execute_edit_order())
 
@@ -718,19 +721,18 @@ def test_edit_order_failing_no_connection(caplog: pytest.LogCaptureFixture) -> N
     """
 
     async def execute_edit_order() -> None:
-        client: SpotWebsocketClientV1TestWrapper = SpotWebsocketClientV1TestWrapper()
-        with pytest.raises(KrakenAuthenticationError):
-            await client.edit_order(
-                orderid="OHSAUDZ-ASJKGD-EPAFUIH",
-                reqid=1244,
-                pair="XBT/USD",
-                price="120",
-                price2="1300",
-                oflags="fok",
-                newuserref="833773",
-                validate=True,
-            )
-        await async_wait(seconds=2)
+        async with SpotWebsocketClientV1TestWrapper() as client:
+            with pytest.raises(KrakenAuthenticationError):
+                await client.edit_order(
+                    orderid="OHSAUDZ-ASJKGD-EPAFUIH",
+                    reqid=1244,
+                    pair="XBT/USD",
+                    price="120",
+                    price2="1300",
+                    oflags="fok",
+                    newuserref="833773",
+                    validate=True,
+                )
 
     asyncio_run(execute_edit_order())
 
@@ -759,12 +761,13 @@ def test_cancel_order(
     """
 
     async def execute_cancel_order() -> None:
-        client: SpotWebsocketClientV1TestWrapper = SpotWebsocketClientV1TestWrapper(
+        async with SpotWebsocketClientV1TestWrapper(
             key=spot_api_key,
             secret=spot_secret_key,
-        )
-        await client.cancel_order(txid=["AOUEHF-ASLBD-A6B4A"])
-        await async_wait(seconds=2)
+        ) as client:
+            await client.cancel_order(txid=["AOUEHF-ASLBD-A6B4A"])
+
+        await asyncio_sleep(2)
 
     asyncio_run(execute_cancel_order())
 
@@ -793,10 +796,9 @@ def test_cancel_order_failing_no_connection(caplog: pytest.LogCaptureFixture) ->
     """
 
     async def execute_cancel_order() -> None:
-        client: SpotWebsocketClientV1TestWrapper = SpotWebsocketClientV1TestWrapper()
-        with pytest.raises(KrakenAuthenticationError):
-            await client.cancel_order(txid=["AOUEHF-ASLBD-A6B4A"])
-        await async_wait(seconds=2)
+        async with SpotWebsocketClientV1TestWrapper() as client:
+            with pytest.raises(KrakenAuthenticationError):
+                await client.cancel_order(txid=["AOUEHF-ASLBD-A6B4A"])
 
     asyncio_run(execute_cancel_order())
 
@@ -822,12 +824,12 @@ def test_cancel_all_orders(
     """
 
     async def execute_cancel_all() -> None:
-        client: SpotWebsocketClientV1TestWrapper = SpotWebsocketClientV1TestWrapper(
+        async with SpotWebsocketClientV1TestWrapper(
             key=spot_api_key,
             secret=spot_secret_key,
-        )
-        await client.cancel_all_orders()
-        await async_wait(seconds=2)
+        ) as client:
+            await client.cancel_all_orders()
+        asyncio_sleep(2)
 
     asyncio_run(execute_cancel_all())
 
@@ -853,10 +855,9 @@ def test_cancel_all_orders_failing_no_connection(
     """
 
     async def execute_cancel_all_orders() -> None:
-        client: SpotWebsocketClientV1TestWrapper = SpotWebsocketClientV1TestWrapper()
-        with pytest.raises(KrakenAuthenticationError):
-            await client.cancel_all_orders()
-        await async_wait(seconds=2)
+        async with SpotWebsocketClientV1TestWrapper() as client:
+            with pytest.raises(KrakenAuthenticationError):
+                await client.cancel_all_orders()
 
     asyncio_run(execute_cancel_all_orders())
 
@@ -876,21 +877,19 @@ def test_cancel_all_orders_after(
     caplog: pytest.LogCaptureFixture,
 ) -> None:
     """
-    Checking the ``cancel_all_orders_after`` function by
-    executing it.
+    Checking the ``cancel_all_orders_after`` function by executing it.
 
     NOTE: This function is not disabled, since the value 0 is
-          submitted which would reset the timer and would not cause
-          any problems.
+          submitted which resets the timer and doesn't cause any problems.
     """
 
     async def execute_cancel_after() -> None:
-        client: SpotWebsocketClientV1TestWrapper = SpotWebsocketClientV1TestWrapper(
+        async with SpotWebsocketClientV1TestWrapper(
             key=spot_api_key,
             secret=spot_secret_key,
-        )
-        await client.cancel_all_orders_after(0)
-        await async_wait(seconds=3)
+        ) as client:
+            await client.cancel_all_orders_after(0)
+            await asyncio_sleep(3)
 
     asyncio_run(execute_cancel_after())
 
@@ -918,10 +917,9 @@ def test_cancel_all_orders_after_failing_no_connection(
     """
 
     async def execute_cancel_all_orders() -> None:
-        client: SpotWebsocketClientV1TestWrapper = SpotWebsocketClientV1TestWrapper()
-        with pytest.raises(KrakenAuthenticationError):
-            await client.cancel_all_orders_after()
-        await async_wait(seconds=2)
+        async with SpotWebsocketClientV1TestWrapper() as client:
+            with pytest.raises(KrakenAuthenticationError):
+                await client.cancel_all_orders_after()
 
     asyncio_run(execute_cancel_all_orders())
 

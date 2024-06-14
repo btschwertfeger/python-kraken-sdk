@@ -56,6 +56,7 @@ kraken = "kraken.cli:cli"
 
 [project.optional-dependencies]
 dev = [
+  "debugpy",
   # building
   "build",
   # documentation

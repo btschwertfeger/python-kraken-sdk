@@ -10,6 +10,7 @@ Module that provides the base class for the Kraken Websocket clients v1 and v2.
 from __future__ import annotations
 
 import logging
+from asyncio import sleep as async_sleep
 from typing import TYPE_CHECKING, Any, TypeVar
 
 from kraken.spot import SpotClient
@@ -65,14 +66,13 @@ class SpotWSClientBase(SpotClient):
 
         self._is_auth: bool = bool(key and secret)
         self.__callback: Callable | None = callback
-        self.exception_occur: bool = False
         self._pub_conn: ConnectSpotWebsocketV1 | ConnectSpotWebsocketV2 | None = None
         self._priv_conn: ConnectSpotWebsocketV1 | ConnectSpotWebsocketV2 | None = None
-        self.__connect(version=api_version, no_public=no_public)
+        self.__prepare_connect(version=api_version, no_public=no_public)
 
     # --------------------------------------------------------------------------
     # Internals
-    def __connect(
+    def __prepare_connect(
         self: SpotWSClientBase,
         version: str,
         *,
@@ -119,6 +119,43 @@ class SpotWSClientBase(SpotClient):
             else None
         )
 
+    async def start(self: SpotWSClientBase) -> None:
+        """Method to start the websocket connection."""
+        if self._pub_conn:
+            await self._pub_conn.start()
+        if self._priv_conn:
+            await self._priv_conn.start()
+
+        # Wait for the connection(s) to be established ...
+        while (timeout := 0.0) < 10:
+            public_conntection_waiting = True
+            if self._pub_conn:
+                if self._pub_conn.socket is not None:
+                    public_conntection_waiting = False
+            else:
+                public_conntection_waiting = False
+
+            private_conection_waiting = True
+            if self._priv_conn:
+                if self._priv_conn.socket is not None:
+                    private_conection_waiting = False
+            else:
+                private_conection_waiting = False
+
+            if not public_conntection_waiting and not private_conection_waiting:
+                break
+            await async_sleep(0.2)
+            timeout += 0.2
+        else:
+            raise TimeoutError("Could not connect to the Kraken API!")
+
+    async def stop(self: SpotWSClientBase) -> None:
+        """Method to stop the websocket connection."""
+        if self._pub_conn:
+            await self._pub_conn.stop()
+        if self._priv_conn:
+            await self._priv_conn.stop()
+
     async def on_message(
         self: SpotWSClientBase,
         message: dict | list,
@@ -149,6 +186,7 @@ class SpotWSClientBase(SpotClient):
 
     async def __aenter__(self: Self) -> Self:
         """Entrypoint for use as context manager"""
+        await self.start()  # type: ignore[attr-defined]
         return self
 
     async def __aexit__(
@@ -157,6 +195,7 @@ class SpotWSClientBase(SpotClient):
         **kwargs: Any,  # noqa: ANN401
     ) -> None:
         """Exit if used as context manager"""
+        await self.stop()
 
     def get_ws_token(self: SpotWSClientBase) -> dict:
         """

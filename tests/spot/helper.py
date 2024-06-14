@@ -44,7 +44,7 @@ async def async_wait(seconds: float = 1.0) -> None:
 
 class SpotWebsocketClientV1TestWrapper(SpotWSClientV1):
     """
-    Class that creates an instance to test the KrakenSpotWSClientV1.
+    Class that creates an instance to test the SpotWSClientV1.
 
     It writes the messages to the log and a file. The log is used
     within the tests, the log file is for local debugging.
@@ -76,7 +76,7 @@ class SpotWebsocketClientV1TestWrapper(SpotWSClientV1):
 
 class SpotWebsocketClientV2TestWrapper(SpotWSClientV2):
     """
-    Class that creates an instance to test the KrakenSpotWSClientV2.
+    Class that creates an instance to test the SpotWSClientV2.
 
     It writes the messages to the log and a file. The log is used
     within the tests, the log file is for local debugging.
