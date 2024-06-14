@@ -3,6 +3,8 @@
 .. Copyright (C) 2023 Benjamin Thomas Schwertfeger
 .. GitHub: https://github.com/btschwertfeger
 
+.. _section-futures-rest-examples:
+
 Futures REST
 ------------
 

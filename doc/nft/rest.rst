@@ -5,6 +5,9 @@
 NFT REST
 =========
 
+The recommended way to execute requests against the Kraken Futures API is
+described in :ref:`section-spot-rest-examples`.
+
 .. autoclass:: kraken.nft.Market
    :members:
    :show-inheritance:

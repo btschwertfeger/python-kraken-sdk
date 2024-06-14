@@ -12,20 +12,6 @@ REST and websocket endpoints of the Kraken Cryptocurrency Exchange API. Since
 these endpoints and their parameters may change, all implemented endpoints are
 tested on a regular basis.
 
-If certain parameters or settings are not available, or specific endpoints are
-hidden and not implemented, it is always possible to execute requests to the
-endpoints directly using the ``request`` method provided by all clients. This
-is demonstrated below.
-
-.. code-block:: python
-    :linenos:
-    :caption: Usage of the basic request method
-
-    from kraken.spot import SpotClient
-
-    client = SpotClient(key="<your-api-key>", secret="<your-secret-key>")
-    print(client.request(method="POST", uri="/0/private/Balance"))
-
 The repository of the `python-kraken-sdk`_ provides some example scripts that
 demonstrate some of the implemented methods. Please see the sections listed
 below.

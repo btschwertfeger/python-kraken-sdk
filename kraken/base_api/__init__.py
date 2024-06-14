@@ -225,7 +225,7 @@ class SpotClient:
         query_str: str | None = None,
         extra_params: str | dict | None = None,
     ) -> tuple[str, str, dict, dict, str]:
-        method: str = method.upper()
+        method: str = method.upper()  # type: ignore[no-redef]
         url: str = urljoin(self.URL, uri)
 
         if not defined(params):
@@ -333,7 +333,7 @@ class SpotClient:
             query_str=query_str,
             extra_params=extra_params,
         )
-        timeout: int = self.TIMEOUT if timeout != 10 else timeout
+        timeout: int = self.TIMEOUT if timeout != 10 else timeout  # type: ignore[no-redef]
 
         if method in {"GET", "DELETE"}:
             return self.__check_response_data(
@@ -536,11 +536,11 @@ class SpotAsyncClient(SpotClient):
             query_str=query_str,
             extra_params=extra_params,
         )
-        timeout: int = self.TIMEOUT if timeout != 10 else timeout
+        timeout: int = self.TIMEOUT if timeout != 10 else timeout  # type: ignore[no-redef]
 
         if method in {"GET", "DELETE"}:
             return await self.__check_response_data(  # type: ignore[return-value]
-                response=await self.__session.request(
+                response=await self.__session.request(  # type: ignore[misc]
                     method=method,
                     url=f"{url}?{query_params}" if query_params else url,
                     headers=headers,
@@ -551,7 +551,7 @@ class SpotAsyncClient(SpotClient):
 
         if do_json:
             return await self.__check_response_data(  # type: ignore[return-value]
-                response=await self.__session.request(
+                response=await self.__session.request(  # type: ignore[misc]
                     method=method,
                     url=url,
                     headers=headers,
@@ -562,7 +562,7 @@ class SpotAsyncClient(SpotClient):
             )
 
         return await self.__check_response_data(  # type: ignore[return-value]
-            response=await self.__session.request(
+            response=await self.__session.request(  # type: ignore[misc]
                 method=method,
                 url=url,
                 headers=headers,
@@ -610,7 +610,7 @@ class SpotAsyncClient(SpotClient):
 
     async def async_close(self: SpotAsyncClient) -> None:
         """Closes the aiohttp session"""
-        await self.__session.close()
+        await self.__session.close()  # type: ignore[func-returns-value]
 
     async def __aenter__(self: Self) -> Self:
         return self
@@ -684,16 +684,16 @@ class FuturesClient:
         )
 
     def _prepare_request(
-        self: FuturesAsyncClient,
+        self: FuturesClient,
         method: str,
         uri: str,
         post_params: dict,
-        query_params: dict,
-        extra_params: dict = None,
-        auth: bool = True,
-    ) -> tuple[str, str, dict, dict, str]:
+        query_params: str | dict,
+        extra_params: str | dict | None = None,
+        auth: bool = True,  # noqa: FBT001,FBT002
+    ) -> tuple[str, str, dict, str, str]:
 
-        method: Final[str] = method.upper()
+        method: str = method.upper()  # type: ignore[no-redef]
         url: Final[str] = urljoin(self.url, uri)
 
         if defined(extra_params):
@@ -712,7 +712,7 @@ class FuturesClient:
         encoded_payload: Final[str] = urlencode(post_params, doseq=True)
 
         query_string = (
-            "" if query_params is None else urlencode(query_params, doseq=True)
+            "" if query_params is None else urlencode(query_params, doseq=True)  # type: ignore[arg-type]
         )
 
         headers: dict = deepcopy(self.HEADERS)
@@ -787,7 +787,7 @@ class FuturesClient:
             auth=auth,
             extra_params=extra_params,
         )
-        timeout: int = self.TIMEOUT if timeout == 10 else timeout
+        timeout: int = self.TIMEOUT if timeout == 10 else timeout  # type: ignore[no-redef]
 
         if method in {"GET", "DELETE"}:
             return self.__check_response_data(
@@ -946,8 +946,8 @@ class FuturesAsyncClient(FuturesClient):
         )
         self.__session = aiohttp.ClientSession(headers=self.HEADERS)
 
-    async def request(  # pylint: disable=arguments-differ,invalid-overridden-method
-        self: FuturesClient,
+    async def request(  # type: ignore[override] # pylint: disable=arguments-differ,invalid-overridden-method
+        self: FuturesAsyncClient,
         method: str,
         uri: str,
         post_params: dict | None = None,
@@ -964,11 +964,11 @@ class FuturesAsyncClient(FuturesClient):
             query_params=query_params,
             auth=auth,
         )
-        timeout: int = self.TIMEOUT if timeout != 10 else timeout
+        timeout: int = self.TIMEOUT if timeout != 10 else timeout  # type: ignore[no-redef]
 
         if method in {"GET", "DELETE"}:
             return await self.__check_response_data(
-                response=await self.__session.request(
+                response=await self.__session.request(  # type: ignore[misc]
                     method=method,
                     url=url,
                     params=query_string,
@@ -980,7 +980,7 @@ class FuturesAsyncClient(FuturesClient):
 
         if method == "PUT":
             return await self.__check_response_data(
-                response=await self.__session.request(
+                response=await self.__session.request(  # type: ignore[misc]
                     method=method,
                     url=url,
                     params=encoded_payload,
@@ -991,7 +991,7 @@ class FuturesAsyncClient(FuturesClient):
             )
 
         return await self.__check_response_data(
-            response=await self.__session.request(
+            response=await self.__session.request(  # type: ignore[misc]
                 method=method,
                 url=url,
                 data=encoded_payload,
@@ -1045,13 +1045,13 @@ class FuturesAsyncClient(FuturesClient):
 
     async def async_close(self: FuturesAsyncClient) -> None:
         """Closes the aiohttp session"""
-        await self.__session.close()
+        await self.__session.close()  # type: ignore[func-returns-value]
 
     async def __aenter__(self: Self) -> Self:
         return self
 
     async def __aexit__(self: FuturesAsyncClient, *args: object) -> None:
-        await self.async_close()
+        return await self.async_close()
 
 
 __all__ = [

@@ -64,15 +64,13 @@ General:
 - extensive examples
 - tested using the `pytest <https://docs.pytest.org/en/7.3.x/>`_ framework
 - releases are permanently archived at `Zenodo <https://zenodo.org/badge/latestdoi/510751854>`_
-- releases before v2.0.0 also support Python 3.7+
 
 Available Clients:
 
-- NFT REST Clients
-- Spot REST Clients
+- Spot REST Clients (sync and async; including access to NFT trading)
 - Spot Websocket Clients (Websocket API v1 and v2)
 - Spot Orderbook Clients (Websocket API v1 and v2)
-- Futures REST Clients
+- Futures REST Clients (sync and async)
 - Futures Websocket Client
 
 Important Notice
@@ -105,6 +103,8 @@ References
 ----------
 
 - https://python-kraken-sdk.readthedocs.io/en/stable
+- https://docs.kraken.com/api/
+- https://docs.kraken.com/api/docs/guides/global-intro
 - https://docs.kraken.com/rest
 - https://docs.kraken.com/websockets
 - https://docs.kraken.com/websockets-v2

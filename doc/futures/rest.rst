@@ -2,8 +2,13 @@
 .. Copyright (C) 2023 Benjamin Thomas Schwertfeger
 .. GitHub: https://github.com/btschwertfeger
 
-Futures REST
-============
+.. _section-futures-rest-clients:
+
+Futures REST Clients
+====================
+
+The recommended way to execute requests against the Kraken Futures API is
+described in :ref:`section-futures-rest-examples`.
 
 .. autoclass:: kraken.futures.User
    :members:

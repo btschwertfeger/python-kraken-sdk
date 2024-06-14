@@ -69,10 +69,7 @@ def test_futures_rest_contextmanager(
 
 
 @pytest.mark.futures()
-def test_futures_async_rest_contextmanager(
-    spot_api_key: str,
-    spot_secret_key: str,
-) -> None:
+def test_futures_async_rest_contextmanager() -> None:
     """
     Checks if the clients can be used as context manager.
     """

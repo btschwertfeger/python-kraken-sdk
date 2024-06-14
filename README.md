@@ -89,6 +89,7 @@ new releases.
 - [ Troubleshooting ](#trouble)
 - [ Contributions ](#contribution)
 - [ Notes ](#notes)
+- [ Considerations ](#considerations)
 - [ References ](#references)
 
 <a name="installation"></a>
@@ -182,7 +183,6 @@ print(client.request("POST", "/0/private/Balance"))
 The async Spot client allows for asynchronous access to Kraken's Spot and NFT API endpoints. Below are two examples demonstrating its usage.
 
 Using SpotAsyncClient without a context manager; In this example, the client is manually closed after the request is made.
-
 
 ```python
 import asyncio
@@ -332,6 +332,7 @@ print(client.request("GET", "/derivatives/api/v3/accounts"))
 ```
 
 ### `FuturesAsyncClient`
+
 The async Futures client allows for asynchronous access to Kraken's Futures
 endpoints. Below are two examples demonstrating its usage.
 
@@ -356,7 +357,6 @@ asyncio.run(main())
 Using FuturesAsyncClient as context manager; This example demonstrates the use
 of the context manager, which ensures the client is automatically closed after
 the request is completed.
-
 
 ```python
 import asyncio
@@ -469,7 +469,8 @@ if __name__ == "__main__":
 
 # 📝 Notes
 
-The versioning scheme follows the pattern `v<Major>.<Minor>.<Patch>`. Here's what each part signifies:
+The versioning scheme follows the pattern `v<Major>.<Minor>.<Patch>`. Here's
+what each part signifies:
 
 - **Major**: This denotes significant changes that may introduce new features or
   modify existing ones. It's possible for these changes to be breaking, meaning
@@ -484,15 +485,20 @@ The versioning scheme follows the pattern `v<Major>.<Minor>.<Patch>`. Here's wha
 Coding standards are not always followed to make arguments and function names as
 similar as possible to those of the Kraken API documentations.
 
-**Changes since v3.0.0**: The tool aims to be fast, easy to use and maintain. In
-the past, lots of clients were implemented, that provided functions for "all"
-available endpoints of the Kraken API. The effort to maintain this collection
-grew to a level where it was not possible to check various changelogs to apply
-new updates on a regular basis. **Instead, it was decided to concentrate on the
-`request` functions of the `SpotClient`, `SpotAsyncClient`, `FuturesClient` and
-the `FuturesAsyncClient` (as well as their websocket client implementations).
-All those clients named "User", "Trade", "Market", "Funding" and so on will no
+<a name="considerations"></a>
+
+# Considerations
+
+The tool aims to be fast, easy to use and maintain. In the past, lots of clients
+were implemented, that provided functions for "all" available endpoints of the
+Kraken API. The effort to maintain this collection grew to a level where it was
+not possible to check various changelogs to apply new updates on a regular
+basis. **Instead, it was decided to concentrate on the `request` functions of
+the `SpotClient`, `SpotAsyncClient`, `FuturesClient` and the
+`FuturesAsyncClient` (as well as their websocket client implementations). All
+those clients named "User", "Trade", "Market", "Funding" and so on will no
 longer be extended, but maintained to a certain degree.**
+
 <a name="references"></a>
 
 # 🔭 References
