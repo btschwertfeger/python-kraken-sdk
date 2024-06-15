@@ -102,9 +102,10 @@ class SpotWSClient(SpotWSClientBase):
         from kraken.spot import SpotWSClient
 
 
+        async def on_message(message):
+            print(message)
+
         async def main():
-            async def on_message(message):
-                print(message)
 
             client = SpotWSClient(callback=on_message)
             await client.start()
@@ -294,7 +295,7 @@ class SpotWSClient(SpotWSClientBase):
             ... )
 
         **Death Man's Switch** is a useful utility to reduce the risk of losses
-        due to network fuckups since it will cancel all orders if the call
+        due to network fuck-ups since it will cancel all orders if the call
         was not received by Kraken within a certain amount of time. See
         https://docs.kraken.com/websockets-v2/#cancel-all-orders-after for more
         information.
@@ -486,7 +487,7 @@ class SpotWSClient(SpotWSClientBase):
 
         - https://docs.kraken.com/websockets-v2/#unsubscribe
 
-        :param params: The unsubscription message (only the params part)
+        :param params: The un-subscription message (only the params part)
         :type params: dict
 
         Initialize your client as described in

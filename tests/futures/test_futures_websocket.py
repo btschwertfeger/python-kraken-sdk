@@ -34,7 +34,6 @@ def test_create_public_client(caplog: pytest.LogCaptureFixture) -> None:
     async def instantiate_client() -> None:
         await client.start()
         await async_sleep(4)
-
         assert not client.is_auth
         await client.stop()
 
