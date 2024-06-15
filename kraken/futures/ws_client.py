@@ -13,19 +13,20 @@ import hmac
 import logging
 from asyncio import sleep as async_sleep
 from copy import deepcopy
-from typing import TYPE_CHECKING, Any, TypeVar
+from typing import TYPE_CHECKING, TypeVar
 
-from kraken.base_api import FuturesClient
+from kraken.base_api import FuturesAsyncClient
 from kraken.exceptions import KrakenAuthenticationError
 from kraken.futures.websocket import ConnectFuturesWebsocket
 
 if TYPE_CHECKING:
     from collections.abc import Callable
+    from typing import Any
 
 Self = TypeVar("Self")
 
 
-class FuturesWSClient(FuturesClient):
+class FuturesWSClient(FuturesAsyncClient):
     """
     Class to access public and (optional) private/authenticated websocket
     connection.
@@ -58,12 +59,13 @@ class FuturesWSClient(FuturesClient):
             async def on_message(self, event: dict) -> None:
                 print(event)
 
-        client = Client()     # unauthenticated
-        auth_client = Client( # authenticated
-            key="api-key",
-            secret="secret-key"
-        )
         async def main() -> None:
+            client = Client()     # unauthenticated
+            auth_client = Client( # authenticated
+                key="api-key",
+                secret="secret-key"
+            )
+
             # open the websocket connections
             await client.start()
             await auth_client.start()
@@ -122,8 +124,7 @@ class FuturesWSClient(FuturesClient):
     ) -> None:
         super().__init__(key=key, secret=secret, url=url, sandbox=sandbox)
 
-        self.__key: str = key
-        self.__secret: str = secret
+        self._key: str = key
 
         self.__callback: Any = callback
         self._conn: ConnectFuturesWebsocket = ConnectFuturesWebsocket(
@@ -156,7 +157,7 @@ class FuturesWSClient(FuturesClient):
             await self._conn.stop()
 
     @property
-    def key(self: FuturesClient) -> str:
+    def key(self: FuturesWSClient) -> str:
         """Returns the API key"""
         return self._key
 
@@ -178,7 +179,7 @@ class FuturesWSClient(FuturesClient):
         sha256_hash.update(challenge.encode("utf-8"))
         return base64.b64encode(
             hmac.new(
-                base64.b64decode(self.__secret),
+                base64.b64decode(self._secret),
                 sha256_hash.digest(),
                 hashlib.sha512,
             ).digest(),
@@ -394,7 +395,7 @@ class FuturesWSClient(FuturesClient):
             >>> FuturesWSClient().is_auth()
             False
         """
-        return bool(self.__key and self.__secret)
+        return bool(self._key and self._secret)
 
     def get_active_subscriptions(self: FuturesWSClient) -> list[dict]:
         """
@@ -429,6 +430,7 @@ class FuturesWSClient(FuturesClient):
 
     async def __aenter__(self: Self) -> Self:
         """Entrypoint for use as context manager"""
+        await super().__aenter__()
         await self.start()  # type: ignore[attr-defined]
         return self
 
@@ -438,6 +440,7 @@ class FuturesWSClient(FuturesClient):
         **kwargs: dict[str, Any],
     ) -> None:
         """Exit if used as context manager"""
+        await super().__aexit__()
         await self.stop()
 
 

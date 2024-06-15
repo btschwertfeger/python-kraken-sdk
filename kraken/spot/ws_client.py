@@ -70,12 +70,12 @@ class SpotWSClient(SpotWSClientBase):
 
 
         async def main():
-
             client = Client()         # unauthenticated
             client_auth = Client(     # authenticated
                 key="kraken-api-key",
                 secret="kraken-secret-key"
             )
+            # open the websocket connections
             await client.start()
             await auth_client.start()
 

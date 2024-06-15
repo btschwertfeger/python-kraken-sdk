@@ -122,7 +122,7 @@ class ConnectSpotWebsocketBase:  # pylint: disable=too-many-instance-attributes
         """
         self._last_ping = time()
         self.ws_conn_details = (
-            None if not self.__is_auth else self.__client.get_ws_token()
+            None if not self.__is_auth else await self.__client.get_ws_token()
         )
         self.LOG.debug(
             "Websocket token: %s",

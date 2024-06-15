@@ -159,7 +159,7 @@ disallow_any_explicit = false
 disallow_any_generics = false
 disallow_subclassing_any = false
 
-# # Untyped definitions and calls
+# Untyped definitions and calls
 check_untyped_defs = true
 disallow_untyped_calls = true
 disallow_untyped_defs = true
@@ -301,7 +301,7 @@ ignore = [
   "RUF022",  # `__all__` is not sorted
 ]
 
-task-tags = ["todo", "TODO"]
+task-tags = ["todo", "TODO", "fixme", "FIXME"]
 
 [tool.ruff.lint.per-file-ignores]
 "examples/*.py" = [
@@ -451,7 +451,7 @@ ignore-patterns = ["^\\.#"]
 # Use multiple processes to speed up PyLint. Specifying 0 will auto-detect the
 # number of processors available to use, and will cap the count on Windows to
 # avoid hangs.
-jobs = 2
+jobs = 0
 
 # Control the amount of potential inferred values when inferring a single object.
 # This can help the performance when dealing with large functions or complex,
