@@ -36,14 +36,13 @@ and documented.
   endpoint with the appropriate parameters. Here private content can also be
   accessed, provided that either the base class or one of the clients has been
   initialized with valid credentials.
-- For Futures there is only one websocket client -
-  :class:`kraken.futures.FuturesWSClient`. For Spot there are two:
-  :class:`kraken.spot.SpotWSClientV1` (for API version 1) and
-  :class:`kraken.spot.SpotWSClientV2` (for API version 2).
+- For Futures there is the websocket client
+  :class:`kraken.futures.FuturesWSClient` and for Spot
+  :class:`kraken.spot.SpotWSClient`.
 
 
 Disclaimer
--------------
+----------
 
 There is no guarantee that this software will work flawlessly at this or later
 times. Of course, no responsibility is taken for possible profits or losses.
@@ -68,19 +67,21 @@ General:
 Available Clients:
 
 - Spot REST Clients (sync and async; including access to NFT trading)
-- Spot Websocket Clients (Websocket API v1 and v2)
-- Spot Orderbook Clients (Websocket API v1 and v2)
+- Spot Websocket Client (Websocket API v2)
+- Spot Orderbook Client (Websocket API v2)
 - Futures REST Clients (sync and async)
 - Futures Websocket Client
 
 Important Notice
 -----------------
+
 **ONLY tagged releases are available at PyPI**. The content of the master branch
 may not match with the content of the latest release. - Please have a look at
 the release specific READMEs and changelogs.
 
 It is also recommended to **pin the used version** to avoid unexpected behavior
 on new releases.
+
 
 .. _section-troubleshooting:
 
@@ -106,7 +107,6 @@ References
 - https://docs.kraken.com/api/
 - https://docs.kraken.com/api/docs/guides/global-intro
 - https://docs.kraken.com/rest
-- https://docs.kraken.com/websockets
 - https://docs.kraken.com/websockets-v2
 - https://docs.futures.kraken.com
 - https://support.kraken.com/hc/en-us/sections/360012894412-Futures-API

@@ -57,8 +57,8 @@ General:
 Available Clients:
 
 - Spot REST Clients (sync and async; including access to NFT trading)
-- Spot Websocket Clients (Websocket API v1 and v2)
-- Spot Orderbook Clients (Websocket API v1 and v2)
+- Spot Websocket Client (using Websocket API v2)
+- Spot Orderbook Client (using Websocket API v2)
 - Futures REST Clients (sync and async)
 - Futures Websocket Client
 
@@ -215,64 +215,62 @@ asyncio.run(main())
 
 <a name="spotws"></a>
 
-### Spot Websocket API V2
+### Spot Websocket API
 
 Kraken offers two versions of their websocket API (V1 and V2). Since V2 is
-offers more possibilities, is way faster and easier to use, only those examples
-are shown below. For using the websocket API V1 please have a look into the
-`examples/spot_ws_examples_v1.py`.
+offers more possibilities, is way faster and easier to use, only the never
+version is supported by this SDK.
 
-The documentation for both API versions can be found here:
+The official documentation for can be found here:
 
 - https://docs.kraken.com/api/docs/guides/global-intro
-- https://docs.kraken.com/websockets
 - https://docs.kraken.com/websockets-v2
 
 Note that authenticated Spot websocket clients can also un-/subscribe from/to
 public feeds.
 
 The example below can be found in an extended way in
-`examples/spot_ws_examples_v2.py`.
+`examples/spot_ws_examples.py`.
 
 ```python
 import asyncio
-from kraken.spot import SpotWSClientV2
+from kraken.spot import SpotWSClient
 
+class Client(SpotWSClient):
+    """Can be used to create a custom trading strategy"""
+
+    async def on_message(self, message):
+        """Receives the websocket messages"""
+        if message.get("method") == "pong" \
+            or message.get("channel") == "heartbeat":
+            return
+
+        print(message)
+        # Here we can access lots of methods, for example to create an order:
+        # if self.is_auth:  # only if the client is authenticated …
+        #     await self.send_message(
+        #         message={
+        #             "method": "add_order",
+        #             "params": {
+        #                 "limit_price": 1234.56,
+        #                 "order_type": "limit",
+        #                 "order_userref": 123456789,
+        #                 "order_qty": 1.0,
+        #                 "side": "buy",
+        #                 "symbol": "BTC/USD",
+        #                 "validate": True,
+        #             },
+        #         }
+        #     )
+        # … it is also possible to call regular REST endpoints
+        # but using the websocket messages is more efficient.
+        # You can also un-/subscribe here using self.subscribe/self.unsubscribe.
 
 async def main():
-    class Client(SpotWSClientV2):
-        """Can be used to create a custom trading strategy"""
-
-        async def on_message(self, message):
-            """Receives the websocket messages"""
-            if message.get("method") == "pong" \
-                or message.get("channel") == "heartbeat":
-                return
-
-            print(message)
-            # Here we can access lots of methods, for example to create an order:
-            # if self.is_auth:  # only if the client is authenticated …
-            #     await self.send_message(
-            #         message={
-            #             "method": "add_order",
-            #             "params": {
-            #                 "limit_price": 1234.56,
-            #                 "order_type": "limit",
-            #                 "order_userref": 123456789,
-            #                 "order_qty": 1.0,
-            #                 "side": "buy",
-            #                 "symbol": "BTC/USD",
-            #                 "validate": True,
-            #             },
-            #         }
-            #     )
-            # … it is also possible to call regular REST endpoints
-            # but using the websocket messages is more efficient.
-            # You can also un-/subscribe here using self.subscribe/self.unsubscribe.
 
     # Public/unauthenticated websocket client
     client = Client()  # only use this one if you don't need private feeds
-
+    await client.start()
     await client.subscribe(
         params={"channel": "ticker", "symbol": ["BTC/USD", "DOT/USD"]}
     )
@@ -287,15 +285,17 @@ async def main():
     )
     # …
 
-    # Per default, the authenticated client starts two websocket connections,
+    # AS default, the authenticated client starts two websocket connections,
     # one for authenticated and one for public messages. If there is no need
     # for a public connection, it can be disabled using the ``no_public``
     # parameter.
     client_auth = Client(key="api-key", secret="secret-key", no_public=True)
+    await client_auth.start()
     await client_auth.subscribe(params={"channel": "balances"})
 
     while not client.exception_occur and not client_auth.exception_occur:
         await asyncio.sleep(6)
+
     return
 
 
@@ -386,15 +386,15 @@ public feeds.
 import asyncio
 from kraken.futures import FuturesWSClient
 
+class Client(FuturesWSClient):
+
+    async def on_message(self, event):
+        print(event)
+
 async def main():
-    class Client(FuturesWSClient):
-
-        async def on_message(self, event):
-            print(event)
-
     # Public/unauthenticated websocket connection
     client = Client()
-
+    await client.start()
     products = ["PI_XBTUSD", "PF_ETHUSD"]
 
     # subscribe to a public websocket feed
@@ -407,6 +407,7 @@ async def main():
 
     # Private/authenticated websocket connection (+public)
     client_auth = Client(key="key-key", secret="secret-key")
+    await client_auth.start()
     # print(client_auth.get_available_private_subscription_feeds())
 
     # subscribe to a private/authenticated websocket feed
@@ -507,7 +508,6 @@ longer be extended, but maintained to a certain degree.**
 - https://docs.kraken.com/api/
 - https://docs.kraken.com/api/docs/guides/global-intro
 - https://docs.kraken.com/rest
-- https://docs.kraken.com/websockets
 - https://docs.kraken.com/websockets-v2
 - https://docs.futures.kraken.com
 - https://support.kraken.com/hc/en-us/sections/360012894412-Futures-API

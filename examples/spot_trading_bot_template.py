@@ -20,7 +20,7 @@ import requests
 import urllib3
 
 from kraken.exceptions import KrakenAuthenticationError  # , KrakenPermissionDeniedError
-from kraken.spot import Funding, Market, SpotWSClientV2, Staking, Trade, User
+from kraken.spot import Funding, Market, SpotWSClient, Trade, User
 
 logging.basicConfig(
     format="%(asctime)s %(module)s,line: %(lineno)d %(levelname)8s | %(message)s",
@@ -31,7 +31,7 @@ logging.getLogger("requests").setLevel(logging.WARNING)
 logging.getLogger("urllib3").setLevel(logging.WARNING)
 
 
-class TradingBot(SpotWSClientV2):
+class TradingBot(SpotWSClient):
     """
     Class that implements the trading strategy
 
@@ -54,7 +54,7 @@ class TradingBot(SpotWSClientV2):
         config: dict,
         **kwargs: object | dict | set | tuple | list | str | float | None,
     ) -> None:
-        super().__init__(  # initialize the KrakenSpotWSClientV2
+        super().__init__(
             key=config["key"],
             secret=config["secret"],
             **kwargs,
@@ -65,7 +65,6 @@ class TradingBot(SpotWSClientV2):
         self.__trade: Trade = Trade(key=config["key"], secret=config["secret"])
         self.__market: Market = Market(key=config["key"], secret=config["secret"])
         self.__funding: Funding = Funding(key=config["key"], secret=config["secret"])
-        self.__staking: Staking = Staking(key=config["key"], secret=config["secret"])
 
     async def on_message(self: TradingBot, message: dict) -> None:
         """Receives all messages of the websocket connection(s)"""
@@ -168,12 +167,13 @@ class Manager:
         websocket feeds. While no exception within the strategy occur run the
         loop.
 
-        The variable `exception_occur` which is an attribute of the
-        KrakenSpotWSClientV2 can be set individually but is also being set to
-        `True` if the websocket connection has some fatal error. This is used to
-        exit the asyncio loop - but you can also apply your own reconnect rules.
+        The variable `exception_occur` which is an attribute of the SpotWSClient
+        can be set individually but is also being set to `True` if the websocket
+        connection has some fatal error. This is used to exit the asyncio loop -
+        but you can also apply your own reconnect rules.
         """
         self.__trading_strategy = TradingBot(config=self.__config)
+        await self.__trading_strategy.start()
 
         await self.__trading_strategy.subscribe(
             params={"channel": "ticker", "symbol": self.__config["pairs"]},

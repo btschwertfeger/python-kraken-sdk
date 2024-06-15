@@ -8,7 +8,7 @@ Module that tests the Kraken Spot websocket client
 (Kraken Spot Websocket API v2)
 
 NOTE:
-*   The custom SpotWebsocketClientV2TestWrapper class is used that wraps around
+*   The custom SpotWebsocketClientTestWrapper class is used that wraps around
     the websocket client. To validate the functions the responses are logged and
     finally the logs are read out and its input is checked for the expected
     output.
@@ -19,6 +19,7 @@ from __future__ import annotations
 
 import logging
 from asyncio import run as asyncio_run
+from asyncio import sleep as async_sleep
 from copy import deepcopy
 from typing import TYPE_CHECKING
 
@@ -28,24 +29,23 @@ if TYPE_CHECKING:
     from pytest_mock import MockerFixture
 
 from kraken.exceptions import KrakenAuthenticationError
-from kraken.spot.websocket.connectors import ConnectSpotWebsocketV2
+from kraken.spot.websocket.connectors import ConnectSpotWebsocket
 
-from .helper import SpotWebsocketClientV2TestWrapper, async_wait
+from .helper import SpotWebsocketClientTestWrapper
 
 
 @pytest.mark.spot()
 @pytest.mark.spot_websocket()
-@pytest.mark.spot_websocket_v2()
 def test_create_public_client(caplog: pytest.LogCaptureFixture) -> None:
     """
     Checks if the websocket client can be instantiated.
     """
 
-    client = SpotWebsocketClientV2TestWrapper()
+    client = SpotWebsocketClientTestWrapper()
 
     async def create_client() -> None:
         await client.start()
-        await async_wait(seconds=5)
+        await async_sleep(5)
         await client.stop()
 
     asyncio_run(create_client())
@@ -61,7 +61,6 @@ def test_create_public_client(caplog: pytest.LogCaptureFixture) -> None:
 
 @pytest.mark.spot()
 @pytest.mark.spot_websocket()
-@pytest.mark.spot_websocket_v2()
 def test_create_public_client_as_context_manager(
     caplog: pytest.LogCaptureFixture,
 ) -> None:
@@ -70,8 +69,8 @@ def test_create_public_client_as_context_manager(
     """
 
     async def create_client_as_context_manager() -> None:
-        async with SpotWebsocketClientV2TestWrapper():
-            await async_wait(seconds=5)
+        async with SpotWebsocketClientTestWrapper():
+            await async_sleep(5)
 
     asyncio_run(create_client_as_context_manager())
 
@@ -86,7 +85,6 @@ def test_create_public_client_as_context_manager(
 
 @pytest.mark.spot()
 @pytest.mark.spot_websocket()
-@pytest.mark.spot_websocket_v2()
 def test_access_public_client_attributes() -> None:
     """
     Checks the ``access_public_client_attributes`` function
@@ -94,7 +92,7 @@ def test_access_public_client_attributes() -> None:
     """
 
     async def check_access() -> None:
-        async with SpotWebsocketClientV2TestWrapper() as client:
+        async with SpotWebsocketClientTestWrapper() as client:
 
             assert client.public_channel_names == [
                 "book",
@@ -104,19 +102,18 @@ def test_access_public_client_attributes() -> None:
                 "trade",
             ]
             assert client.active_public_subscriptions == []
-            await async_wait(seconds=1)
+            await async_sleep(1)
             with pytest.raises(ConnectionError):
                 # can't access private subscriptions on unauthenticated client
                 assert isinstance(client.active_private_subscriptions, list)
 
-            await async_wait(seconds=1.5)
+            await async_sleep(1.5)
 
     asyncio_run(check_access())
 
 
 @pytest.mark.spot()
 @pytest.mark.spot_websocket()
-@pytest.mark.spot_websocket_v2()
 def test_access_public_subscriptions_no_conn_failing() -> None:
     """
     Checks if ``active_public_subscriptions`` fails, because there is no
@@ -124,13 +121,13 @@ def test_access_public_subscriptions_no_conn_failing() -> None:
     """
 
     async def check_access() -> None:
-        async with SpotWebsocketClientV2TestWrapper(
+        async with SpotWebsocketClientTestWrapper(
             no_public=True,
         ) as client:
             with pytest.raises(ConnectionError):
                 assert isinstance(client.active_public_subscriptions, list)
 
-            await async_wait(seconds=1.5)
+            await async_sleep(1.5)
 
     asyncio_run(check_access())
 
@@ -138,7 +135,6 @@ def test_access_public_subscriptions_no_conn_failing() -> None:
 @pytest.mark.spot()
 @pytest.mark.spot_auth()
 @pytest.mark.spot_websocket()
-@pytest.mark.spot_websocket_v2()
 def test_access_private_client_attributes(
     spot_api_key: str,
     spot_secret_key: str,
@@ -149,7 +145,7 @@ def test_access_private_client_attributes(
     """
 
     async def check_access() -> None:
-        async with SpotWebsocketClientV2TestWrapper(
+        async with SpotWebsocketClientTestWrapper(
             key=spot_api_key,
             secret=spot_secret_key,
         ) as auth_client:
@@ -164,14 +160,13 @@ def test_access_private_client_attributes(
                 "edit_order",
             ]
             assert auth_client.active_private_subscriptions == []
-            await async_wait(seconds=2.5)
+            await async_sleep(2.5)
 
     asyncio_run(check_access())
 
 
 @pytest.mark.spot()
 @pytest.mark.spot_websocket()
-@pytest.mark.spot_websocket_v2()
 def test_send_message_missing_method_failing() -> None:
     """
     Checks if the send_message function fails when specific keys or values
@@ -179,7 +174,7 @@ def test_send_message_missing_method_failing() -> None:
     """
 
     async def create_client() -> None:
-        async with SpotWebsocketClientV2TestWrapper() as client:
+        async with SpotWebsocketClientTestWrapper() as client:
             with pytest.raises(TypeError):  # wrong message format
                 await client.send_message(message=[])
             with pytest.raises(TypeError):  # method value not string
@@ -196,35 +191,34 @@ def test_send_message_missing_method_failing() -> None:
                 await client.send_message(
                     message={"method": "subscribe", "params": {"channel": 1}},
                 )
-            await async_wait(seconds=1)
+            await async_sleep(1)
 
     asyncio_run(create_client())
 
 
 @pytest.mark.spot()
 @pytest.mark.spot_websocket()
-@pytest.mark.spot_websocket_v2()
 def test_send_message_raw(caplog: pytest.LogCaptureFixture) -> None:
     """
     Checks if the send_message function fails when the socket is not available.
     """
 
     async def create_client() -> None:
-        async with SpotWebsocketClientV2TestWrapper() as client:
+        async with SpotWebsocketClientTestWrapper() as client:
             await client.send_message(
                 message={"method": "ping", "req_id": 123456789},
                 raw=True,
             )
-            await async_wait(seconds=1)
+            await async_sleep(1)
 
     asyncio_run(create_client())
 
     assert '{"method": "pong", "req_id": 123456789, "time_in":' in caplog.text
 
 
+@pytest.mark.wip()
 @pytest.mark.spot()
 @pytest.mark.spot_websocket()
-@pytest.mark.spot_websocket_v2()
 def test_public_subscribe(caplog: pytest.LogCaptureFixture) -> None:
     """
     Function that checks if the websocket client is able to subscribe to public
@@ -232,25 +226,25 @@ def test_public_subscribe(caplog: pytest.LogCaptureFixture) -> None:
     """
 
     async def test_subscription() -> None:
-        async with SpotWebsocketClientV2TestWrapper() as client:
+        async with SpotWebsocketClientTestWrapper() as client:
             await client.subscribe(
                 params={"channel": "ticker", "symbol": ["BTC/USD"]},
                 req_id=12345678,
             )
-        await async_wait(seconds=2)
+            await async_sleep(3)
 
     asyncio_run(test_subscription())
 
     assert (
-        '{"method": "subscribe", "req_id": 12345678, "result": {"channel": "ticker", "event_trigger": "trades", "snapshot": true, "symbol": "BTC/USD"}, "success": true, "time_in":'
-        in caplog.text
+        '{"method": "subscribe", "req_id": 12345678, "result": {"channel":'
+        ' "ticker", "event_trigger": "trades", "snapshot": true, "symbol":'
+        ' "BTC/USD"}, "success": true, "time_in":' in caplog.text
     )
 
 
 @pytest.mark.spot()
 @pytest.mark.spot_auth()
 @pytest.mark.spot_websocket()
-@pytest.mark.spot_websocket_v2()
 def test_private_subscribe_failing_on_public_connection() -> None:
     """
     Ensures that the public websocket connection can't subscribe to private
@@ -258,14 +252,14 @@ def test_private_subscribe_failing_on_public_connection() -> None:
     """
 
     async def test_subscription() -> None:
-        async with SpotWebsocketClientV2TestWrapper() as client:
+        async with SpotWebsocketClientTestWrapper() as client:
             with pytest.raises(KrakenAuthenticationError):
                 await client.subscribe(
                     params={"channel": "executions"},
                     req_id=123456789,
                 )
 
-            await async_wait(seconds=2)
+            await async_sleep(2)
 
     asyncio_run(test_subscription())
 
@@ -273,7 +267,6 @@ def test_private_subscribe_failing_on_public_connection() -> None:
 @pytest.mark.spot()
 @pytest.mark.spot_auth()
 @pytest.mark.spot_websocket()
-@pytest.mark.spot_websocket_v2()
 def test_private_subscribe(
     spot_api_key: str,
     spot_secret_key: str,
@@ -284,7 +277,7 @@ def test_private_subscribe(
     """
 
     async def test_subscription() -> None:
-        async with SpotWebsocketClientV2TestWrapper(
+        async with SpotWebsocketClientTestWrapper(
             key=spot_api_key,
             secret=spot_secret_key,
             no_public=True,
@@ -294,7 +287,7 @@ def test_private_subscribe(
                 req_id=123456789,
             )
 
-            await async_wait(seconds=2)
+            await async_sleep(2)
 
     asyncio_run(test_subscription())
 
@@ -307,21 +300,20 @@ def test_private_subscribe(
 
 @pytest.mark.spot()
 @pytest.mark.spot_websocket()
-@pytest.mark.spot_websocket_v2()
 def test_public_unsubscribe(caplog: pytest.LogCaptureFixture) -> None:
     """
     Checks if the websocket client can unsubscribe from public feeds.
     """
 
     async def test_unsubscribe() -> None:
-        async with SpotWebsocketClientV2TestWrapper() as client:
+        async with SpotWebsocketClientTestWrapper() as client:
 
             params: dict = {"channel": "ticker", "symbol": ["BTC/USD"]}
             await client.subscribe(params=params, req_id=123456789)
-            await async_wait(seconds=3)
+            await async_sleep(3)
 
             await client.unsubscribe(params=params, req_id=987654321)
-            await async_wait(seconds=2)
+            await async_sleep(2)
 
     asyncio_run(test_unsubscribe())
 
@@ -335,7 +327,6 @@ def test_public_unsubscribe(caplog: pytest.LogCaptureFixture) -> None:
 
 @pytest.mark.spot()
 @pytest.mark.spot_websocket()
-@pytest.mark.spot_websocket_v2()
 def test_public_unsubscribe_failure(caplog: pytest.LogCaptureFixture) -> None:
     """
     Checks if the websocket client responses with failures
@@ -343,7 +334,7 @@ def test_public_unsubscribe_failure(caplog: pytest.LogCaptureFixture) -> None:
     """
 
     async def check_unsubscribe_fail() -> None:
-        async with SpotWebsocketClientV2TestWrapper() as client:
+        async with SpotWebsocketClientTestWrapper() as client:
 
             # We did not subscribed to this ticker but it will work,
             # and the response will inform us that there is no such subscription.
@@ -352,7 +343,7 @@ def test_public_unsubscribe_failure(caplog: pytest.LogCaptureFixture) -> None:
                 req_id=123456789,
             )
 
-            await async_wait(seconds=2)
+            await async_sleep(2)
 
     asyncio_run(check_unsubscribe_fail())
 
@@ -365,7 +356,6 @@ def test_public_unsubscribe_failure(caplog: pytest.LogCaptureFixture) -> None:
 @pytest.mark.spot()
 @pytest.mark.spot_auth()
 @pytest.mark.spot_websocket()
-@pytest.mark.spot_websocket_v2()
 def test_private_unsubscribe(
     spot_api_key: str,
     spot_secret_key: str,
@@ -376,17 +366,17 @@ def test_private_unsubscribe(
     """
 
     async def check_unsubscribe() -> None:
-        async with SpotWebsocketClientV2TestWrapper(
+        async with SpotWebsocketClientTestWrapper(
             key=spot_api_key,
             secret=spot_secret_key,
             no_public=True,
         ) as client:
 
             await client.subscribe(params={"channel": "executions"}, req_id=123456789)
-            await async_wait(seconds=2)
+            await async_sleep(2)
 
             await client.unsubscribe(params={"channel": "executions"}, req_id=987654321)
-            await async_wait(seconds=2)
+            await async_sleep(2)
             # todo: check if subs are removed from known list - Dec 2023: obsolete?
 
     asyncio_run(check_unsubscribe())
@@ -401,7 +391,6 @@ def test_private_unsubscribe(
 
 @pytest.mark.spot()
 @pytest.mark.spot_websocket()
-@pytest.mark.spot_websocket_v2()
 def test___transform_subscription() -> None:
     """
     Checks if the subscription transformation works properly by checking
@@ -430,8 +419,8 @@ def test___transform_subscription() -> None:
         target_subscription["result"]["symbol"] = ["BTC/USD"]
 
         assert (
-            ConnectSpotWebsocketV2._ConnectSpotWebsocketV2__transform_subscription(
-                ConnectSpotWebsocketV2,
+            ConnectSpotWebsocket._ConnectSpotWebsocket__transform_subscription(
+                ConnectSpotWebsocket,
                 subscription=incoming_subscription,
             )
             == target_subscription
@@ -440,7 +429,6 @@ def test___transform_subscription() -> None:
 
 @pytest.mark.spot()
 @pytest.mark.spot_websocket()
-@pytest.mark.spot_websocket_v2()
 def test___transform_subscription_no_change() -> None:
     """
     Similar to the test above -- but verifying that messages that don't need an
@@ -466,8 +454,8 @@ def test___transform_subscription_no_change() -> None:
         }
 
         assert (
-            ConnectSpotWebsocketV2._ConnectSpotWebsocketV2__transform_subscription(
-                ConnectSpotWebsocketV2,
+            ConnectSpotWebsocket._ConnectSpotWebsocket__transform_subscription(
+                ConnectSpotWebsocket,
                 subscription=incoming_subscription,
             )
             == incoming_subscription
@@ -477,7 +465,6 @@ def test___transform_subscription_no_change() -> None:
 @pytest.mark.spot()
 @pytest.mark.spot_auth()
 @pytest.mark.spot_websocket()
-@pytest.mark.spot_websocket_v2()
 def test_reconnect(
     spot_api_key: str,
     spot_secret_key: str,
@@ -490,15 +477,15 @@ def test_reconnect(
     caplog.set_level(logging.INFO)
 
     async def check_reconnect() -> None:
-        async with SpotWebsocketClientV2TestWrapper(
+        async with SpotWebsocketClientTestWrapper(
             key=spot_api_key,
             secret=spot_secret_key,
         ) as client:
-            await async_wait(seconds=2)
+            await async_sleep(2)
 
             await client.subscribe(params={"channel": "ticker", "symbol": ["BTC/USD"]})
             await client.subscribe(params={"channel": "executions"})
-            await async_wait(seconds=2)
+            await async_sleep(2)
 
             for obj in (client._priv_conn, client._pub_conn):
                 mocker.patch.object(
@@ -509,7 +496,7 @@ def test_reconnect(
             await client._pub_conn.close_connection()
             await client._priv_conn.close_connection()
 
-            await async_wait(seconds=5)
+            await async_sleep(5)
 
     asyncio_run(check_reconnect())
 

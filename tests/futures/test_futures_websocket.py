@@ -194,7 +194,6 @@ def test_subscribe_private(
         assert expected in caplog.text
 
 
-@pytest.mark.wip()
 @pytest.mark.futures()
 @pytest.mark.futures_websocket()
 def test_unsubscribe_public(caplog: pytest.LogCaptureFixture) -> None:

@@ -180,7 +180,7 @@ class ConnectFuturesWebsocket:  # pylint: disable=too-many-instance-attributes
                 tasks.keys(),
                 return_when=asyncio.FIRST_EXCEPTION,
             )
-            exception_occur: bool = False
+            exception_occur = False
             for task in finished:
                 if task.exception():
                     exception_occur = True

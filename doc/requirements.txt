@@ -1,5 +1,9 @@
+aiohttp
 asyncio>=3.4
+click
+cloup
 nbsphinx
+orjson
 requests
 setuptools_scm
 sphinx
