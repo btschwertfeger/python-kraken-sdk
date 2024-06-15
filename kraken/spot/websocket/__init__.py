@@ -4,7 +4,7 @@
 #
 
 """
-Module that provides the base class for the Kraken Websocket clients v1 and v2.
+Module that provides the base class for the Kraken Websocket clients v2.
 """
 
 from __future__ import annotations
@@ -13,10 +13,7 @@ import logging
 from typing import TYPE_CHECKING, Any, TypeVar
 
 from kraken.spot import SpotClient
-from kraken.spot.websocket.connectors import (
-    ConnectSpotWebsocketV1,
-    ConnectSpotWebsocketV2,
-)
+from kraken.spot.websocket.connectors import ConnectSpotWebsocket
 
 if TYPE_CHECKING:
     from collections.abc import Callable
@@ -26,10 +23,9 @@ Self = TypeVar("Self")
 
 class SpotWSClientBase(SpotClient):
     """
-    This is the base class for :class:`kraken.spot.SpotWSClientV1` and
-    :class:`kraken.spot.SpotWSClientV2`. It extends the REST API base
-    class and is used to provide the base functionalities that are used
-    for Kraken Websocket API v1 and v2.
+    This is the base class for :class:`kraken.spot.SpotWSClient`. It extends
+    the REST API base class and is used to provide the base functionalities that
+    are used for Kraken Websocket API v2.
 
     **This is an internal class and should not be used outside.**
 
@@ -39,10 +35,10 @@ class SpotWSClientBase(SpotClient):
     :type secret: str, optional
     :param url: Set a specific URL to access the Kraken REST API
     :type url: str, optional
-    :param no_public: Disables public connection (default: ``False``).
-        If not set or set to ``False``, the client will create a public and
-        a private connection per default. If only a private connection is
-        required, this parameter should be set to ``True``.
+    :param no_public: Disables public connection (default: ``False``). If not
+        set or set to ``False``, the client will create a public and a private
+        connection per default. If only a private connection is required, this
+        parameter should be set to ``True``.
     :param beta: Use the beta websocket channels (maybe not supported anymore,
         default: ``False``)
     :type beta: bool
@@ -57,7 +53,6 @@ class SpotWSClientBase(SpotClient):
         key: str = "",
         secret: str = "",
         callback: Callable | None = None,
-        api_version: str = "v2",
         *,
         no_public: bool = False,
     ) -> None:
@@ -66,36 +61,22 @@ class SpotWSClientBase(SpotClient):
         self._is_auth: bool = bool(key and secret)
         self.__callback: Callable | None = callback
         self.exception_occur: bool = False
-        self._pub_conn: ConnectSpotWebsocketV1 | ConnectSpotWebsocketV2 | None = None
-        self._priv_conn: ConnectSpotWebsocketV1 | ConnectSpotWebsocketV2 | None = None
-        self.__connect(version=api_version, no_public=no_public)
+        self._pub_conn: ConnectSpotWebsocket | None = None
+        self._priv_conn: ConnectSpotWebsocket | None = None
+        self.__connect(no_public=no_public)
 
     # --------------------------------------------------------------------------
     # Internals
     def __connect(
         self: SpotWSClientBase,
-        version: str,
         *,
         no_public: bool,
     ) -> None:
-        """
-        Set up functions and attributes based on the API version.
+        """Set up functions and attributes based on the API version."""
 
-        :param version: The Websocket API version to use (one of ``v1``, ``v2``)
-        :type version: str
-        """
-        ConnectSpotWebsocket: type[ConnectSpotWebsocketV1 | ConnectSpotWebsocketV2]
-
-        if version == "v1":
-            ConnectSpotWebsocket = ConnectSpotWebsocketV1
-
-        elif version == "v2":
-            # pylint: disable=invalid-name
-            self.PROD_ENV_URL += "/v2"
-            self.AUTH_PROD_ENV_URL += "/v2"
-            ConnectSpotWebsocket = ConnectSpotWebsocketV2
-        else:
-            raise ValueError("Websocket API version must be one of ``v1``, ``v2``")
+        # pylint: disable=invalid-name
+        self.PROD_ENV_URL += "/v2"
+        self.AUTH_PROD_ENV_URL += "/v2"
 
         self._pub_conn = (
             ConnectSpotWebsocket(
@@ -128,8 +109,7 @@ class SpotWSClientBase(SpotClient):
         have to overwrite this function since it will receive all incoming
         messages that will be sent by Kraken.
 
-        See :class:`kraken.spot.SpotWSClientV1` and
-        :class:`kraken.spot.SpotWSClientV2` for examples to use this
+        See :class:`kraken.spot.SpotWSClient` for examples to use this
         function.
 
         :param message: The message received sent by Kraken via the websocket connection

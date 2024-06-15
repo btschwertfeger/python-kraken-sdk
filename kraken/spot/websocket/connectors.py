@@ -7,7 +7,7 @@
 This module provides the base class that is used to create and maintain
 websocket connections to Kraken.
 
-It also provides derived classes for using the Kraken Websocket API v1 and v2.
+It also provides derived classes for using the Kraken Websocket API v2.
 """
 
 from __future__ import annotations
@@ -34,13 +34,10 @@ if TYPE_CHECKING:
 class ConnectSpotWebsocketBase:
     """
     This class serves as the base for
-    :class:`kraken.spot.websocket.connectors.ConnectSpotWebsocket` and
-    :class:`kraken.spot.websocket.connectors.ConnectSpotWebsocketV2`.
+    :class:`kraken.spot.websocket.connectors.ConnectSpotWebsocket`.
 
     It creates and holds a websocket connection, reconnects and handles
-    errors. Its functions only serve as base for the classes mentioned above,
-    since it combines the functionalities that is used for both Websocket API v1
-    and v2.
+    errors.
 
     **This is an internal class and should not be used outside.**
 
@@ -291,172 +288,7 @@ class ConnectSpotWebsocketBase:
         )
 
 
-class ConnectSpotWebsocketV1(ConnectSpotWebsocketBase):
-    """
-    This class extends the
-    :class:`kraken.spot.websocket.connectors.ConnectSpotWebsocketBase` and
-    can be instantiated to create and maintain a websocket connection using
-    the Kraken Websocket API v1.
-
-    **This is an internal class and should not be used outside.**
-
-    :param client: The websocket client that wants to connect
-    :type client: :class:`kraken.spot.SpotWSClientBase`
-    :param endpoint: The websocket endpoint
-    :type endpoint: str
-    :param callback: Callback function that receives the websocket messages
-    :type callback: function
-    :param is_auth: If the websocket connects to endpoints that
-        require authentication (default: ``False``)
-    :type is_auth: bool, optional
-    """
-
-    def __init__(
-        self: ConnectSpotWebsocketV1,
-        client: SpotWSClientBase,
-        endpoint: str,
-        callback: Callable | None,
-        *,
-        is_auth: bool = False,
-    ) -> None:
-        super().__init__(
-            client=client,
-            endpoint=endpoint,
-            callback=callback,
-            is_auth=is_auth,
-        )
-
-    async def send_ping(self: ConnectSpotWebsocketV1) -> None:
-        """Sends ping to Kraken"""
-        await self.socket.send(
-            json.dumps(
-                {
-                    "event": "ping",
-                    "reqid": int(time() * 1000),
-                },
-            ),
-        )
-        self._last_ping = time()
-
-    async def _recover_subscriptions(
-        self: ConnectSpotWebsocketV1,
-        event: asyncio.Event,
-    ) -> None:
-        """
-        Executes the subscribe function for all subscriptions that were  tracked
-        locally. This function is called when the connection was closed to
-        recover the subscriptions.
-
-        :param event: Event to wait for (so this is only executed when
-            it is set to ``True`` - which is when the connection is ready)
-        :type event: asyncio.Event
-        """
-        log_msg: str = (
-            f'Recover {"authenticated" if self.is_auth else "public"} subscriptions {self._subscriptions}'
-        )
-        self.LOG.info("%s: waiting", log_msg)
-        await event.wait()
-
-        for sub in self._subscriptions:
-            cpy = deepcopy(sub)
-            private = False
-            if (
-                "subscription" in sub
-                and "name" in sub["subscription"]
-                and sub["subscription"]["name"] in self.client.private_channel_names
-            ):
-                cpy["subscription"]["token"] = self.ws_conn_details["token"]
-                private = True
-
-            await self.client.send_message(cpy, private=private)
-            self.LOG.info("%s: OK", sub)
-
-        self.LOG.info("%s: done", log_msg)
-
-    def _manage_subscriptions(
-        self: ConnectSpotWebsocketV1,
-        message: dict | list,
-    ) -> None:
-        """
-        Checks if the message contains events about un-/subscriptions
-        to add or remove these from the list of current tracked subscriptions.
-
-        :param message: The message to check for subscriptions
-        :type message: dict | list
-        """
-        if (
-            isinstance(message, dict)
-            and message.get("event") == "subscriptionStatus"
-            and message.get("status")
-        ):
-            if message["status"] == "subscribed":
-                self.__append_subscription(message=message)
-            elif message["status"] == "unsubscribed":
-                self.__remove_subscription(message=message)
-            elif message["status"] == "error":
-                self.LOG.warning(message)
-
-    def __append_subscription(self: ConnectSpotWebsocketV1, message: dict) -> None:
-        """
-        Appends a subscription to the local list of tracked subscriptions.
-
-        :param subscription: The subscription to append
-        :type subscription: dict
-        """
-        # remove from list, to avoid duplicate entries
-        self.__remove_subscription(message)
-        self._subscriptions.append(self.__build_subscription(message))
-
-    def __remove_subscription(self: ConnectSpotWebsocketV1, message: dict) -> None:
-        """
-        Removes a subscription from the list of locally tracked subscriptions.
-
-        :param subscription: The subscription to remove.
-        :type subscription: dict
-        """
-        subscription: dict = self.__build_subscription(message=message)
-        self._subscriptions = [
-            sub for sub in self._subscriptions if sub != subscription
-        ]
-
-    def __build_subscription(self: ConnectSpotWebsocketV1, message: dict) -> dict:
-        """
-        Builds a subscription dictionary that can be used to subscribe to a
-        feed. This is also used to prepare the local active subscription list.
-
-        :param message: The information to build the subscription from
-        :type message: dict
-        :raises ValueError: If attributes are missing
-        :return: The built subscription
-        :rtype: dict
-        """
-        sub: dict = {"event": "subscribe"}
-
-        if "subscription" not in message or "name" not in message["subscription"]:
-            raise ValueError("Cannot remove subscription with missing attributes.")
-        if (
-            message["subscription"]["name"] in self.client.public_channel_names
-        ):  # public endpoint
-            if message.get("pair"):
-                sub["pair"] = (
-                    message["pair"]
-                    if isinstance(message["pair"], list)
-                    else [message["pair"]]
-                )
-            sub["subscription"] = message["subscription"]
-        elif (
-            message["subscription"]["name"] in self.client.private_channel_names
-        ):  # private endpoint
-            sub["subscription"] = {"name": message["subscription"]["name"]}
-        else:
-            self.LOG.warning(
-                "Feed not implemented. Please contact the python-kraken-sdk "
-                "package maintainer.",
-            )
-        return sub
-
-
-class ConnectSpotWebsocketV2(ConnectSpotWebsocketBase):
+class ConnectSpotWebsocket(ConnectSpotWebsocketBase):
     """
     This class extends the
     :class:`kraken.spot.websocket.connectors.ConnectSpotWebsocketBase` and can
@@ -477,7 +309,7 @@ class ConnectSpotWebsocketV2(ConnectSpotWebsocketBase):
     """
 
     def __init__(
-        self: ConnectSpotWebsocketV2,
+        self: ConnectSpotWebsocket,
         client: SpotWSClientBase,
         endpoint: str,
         callback: Callable | None,
@@ -491,13 +323,13 @@ class ConnectSpotWebsocketV2(ConnectSpotWebsocketBase):
             is_auth=is_auth,
         )
 
-    async def send_ping(self: ConnectSpotWebsocketV2) -> None:
+    async def send_ping(self: ConnectSpotWebsocket) -> None:
         """Sends ping to Kraken"""
         await self.socket.send(json.dumps({"method": "ping"}))
         self._last_ping = time()
 
     async def _recover_subscriptions(
-        self: ConnectSpotWebsocketV2,
+        self: ConnectSpotWebsocket,
         event: asyncio.Event,
     ) -> None:
         """
@@ -521,7 +353,7 @@ class ConnectSpotWebsocketV2(ConnectSpotWebsocketBase):
 
         self.LOG.info("%s: done", log_msg)
 
-    def _manage_subscriptions(self: ConnectSpotWebsocketV2, message: dict) -> None:  # type: ignore[override]
+    def _manage_subscriptions(self: ConnectSpotWebsocket, message: dict) -> None:  # type: ignore[override]
         """
         Checks if the message contains events about un-/subscriptions
         to add or remove these from the list of current tracked subscriptions.
@@ -543,7 +375,7 @@ class ConnectSpotWebsocketV2(ConnectSpotWebsocketBase):
             else:
                 self.LOG.warning(message)
 
-    def __append_subscription(self: ConnectSpotWebsocketV2, subscription: dict) -> None:
+    def __append_subscription(self: ConnectSpotWebsocket, subscription: dict) -> None:
         """
         Appends a subscription to the local list of tracked subscriptions.
 
@@ -553,7 +385,7 @@ class ConnectSpotWebsocketV2(ConnectSpotWebsocketBase):
         self.__remove_subscription(subscription=subscription)
         self._subscriptions.append(subscription)
 
-    def __remove_subscription(self: ConnectSpotWebsocketV2, subscription: dict) -> None:
+    def __remove_subscription(self: ConnectSpotWebsocket, subscription: dict) -> None:
         """
         Removes a subscription from the list of locally tracked subscriptions.
 
@@ -569,7 +401,7 @@ class ConnectSpotWebsocketV2(ConnectSpotWebsocketBase):
                 return
 
     def __transform_subscription(
-        self: ConnectSpotWebsocketV2,
+        self: ConnectSpotWebsocket,
         subscription: dict,
     ) -> dict:
         """
@@ -620,6 +452,5 @@ class ConnectSpotWebsocketV2(ConnectSpotWebsocketBase):
 
 __all__ = [
     "ConnectSpotWebsocketBase",
-    "ConnectSpotWebsocketV1",
-    "ConnectSpotWebsocketV2",
+    "ConnectSpotWebsocket",
 ]

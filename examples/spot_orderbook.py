@@ -40,7 +40,7 @@ import asyncio
 import logging
 from typing import Any
 
-from kraken.spot import OrderbookClientV2
+from kraken.spot import SpotOrderBookClient
 
 logging.basicConfig(
     format="%(asctime)s %(module)s,line: %(lineno)d %(levelname)8s | %(message)s",
@@ -51,12 +51,12 @@ logging.getLogger().setLevel(logging.INFO)
 logging.getLogger("requests").setLevel(logging.WARNING)
 
 
-class Orderbook(OrderbookClientV2):
+class Orderbook(SpotOrderBookClient):
     """
     This is a wrapper class that is used to overload the :func:`on_book_update`
     function. It can also be used as a base for trading strategy. Since the
-    :class:`kraken.spot.OrderbookClientV2` is derived from
-    :class:`kraken.spot.KrakenSpotWSClientV2` it can also be used to access the
+    :class:`kraken.spot.SpotOrderBookClient` is derived from
+    :class:`kraken.spot.SpotWSClient` it can also be used to access the
     :func:`subscribe` function and any other provided utility.
     """
 
