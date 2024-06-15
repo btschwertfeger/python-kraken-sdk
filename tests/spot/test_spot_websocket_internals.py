@@ -8,12 +8,11 @@
 from __future__ import annotations
 
 from asyncio import run as asyncio_run
+from asyncio import sleep as async_sleep
 
 import pytest
 
 from kraken.spot.websocket import SpotWSClientBase
-
-from .helper import async_wait
 
 
 @pytest.mark.spot()
@@ -33,7 +32,7 @@ def test_ws_base_client_context_manager() -> None:
         with TestClient(no_public=True) as client:
             with pytest.raises(ValueError, match=r"Test Error"):
                 await client.on_message(message={"error": "yes"})
-            await async_wait(seconds=5)
+            await async_sleep(5)
 
     asyncio_run(check_it())
 

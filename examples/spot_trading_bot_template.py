@@ -173,6 +173,7 @@ class Manager:
         but you can also apply your own reconnect rules.
         """
         self.__trading_strategy = TradingBot(config=self.__config)
+        await self.__trading_strategy.start()
 
         await self.__trading_strategy.subscribe(
             params={"channel": "ticker", "symbol": self.__config["pairs"]},

@@ -2,4 +2,4 @@
 # Copyright (C) 2023 Benjamin Thomas Schwertfeger
 # GitHub: https://github.com/btschwertfeger
 #
-# This file is required for the CI/CD codecov workflow.
+# This file is required for collecting coverage information.

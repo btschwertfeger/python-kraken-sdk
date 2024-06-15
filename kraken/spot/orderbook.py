@@ -25,7 +25,7 @@ if TYPE_CHECKING:
     from collections.abc import Callable
 
 
-class SpotOrderBookClient:
+class SpotOrderBookClient(SpotWSClient):
     """
     **This client is using the Kraken Websocket API v2**
 
@@ -73,7 +73,10 @@ class SpotOrderBookClient:
                     )
 
         async def main() -> None:
-            orderbook: OrderBook = OrderBook(depth=10) await orderbook.add_book(
+            orderbook: OrderBook = OrderBook(depth=10)
+            await orderbook.start()
+
+            await orderbook.add_book(
                 pairs=["XBT/USD"]  # we can also subscribe to more currency
                 pairs
             )
@@ -102,6 +105,8 @@ class SpotOrderBookClient:
 
         async def main() -> None:
             orderbook: OrderBook = OrderBook(depth=100, callback=my_callback)
+            await orderbook.start()
+
             await orderbook.add_book(
                 pairs=["XBT/USD"]  # we can also subscribe to more currency
                 pairs
@@ -130,9 +135,6 @@ class SpotOrderBookClient:
         self.__callback: Callable | None = callback
 
         self.__market: Market = Market()
-        self.ws_client: SpotWSClient = SpotWSClient(
-            callback=self.on_message,
-        )
 
     async def on_message(self: SpotOrderBookClient, message: list | dict) -> None:
         """
@@ -257,7 +259,7 @@ class SpotOrderBookClient:
         :param depth: The book depth
         :type depth: int
         """
-        await self.ws_client.subscribe(
+        await self.subscribe(
             params={"channel": "book", "depth": self.__depth, "symbol": pairs},
         )
 
@@ -270,7 +272,7 @@ class SpotOrderBookClient:
         :param depth: The book depth
         :type depth: int
         """
-        await self.ws_client.unsubscribe(
+        await self.unsubscribe(
             params={"channel": "book", "depth": self.__depth, "symbol": pairs},
         )
 
@@ -280,20 +282,6 @@ class SpotOrderBookClient:
         Return the fixed depth of this orderbook client.
         """
         return self.__depth
-
-    @property
-    def exception_occur(self: SpotOrderBookClient) -> bool:
-        """
-        Can be used to determine if any critical error occurred within the
-        websocket connection. If so, the function will return ``True`` and the
-        client instance is most likely not usable anymore. So this is the
-        switch lets the user know, when to delete the current one and create a
-        new one.
-
-        :return: ``True`` if any critical error occurred else ``False``
-        :rtype: bool
-        """
-        return bool(self.ws_client.exception_occur)
 
     def get(self: SpotOrderBookClient, pair: str) -> dict | None:
         """

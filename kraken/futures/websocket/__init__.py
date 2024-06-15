@@ -2,6 +2,7 @@
 # Copyright (C) 2023 Benjamin Thomas Schwertfeger
 # GitHub: https://github.com/btschwertfeger
 #
+# pylint: disable=attribute-defined-outside-init
 
 """Module that implements the Kraken Futures websocket client"""
 
@@ -25,7 +26,7 @@ if TYPE_CHECKING:
     from kraken.futures import FuturesWSClient
 
 
-class ConnectFuturesWebsocket:
+class ConnectFuturesWebsocket:  # pylint: disable=too-many-instance-attributes
     """
     This class is only called by the
     :class:`kraken.futures.FuturesWSClient` to establish the websocket
@@ -58,21 +59,34 @@ class ConnectFuturesWebsocket:
         self.__new_challenge: str | None = None
         self.__challenge_ready: bool = False
 
-        self.__socket: Any = None
+        self.socket: Any = None
         self.__subscriptions: list[dict] = []
-
-        self.task = asyncio.ensure_future(
-            self.__run_forever(),
-            loop=asyncio.get_running_loop(),
-        )
+        self.keep_alive = True
+        self.exception_occur = False
 
     @property
     def subscriptions(self: ConnectFuturesWebsocket) -> list[dict]:
         """Returns the active subscriptions"""
         return self.__subscriptions
 
+    async def start(self: ConnectFuturesWebsocket) -> None:
+        """Starts the websocket connection"""
+        if (
+            hasattr(self, "task")
+            and not self.task.done()  # pylint: disable=access-member-before-definition
+        ):
+            return
+        self.task: asyncio.Task = asyncio.create_task(
+            self.__run_forever(),
+        )
+
+    async def stop(self: ConnectFuturesWebsocket) -> None:
+        """Stops the websocket connection"""
+        self.keep_alive = False
+        if hasattr(self, "task") and not self.task.done():
+            await self.task
+
     async def __run(self: ConnectFuturesWebsocket, event: asyncio.Event) -> None:
-        keep_alive: bool = True
         self.__new_challenge = None
         self.__last_challenge = None
 
@@ -81,15 +95,15 @@ class ConnectFuturesWebsocket:
             ping_interval=30,
         ) as socket:
             logging.info("Websocket connected!")
-            self.__socket = socket
+            self.socket = socket
 
             if not event.is_set():
                 event.set()
             self.__reconnect_num = 0
 
-            while keep_alive:
+            while self.keep_alive:
                 try:
-                    _message = await asyncio.wait_for(self.__socket.recv(), timeout=15)
+                    _message = await asyncio.wait_for(self.socket.recv(), timeout=10)
                 except TimeoutError:
                     logging.debug(  # important
                         "Timeout error in %s",
@@ -97,7 +111,7 @@ class ConnectFuturesWebsocket:
                     )
                 except asyncio.CancelledError:
                     logging.exception("asyncio.CancelledError")
-                    keep_alive = False
+                    self.keep_alive = False
                     await self.__callback({"error": "asyncio.CancelledError"})
                 else:
                     try:
@@ -119,21 +133,23 @@ class ConnectFuturesWebsocket:
                             await self.__callback(message)
 
     async def __run_forever(self: ConnectFuturesWebsocket) -> None:
+        self.keep_alive = True
+        self.exception_occur = False
         try:
-            while True:
+            while self.keep_alive:
                 await self.__reconnect()
         except MaxReconnectError:
             await self.__callback(
                 {"error": "kraken.exceptions.MaxReconnectError"},
             )
+            self.exception_occur = True
         except Exception:
             logging.exception(traceback.format_exc())
-        finally:
-            self.__client.exception_occur = True
+            self.exception_occur = True
 
     async def close_connection(self: ConnectFuturesWebsocket) -> None:
         """Closes the connection -/ will force reconnect"""
-        await self.__socket.close()
+        await self.socket.close()
 
     async def __reconnect(self: ConnectFuturesWebsocket) -> None:
         logging.info("Websocket start connect/reconnect")
@@ -159,12 +175,12 @@ class ConnectFuturesWebsocket:
             asyncio.ensure_future(self.__run(event)): self.__run,
         }
 
-        while set(tasks.keys()):
+        while self.keep_alive:
             finished, pending = await asyncio.wait(
                 tasks.keys(),
                 return_when=asyncio.FIRST_EXCEPTION,
             )
-            exception_occur: bool = False
+            exception_occur = False
             for task in finished:
                 if task.exception():
                     exception_occur = True
@@ -222,7 +238,7 @@ class ConnectFuturesWebsocket:
         :type private: bool, optional
         :rtype: Coroutine
         """
-        while not self.__socket:
+        while not self.socket:
             await asyncio.sleep(0.4)
 
         if private:
@@ -237,7 +253,7 @@ class ConnectFuturesWebsocket:
             message["original_challenge"] = self.__last_challenge
             message["signed_challenge"] = self.__new_challenge
 
-        await self.__socket.send(json.dumps(message))
+        await self.socket.send(json.dumps(message))
 
     def __handle_new_challenge(self: ConnectFuturesWebsocket, message: dict) -> None:
         self.__last_challenge = message["message"]
@@ -245,7 +261,7 @@ class ConnectFuturesWebsocket:
         self.__challenge_ready = True
 
     async def __check_challenge_ready(self: ConnectFuturesWebsocket) -> None:
-        await self.__socket.send(
+        await self.socket.send(
             json.dumps({"event": "challenge", "api_key": self.__client.key}),
         )
 

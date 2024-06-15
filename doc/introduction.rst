@@ -30,19 +30,19 @@ and documented.
 - The output in the examples may differ, as these are only intended as examples
   and may change in the future.
 - If a certain endpoint is not reachable, the function
-  :func:`kraken.base_api.SpotClient.request` or
-  :func:`kraken.base_api.FuturesClient.request`,
+  :func:`kraken.spot.SpotClient.request` or
+  :func:`kraken.futures.FuturesClient.request`,
   which is also available in all derived REST clients, can be used to reach an
   endpoint with the appropriate parameters. Here private content can also be
   accessed, provided that either the base class or one of the clients has been
   initialized with valid credentials.
 - For Futures there is the websocket client
   :class:`kraken.futures.FuturesWSClient` and for Spot
-  :class:`kraken.spot.SpotWSClientV2` (for API v2).
+  :class:`kraken.spot.SpotWSClient`.
 
 
 Disclaimer
--------------
+----------
 
 There is no guarantee that this software will work flawlessly at this or later
 times. Of course, no responsibility is taken for possible profits or losses.
@@ -74,12 +74,14 @@ Available Clients:
 
 Important Notice
 -----------------
+
 **ONLY tagged releases are available at PyPI**. The content of the master branch
 may not match with the content of the latest release. - Please have a look at
 the release specific READMEs and changelogs.
 
 It is also recommended to **pin the used version** to avoid unexpected behavior
 on new releases.
+
 
 .. _section-troubleshooting:
 
@@ -105,7 +107,6 @@ References
 - https://docs.kraken.com/api/
 - https://docs.kraken.com/api/docs/guides/global-intro
 - https://docs.kraken.com/rest
-- https://docs.kraken.com/websockets
 - https://docs.kraken.com/websockets-v2
 - https://docs.futures.kraken.com
 - https://support.kraken.com/hc/en-us/sections/360012894412-Futures-API

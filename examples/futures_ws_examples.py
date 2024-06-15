@@ -27,24 +27,26 @@ logging.getLogger("requests").setLevel(logging.WARNING)
 logging.getLogger("urllib3").setLevel(logging.WARNING)
 
 
+# Custom client
+class Client(FuturesWSClient):
+    """Can be used to create a custom trading strategy"""
+
+    async def on_message(self: Client, message: list | dict) -> None:
+        """Receives the websocket messages"""
+        logging.info(message)
+        # … apply your trading strategy in this class
+        # … you can also combine this with the Futures REST clients
+
+
 async def main() -> None:
     """Create a client and subscribe to channels/feeds"""
 
     key = os.getenv("FUTURES_API_KEY")
     secret = os.getenv("FUTURES_SECRET_KEY")
 
-    # Custom client
-    class Client(FuturesWSClient):
-        """Can be used to create a custom trading strategy"""
-
-        async def on_message(self: Client, message: list | dict) -> None:
-            """Receives the websocket messages"""
-            logging.info(message)
-            # … apply your trading strategy here
-            # … you can also combine this with the Futures REST clients
-
     # _____Public_Websocket_Feeds___________________
     client = Client()
+    await client.start()
     # print(client.get_available_public_subscription_feeds())
 
     products = ["PI_XBTUSD", "PF_SOLUSD"]
@@ -66,6 +68,7 @@ async def main() -> None:
     # _____Private_Websocket_Feeds_________________
     if key and secret:
         client_auth = Client(key=key, secret=secret)
+        await client_auth.start()
         # print(client_auth.get_available_private_subscription_feeds())
 
         # subscribe to a private/authenticated websocket feed

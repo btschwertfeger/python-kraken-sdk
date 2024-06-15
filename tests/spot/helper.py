@@ -12,9 +12,7 @@ from __future__ import annotations
 
 import json
 import logging
-from asyncio import sleep
 from pathlib import Path
-from time import time
 
 from kraken.spot import SpotOrderBookClient, SpotWSClient
 
@@ -30,14 +28,7 @@ def is_not_error(
     return isinstance(value, dict) and "error" not in value
 
 
-async def async_wait(seconds: float = 1.0) -> None:
-    """Function that waits for ``seconds`` - asynchronous."""
-    start: float = time()
-    while time() - seconds < start:
-        await sleep(0.2)
-
-
-class SpotWebsocketClientV2TestWrapper(SpotWSClient):
+class SpotWebsocketClientTestWrapper(SpotWSClient):
     """
     Class that creates an instance to test the SpotWSClient.
 
@@ -48,7 +39,7 @@ class SpotWebsocketClientV2TestWrapper(SpotWSClient):
     LOG: logging.Logger = logging.getLogger(__name__)
 
     def __init__(
-        self: SpotWebsocketClientV2TestWrapper,
+        self: SpotWebsocketClientTestWrapper,
         key: str = "",
         secret: str = "",
         **kwargs: dict | str | float | bool | None,
@@ -59,7 +50,7 @@ class SpotWebsocketClientV2TestWrapper(SpotWSClient):
         fh.setLevel(logging.INFO)
         self.LOG.addHandler(fh)
 
-    async def on_message(self: SpotWebsocketClientV2TestWrapper, message: dict) -> None:
+    async def on_message(self: SpotWebsocketClientTestWrapper, message: dict) -> None:
         """
         This is the callback function that must be implemented
         to handle custom websocket messages.

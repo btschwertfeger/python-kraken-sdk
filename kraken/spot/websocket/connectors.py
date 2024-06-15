@@ -2,6 +2,7 @@
 # Copyright (C) 2023 Benjamin Thomas Schwertfeger
 # GitHub: https://github.com/btschwertfeger
 #
+# pylint: disable=attribute-defined-outside-init
 
 """
 This module provides the base class that is used to create and maintain
@@ -31,7 +32,7 @@ if TYPE_CHECKING:
     from kraken.spot.websocket import SpotWSClientBase
 
 
-class ConnectSpotWebsocketBase:
+class ConnectSpotWebsocketBase:  # pylint: disable=too-many-instance-attributes
     """
     This class serves as the base for
     :class:`kraken.spot.websocket.connectors.ConnectSpotWebsocket`.
@@ -76,7 +77,8 @@ class ConnectSpotWebsocketBase:
         self._last_ping: int | float | None = None
         self.socket: Any | None = None
         self._subscriptions: list[dict] = []
-        self.task: asyncio.Task = asyncio.create_task(self.__run_forever())
+        self.exception_occur: bool = False
+        self.keep_alive: bool = True
 
     @property
     def is_auth(self: ConnectSpotWebsocketBase) -> bool:
@@ -93,6 +95,23 @@ class ConnectSpotWebsocketBase:
         """Returns a copy of active subscriptions"""
         return deepcopy(self._subscriptions)
 
+    async def start(self: ConnectSpotWebsocketBase) -> None:
+        """Starts the websocket connection"""
+        if (
+            hasattr(self, "task")
+            and not self.task.done()  # pylint: disable=access-member-before-definition
+        ):
+            return
+        self.task: asyncio.Task = asyncio.create_task(
+            self.__run_forever(),
+        )
+
+    async def stop(self: ConnectSpotWebsocketBase) -> None:
+        """Stops the websocket connection"""
+        self.keep_alive = False
+        if hasattr(self, "task") and not self.task.done():
+            await self.task
+
     async def __run(self: ConnectSpotWebsocketBase, event: asyncio.Event) -> None:
         """
         This function establishes the websocket connection and runs until
@@ -101,7 +120,6 @@ class ConnectSpotWebsocketBase:
         :param event: Event used to control the information flow
         :type event: asyncio.Event
         """
-        keep_alive: bool = True
         self._last_ping = time()
         self.ws_conn_details = (
             None if not self.__is_auth else self.__client.get_ws_token()
@@ -124,16 +142,16 @@ class ConnectSpotWebsocketBase:
                 event.set()
             self.__reconnect_num = 0
 
-            while keep_alive:
+            while self.keep_alive:
                 if time() - self._last_ping > self.PING_INTERVAL:
                     await self.send_ping()
                 try:
-                    _message = await asyncio.wait_for(self.socket.recv(), timeout=15)
+                    _message = await asyncio.wait_for(self.socket.recv(), timeout=10)
                 except TimeoutError:  # important
                     await self.send_ping()
                 except asyncio.CancelledError:
                     self.LOG.exception("asyncio.CancelledError")
-                    keep_alive = False
+                    self.keep_alive = False
                     await self.__callback({"error": "asyncio.CancelledError"})
                 else:
                     try:
@@ -146,20 +164,17 @@ class ConnectSpotWebsocketBase:
                         await self.__callback(message)
 
     async def __run_forever(self: ConnectSpotWebsocketBase) -> None:
-        """
-        This function ensures the reconnects.
-
-        todo: This is stupid. There must be a better way for passing
-              the raised exception to the client class - not
-              through this ``exception_occur`` flag
-        """
+        """This function ensures the reconnects."""
+        self.keep_alive = True
+        self.exception_occur = False
         try:
-            while True:
+            while self.keep_alive:
                 await self.__reconnect()
         except MaxReconnectError:
             await self.__callback(
                 {"error": "kraken.exceptions.MaxReconnectError"},
             )
+            self.exception_occur = True
         except Exception as exc:
             traceback_: str = traceback.format_exc()
             logging.exception(
@@ -168,11 +183,7 @@ class ConnectSpotWebsocketBase:
                 traceback_,
             )
             await self.__callback({"error": traceback_})
-        finally:
-            await self.__callback(
-                {"error": "Exception stopped the Kraken Spot Websocket Client!"},
-            )
-            self.__client.exception_occur = True
+            self.exception_occur = True
 
     async def close_connection(self: ConnectSpotWebsocketBase) -> None:
         """Closes the websocket connection and thus forces a reconnect"""
@@ -208,7 +219,7 @@ class ConnectSpotWebsocketBase:
             asyncio.create_task(self.__run(event)),
         ]
 
-        while True:
+        while self.keep_alive:
             finished, pending = await asyncio.wait(
                 tasks,
                 return_when=asyncio.FIRST_EXCEPTION,

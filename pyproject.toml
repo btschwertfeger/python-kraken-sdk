@@ -57,6 +57,7 @@ kraken = "kraken.cli:cli"
 
 [project.optional-dependencies]
 dev = [
+  "debugpy",
   # building
   "build",
   # documentation
@@ -96,9 +97,9 @@ junit_family = "xunit2"
 testpaths = ["tests"]
 
 [tool.pytest.ini_options]
-filterwarnings = [
-  "ignore:The Kraken websocket API v1 is marked as deprecated*:DeprecationWarning",
-]
+# filterwarnings = [
+#   "ignore:The Kraken websocket API v1 is marked as deprecated*:DeprecationWarning",
+# ]
 
 cache_dir = ".cache/pytest"
 markers = [
@@ -309,9 +310,6 @@ task-tags = ["todo", "TODO"]
   "S101",     # assert use
   "S110",     # try-catch-pass without logging
   "T201",     # print
-]
-"examples/spot_trading_bot_template_v2.py" = [
-  "RUF027", # Possible f-string without an `f` prefix
 ]
 "tests/*.py" = [
   "ASYNC101", # no open call on async function

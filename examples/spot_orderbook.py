@@ -104,14 +104,14 @@ async def main() -> None:
     Finally we need some "game loop" - so we create a while loop
     that runs as long as there is no error.
     """
-    orderbook: Orderbook = Orderbook(depth=10)
 
-    await orderbook.add_book(
-        pairs=["BTC/USD"],  # we can also subscribe to more currency pairs
-    )
+    async with Orderbook(depth=10) as orderbook:
+        await orderbook.add_book(
+            pairs=["BTC/USD"],  # we can also subscribe to more currency pairs
+        )
 
-    while not orderbook.exception_occur:
-        await asyncio.sleep(10)
+        while not orderbook.exception_occur:
+            await asyncio.sleep(10)
 
 
 if __name__ == "__main__":
