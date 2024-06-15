@@ -20,7 +20,7 @@ import requests
 import urllib3
 
 from kraken.exceptions import KrakenAuthenticationError  # , KrakenPermissionDeniedError
-from kraken.spot import Funding, Market, SpotWSClientV2, Staking, Trade, User
+from kraken.spot import Funding, Market, SpotWSClientV2, Trade, User
 
 logging.basicConfig(
     format="%(asctime)s %(module)s,line: %(lineno)d %(levelname)8s | %(message)s",
@@ -65,7 +65,6 @@ class TradingBot(SpotWSClientV2):
         self.__trade: Trade = Trade(key=config["key"], secret=config["secret"])
         self.__market: Market = Market(key=config["key"], secret=config["secret"])
         self.__funding: Funding = Funding(key=config["key"], secret=config["secret"])
-        self.__staking: Staking = Staking(key=config["key"], secret=config["secret"])
 
     async def on_message(self: TradingBot, message: dict) -> None:
         """Receives all messages of the websocket connection(s)"""

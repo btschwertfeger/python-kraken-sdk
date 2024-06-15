@@ -27,6 +27,7 @@ dependencies = [
   "click",
   "cloup",
   "orjson",
+  "aiohttp",
 ]
 keywords = ["crypto", "trading", "kraken", "exchange", "api"]
 classifiers = [
@@ -110,7 +111,6 @@ markers = [
   "spot_user: … Spot User endpoint.",
   "spot_market: … Spot Market endpoint.",
   "spot_funding: … Spot Funding endpoint.",
-  "spot_staking: … Spot Staking endpoint.",
   "spot_websocket: … Spot Websocket clients (v1 + v2) + Spot Orderbook client.",
   "spot_websocket_v1: … Spot Websocket client v1.",
   "spot_websocket_v2: … Spot Websocket client v2.",
