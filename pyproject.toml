@@ -111,10 +111,7 @@ markers = [
   "spot_user: … Spot User endpoint.",
   "spot_market: … Spot Market endpoint.",
   "spot_funding: … Spot Funding endpoint.",
-  "spot_staking: … Spot Staking endpoint.",
-  "spot_websocket: … Spot Websocket clients (v1 + v2) + Spot Orderbook client.",
-  "spot_websocket_v1: … Spot Websocket client v1.",
-  "spot_websocket_v2: … Spot Websocket client v2.",
+  "spot_websocket: … Spot Websocket client + Spot Orderbook client.",
   "spot_orderbook: … Spot Orderbook client.",
   "futures: … Futures endpoint.",
   "futures_auth: … authenticated Futures endpoint.",
@@ -139,7 +136,6 @@ skip_empty = true
 [tool.codespell]
 skip = "CHANGELOG.md,examples/market_client_example.ipynb,doc/examples/market_client_example.ipynb"
 check-filenames = true
-
 
 # ========= T Y P I N G ========================================================
 #
