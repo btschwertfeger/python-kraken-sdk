@@ -13,7 +13,7 @@ import logging
 from asyncio import sleep as async_sleep
 from typing import TYPE_CHECKING, Any, TypeVar
 
-from kraken.spot import SpotClient
+from kraken.spot import SpotAsyncClient
 from kraken.spot.websocket.connectors import ConnectSpotWebsocket
 
 if TYPE_CHECKING:
@@ -22,7 +22,7 @@ if TYPE_CHECKING:
 Self = TypeVar("Self")
 
 
-class SpotWSClientBase(SpotClient):
+class SpotWSClientBase(SpotAsyncClient):
     """
     This is the base class for :class:`kraken.spot.SpotWSClient`. It extends
     the REST API base class and is used to provide the base functionalities that
@@ -173,6 +173,7 @@ class SpotWSClientBase(SpotClient):
 
     async def __aenter__(self: Self) -> Self:
         """Entrypoint for use as context manager"""
+        await super().__aenter__()
         await self.start()  # type: ignore[attr-defined]
         return self
 
@@ -182,9 +183,10 @@ class SpotWSClientBase(SpotClient):
         **kwargs: Any,  # noqa: ANN401
     ) -> None:
         """Exit if used as context manager"""
+        await super().__aexit__()
         await self.stop()
 
-    def get_ws_token(self: SpotWSClientBase) -> dict:
+    async def get_ws_token(self: SpotWSClientBase) -> dict:
         """
         Get the authentication token to establish the authenticated
         websocket connection. This is used internally and in most cases not
@@ -195,7 +197,7 @@ class SpotWSClientBase(SpotClient):
         :returns: The authentication token
         :rtype: dict
         """
-        return self.request(  # type: ignore[return-value]
+        return await self.request(  # type: ignore[return-value]
             method="POST",
             uri="/0/private/GetWebSocketsToken",
         )

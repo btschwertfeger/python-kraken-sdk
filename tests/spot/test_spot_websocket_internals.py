@@ -46,6 +46,10 @@ def test_ws_base_client_on_message_no_callback(
     Checks that the KrakenSpotWSClientBase logs a message when no callback
     was defined.
     """
-    client = SpotWSClientBase(no_public=True)
-    asyncio_run(client.on_message({"event": "testing"}))
+
+    async def run() -> None:
+        client = SpotWSClientBase(no_public=True)
+        await client.on_message({"event": "testing"})
+
+    asyncio_run(run())
     assert "Received message but no callback is defined!" in caplog.text

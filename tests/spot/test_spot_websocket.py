@@ -41,9 +41,8 @@ def test_create_public_client(caplog: pytest.LogCaptureFixture) -> None:
     Checks if the websocket client can be instantiated.
     """
 
-    client = SpotWebsocketClientTestWrapper()
-
     async def create_client() -> None:
+        client = SpotWebsocketClientTestWrapper()
         await client.start()
         await async_sleep(5)
         await client.stop()
@@ -216,7 +215,6 @@ def test_send_message_raw(caplog: pytest.LogCaptureFixture) -> None:
     assert '{"method": "pong", "req_id": 123456789, "time_in":' in caplog.text
 
 
-@pytest.mark.wip()
 @pytest.mark.spot()
 @pytest.mark.spot_websocket()
 def test_public_subscribe(caplog: pytest.LogCaptureFixture) -> None:
