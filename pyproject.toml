@@ -27,6 +27,7 @@ dependencies = [
   "click",
   "cloup",
   "orjson",
+  "aiohttp",
 ]
 keywords = ["crypto", "trading", "kraken", "exchange", "api"]
 classifiers = [
