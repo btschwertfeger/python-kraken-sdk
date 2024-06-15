@@ -15,7 +15,7 @@ The trading strategy can be implemented using the ``TradingBot`` class. This
 class has access to all REST clients and receives all messages that are sent by
 the subscribed websocket feeds via the ``on_message`` function.
 
-.. literalinclude:: ../../../examples/spot_trading_bot_template_v2.py
+.. literalinclude:: ../../../examples/spot_trading_bot_template.py
    :language: python
    :linenos:
    :caption: Template to build a trading bot using the Kraken Spot Websocket API v2

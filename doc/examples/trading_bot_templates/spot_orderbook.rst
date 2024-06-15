@@ -14,7 +14,7 @@ valid realtime orderbooks. The current implementation of the
 .. literalinclude:: ../../../examples/spot_orderbook.py
    :language: python
    :linenos:
-   :caption: Sample on how to maintain a valid orderbook w/ websocket API v2
+   :caption: Sample on how to maintain a valid orderbook w/ websocket API
 
 References:
 - https://gist.github.com/btschwertfeger/6eea0eeff193f7cd1b262cfce4f0eb51

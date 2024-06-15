@@ -14,7 +14,7 @@ Websocket API v2.
 For questions, feedback, additions, suggestions for improvement or problems
 `python-kraken-sdk/discussions`_ or `python-kraken-sdk/issues`_ may be helpful.
 
-.. literalinclude:: ../../../examples/spot_ws_examples_v2.py
+.. literalinclude:: ../../../examples/spot_ws_examples.py
    :language: python
    :linenos:
-   :caption: Example access and usage for Kraken Spot Websocket API v2
+   :caption: Example access and usage for Kraken Spot Websocket API
