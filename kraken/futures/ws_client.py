@@ -11,6 +11,7 @@ import base64
 import hashlib
 import hmac
 import logging
+from asyncio import sleep as async_sleep
 from copy import deepcopy
 from typing import TYPE_CHECKING, Any, TypeVar
 
@@ -26,8 +27,8 @@ Self = TypeVar("Self")
 
 class FuturesWSClient(FuturesClient):
     """
-    Class to access public and (optional)
-    private/authenticated websocket connection.
+    Class to access public and (optional) private/authenticated websocket
+    connection.
 
     So far there are no trade endpoints that can be accessed using the Futures
     Kraken API. If this has changed and is not implemented yet, please open an
@@ -52,18 +53,20 @@ class FuturesWSClient(FuturesClient):
         import asyncio
         from kraken.futures import FuturesWSClient
 
+        # Create the custom client
+        class Client(FuturesWSClient):
+            async def on_message(self, event: dict) -> None:
+                print(event)
+
+        client = Client()     # unauthenticated
+        auth_client = Client( # authenticated
+            key="api-key",
+            secret="secret-key"
+        )
         async def main() -> None:
-
-            # Create the custom client
-            class Client(FuturesWSClient):
-                async def on_message(self, event: dict) -> None:
-                    print(event)
-
-            client = Client()     # unauthenticated
-            auth_client = Client( # authenticated
-                key="api-key",
-                secret="secret-key"
-            )
+            # open the websocket connections
+            await client.start()
+            await auth_client.start()
 
             # now you can subscribe to channels using
             await client.subscribe(
@@ -99,14 +102,10 @@ class FuturesWSClient(FuturesClient):
                 await asyncio.sleep(6)
 
         if __name__ == "__main__":
-            loop = asyncio.new_event_loop()
-            asyncio.set_event_loop(loop)
             try:
                 asyncio.run(main())
             except KeyboardInterrupt:
                 pass
-            finally:
-                loop.close()
     """
 
     PROD_ENV_URL: str = "futures.kraken.com/ws/v1"
@@ -126,7 +125,6 @@ class FuturesWSClient(FuturesClient):
         self.__key: str = key
         self.__secret: str = secret
 
-        self.exception_occur: bool = False
         self.__callback: Any = callback
         self._conn: ConnectFuturesWebsocket = ConnectFuturesWebsocket(
             client=self,
@@ -135,6 +133,29 @@ class FuturesWSClient(FuturesClient):
             ),
             callback=self.on_message,
         )
+
+    @property
+    def exception_occur(self: FuturesWSClient) -> bool:
+        """Returns True if the connection was stopped due to an exception."""
+        return self._conn.exception_occur
+
+    async def start(self: FuturesWSClient) -> None:
+        """Method to start the websocket connection."""
+        await self._conn.start()
+
+        # Wait for the connection(s) to be established ...
+        while (timeout := 0.0) < 10:
+            if self._conn.socket is not None:
+                break
+            await async_sleep(0.2)
+            timeout += 0.2
+        else:
+            raise TimeoutError("Could not connect to the Kraken API!")
+
+    async def stop(self: FuturesWSClient) -> None:
+        """Method to stop the websocket connection."""
+        if self._conn:
+            await self._conn.stop()
 
     @property
     def key(self: FuturesClient) -> str:
@@ -409,6 +430,8 @@ class FuturesWSClient(FuturesClient):
         return self._conn.get_active_subscriptions()
 
     async def __aenter__(self: Self) -> Self:
+        """Entrypoint for use as context manager"""
+        await self.start()  # type: ignore[attr-defined]
         return self
 
     async def __aexit__(
@@ -416,7 +439,8 @@ class FuturesWSClient(FuturesClient):
         *exc: object,
         **kwargs: dict[str, Any],
     ) -> None:
-        pass
+        """Exit if used as context manager"""
+        await self.stop()
 
 
 __all__ = ["FuturesWSClient"]

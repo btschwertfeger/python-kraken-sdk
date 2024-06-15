@@ -311,7 +311,6 @@ def test_public_unsubscribe(caplog: pytest.LogCaptureFixture) -> None:
         assert expected in caplog.text
 
 
-@pytest.mark.wip()
 @pytest.mark.spot()
 @pytest.mark.spot_websocket()
 @pytest.mark.spot_websocket_v1()

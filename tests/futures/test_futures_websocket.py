@@ -14,9 +14,11 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from pytest_mock import MockerFixture
 
+from asyncio import sleep as async_sleep
+
 import pytest
 
-from .helper import FuturesWebsocketClientTestWrapper, async_wait
+from .helper import FuturesWebsocketClientTestWrapper
 
 
 @pytest.mark.futures()
@@ -27,11 +29,14 @@ def test_create_public_client(caplog: pytest.LogCaptureFixture) -> None:
     can be instantiated.
     """
 
+    client = FuturesWebsocketClientTestWrapper()
+
     async def instantiate_client() -> None:
-        client: FuturesWebsocketClientTestWrapper = FuturesWebsocketClientTestWrapper()
-        await async_wait(5)
+        await client.start()
+        await async_sleep(4)
 
         assert not client.is_auth
+        await client.stop()
 
     asyncio.run(instantiate_client())
 
@@ -52,12 +57,12 @@ def test_create_private_client(
     """
 
     async def instantiate_client() -> None:
-        client: FuturesWebsocketClientTestWrapper = FuturesWebsocketClientTestWrapper(
+        async with FuturesWebsocketClientTestWrapper(
             key=futures_api_key,
             secret=futures_secret_key,
-        )
-        assert client.is_auth
-        await async_wait(5)
+        ) as client:
+            assert client.is_auth
+            await async_sleep(4)
 
     asyncio.run(instantiate_client())
 
@@ -116,26 +121,25 @@ def test_subscribe_public(caplog: pytest.LogCaptureFixture) -> None:
     """
 
     async def check_subscription() -> None:
-        client: FuturesWebsocketClientTestWrapper = FuturesWebsocketClientTestWrapper()
-        await async_wait(2)
+        async with FuturesWebsocketClientTestWrapper() as client:
+            with pytest.raises(
+                TypeError,
+                match=r"Parameter products must be type of list\[str\] \(e.g. products=\[\"PI_XBTUSD\"\]\)",
+            ):
+                await client.subscribe(feed="ticker", products="PI_XBTUSD")  # type: ignore[arg-type]
 
-        with pytest.raises(
-            TypeError,
-            match=r"Parameter products must be type of list\[str\] \(e.g. products=\[\"PI_XBTUSD\"\]\)",
-        ):
-            await client.subscribe(feed="ticker", products="PI_XBTUSD")  # type: ignore[arg-type]
+        async with FuturesWebsocketClientTestWrapper() as client:
+            await client.subscribe(feed="ticker", products=["PI_XBTUSD", "PF_SOLUSD"])
+            await async_sleep(2)
 
-        await client.subscribe(feed="ticker", products=["PI_XBTUSD", "PF_SOLUSD"])
-        await async_wait(seconds=2)
+            subs: list[dict] = client.get_active_subscriptions()
+            assert isinstance(subs, list)
 
-        subs: list[dict] = client.get_active_subscriptions()
-        assert isinstance(subs, list)
-
-        expected_subscriptions: list[dict] = [
-            {"event": "subscribe", "feed": "ticker", "product_ids": ["PI_XBTUSD"]},
-            {"event": "subscribe", "feed": "ticker", "product_ids": ["PF_SOLUSD"]},
-        ]
-        assert all(sub in subs for sub in expected_subscriptions)
+            expected_subscriptions: list[dict] = [
+                {"event": "subscribe", "feed": "ticker", "product_ids": ["PI_XBTUSD"]},
+                {"event": "subscribe", "feed": "ticker", "product_ids": ["PF_SOLUSD"]},
+            ]
+            assert all(sub in subs for sub in expected_subscriptions)
 
     asyncio.run(check_subscription())
 
@@ -160,22 +164,26 @@ def test_subscribe_private(
     """
 
     async def submit_subscription() -> None:
-        client: FuturesWebsocketClientTestWrapper = FuturesWebsocketClientTestWrapper(
+        async with FuturesWebsocketClientTestWrapper(
             key=futures_api_key,
             secret=futures_secret_key,
-        )
+        ) as client:
 
-        with pytest.raises(
-            ValueError,
-            match=r"There is no private feed that accepts products!",
-        ):
-            await client.subscribe(feed="fills", products=["PI_XBTUSD"])
+            with pytest.raises(
+                ValueError,
+                match=r"There is no private feed that accepts products!",
+            ):
+                await client.subscribe(feed="fills", products=["PI_XBTUSD"])
 
-        await client.subscribe(feed="open_orders")
-        await async_wait(seconds=2)
+        async with FuturesWebsocketClientTestWrapper(
+            key=futures_api_key,
+            secret=futures_secret_key,
+        ) as client:
 
-        assert len(client.get_active_subscriptions()) == 1
-        await async_wait(seconds=1)
+            await client.subscribe(feed="open_orders")
+            await async_sleep(2)
+
+            assert len(client.get_active_subscriptions()) == 1
 
     asyncio.run(submit_subscription())
 
@@ -186,6 +194,7 @@ def test_subscribe_private(
         assert expected in caplog.text
 
 
+@pytest.mark.wip()
 @pytest.mark.futures()
 @pytest.mark.futures_websocket()
 def test_unsubscribe_public(caplog: pytest.LogCaptureFixture) -> None:
@@ -195,20 +204,22 @@ def test_unsubscribe_public(caplog: pytest.LogCaptureFixture) -> None:
     """
 
     async def execute_unsubscribe() -> None:
-        client: FuturesWebsocketClientTestWrapper = FuturesWebsocketClientTestWrapper()
         products: list[str] = ["PI_XBTUSD", "PF_SOLUSD"]
+        async with FuturesWebsocketClientTestWrapper() as client:
 
-        await client.subscribe(feed="ticker", products=products)
-        await async_wait(seconds=2)
+            await client.subscribe(feed="ticker", products=products)
+            await async_sleep(2)
 
-        with pytest.raises(
-            TypeError,
-            match=r"Parameter products must be type of list\[str\]",
-        ):
-            await client.unsubscribe(feed="ticker", products="PI_XBTUSD")  # type: ignore[arg-type]
+            await client.unsubscribe(feed="ticker", products=products)
+            await async_sleep(2)  # need to get the message before error
 
-        await client.unsubscribe(feed="ticker", products=products)
-        await async_wait(seconds=2)
+            with pytest.raises(
+                TypeError,
+                match=r"Parameter products must be type of list\[str\]",
+            ):
+                await client.unsubscribe(feed="ticker", products="PI_XBTUSD")  # type: ignore[arg-type]
+
+        await async_sleep(4)
 
     asyncio.run(execute_unsubscribe())
 
@@ -235,21 +246,22 @@ def test_unsubscribe_private(
     """
 
     async def execute_unsubscribe() -> None:
-        client: FuturesWebsocketClientTestWrapper = FuturesWebsocketClientTestWrapper(
+        async with FuturesWebsocketClientTestWrapper(
             key=futures_api_key,
             secret=futures_secret_key,
-        )
-        await client.subscribe(feed="open_orders")
+        ) as client:
+            await client.subscribe(feed="open_orders")
 
-        await async_wait(seconds=2)
-        with pytest.raises(
-            ValueError,
-            match=r"There is no private feed that accepts products!",
-        ):
-            await client.unsubscribe(feed="open_orders", products=["PI_XBTUSD"])
+            await async_sleep(2)
+            await client.unsubscribe(feed="open_orders")
 
-        await client.unsubscribe(feed="open_orders")
-        await async_wait(seconds=2)
+            with pytest.raises(
+                ValueError,
+                match=r"There is no private feed that accepts products!",
+            ):
+                await client.unsubscribe(feed="open_orders", products=["PI_XBTUSD"])
+
+            await async_sleep(2)
 
     asyncio.run(execute_unsubscribe())
 
@@ -268,17 +280,16 @@ def test_get_active_subscriptions(caplog: pytest.LogCaptureFixture) -> None:
     """
 
     async def check_subscriptions() -> None:
-        client: FuturesWebsocketClientTestWrapper = FuturesWebsocketClientTestWrapper()
-        assert client.get_active_subscriptions() == []
-        await async_wait(seconds=1)
+        async with FuturesWebsocketClientTestWrapper() as client:
+            assert client.get_active_subscriptions() == []
 
-        await client.subscribe(feed="ticker", products=["PI_XBTUSD"])
-        await async_wait(seconds=1)
-        assert len(client.get_active_subscriptions()) == 1
+            await client.subscribe(feed="ticker", products=["PI_XBTUSD"])
+            await async_sleep(1)
+            assert len(client.get_active_subscriptions()) == 1
 
-        await client.unsubscribe(feed="ticker", products=["PI_XBTUSD"])
-        await async_wait(seconds=1)
-        assert client.get_active_subscriptions() == []
+            await client.unsubscribe(feed="ticker", products=["PI_XBTUSD"])
+            await async_sleep(1)
+            assert client.get_active_subscriptions() == []
 
     asyncio.run(check_subscriptions())
 
@@ -305,27 +316,27 @@ def test_resubscribe(
     caplog.set_level(logging.INFO)
 
     async def check_resubscribe() -> None:
-        client: FuturesWebsocketClientTestWrapper = FuturesWebsocketClientTestWrapper(
+        async with FuturesWebsocketClientTestWrapper(
             key=futures_api_key,
             secret=futures_secret_key,
-        )
+        ) as client:
 
-        assert client.get_active_subscriptions() == []
-        await async_wait(seconds=1)
+            assert client.get_active_subscriptions() == []
+            await async_sleep(1)
 
-        await client.subscribe(feed="open_orders")
-        await async_wait(seconds=2)
-        assert len(client.get_active_subscriptions()) == 1
+            await client.subscribe(feed="open_orders")
+            await async_sleep(2)
+            assert len(client.get_active_subscriptions()) == 1
 
-        mocker.patch.object(
-            client._conn,
-            "_ConnectFuturesWebsocket__get_reconnect_wait",
-            return_value=2,
-        )
+            mocker.patch.object(
+                client._conn,
+                "_ConnectFuturesWebsocket__get_reconnect_wait",
+                return_value=2,
+            )
 
-        await client._conn.close_connection()
-        await async_wait(seconds=5)
-        assert len(client.get_active_subscriptions()) == 1
+            await client._conn.close_connection()
+            await async_sleep(5)
+            assert len(client.get_active_subscriptions()) == 1
 
     asyncio.run(check_resubscribe())
     for phrase in (
