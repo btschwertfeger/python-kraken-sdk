@@ -11,7 +11,7 @@ import os
 
 import pytest
 
-from kraken.spot import Earn, Funding, Market, Staking, Trade, User
+from kraken.spot import Earn, Funding, Market, Trade, User
 
 SPOT_API_KEY: str = os.getenv("SPOT_API_KEY")
 SPOT_SECRET_KEY: str = os.getenv("SPOT_SECRET_KEY")
@@ -92,11 +92,3 @@ def spot_auth_funding() -> Funding:
     Fixture providing an authenticated Spot funding client.
     """
     return Funding(key=SPOT_API_KEY, secret=SPOT_SECRET_KEY)
-
-
-@pytest.fixture()
-def spot_auth_staking() -> Staking:
-    """
-    Fixture providing an authenticated Spot staking client.
-    """
-    return Staking(key=SPOT_API_KEY, secret=SPOT_SECRET_KEY)

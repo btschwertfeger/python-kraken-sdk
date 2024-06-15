@@ -18,8 +18,7 @@ class Earn(SpotClient):
     """
 
     Class that implements the Kraken Spot Earn client. Currently there are no
-    earn endpoints that could be accesses without authentication. The earn
-    endpoints replace the past staking endpoints.
+    earn endpoints that could be accesses without authentication.
 
     - https://docs.kraken.com/rest/#tag/Earn
 

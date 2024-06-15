@@ -34,8 +34,3 @@ described in :ref:`section-spot-rest-examples`.
    :members:
    :show-inheritance:
    :inherited-members:
-
-.. autoclass:: kraken.spot.Staking
-   :members:
-   :show-inheritance:
-   :inherited-members:

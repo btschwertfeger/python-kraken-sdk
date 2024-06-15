@@ -11,7 +11,6 @@ from kraken.spot.funding import Funding
 from kraken.spot.market import Market
 from kraken.spot.orderbook_v1 import OrderbookClientV1
 from kraken.spot.orderbook_v2 import OrderbookClientV2
-from kraken.spot.staking import Staking
 from kraken.spot.trade import Trade
 from kraken.spot.user import User
 from kraken.spot.websocket_v1 import SpotWSClientV1
@@ -27,7 +26,6 @@ __all__ = [
     "OrderbookClientV2",
     "SpotClient",
     "SpotAsyncClient",
-    "Staking",
     "Trade",
     "User",
 ]
