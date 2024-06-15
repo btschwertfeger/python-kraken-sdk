@@ -13,14 +13,15 @@ import hmac
 import logging
 from asyncio import sleep as async_sleep
 from copy import deepcopy
-from typing import TYPE_CHECKING, Any, TypeVar
+from typing import TYPE_CHECKING, TypeVar
 
+from kraken.base_api import FuturesAsyncClient
 from kraken.exceptions import KrakenAuthenticationError
-from kraken.futures import FuturesAsyncClient
 from kraken.futures.websocket import ConnectFuturesWebsocket
 
 if TYPE_CHECKING:
     from collections.abc import Callable
+    from typing import Any
 
 Self = TypeVar("Self")
 
