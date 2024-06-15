@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import asyncio
 import json
+from asyncio import sleep as async_sleep
 from collections import OrderedDict
 from typing import TYPE_CHECKING
 from unittest import mock
@@ -19,7 +20,7 @@ import pytest
 
 from kraken.spot import SpotOrderBookClient
 
-from .helper import FIXTURE_DIR, SpotOrderBookClientWrapper, async_wait
+from .helper import FIXTURE_DIR, SpotOrderBookClientWrapper
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -36,7 +37,7 @@ def test_create_public_bot(caplog: pytest.LogCaptureFixture) -> None:
     async def create_bot() -> None:
         async with SpotOrderBookClientWrapper() as orderbook:
 
-            await async_wait(seconds=10)
+            await async_sleep(10)
 
             assert orderbook.depth == 10
 
@@ -135,7 +136,7 @@ def test_add_book(caplog: pytest.LogCaptureFixture) -> None:
         await orderbook.start()
 
         await orderbook.add_book(pairs=["BTC/USD"])
-        await async_wait(seconds=2)
+        await async_sleep(2)
 
         book: dict | None = orderbook.get(pair="BTC/USD")
         assert isinstance(book, dict)
@@ -174,10 +175,10 @@ def test_remove_book(caplog: pytest.LogCaptureFixture) -> None:
         async with SpotOrderBookClientWrapper() as orderbook:
 
             await orderbook.add_book(pairs=["BTC/USD"])
-            await async_wait(seconds=2)
+            await async_sleep(2)
 
             await orderbook.remove_book(pairs=["BTC/USD"])
-            await async_wait(seconds=2)
+            await async_sleep(2)
 
     asyncio.run(execute_remove_book())
 

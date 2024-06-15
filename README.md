@@ -395,6 +395,7 @@ async def main():
     # Public/unauthenticated websocket connection
     client = Client()
     await client.start()
+
     products = ["PI_XBTUSD", "PF_ETHUSD"]
 
     # subscribe to a public websocket feed
@@ -408,6 +409,7 @@ async def main():
     # Private/authenticated websocket connection (+public)
     client_auth = Client(key="key-key", secret="secret-key")
     await client_auth.start()
+
     # print(client_auth.get_available_private_subscription_feeds())
 
     # subscribe to a private/authenticated websocket feed
