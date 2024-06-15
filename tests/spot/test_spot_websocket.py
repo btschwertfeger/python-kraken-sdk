@@ -28,7 +28,7 @@ if TYPE_CHECKING:
     from pytest_mock import MockerFixture
 
 from kraken.exceptions import KrakenAuthenticationError
-from kraken.spot.websocket.connectors import ConnectSpotWebsocketV2
+from kraken.spot.websocket.connectors import ConnectSpotWebsocket
 
 from .helper import SpotWebsocketClientV2TestWrapper, async_wait
 
@@ -421,8 +421,8 @@ def test___transform_subscription() -> None:
         target_subscription["result"]["symbol"] = ["BTC/USD"]
 
         assert (
-            ConnectSpotWebsocketV2._ConnectSpotWebsocketV2__transform_subscription(
-                ConnectSpotWebsocketV2,
+            ConnectSpotWebsocket._ConnectSpotWebsocket__transform_subscription(
+                ConnectSpotWebsocket,
                 subscription=incoming_subscription,
             )
             == target_subscription
@@ -457,8 +457,8 @@ def test___transform_subscription_no_change() -> None:
         }
 
         assert (
-            ConnectSpotWebsocketV2._ConnectSpotWebsocketV2__transform_subscription(
-                ConnectSpotWebsocketV2,
+            ConnectSpotWebsocket._ConnectSpotWebsocket__transform_subscription(
+                ConnectSpotWebsocket,
                 subscription=incoming_subscription,
             )
             == incoming_subscription

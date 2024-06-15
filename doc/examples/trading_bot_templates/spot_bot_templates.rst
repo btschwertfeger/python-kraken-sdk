@@ -19,8 +19,3 @@ the subscribed websocket feeds via the ``on_message`` function.
    :language: python
    :linenos:
    :caption: Template to build a trading bot using the Kraken Spot Websocket API v2
-
-.. literalinclude:: ../../../examples/spot_trading_bot_template_v1.py
-   :language: python
-   :linenos:
-   :caption: Template to build a trading bot using the Kraken Spot Websocket API v1

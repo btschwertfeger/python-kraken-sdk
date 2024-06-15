@@ -35,11 +35,6 @@ They are the base classes for Spot and Futures REST and websocket clients.
    :show-inheritance:
    :inherited-members:
 
-.. autoclass:: kraken.spot.websocket.connectors.ConnectSpotWebsocketV1
-   :members:
-   :show-inheritance:
-   :inherited-members:
-
 .. autoclass:: kraken.spot.websocket.connectors.ConnectSpotWebsocketV2
    :members:
    :show-inheritance:

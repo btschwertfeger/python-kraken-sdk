@@ -18,20 +18,6 @@ from .helper import async_wait
 
 @pytest.mark.spot()
 @pytest.mark.spot_websocket()
-def test_ws_base_client_invalid_api_version() -> None:
-    """
-    Checks that the KrakenSpotWSClientBase raises an error when an invalid API
-    version was specified.
-    """
-    with pytest.raises(
-        ValueError,
-        match=r"Websocket API version must be one of ``v1``, ``v2``",
-    ):
-        client = SpotWSClientBase(api_version="10")
-
-
-@pytest.mark.spot()
-@pytest.mark.spot_websocket()
 def test_ws_base_client_context_manager() -> None:
     """
     Checks that the KrakenSpotWSClientBase can be instantiated as context
@@ -44,7 +30,7 @@ def test_ws_base_client_context_manager() -> None:
                 if message == {"error": "yes"}:
                     raise ValueError("Test Error")
 
-        with TestClient(api_version="v2", no_public=True) as client:
+        with TestClient(no_public=True) as client:
             with pytest.raises(ValueError, match=r"Test Error"):
                 await client.on_message(message={"error": "yes"})
             await async_wait(seconds=5)
@@ -61,6 +47,6 @@ def test_ws_base_client_on_message_no_callback(
     Checks that the KrakenSpotWSClientBase logs a message when no callback
     was defined.
     """
-    client = SpotWSClientBase(api_version="v2", no_public=True)
+    client = SpotWSClientBase(no_public=True)
     asyncio_run(client.on_message({"event": "testing"}))
     assert "Received message but no callback is defined!" in caplog.text

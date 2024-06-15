@@ -16,7 +16,7 @@ import logging.config
 import os
 from contextlib import suppress
 
-from kraken.spot import SpotWSClientV2
+from kraken.spot import SpotWSClient
 
 logging.basicConfig(
     format="%(asctime)s %(module)s,line: %(lineno)d %(levelname)8s | %(message)s",
@@ -31,7 +31,7 @@ async def main() -> None:
     key: str = os.getenv("SPOT_API_KEY")
     secret: str = os.getenv("SPOT_SECRET_KEY")
 
-    class Client(SpotWSClientV2):
+    class Client(SpotWSClient):
         """Can be used to create a custom trading strategy"""
 
         async def on_message(self: Client, message: dict) -> None:
@@ -116,7 +116,7 @@ if __name__ == "__main__":
 # ============================================================
 # Alternative - as ContextManager:
 
-# from kraken.spot import KrakenSpotWSClientV2
+# from kraken.spot import SpotWSClient
 # import asyncio
 
 
@@ -125,7 +125,7 @@ if __name__ == "__main__":
 
 
 # async def main() -> None:
-#     async with KrakenSpotWSClientV2(callback=on_message) as session:
+#     async with SpotWSClient(callback=on_message) as session:
 #         await session.subscribe(params={"channel": "ticker", "symbol": ["BTC/USD"]})
 
 #     while True:

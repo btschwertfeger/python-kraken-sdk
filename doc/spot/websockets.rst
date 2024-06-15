@@ -5,22 +5,12 @@
 Spot Websockets
 ===============
 
-.. autoclass:: kraken.spot.SpotWSClientV2
+.. autoclass:: kraken.spot.SpotWSClient
    :members:
    :show-inheritance:
    :inherited-members:
 
-.. autoclass:: kraken.spot.SpotWSClientV1
-   :members:
-   :show-inheritance:
-   :inherited-members:
-
-.. autoclass:: kraken.spot.OrderbookClientV2
-   :members:
-   :show-inheritance:
-   :inherited-members:
-
-.. autoclass:: kraken.spot.OrderbookClientV1
+.. autoclass:: kraken.spot.SpotOrderBookClient
    :members:
    :show-inheritance:
    :inherited-members:

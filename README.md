@@ -57,8 +57,8 @@ General:
 Available Clients:
 
 - Spot REST Clients (sync and async; including access to NFT trading)
-- Spot Websocket Clients (Websocket API v1 and v2)
-- Spot Orderbook Clients (Websocket API v1 and v2)
+- Spot Websocket Client (using Websocket API v2)
+- Spot Orderbook Client (using Websocket API v2)
 - Futures REST Clients (sync and async)
 - Futures Websocket Client
 
@@ -218,29 +218,27 @@ asyncio.run(main())
 ### Spot Websocket API V2
 
 Kraken offers two versions of their websocket API (V1 and V2). Since V2 is
-offers more possibilities, is way faster and easier to use, only those examples
-are shown below. For using the websocket API V1 please have a look into the
-`examples/spot_ws_examples_v1.py`.
+offers more possibilities, is way faster and easier to use, only the never
+version is supported by this SDK.
 
 The documentation for both API versions can be found here:
 
 - https://docs.kraken.com/api/docs/guides/global-intro
-- https://docs.kraken.com/websockets
 - https://docs.kraken.com/websockets-v2
 
 Note that authenticated Spot websocket clients can also un-/subscribe from/to
 public feeds.
 
 The example below can be found in an extended way in
-`examples/spot_ws_examples_v2.py`.
+`examples/spot_ws_examples.py`.
 
 ```python
 import asyncio
-from kraken.spot import SpotWSClientV2
+from kraken.spot import SpotWSClient
 
 
 async def main():
-    class Client(SpotWSClientV2):
+    class Client(SpotWSClient):
         """Can be used to create a custom trading strategy"""
 
         async def on_message(self, message):
