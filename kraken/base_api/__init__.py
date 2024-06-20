@@ -253,7 +253,7 @@ class SpotClient:
             if not self._key or not self._secret:
                 raise ValueError("Missing credentials.")
 
-            params["nonce"] = str(int(time.time() * 100_000_000))
+            params["nonce"] = self.get_nonce()
             content_type: str
             sign_data: str
 
@@ -430,6 +430,10 @@ class SpotClient:
             return data
 
         raise Exception(f"{response.status_code} - {response.text}")
+
+    def get_nonce(self: SpotClient) -> str:
+        """Return a new nonce"""
+        return str(int(time.time() * 100_000_000))
 
     @property
     def return_unique_id(self: SpotClient) -> str:
@@ -720,7 +724,7 @@ class FuturesClient:
         if auth:
             if not self._key or not self._secret:
                 raise ValueError("Missing credentials")
-            nonce: str = str(int(time.time() * 100_000_000))
+            nonce: str = self.get_nonce()
             headers.update(
                 {
                     "Content-Type": "application/x-www-form-urlencoded; charset=utf-8",
@@ -897,6 +901,10 @@ class FuturesClient:
             return data
 
         raise Exception(f"{response.status_code} - {response.text}")
+
+    def get_nonce(self: FuturesClient) -> str:
+        """Return a new nonce"""
+        return str(int(time.time() * 100_000_000))
 
     def __enter__(self: Self) -> Self:
         return self
