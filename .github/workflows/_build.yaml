@@ -24,6 +24,11 @@ jobs:
   Build:
     runs-on: ${{ inputs.os }}
     steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@17d0e2bd7d51742c71671bd19fa12bdc9d40a3d6 # v2.8.1
+        with:
+          egress-policy: audit
+
       - name: Checkout repository
         uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 # v4.1.6
         with:
@@ -66,7 +71,7 @@ jobs:
         run: python -m build
 
       - name: Store the distribution packages
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@65462800fd760344b1a7b4382951275a0abb4808 # v4.3.3
         # upload artifacts with the oldest supported version
         if: runner.os == 'linux' && inputs.python-version == '3.11'
         with:

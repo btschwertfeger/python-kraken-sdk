@@ -30,12 +30,21 @@ jobs:
     # Learn more about CodeQL language support at https://aka.ms/codeql-docs/language-support
 
     steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@17d0e2bd7d51742c71671bd19fa12bdc9d40a3d6 # v2.8.1
+        with:
+          egress-policy: audit
+
       - name: Checkout repository
         uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 # v4.1.6
 
+      - name: "Dependency Review"
+        if: github.event_name == 'pull_request'
+        uses: actions/dependency-review-action@0efb1d1d84fc9633afcdaad14c485cbbc90ef46c # v2.5.1
+
       # Initializes the CodeQL tools for scanning.
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@v3
+        uses: github/codeql-action/init@23acc5c183826b7a8a97bce3cecc52db901f8251 # v3.25.10
         with:
           languages: python
           # If you wish to specify custom queries, you can do so here or in a config file.
@@ -48,7 +57,7 @@ jobs:
       # Autobuild attempts to build any compiled languages  (C/C++, C#, Go, or Java).
       # If this step fails, then you should remove it and run the build manually (see below)
       - name: Autobuild
-        uses: github/codeql-action/autobuild@v3
+        uses: github/codeql-action/autobuild@23acc5c183826b7a8a97bce3cecc52db901f8251 # v3.25.10
 
       # ℹ️ Command-line programs to run using the OS shell.
       # 📚 See https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idstepsrun
@@ -61,6 +70,6 @@ jobs:
       #   ./location_of_script_within_repo/buildscript.sh
 
       - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v3
+        uses: github/codeql-action/analyze@23acc5c183826b7a8a97bce3cecc52db901f8251 # v3.25.10
         with:
           category: "/language:python"
