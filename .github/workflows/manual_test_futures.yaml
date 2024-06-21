@@ -27,7 +27,8 @@ name: PR Manual Test Futures
 on:
   workflow_dispatch:
 
-permissions: read-all
+permissions:
+  contents: read
 
 jobs:
   Test-Futures-Public:

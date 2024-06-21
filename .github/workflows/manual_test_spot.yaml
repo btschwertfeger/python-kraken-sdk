@@ -35,7 +35,8 @@ name: PR Manual Test Spot
 on:
   workflow_dispatch:
 
-permissions: read-all
+permissions:
+  contents: read
 
 jobs:
   Test-Spot-Public:

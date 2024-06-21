@@ -30,7 +30,8 @@ on:
       FUTURES_SANDBOX_SECRET:
         required: true
 
-permissions: read-all
+permissions:
+  contents: read
 
 jobs:
   Test-Futures:
@@ -40,7 +41,14 @@ jobs:
       - name: Harden Runner
         uses: step-security/harden-runner@17d0e2bd7d51742c71671bd19fa12bdc9d40a3d6 # v2.8.1
         with:
-          egress-policy: audit
+          disable-sudo: true
+          egress-policy: block
+          allowed-endpoints: >
+            demo-futures.kraken.com:443
+            files.pythonhosted.org:443
+            futures.kraken.com:443
+            github.com:443
+            pypi.org:443
 
       - name: Checkout repository
         uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 # v4.1.6
