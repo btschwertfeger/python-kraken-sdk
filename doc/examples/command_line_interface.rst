@@ -36,3 +36,7 @@ Futurs API can be accessed like that. See examples below.
     # get user's open futures positions
     kraken futures --api-key=<api-key> --secret-key=<secret-key> https://futures.kraken.com/derivatives/api/v3/openpositions
     {'result': 'success', 'openPositions': [], 'serverTime': '2024-05-26T07:15:38.91Z'}
+
+.. click:: kraken.cli:cli
+   :prog: kraken
+   :nested: full

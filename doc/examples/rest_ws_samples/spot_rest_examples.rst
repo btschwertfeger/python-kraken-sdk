@@ -63,7 +63,9 @@ request is completed.
    from kraken.spot import SpotAsyncClient
 
    async def main():
-      async with SpotAsyncClient(key="<your-api-key>", secret="<your-secret-key>")as client:
+      async with SpotAsyncClient(
+         key="<your-api-key>", secret="<your-secret-key>"
+      ) as client:
          response = await client.request("POST", "/0/private/Balance")
          print(response)
 

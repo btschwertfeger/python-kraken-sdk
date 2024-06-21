@@ -62,6 +62,7 @@ dev = [
   "build",
   # documentation
   "sphinx",
+  "sphinx-click",
   "sphinx-rtd-theme",
   "nbsphinx",
   # formatting

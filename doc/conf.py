@@ -46,6 +46,7 @@ def setup(app: Any) -> None:  # noqa: ARG001,ANN401
 
 extensions = [
     "nbsphinx",
+    "sphinx_click",
     "sphinx.ext.autodoc",
     "sphinx.ext.doctest",
     "sphinx.ext.intersphinx",

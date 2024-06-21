@@ -7,5 +7,6 @@ orjson
 requests
 setuptools_scm
 sphinx
+sphinx-click
 sphinx-rtd-theme
 websockets

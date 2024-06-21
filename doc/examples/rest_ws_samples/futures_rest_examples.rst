@@ -64,7 +64,9 @@ the request is completed.
    from kraken.futures import FuturesAsyncClient
 
    async def main():
-      async with FuturesAsyncClient(key="<your-api-key>", secret="<your-secret-key>") as client:
+      async with FuturesAsyncClient(
+         key="<your-api-key>", secret="<your-secret-key>"
+      ) as client:
          response = await client.request("GET", "/derivatives/api/v3/accounts")
          print(response)
 

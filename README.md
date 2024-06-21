@@ -215,13 +215,13 @@ asyncio.run(main())
 
 <a name="spotws"></a>
 
-### Spot Websocket API
+### `SpotWSClient` (Websocket API)
 
 Kraken offers two versions of their websocket API (V1 and V2). Since V2 is
 offers more possibilities, is way faster and easier to use, only the never
 version is supported by this SDK.
 
-The official documentation for can be found here:
+The official documentation for can be found at:
 
 - https://docs.kraken.com/api/docs/guides/global-intro
 - https://docs.kraken.com/websockets-v2
@@ -295,8 +295,6 @@ async def main():
 
     while not client.exception_occur and not client_auth.exception_occur:
         await asyncio.sleep(6)
-
-    return
 
 
 if __name__ == "__main__":
@@ -372,7 +370,7 @@ asyncio.run(main())
 
 <a name="futuresws"></a>
 
-### Futures Websocket API
+### `FuturesWSClient` (Websocket API)
 
 Not only REST, also the websocket API for Kraken Futures is available. Examples
 are shown below and demonstrated in `examples/futures_ws_examples.py`.
@@ -421,7 +419,7 @@ async def main():
     # unsubscribe from a private/authenticated websocket feed
     await client_auth.unsubscribe(feed="fills")
 
-    while True:
+    while not client.exception_occur and not client_auth.exception_occur:
         await asyncio.sleep(6)
 
 if __name__ == "__main__":
@@ -493,14 +491,14 @@ similar as possible to those of the Kraken API documentations.
 # Considerations
 
 The tool aims to be fast, easy to use and maintain. In the past, lots of clients
-were implemented, that provided functions for "all" available endpoints of the
-Kraken API. The effort to maintain this collection grew to a level where it was
-not possible to check various changelogs to apply new updates on a regular
-basis. **Instead, it was decided to concentrate on the `request` functions of
+were implemented, that provided functions for almost all available endpoints of
+the Kraken API. The effort to maintain this collection grew to a level where it
+was not possible to check various changelogs to apply new updates on a regular
+basis. Instead, it was decided to concentrate on the `request` functions of
 the `SpotClient`, `SpotAsyncClient`, `FuturesClient` and the
 `FuturesAsyncClient` (as well as their websocket client implementations). All
 those clients named "User", "Trade", "Market", "Funding" and so on will no
-longer be extended, but maintained to a certain degree.**
+longer be extended, but maintained to a certain degree.
 
 <a name="references"></a>
 
