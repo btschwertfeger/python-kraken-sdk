@@ -40,9 +40,10 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt update
-          sudo apt install -y pandoc
-          python -m pip install --upgrade pip
-          python -m pip install -r doc/requirements.txt
+          DEBIAN_FRONTEND=noninteractive sudo apt install -y pandoc
+          python -m pip install --user -r doc/requirements.txt
+          python -m pip install --user --upgrade pip
+          python -m pip install --user .
 
       - name: Build the documentation
-        run: cd doc && make html
+        run: make doc

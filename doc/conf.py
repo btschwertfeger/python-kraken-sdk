@@ -37,7 +37,7 @@ def setup(app: Any) -> None:  # noqa: ARG001,ANN401
     """Setup function to modify doc building"""
     copyfile(
         Path("..") / "examples" / "market_client_example.ipynb",
-        "market_client_example.ipynb",
+        Path("examples") / "market_client_example.ipynb",
     )
 
 
@@ -53,10 +53,17 @@ extensions = [
     "sphinx.ext.coverage",
     "sphinx.ext.napoleon",
     "sphinx.ext.autosectionlabel",
+    "IPython.sphinxext.ipython_console_highlighting",
 ]
 
 templates_path = ["_templates"]
-exclude_patterns = ["_build", "Thumbs.db", ".DS_Store", "links.rst"]
+exclude_patterns = [
+    "_build",
+    "Thumbs.db",
+    ".DS_Store",
+    "links.rst",
+    "**.ipynb_checkpoints",
+]
 
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output

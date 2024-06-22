@@ -2,6 +2,7 @@ aiohttp
 asyncio>=3.4
 click
 cloup
+ipython
 nbsphinx
 orjson
 requests
