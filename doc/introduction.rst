@@ -30,20 +30,19 @@ and documented.
 - The output in the examples may differ, as these are only intended as examples
   and may change in the future.
 - If a certain endpoint is not reachable, the function
-  :func:`kraken.base_api.KrakenSpotBaseAPI._request` or
-  :func:`kraken.base_api.KrakenFuturesBaseAPI._request`,
+  :func:`kraken.spot.SpotClient.request` or
+  :func:`kraken.futures.FuturesClient.request`,
   which is also available in all derived REST clients, can be used to reach an
   endpoint with the appropriate parameters. Here private content can also be
   accessed, provided that either the base class or one of the clients has been
   initialized with valid credentials.
-- For Futures there is only one websocket client -
-  :class:`kraken.futures.KrakenFuturesWSClient`. For Spot there are two:
-  :class:`kraken.spot.KrakenSpotWSClientV1` (for API version 1) and
-  :class:`kraken.spot.KrakenSpotWSClientV2` (for API version 2).
+- For Futures there is the websocket client
+  :class:`kraken.futures.FuturesWSClient` and for Spot
+  :class:`kraken.spot.SpotWSClient`.
 
 
 Disclaimer
--------------
+----------
 
 There is no guarantee that this software will work flawlessly at this or later
 times. Of course, no responsibility is taken for possible profits or losses.
@@ -64,25 +63,25 @@ General:
 - extensive examples
 - tested using the `pytest <https://docs.pytest.org/en/7.3.x/>`_ framework
 - releases are permanently archived at `Zenodo <https://zenodo.org/badge/latestdoi/510751854>`_
-- releases before v2.0.0 also support Python 3.7+
 
 Available Clients:
 
-- NFT REST Clients
-- Spot REST Clients
-- Spot Websocket Clients (Websocket API v1 and v2)
-- Spot Orderbook Clients (Websocket API v1 and v2)
-- Futures REST Clients
+- Spot REST Clients (sync and async; including access to NFT trading)
+- Spot Websocket Client (Websocket API v2)
+- Spot Orderbook Client (Websocket API v2)
+- Futures REST Clients (sync and async)
 - Futures Websocket Client
 
 Important Notice
 -----------------
+
 **ONLY tagged releases are available at PyPI**. The content of the master branch
 may not match with the content of the latest release. - Please have a look at
 the release specific READMEs and changelogs.
 
 It is also recommended to **pin the used version** to avoid unexpected behavior
 on new releases.
+
 
 .. _section-troubleshooting:
 
@@ -105,8 +104,9 @@ References
 ----------
 
 - https://python-kraken-sdk.readthedocs.io/en/stable
+- https://docs.kraken.com/api/
+- https://docs.kraken.com/api/docs/guides/global-intro
 - https://docs.kraken.com/rest
-- https://docs.kraken.com/websockets
 - https://docs.kraken.com/websockets-v2
 - https://docs.futures.kraken.com
 - https://support.kraken.com/hc/en-us/sections/360012894412-Futures-API

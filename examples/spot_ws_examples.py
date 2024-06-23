@@ -16,7 +16,7 @@ import logging.config
 import os
 from contextlib import suppress
 
-from kraken.spot import KrakenSpotWSClientV2
+from kraken.spot import SpotWSClient
 
 logging.basicConfig(
     format="%(asctime)s %(module)s,line: %(lineno)d %(levelname)8s | %(message)s",
@@ -27,41 +27,43 @@ logging.getLogger("requests").setLevel(logging.WARNING)
 logging.getLogger("urllib3").setLevel(logging.WARNING)
 
 
+class Client(SpotWSClient):
+    """Can be used to create a custom trading strategy"""
+
+    async def on_message(self: Client, message: dict) -> None:
+        """Receives the websocket messages"""
+        if message.get("method") == "pong" or message.get("channel") == "heartbeat":
+            return
+
+        print(message)
+        # now you can access lots of methods, for example to create an order:
+        # if self._is_auth:  # only if the client is authenticated …
+        #     await self.send_message(
+        #         message={
+        #             "method": "add_order",
+        #             "params": {
+        #                 "limit_price": 1234.56,
+        #                 "order_type": "limit",
+        #                 "order_userref": 123456789,
+        #                 "order_qty": 1.0,
+        #                 "side": "buy",
+        #                 "symbol": "BTC/USD",
+        #                 "validate": True,
+        #             },
+        #         }
+        #     )
+        # ... it is also possible to call regular REST endpoints
+        # but using the websocket messages is more efficient.
+        # You can also un-/subscribe here using self.subscribe/self.unsubscribe.
+
+
 async def main() -> None:
     key: str = os.getenv("SPOT_API_KEY")
     secret: str = os.getenv("SPOT_SECRET_KEY")
 
-    class Client(KrakenSpotWSClientV2):
-        """Can be used to create a custom trading strategy"""
-
-        async def on_message(self: Client, message: dict) -> None:
-            """Receives the websocket messages"""
-            if message.get("method") == "pong" or message.get("channel") == "heartbeat":
-                return
-
-            print(message)
-            # now you can access lots of methods, for example to create an order:
-            # if self._is_auth:  # only if the client is authenticated …
-            #     await self.send_message(
-            #         message={
-            #             "method": "add_order",
-            #             "params": {
-            #                 "limit_price": 1234.56,
-            #                 "order_type": "limit",
-            #                 "order_userref": 123456789,
-            #                 "order_qty": 1.0,
-            #                 "side": "buy",
-            #                 "symbol": "BTC/USD",
-            #                 "validate": True,
-            #             },
-            #         }
-            #     )
-            # ... it is also possible to call regular REST endpoints
-            # but using the websocket messages is more efficient.
-            # You can also un-/subscribe here using self.subscribe/self.unsubscribe.
-
     # Public/unauthenticated websocket client
     client: Client = Client()  # only use this one if you don't need private feeds
+    await client.start()
     # print(client.public_channel_names)  # list public subscription names
 
     await client.subscribe(
@@ -95,6 +97,7 @@ async def main() -> None:
         # for a public connection, it can be disabled using the ``no_public``
         # parameter.
         client_auth = Client(key=key, secret=secret, no_public=True)
+        await client_auth.start()
         # print(client_auth.private_channel_names)  # … list private channel names
         # when using the authenticated client, you can also subscribe to public feeds
         await client_auth.subscribe(params={"channel": "executions"})
@@ -116,7 +119,7 @@ if __name__ == "__main__":
 # ============================================================
 # Alternative - as ContextManager:
 
-# from kraken.spot import KrakenSpotWSClientV2
+# from kraken.spot import SpotWSClient
 # import asyncio
 
 
@@ -125,7 +128,7 @@ if __name__ == "__main__":
 
 
 # async def main() -> None:
-#     async with KrakenSpotWSClientV2(callback=on_message) as session:
+#     async with SpotWSClient(callback=on_message) as session:
 #         await session.subscribe(params={"channel": "ticker", "symbol": ["BTC/USD"]})
 
 #     while True:

@@ -8,26 +8,11 @@
 from __future__ import annotations
 
 from asyncio import run as asyncio_run
+from asyncio import sleep as async_sleep
 
 import pytest
 
-from kraken.spot.websocket import KrakenSpotWSClientBase
-
-from .helper import async_wait
-
-
-@pytest.mark.spot()
-@pytest.mark.spot_websocket()
-def test_ws_base_client_invalid_api_version() -> None:
-    """
-    Checks that the KrakenSpotWSClientBase raises an error when an invalid API
-    version was specified.
-    """
-    with pytest.raises(
-        ValueError,
-        match=r"Websocket API version must be one of ``v1``, ``v2``",
-    ):
-        client = KrakenSpotWSClientBase(api_version="10")
+from kraken.spot.websocket import SpotWSClientBase
 
 
 @pytest.mark.spot()
@@ -39,15 +24,15 @@ def test_ws_base_client_context_manager() -> None:
     """
 
     async def check_it() -> None:
-        class TestClient(KrakenSpotWSClientBase):
+        class TestClient(SpotWSClientBase):
             async def on_message(self: TestClient, message: dict) -> None:
                 if message == {"error": "yes"}:
                     raise ValueError("Test Error")
 
-        with TestClient(api_version="v2", no_public=True) as client:
+        with TestClient(no_public=True) as client:
             with pytest.raises(ValueError, match=r"Test Error"):
                 await client.on_message(message={"error": "yes"})
-            await async_wait(seconds=5)
+            await async_sleep(5)
 
     asyncio_run(check_it())
 
@@ -61,6 +46,10 @@ def test_ws_base_client_on_message_no_callback(
     Checks that the KrakenSpotWSClientBase logs a message when no callback
     was defined.
     """
-    client = KrakenSpotWSClientBase(api_version="v2", no_public=True)
-    asyncio_run(client.on_message({"event": "testing"}))
+
+    async def run() -> None:
+        client = SpotWSClientBase(no_public=True)
+        await client.on_message({"event": "testing"})
+
+    asyncio_run(run())
     assert "Received message but no callback is defined!" in caplog.text

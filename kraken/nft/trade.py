@@ -8,12 +8,12 @@ from __future__ import annotations
 
 from typing import TypeVar
 
-from kraken.base_api import KrakenNFTBaseAPI, defined
+from kraken.base_api import NFTClient, defined
 
 Self = TypeVar("Self")
 
 
-class Trade(KrakenNFTBaseAPI):
+class Trade(NFTClient):
     """
     Class that implements the Kraken NFT Trade client. Can be used to access
     the Kraken NFT market data.
@@ -115,7 +115,7 @@ class Trade(KrakenNFTBaseAPI):
         if defined(start_time):
             params["start_time"] = start_time
 
-        return self._request(  # type: ignore[return-value]
+        return self.request(  # type: ignore[return-value]
             method="POST",
             uri="/0/private/NftCreateAuction",
             params=params,
@@ -167,7 +167,7 @@ class Trade(KrakenNFTBaseAPI):
         if defined(reserve_price):
             params["reserve_price"] = reserve_price
 
-        return self._request(  # type: ignore[return-value]
+        return self.request(  # type: ignore[return-value]
             method="POST",
             uri="/0/private/NftModifyAuction",
             params=params,
@@ -204,7 +204,7 @@ class Trade(KrakenNFTBaseAPI):
         if defined(otp):
             params["otp"] = otp
 
-        return self._request(  # type: ignore[return-value]
+        return self.request(  # type: ignore[return-value]
             method="POST",
             uri="/0/private/NftCancelAuction",
             params=params,
@@ -266,7 +266,7 @@ class Trade(KrakenNFTBaseAPI):
         if defined(otp):
             params["otp"] = otp
 
-        return self._request(  # type: ignore[return-value]
+        return self.request(  # type: ignore[return-value]
             method="POST",
             uri="/0/private/NftPlaceOffer",
             params=params,
@@ -323,7 +323,7 @@ class Trade(KrakenNFTBaseAPI):
         if defined(otp):
             params["otp"] = otp
 
-        return self._request(  # type: ignore[return-value]
+        return self.request(  # type: ignore[return-value]
             method="POST",
             uri="/0/private/NftCounterOffer",
             params=params,
@@ -360,7 +360,7 @@ class Trade(KrakenNFTBaseAPI):
         if defined(otp):
             params["otp"] = otp
 
-        return self._request(  # type: ignore[return-value]
+        return self.request(  # type: ignore[return-value]
             method="POST",
             uri="/0/private/NftAcceptOffer",
             params=params,
@@ -414,7 +414,7 @@ class Trade(KrakenNFTBaseAPI):
         if defined(otp):
             params["otp"] = otp
 
-        return self._request(  # type: ignore[return-value]
+        return self.request(  # type: ignore[return-value]
             method="POST",
             uri="/0/private/NftAuctionTrades",
             params=params,
@@ -510,7 +510,7 @@ class Trade(KrakenNFTBaseAPI):
         if defined(otp):
             params["otp"] = otp
 
-        return self._request(  # type: ignore[return-value]
+        return self.request(  # type: ignore[return-value]
             method="POST",
             uri="/0/private/NftUserOffers",
             params=params,
@@ -599,7 +599,7 @@ class Trade(KrakenNFTBaseAPI):
         if defined(otp):
             params[otp] = otp
 
-        return self._request(  # type: ignore[return-value]
+        return self.request(  # type: ignore[return-value]
             method="POST",
             uri="/0/private/NftWallet",
             params=params,
@@ -668,7 +668,7 @@ class Trade(KrakenNFTBaseAPI):
         if defined(type_):
             params[type_] = type_
 
-        return self._request(  # type: ignore[return-value]
+        return self.request(  # type: ignore[return-value]
             method="POST",
             uri="/0/private/NftTransactions",
             params=params,

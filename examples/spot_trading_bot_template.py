@@ -2,10 +2,9 @@
 # Copyright (C) 2023 Benjamin Thomas Schwertfeger
 # GitHub: https://github.com/btschwertfeger
 # ruff: noqa: RUF027
-
 """
 Module that provides a template to build a Spot trading algorithm using the
-python-kraken-sdk and Kraken Spot websocket API v1.
+python-kraken-sdk and Kraken Spot websocket API v2.
 """
 
 from __future__ import annotations
@@ -21,7 +20,7 @@ import requests
 import urllib3
 
 from kraken.exceptions import KrakenAuthenticationError  # , KrakenPermissionDeniedError
-from kraken.spot import Funding, KrakenSpotWSClientV1, Market, Staking, Trade, User
+from kraken.spot import Funding, Market, SpotWSClient, Trade, User
 
 logging.basicConfig(
     format="%(asctime)s %(module)s,line: %(lineno)d %(levelname)8s | %(message)s",
@@ -32,7 +31,7 @@ logging.getLogger("requests").setLevel(logging.WARNING)
 logging.getLogger("urllib3").setLevel(logging.WARNING)
 
 
-class TradingBot(KrakenSpotWSClientV1):
+class TradingBot(SpotWSClient):
     """
     Class that implements the trading strategy
 
@@ -50,10 +49,15 @@ class TradingBot(KrakenSpotWSClientV1):
         }
     """
 
-    def __init__(self: TradingBot, config: dict) -> None:
-        super().__init__(  # initialize the KrakenSpotWSClientV1
+    def __init__(
+        self: TradingBot,
+        config: dict,
+        **kwargs: object | dict | set | tuple | list | str | float | None,
+    ) -> None:
+        super().__init__(
             key=config["key"],
             secret=config["secret"],
+            **kwargs,
         )
         self.__config: dict = config
 
@@ -61,16 +65,14 @@ class TradingBot(KrakenSpotWSClientV1):
         self.__trade: Trade = Trade(key=config["key"], secret=config["secret"])
         self.__market: Market = Market(key=config["key"], secret=config["secret"])
         self.__funding: Funding = Funding(key=config["key"], secret=config["secret"])
-        self.__staking: Staking = Staking(key=config["key"], secret=config["secret"])
 
-    async def on_message(self: TradingBot, message: dict | list) -> None:
+    async def on_message(self: TradingBot, message: dict) -> None:
         """Receives all messages of the websocket connection(s)"""
-        if isinstance(message, dict) and "event" in message:
-            if message["event"] in {"heartbeat", "pong"}:
-                return
-            if "error" in message:
-                # handle exceptions/errors sent by websocket connection …
-                pass
+        if message.get("method") == "pong" or message.get("channel") == "heartbeat":
+            return
+        if "error" in message:
+            # handle exceptions/errors sent by websocket connection …
+            pass
 
         logging.info(message)
 
@@ -91,19 +93,26 @@ class TradingBot(KrakenSpotWSClientV1):
 
         # The spot websocket client also allow sending orders via websockets
         # this is way faster than using REST endpoints.
-        # await self.create_order(
-        #     ordertype='limit',
-        #     side='buy',
-        #     pair='BTC/EUR',
-        #     price=20000,
-        #     volume=200
+        # await self.send_message(
+        #     message={
+        #         "method": "add_order",
+        #         "params": {
+        #             "limit_price": 1234.56,
+        #             "order_type": "limit",
+        #             "order_userref": 123456789,
+        #             "order_qty": 1.0,
+        #             "side": "buy",
+        #             "symbol": "BTC/USD",
+        #             "validate": True,
+        #         },
+        #     }
         # )
 
         # You can also un-/subscribe here using `self.subscribe(...)` or
         # `self.unsubscribe(...)`.
         #
         # … more can be found in the documentation
-        #        (https://python-kraken-sdk.readthedocs.io/en/stable/)
+        #        (https://python-kraken-sdk.readthedocs.io/en/stable/).
 
     # Add more functions to customize the trading strategy …
 
@@ -114,7 +123,7 @@ class TradingBot(KrakenSpotWSClientV1):
             extra={"reason": reason},
         )
         # some ideas:
-        #   * save the bots data
+        #   * save the current data
         #   * maybe close trades
         #   * enable dead man's switch
         sys.exit(1)
@@ -130,8 +139,8 @@ class Manager:
     ====== P A R A M E T E R S ======
     config: dict
         configuration like: {
-            "key": "kraken-spot-key",
-            "secret": "kraken-spot-secret",
+            "key" "kraken-spot-key",
+            "secret": "kraken-secret-key",
             "pairs": ["DOT/USD", "BTC/USD"],
         }
     """
@@ -154,34 +163,36 @@ class Manager:
 
     async def __main(self: Manager) -> None:
         """
-        Instantiates the trading strategy (bot) and subscribes to the
-        desired websocket feeds. While no exception within the strategy occur
-        run the loop.
+        Instantiates the trading strategy and subscribes to the desired
+        websocket feeds. While no exception within the strategy occur run the
+        loop.
 
-        This variable `exception_occur` which is an attribute of the
-        KrakenSpotWSClientV1 can be set individually but is also being set to
-        `True` if the websocket connection has some fatal error. This is used to
-        exit the asyncio loop - but you can also apply your own reconnect rules.
+        The variable `exception_occur` which is an attribute of the SpotWSClient
+        can be set individually but is also being set to `True` if the websocket
+        connection has some fatal error. This is used to exit the asyncio loop -
+        but you can also apply your own reconnect rules.
         """
         self.__trading_strategy = TradingBot(config=self.__config)
+        await self.__trading_strategy.start()
 
         await self.__trading_strategy.subscribe(
-            subscription={"name": "ticker"},
-            pair=self.__config["pairs"],
+            params={"channel": "ticker", "symbol": self.__config["pairs"]},
         )
         await self.__trading_strategy.subscribe(
-            subscription={"name": "ohlc", "interval": 15},
-            pair=self.__config["pairs"],
+            params={
+                "channel": "ohlc",
+                "interval": 15,
+                "symbol": self.__config["pairs"],
+            },
         )
 
-        await self.__trading_strategy.subscribe(subscription={"name": "ownTrades"})
-        await self.__trading_strategy.subscribe(subscription={"name": "openOrders"})
+        await self.__trading_strategy.subscribe(params={"channel": "executions"})
 
         while not self.__trading_strategy.exception_occur:
             try:
                 # check if the algorithm feels good
                 # maybe send a status update every day via Telegram or Mail
-                # ..…
+                # …
                 pass
 
             except Exception as exc:
@@ -225,7 +236,7 @@ def main() -> None:
         config={
             "key": os.getenv("SPOT_API_KEY"),
             "secret": os.getenv("SPOT_SECRET_KEY"),
-            "pairs": ["DOT/USD", "XBT/USD"],
+            "pairs": ["DOT/USD", "BTC/USD"],
         },
     )
 

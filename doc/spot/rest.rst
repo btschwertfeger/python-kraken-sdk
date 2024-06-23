@@ -2,8 +2,13 @@
 .. Copyright (C) 2023 Benjamin Thomas Schwertfeger
 .. GitHub: https://github.com/btschwertfeger
 
-Spot REST
-=========
+.. _section-spot-rest-clients:
+
+Spot REST Clients
+==================
+
+The recommended way to execute requests against the Kraken Futures API is
+described in :ref:`section-spot-rest-examples`.
 
 .. autoclass:: kraken.spot.User
    :members:
@@ -26,11 +31,6 @@ Spot REST
    :inherited-members:
 
 .. autoclass:: kraken.spot.Earn
-   :members:
-   :show-inheritance:
-   :inherited-members:
-
-.. autoclass:: kraken.spot.Staking
    :members:
    :show-inheritance:
    :inherited-members:

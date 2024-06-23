@@ -5,7 +5,7 @@
 
 repos:
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.3.4
+    rev: v0.4.2
     hooks:
       - id: ruff
         args:
@@ -21,7 +21,7 @@ repos:
           - --show-source
           - --statistics
   - repo: https://github.com/pycqa/pylint
-    rev: v3.0.3
+    rev: v3.2.3
     hooks:
       - id: pylint
         name: pylint
@@ -32,7 +32,7 @@ repos:
           - -d=R0801 # ignore duplicate code
           - -j=4
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.8.0
+    rev: v1.10.0
     hooks:
       - id: mypy
         name: mypy
@@ -42,8 +42,16 @@ repos:
           - --config-file=pyproject.toml
           - --install-types
           - --non-interactive
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.16.3
+    hooks:
+      - id: gitleaks
+  - repo: https://github.com/jumanjihouse/pre-commit-hooks
+    rev: 3.0.0
+    hooks:
+      - id: shellcheck
   - repo: https://github.com/codespell-project/codespell
-    rev: v2.2.6
+    rev: v2.3.0
     hooks:
       - id: codespell
         additional_dependencies:
@@ -81,7 +89,7 @@ repos:
       - id: rst-inline-touching-normal
       - id: text-unicode-replacement-char
   - repo: https://github.com/psf/black
-    rev: 24.2.0
+    rev: 24.4.2
     hooks:
       - id: black
   - repo: https://github.com/pre-commit/mirrors-prettier

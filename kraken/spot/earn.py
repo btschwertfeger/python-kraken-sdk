@@ -9,17 +9,16 @@ from __future__ import annotations
 
 from typing import TypeVar
 
-from kraken.base_api import KrakenSpotBaseAPI, defined
+from kraken.base_api import SpotClient, defined
 
 Self = TypeVar("Self")
 
 
-class Earn(KrakenSpotBaseAPI):
+class Earn(SpotClient):
     """
 
     Class that implements the Kraken Spot Earn client. Currently there are no
-    earn endpoints that could be accesses without authentication. The earn
-    endpoints replace the past staking endpoints.
+    earn endpoints that could be accesses without authentication.
 
     - https://docs.kraken.com/rest/#tag/Earn
 
@@ -94,7 +93,7 @@ class Earn(KrakenSpotBaseAPI):
 
         """
 
-        return self._request(  # type: ignore[return-value]
+        return self.request(  # type: ignore[return-value]
             method="POST",
             uri="/0/private/Earn/Allocate",
             params={"amount": amount, "strategy_id": strategy_id},
@@ -136,7 +135,7 @@ class Earn(KrakenSpotBaseAPI):
 
         """
 
-        return self._request(  # type: ignore[return-value]
+        return self.request(  # type: ignore[return-value]
             method="POST",
             uri="/0/private/Earn/Deallocate",
             params={"amount": amount, "strategy_id": strategy_id},
@@ -173,7 +172,7 @@ class Earn(KrakenSpotBaseAPI):
             {'pending': False}
         """
 
-        return self._request(  # type: ignore[return-value]
+        return self.request(  # type: ignore[return-value]
             method="POST",
             uri="/0/private/Earn/AllocateStatus",
             params={"strategy_id": strategy_id},
@@ -210,7 +209,7 @@ class Earn(KrakenSpotBaseAPI):
             {'pending': False}
         """
 
-        return self._request(  # type: ignore[return-value]
+        return self.request(  # type: ignore[return-value]
             method="POST",
             uri="/0/private/Earn/DeallocateStatus",
             params={"strategy_id": strategy_id},
@@ -313,7 +312,7 @@ class Earn(KrakenSpotBaseAPI):
         if defined(cursor):
             params["cursor"] = cursor
 
-        return self._request(  # type: ignore[return-value]
+        return self.request(  # type: ignore[return-value]
             method="POST",
             uri="/0/private/Earn/Strategies",
             params=params,
@@ -376,7 +375,7 @@ class Earn(KrakenSpotBaseAPI):
         if defined(converted_asset):
             params["converted_asset"] = converted_asset
 
-        return self._request(  # type: ignore[return-value]
+        return self.request(  # type: ignore[return-value]
             method="POST",
             uri="/0/private/Earn/Allocations",
             params=params,

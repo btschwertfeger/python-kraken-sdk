@@ -17,12 +17,18 @@ on:
         type: string
         required: true
 
-permissions: read-all
+permissions:
+  contents: read
 
 jobs:
   Build:
     runs-on: ${{ inputs.os }}
     steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@17d0e2bd7d51742c71671bd19fa12bdc9d40a3d6 # v2.8.1
+        with:
+          egress-policy: audit
+
       - name: Checkout repository
         uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
 
@@ -34,9 +40,10 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt update
-          sudo apt install -y pandoc
-          python -m pip install --upgrade pip
-          python -m pip install -r doc/requirements.txt
+          DEBIAN_FRONTEND=noninteractive sudo apt install -y pandoc
+          python -m pip install --user -r doc/requirements.txt
+          python -m pip install --user --upgrade pip
+          python -m pip install --user .
 
       - name: Build the documentation
-        run: cd doc && make html
+        run: make doc

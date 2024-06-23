@@ -1,7 +1,13 @@
+aiohttp
 asyncio>=3.4
+click
+cloup
+ipython
 nbsphinx
+orjson
 requests
 setuptools_scm
 sphinx
+sphinx-click
 sphinx-rtd-theme
 websockets

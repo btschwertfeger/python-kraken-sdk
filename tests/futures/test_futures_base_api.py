@@ -5,9 +5,11 @@
 
 """Module that checks the general Futures Base API class."""
 
+from asyncio import run
+
 import pytest
 
-from kraken.base_api import KrakenFuturesBaseAPI
+from kraken.base_api import FuturesAsyncClient, FuturesClient
 from kraken.exceptions import KrakenRequiredArgumentMissingError
 from kraken.futures import Funding, Market, Trade, User
 
@@ -23,14 +25,14 @@ def test_KrakenFuturesBaseAPI_without_exception() -> None:
     the same request and the returned response gets evaluated.
     """
     with pytest.raises(KrakenRequiredArgumentMissingError):
-        KrakenFuturesBaseAPI(
+        FuturesClient(
             key="fake",
             secret="fake",
-        )._request(method="POST", uri="/derivatives/api/v3/sendorder", auth=True)
+        ).request(method="POST", uri="/derivatives/api/v3/sendorder", auth=True)
 
     result: dict = (
-        KrakenFuturesBaseAPI(key="fake", secret="fake", use_custom_exceptions=False)  # type: ignore[union-attr]
-        ._request(method="POST", uri="/derivatives/api/v3/sendorder", auth=True)
+        FuturesClient(key="fake", secret="fake", use_custom_exceptions=False)  # type: ignore[union-attr]
+        .request(method="POST", uri="/derivatives/api/v3/sendorder", auth=True)
         .json()
     )
 
@@ -60,3 +62,60 @@ def test_futures_rest_contextmanager(
 
     with futures_demo_trade as trade:
         assert is_success(trade.get_fills())
+
+
+# ==============================================================================
+# Futures async client
+
+
+@pytest.mark.futures()
+def test_futures_async_rest_contextmanager() -> None:
+    """
+    Checks if the clients can be used as context manager.
+    """
+
+    async def check() -> None:
+        async with FuturesAsyncClient() as client:
+            assert isinstance(
+                await client.request(
+                    "GET",
+                    "/api/charts/v1/spot/PI_XBTUSD/1h",
+                    auth=False,
+                    post_params={"from": "1668989233", "to": "1668999233"},
+                ),
+                dict,
+            )
+
+    run(check())
+
+
+@pytest.mark.futures()
+@pytest.mark.futures_auth()
+def test_futures_rest_async_client_post(
+    futures_api_key: str,
+    futures_secret_key: str,
+) -> None:
+    """
+    Check the instantiation as well as a simple request using the async client.
+    """
+
+    async def check() -> None:
+        client = FuturesAsyncClient(futures_api_key, futures_secret_key)
+        try:
+            assert isinstance(
+                await client.request(
+                    "POST",
+                    "/derivatives/api/v3/orders/status",
+                    post_params={
+                        "orderIds": [
+                            "bcaaefce-27a3-44b4-b13a-19df21e3f087",
+                            "685d5a1a-23eb-450c-bf17-1e4ab5c6fe8a",
+                        ],
+                    },
+                ),
+                dict,
+            )
+        finally:
+            await client.async_close()
+
+    run(check())

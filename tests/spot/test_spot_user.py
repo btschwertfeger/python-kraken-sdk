@@ -315,7 +315,7 @@ def test_request_save_export_report(spot_auth_user: User) -> None:
             description="this is an invalid report type",
         )
 
-    first_of_currrent_month = int(datetime.now().replace(day=1).timestamp())
+    first_of_current_month = int(datetime.now().replace(day=1).timestamp())
     for report in ("trades", "ledgers"):
         if report == "trades":
             fields = [
@@ -348,8 +348,8 @@ def test_request_save_export_report(spot_auth_user: User) -> None:
             description=export_descr,
             fields=fields,
             format_="CSV",
-            starttm=first_of_currrent_month,
-            endtm=first_of_currrent_month + 100 * 100,
+            starttm=first_of_current_month,
+            endtm=first_of_current_month + 100 * 100,
             timeout=30,
         )
         assert is_not_error(response)

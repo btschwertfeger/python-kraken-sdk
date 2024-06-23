@@ -19,13 +19,13 @@ from inspect import iscoroutinefunction
 from typing import TYPE_CHECKING
 
 from kraken.spot import Market
-from kraken.spot.websocket_v2 import KrakenSpotWSClientV2
+from kraken.spot.ws_client import SpotWSClient
 
 if TYPE_CHECKING:
     from collections.abc import Callable
 
 
-class OrderbookClientV2:
+class SpotOrderBookClient(SpotWSClient):
     """
     **This client is using the Kraken Websocket API v2**
 
@@ -54,10 +54,10 @@ class OrderbookClientV2:
         :caption: Example: Create and maintain a Spot orderbook as custom class
 
         from typing import Any
-        from kraken.spot import OrderbookClientV2
+        from kraken.spot import SpotOrderBookClient
         import asyncio
 
-        class OrderBook(OrderbookClientV2):
+        class OrderBook(SpotOrderBookClient):
             async def on_book_update(self: "OrderBook", pair: str, message:
             list) -> None:
                 '''This function must be overloaded to get the recent updates.'''
@@ -73,7 +73,10 @@ class OrderbookClientV2:
                     )
 
         async def main() -> None:
-            orderbook: OrderBook = OrderBook(depth=10) await orderbook.add_book(
+            orderbook: OrderBook = OrderBook(depth=10)
+            await orderbook.start()
+
+            await orderbook.add_book(
                 pairs=["XBT/USD"]  # we can also subscribe to more currency
                 pairs
             )
@@ -93,7 +96,7 @@ class OrderbookClientV2:
         :caption: Example: Create and maintain a Spot orderbook using a callback
 
         from typing import Any
-        from kraken.spot import OrderbookClientV2
+        from kraken.spot import SpotOrderBookClient
         import asyncio
 
         async def my_callback(self: "OrderBook", pair: str, message: dict) -> None:
@@ -102,6 +105,8 @@ class OrderbookClientV2:
 
         async def main() -> None:
             orderbook: OrderBook = OrderBook(depth=100, callback=my_callback)
+            await orderbook.start()
+
             await orderbook.add_book(
                 pairs=["XBT/USD"]  # we can also subscribe to more currency
                 pairs
@@ -120,7 +125,7 @@ class OrderbookClientV2:
     LOG: logging.Logger = logging.getLogger(__name__)
 
     def __init__(
-        self: OrderbookClientV2,
+        self: SpotOrderBookClient,
         depth: int = 10,
         callback: Callable | None = None,
     ) -> None:
@@ -130,11 +135,8 @@ class OrderbookClientV2:
         self.__callback: Callable | None = callback
 
         self.__market: Market = Market()
-        self.ws_client: KrakenSpotWSClientV2 = KrakenSpotWSClientV2(
-            callback=self.on_message,
-        )
 
-    async def on_message(self: OrderbookClientV2, message: list | dict) -> None:
+    async def on_message(self: SpotOrderBookClient, message: list | dict) -> None:
         """
         *This function must not be overloaded - it would break this client!*
 
@@ -223,7 +225,11 @@ class OrderbookClientV2:
             await asyncio_sleep(3)
             await self.add_book(pairs=[pair])
 
-    async def on_book_update(self: OrderbookClientV2, pair: str, message: dict) -> None:
+    async def on_book_update(
+        self: SpotOrderBookClient,
+        pair: str,
+        message: dict,
+    ) -> None:
         """
         This function will be called every time the orderbook gets updated. It
         needs to be overloaded if no callback function was defined during the
@@ -243,7 +249,7 @@ class OrderbookClientV2:
         else:
             print(message)  # noqa: T201
 
-    async def add_book(self: OrderbookClientV2, pairs: list[str]) -> None:
+    async def add_book(self: SpotOrderBookClient, pairs: list[str]) -> None:
         """
         Add an orderbook to this client. The feed will be subscribed and updates
         will be published to the :func:`on_book_update` function.
@@ -253,11 +259,11 @@ class OrderbookClientV2:
         :param depth: The book depth
         :type depth: int
         """
-        await self.ws_client.subscribe(
+        await self.subscribe(
             params={"channel": "book", "depth": self.__depth, "symbol": pairs},
         )
 
-    async def remove_book(self: OrderbookClientV2, pairs: list[str]) -> None:
+    async def remove_book(self: SpotOrderBookClient, pairs: list[str]) -> None:
         """
         Unsubscribe from a subscribed orderbook.
 
@@ -266,32 +272,18 @@ class OrderbookClientV2:
         :param depth: The book depth
         :type depth: int
         """
-        await self.ws_client.unsubscribe(
+        await self.unsubscribe(
             params={"channel": "book", "depth": self.__depth, "symbol": pairs},
         )
 
     @property
-    def depth(self: OrderbookClientV2) -> int:
+    def depth(self: SpotOrderBookClient) -> int:
         """
         Return the fixed depth of this orderbook client.
         """
         return self.__depth
 
-    @property
-    def exception_occur(self: OrderbookClientV2) -> bool:
-        """
-        Can be used to determine if any critical error occurred within the
-        websocket connection. If so, the function will return ``True`` and the
-        client instance is most likely not usable anymore. So this is the
-        switch lets the user know, when to delete the current one and create a
-        new one.
-
-        :return: ``True`` if any critical error occurred else ``False``
-        :rtype: bool
-        """
-        return bool(self.ws_client.exception_occur)
-
-    def get(self: OrderbookClientV2, pair: str) -> dict | None:
+    def get(self: SpotOrderBookClient, pair: str) -> dict | None:
         """
         Returns the orderbook for a specific ``pair``.
 
@@ -305,7 +297,7 @@ class OrderbookClientV2:
             :caption: Orderbook: Get ask and bid
 
             …
-            class Orderbook(OrderbookClientV2):
+            class Orderbook(SpotOrderBookClient):
 
                 async def on_book_update(
                     self: "Orderbook",
@@ -321,7 +313,7 @@ class OrderbookClientV2:
         return self.__book.get(pair)
 
     def __update_book(
-        self: OrderbookClientV2,
+        self: SpotOrderBookClient,
         orders: list[dict],
         side: str,
         symbol: str,
@@ -367,7 +359,11 @@ class OrderbookClientV2:
                 )[: self.__depth],
             )
 
-    def __validate_checksum(self: OrderbookClientV2, pair: str, checksum: int) -> None:
+    def __validate_checksum(
+        self: SpotOrderBookClient,
+        pair: str,
+        checksum: int,
+    ) -> None:
         """
         Function that validates the checksum of the order book as described here
         https://docs.kraken.com/websockets-v2/#calculate-book-checksum.
@@ -411,4 +407,4 @@ class OrderbookClientV2:
         return float(values[0])
 
 
-__all__ = ["OrderbookClientV2"]
+__all__ = ["SpotOrderBookClient"]

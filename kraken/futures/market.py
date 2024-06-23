@@ -10,12 +10,12 @@ from __future__ import annotations
 from functools import lru_cache
 from typing import TypeVar
 
-from kraken.base_api import KrakenFuturesBaseAPI, defined, ensure_string
+from kraken.base_api import FuturesClient, defined, ensure_string
 
 Self = TypeVar("Self")
 
 
-class Market(KrakenFuturesBaseAPI):
+class Market(FuturesClient):
     """
     Class that implements the Kraken Futures market client
 
@@ -129,7 +129,7 @@ class Market(KrakenFuturesBaseAPI):
             params["from"] = from_
         if defined(to):
             params["to"] = to
-        return self._request(  # type: ignore[return-value]
+        return self.request(  # type: ignore[return-value]
             method="GET",
             uri=f"/api/charts/v1/{tick_type}/{symbol}/{resolution}",
             query_params=params,
@@ -164,7 +164,7 @@ class Market(KrakenFuturesBaseAPI):
             >>> Market().get_tick_types()
             ['mark', 'spot', 'trade']
         """
-        return self._request(  # type: ignore[return-value]
+        return self.request(  # type: ignore[return-value]
             method="GET",
             uri="/api/charts/v1/",
             auth=False,
@@ -201,7 +201,7 @@ class Market(KrakenFuturesBaseAPI):
             >>> Market().get_tradeable_products(tick_type="trade")
             ["PI_XBTUSD", "PF_XBTUSD", "PF_SOLUSD", ...]
         """
-        return self._request(  # type: ignore[return-value]
+        return self.request(  # type: ignore[return-value]
             method="GET",
             uri=f"/api/charts/v1/{tick_type}",
             auth=False,
@@ -241,7 +241,7 @@ class Market(KrakenFuturesBaseAPI):
             >>> Market().get_resolutions(tick_type="mark", tradeable="PI_XBTUSD")
             ['1h', '12h', '1w', '15m', '1d', '5m', '30m', '4h', '1m']
         """
-        return self._request(  # type: ignore[return-value]
+        return self.request(  # type: ignore[return-value]
             method="GET",
             uri=f"/api/charts/v1/{tick_type}/{tradeable}",
             auth=False,
@@ -292,7 +292,7 @@ class Market(KrakenFuturesBaseAPI):
                 ]
             }
         """
-        return self._request(  # type: ignore[return-value]
+        return self.request(  # type: ignore[return-value]
             method="GET",
             uri="/derivatives/api/v3/feeschedules",
             auth=False,
@@ -328,7 +328,7 @@ class Market(KrakenFuturesBaseAPI):
             }
 
         """
-        return self._request(  # type: ignore[return-value]
+        return self.request(  # type: ignore[return-value]
             method="GET",
             uri="/derivatives/api/v3/feeschedules/volumes",
             auth=True,
@@ -386,7 +386,7 @@ class Market(KrakenFuturesBaseAPI):
         if defined(symbol):
             params["symbol"] = symbol
 
-        return self._request(  # type: ignore[return-value]
+        return self.request(  # type: ignore[return-value]
             method="GET",
             uri="/derivatives/api/v3/orderbook",
             query_params=params,
@@ -440,7 +440,7 @@ class Market(KrakenFuturesBaseAPI):
                 }, ...]
             }
         """
-        return self._request(  # type: ignore[return-value]
+        return self.request(  # type: ignore[return-value]
             method="GET",
             uri="/derivatives/api/v3/tickers",
             auth=False,
@@ -530,7 +530,7 @@ class Market(KrakenFuturesBaseAPI):
             }
 
         """
-        return self._request(  # type: ignore[return-value]
+        return self.request(  # type: ignore[return-value]
             method="GET",
             uri="/derivatives/api/v3/instruments",
             auth=False,
@@ -570,13 +570,13 @@ class Market(KrakenFuturesBaseAPI):
             }
         """
         if instrument:
-            return self._request(  # type: ignore[return-value]
+            return self.request(  # type: ignore[return-value]
                 method="GET",
                 uri=f"/derivatives/api/v3/instruments/{instrument}/status",
                 auth=False,
             )
 
-        return self._request(  # type: ignore[return-value]
+        return self.request(  # type: ignore[return-value]
             method="GET",
             uri="/derivatives/api/v3/instruments/status",
             auth=False,
@@ -635,7 +635,7 @@ class Market(KrakenFuturesBaseAPI):
         if defined(lastTime):
             params["lastTime"] = lastTime
 
-        return self._request(  # type: ignore[return-value]
+        return self.request(  # type: ignore[return-value]
             method="GET",
             uri="/derivatives/api/v3/history",
             query_params=params,
@@ -683,7 +683,7 @@ class Market(KrakenFuturesBaseAPI):
                 ]
             }
         """
-        return self._request(  # type: ignore[return-value]
+        return self.request(  # type: ignore[return-value]
             method="GET",
             uri="/derivatives/api/v4/historicalfundingrates",
             query_params={"symbol": symbol},
@@ -721,7 +721,7 @@ class Market(KrakenFuturesBaseAPI):
                 ]
             }
         """
-        return self._request(  # type: ignore[return-value]
+        return self.request(  # type: ignore[return-value]
             method="GET",
             uri="/derivatives/api/v3/leveragepreferences",
             auth=True,
@@ -763,7 +763,7 @@ class Market(KrakenFuturesBaseAPI):
         if defined(maxLeverage):
             params["maxLeverage"] = maxLeverage
 
-        return self._request(  # type: ignore[return-value]
+        return self.request(  # type: ignore[return-value]
             method="PUT",
             uri="/derivatives/api/v3/leveragepreferences",
             post_params=params,
@@ -797,7 +797,7 @@ class Market(KrakenFuturesBaseAPI):
             >>> market.get_pnl_preference()
             {'result': 'success', 'serverTime': '2023-04-04T15:21:29.413Z', 'preferences': []}
         """
-        return self._request(  # type: ignore[return-value]
+        return self.request(  # type: ignore[return-value]
             method="GET",
             uri="/derivatives/api/v3/pnlpreferences",
             auth=True,
@@ -837,7 +837,7 @@ class Market(KrakenFuturesBaseAPI):
             >>> market.set_pnl_preference(symbol="PF_XBTUSD", pnlPreference="USD")
             {'result': 'success', 'serverTime': '2023-04-04T15:24:18.406Z'}
         """
-        return self._request(  # type: ignore[return-value]
+        return self.request(  # type: ignore[return-value]
             method="PUT",
             uri="/derivatives/api/v3/pnlpreferences",
             post_params={"symbol": symbol, "pnlPreference": pnlPreference},
@@ -891,7 +891,7 @@ class Market(KrakenFuturesBaseAPI):
         if defined(tradeable):
             params["tradeable"] = tradeable
 
-        return self._request(  # type: ignore[return-value]
+        return self.request(  # type: ignore[return-value]
             method="GET",
             uri=endpoint,
             post_params=params,

@@ -5,10 +5,18 @@
 
 """This module provides the Kraken Futures clients"""
 
+from kraken.base_api import FuturesAsyncClient
 from kraken.futures.funding import Funding
 from kraken.futures.market import Market
 from kraken.futures.trade import Trade
 from kraken.futures.user import User
-from kraken.futures.ws_client import KrakenFuturesWSClient
+from kraken.futures.ws_client import FuturesWSClient
 
-__all__ = ["Funding", "KrakenFuturesWSClient", "Market", "Trade", "User"]
+__all__ = [
+    "Funding",
+    "FuturesAsyncClient",
+    "FuturesWSClient",
+    "Market",
+    "Trade",
+    "User",
+]

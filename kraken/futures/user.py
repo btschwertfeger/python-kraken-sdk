@@ -9,7 +9,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, TypeVar
 
-from kraken.base_api import KrakenFuturesBaseAPI, defined
+from kraken.base_api import FuturesClient, defined
 
 if TYPE_CHECKING:
     import requests
@@ -17,7 +17,7 @@ if TYPE_CHECKING:
 Self = TypeVar("Self")
 
 
-class User(KrakenFuturesBaseAPI):
+class User(FuturesClient):
     """
     Class that implements the Kraken Futures user client
 
@@ -153,7 +153,7 @@ class User(KrakenFuturesBaseAPI):
                 'serverTime': '2023-04-04T17:56:49.027Z'
             }
         """
-        return self._request(  # type: ignore[return-value]
+        return self.request(  # type: ignore[return-value]
             method="GET",
             uri="/derivatives/api/v3/accounts",
             auth=True,
@@ -190,7 +190,7 @@ class User(KrakenFuturesBaseAPI):
                 'subaccounts': []
             }
         """
-        return self._request(  # type: ignore[return-value]
+        return self.request(  # type: ignore[return-value]
             method="GET",
             uri="/derivatives/api/v3/subaccounts",
             auth=True,
@@ -229,7 +229,7 @@ class User(KrakenFuturesBaseAPI):
                 ]
             }
         """
-        return self._request(  # type: ignore[return-value]
+        return self.request(  # type: ignore[return-value]
             method="GET",
             uri="/derivatives/api/v3/unwindqueue",
             auth=True,
@@ -269,7 +269,7 @@ class User(KrakenFuturesBaseAPI):
                 'serverTime': '2023-04-04T18:01:39.729Z'
             }
         """
-        return self._request(  # type: ignore[return-value]
+        return self.request(  # type: ignore[return-value]
             method="GET",
             uri="/derivatives/api/v3/notifications",
             auth=True,
@@ -367,7 +367,7 @@ class User(KrakenFuturesBaseAPI):
         if defined(to):
             params["to"] = to
 
-        return self._request(  # type: ignore[return-value]
+        return self.request(  # type: ignore[return-value]
             method="GET",
             uri="/api/history/v2/account-log",
             query_params=params,
@@ -402,7 +402,7 @@ class User(KrakenFuturesBaseAPI):
             ...             file.write(chunk)
         """
 
-        return self._request(  # type: ignore[return-value]
+        return self.request(  # type: ignore[return-value]
             method="GET",
             uri="/api/history/v2/accountlogcsv",
             auth=True,
@@ -456,7 +456,7 @@ class User(KrakenFuturesBaseAPI):
         if defined(tradeable):
             params["tradeable"] = tradeable
 
-        return self._request(  # type: ignore[return-value]
+        return self.request(  # type: ignore[return-value]
             method="GET",
             uri=endpoint,
             query_params=params,
@@ -806,7 +806,7 @@ class User(KrakenFuturesBaseAPI):
                 'serverTime': '2023-04-06T16:12:15.410Z'
             }
         """
-        return self._request(  # type: ignore[return-value]
+        return self.request(  # type: ignore[return-value]
             method="GET",
             uri="/derivatives/api/v3/openpositions",
             auth=True,
@@ -896,7 +896,7 @@ class User(KrakenFuturesBaseAPI):
                 'serverTime': '2023-04-07T15:30:29.911Z'
             }
         """
-        return self._request(  # type: ignore[return-value]
+        return self.request(  # type: ignore[return-value]
             method="GET",
             uri="/derivatives/api/v3/openorders",
             auth=True,
@@ -936,7 +936,7 @@ class User(KrakenFuturesBaseAPI):
                "tradingEnabled": False
             }
         """
-        return self._request(  # type: ignore[return-value]
+        return self.request(  # type: ignore[return-value]
             method="GET",
             uri=f"/derivatives/api/v3/subaccount/{subaccountUid}/trading-enabled",
             auth=True,
@@ -978,7 +978,7 @@ class User(KrakenFuturesBaseAPI):
                 "tradingEnabled": True
             }
         """
-        return self._request(  # type: ignore[return-value]
+        return self.request(  # type: ignore[return-value]
             method="PUT",
             uri=f"/derivatives/api/v3/subaccount/{subaccountUid}/trading-enabled",
             post_params={"tradingEnabled": trading_enabled},

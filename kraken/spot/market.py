@@ -10,12 +10,12 @@ from __future__ import annotations
 from functools import lru_cache
 from typing import TypeVar
 
-from kraken.base_api import KrakenSpotBaseAPI, defined, ensure_string
+from kraken.base_api import SpotClient, defined, ensure_string
 
 Self = TypeVar("Self")
 
 
-class Market(KrakenSpotBaseAPI):
+class Market(SpotClient):
     """
     Class that implements the Kraken Spot Market client. Can be used to access
     the Kraken Spot market data.
@@ -125,7 +125,7 @@ class Market(KrakenSpotBaseAPI):
             params["asset"] = assets
         if defined(aclass):
             params["aclass"] = aclass
-        return self._request(  # type: ignore[return-value]
+        return self.request(  # type: ignore[return-value]
             method="GET",
             uri="/0/public/Assets",
             params=params,
@@ -209,7 +209,7 @@ class Market(KrakenSpotBaseAPI):
             params["pair"] = pair
         if defined(info):
             params["info"] = info
-        return self._request(  # type: ignore[return-value]
+        return self.request(  # type: ignore[return-value]
             method="GET",
             uri="/0/public/AssetPairs",
             params=params,
@@ -259,7 +259,7 @@ class Market(KrakenSpotBaseAPI):
         params: dict = {}
         if defined(pair):
             params["pair"] = pair
-        return self._request(  # type: ignore[return-value]
+        return self.request(  # type: ignore[return-value]
             method="GET",
             uri="/0/public/Ticker",
             params=params,
@@ -314,7 +314,7 @@ class Market(KrakenSpotBaseAPI):
         params: dict = {"pair": pair, "interval": interval}
         if defined(since):
             params["since"] = since
-        return self._request(  # type: ignore[return-value]
+        return self.request(  # type: ignore[return-value]
             method="GET",
             uri="/0/public/OHLC",
             params=params,
@@ -362,7 +362,7 @@ class Market(KrakenSpotBaseAPI):
                 }
             }
         """
-        return self._request(  # type: ignore[return-value]
+        return self.request(  # type: ignore[return-value]
             method="GET",
             uri="/0/public/Depth",
             params={"pair": pair, "count": count},
@@ -413,7 +413,7 @@ class Market(KrakenSpotBaseAPI):
             params["since"] = since
         if defined(count):
             params["count"] = count
-        return self._request(  # type: ignore[return-value]
+        return self.request(  # type: ignore[return-value]
             method="GET",
             uri="/0/public/Trades",
             params=params,
@@ -458,7 +458,7 @@ class Market(KrakenSpotBaseAPI):
         params: dict = {"pair": pair}
         if defined(since):
             params["since"] = since
-        return self._request(  # type: ignore[return-value]
+        return self.request(  # type: ignore[return-value]
             method="GET",
             uri="/0/public/Spread",
             params=params,
@@ -487,7 +487,7 @@ class Market(KrakenSpotBaseAPI):
             >>> Market().get_system_status()
             {'status': 'online', 'timestamp': '2023-04-05T17:12:31Z'}
         """
-        return self._request(  # type: ignore[return-value]
+        return self.request(  # type: ignore[return-value]
             method="GET",
             uri="/0/public/SystemStatus",
             auth=False,

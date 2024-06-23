@@ -2,14 +2,11 @@
 _version.py
 .vscode/
 
-# Vale
-vale.ini
-styles/
-
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
 *$py.class
+
 # C extensions
 *.so
 
@@ -36,19 +33,14 @@ share/python-wheels/
 MANIFEST
 
 # Unit test / coverage reports
-htmlcov/
-.tox/
-.nox/
 .coverage
 .coverage.*
 .cache
 .ruff_cache
-nosetests.xml
 coverage.xml
 pytest.xml
 *.cover
 *.py,cover
-.hypothesis/
 .pytest_cache/
 
 # Translations
@@ -57,9 +49,6 @@ pytest.xml
 
 # Sphinx documentation
 doc/_build/
-
-# PyBuilder
-target/
 
 # Jupyter Notebook
 .ipynb_checkpoints
@@ -85,6 +74,7 @@ mypy.xml
 # misc
 del*.py
 del/
+todo.md
 .DS_Store
 *.csv
 *.log

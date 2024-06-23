@@ -125,21 +125,23 @@ def cli(ctx: Context, **kwargs: dict) -> None:
 @pass_context
 def spot(ctx: Context, url: str, **kwargs: dict) -> None:  # noqa: ARG001
     """Access the Kraken Spot REST API"""
-    from kraken.base_api import KrakenSpotBaseAPI  # noqa: PLC0415
+    from kraken.base_api import SpotClient  # noqa: PLC0415
 
     logging.debug("Initialize the Kraken client")
-    client = KrakenSpotBaseAPI(
+    client = SpotClient(
         key=kwargs["api_key"],  # type: ignore[arg-type]
         secret=kwargs["secret_key"],  # type: ignore[arg-type]
     )
 
     try:
-        response = client._request(  # noqa: SLF001 # pylint: disable=protected-access,no-value-for-parameter
-            method=kwargs["x"],  # type: ignore[arg-type]
-            uri=(uri := re_sub(r"https://.*.com", "", url)),
-            params=orloads(kwargs.get("data") or "{}"),
-            timeout=kwargs["timeout"],  # type: ignore[arg-type]
-            auth="private" in uri.lower(),
+        response = (
+            client.request(  # pylint: disable=protected-access,no-value-for-parameter
+                method=kwargs["x"],  # type: ignore[arg-type]
+                uri=(uri := re_sub(r"https://.*.com", "", url)),
+                params=orloads(kwargs.get("data") or "{}"),
+                timeout=kwargs["timeout"],  # type: ignore[arg-type]
+                auth="private" in uri.lower(),
+            )
         )
     except JSONDecodeError as exc:
         logging.error(f"Could not parse the passed data. {exc}")  # noqa: G004
@@ -199,22 +201,24 @@ def spot(ctx: Context, url: str, **kwargs: dict) -> None:  # noqa: ARG001
 @pass_context
 def futures(ctx: Context, url: str, **kwargs: dict) -> None:  # noqa: ARG001
     """Access the Kraken Futures REST API"""
-    from kraken.base_api import KrakenFuturesBaseAPI  # noqa: PLC0415
+    from kraken.base_api import FuturesClient  # noqa: PLC0415
 
     logging.debug("Initialize the Kraken client")
-    client = KrakenFuturesBaseAPI(
+    client = FuturesClient(
         key=kwargs["api_key"],  # type: ignore[arg-type]
         secret=kwargs["secret_key"],  # type: ignore[arg-type]
     )
 
     try:
-        response = client._request(  # noqa: SLF001 # pylint: disable=protected-access,no-value-for-parameter
-            method=kwargs["x"],  # type: ignore[arg-type]
-            uri=(uri := re_sub(r"https://.*.com", "", url)),
-            post_params=orloads(kwargs.get("data") or "{}"),
-            query_params=orloads(kwargs.get("query") or "{}"),
-            timeout=kwargs["timeout"],  # type: ignore[arg-type]
-            auth="derivatives" in uri.lower(),
+        response = (
+            client.request(  # pylint: disable=protected-access,no-value-for-parameter
+                method=kwargs["x"],  # type: ignore[arg-type]
+                uri=(uri := re_sub(r"https://.*.com", "", url)),
+                post_params=orloads(kwargs.get("data") or "{}"),
+                query_params=orloads(kwargs.get("query") or "{}"),
+                timeout=kwargs["timeout"],  # type: ignore[arg-type]
+                auth="derivatives" in uri.lower(),
+            )
         )
     except JSONDecodeError as exc:
         logging.error(f"Could not parse the passed data. {exc}")  # noqa: G004

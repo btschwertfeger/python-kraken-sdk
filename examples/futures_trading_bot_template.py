@@ -21,7 +21,7 @@ import requests
 import urllib3
 
 from kraken.exceptions import KrakenAuthenticationError
-from kraken.futures import Funding, KrakenFuturesWSClient, Market, Trade, User
+from kraken.futures import FuturesWSClient, User
 
 logging.basicConfig(
     format="%(asctime)s %(module)s,line: %(lineno)d %(levelname)8s | %(message)s",
@@ -32,7 +32,7 @@ logging.getLogger("requests").setLevel(logging.WARNING)
 logging.getLogger("urllib3").setLevel(logging.WARNING)
 
 
-class TradingBot(KrakenFuturesWSClient):
+class TradingBot(FuturesWSClient):
     """
     Class that implements the trading strategy
 
@@ -55,29 +55,16 @@ class TradingBot(KrakenFuturesWSClient):
             key=config["key"],
             secret=config["secret"],
         )
-        self.__config: dict = config
-
-        self.__user: User = User(key=config["key"], secret=config["secret"])
-        self.__trade: Trade = Trade(key=config["key"], secret=config["secret"])
-        self.__market: Market = Market(key=config["key"], secret=config["secret"])
-        self.__funding: Funding = Funding(key=config["key"], secret=config["secret"])
 
     async def on_message(self: TradingBot, message: list | dict) -> None:
         """Receives all messages that came form the websocket feed(s)"""
         logging.info(message)
 
         # == apply your trading strategy here ==
-
-        # Call functions of `self.__trade` and other clients if conditions met …
-        # print(
-        #     self.__trade.create_order(
-        #         orderType='lmt',
-        #         size=2,
-        #         symbol='PI_XBTUSD',
-        #         side='buy',
-        #         limitPrice=10000
-        #     )
-        # )
+        # Hint: You can execute requests using the `request` function directly:
+        # print(await self.request(
+        #     "GET", "/api/charts/v1/spot/PI_XBTUSD/1d",
+        # ))
 
         # You can also un-/subscribe here using `self.subscribe(...)` or
         # `self.unsubscribe(...)`
@@ -139,6 +126,7 @@ class ManagedBot:
         exit the asyncio loop - but you can also apply your own reconnect rules.
         """
         self.__trading_strategy = TradingBot(config=self.__config)
+        await self.__trading_strategy.start()
 
         await self.__trading_strategy.subscribe(
             feed="ticker",

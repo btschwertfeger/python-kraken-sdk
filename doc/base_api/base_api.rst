@@ -10,27 +10,32 @@ avoid using them since these are internals and may change without any warning.
 
 They are the base classes for Spot and Futures REST and websocket clients.
 
-.. autoclass:: kraken.base_api.KrakenSpotBaseAPI
+.. autoclass:: kraken.base_api.SpotClient
    :members:
    :show-inheritance:
    :inherited-members:
 
-.. autoclass:: kraken.base_api.KrakenFuturesBaseAPI
+.. autoclass:: kraken.base_api.SpotAsyncClient
    :members:
    :show-inheritance:
    :inherited-members:
 
-.. autoclass:: kraken.spot.websocket.KrakenSpotWSClientBase
+.. autoclass:: kraken.base_api.FuturesClient
    :members:
    :show-inheritance:
    :inherited-members:
 
-.. autoclass:: kraken.spot.websocket.connectors.ConnectSpotWebsocketV1
+.. autoclass:: kraken.base_api.FuturesAsyncClient
    :members:
    :show-inheritance:
    :inherited-members:
 
-.. autoclass:: kraken.spot.websocket.connectors.ConnectSpotWebsocketV2
+.. autoclass:: kraken.spot.websocket.SpotWSClientBase
+   :members:
+   :show-inheritance:
+   :inherited-members:
+
+.. autoclass:: kraken.spot.websocket.connectors.ConnectSpotWebsocket
    :members:
    :show-inheritance:
    :inherited-members:

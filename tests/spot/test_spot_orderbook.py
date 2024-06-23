@@ -11,15 +11,16 @@ from __future__ import annotations
 
 import asyncio
 import json
+from asyncio import sleep as async_sleep
 from collections import OrderedDict
 from typing import TYPE_CHECKING
 from unittest import mock
 
 import pytest
 
-from kraken.spot import OrderbookClientV2
+from kraken.spot import SpotOrderBookClient
 
-from .helper import FIXTURE_DIR, OrderbookClientV2Wrapper, async_wait
+from .helper import FIXTURE_DIR, SpotOrderBookClientWrapper
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -34,10 +35,11 @@ def test_create_public_bot(caplog: pytest.LogCaptureFixture) -> None:
     """
 
     async def create_bot() -> None:
-        orderbook: OrderbookClientV2Wrapper = OrderbookClientV2Wrapper()
-        await async_wait(seconds=10)
+        async with SpotOrderBookClientWrapper() as orderbook:
 
-        assert orderbook.depth == 10
+            await async_sleep(10)
+
+            assert orderbook.depth == 10
 
     asyncio.run(create_bot())
 
@@ -60,25 +62,25 @@ def test_get_first() -> None:
 
     assert (
         float(10)
-        == OrderbookClientV2Wrapper.get_first(("10", "5"))
-        == OrderbookClientV2Wrapper.get_first((10, 5))
+        == SpotOrderBookClientWrapper.get_first(("10", "5"))
+        == SpotOrderBookClientWrapper.get_first((10, 5))
     )
 
 
 @pytest.mark.spot()
 @pytest.mark.spot_orderbook()
-@mock.patch("kraken.spot.orderbook_v2.KrakenSpotWSClientV2", return_value=None)
+@mock.patch("kraken.spot.orderbook.SpotWSClient", return_value=None)
 @mock.patch(
-    "kraken.spot.orderbook_v2.OrderbookClientV2.remove_book",
+    "kraken.spot.orderbook.SpotOrderBookClient.remove_book",
     return_value=mock.AsyncMock(),
 )
 @mock.patch(
-    "kraken.spot.orderbook_v2.OrderbookClientV2.add_book",
+    "kraken.spot.orderbook.SpotOrderBookClient.add_book",
     return_value=mock.AsyncMock(),
 )
 def test_passing_msg_and_validate_checksum(
     mock_add_book: mock.MagicMock,  # noqa: ARG001
-    mock_remove_bookv: mock.MagicMock,  # noqa: ARG001
+    mock_remove_book: mock.MagicMock,  # noqa: ARG001
     mock_ws_client: mock.MagicMock,  # noqa: ARG001
 ) -> None:
     """
@@ -91,7 +93,8 @@ def test_passing_msg_and_validate_checksum(
         orderbook: dict = json.load(json_file)
 
     async def assign() -> None:
-        client: OrderbookClientV2 = OrderbookClientV2(depth=10)
+        client: SpotOrderBookClient = SpotOrderBookClient(depth=10)
+        # await client.start() # not required here
 
         await client.on_message(message=orderbook["init"])
         assert client.get(pair="BTC/USD")["valid"]
@@ -129,10 +132,11 @@ def test_add_book(caplog: pytest.LogCaptureFixture) -> None:
     """
 
     async def execute_add_book() -> None:
-        orderbook: OrderbookClientV2Wrapper = OrderbookClientV2Wrapper()
+        orderbook = SpotOrderBookClientWrapper()
+        await orderbook.start()
 
         await orderbook.add_book(pairs=["BTC/USD"])
-        await async_wait(seconds=2)
+        await async_sleep(2)
 
         book: dict | None = orderbook.get(pair="BTC/USD")
         assert isinstance(book, dict)
@@ -168,13 +172,13 @@ def test_remove_book(caplog: pytest.LogCaptureFixture) -> None:
     """
 
     async def execute_remove_book() -> None:
-        orderbook: OrderbookClientV2Wrapper = OrderbookClientV2Wrapper()
+        async with SpotOrderBookClientWrapper() as orderbook:
 
-        await orderbook.add_book(pairs=["BTC/USD"])
-        await async_wait(seconds=2)
+            await orderbook.add_book(pairs=["BTC/USD"])
+            await async_sleep(2)
 
-        await orderbook.remove_book(pairs=["BTC/USD"])
-        await async_wait(seconds=2)
+            await orderbook.remove_book(pairs=["BTC/USD"])
+            await async_sleep(2)
 
     asyncio.run(execute_remove_book())
 

@@ -6,11 +6,9 @@
 from __future__ import annotations
 
 import logging
-from asyncio import sleep
 from pathlib import Path
-from time import time
 
-from kraken.futures import KrakenFuturesWSClient
+from kraken.futures import FuturesWSClient
 
 CACHE_DIR: Path = Path(__file__).resolve().parent.parent.parent / ".cache" / "tests"
 CACHE_DIR.mkdir(parents=True, exist_ok=True)
@@ -32,16 +30,9 @@ def is_not_error(
     return isinstance(value, dict) and "error" not in value
 
 
-async def async_wait(seconds: float = 1.0) -> None:
-    """Function that realizes the wait for ``seconds``."""
-    start: float = time()
-    while time() - seconds < start:
-        await sleep(0.2)
-
-
-class FuturesWebsocketClientTestWrapper(KrakenFuturesWSClient):
+class FuturesWebsocketClientTestWrapper(FuturesWSClient):
     """
-    Class that creates an instance to test the KrakenFuturesWSClient.
+    Class that creates an instance to test the FuturesWSClient.
 
     It writes the messages to the log and a file. The log is used
     within the tests, the log file is for local debugging.

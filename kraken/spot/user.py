@@ -12,12 +12,12 @@ from __future__ import annotations
 from decimal import Decimal
 from typing import TypeVar
 
-from kraken.base_api import KrakenSpotBaseAPI, defined, ensure_string
+from kraken.base_api import SpotClient, defined, ensure_string
 
 Self = TypeVar("Self")
 
 
-class User(KrakenSpotBaseAPI):
+class User(SpotClient):
     """
     Class that implements the Kraken Spot User client
 
@@ -93,7 +93,7 @@ class User(KrakenSpotBaseAPI):
                 ...
             }
         """
-        return self._request(  # type: ignore[return-value]
+        return self.request(  # type: ignore[return-value]
             method="POST",
             uri="/0/private/Balance",
             extra_params=extra_params,
@@ -139,7 +139,7 @@ class User(KrakenSpotBaseAPI):
                 ...
             }
         """
-        return self._request(  # type: ignore[return-value]
+        return self.request(  # type: ignore[return-value]
             method="POST",
             uri="/0/private/BalanceEx",
             extra_params=extra_params,
@@ -228,7 +228,7 @@ class User(KrakenSpotBaseAPI):
         params: dict = {}
         if defined(asset):
             params["asset"] = asset
-        return self._request(  # type: ignore[return-value]
+        return self.request(  # type: ignore[return-value]
             method="POST",
             uri="/0/private/TradeBalance",
             params=params,
@@ -302,7 +302,7 @@ class User(KrakenSpotBaseAPI):
         params: dict = {"trades": trades}
         if defined(userref):
             params["userref"] = userref
-        return self._request(  # type: ignore[return-value]
+        return self.request(  # type: ignore[return-value]
             method="POST",
             uri="/0/private/OpenOrders",
             params=params,
@@ -397,7 +397,7 @@ class User(KrakenSpotBaseAPI):
         if defined(ofs):
             params["ofs"] = ofs
 
-        return self._request(  # type: ignore[return-value]
+        return self.request(  # type: ignore[return-value]
             method="POST",
             uri="/0/private/ClosedOrders",
             params=params,
@@ -510,7 +510,7 @@ class User(KrakenSpotBaseAPI):
         }
         if defined(userref):
             params["userref"] = userref
-        return self._request(  # type: ignore[return-value]
+        return self.request(  # type: ignore[return-value]
             method="POST",
             uri="/0/private/QueryOrders",
             params=params,
@@ -598,7 +598,7 @@ class User(KrakenSpotBaseAPI):
             params["end"] = end
         if defined(ofs):
             params["ofs"] = ofs
-        return self._request(  # type: ignore[return-value]
+        return self.request(  # type: ignore[return-value]
             method="POST",
             uri="/0/private/TradesHistory",
             params=params,
@@ -655,7 +655,7 @@ class User(KrakenSpotBaseAPI):
                 }
             }
         """
-        return self._request(  # type: ignore[return-value]
+        return self.request(  # type: ignore[return-value]
             method="POST",
             uri="/0/private/QueryTrades",
             params={
@@ -726,7 +726,7 @@ class User(KrakenSpotBaseAPI):
         params: dict = {"docalcs": docalcs, "consolidation": consolidation}
         if defined(txid):
             params["txid"] = txid
-        return self._request(  # type: ignore[return-value]
+        return self.request(  # type: ignore[return-value]
             method="POST",
             uri="/0/private/OpenPositions",
             params=params,
@@ -802,7 +802,7 @@ class User(KrakenSpotBaseAPI):
             params["end"] = end
         if defined(ofs):
             params["ofs"] = ofs
-        return self._request(  # type: ignore[return-value]
+        return self.request(  # type: ignore[return-value]
             method="POST",
             uri="/0/private/Ledgers",
             params=params,
@@ -853,7 +853,7 @@ class User(KrakenSpotBaseAPI):
                 }
             }
         """
-        return self._request(  # type: ignore[return-value]
+        return self.request(  # type: ignore[return-value]
             method="POST",
             uri="/0/private/QueryLedgers",
             params={"trades": trades, "id": id_},
@@ -924,7 +924,7 @@ class User(KrakenSpotBaseAPI):
         params: dict = {"fee-info": fee_info}
         if defined(pair):
             params["pair"] = pair
-        return self._request(  # type: ignore[return-value]
+        return self.request(  # type: ignore[return-value]
             method="POST",
             uri="/0/private/TradeVolume",
             params=params,
@@ -994,7 +994,7 @@ class User(KrakenSpotBaseAPI):
             params["starttm"] = starttm
         if defined(endtm):
             params["endtm"] = endtm
-        return self._request(  # type: ignore[return-value]
+        return self.request(  # type: ignore[return-value]
             method="POST",
             uri="/0/private/AddExport",
             params=params,
@@ -1058,7 +1058,7 @@ class User(KrakenSpotBaseAPI):
         """
         if report not in {"trades", "ledgers"}:
             raise ValueError('report must be one of "trades", "ledgers"')
-        return self._request(  # type: ignore[return-value]
+        return self.request(  # type: ignore[return-value]
             method="POST",
             uri="/0/private/ExportStatus",
             params={"report": report},
@@ -1106,7 +1106,7 @@ class User(KrakenSpotBaseAPI):
             ...             file.write(chunk)
 
         """
-        return self._request(  # type: ignore[return-value]
+        return self.request(  # type: ignore[return-value]
             method="POST",
             uri="/0/private/RetrieveExport",
             params={"id": id_},
@@ -1149,7 +1149,7 @@ class User(KrakenSpotBaseAPI):
             >>> user.delete_export_report(id_="GEHI", type_="delete")
             { 'delete': True }
         """
-        return self._request(  # type: ignore[return-value]
+        return self.request(  # type: ignore[return-value]
             method="POST",
             uri="/0/private/RemoveExport",
             params={"id": id_, "type": type_},
@@ -1185,7 +1185,7 @@ class User(KrakenSpotBaseAPI):
             >>> user.create_subaccount(username="user", email="user@domain.com")
             { 'result': True }
         """
-        return self._request(  # type: ignore[return-value]
+        return self.request(  # type: ignore[return-value]
             method="POST",
             uri="/0/private/CreateSubaccount",
             params={"username": username, "email": email},
@@ -1238,7 +1238,7 @@ class User(KrakenSpotBaseAPI):
                 }
             }
         """
-        return self._request(  # type: ignore[return-value]
+        return self.request(  # type: ignore[return-value]
             method="POST",
             uri="/0/private/AccountTransfer",
             params={"asset": asset, "amount": amount, "from": from_, "to": to_},

@@ -13,7 +13,8 @@ name: PR Manual Pre-Commit
 on:
   workflow_dispatch:
 
-permissions: read-all
+permissions:
+  contents: read
 
 jobs:
   Pre-Commit:

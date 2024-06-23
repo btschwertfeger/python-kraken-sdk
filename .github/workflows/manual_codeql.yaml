@@ -12,7 +12,11 @@ name: PR Manual CodeQL
 on:
   workflow_dispatch:
 
-permissions: read-all
+# Don't change this permissions. These must match those of the analyze job.
+permissions:
+  actions: read
+  contents: read
+  security-events: write
 
 jobs:
   CodeQL:

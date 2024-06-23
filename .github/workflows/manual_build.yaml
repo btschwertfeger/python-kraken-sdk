@@ -12,7 +12,8 @@ name: PR Manual Build
 on:
   workflow_dispatch:
 
-permissions: read-all
+permissions:
+  contents: read
 
 jobs:
   Build:

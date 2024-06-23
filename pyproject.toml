@@ -27,6 +27,7 @@ dependencies = [
   "click",
   "cloup",
   "orjson",
+  "aiohttp",
 ]
 keywords = ["crypto", "trading", "kraken", "exchange", "api"]
 classifiers = [
@@ -56,12 +57,15 @@ kraken = "kraken.cli:cli"
 
 [project.optional-dependencies]
 dev = [
+  "debugpy",
   # building
   "build",
   # documentation
   "sphinx",
+  "sphinx-click",
   "sphinx-rtd-theme",
   "nbsphinx",
+  "ipython",          # to visualize notebooks in doc
   # formatting
   "black",
   # typing
@@ -95,9 +99,9 @@ junit_family = "xunit2"
 testpaths = ["tests"]
 
 [tool.pytest.ini_options]
-filterwarnings = [
-  "ignore:The Kraken websocket API v1 is marked as deprecated*:DeprecationWarning",
-]
+# filterwarnings = [
+#   "ignore:The Kraken websocket API v1 is marked as deprecated*:DeprecationWarning",
+# ]
 
 cache_dir = ".cache/pytest"
 markers = [
@@ -110,10 +114,7 @@ markers = [
   "spot_user: … Spot User endpoint.",
   "spot_market: … Spot Market endpoint.",
   "spot_funding: … Spot Funding endpoint.",
-  "spot_staking: … Spot Staking endpoint.",
-  "spot_websocket: … Spot Websocket clients (v1 + v2) + Spot Orderbook client.",
-  "spot_websocket_v1: … Spot Websocket client v1.",
-  "spot_websocket_v2: … Spot Websocket client v2.",
+  "spot_websocket: … Spot Websocket client + Spot Orderbook client.",
   "spot_orderbook: … Spot Orderbook client.",
   "futures: … Futures endpoint.",
   "futures_auth: … authenticated Futures endpoint.",
@@ -139,7 +140,6 @@ skip_empty = true
 skip = "CHANGELOG.md,examples/market_client_example.ipynb,doc/examples/market_client_example.ipynb"
 check-filenames = true
 
-
 # ========= T Y P I N G ========================================================
 #
 [tool.mypy]
@@ -161,7 +161,7 @@ disallow_any_explicit = false
 disallow_any_generics = false
 disallow_subclassing_any = false
 
-# # Untyped definitions and calls
+# Untyped definitions and calls
 check_untyped_defs = true
 disallow_untyped_calls = true
 disallow_untyped_defs = true
@@ -303,7 +303,7 @@ ignore = [
   "RUF022",  # `__all__` is not sorted
 ]
 
-task-tags = ["todo", "TODO"]
+task-tags = ["todo", "TODO", "fixme", "FIXME"]
 
 [tool.ruff.lint.per-file-ignores]
 "examples/*.py" = [
@@ -312,9 +312,6 @@ task-tags = ["todo", "TODO"]
   "S101",     # assert use
   "S110",     # try-catch-pass without logging
   "T201",     # print
-]
-"examples/spot_trading_bot_template_v2.py" = [
-  "RUF027", # Possible f-string without an `f` prefix
 ]
 "tests/*.py" = [
   "ASYNC101", # no open call on async function
@@ -456,7 +453,7 @@ ignore-patterns = ["^\\.#"]
 # Use multiple processes to speed up PyLint. Specifying 0 will auto-detect the
 # number of processors available to use, and will cap the count on Windows to
 # avoid hangs.
-jobs = 2
+jobs = 0
 
 # Control the amount of potential inferred values when inferring a single object.
 # This can help the performance when dealing with large functions or complex,
