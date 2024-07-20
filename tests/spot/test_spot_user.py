@@ -15,11 +15,7 @@ from unittest import mock
 
 import pytest
 
-from kraken.exceptions import (
-    KrakenAuthenticationFailedError,
-    KrakenInvalidOrderError,
-    KrakenPermissionDeniedError,
-)
+from kraken.exceptions import KrakenInvalidOrderError, KrakenPermissionDeniedError
 from kraken.spot import User
 
 from .helper import is_not_error
@@ -420,6 +416,7 @@ def test_create_subaccount_failing(spot_auth_user: User) -> None:
 @pytest.mark.spot()
 @pytest.mark.spot_auth()
 @pytest.mark.spot_user()
+@pytest.mark.skip("Subaccount actions are only available for institutional clients")
 def test_account_transfer_failing(spot_auth_user: User) -> None:
     """
     Checks the ``account_transfer`` function by creating one.
@@ -430,10 +427,9 @@ def test_account_transfer_failing(spot_auth_user: User) -> None:
 
     todo: test this using a valid account
     """
-    with pytest.raises(KrakenAuthenticationFailedError):
-        spot_auth_user.account_transfer(
-            asset="XBT",
-            amount=1.0,
-            from_="ABCD 1234 EFGH 5678",
-            to_="JKIL 9012 MNOP 3456",
-        )
+    spot_auth_user.account_transfer(
+        asset="XBT",
+        amount=1.0,
+        from_="ABCD 1234 EFGH 5678",
+        to_="JKIL 9012 MNOP 3456",
+    )
