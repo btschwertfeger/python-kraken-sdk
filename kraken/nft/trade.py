@@ -50,8 +50,9 @@ class Trade(NFTClient):
         key: str = "",
         secret: str = "",
         url: str = "",
+        proxy: str | None = None,
     ) -> None:
-        super().__init__(key=key, secret=secret, url=url)
+        super().__init__(key=key, secret=secret, url=url, proxy=proxy)
 
     def __enter__(self: Self) -> Self:
         super().__enter__()

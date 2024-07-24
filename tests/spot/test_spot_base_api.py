@@ -15,8 +15,10 @@ from datetime import datetime
 from pathlib import Path
 from time import sleep
 from typing import TYPE_CHECKING
+from unittest import IsolatedAsyncioTestCase
 
 import pytest
+from proxy import TestCase
 
 from kraken.exceptions import KrakenInvalidAPIKeyError, KrakenPermissionDeniedError
 from kraken.spot import SpotAsyncClient, SpotClient
@@ -225,3 +227,36 @@ def test_spot_rest_async_client_post_report(
             await client.async_close()
 
     run(check())
+
+
+class TestProxyPyEmbedded(TestCase, IsolatedAsyncioTestCase):
+    def get_proxy_str(self) -> str:
+        return f"http://127.0.0.1:{self.PROXY.flags.port}"
+
+    def test_spot_rest_proxies(self) -> None:
+        """
+        Checks if the clients can be used with a proxy.
+        """
+        client = SpotClient(proxy=self.get_proxy_str())
+        assert is_not_error(
+            client.request(
+                "GET",
+                "/0/public/OHLC",
+                params={"pair": "XBTUSD"},
+                auth=False,
+            ),
+        )
+
+    @pytest.mark.asyncio()
+    async def test_spot_rest_proxies_async(self) -> None:
+        """
+        Checks if the async clients can be used with a proxy.
+        """
+        client = SpotAsyncClient(proxy=self.get_proxy_str())
+        res = await client.request(
+            "GET",
+            "/0/public/OHLC",
+            params={"pair": "XBTUSD"},
+            auth=False,
+        )
+        assert is_not_error(res)

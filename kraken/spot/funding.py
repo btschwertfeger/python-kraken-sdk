@@ -28,6 +28,8 @@ class Funding(SpotClient):
     :param url: Alternative URL to access the Kraken API (default:
         https://api.kraken.com)
     :type url: str, optional
+    :param proxy: proxy URL, may contain authentication information
+    :type proxy: str, optional
 
     .. code-block:: python
         :linenos:
@@ -51,8 +53,9 @@ class Funding(SpotClient):
         key: str = "",
         secret: str = "",
         url: str = "",
+        proxy: str | None = None,
     ) -> None:
-        super().__init__(key=key, secret=secret, url=url)
+        super().__init__(key=key, secret=secret, url=url, proxy=proxy)
 
     def __enter__(self: Self) -> Self:
         super().__enter__()

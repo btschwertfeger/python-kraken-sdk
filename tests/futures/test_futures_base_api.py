@@ -6,8 +6,10 @@
 """Module that checks the general Futures Base API class."""
 
 from asyncio import run
+from unittest import IsolatedAsyncioTestCase
 
 import pytest
+from proxy import TestCase
 
 from kraken.base_api import FuturesAsyncClient, FuturesClient
 from kraken.exceptions import KrakenRequiredArgumentMissingError
@@ -119,3 +121,37 @@ def test_futures_rest_async_client_post(
             await client.async_close()
 
     run(check())
+
+
+class TestProxyPyEmbedded(TestCase, IsolatedAsyncioTestCase):
+    def get_proxy_str(self) -> str:
+        return f"http://127.0.0.1:{self.PROXY.flags.port}"
+
+    def test_futures_rest_proxies(self) -> None:
+        """
+        Checks if the clients can be used with a proxy.
+        """
+        client = FuturesClient(proxy=self.get_proxy_str())
+        assert isinstance(
+            client.request(
+                "GET",
+                "/api/charts/v1/spot/PI_XBTUSD/1h",
+                auth=False,
+                post_params={"from": "1668989233", "to": "1668999233"},
+            ),
+            dict,
+        )
+
+    @pytest.mark.asyncio()
+    async def test_futures_rest_proxies_async(self) -> None:
+        """
+        Checks if the async clients can be used with a proxy.
+        """
+        client = FuturesAsyncClient(proxy=self.get_proxy_str())
+        res = await client.request(
+            "GET",
+            "/api/charts/v1/spot/PI_XBTUSD/1h",
+            auth=False,
+            post_params={"from": "1668989233", "to": "1668999233"},
+        )
+        assert isinstance(res, dict)
