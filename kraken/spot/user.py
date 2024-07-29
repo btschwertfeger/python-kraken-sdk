@@ -4,7 +4,7 @@
 #
 # (PLR0904): Too many public methods
 # ruff: noqa: PLR0904
-# pylint: disable=C0302
+# pylint: disable=too-many-lines
 
 """ Module that implements the Kraken Spot User client"""
 

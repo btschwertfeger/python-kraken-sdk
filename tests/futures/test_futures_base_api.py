@@ -127,6 +127,8 @@ class TestProxyPyEmbedded(TestCase, IsolatedAsyncioTestCase):
     def get_proxy_str(self) -> str:
         return f"http://127.0.0.1:{self.PROXY.flags.port}"
 
+    @pytest.mark.futures()
+    @pytest.mark.futures_market()
     def test_futures_rest_proxies(self) -> None:
         """
         Checks if the clients can be used with a proxy.
@@ -143,6 +145,8 @@ class TestProxyPyEmbedded(TestCase, IsolatedAsyncioTestCase):
         )
 
     @pytest.mark.asyncio()
+    @pytest.mark.futures()
+    @pytest.mark.futures_market()
     async def test_futures_rest_proxies_async(self) -> None:
         """
         Checks if the async clients can be used with a proxy.
