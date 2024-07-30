@@ -24,7 +24,7 @@ jobs:
       id-token: write # IMPORTANT: this permission is mandatory for OIDC publishing
     environment:
       name: pypi
-      url: https://pypi.org/p/python-cmethods
+      url: https://pypi.org/p/python-kraken-sdk
     steps:
       - name: Harden Runner
         uses: step-security/harden-runner@0d381219ddf674d61a7572ddd19d7941e271515c # v2.9.0
