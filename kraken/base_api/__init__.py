@@ -187,6 +187,8 @@ class SpotClient:
     :type secret: str, optional
     :param url: URL to access the Kraken API (default: https://api.kraken.com)
     :type url: str, optional
+    :param proxy: proxy URL, may contain authentication information
+    :type proxy: str, optional
     """
 
     URL: str = "https://api.kraken.com"
@@ -201,6 +203,7 @@ class SpotClient:
         key: str = "",
         secret: str = "",
         url: str = "",
+        proxy: str | None = None,
         *,
         use_custom_exceptions: bool = True,
     ) -> None:
@@ -212,6 +215,13 @@ class SpotClient:
         self._use_custom_exceptions: bool = use_custom_exceptions
         self._err_handler: ErrorHandler = ErrorHandler()
         self.__session: requests.Session = requests.Session()
+        if proxy is not None:
+            self.__session.proxies.update(
+                {
+                    "http": proxy,
+                    "https": proxy,
+                },
+            )
         self.__session.headers.update(self.HEADERS)
 
     def _prepare_request(
@@ -469,6 +479,8 @@ class SpotAsyncClient(SpotClient):
     :type secret: str, optional
     :param url: URL to access the Kraken API (default: https://api.kraken.com)
     :type url: str, optional
+    :param proxy: proxy URL, may contain authentication information
+    :type proxy: str, optional
     """
 
     def __init__(
@@ -476,6 +488,7 @@ class SpotAsyncClient(SpotClient):
         key: str = "",
         secret: str = "",
         url: str = "",
+        proxy: str | None = None,
         *,
         use_custom_exceptions: bool = True,
     ) -> None:
@@ -486,6 +499,7 @@ class SpotAsyncClient(SpotClient):
             use_custom_exceptions=use_custom_exceptions,
         )
         self.__session = aiohttp.ClientSession(headers=self.HEADERS)
+        self.proxy = proxy
 
     async def request(  # type: ignore[override] # pylint: disable=invalid-overridden-method,too-many-arguments # noqa: PLR0913
         self: SpotAsyncClient,
@@ -544,34 +558,37 @@ class SpotAsyncClient(SpotClient):
 
         if method in {"GET", "DELETE"}:
             return await self.__check_response_data(  # type: ignore[return-value]
-                response=await self.__session.request(  # type: ignore[misc]
+                response=await self.__session.request(  # type: ignore[misc,call-arg]
                     method=method,
                     url=f"{url}?{query_params}" if query_params else url,
                     headers=headers,
                     timeout=timeout,
+                    proxy=self.proxy,
                 ),
                 return_raw=return_raw,
             )
 
         if do_json:
             return await self.__check_response_data(  # type: ignore[return-value]
-                response=await self.__session.request(  # type: ignore[misc]
+                response=await self.__session.request(  # type: ignore[misc,call-arg]
                     method=method,
                     url=url,
                     headers=headers,
                     json=params,
                     timeout=timeout,
+                    proxy=self.proxy,
                 ),
                 return_raw=return_raw,
             )
 
         return await self.__check_response_data(  # type: ignore[return-value]
-            response=await self.__session.request(  # type: ignore[misc]
+            response=await self.__session.request(  # type: ignore[misc,call-arg]
                 method=method,
                 url=url,
                 headers=headers,
                 data=params,
                 timeout=timeout,
+                proxy=self.proxy,
             ),
             return_raw=return_raw,
         )
@@ -646,6 +663,8 @@ class FuturesClient:
     :type url: str, optional
     :param sandbox: If set to ``True`` the URL will be https://demo-futures.kraken.com (default: ``False``)
     :type sandbox: bool, optional
+    :param proxy: proxy URL, may contain authentication information
+    :type proxy: str, optional
     """
 
     URL: str = "https://futures.kraken.com"
@@ -661,6 +680,7 @@ class FuturesClient:
         key: str = "",
         secret: str = "",
         url: str = "",
+        proxy: str | None = None,
         *,
         sandbox: bool = False,
         use_custom_exceptions: bool = True,
@@ -686,6 +706,13 @@ class FuturesClient:
                 " (https://github.com/btschwertfeger/python-kraken-sdk)",
             },
         )
+        if proxy is not None:
+            self.__session.proxies.update(
+                {
+                    "http": proxy,
+                    "https": proxy,
+                },
+            )
 
     def _prepare_request(
         self: FuturesClient,
@@ -931,6 +958,8 @@ class FuturesAsyncClient(FuturesClient):
     :param url: The URL to access the Futures Kraken API (default:
         https://futures.kraken.com)
     :type url: str, optional
+    :param proxy: proxy URL, may contain authentication information
+    :type proxy: str, optional
     :param sandbox: If set to ``True`` the URL will be
         https://demo-futures.kraken.com (default: ``False``)
     :type sandbox: bool, optional
@@ -941,6 +970,7 @@ class FuturesAsyncClient(FuturesClient):
         key: str = "",
         secret: str = "",
         url: str = "",
+        proxy: str | None = None,
         *,
         sandbox: bool = False,
         use_custom_exceptions: bool = True,
@@ -953,6 +983,7 @@ class FuturesAsyncClient(FuturesClient):
             use_custom_exceptions=use_custom_exceptions,
         )
         self.__session = aiohttp.ClientSession(headers=self.HEADERS)
+        self.proxy = proxy
 
     async def request(  # type: ignore[override] # pylint: disable=arguments-differ,invalid-overridden-method
         self: FuturesAsyncClient,
@@ -976,35 +1007,38 @@ class FuturesAsyncClient(FuturesClient):
 
         if method in {"GET", "DELETE"}:
             return await self.__check_response_data(
-                response=await self.__session.request(  # type: ignore[misc]
+                response=await self.__session.request(  # type: ignore[misc,call-arg]
                     method=method,
                     url=url,
                     params=query_string,
                     headers=headers,
                     timeout=timeout,
+                    proxy=self.proxy,
                 ),
                 return_raw=return_raw,
             )
 
         if method == "PUT":
             return await self.__check_response_data(
-                response=await self.__session.request(  # type: ignore[misc]
+                response=await self.__session.request(  # type: ignore[misc,call-arg]
                     method=method,
                     url=url,
                     params=encoded_payload,
                     headers=headers,
                     timeout=timeout,
+                    proxy=self.proxy,
                 ),
                 return_raw=return_raw,
             )
 
         return await self.__check_response_data(
-            response=await self.__session.request(  # type: ignore[misc]
+            response=await self.__session.request(  # type: ignore[misc,call-arg]
                 method=method,
                 url=url,
                 data=encoded_payload,
                 headers=headers,
                 timeout=timeout,
+                proxy=self.proxy,
             ),
             return_raw=return_raw,
         )

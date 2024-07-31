@@ -4,6 +4,7 @@
 #
 # (PLR0904): Too many public methods
 # ruff: noqa: PLR0904
+# pylint: disable=too-many-lines
 
 """ Module that implements the Kraken Spot User client"""
 
@@ -33,6 +34,8 @@ class User(SpotClient):
     :param url: The URL to access the Kraken API (default:
         https://api.kraken.com)
     :type url: str, optional
+    :param proxy: proxy URL, may contain authentication information
+    :type proxy: str, optional
 
     .. code-block:: python
         :linenos:
@@ -56,8 +59,9 @@ class User(SpotClient):
         key: str = "",
         secret: str = "",
         url: str = "",
+        proxy: str | None = None,
     ) -> None:
-        super().__init__(key=key, secret=secret, url=url)
+        super().__init__(key=key, secret=secret, url=url, proxy=proxy)
 
     def __enter__(self: Self) -> Self:
         super().__enter__()

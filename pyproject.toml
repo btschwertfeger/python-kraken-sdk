@@ -75,7 +75,7 @@ dev = [
   "ruff",
   "pylint",
 ]
-test = ["pytest", "pytest-cov", "pytest-mock"]
+test = ["pytest", "pytest-cov", "pytest-mock", "pytest-asyncio", "proxy.py"]
 examples = ["matplotlib", "pandas", "numpy"]
 jupyter = ["ipykernel"] # python3 -m ipykernel install --user --name=kraken
 

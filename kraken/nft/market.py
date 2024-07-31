@@ -27,6 +27,8 @@ class Market(NFTClient):
     :type key: str, optional
     :param secret: Spot API secret key (default: ``""``)
     :type secret: str, optional
+    :param proxy: proxy URL, may contain authentication information
+    :type proxy: str, optional
 
     .. code-block:: python
         :linenos:
@@ -50,8 +52,9 @@ class Market(NFTClient):
         key: str = "",
         secret: str = "",
         url: str = "",
+        proxy: str | None = None,
     ) -> None:
-        super().__init__(key=key, secret=secret, url=url)
+        super().__init__(key=key, secret=secret, url=url, proxy=proxy)
 
     def __enter__(self: Self) -> Self:
         super().__enter__()

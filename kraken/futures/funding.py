@@ -27,6 +27,8 @@ class Funding(FuturesClient):
     :param url: Alternative URL to access the Futures Kraken API (default:
         https://futures.kraken.com)
     :type url: str, optional
+    :param proxy: proxy URL, may contain authentication information
+    :type proxy: str, optional
     :param sandbox: If set to ``True`` the URL will be
         https://demo-futures.kraken.com (default: ``False``)
     :type sandbox: bool, optional
@@ -53,10 +55,11 @@ class Funding(FuturesClient):
         key: str = "",
         secret: str = "",
         url: str = "",
+        proxy: str | None = None,
         *,
         sandbox: bool = False,
     ) -> None:
-        super().__init__(key=key, secret=secret, url=url, sandbox=sandbox)
+        super().__init__(key=key, secret=secret, url=url, proxy=proxy, sandbox=sandbox)
 
     def __enter__(self: Self) -> Self:
         super().__enter__()
