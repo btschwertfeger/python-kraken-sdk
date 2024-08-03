@@ -213,7 +213,8 @@ def test_send_message_raw(caplog: pytest.LogCaptureFixture) -> None:
 
     asyncio_run(create_client())
 
-    assert '{"method": "pong", "req_id": 123456789, "time_in":' in caplog.text
+    assert '{"method": "pong", "req_id": 123456789' in caplog.text
+    assert '"success": false' not in caplog.text
 
 
 @pytest.mark.spot()
@@ -237,8 +238,9 @@ def test_public_subscribe(caplog: pytest.LogCaptureFixture) -> None:
     assert (
         '{"method": "subscribe", "req_id": 12345678, "result": {"channel":'
         ' "ticker", "event_trigger": "trades", "snapshot": true, "symbol":'
-        ' "BTC/USD"}, "success": true, "time_in":' in caplog.text
+        ' "BTC/USD"}, "success": true' in caplog.text
     )
+    assert '"success": false' not in caplog.text
 
 
 @pytest.mark.spot()
@@ -290,11 +292,11 @@ def test_private_subscribe(
 
     asyncio_run(test_subscription())
 
-    for phrase in (
-        '{"method": "subscribe", "req_id": 123456789, "result": {"channel": "executions"',  # for some reason they provide a "warnings" key
-        '"success": true',
-    ):
-        assert phrase in caplog.text
+    assert re.search(
+        r'\{"method": "subscribe", "req_id": 123456789, "result": \{"channel": "executions".*"success": true',
+        caplog.text,
+    )
+    assert '"success": false' not in caplog.text
 
 
 @pytest.mark.spot()
@@ -317,11 +319,12 @@ def test_public_unsubscribe(caplog: pytest.LogCaptureFixture) -> None:
     asyncio_run(test_unsubscribe())
 
     for expected in (
-        '{"method": "subscribe", "req_id": 123456789, "result": {"channel": "ticker", "event_trigger": "trades", "snapshot": true, "symbol": "BTC/USD"}, "success": true, "time_in": ',
+        '{"method": "subscribe", "req_id": 123456789, "result": {"channel": "ticker", "event_trigger": "trades", "snapshot": true, "symbol": "BTC/USD"}, "success": true',
         '{"channel": "ticker", "type": "snapshot", "data": [{"symbol": "BTC/USD", ',
-        '{"method": "unsubscribe", "req_id": 987654321, "result": {"channel": "ticker", "event_trigger": "trades", "symbol": "BTC/USD"}, "success": true, "time_in": ',
+        '{"method": "unsubscribe", "req_id": 987654321, "result": {"channel": "ticker", "event_trigger": "trades", "symbol": "BTC/USD"}, "success": true',
     ):
         assert expected in caplog.text
+    assert '"success": false' not in caplog.text
 
 
 @pytest.mark.spot()
@@ -461,7 +464,6 @@ def test___transform_subscription_no_change() -> None:
         )
 
 
-@pytest.mark.wip()
 @pytest.mark.spot()
 @pytest.mark.spot_auth()
 @pytest.mark.spot_websocket()

@@ -1,11 +1,20 @@
 # Changelog
 
-## [Unreleased](https://github.com/btschwertfeger/python-kraken-sdk/tree/HEAD)
+## [v3.1.0](https://github.com/btschwertfeger/python-kraken-sdk/tree/v3.1.0) (2024-07-31)
 
-[Full Changelog](https://github.com/btschwertfeger/python-kraken-sdk/compare/v3.0.0...HEAD)
+[Full Changelog](https://github.com/btschwertfeger/python-kraken-sdk/compare/v3.0.0...v3.1.0)
+
+**Implemented enhancements:**
+
+- Add proxy support for futures and spot clients \(async and sync\) [\#257](https://github.com/btschwertfeger/python-kraken-sdk/pull/257) ([Graeme22](https://github.com/Graeme22))
 
 Uncategorized merged pull requests:
 
+- Bump github/codeql-action from 3.25.13 to 3.25.15 [\#260](https://github.com/btschwertfeger/python-kraken-sdk/pull/260) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump ossf/scorecard-action from 2.3.3 to 2.4.0 [\#259](https://github.com/btschwertfeger/python-kraken-sdk/pull/259) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump step-security/harden-runner from 2.8.1 to 2.9.0 [\#255](https://github.com/btschwertfeger/python-kraken-sdk/pull/255) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump github/codeql-action from 3.25.12 to 3.25.13 [\#254](https://github.com/btschwertfeger/python-kraken-sdk/pull/254) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Skip test which requires to be executed from an institutional account [\#253](https://github.com/btschwertfeger/python-kraken-sdk/pull/253) ([btschwertfeger](https://github.com/btschwertfeger))
 - Bump actions/dependency-review-action from 4.3.3 to 4.3.4 [\#251](https://github.com/btschwertfeger/python-kraken-sdk/pull/251) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump github/codeql-action from 3.25.11 to 3.25.12 [\#250](https://github.com/btschwertfeger/python-kraken-sdk/pull/250) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump actions/setup-python from 5.1.0 to 5.1.1 [\#249](https://github.com/btschwertfeger/python-kraken-sdk/pull/249) ([dependabot[bot]](https://github.com/apps/dependabot))
@@ -14,6 +23,8 @@ Uncategorized merged pull requests:
 - Bump github/codeql-action from 2.2.4 to 3.25.11 [\#246](https://github.com/btschwertfeger/python-kraken-sdk/pull/246) ([dependabot[bot]](https://github.com/apps/dependabot))
 - CI: Change rules for harden-runner job in codeql [\#245](https://github.com/btschwertfeger/python-kraken-sdk/pull/245) ([btschwertfeger](https://github.com/btschwertfeger))
 - Bump actions/dependency-review-action from 2.5.1 to 4.3.3 [\#243](https://github.com/btschwertfeger/python-kraken-sdk/pull/243) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Update the CI trigger rules to allow workflow runs on pull requests from outside this repository [\#262](https://github.com/btschwertfeger/python-kraken-sdk/pull/262) ([btschwertfeger](https://github.com/btschwertfeger))
+- Update the CI environment URL [\#258](https://github.com/btschwertfeger/python-kraken-sdk/pull/258) ([btschwertfeger](https://github.com/btschwertfeger))
 
 ## [v3.0.0](https://github.com/btschwertfeger/python-kraken-sdk/tree/v3.0.0) (2024-06-23)
 
