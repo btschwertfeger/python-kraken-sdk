@@ -56,7 +56,7 @@ on:
     types: [opened, synchronize, reopened]
 
 concurrency:
-  group: CICD-${{ github.ref }}
+  group: CICD # should only run once due to API rate limits
   cancel-in-progress: true
 
 jobs:
