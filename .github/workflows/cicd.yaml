@@ -55,8 +55,9 @@ on:
   pull_request:
     types: [opened, synchronize, reopened]
 
+# should only run once due to API rate limits
 concurrency:
-  group: CICD # should only run once due to API rate limits
+  group: CICD
   cancel-in-progress: true
 
 jobs:
