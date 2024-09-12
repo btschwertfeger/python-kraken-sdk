@@ -22,9 +22,9 @@ from kraken.exceptions import (
 )
 
 
-@pytest.mark.nft()
-@pytest.mark.nft_auth()
-@pytest.mark.nft_trade()
+@pytest.mark.nft
+@pytest.mark.nft_auth
+@pytest.mark.nft_trade
 def test_nft_trade_contextmanager(nft_auth_trade: Trade) -> None:
     """
     Checks if the clients can be used as context manager.
@@ -34,9 +34,9 @@ def test_nft_trade_contextmanager(nft_auth_trade: Trade) -> None:
         assert isinstance(result, dict)
 
 
-@pytest.mark.nft()
-@pytest.mark.nft_auth()
-@pytest.mark.nft_trade()
+@pytest.mark.nft
+@pytest.mark.nft_auth
+@pytest.mark.nft_trade
 def test_nft_trade_create_auction(nft_auth_trade: Trade) -> None:
     """Checks the ``create_auction`` endpoint."""
 
@@ -54,9 +54,9 @@ def test_nft_trade_create_auction(nft_auth_trade: Trade) -> None:
         )
 
 
-@pytest.mark.nft()
-@pytest.mark.nft_auth()
-@pytest.mark.nft_trade()
+@pytest.mark.nft
+@pytest.mark.nft_auth
+@pytest.mark.nft_trade
 def test_nft_trade_modify_auction(nft_auth_trade: Trade) -> None:
     """
     Checks the ``modify_auction`` endpoint.
@@ -75,9 +75,9 @@ def test_nft_trade_modify_auction(nft_auth_trade: Trade) -> None:
     ) == ["EAPI:Invalid arguments:No auction with the provided ID"]
 
 
-@pytest.mark.nft()
-@pytest.mark.nft_auth()
-@pytest.mark.nft_trade()
+@pytest.mark.nft
+@pytest.mark.nft_auth
+@pytest.mark.nft_trade
 def test_nft_trade_cancel_auction(nft_auth_trade: Trade) -> None:
     """Checks the ``cancel_auction`` endpoint."""
 
@@ -93,9 +93,9 @@ def test_nft_trade_cancel_auction(nft_auth_trade: Trade) -> None:
     assert result["statuses"][0].get("reason") == "not found"
 
 
-@pytest.mark.nft()
-@pytest.mark.nft_auth()
-@pytest.mark.nft_trade()
+@pytest.mark.nft
+@pytest.mark.nft_auth
+@pytest.mark.nft_trade
 @pytest.mark.skip(reason="CI should not play with NFTs")
 def test_nft_trade_place_offer(nft_auth_trade: Trade) -> None:
     """Checks the ``place_offer`` endpoint."""
@@ -108,9 +108,9 @@ def test_nft_trade_place_offer(nft_auth_trade: Trade) -> None:
         )
 
 
-@pytest.mark.nft()
-@pytest.mark.nft_auth()
-@pytest.mark.nft_trade()
+@pytest.mark.nft
+@pytest.mark.nft_auth
+@pytest.mark.nft_trade
 @pytest.mark.skip(reason="CI should not play with NFTs")
 def test_nft_trade_counter_offer(nft_auth_trade: Trade) -> None:
     """Checks the ``counter_offer`` endpoint."""
@@ -123,9 +123,9 @@ def test_nft_trade_counter_offer(nft_auth_trade: Trade) -> None:
         )
 
 
-@pytest.mark.nft()
-@pytest.mark.nft_auth()
-@pytest.mark.nft_trade()
+@pytest.mark.nft
+@pytest.mark.nft_auth
+@pytest.mark.nft_trade
 @pytest.mark.skip(reason="CI should not play with NFTs")
 def test_nft_trade_accept_offer(nft_auth_trade: Trade) -> None:
     """Checks the ``accept_offer`` endpoint."""
@@ -134,9 +134,9 @@ def test_nft_trade_accept_offer(nft_auth_trade: Trade) -> None:
         nft_auth_trade.accept_offer(offer_id="ONQYPLG-OFARL-35RBG-O")
 
 
-@pytest.mark.nft()
-@pytest.mark.nft_auth()
-@pytest.mark.nft_trade()
+@pytest.mark.nft
+@pytest.mark.nft_auth
+@pytest.mark.nft_trade
 def test_nft_trade_get_auction_trades(nft_auth_trade: Trade) -> None:
     """Checks the ``get_auction_trades`` endpoint."""
 
@@ -150,9 +150,9 @@ def test_nft_trade_get_auction_trades(nft_auth_trade: Trade) -> None:
     assert "currency" in result[0]
 
 
-@pytest.mark.nft()
-@pytest.mark.nft_auth()
-@pytest.mark.nft_trade()
+@pytest.mark.nft
+@pytest.mark.nft_auth
+@pytest.mark.nft_trade
 def test_nft_trade_get_user_offers(nft_auth_trade: Trade) -> None:
     """Checks the ``get_user_offers`` endpoint."""
 
@@ -173,9 +173,9 @@ def test_nft_trade_get_user_offers(nft_auth_trade: Trade) -> None:
     assert isinstance(result["offers"], list)
 
 
-@pytest.mark.nft()
-@pytest.mark.nft_auth()
-@pytest.mark.nft_trade()
+@pytest.mark.nft
+@pytest.mark.nft_auth
+@pytest.mark.nft_trade
 def test_nft_trade_get_nft_wallet(nft_auth_trade: Trade) -> None:
     """Checks the ``get_nft_wallet`` endpoint."""
 
@@ -198,9 +198,9 @@ def test_nft_trade_get_nft_wallet(nft_auth_trade: Trade) -> None:
     assert isinstance(result["items"], list)
 
 
-@pytest.mark.nft()
-@pytest.mark.nft_auth()
-@pytest.mark.nft_trade()
+@pytest.mark.nft
+@pytest.mark.nft_auth
+@pytest.mark.nft_trade
 def test_nft_trade_list_nft_transactions(nft_auth_trade: Trade) -> None:
     """Checks the ``list_nft_transactions`` endpoint."""
 

@@ -767,7 +767,7 @@ class FuturesClient:
 
         return method, url, headers, encoded_payload, query_string
 
-    def request(  # noqa: PLR0913 # pylint: disable=too-many-arguments
+    def request(   # pylint: disable=too-many-arguments
         self: FuturesClient,
         method: str,
         uri: str,

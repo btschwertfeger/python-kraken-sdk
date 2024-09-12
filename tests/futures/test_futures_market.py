@@ -12,8 +12,8 @@ from kraken.futures import Market
 from .helper import is_not_error, is_success
 
 
-@pytest.mark.futures()
-@pytest.mark.futures_market()
+@pytest.mark.futures
+@pytest.mark.futures_market
 def test_get_ohlc(futures_market: Market) -> None:
     """
     Checks the ``get_ohlc`` endpoint.
@@ -30,8 +30,8 @@ def test_get_ohlc(futures_market: Market) -> None:
     )
 
 
-@pytest.mark.futures()
-@pytest.mark.futures_market()
+@pytest.mark.futures
+@pytest.mark.futures_market
 def test_get_ohlc_failing_wrong_tick_type(futures_market: Market) -> None:
     """
     Checks the ``get_ohlc`` function by passing an invalid tick type.
@@ -43,8 +43,8 @@ def test_get_ohlc_failing_wrong_tick_type(futures_market: Market) -> None:
         futures_market.get_ohlc(symbol="XBTUSDT", resolution="240", tick_type="fail")
 
 
-@pytest.mark.futures()
-@pytest.mark.futures_market()
+@pytest.mark.futures
+@pytest.mark.futures_market
 def test_get_ohlc_failing_wrong_resolution(futures_market: Market) -> None:
     """
     Checks the ``get_ohlc`` function by passing an invalid resolution.
@@ -56,14 +56,14 @@ def test_get_ohlc_failing_wrong_resolution(futures_market: Market) -> None:
         futures_market.get_ohlc(symbol="XBTUSDT", resolution="1234", tick_type="trade")
 
 
-@pytest.mark.futures()
-@pytest.mark.futures_market()
+@pytest.mark.futures
+@pytest.mark.futures_market
 def test_get_tick_types(futures_market: Market) -> None:
     assert isinstance(futures_market.get_tick_types(), list)
 
 
-@pytest.mark.futures()
-@pytest.mark.futures_market()
+@pytest.mark.futures
+@pytest.mark.futures_market
 def test_get_tradeable_products(futures_market: Market) -> None:
     """
     Checks the ``get_tradeable_products`` endpoint.
@@ -71,8 +71,8 @@ def test_get_tradeable_products(futures_market: Market) -> None:
     assert isinstance(futures_market.get_tradeable_products(tick_type="mark"), list)
 
 
-@pytest.mark.futures()
-@pytest.mark.futures_market()
+@pytest.mark.futures
+@pytest.mark.futures_market
 def test_get_resolutions(futures_market: Market) -> None:
     """
     Checks the ``get_resolutions`` endpoint.
@@ -83,8 +83,8 @@ def test_get_resolutions(futures_market: Market) -> None:
     )
 
 
-@pytest.mark.futures()
-@pytest.mark.futures_market()
+@pytest.mark.futures
+@pytest.mark.futures_market
 def test_get_fee_schedules(futures_market: Market) -> None:
     """
     Checks the ``get_fee_schedules`` endpoint.
@@ -92,9 +92,9 @@ def test_get_fee_schedules(futures_market: Market) -> None:
     assert is_success(futures_market.get_fee_schedules())
 
 
-@pytest.mark.futures()
-@pytest.mark.futures_auth()
-@pytest.mark.futures_market()
+@pytest.mark.futures
+@pytest.mark.futures_auth
+@pytest.mark.futures_market
 def test_get_fee_schedules_vol(futures_auth_market: Market) -> None:
     """
     Checks the ``get_fee_schedules_vol`` endpoint.
@@ -102,8 +102,8 @@ def test_get_fee_schedules_vol(futures_auth_market: Market) -> None:
     assert is_success(futures_auth_market.get_fee_schedules_vol())
 
 
-@pytest.mark.futures()
-@pytest.mark.futures_market()
+@pytest.mark.futures
+@pytest.mark.futures_market
 def test_get_orderbook(futures_market: Market) -> None:
     """
     Checks the ``get_orderbook`` endpoint.
@@ -113,8 +113,8 @@ def test_get_orderbook(futures_market: Market) -> None:
     assert is_success(futures_market.get_orderbook(symbol="PI_XBTUSD"))
 
 
-@pytest.mark.futures()
-@pytest.mark.futures_market()
+@pytest.mark.futures
+@pytest.mark.futures_market
 def test_get_tickers(futures_market: Market) -> None:
     """
     Checks the ``get_tickers`` endpoint.
@@ -122,8 +122,8 @@ def test_get_tickers(futures_market: Market) -> None:
     assert is_success(futures_market.get_tickers())
 
 
-@pytest.mark.futures()
-@pytest.mark.futures_market()
+@pytest.mark.futures
+@pytest.mark.futures_market
 def test_get_instruments(futures_market: Market) -> None:
     """
     Checks the ``get_instruments`` endpoint.
@@ -131,8 +131,8 @@ def test_get_instruments(futures_market: Market) -> None:
     assert is_success(futures_market.get_instruments())
 
 
-@pytest.mark.futures()
-@pytest.mark.futures_market()
+@pytest.mark.futures
+@pytest.mark.futures_market
 def test_get_instruments_status(futures_market: Market) -> None:
     """
     Checks the ``get_instruments_status`` endpoint.
@@ -141,8 +141,8 @@ def test_get_instruments_status(futures_market: Market) -> None:
     assert is_success(futures_market.get_instruments_status(instrument="PI_XBTUSD"))
 
 
-@pytest.mark.futures()
-@pytest.mark.futures_market()
+@pytest.mark.futures
+@pytest.mark.futures_market
 def test_get_trade_history(futures_market: Market) -> None:
     """
     Checks the ``get_trade_history`` endpoint.
@@ -150,8 +150,8 @@ def test_get_trade_history(futures_market: Market) -> None:
     assert is_success(futures_market.get_trade_history(symbol="PI_XBTUSD"))
 
 
-@pytest.mark.futures()
-@pytest.mark.futures_market()
+@pytest.mark.futures
+@pytest.mark.futures_market
 def test_get_historical_funding_rates(futures_market: Market) -> None:
     """
     Checks the ``get_historical_funding_rates`` endpoint.
@@ -159,9 +159,9 @@ def test_get_historical_funding_rates(futures_market: Market) -> None:
     assert is_success(futures_market.get_historical_funding_rates(symbol="PI_XBTUSD"))
 
 
-@pytest.mark.futures()
-@pytest.mark.futures_auth()
-@pytest.mark.futures_market()
+@pytest.mark.futures
+@pytest.mark.futures_auth
+@pytest.mark.futures_market
 def test_get_leverage_preference(futures_auth_market: Market) -> None:
     """
     Checks the ``get_leverage_preference`` endpoint.
@@ -169,9 +169,9 @@ def test_get_leverage_preference(futures_auth_market: Market) -> None:
     assert is_not_error(futures_auth_market.get_leverage_preference())
 
 
-@pytest.mark.futures()
-@pytest.mark.futures_auth()
-@pytest.mark.futures_market()
+@pytest.mark.futures
+@pytest.mark.futures_auth
+@pytest.mark.futures_market
 @pytest.mark.skip(reason="CI does not have trade permission")
 def test_set_leverage_preference(futures_auth_market: Market) -> None:
     """
@@ -201,9 +201,9 @@ def test_set_leverage_preference(futures_auth_market: Market) -> None:
                 break
 
 
-@pytest.mark.futures()
-@pytest.mark.futures_auth()
-@pytest.mark.futures_market()
+@pytest.mark.futures
+@pytest.mark.futures_auth
+@pytest.mark.futures_market
 def test_get_pnl_preference(futures_auth_market: Market) -> None:
     """
     Checks the ``get_pnl_preference`` endpoint.
@@ -211,9 +211,9 @@ def test_get_pnl_preference(futures_auth_market: Market) -> None:
     assert is_not_error(futures_auth_market.get_pnl_preference())
 
 
-@pytest.mark.futures()
-@pytest.mark.futures_auth()
-@pytest.mark.futures_market()
+@pytest.mark.futures
+@pytest.mark.futures_auth
+@pytest.mark.futures_market
 @pytest.mark.skip(reason="CI does not have trade permission")
 def test_set_pnl_preference(futures_auth_market: Market) -> None:
     """
@@ -246,8 +246,8 @@ def test_set_pnl_preference(futures_auth_market: Market) -> None:
                 break
 
 
-@pytest.mark.futures()
-@pytest.mark.futures_market()
+@pytest.mark.futures
+@pytest.mark.futures_market
 def test_get_public_execution_events(futures_market: Market) -> None:
     """
     Checks the ``get_public_execution_events`` endpoint.
@@ -261,8 +261,8 @@ def test_get_public_execution_events(futures_market: Market) -> None:
     )
 
 
-@pytest.mark.futures()
-@pytest.mark.futures_market()
+@pytest.mark.futures
+@pytest.mark.futures_market
 def test_get_public_order_events(futures_market: Market) -> None:
     """
     Checks the ``public_order_events`` endpoint.
@@ -276,8 +276,8 @@ def test_get_public_order_events(futures_market: Market) -> None:
     )
 
 
-@pytest.mark.futures()
-@pytest.mark.futures_market()
+@pytest.mark.futures
+@pytest.mark.futures_market
 def test_get_public_mark_price_events(futures_market: Market) -> None:
     """
     Checks the ``get_public_mark_price_events`` endpoint.

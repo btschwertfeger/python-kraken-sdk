@@ -28,7 +28,7 @@ if TYPE_CHECKING:
 from .helper import is_not_error
 
 
-@pytest.mark.spot()
+@pytest.mark.spot
 def test_KrakenSpotBaseAPI_without_exception() -> None:
     """
     Checks first if the expected error will be raised and than creates a new
@@ -51,8 +51,8 @@ def test_KrakenSpotBaseAPI_without_exception() -> None:
     }
 
 
-@pytest.mark.spot()
-@pytest.mark.spot_auth()
+@pytest.mark.spot
+@pytest.mark.spot_auth
 def test_spot_rest_contextmanager(
     spot_market: Market,
     spot_auth_funding: Funding,
@@ -80,7 +80,7 @@ def test_spot_rest_contextmanager(
 # Spot async client
 
 
-@pytest.mark.spot()
+@pytest.mark.spot
 def test_spot_rest_async_client_get() -> None:
     """
     Check the instantiation as well as a simple request using the async client.
@@ -103,7 +103,7 @@ def test_spot_rest_async_client_get() -> None:
     run(check())
 
 
-@pytest.mark.spot()
+@pytest.mark.spot
 def test_spot_async_rest_contextmanager(
     spot_api_key: str,
     spot_secret_key: str,
@@ -120,8 +120,8 @@ def test_spot_async_rest_contextmanager(
     run(check())
 
 
-@pytest.mark.spot()
-@pytest.mark.spot_auth()
+@pytest.mark.spot
+@pytest.mark.spot_auth
 def test_spot_rest_async_client_post_report(
     spot_api_key: str,
     spot_secret_key: str,
@@ -233,8 +233,8 @@ class TestProxyPyEmbedded(TestCase, IsolatedAsyncioTestCase):
     def get_proxy_str(self) -> str:
         return f"http://127.0.0.1:{self.PROXY.flags.port}"
 
-    @pytest.mark.spot()
-    @pytest.mark.spot_market()
+    @pytest.mark.spot
+    @pytest.mark.spot_market
     def test_spot_rest_proxies(self) -> None:
         """
         Checks if the clients can be used with a proxy.
@@ -249,9 +249,9 @@ class TestProxyPyEmbedded(TestCase, IsolatedAsyncioTestCase):
             ),
         )
 
-    @pytest.mark.spot()
-    @pytest.mark.spot_market()
-    @pytest.mark.asyncio()
+    @pytest.mark.spot
+    @pytest.mark.spot_market
+    @pytest.mark.asyncio
     async def test_spot_rest_proxies_async(self) -> None:
         """
         Checks if the async clients can be used with a proxy.

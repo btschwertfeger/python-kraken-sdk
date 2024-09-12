@@ -12,9 +12,9 @@ from kraken.spot import Earn
 from .helper import is_not_error
 
 
-@pytest.mark.spot()
-@pytest.mark.spot_auth()
-@pytest.mark.spot_earn()
+@pytest.mark.spot
+@pytest.mark.spot_auth
+@pytest.mark.spot_earn
 @pytest.mark.skip(reason="CI does not have earn permission")
 def test_allocate_earn_funds(spot_auth_earn: Earn) -> None:
     """
@@ -30,9 +30,9 @@ def test_allocate_earn_funds(spot_auth_earn: Earn) -> None:
     )
 
 
-@pytest.mark.spot()
-@pytest.mark.spot_auth()
-@pytest.mark.spot_earn()
+@pytest.mark.spot
+@pytest.mark.spot_auth
+@pytest.mark.spot_earn
 @pytest.mark.skip(reason="CI does not have earn permission")
 def test_deallocate_earn_funds(spot_auth_earn: Earn) -> None:
     """
@@ -48,9 +48,9 @@ def test_deallocate_earn_funds(spot_auth_earn: Earn) -> None:
     )
 
 
-@pytest.mark.spot()
-@pytest.mark.spot_auth()
-@pytest.mark.spot_earn()
+@pytest.mark.spot
+@pytest.mark.spot_auth
+@pytest.mark.spot_earn
 @pytest.mark.skip(reason="CI does not have earn permission")
 def test_get_allocation_status(spot_auth_earn: Earn) -> None:
     """
@@ -64,9 +64,9 @@ def test_get_allocation_status(spot_auth_earn: Earn) -> None:
     )
 
 
-@pytest.mark.spot()
-@pytest.mark.spot_auth()
-@pytest.mark.spot_earn()
+@pytest.mark.spot
+@pytest.mark.spot_auth
+@pytest.mark.spot_earn
 @pytest.mark.skip(reason="CI does not have earn permission")
 def test_get_deallocation_status(spot_auth_earn: Earn) -> None:
     """
@@ -80,9 +80,9 @@ def test_get_deallocation_status(spot_auth_earn: Earn) -> None:
     )
 
 
-@pytest.mark.spot()
-@pytest.mark.spot_auth()
-@pytest.mark.spot_earn()
+@pytest.mark.spot
+@pytest.mark.spot_auth
+@pytest.mark.spot_earn
 @pytest.mark.skip(reason="CI does not have earn permission")
 def test_list_earn_strategies(spot_auth_earn: Earn) -> None:
     """
@@ -92,9 +92,9 @@ def test_list_earn_strategies(spot_auth_earn: Earn) -> None:
     assert is_not_error(spot_auth_earn.list_earn_strategies(asset="DOT"))
 
 
-@pytest.mark.spot()
-@pytest.mark.spot_auth()
-@pytest.mark.spot_earn()
+@pytest.mark.spot
+@pytest.mark.spot_auth
+@pytest.mark.spot_earn
 @pytest.mark.skip(reason="CI does not have earn permission")
 def test_list_earn_allocations(spot_auth_earn: Earn) -> None:
     """

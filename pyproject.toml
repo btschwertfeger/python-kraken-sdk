@@ -269,30 +269,31 @@ select = [
   # "TRY", # tryceratops # specify exception messages in class; not important
 ]
 fixable = [
-  "C4",
-  "COM",
-  "E221", # Multiple spaces before operator
-  "E202", # Missing Whitespace before ')'
-  "E225", # Missing whitespace around operator
-  "E227", # Missing whitespace around bitwise or shift operator
-  "E231", # Missing whitespace after ':'
-  "E252", # Missing whitespace around parameter equals
-  "E261", # Missing insert at least two spaces before inline comment
-  "E302", # Expected 2 blank lines, found x
-  "E303", # Too many blank lines
-  "E701", # Multiple statements on one line (colon)
-  "F401", # unused import
-  "FA",
-  "I",
-  "ICN",
-  "PL",   # pylint
-  "PT",
-  "Q",
-  "RSE",
-  "UP",   # pyupgrade
-  "W292", # missing new line at end of file
-  "W293", # blank line with whitespace
-  "W391", # too many new lines at end of file
+  "ALL",
+  # "C4",
+  # "COM",
+  # "E221", # Multiple spaces before operator
+  # "E202", # Missing Whitespace before ')'
+  # "E225", # Missing whitespace around operator
+  # "E227", # Missing whitespace around bitwise or shift operator
+  # "E231", # Missing whitespace after ':'
+  # "E252", # Missing whitespace around parameter equals
+  # "E261", # Missing insert at least two spaces before inline comment
+  # "E302", # Expected 2 blank lines, found x
+  # "E303", # Too many blank lines
+  # "E701", # Multiple statements on one line (colon)
+  # "F401", # unused import
+  # "FA",
+  # "I",
+  # "ICN",
+  # "PL",   # pylint
+  # "PT",
+  # "Q",
+  # "RSE",
+  # "UP",   # pyupgrade
+  # "W292", # missing new line at end of file
+  # "W293", # blank line with whitespace
+  # "W391", # too many new lines at end of file
 ]
 
 ignore = [
@@ -307,14 +308,16 @@ task-tags = ["todo", "TODO", "fixme", "FIXME"]
 
 [tool.ruff.lint.per-file-ignores]
 "examples/*.py" = [
-  "ASYNC101", # no open call on async function
+  # "ASYNC101", # no open call on async function
+  "ASYNC251", # time.sleep in async function
   "BLE001",   # blind exception
   "S101",     # assert use
   "S110",     # try-catch-pass without logging
   "T201",     # print
 ]
 "tests/*.py" = [
-  "ASYNC101", # no open call on async function
+  # "ASYNC101", # no open call on async function
+  "ASYNC251", # time.sleep in async function
   "E501",     # line to long
   "F841",     # unused variable
   "N802",     # PEP8 naming

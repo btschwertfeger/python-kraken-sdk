@@ -14,8 +14,8 @@ if TYPE_CHECKING:
     from kraken.nft import Market
 
 
-@pytest.mark.nft()
-@pytest.mark.nft_market()
+@pytest.mark.nft
+@pytest.mark.nft_market
 def test_spot_rest_contextmanager(nft_market: Market) -> None:
     """
     Checks if the client can be used as context manager.
@@ -26,8 +26,8 @@ def test_spot_rest_contextmanager(nft_market: Market) -> None:
         assert "nft" in result
 
 
-@pytest.mark.nft()
-@pytest.mark.nft_market()
+@pytest.mark.nft
+@pytest.mark.nft_market
 def test_nft_get_nft(nft_market: Market) -> None:
     """
     Checks the ``get_nft`` endpoint
@@ -39,8 +39,8 @@ def test_nft_get_nft(nft_market: Market) -> None:
     assert result["nft"].get("id") == "NT4GUCU-SIJE2-YSQQG2"
 
 
-@pytest.mark.nft()
-@pytest.mark.nft_market()
+@pytest.mark.nft
+@pytest.mark.nft_market
 def test_nft_list_nfts(nft_market: Market) -> None:
     """
     Checks the ``list_nfts`` endpoint
@@ -57,8 +57,8 @@ def test_nft_list_nfts(nft_market: Market) -> None:
     assert "items" in result
 
 
-@pytest.mark.nft()
-@pytest.mark.nft_market()
+@pytest.mark.nft
+@pytest.mark.nft_market
 def test_nft_get_nft_provenance(nft_market: Market) -> None:
     """
     Checks the ``get_nft_provenance`` endpoint
@@ -71,8 +71,8 @@ def test_nft_get_nft_provenance(nft_market: Market) -> None:
     assert result["items"][0]["nft_id"] == "NT4GUCU-SIJE2-YSQQG2"
 
 
-@pytest.mark.nft()
-@pytest.mark.nft_market()
+@pytest.mark.nft
+@pytest.mark.nft_market
 def test_nft_get_collection(nft_market: Market) -> None:
     """
     Checks the ``get_collection`` endpoint
@@ -88,8 +88,8 @@ def test_nft_get_collection(nft_market: Market) -> None:
     assert result["collection"]["name"] == "Williams Racing Collectibles+ Grid Pass"
 
 
-@pytest.mark.nft()
-@pytest.mark.nft_market()
+@pytest.mark.nft
+@pytest.mark.nft_market
 def test_nft_list_collections(nft_market: Market) -> None:
     """
     Checks the ``list_collections`` endpoint
@@ -107,8 +107,8 @@ def test_nft_list_collections(nft_market: Market) -> None:
     assert "items" in result
 
 
-@pytest.mark.nft()
-@pytest.mark.nft_market()
+@pytest.mark.nft
+@pytest.mark.nft_market
 def test_nft_get_creator(nft_market: Market) -> None:
     """
     Checks the ``get_creator`` endpoint
@@ -120,8 +120,8 @@ def test_nft_get_creator(nft_market: Market) -> None:
     assert result["creator"].get("id") == "NA7NELE-FOQFZ-ODWOTV"
 
 
-@pytest.mark.nft()
-@pytest.mark.nft_market()
+@pytest.mark.nft
+@pytest.mark.nft_market
 def test_nft_list_creators(nft_market: Market) -> None:
     """
     Checks the ``list_creators`` endpoint
@@ -139,8 +139,8 @@ def test_nft_list_creators(nft_market: Market) -> None:
     assert "items" in result
 
 
-@pytest.mark.nft()
-@pytest.mark.nft_market()
+@pytest.mark.nft
+@pytest.mark.nft_market
 def test_nft_list_blockchains(nft_market: Market) -> None:
     """
     Checks the ``list_blockchains`` endpoint
@@ -153,8 +153,8 @@ def test_nft_list_blockchains(nft_market: Market) -> None:
     assert result["total"] >= 3
 
 
-@pytest.mark.nft()
-@pytest.mark.nft_market()
+@pytest.mark.nft
+@pytest.mark.nft_market
 def test_nft_get_auctions(nft_market: Market) -> None:
     """
     Checks the ``get_auctions`` endpoint
@@ -169,8 +169,8 @@ def test_nft_get_auctions(nft_market: Market) -> None:
     assert result[1]["status_detail"] == "CLOSED"
 
 
-@pytest.mark.nft()
-@pytest.mark.nft_market()
+@pytest.mark.nft
+@pytest.mark.nft_market
 def test_nft_get_offers(nft_market: Market) -> None:
     """
     Checks the ``get_offers`` endpoint
@@ -181,8 +181,8 @@ def test_nft_get_offers(nft_market: Market) -> None:
     assert isinstance(result["offers"], list)
 
 
-@pytest.mark.nft()
-@pytest.mark.nft_market()
+@pytest.mark.nft
+@pytest.mark.nft_market
 def test_nft_get_nft_quotes(nft_market: Market) -> None:
     """
     Checks the ``get_nft_quotes`` endpoint

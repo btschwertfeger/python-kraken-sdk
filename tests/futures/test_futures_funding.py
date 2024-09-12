@@ -14,9 +14,9 @@ from .helper import is_success
 # todo: Mocking? Or is this to dangerous?
 
 
-@pytest.mark.futures()
-@pytest.mark.futures_auth()
-@pytest.mark.futures_funding()
+@pytest.mark.futures
+@pytest.mark.futures_auth
+@pytest.mark.futures_funding
 @pytest.mark.skip(reason="Too much data, read time out")
 def test_get_historical_funding_rates(futures_demo_funding: Funding) -> None:
     """
@@ -27,12 +27,12 @@ def test_get_historical_funding_rates(futures_demo_funding: Funding) -> None:
     )
 
 
-@pytest.mark.futures()
-@pytest.mark.futures_auth()
-@pytest.mark.futures_funding()
+@pytest.mark.futures
+@pytest.mark.futures_auth
+@pytest.mark.futures_funding
 @pytest.mark.skip(reason="CI does not have withdraw permission")
 def test_initiate_wallet_transfer(
-    futures_demo_funding: Funding,  # noqa: ARG001
+    futures_demo_funding: Funding,
 ) -> None:
     """
     Checks the ``initiate_wallet_transfer`` function - skipped since
@@ -44,12 +44,12 @@ def test_initiate_wallet_transfer(
     # ))
 
 
-@pytest.mark.futures()
-@pytest.mark.futures_auth()
-@pytest.mark.futures_funding()
+@pytest.mark.futures
+@pytest.mark.futures_auth
+@pytest.mark.futures_funding
 @pytest.mark.skip(reason="CI does not have withdraw permission")
 def test_initiate_subccount_transfer(
-    futures_demo_funding: Funding,  # noqa: ARG001
+    futures_demo_funding: Funding,
 ) -> None:
     """
     Checks the ``initiate_subaccount_transfer`` function.
@@ -64,12 +64,12 @@ def test_initiate_subccount_transfer(
     # ))
 
 
-@pytest.mark.futures()
-@pytest.mark.futures_auth()
-@pytest.mark.futures_funding()
+@pytest.mark.futures
+@pytest.mark.futures_auth
+@pytest.mark.futures_funding
 @pytest.mark.skip(reason="CI does not have withdraw permission")
 def test_initiate_withdrawal_to_spot_wallet(
-    futures_demo_funding: Funding,  # noqa: ARG001
+    futures_demo_funding: Funding,
 ) -> None:
     """
     Checks the ``initiate_withdrawal_to_spot_wallet`` function.

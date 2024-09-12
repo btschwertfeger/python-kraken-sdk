@@ -521,7 +521,7 @@ class User(SpotClient):
             extra_params=extra_params,
         )
 
-    def get_trades_history(  # noqa: PLR0913 # pylint: disable=too-many-arguments
+    def get_trades_history(  # pylint: disable=too-many-arguments
         self: User,
         type_: str | None = "all",
         start: int | None = None,
@@ -936,7 +936,7 @@ class User(SpotClient):
         )
 
     @ensure_string("fields")
-    def request_export_report(  # noqa: PLR0913 # pylint: disable=too-many-arguments
+    def request_export_report(  # pylint: disable=too-many-arguments
         self: User,
         report: str,
         description: str,

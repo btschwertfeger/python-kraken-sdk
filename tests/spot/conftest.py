@@ -17,19 +17,19 @@ SPOT_API_KEY: str = os.getenv("SPOT_API_KEY")
 SPOT_SECRET_KEY: str = os.getenv("SPOT_SECRET_KEY")
 
 
-@pytest.fixture()
+@pytest.fixture
 def spot_api_key() -> str:
     """Returns the Kraken Spot API Key for testing."""
     return SPOT_API_KEY
 
 
-@pytest.fixture()
+@pytest.fixture
 def spot_secret_key() -> str:
     """Returns the Kraken Spot API secret for testing."""
     return SPOT_SECRET_KEY
 
 
-@pytest.fixture()
+@pytest.fixture
 def spot_auth_user() -> User:
     """
     Fixture providing an authenticated Spot user client.
@@ -37,7 +37,7 @@ def spot_auth_user() -> User:
     return User(key=SPOT_API_KEY, secret=SPOT_SECRET_KEY)
 
 
-@pytest.fixture()
+@pytest.fixture
 def spot_market() -> Market:
     """
     Fixture providing an unauthenticated Spot market client.
@@ -45,7 +45,7 @@ def spot_market() -> Market:
     return Market()
 
 
-@pytest.fixture()
+@pytest.fixture
 def spot_auth_market() -> Market:
     """
     Fixture providing an authenticated Spot market client.
@@ -53,7 +53,7 @@ def spot_auth_market() -> Market:
     return Market(key=SPOT_API_KEY, secret=SPOT_SECRET_KEY)
 
 
-@pytest.fixture()
+@pytest.fixture
 def spot_trade() -> Trade:
     """
     Fixture providing an unauthenticated Spot trade client.
@@ -61,7 +61,7 @@ def spot_trade() -> Trade:
     return Trade()
 
 
-@pytest.fixture()
+@pytest.fixture
 def spot_auth_trade() -> Trade:
     """
     Fixture providing an authenticated Spot trade client.
@@ -69,7 +69,7 @@ def spot_auth_trade() -> Trade:
     return Trade(key=SPOT_API_KEY, secret=SPOT_SECRET_KEY)
 
 
-@pytest.fixture()
+@pytest.fixture
 def spot_earn() -> Earn:
     """
     Fixture providing an unauthenticated Spot earn client.
@@ -77,16 +77,15 @@ def spot_earn() -> Earn:
     return Earn()
 
 
-@pytest.fixture()
-def spot_auth_earn() -> Earn:  # noqa: PT004
+@pytest.fixture
+def spot_auth_earn() -> Earn:
     """
     Fixture providing an authenticated Spot earn client.
     """
     raise ValueError("Do not use the authenticated Spot earn client for testing!")
-    # return Earn(key=SPOT_API_KEY, secret=SPOT_SECRET_KEY)
 
 
-@pytest.fixture()
+@pytest.fixture
 def spot_auth_funding() -> Funding:
     """
     Fixture providing an authenticated Spot funding client.

@@ -15,9 +15,9 @@ from .helper import is_not_error
 # todo: Mock skipped tests - or is this to dangerous?
 
 
-@pytest.mark.spot()
-@pytest.mark.spot_auth()
-@pytest.mark.spot_funding()
+@pytest.mark.spot
+@pytest.mark.spot_auth
+@pytest.mark.spot_funding
 def test_get_deposit_methods(spot_auth_funding: Funding) -> None:
     """
     Checks if the response of the ``get_deposit_methods`` is of
@@ -26,9 +26,9 @@ def test_get_deposit_methods(spot_auth_funding: Funding) -> None:
     assert isinstance(spot_auth_funding.get_deposit_methods(asset="XBT"), list)
 
 
-@pytest.mark.spot()
-@pytest.mark.spot_auth()
-@pytest.mark.spot_funding()
+@pytest.mark.spot
+@pytest.mark.spot_auth
+@pytest.mark.spot_funding
 def test_get_deposit_address(spot_auth_funding: Funding) -> None:
     """
     Checks the ``get_deposit_address`` function by performing a valid request
@@ -40,9 +40,9 @@ def test_get_deposit_address(spot_auth_funding: Funding) -> None:
     )
 
 
-@pytest.mark.spot()
-@pytest.mark.spot_auth()
-@pytest.mark.spot_funding()
+@pytest.mark.spot
+@pytest.mark.spot_auth
+@pytest.mark.spot_funding
 def test_get_recent_deposits_status(spot_auth_funding: Funding) -> None:
     """
     Checks the ``get_recent_deposit_status`` endpoint by executing multiple
@@ -70,9 +70,9 @@ def test_get_recent_deposits_status(spot_auth_funding: Funding) -> None:
     )
 
 
-@pytest.mark.spot()
-@pytest.mark.spot_auth()
-@pytest.mark.spot_funding()
+@pytest.mark.spot
+@pytest.mark.spot_auth
+@pytest.mark.spot_funding
 @pytest.mark.skip(reason="CI does not have withdraw permission")
 def test_withdraw_funds(spot_auth_funding: Funding) -> None:
     """
@@ -93,9 +93,9 @@ def test_withdraw_funds(spot_auth_funding: Funding) -> None:
         )
 
 
-@pytest.mark.spot()
-@pytest.mark.spot_auth()
-@pytest.mark.spot_funding()
+@pytest.mark.spot
+@pytest.mark.spot_auth
+@pytest.mark.spot_funding
 @pytest.mark.skip(reason="CI does not have withdraw permission")
 def test_get_withdrawal_info(spot_auth_funding: Funding) -> None:
     """
@@ -114,9 +114,9 @@ def test_get_withdrawal_info(spot_auth_funding: Funding) -> None:
         )
 
 
-@pytest.mark.spot()
-@pytest.mark.spot_auth()
-@pytest.mark.spot_funding()
+@pytest.mark.spot
+@pytest.mark.spot_auth
+@pytest.mark.spot_funding
 @pytest.mark.skip(reason="CI does not have withdraw permission")
 def test_get_recent_withdraw_status(spot_auth_funding: Funding) -> None:
     """
@@ -135,9 +135,9 @@ def test_get_recent_withdraw_status(spot_auth_funding: Funding) -> None:
     )
 
 
-@pytest.mark.spot()
-@pytest.mark.spot_auth()
-@pytest.mark.spot_funding()
+@pytest.mark.spot
+@pytest.mark.spot_auth
+@pytest.mark.spot_funding
 @pytest.mark.skip(reason="CI does not have withdraw permission")
 def test_wallet_transfer(spot_auth_funding: Funding) -> None:
     """
@@ -162,9 +162,9 @@ def test_wallet_transfer(spot_auth_funding: Funding) -> None:
         )
 
 
-@pytest.mark.spot()
-@pytest.mark.spot_auth()
-@pytest.mark.spot_funding()
+@pytest.mark.spot
+@pytest.mark.spot_auth
+@pytest.mark.spot_funding
 @pytest.mark.skip(reason="CI does not have withdraw permission")
 def test_withdraw_methods(spot_auth_funding: Funding) -> None:
     """
@@ -184,9 +184,9 @@ def test_withdraw_methods(spot_auth_funding: Funding) -> None:
     assert isinstance(response, list)
 
 
-@pytest.mark.spot()
-@pytest.mark.spot_auth()
-@pytest.mark.spot_funding()
+@pytest.mark.spot
+@pytest.mark.spot_auth
+@pytest.mark.spot_funding
 @pytest.mark.skip(reason="CI does not have withdraw permission")
 def test_withdraw_addresses(spot_auth_funding: Funding) -> None:
     """

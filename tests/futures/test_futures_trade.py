@@ -31,9 +31,9 @@ def _run_before_and_after_tests(futures_demo_trade: Trade) -> Generator:
     sleep(0.25)
 
 
-@pytest.mark.futures()
-@pytest.mark.futures_auth()
-@pytest.mark.futures_trade()
+@pytest.mark.futures
+@pytest.mark.futures_auth
+@pytest.mark.futures_trade
 def test_get_fills(futures_demo_trade: Trade) -> None:
     """
     Checks the ``get_fills`` endpoint.
@@ -44,9 +44,9 @@ def test_get_fills(futures_demo_trade: Trade) -> None:
     )
 
 
-@pytest.mark.futures()
-@pytest.mark.futures_auth()
-@pytest.mark.futures_trade()
+@pytest.mark.futures
+@pytest.mark.futures_auth
+@pytest.mark.futures_trade
 def test_dead_mans_switch(futures_demo_trade: Trade) -> None:
     """
     Checks the ``dead_mans_switch`` endpoint.
@@ -57,9 +57,9 @@ def test_dead_mans_switch(futures_demo_trade: Trade) -> None:
     )  # reset dead mans switch
 
 
-@pytest.mark.futures()
-@pytest.mark.futures_auth()
-@pytest.mark.futures_trade()
+@pytest.mark.futures
+@pytest.mark.futures_auth
+@pytest.mark.futures_trade
 def test_get_orders_status(futures_demo_trade: Trade) -> None:
     """
     Checks the ``get_orders_status`` endpoint.
@@ -83,9 +83,9 @@ def test_get_orders_status(futures_demo_trade: Trade) -> None:
     )
 
 
-@pytest.mark.futures()
-@pytest.mark.futures_auth()
-@pytest.mark.futures_trade()
+@pytest.mark.futures
+@pytest.mark.futures_auth
+@pytest.mark.futures_trade
 def test_create_order(futures_demo_trade: Trade) -> None:
     """
     Checks the ``create_order`` endpoint.
@@ -132,9 +132,9 @@ def test_create_order(futures_demo_trade: Trade) -> None:
     #     pass
 
 
-@pytest.mark.futures()
-@pytest.mark.futures_auth()
-@pytest.mark.futures_trade()
+@pytest.mark.futures
+@pytest.mark.futures_auth
+@pytest.mark.futures_trade
 def test_create_order_failing(futures_demo_trade: Trade) -> None:
     """
     Checks ``create_order`` endpoint to fail when using invalid parameters.
@@ -165,9 +165,9 @@ def test_create_order_failing(futures_demo_trade: Trade) -> None:
         )
 
 
-@pytest.mark.futures()
-@pytest.mark.futures_auth()
-@pytest.mark.futures_trade()
+@pytest.mark.futures
+@pytest.mark.futures_auth
+@pytest.mark.futures_trade
 def test_create_batch_order(futures_demo_trade: Trade) -> None:
     """
     Checks the ``create_order_batch`` endpoint.
@@ -210,9 +210,9 @@ def test_create_batch_order(futures_demo_trade: Trade) -> None:
         )
 
 
-@pytest.mark.futures()
-@pytest.mark.futures_auth()
-@pytest.mark.futures_trade()
+@pytest.mark.futures
+@pytest.mark.futures_auth
+@pytest.mark.futures_trade
 def test_edit_order(futures_demo_trade: Trade) -> None:
     """
     Checks the ``edit_order`` endpoint.
@@ -234,9 +234,9 @@ def test_edit_order(futures_demo_trade: Trade) -> None:
     )
 
 
-@pytest.mark.futures()
-@pytest.mark.futures_auth()
-@pytest.mark.futures_trade()
+@pytest.mark.futures
+@pytest.mark.futures_auth
+@pytest.mark.futures_trade
 def test_edit_order_failing(futures_demo_trade: Trade) -> None:
     """
     Checks if the ``edit_order`` endpoint fails when using invalid parameters.
@@ -245,9 +245,9 @@ def test_edit_order_failing(futures_demo_trade: Trade) -> None:
         futures_demo_trade.edit_order()
 
 
-@pytest.mark.futures()
-@pytest.mark.futures_auth()
-@pytest.mark.futures_trade()
+@pytest.mark.futures
+@pytest.mark.futures_auth
+@pytest.mark.futures_trade
 def test_cancel_order(futures_demo_trade: Trade) -> None:
     """
     Checks the ``cancel_order`` endpoint.
@@ -265,9 +265,9 @@ def test_cancel_order(futures_demo_trade: Trade) -> None:
     )
 
 
-@pytest.mark.futures()
-@pytest.mark.futures_auth()
-@pytest.mark.futures_trade()
+@pytest.mark.futures
+@pytest.mark.futures_auth
+@pytest.mark.futures_trade
 def test_cancel_order_failing(futures_demo_trade: Trade) -> None:
     """
     Checks if the ``cancel_order`` endpoint is failing when
@@ -277,9 +277,9 @@ def test_cancel_order_failing(futures_demo_trade: Trade) -> None:
         futures_demo_trade.cancel_order()
 
 
-@pytest.mark.futures()
-@pytest.mark.futures_auth()
-@pytest.mark.futures_trade()
+@pytest.mark.futures
+@pytest.mark.futures_auth
+@pytest.mark.futures_trade
 def test_cancel_all_orders(futures_demo_trade: Trade) -> None:
     """
     Checks the ``cancel_all_orders`` endpoint.
@@ -288,9 +288,9 @@ def test_cancel_all_orders(futures_demo_trade: Trade) -> None:
     assert is_success(futures_demo_trade.cancel_all_orders())
 
 
-@pytest.mark.futures()
-@pytest.mark.futures_auth()
-@pytest.mark.futures_trade()
+@pytest.mark.futures
+@pytest.mark.futures_auth
+@pytest.mark.futures_trade
 def test_get_max_order_size(futures_auth_trade: Trade) -> None:
     """
     Checks the ``cancel_all_orders`` endpoint.

@@ -35,8 +35,8 @@ from kraken.spot.websocket.connectors import ConnectSpotWebsocket
 from .helper import SpotWebsocketClientTestWrapper
 
 
-@pytest.mark.spot()
-@pytest.mark.spot_websocket()
+@pytest.mark.spot
+@pytest.mark.spot_websocket
 def test_create_public_client(caplog: pytest.LogCaptureFixture) -> None:
     """
     Checks if the websocket client can be instantiated.
@@ -59,8 +59,8 @@ def test_create_public_client(caplog: pytest.LogCaptureFixture) -> None:
         assert expected in caplog.text
 
 
-@pytest.mark.spot()
-@pytest.mark.spot_websocket()
+@pytest.mark.spot
+@pytest.mark.spot_websocket
 def test_create_public_client_as_context_manager(
     caplog: pytest.LogCaptureFixture,
 ) -> None:
@@ -83,8 +83,8 @@ def test_create_public_client_as_context_manager(
         assert expected in caplog.text
 
 
-@pytest.mark.spot()
-@pytest.mark.spot_websocket()
+@pytest.mark.spot
+@pytest.mark.spot_websocket
 def test_access_public_client_attributes() -> None:
     """
     Checks the ``access_public_client_attributes`` function
@@ -112,8 +112,8 @@ def test_access_public_client_attributes() -> None:
     asyncio_run(check_access())
 
 
-@pytest.mark.spot()
-@pytest.mark.spot_websocket()
+@pytest.mark.spot
+@pytest.mark.spot_websocket
 def test_access_public_subscriptions_no_conn_failing() -> None:
     """
     Checks if ``active_public_subscriptions`` fails, because there is no
@@ -132,9 +132,9 @@ def test_access_public_subscriptions_no_conn_failing() -> None:
     asyncio_run(check_access())
 
 
-@pytest.mark.spot()
-@pytest.mark.spot_auth()
-@pytest.mark.spot_websocket()
+@pytest.mark.spot
+@pytest.mark.spot_auth
+@pytest.mark.spot_websocket
 def test_access_private_client_attributes(
     spot_api_key: str,
     spot_secret_key: str,
@@ -165,8 +165,8 @@ def test_access_private_client_attributes(
     asyncio_run(check_access())
 
 
-@pytest.mark.spot()
-@pytest.mark.spot_websocket()
+@pytest.mark.spot
+@pytest.mark.spot_websocket
 def test_send_message_missing_method_failing() -> None:
     """
     Checks if the send_message function fails when specific keys or values
@@ -196,8 +196,8 @@ def test_send_message_missing_method_failing() -> None:
     asyncio_run(create_client())
 
 
-@pytest.mark.spot()
-@pytest.mark.spot_websocket()
+@pytest.mark.spot
+@pytest.mark.spot_websocket
 def test_send_message_raw(caplog: pytest.LogCaptureFixture) -> None:
     """
     Checks if the send_message function fails when the socket is not available.
@@ -217,8 +217,8 @@ def test_send_message_raw(caplog: pytest.LogCaptureFixture) -> None:
     assert '"success": false' not in caplog.text
 
 
-@pytest.mark.spot()
-@pytest.mark.spot_websocket()
+@pytest.mark.spot
+@pytest.mark.spot_websocket
 def test_public_subscribe(caplog: pytest.LogCaptureFixture) -> None:
     """
     Function that checks if the websocket client is able to subscribe to public
@@ -243,9 +243,9 @@ def test_public_subscribe(caplog: pytest.LogCaptureFixture) -> None:
     assert '"success": false' not in caplog.text
 
 
-@pytest.mark.spot()
-@pytest.mark.spot_auth()
-@pytest.mark.spot_websocket()
+@pytest.mark.spot
+@pytest.mark.spot_auth
+@pytest.mark.spot_websocket
 def test_private_subscribe_failing_on_public_connection() -> None:
     """
     Ensures that the public websocket connection can't subscribe to private
@@ -265,9 +265,9 @@ def test_private_subscribe_failing_on_public_connection() -> None:
     asyncio_run(test_subscription())
 
 
-@pytest.mark.spot()
-@pytest.mark.spot_auth()
-@pytest.mark.spot_websocket()
+@pytest.mark.spot
+@pytest.mark.spot_auth
+@pytest.mark.spot_websocket
 def test_private_subscribe(
     spot_api_key: str,
     spot_secret_key: str,
@@ -299,8 +299,8 @@ def test_private_subscribe(
     assert '"success": false' not in caplog.text
 
 
-@pytest.mark.spot()
-@pytest.mark.spot_websocket()
+@pytest.mark.spot
+@pytest.mark.spot_websocket
 def test_public_unsubscribe(caplog: pytest.LogCaptureFixture) -> None:
     """
     Checks if the websocket client can unsubscribe from public feeds.
@@ -327,8 +327,8 @@ def test_public_unsubscribe(caplog: pytest.LogCaptureFixture) -> None:
     assert '"success": false' not in caplog.text
 
 
-@pytest.mark.spot()
-@pytest.mark.spot_websocket()
+@pytest.mark.spot
+@pytest.mark.spot_websocket
 def test_public_unsubscribe_failure(caplog: pytest.LogCaptureFixture) -> None:
     """
     Checks if the websocket client responses with failures
@@ -355,9 +355,9 @@ def test_public_unsubscribe_failure(caplog: pytest.LogCaptureFixture) -> None:
     )
 
 
-@pytest.mark.spot()
-@pytest.mark.spot_auth()
-@pytest.mark.spot_websocket()
+@pytest.mark.spot
+@pytest.mark.spot_auth
+@pytest.mark.spot_websocket
 def test_private_unsubscribe(
     spot_api_key: str,
     spot_secret_key: str,
@@ -391,8 +391,8 @@ def test_private_unsubscribe(
     assert '"success": false' not in caplog.text
 
 
-@pytest.mark.spot()
-@pytest.mark.spot_websocket()
+@pytest.mark.spot
+@pytest.mark.spot_websocket
 def test___transform_subscription() -> None:
     """
     Checks if the subscription transformation works properly by checking
@@ -429,8 +429,8 @@ def test___transform_subscription() -> None:
         )
 
 
-@pytest.mark.spot()
-@pytest.mark.spot_websocket()
+@pytest.mark.spot
+@pytest.mark.spot_websocket
 def test___transform_subscription_no_change() -> None:
     """
     Similar to the test above -- but verifying that messages that don't need an
@@ -464,9 +464,9 @@ def test___transform_subscription_no_change() -> None:
         )
 
 
-@pytest.mark.spot()
-@pytest.mark.spot_auth()
-@pytest.mark.spot_websocket()
+@pytest.mark.spot
+@pytest.mark.spot_auth
+@pytest.mark.spot_websocket
 def test_reconnect(
     spot_api_key: str,
     spot_secret_key: str,

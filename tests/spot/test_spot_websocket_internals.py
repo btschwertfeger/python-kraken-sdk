@@ -15,8 +15,8 @@ import pytest
 from kraken.spot.websocket import SpotWSClientBase
 
 
-@pytest.mark.spot()
-@pytest.mark.spot_websocket()
+@pytest.mark.spot
+@pytest.mark.spot_websocket
 def test_ws_base_client_context_manager() -> None:
     """
     Checks that the KrakenSpotWSClientBase can be instantiated as context
@@ -37,8 +37,8 @@ def test_ws_base_client_context_manager() -> None:
     asyncio_run(check_it())
 
 
-@pytest.mark.spot()
-@pytest.mark.spot_websocket()
+@pytest.mark.spot
+@pytest.mark.spot_websocket
 def test_ws_base_client_on_message_no_callback(
     caplog: pytest.LogCaptureFixture,
 ) -> None:

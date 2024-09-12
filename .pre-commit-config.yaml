@@ -5,7 +5,7 @@
 
 repos:
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.4.2
+    rev: v0.6.4
     hooks:
       - id: ruff
         args:
@@ -13,7 +13,7 @@ repos:
           - --fix
           - --exit-non-zero-on-fix
   - repo: https://github.com/pycqa/flake8
-    rev: 7.0.0
+    rev: 7.1.1
     hooks:
       - id: flake8
         args:
@@ -21,7 +21,7 @@ repos:
           - --show-source
           - --statistics
   - repo: https://github.com/pycqa/pylint
-    rev: v3.2.3
+    rev: v3.2.7
     hooks:
       - id: pylint
         name: pylint
@@ -32,7 +32,7 @@ repos:
           - -d=R0801 # ignore duplicate code
           - -j=4
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.10.0
+    rev: v1.11.2
     hooks:
       - id: mypy
         name: mypy
@@ -43,7 +43,7 @@ repos:
           - --install-types
           - --non-interactive
   - repo: https://github.com/gitleaks/gitleaks
-    rev: v8.16.3
+    rev: v8.18.4
     hooks:
       - id: gitleaks
   - repo: https://github.com/jumanjihouse/pre-commit-hooks
@@ -57,7 +57,7 @@ repos:
         additional_dependencies:
           - tomli
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.5.0
+    rev: v4.6.0
     hooks:
       - id: check-yaml
       - id: check-json
@@ -89,11 +89,11 @@ repos:
       - id: rst-inline-touching-normal
       - id: text-unicode-replacement-char
   - repo: https://github.com/psf/black
-    rev: 24.4.2
+    rev: 24.8.0
     hooks:
       - id: black
   - repo: https://github.com/pre-commit/mirrors-prettier
-    rev: v3.0.2
+    rev: v4.0.0-alpha.8
     hooks:
       - id: prettier
   - repo: https://github.com/PyCQA/isort

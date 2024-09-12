@@ -58,7 +58,7 @@ class Trade(NFTClient):
         super().__enter__()
         return self
 
-    def create_auction(  # noqa: PLR0913 # pylint: disable=too-many-arguments
+    def create_auction(   # pylint: disable=too-many-arguments
         self: Trade,
         auction_currency: str,
         auction_params: dict,
