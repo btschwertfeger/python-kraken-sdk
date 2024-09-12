@@ -46,16 +46,16 @@ name: CI/CD
 
 on:
   push:
-    branches:
-      - "**"
+    branches: [master]
   schedule:
     - cron: "20 16 */7 * *"
   release:
     types: [created]
   pull_request:
     types: [opened, synchronize, reopened]
+    branches: ["**"]
 
-# should only run once due to API rate limits
+# only run once due to API rate limits
 concurrency:
   group: CICD
   cancel-in-progress: true
