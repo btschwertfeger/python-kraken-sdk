@@ -12,14 +12,12 @@ from typing import TYPE_CHECKING
 from kraken.cli import cli
 
 if TYPE_CHECKING:
-
     from click.testing import CliRunner
 import pytest
 
 
 @pytest.mark.spot
 def test_cli_version(cli_runner: CliRunner) -> None:
-
     result = cli_runner.invoke(cli, ["--version"])
     assert result.exit_code == 0, result.exception
 

@@ -86,7 +86,10 @@ class ConnectFuturesWebsocket:  # pylint: disable=too-many-instance-attributes
         if hasattr(self, "task") and not self.task.done():
             await self.task
 
-    async def __run(self: ConnectFuturesWebsocket, event: asyncio.Event) -> None:
+    async def __run(  # noqa: C901
+        self: ConnectFuturesWebsocket,
+        event: asyncio.Event,
+    ) -> None:
         self.__new_challenge = None
         self.__last_challenge = None
 

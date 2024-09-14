@@ -530,7 +530,7 @@ class Trade(FuturesClient):
             extra_params=extra_params,
         )
 
-    def create_order(  # pylint: disable=too-many-arguments # noqa: PLR0913, PLR0917
+    def create_order(  # pylint: disable=too-many-arguments # noqa: PLR0913,PLR0917,C901
         self: Trade,
         orderType: str,
         size: str | float,

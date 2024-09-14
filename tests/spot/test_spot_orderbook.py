@@ -36,7 +36,6 @@ def test_create_public_bot(caplog: pytest.LogCaptureFixture) -> None:
 
     async def create_bot() -> None:
         async with SpotOrderBookClientWrapper() as orderbook:
-
             await async_sleep(10)
 
             assert orderbook.depth == 10
@@ -173,7 +172,6 @@ def test_remove_book(caplog: pytest.LogCaptureFixture) -> None:
 
     async def execute_remove_book() -> None:
         async with SpotOrderBookClientWrapper() as orderbook:
-
             await orderbook.add_book(pairs=["BTC/USD"])
             await async_sleep(2)
 

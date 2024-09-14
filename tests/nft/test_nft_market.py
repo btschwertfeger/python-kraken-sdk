@@ -2,7 +2,7 @@
 # Copyright (C) 2024 Benjamin Thomas Schwertfeger
 # GitHub: https://github.com/btschwertfeger
 
-"""Module implementing NFT Market unit tests """
+"""Module implementing NFT Market unit tests"""
 
 from __future__ import annotations
 

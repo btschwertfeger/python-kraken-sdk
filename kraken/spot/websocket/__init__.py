@@ -180,7 +180,7 @@ class SpotWSClientBase(SpotAsyncClient):
     async def __aexit__(
         self: SpotWSClientBase,
         *exc: object,
-        **kwargs: Any,  # noqa: ANN401
+        **kwargs: Any,
     ) -> None:
         """Exit if used as context manager"""
         await super().__aexit__()
@@ -255,8 +255,8 @@ class SpotWSClientBase(SpotAsyncClient):
 
     async def send_message(
         self: SpotWSClientBase,
-        *args: Any,  # noqa: ANN401
-        **kwargs: Any,  # noqa: ANN401
+        *args: Any,
+        **kwargs: Any,
     ) -> None:
         """
         This functions must be overloaded and should be used to send messages
@@ -266,8 +266,8 @@ class SpotWSClientBase(SpotAsyncClient):
 
     async def subscribe(
         self: SpotWSClientBase,
-        *args: Any,  # noqa: ANN401
-        **kwargs: Any,  # noqa: ANN401
+        *args: Any,
+        **kwargs: Any,
     ) -> None:
         """
         This function must be overloaded and should be used to subscribe
@@ -277,8 +277,8 @@ class SpotWSClientBase(SpotAsyncClient):
 
     async def unsubscribe(
         self: SpotWSClientBase,
-        *args: Any,  # noqa: ANN401
-        **kwargs: Any,  # noqa: ANN401
+        *args: Any,
+        **kwargs: Any,
     ) -> None:
         """
         This function must be overloaded and should be used to unsubscribe

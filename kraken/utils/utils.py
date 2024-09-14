@@ -21,8 +21,8 @@ def deprecated(func: Callable) -> Callable:
 
     @wraps(func)
     def wrapper(
-        *args: Any | None,  # noqa: ANN401
-        **kwargs: Any | None,  # noqa: ANN401
+        *args: Any | None,
+        **kwargs: Any | None,
     ) -> Any | None:  # noqa: ANN401
         warnings.warn(
             f"Call to deprecated function {func.__name__}.",

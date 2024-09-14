@@ -5,9 +5,8 @@
 #
 
 UV ?= uv
-UVX ?= uvx
 PYTHON := python
-PYTEST := $(UVX) pytest
+PYTEST := $(UV) run pytest
 PYTEST_OPTS := -vv --junit-xml=pytest.xml
 PYTEST_COV_OPTS := $(PYTEST_OPTS) --cov --cov-report=xml:coverage.xml --cov-report=term
 TEST_DIR := tests

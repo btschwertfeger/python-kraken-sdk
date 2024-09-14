@@ -6,7 +6,7 @@
 # ruff: noqa: PLR0904
 # pylint: disable=too-many-lines
 
-""" Module that implements the Kraken Spot User client"""
+"""Module that implements the Kraken Spot User client"""
 
 from __future__ import annotations
 

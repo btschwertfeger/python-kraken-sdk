@@ -216,54 +216,53 @@ line-length = 130
 
 [tool.ruff.lint]
 select = [
-  "A",     # flake8-builtins
-  "AIR",   # Airflow
-  "ANN",   # flake8-annotations
-  "ARG",   # flake8-unused-arguments
-  "ASYNC", # flake8-async
-  "ASYNC", # flake8-async
-  "B",     # flake8-bugbear
-  "B",     # flake8-bugbear
-  "BLE",   # flake8-blind-except
-  "C4",    # flake8-comprehensions
-  "COM",   # flake8-commas
-  "CPY",   # flake8-copyright
+  "A",      # flake8-builtins
+  "AIR",    # Airflow
+  "ANN",    # flake8-annotations
+  "ARG",    # flake8-unused-arguments
+  "ASYNC",  # flake8-async
+  "ASYNC1", # flake8-trio
+  "B",      # flake8-bugbear
+  "BLE",    # flake8-blind-except
+  "C",      # pylint convention
+  "C4",     # flake8-comprehensions
+  "COM",    # flake8-commas
+  "CPY",    # flake8-copyright
+  "E",      # pylint error
+  "F",      # pyflakes
+  "FA",     # flake8-future-annotations
+  "FBT",    # flake8-boolean-trap
+  "FLY",    # flynt
+  "FURB",   # refurb
+  "G",      # flake8-logging-format
+  "I",      # isort
+  "ICN",    # flake8-import-conventions
+  "INT",    # flake8-gettext
+  "ISC",    # flake8-implicit-string-concat
+  "LOG",    # flake8-logging
+  "N",      # PEP8 naming
+  "PERF",   # Perflint
+  "PGH",    # pygrep-hooks
+  "PIE",    # flake8-pie
+  "PL",     # PyLint
+  "PT",     # flake8-pytest-style
+  "PTH",    # flake8-use-pathlib
+  "PYI",    # flake8-pyi
+  "Q",      # flake8-quotes
+  "R",      # pylint refactor
+  "RET",    # flake8-return
+  "RSE",    # flake8-raise
+  "RUF",    # Ruff-specific rules
+  "S",      # flake8-bandit
+  "SIM",    # flake8-simplify
+  "SLF",    # flake8-self
+  "SLOT",   # flake8-slots
+  "T20",    # flake8-print
+  "TCH",    # flake8-type-checking
+  "TID",    # flake8-tidy-imports
+  # "W",      # pylint warning
   # "D",     # pydocstyle | sphinx format not supported
-  "E",    # pycodestyle
-  "F",    # pyflakes
-  "FA",   # flake8-future-annotations
-  "FBT",  # flake8-boolean-trap
-  "FLY",  # flynt
-  "FURB", # refurb
-  "G",    # flake8-logging-format
-  "I",    # isort
-  "ICN",  # flake8-import-conventions
-  "INT",  # flake8-gettext
-  "ISC",  # flake8-implicit-string-concat
-  "LOG",  # flake8-logging
-  "N",    # PEP8 naming
-  "PERF", # Perflint # maybe
-  "PGH",  # pygrep-hooks
-  "PIE",  # flake8-pie
-  "PL",   # PyLint
-  "PT",   # flake8-pytest-style
-  "PTH",  # flake8-use-pathlib
-  "PYI",  # flake8-pyi
-  "Q",    # flake8-quotes
-  "RET",  # flake8-return
-  "RSE",  # flake8-raise
-  "RUF",  # Ruff-specific rules
-  "S",    # flake8-bandit
-  "SIM",  # flake8-simplify
-  "SLF",  # flake8-self
-  "SLOT", # flake8-slots
-  "T20",  # flake8-print
-  "TCH",  # flake8-type-checking
-  "TID",  # flake8-tidy-imports
-  "TRIO", # flake8-trio
-  "UP",   # pyupgrade
-  "W",    # pycodestyle
-  # "ERA", # eradicate # commented-out code
+  # "ERA", # eradicate - commented-out code
   # "FIX", # flake8-fixme
   # "TD",  # flake8-todos
   # "TRY", # tryceratops # specify exception messages in class; not important
@@ -271,26 +270,30 @@ select = [
 fixable = ["ALL"]
 
 ignore = [
-  "B019",    # use of lru_cache or cache
-  "PLR2004", # magic value in comparison
-  "E203",    # Whitespace before ':' # false positive on list slices
-  "PLR6301", # Method `…` could be a function or static method # false positive for no-self-use
-  "RUF022",  # `__all__` is not sorted
+  "ASYNC110", # use of asyncio.sleep instead of asyncio.Event # FIXME
+  "B019",     # use of lru_cache or cache
+  "PLR2004",  # magic value in comparison
+  "E203",     # Whitespace before ':' # false positive on list slices
+  "PLR6301",  # Method `…` could be a function or static method # false positive for no-self-use
+  "RUF022",   # `__all__` is not sorted
 ]
 
 task-tags = ["todo", "TODO", "fixme", "FIXME"]
 
 [tool.ruff.lint.per-file-ignores]
 "examples/*.py" = [
-  # "ASYNC101", # no open call on async function
+  "ASYNC230", # use open in async functions
   "ASYNC251", # time.sleep in async function
   "BLE001",   # blind exception
   "S101",     # assert use
   "S110",     # try-catch-pass without logging
   "T201",     # print
 ]
+"examples/*.ipynb" = [
+  "CPY001", # copyright
+]
 "tests/*.py" = [
-  # "ASYNC101", # no open call on async function
+  "ASYNC230", # use open in async functions
   "ASYNC251", # time.sleep in async function
   "E501",     # line to long
   "F841",     # unused variable
@@ -316,6 +319,9 @@ ban-relative-imports = "all"
 
 [tool.ruff.lint.flake8-bandit]
 check-typed-exception = true
+
+[tool.ruff.lint.flake8-annotations]
+allow-star-arg-any = true
 
 [tool.ruff.lint.flake8-type-checking]
 strict = true

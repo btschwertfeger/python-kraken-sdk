@@ -167,7 +167,6 @@ def test_subscribe_private(
             key=futures_api_key,
             secret=futures_secret_key,
         ) as client:
-
             with pytest.raises(
                 ValueError,
                 match=r"There is no private feed that accepts products!",
@@ -178,7 +177,6 @@ def test_subscribe_private(
             key=futures_api_key,
             secret=futures_secret_key,
         ) as client:
-
             await client.subscribe(feed="open_orders")
             await async_sleep(2)
 
@@ -204,7 +202,6 @@ def test_unsubscribe_public(caplog: pytest.LogCaptureFixture) -> None:
     async def execute_unsubscribe() -> None:
         products: list[str] = ["PI_XBTUSD", "PF_SOLUSD"]
         async with FuturesWebsocketClientTestWrapper() as client:
-
             await client.subscribe(feed="ticker", products=products)
             await async_sleep(2)
 
@@ -318,7 +315,6 @@ def test_resubscribe(
             key=futures_api_key,
             secret=futures_secret_key,
         ) as client:
-
             assert client.get_active_subscriptions() == []
             await async_sleep(1)
 

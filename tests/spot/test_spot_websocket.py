@@ -93,7 +93,6 @@ def test_access_public_client_attributes() -> None:
 
     async def check_access() -> None:
         async with SpotWebsocketClientTestWrapper() as client:
-
             assert client.public_channel_names == [
                 "book",
                 "instrument",
@@ -300,7 +299,6 @@ def test_public_unsubscribe(caplog: pytest.LogCaptureFixture) -> None:
 
     async def test_unsubscribe() -> None:
         async with SpotWebsocketClientTestWrapper() as client:
-
             params: dict = {"channel": "ticker", "symbol": ["BTC/USD"]}
             await client.subscribe(params=params, req_id=123456789)
             await async_sleep(3)
@@ -329,7 +327,6 @@ def test_public_unsubscribe_failure(caplog: pytest.LogCaptureFixture) -> None:
 
     async def check_unsubscribe_fail() -> None:
         async with SpotWebsocketClientTestWrapper() as client:
-
             # We did not subscribed to this ticker but it will work,
             # and the response will inform us that there is no such subscription.
             await client.unsubscribe(
@@ -365,7 +362,6 @@ def test_private_unsubscribe(
             secret=spot_secret_key,
             no_public=True,
         ) as client:
-
             await client.subscribe(params={"channel": "executions"}, req_id=123456789)
             await async_sleep(2)
 
