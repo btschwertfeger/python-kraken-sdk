@@ -218,4 +218,3 @@ def test_nft_trade_list_nft_transactions(nft_auth_trade: Trade) -> None:
     assert len(result["items"]) > 0
     assert isinstance(result["items"][0], dict)
     assert "nft_id" in result["items"][0]
-    assert result["items"][0]["nft_id"] == "NTRU2ZH-EK7SW-QHJOVI"

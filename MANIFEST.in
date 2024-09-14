@@ -12,3 +12,4 @@ prune doc
 prune examples
 prune tests
 prune venv
+prune .venv

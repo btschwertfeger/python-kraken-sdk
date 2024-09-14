@@ -515,7 +515,8 @@ class SpotWSClient(SpotWSClientBase):
         Returns the list of valid values for ``channel`` when un-/subscribing
         from/to public feeds without authentication.
 
-        See https://docs.kraken.com/websockets-v2/#channels for all channels.
+        Override this property if the exchange supports additional public
+        channels.
 
         The available public channels are listed below:
 
@@ -536,16 +537,18 @@ class SpotWSClient(SpotWSClientBase):
         Returns the list of valid values for ``channel`` when un-/subscribing
         from/to private feeds that need authentication.
 
-        See https://docs.kraken.com/websockets-v2/#channels for all channels.
+        Override this property if the exchange supports additional private
+        channels.
 
-        Currently there is only one private channel (June 2023):
-
-        - `executions <https://docs.kraken.com/websockets-v2/#executions>`_
+        - `executions
+          <https://docs.kraken.com/api/docs/websocket-v2/executions>`_
+        - `balances <https://docs.kraken.com/api/docs/websocket-v2/balances>`_
+        - `level3 <https://docs.kraken.com/api/docs/websocket-v2/level3>`_
 
         :return: List of available private channel names
         :rtype: list[str]
         """
-        return ["executions", "balances"]
+        return ["executions", "balances", "level3"]
 
     @property
     def private_methods(self: SpotWSClient) -> list[str]:
