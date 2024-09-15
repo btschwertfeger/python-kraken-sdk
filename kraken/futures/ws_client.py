@@ -113,7 +113,7 @@ class FuturesWSClient(FuturesAsyncClient):
     PROD_ENV_URL: str = "futures.kraken.com/ws/v1"
     DEMO_ENV_URL: str = "demo-futures.kraken.com/ws/v1"
 
-    def __init__(
+    def __init__(  # nosec: B107
         self: FuturesWSClient,
         key: str = "",
         secret: str = "",

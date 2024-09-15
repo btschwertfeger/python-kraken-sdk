@@ -257,7 +257,7 @@ class ConnectSpotWebsocketBase:  # pylint: disable=too-many-instance-attributes
         :rtype: float | Any
         """
         return round(
-            random() * min(60 * 3, (2**attempts) - 1) + 1,  # noqa: S311
+            random() * min(60 * 3, (2**attempts) - 1) + 1,  # noqa: S311 # nosec: B311
         )
 
     # --------------------------------------------------------------------------

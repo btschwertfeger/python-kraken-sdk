@@ -12,19 +12,17 @@ from typing import TYPE_CHECKING
 from kraken.cli import cli
 
 if TYPE_CHECKING:
-
     from click.testing import CliRunner
 import pytest
 
 
-@pytest.mark.spot()
+@pytest.mark.spot
 def test_cli_version(cli_runner: CliRunner) -> None:
-
     result = cli_runner.invoke(cli, ["--version"])
     assert result.exit_code == 0, result.exception
 
 
-@pytest.mark.spot()
+@pytest.mark.spot
 def test_cli_spot_public(cli_runner: CliRunner) -> None:
     result = cli_runner.invoke(cli, ["spot", "https://api.kraken.com/0/public/Time"])
     assert result.exit_code == 0, result.exception
@@ -34,8 +32,8 @@ def test_cli_spot_public(cli_runner: CliRunner) -> None:
 
 
 @pytest.mark.usefixtures("_with_cli_env_vars")
-@pytest.mark.spot()
-@pytest.mark.spot_auth()
+@pytest.mark.spot
+@pytest.mark.spot_auth
 def test_cli_spot_private(
     cli_runner: CliRunner,
 ) -> None:
@@ -52,7 +50,7 @@ def test_cli_spot_private(
     assert result.exit_code == 0, result.exception
 
 
-@pytest.mark.futures()
+@pytest.mark.futures
 def test_cli_futures_public(cli_runner: CliRunner) -> None:
     result = cli_runner.invoke(
         cli,
@@ -65,8 +63,8 @@ def test_cli_futures_public(cli_runner: CliRunner) -> None:
 
 
 @pytest.mark.usefixtures("_with_cli_env_vars")
-@pytest.mark.futures()
-@pytest.mark.futures_auth()
+@pytest.mark.futures
+@pytest.mark.futures_auth
 def test_cli_futures_private(
     cli_runner: CliRunner,
 ) -> None:

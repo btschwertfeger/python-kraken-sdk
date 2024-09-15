@@ -86,7 +86,10 @@ class ConnectFuturesWebsocket:  # pylint: disable=too-many-instance-attributes
         if hasattr(self, "task") and not self.task.done():
             await self.task
 
-    async def __run(self: ConnectFuturesWebsocket, event: asyncio.Event) -> None:
+    async def __run(  # noqa: C901
+        self: ConnectFuturesWebsocket,
+        event: asyncio.Event,
+    ) -> None:
         self.__new_challenge = None
         self.__last_challenge = None
 
@@ -271,7 +274,7 @@ class ConnectFuturesWebsocket:  # pylint: disable=too-many-instance-attributes
 
     def __get_reconnect_wait(self, attempts: int) -> float:
         return round(  # type: ignore[no-any-return]
-            random() * min(60 * 3, (2**attempts) - 1) + 1,  # noqa: S311
+            random() * min(60 * 3, (2**attempts) - 1) + 1,  # noqa: S311 # nosec: B311
         )
 
     def __append_subscription(self: ConnectFuturesWebsocket, message: dict) -> None:

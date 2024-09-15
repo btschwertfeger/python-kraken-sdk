@@ -26,9 +26,9 @@ if TYPE_CHECKING:
     from pathlib import Path
 
 
-@pytest.mark.spot()
-@pytest.mark.spot_websocket()
-@pytest.mark.spot_orderbook()
+@pytest.mark.spot
+@pytest.mark.spot_websocket
+@pytest.mark.spot_orderbook
 def test_create_public_bot(caplog: pytest.LogCaptureFixture) -> None:
     """
     Checks if the websocket client can be instantiated.
@@ -36,7 +36,6 @@ def test_create_public_bot(caplog: pytest.LogCaptureFixture) -> None:
 
     async def create_bot() -> None:
         async with SpotOrderBookClientWrapper() as orderbook:
-
             await async_sleep(10)
 
             assert orderbook.depth == 10
@@ -52,9 +51,9 @@ def test_create_public_bot(caplog: pytest.LogCaptureFixture) -> None:
         assert expected in caplog.text
 
 
-@pytest.mark.spot()
-@pytest.mark.spot_websocket()
-@pytest.mark.spot_orderbook()
+@pytest.mark.spot
+@pytest.mark.spot_websocket
+@pytest.mark.spot_orderbook
 def test_get_first() -> None:
     """
     Checks the ``get_first`` method.
@@ -67,8 +66,8 @@ def test_get_first() -> None:
     )
 
 
-@pytest.mark.spot()
-@pytest.mark.spot_orderbook()
+@pytest.mark.spot
+@pytest.mark.spot_orderbook
 @mock.patch("kraken.spot.orderbook.SpotWSClient", return_value=None)
 @mock.patch(
     "kraken.spot.orderbook.SpotOrderBookClient.remove_book",
@@ -122,9 +121,9 @@ def test_passing_msg_and_validate_checksum(
     asyncio.run(assign())
 
 
-@pytest.mark.spot()
-@pytest.mark.spot_websocket()
-@pytest.mark.spot_orderbook()
+@pytest.mark.spot
+@pytest.mark.spot_websocket
+@pytest.mark.spot_orderbook
 def test_add_book(caplog: pytest.LogCaptureFixture) -> None:
     """
     Checks if the orderbook client is able to add a book by subscribing.
@@ -162,9 +161,9 @@ def test_add_book(caplog: pytest.LogCaptureFixture) -> None:
         assert expected in caplog.text
 
 
-@pytest.mark.spot()
-@pytest.mark.spot_websocket()
-@pytest.mark.spot_orderbook()
+@pytest.mark.spot
+@pytest.mark.spot_websocket
+@pytest.mark.spot_orderbook
 def test_remove_book(caplog: pytest.LogCaptureFixture) -> None:
     """
     Checks if the orderbook client is able to add a book by subscribing to a book
@@ -173,7 +172,6 @@ def test_remove_book(caplog: pytest.LogCaptureFixture) -> None:
 
     async def execute_remove_book() -> None:
         async with SpotOrderBookClientWrapper() as orderbook:
-
             await orderbook.add_book(pairs=["BTC/USD"])
             await async_sleep(2)
 

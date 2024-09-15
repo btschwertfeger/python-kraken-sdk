@@ -18,19 +18,19 @@ SPOT_API_KEY: str = os.getenv("SPOT_API_KEY")
 SPOT_SECRET_KEY: str = os.getenv("SPOT_SECRET_KEY")
 
 
-@pytest.fixture()
+@pytest.fixture
 def spot_api_key() -> str:
     """Returns the Kraken Spot API Key for testing."""
     return SPOT_API_KEY
 
 
-@pytest.fixture()
+@pytest.fixture
 def spot_secret_key() -> str:
     """Returns the Kraken Spot API secret for testing."""
     return SPOT_SECRET_KEY
 
 
-@pytest.fixture()
+@pytest.fixture
 def nft_market() -> Market:
     """
     Fixture providing an authenticated NFT market client.
@@ -38,7 +38,7 @@ def nft_market() -> Market:
     return Market()
 
 
-@pytest.fixture()
+@pytest.fixture
 def nft_auth_trade() -> Trade:
     """
     Fixture providing an unauthenticated NFT trade client.

@@ -14,8 +14,8 @@ from kraken.spot import Market
 from .helper import is_not_error
 
 
-@pytest.mark.spot()
-@pytest.mark.spot_market()
+@pytest.mark.spot
+@pytest.mark.spot_market
 def test_get_system_status(spot_market: Market) -> None:
     """
     Checks the ``get_system_status`` endpoint by performing a
@@ -25,8 +25,8 @@ def test_get_system_status(spot_market: Market) -> None:
     assert is_not_error(spot_market.get_system_status())
 
 
-@pytest.mark.spot()
-@pytest.mark.spot_market()
+@pytest.mark.spot
+@pytest.mark.spot_market
 def test_get_assets(spot_market: Market) -> None:
     """
     Checks the ``get_assets`` endpoint by performing multiple
@@ -44,8 +44,8 @@ def test_get_assets(spot_market: Market) -> None:
     sleep(3)
 
 
-@pytest.mark.spot()
-@pytest.mark.spot_market()
+@pytest.mark.spot
+@pytest.mark.spot_market
 def test_get_asset_pairs(spot_market: Market) -> None:
     """
     Checks the ``get_asset_pairs`` endpoint by performing multiple
@@ -61,8 +61,8 @@ def test_get_asset_pairs(spot_market: Market) -> None:
     sleep(3)
 
 
-@pytest.mark.spot()
-@pytest.mark.spot_market()
+@pytest.mark.spot
+@pytest.mark.spot_market
 def test_get_ticker(spot_market: Market) -> None:
     """
     Checks the ``get_ticker`` endpoint by performing multiple
@@ -74,8 +74,8 @@ def test_get_ticker(spot_market: Market) -> None:
     assert is_not_error(spot_market.get_ticker(pair=["DOTUSD", "XBTUSD"]))
 
 
-@pytest.mark.spot()
-@pytest.mark.spot_market()
+@pytest.mark.spot
+@pytest.mark.spot_market
 def test_get_ohlc(spot_market: Market) -> None:
     """
     Checks the ``get_ohlc`` endpoint by performing multiple
@@ -88,8 +88,8 @@ def test_get_ohlc(spot_market: Market) -> None:
     )  # interval in [1 5 15 30 60 240 1440 10080 21600]
 
 
-@pytest.mark.spot()
-@pytest.mark.spot_market()
+@pytest.mark.spot
+@pytest.mark.spot_market
 def test_get_order_book(spot_market: Market) -> None:
     """
     Checks the ``get_order_book`` endpoint by performing multiple
@@ -102,8 +102,8 @@ def test_get_order_book(spot_market: Market) -> None:
     )  # count in [1...500]
 
 
-@pytest.mark.spot()
-@pytest.mark.spot_market()
+@pytest.mark.spot
+@pytest.mark.spot_market
 def test_get_recent_trades(spot_market: Market) -> None:
     """
     Checks the ``get_recent_trades`` endpoint by performing multiple
@@ -116,8 +116,8 @@ def test_get_recent_trades(spot_market: Market) -> None:
     )
 
 
-@pytest.mark.spot()
-@pytest.mark.spot_market()
+@pytest.mark.spot
+@pytest.mark.spot_market
 def test_get_recent_spreads(spot_market: Market) -> None:
     """
     Checks the ``get_recent_spreads`` endpoint by performing multiple
@@ -130,8 +130,8 @@ def test_get_recent_spreads(spot_market: Market) -> None:
     )
 
 
-@pytest.mark.spot()
-@pytest.mark.spot_market()
+@pytest.mark.spot
+@pytest.mark.spot_market
 def test_extra_parameter(spot_market: Market) -> None:
     """
     Checks if the extra parameter can be used to overwrite an existing one.

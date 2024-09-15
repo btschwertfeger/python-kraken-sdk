@@ -54,7 +54,7 @@ class User(FuturesClient):
         ...     print(user.get_wallets())
     """
 
-    def __init__(
+    def __init__(  # nosec: B107
         self: User,
         key: str = "",
         secret: str = "",
@@ -279,7 +279,7 @@ class User(FuturesClient):
             extra_params=extra_params,
         )
 
-    def get_account_log(  # noqa: PLR0913 # pylint: disable=too-many-arguments
+    def get_account_log(  # pylint: disable=too-many-arguments
         self: User,
         before: str | int | None = None,
         count: str | int | None = None,

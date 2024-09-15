@@ -18,7 +18,7 @@ from kraken.futures import Funding, Market, Trade, User
 from .helper import is_success
 
 
-@pytest.mark.futures()
+@pytest.mark.futures
 def test_KrakenFuturesBaseAPI_without_exception() -> None:
     """
     Checks first if the expected error will be raised and than
@@ -42,8 +42,8 @@ def test_KrakenFuturesBaseAPI_without_exception() -> None:
     assert result.get("error") == "requiredArgumentMissing"
 
 
-@pytest.mark.futures()
-@pytest.mark.futures_auth()
+@pytest.mark.futures
+@pytest.mark.futures_auth
 def test_futures_rest_contextmanager(
     futures_market: Market,
     futures_auth_funding: Funding,
@@ -70,7 +70,7 @@ def test_futures_rest_contextmanager(
 # Futures async client
 
 
-@pytest.mark.futures()
+@pytest.mark.futures
 def test_futures_async_rest_contextmanager() -> None:
     """
     Checks if the clients can be used as context manager.
@@ -91,8 +91,8 @@ def test_futures_async_rest_contextmanager() -> None:
     run(check())
 
 
-@pytest.mark.futures()
-@pytest.mark.futures_auth()
+@pytest.mark.futures
+@pytest.mark.futures_auth
 def test_futures_rest_async_client_post(
     futures_api_key: str,
     futures_secret_key: str,
@@ -127,8 +127,8 @@ class TestProxyPyEmbedded(TestCase, IsolatedAsyncioTestCase):
     def get_proxy_str(self) -> str:
         return f"http://127.0.0.1:{self.PROXY.flags.port}"
 
-    @pytest.mark.futures()
-    @pytest.mark.futures_market()
+    @pytest.mark.futures
+    @pytest.mark.futures_market
     def test_futures_rest_proxies(self) -> None:
         """
         Checks if the clients can be used with a proxy.
@@ -144,9 +144,9 @@ class TestProxyPyEmbedded(TestCase, IsolatedAsyncioTestCase):
             dict,
         )
 
-    @pytest.mark.asyncio()
-    @pytest.mark.futures()
-    @pytest.mark.futures_market()
+    @pytest.mark.asyncio
+    @pytest.mark.futures
+    @pytest.mark.futures_market
     async def test_futures_rest_proxies_async(self) -> None:
         """
         Checks if the async clients can be used with a proxy.

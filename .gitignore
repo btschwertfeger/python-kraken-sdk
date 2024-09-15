@@ -79,3 +79,4 @@ todo.md
 *.csv
 *.log
 *.zip
+uv.lock

@@ -4,12 +4,14 @@
 # GitHub: https://github.com/btschwertfeger
 #
 
+UV ?= uv
 PYTHON := python
-PYTEST := $(PYTHON) -m pytest
+PYTEST := $(UV) run pytest
 PYTEST_OPTS := -vv --junit-xml=pytest.xml
 PYTEST_COV_OPTS := $(PYTEST_OPTS) --cov --cov-report=xml:coverage.xml --cov-report=term
 TEST_DIR := tests
 
+## ======= H E L P =======
 .PHONY: help
 help:
 	@grep "^##" Makefile | sed -e "s/##//"
@@ -18,8 +20,8 @@ help:
 ## build		Builds the python-kraken-sdk
 ##
 .PHONY: build
-build:
-	$(PYTHON) -m build .
+build: check-uv
+	$(UV) build .
 
 .PHONY: rebuild
 rebuild: clean build
@@ -34,14 +36,14 @@ doc:
 ## install	Install the package
 ##
 .PHONY: install
-install:
-	$(PYTHON) -m pip install .
+install: check-uv
+	$(UV) pip install .
 
 ## dev		Installs the extended package in edit mode
 ##
 .PHONY: dev
-dev:
-	$(PYTHON) -m pip install -e ".[dev,test]"
+dev: check-uv
+	$(UV) pip install -e ".[dev,test]"
 
 ## ======= T E S T I N G =======
 ## test		Run the unit tests
@@ -84,13 +86,13 @@ pre-commit:
 ## ruff 	Run ruff without fix
 .PHONY: ruff
 ruff:
-	ruff check --preview .
+	$(UVX) ruff check --preview .
 
 ## ruff-fix 	Run ruff with fix
 ##
 .PHONY: ruff-fix
 ruff-fix:
-	ruff check --fix --preview .
+	$(UVX) ruff check --fix --preview .
 
 ## changelog	Generate the changelog
 ##
@@ -134,3 +136,12 @@ clean:
 	find tests -name "__pycache__" | xargs rm -rf
 	find kraken -name "__pycache__" | xargs rm -rf
 	find examples -name "__pycache__" | xargs rm -rf
+
+## check-uv		Check if uv is installed
+##
+.PHONY: check-uv
+check-uv:
+	@if ! command -v $(UV) >/dev/null; then \
+		echo "Error: uv is not installed. Please visit https://github.com/astral-sh/uv for installation instructions."; \
+		exit 1; \
+	fi

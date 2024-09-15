@@ -13,13 +13,13 @@ import pytest
 from click.testing import CliRunner
 
 
-@pytest.fixture()
+@pytest.fixture
 def cli_runner() -> CliRunner:
     """Provide a cli-runner for testing the CLI"""
     return CliRunner()
 
 
-@pytest.fixture()
+@pytest.fixture
 def _with_cli_env_vars() -> None:
     """Setup some environment variables for th CLI tests"""
     os.environ["KRAKEN_SPOT_API_KEY"] = os.getenv("SPOT_API_KEY", "")

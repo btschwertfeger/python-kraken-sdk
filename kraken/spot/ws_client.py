@@ -155,7 +155,7 @@ class SpotWSClient(SpotWSClientBase):
                 pass
     """
 
-    def __init__(
+    def __init__(  # nosec: B107
         self: SpotWSClient,
         key: str = "",
         secret: str = "",
@@ -170,7 +170,7 @@ class SpotWSClient(SpotWSClientBase):
             no_public=no_public,
         )
 
-    async def send_message(  # pylint: disable=arguments-differ
+    async def send_message(  # noqa: C901 # pylint: disable=arguments-differ
         self: SpotWSClient,
         message: dict,
         *,
@@ -372,8 +372,7 @@ class SpotWSClient(SpotWSClientBase):
         if "subscribe" in message["method"]:
             if not message.get("params") or not isinstance(message["params"], dict):
                 raise TypeError(
-                    "The message must contain the ``params`` key with a value"
-                    " as type dict!",
+                    "The message must contain the ``params`` key with a value as type dict!",
                 )
             if not message["params"].get("channel") or not isinstance(
                 message["params"]["channel"],

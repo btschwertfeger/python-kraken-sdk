@@ -32,8 +32,8 @@ missing, this is the right place to request them.
 
 #### Solve an issue
 
-Scan through our [existing issues](https://github.com/github/docs/issues) to
-find one that interests you. If the future brings more and more features or
+Scan through our [existing issues](https://github.com/btschwertfeger/python-kraken-sdk/issues)
+to find one that interests you. If the future brings more and more features or
 issues - you can also filter for specific `labels`.
 
 ### Make Changes

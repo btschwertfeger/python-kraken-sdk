@@ -65,8 +65,8 @@ def ensure_string(parameter_name: str) -> Callable:
     def decorator(func: Callable) -> Callable:
         @wraps(func)  # required for sphinx to discover the func
         def wrapper(
-            *args: Any | None,  # noqa: ANN401
-            **kwargs: Any | None,  # noqa: ANN401
+            *args: Any | None,
+            **kwargs: Any | None,
         ) -> Any | None:  # noqa: ANN401
             if parameter_name in kwargs:
                 value: Any = kwargs[parameter_name]
@@ -194,11 +194,10 @@ class SpotClient:
     URL: str = "https://api.kraken.com"
     TIMEOUT: int = 10
     HEADERS: Final[dict] = {
-        "User-Agent": "python-kraken-sdk"
-        " (https://github.com/btschwertfeger/python-kraken-sdk)",
+        "User-Agent": "python-kraken-sdk (https://github.com/btschwertfeger/python-kraken-sdk)",
     }
 
-    def __init__(
+    def __init__(  # nosec: B107
         self: SpotClient,
         key: str = "",
         secret: str = "",
@@ -483,7 +482,7 @@ class SpotAsyncClient(SpotClient):
     :type proxy: str, optional
     """
 
-    def __init__(
+    def __init__(  # nosec: B107
         self: SpotAsyncClient,
         key: str = "",
         secret: str = "",
@@ -506,7 +505,7 @@ class SpotAsyncClient(SpotClient):
         method: str,
         uri: str,
         params: dict | None = None,
-        timeout: int = 10,
+        timeout: int = 10,  # noqa: ASYNC109
         *,
         auth: bool = True,
         do_json: bool = False,
@@ -671,11 +670,10 @@ class FuturesClient:
     SANDBOX_URL: str = "https://demo-futures.kraken.com"
     TIMEOUT: int = 10
     HEADERS: Final[dict] = {
-        "User-Agent": "python-kraken-sdk"
-        " (https://github.com/btschwertfeger/python-kraken-sdk)",
+        "User-Agent": "python-kraken-sdk (https://github.com/btschwertfeger/python-kraken-sdk)",
     }
 
-    def __init__(
+    def __init__(  # nosec: B107
         self: FuturesClient,
         key: str = "",
         secret: str = "",
@@ -702,8 +700,7 @@ class FuturesClient:
         self.__session: requests.Session = requests.Session()
         self.__session.headers.update(
             {
-                "User-Agent": "python-kraken-sdk"
-                " (https://github.com/btschwertfeger/python-kraken-sdk)",
+                "User-Agent": "python-kraken-sdk (https://github.com/btschwertfeger/python-kraken-sdk)",
             },
         )
         if proxy is not None:
@@ -723,7 +720,6 @@ class FuturesClient:
         extra_params: str | dict | None = None,
         auth: bool = True,  # noqa: FBT001,FBT002
     ) -> tuple[str, str, dict, str, str]:
-
         method: str = method.upper()  # type: ignore[no-redef]
         url: Final[str] = urljoin(self.url, uri)
 
@@ -767,7 +763,7 @@ class FuturesClient:
 
         return method, url, headers, encoded_payload, query_string
 
-    def request(  # noqa: PLR0913 # pylint: disable=too-many-arguments
+    def request(  # pylint: disable=too-many-arguments
         self: FuturesClient,
         method: str,
         uri: str,
@@ -965,7 +961,7 @@ class FuturesAsyncClient(FuturesClient):
     :type sandbox: bool, optional
     """
 
-    def __init__(
+    def __init__(  # nosec: B107
         self: FuturesAsyncClient,
         key: str = "",
         secret: str = "",
@@ -991,7 +987,7 @@ class FuturesAsyncClient(FuturesClient):
         uri: str,
         post_params: dict | None = None,
         query_params: dict | None = None,
-        timeout: int = 10,
+        timeout: int = 10,  # noqa: ASYNC109
         *,
         auth: bool = True,
         return_raw: bool = False,

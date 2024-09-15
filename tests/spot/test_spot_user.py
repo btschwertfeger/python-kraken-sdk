@@ -21,9 +21,9 @@ from kraken.spot import User
 from .helper import is_not_error
 
 
-@pytest.mark.spot()
-@pytest.mark.spot_auth()
-@pytest.mark.spot_user()
+@pytest.mark.spot
+@pytest.mark.spot_auth
+@pytest.mark.spot_user
 def test_get_account_balance(spot_auth_user: User) -> None:
     """
     Checks the ``get_account_balance`` function by validating that
@@ -32,9 +32,9 @@ def test_get_account_balance(spot_auth_user: User) -> None:
     assert is_not_error(spot_auth_user.get_account_balance())
 
 
-@pytest.mark.spot()
-@pytest.mark.spot_auth()
-@pytest.mark.spot_user()
+@pytest.mark.spot
+@pytest.mark.spot_auth
+@pytest.mark.spot_user
 def test_get_balances(spot_auth_user: User) -> None:
     """
     Checks the ``get_balances`` function by validating that
@@ -45,9 +45,9 @@ def test_get_balances(spot_auth_user: User) -> None:
     assert is_not_error(result)
 
 
-@pytest.mark.spot()
-@pytest.mark.spot_auth()
-@pytest.mark.spot_user()
+@pytest.mark.spot
+@pytest.mark.spot_auth
+@pytest.mark.spot_user
 @mock.patch.object(
     User,
     "get_balances",
@@ -75,9 +75,9 @@ def test_get_balance(
     }
 
 
-@pytest.mark.spot()
-@pytest.mark.spot_auth()
-@pytest.mark.spot_user()
+@pytest.mark.spot
+@pytest.mark.spot_auth
+@pytest.mark.spot_user
 def test_get_trade_balance(spot_auth_user: User) -> None:
     """
     Checks the ``get_trade_balances`` function by validating that
@@ -90,9 +90,9 @@ def test_get_trade_balance(spot_auth_user: User) -> None:
     assert is_not_error(spot_auth_user.get_trade_balance(asset="EUR"))
 
 
-@pytest.mark.spot()
-@pytest.mark.spot_auth()
-@pytest.mark.spot_user()
+@pytest.mark.spot
+@pytest.mark.spot_auth
+@pytest.mark.spot_user
 def test_get_open_orders(spot_auth_user: User) -> None:
     """
     Checks the ``get_open_orders`` function by validating that
@@ -102,9 +102,9 @@ def test_get_open_orders(spot_auth_user: User) -> None:
     assert is_not_error(spot_auth_user.get_open_orders(trades=False, userref="1234567"))
 
 
-@pytest.mark.spot()
-@pytest.mark.spot_auth()
-@pytest.mark.spot_user()
+@pytest.mark.spot
+@pytest.mark.spot_auth
+@pytest.mark.spot_user
 def test_get_closed_orders(spot_auth_user: User) -> None:
     """
     Checks the ``get_closed_orders`` function by validating that
@@ -134,9 +134,9 @@ def test_get_closed_orders(spot_auth_user: User) -> None:
     )
 
 
-@pytest.mark.spot()
-@pytest.mark.spot_auth()
-@pytest.mark.spot_user()
+@pytest.mark.spot
+@pytest.mark.spot_auth
+@pytest.mark.spot_user
 def test_get_trades_info(spot_auth_user: User) -> None:
     """
     Checks the ``get_trades_info`` function by validating that
@@ -165,9 +165,9 @@ def test_get_trades_info(spot_auth_user: User) -> None:
             sleep(2)
 
 
-@pytest.mark.spot()
-@pytest.mark.spot_auth()
-@pytest.mark.spot_user()
+@pytest.mark.spot
+@pytest.mark.spot_auth
+@pytest.mark.spot_user
 def test_get_orders_info(spot_auth_user: User) -> None:
     """
     Checks the ``get_orders_info`` function by validating that
@@ -196,9 +196,9 @@ def test_get_orders_info(spot_auth_user: User) -> None:
             sleep(2)
 
 
-@pytest.mark.spot()
-@pytest.mark.spot_auth()
-@pytest.mark.spot_user()
+@pytest.mark.spot
+@pytest.mark.spot_auth
+@pytest.mark.spot_user
 def test_get_trades_history(spot_auth_user: User) -> None:
     """
     Checks the ``get_trades_history`` function by validating that
@@ -216,9 +216,9 @@ def test_get_trades_history(spot_auth_user: User) -> None:
     )
 
 
-@pytest.mark.spot()
-@pytest.mark.spot_auth()
-@pytest.mark.spot_user()
+@pytest.mark.spot
+@pytest.mark.spot_auth
+@pytest.mark.spot_user
 def test_get_open_positions(spot_auth_user: User) -> None:
     """
     Checks the ``get_open_positions`` function by validating that
@@ -235,9 +235,9 @@ def test_get_open_positions(spot_auth_user: User) -> None:
     )
 
 
-@pytest.mark.spot()
-@pytest.mark.spot_auth()
-@pytest.mark.spot_user()
+@pytest.mark.spot
+@pytest.mark.spot_auth
+@pytest.mark.spot_user
 def test_get_ledgers_info(spot_auth_user: User) -> None:
     """
     Checks the ``get_ledgers_info`` function by validating that
@@ -265,9 +265,9 @@ def test_get_ledgers_info(spot_auth_user: User) -> None:
     )
 
 
-@pytest.mark.spot()
-@pytest.mark.spot_auth()
-@pytest.mark.spot_user()
+@pytest.mark.spot
+@pytest.mark.spot_auth
+@pytest.mark.spot_user
 def test_get_ledgers(spot_auth_user: User) -> None:
     """
     Checks the ``get_ledgers`` function by validating that
@@ -282,9 +282,9 @@ def test_get_ledgers(spot_auth_user: User) -> None:
     )
 
 
-@pytest.mark.spot()
-@pytest.mark.spot_auth()
-@pytest.mark.spot_user()
+@pytest.mark.spot
+@pytest.mark.spot_auth
+@pytest.mark.spot_user
 def test_get_trade_volume(spot_auth_user: User) -> None:
     """
     Checks the ``get_trade_volume`` function by validating that
@@ -294,9 +294,9 @@ def test_get_trade_volume(spot_auth_user: User) -> None:
     assert is_not_error(spot_auth_user.get_trade_volume(pair="DOT/EUR", fee_info=False))
 
 
-@pytest.mark.spot()
-@pytest.mark.spot_auth()
-@pytest.mark.spot_user()
+@pytest.mark.spot
+@pytest.mark.spot_auth
+@pytest.mark.spot_user
 def test_request_save_export_report(spot_auth_user: User) -> None:
     """
     Checks the ``save_export_report`` function by requesting an
@@ -381,9 +381,9 @@ def test_request_save_export_report(spot_auth_user: User) -> None:
             sleep(2)
 
 
-@pytest.mark.spot()
-@pytest.mark.spot_auth()
-@pytest.mark.spot_user()
+@pytest.mark.spot
+@pytest.mark.spot_auth
+@pytest.mark.spot_user
 def test_export_report_status_invalid(spot_auth_user: User) -> None:
     """
     Checks the ``export_report_status`` function by passing an invalid
@@ -396,9 +396,9 @@ def test_export_report_status_invalid(spot_auth_user: User) -> None:
         spot_auth_user.get_export_report_status(report="invalid")
 
 
-@pytest.mark.spot()
-@pytest.mark.spot_auth()
-@pytest.mark.spot_user()
+@pytest.mark.spot
+@pytest.mark.spot_auth
+@pytest.mark.spot_user
 def test_create_subaccount_failing(spot_auth_user: User) -> None:
     """
     Checks the ``create_subaccount`` function by creating one.
@@ -413,9 +413,9 @@ def test_create_subaccount_failing(spot_auth_user: User) -> None:
         spot_auth_user.create_subaccount(email="abc@welt.de", username="tomtucker")
 
 
-@pytest.mark.spot()
-@pytest.mark.spot_auth()
-@pytest.mark.spot_user()
+@pytest.mark.spot
+@pytest.mark.spot_auth
+@pytest.mark.spot_user
 @pytest.mark.skip("Subaccount actions are only available for institutional clients")
 def test_account_transfer_failing(spot_auth_user: User) -> None:
     """

@@ -21,8 +21,8 @@ import pytest
 from .helper import FuturesWebsocketClientTestWrapper
 
 
-@pytest.mark.futures()
-@pytest.mark.futures_websocket()
+@pytest.mark.futures
+@pytest.mark.futures_websocket
 def test_create_public_client(caplog: pytest.LogCaptureFixture) -> None:
     """
     Checks if the unauthenticated websocket client
@@ -42,9 +42,9 @@ def test_create_public_client(caplog: pytest.LogCaptureFixture) -> None:
     assert "{'event': 'info', 'version': 1}" in caplog.text
 
 
-@pytest.mark.futures()
-@pytest.mark.futures_auth()
-@pytest.mark.futures_websocket()
+@pytest.mark.futures
+@pytest.mark.futures_auth
+@pytest.mark.futures_websocket
 def test_create_private_client(
     futures_api_key: str,
     futures_secret_key: str,
@@ -68,8 +68,8 @@ def test_create_private_client(
     assert "{'event': 'info', 'version': 1}" in caplog.text
 
 
-@pytest.mark.futures()
-@pytest.mark.futures_websocket()
+@pytest.mark.futures
+@pytest.mark.futures_websocket
 def test_get_available_public_subscriptions() -> None:
     """
     Checks the ``get_available_public_subscription_feeds`` function.
@@ -88,8 +88,8 @@ def test_get_available_public_subscriptions() -> None:
     )
 
 
-@pytest.mark.futures()
-@pytest.mark.futures_websocket()
+@pytest.mark.futures
+@pytest.mark.futures_websocket
 def test_get_available_private_subscriptions() -> None:
     """
     Checks the ``get_available_private_subscription_feeds`` function.
@@ -112,8 +112,8 @@ def test_get_available_private_subscriptions() -> None:
     )
 
 
-@pytest.mark.futures()
-@pytest.mark.futures_websocket()
+@pytest.mark.futures
+@pytest.mark.futures_websocket
 def test_subscribe_public(caplog: pytest.LogCaptureFixture) -> None:
     """
     Checks if the client is able to subscribe to a public feed.
@@ -149,9 +149,9 @@ def test_subscribe_public(caplog: pytest.LogCaptureFixture) -> None:
         assert expected in caplog.text
 
 
-@pytest.mark.futures()
-@pytest.mark.futures_auth()
-@pytest.mark.futures_websocket()
+@pytest.mark.futures
+@pytest.mark.futures_auth
+@pytest.mark.futures_websocket
 def test_subscribe_private(
     futures_api_key: str,
     futures_secret_key: str,
@@ -167,7 +167,6 @@ def test_subscribe_private(
             key=futures_api_key,
             secret=futures_secret_key,
         ) as client:
-
             with pytest.raises(
                 ValueError,
                 match=r"There is no private feed that accepts products!",
@@ -178,7 +177,6 @@ def test_subscribe_private(
             key=futures_api_key,
             secret=futures_secret_key,
         ) as client:
-
             await client.subscribe(feed="open_orders")
             await async_sleep(2)
 
@@ -193,8 +191,8 @@ def test_subscribe_private(
         assert expected in caplog.text
 
 
-@pytest.mark.futures()
-@pytest.mark.futures_websocket()
+@pytest.mark.futures
+@pytest.mark.futures_websocket
 def test_unsubscribe_public(caplog: pytest.LogCaptureFixture) -> None:
     """
     Checks if the unauthenticated websocket client is able to unsubscribe
@@ -204,7 +202,6 @@ def test_unsubscribe_public(caplog: pytest.LogCaptureFixture) -> None:
     async def execute_unsubscribe() -> None:
         products: list[str] = ["PI_XBTUSD", "PF_SOLUSD"]
         async with FuturesWebsocketClientTestWrapper() as client:
-
             await client.subscribe(feed="ticker", products=products)
             await async_sleep(2)
 
@@ -230,9 +227,9 @@ def test_unsubscribe_public(caplog: pytest.LogCaptureFixture) -> None:
         assert expected in caplog.text
 
 
-@pytest.mark.futures()
-@pytest.mark.futures_auth()
-@pytest.mark.futures_websocket()
+@pytest.mark.futures
+@pytest.mark.futures_auth
+@pytest.mark.futures_websocket
 def test_unsubscribe_private(
     futures_api_key: str,
     futures_secret_key: str,
@@ -270,8 +267,8 @@ def test_unsubscribe_private(
         assert expected in caplog.text
 
 
-@pytest.mark.futures()
-@pytest.mark.futures_websocket()
+@pytest.mark.futures
+@pytest.mark.futures_websocket
 def test_get_active_subscriptions(caplog: pytest.LogCaptureFixture) -> None:
     """
     Checks the ``get_active_subscriptions`` function.
@@ -298,9 +295,9 @@ def test_get_active_subscriptions(caplog: pytest.LogCaptureFixture) -> None:
         assert expected in caplog.text
 
 
-@pytest.mark.futures()
-@pytest.mark.futures_auth()
-@pytest.mark.futures_websocket()
+@pytest.mark.futures
+@pytest.mark.futures_auth
+@pytest.mark.futures_websocket
 def test_resubscribe(
     futures_api_key: str,
     futures_secret_key: str,
@@ -318,7 +315,6 @@ def test_resubscribe(
             key=futures_api_key,
             secret=futures_secret_key,
         ) as client:
-
             assert client.get_active_subscriptions() == []
             await async_sleep(1)
 

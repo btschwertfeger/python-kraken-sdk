@@ -45,7 +45,7 @@ class Trade(NFTClient):
         ...     print(trade.)
     """
 
-    def __init__(
+    def __init__(  # nosec: B107
         self: Trade,
         key: str = "",
         secret: str = "",
@@ -58,7 +58,7 @@ class Trade(NFTClient):
         super().__enter__()
         return self
 
-    def create_auction(  # noqa: PLR0913 # pylint: disable=too-many-arguments
+    def create_auction(  # pylint: disable=too-many-arguments
         self: Trade,
         auction_currency: str,
         auction_params: dict,
@@ -520,7 +520,7 @@ class Trade(NFTClient):
             extra_params=extra_params,
         )
 
-    def get_nft_wallet(  # noqa: PLR0913,PLR0917 # pylint: disable=too-many-arguments
+    def get_nft_wallet(  # noqa: PLR0913,PLR0917,C901 # pylint: disable=too-many-arguments
         self: Trade,
         chain: str | None = None,
         currency: str | None = None,
