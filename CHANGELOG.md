@@ -1,5 +1,25 @@
 # Changelog
 
+## [v3.1.1](https://github.com/btschwertfeger/python-kraken-sdk/tree/v3.1.1) (2024-09-13)
+
+[Full Changelog](https://github.com/btschwertfeger/python-kraken-sdk/compare/v3.1.0...v3.1.1)
+
+**Fixed bugs:**
+
+- Resolve "The "level3" channel is missing in `kraken.spot.ws_client.SpotWSClient.private_channel_names`" [\#270](https://github.com/btschwertfeger/python-kraken-sdk/pull/270) ([btschwertfeger](https://github.com/btschwertfeger))
+
+Uncategorized merged pull requests:
+
+- Bump pypa/gh-action-pypi-publish from 1.10.0 to 1.10.1 [\#274](https://github.com/btschwertfeger/python-kraken-sdk/pull/274) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump pypa/gh-action-pypi-publish from 1.9.0 to 1.10.0 [\#273](https://github.com/btschwertfeger/python-kraken-sdk/pull/273) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump github/codeql-action from 3.26.5 to 3.26.6 [\#272](https://github.com/btschwertfeger/python-kraken-sdk/pull/272) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump actions/setup-python from 5.1.1 to 5.2.0 [\#271](https://github.com/btschwertfeger/python-kraken-sdk/pull/271) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump github/codeql-action from 3.26.2 to 3.26.5 [\#268](https://github.com/btschwertfeger/python-kraken-sdk/pull/268) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump github/codeql-action from 3.26.0 to 3.26.2 [\#266](https://github.com/btschwertfeger/python-kraken-sdk/pull/266) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump github/codeql-action from 3.25.15 to 3.26.0 [\#265](https://github.com/btschwertfeger/python-kraken-sdk/pull/265) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump step-security/harden-runner from 2.9.0 to 2.9.1 [\#264](https://github.com/btschwertfeger/python-kraken-sdk/pull/264) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Improve test suite and remove unused workflows [\#263](https://github.com/btschwertfeger/python-kraken-sdk/pull/263) ([btschwertfeger](https://github.com/btschwertfeger))
+
 ## [v3.1.0](https://github.com/btschwertfeger/python-kraken-sdk/tree/v3.1.0) (2024-07-31)
 
 [Full Changelog](https://github.com/btschwertfeger/python-kraken-sdk/compare/v3.0.0...v3.1.0)
