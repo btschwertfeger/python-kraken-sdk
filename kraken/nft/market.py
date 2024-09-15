@@ -47,7 +47,7 @@ class Market(NFTClient):
         ...     print(market.list_blockchains())
     """
 
-    def __init__(
+    def __init__(  # nosec: B107
         self: Market,
         key: str = "",
         secret: str = "",

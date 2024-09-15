@@ -51,7 +51,7 @@ class Trade(SpotClient):
 
     """
 
-    def __init__(
+    def __init__(  # nosec: B107
         self: Trade,
         key: str = "",
         secret: str = "",

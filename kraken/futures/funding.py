@@ -50,7 +50,7 @@ class Funding(FuturesClient):
         ...     print(funding.get_historical_funding_rates(symbol="PI_XBTUSD"))
     """
 
-    def __init__(
+    def __init__(  # nosec: B107
         self,
         key: str = "",
         secret: str = "",

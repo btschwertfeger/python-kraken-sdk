@@ -48,7 +48,7 @@ class Funding(SpotClient):
         ...     print(funding.get_deposit_methods(asset="XLM"))
     """
 
-    def __init__(
+    def __init__(  # nosec: B107
         self: Funding,
         key: str = "",
         secret: str = "",

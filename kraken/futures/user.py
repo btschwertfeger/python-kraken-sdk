@@ -54,7 +54,7 @@ class User(FuturesClient):
         ...     print(user.get_wallets())
     """
 
-    def __init__(
+    def __init__(  # nosec: B107
         self: User,
         key: str = "",
         secret: str = "",

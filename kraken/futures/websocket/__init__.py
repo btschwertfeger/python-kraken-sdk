@@ -274,7 +274,7 @@ class ConnectFuturesWebsocket:  # pylint: disable=too-many-instance-attributes
 
     def __get_reconnect_wait(self, attempts: int) -> float:
         return round(  # type: ignore[no-any-return]
-            random() * min(60 * 3, (2**attempts) - 1) + 1,  # noqa: S311
+            random() * min(60 * 3, (2**attempts) - 1) + 1,  # noqa: S311 # nosec: B311
         )
 
     def __append_subscription(self: ConnectFuturesWebsocket, message: dict) -> None:

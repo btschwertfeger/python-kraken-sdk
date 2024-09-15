@@ -155,7 +155,7 @@ class SpotWSClient(SpotWSClientBase):
                 pass
     """
 
-    def __init__(
+    def __init__(  # nosec: B107
         self: SpotWSClient,
         key: str = "",
         secret: str = "",

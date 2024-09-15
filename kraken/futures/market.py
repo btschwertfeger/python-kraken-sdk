@@ -52,7 +52,7 @@ class Market(FuturesClient):
         ...     print(market.get_tick_types())
     """
 
-    def __init__(
+    def __init__(  # nosec: B107
         self: Market,
         key: str = "",
         secret: str = "",

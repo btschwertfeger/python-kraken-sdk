@@ -49,7 +49,7 @@ class Earn(SpotClient):
         ...     print(earn.stake_asset(asset="XLM", amount=200, method="Lumen Staked"))
     """
 
-    def __init__(
+    def __init__(  # nosec: B107
         self,
         key: str = "",
         secret: str = "",

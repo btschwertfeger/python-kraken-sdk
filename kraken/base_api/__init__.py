@@ -197,7 +197,7 @@ class SpotClient:
         "User-Agent": "python-kraken-sdk (https://github.com/btschwertfeger/python-kraken-sdk)",
     }
 
-    def __init__(
+    def __init__(  # nosec: B107
         self: SpotClient,
         key: str = "",
         secret: str = "",
@@ -482,7 +482,7 @@ class SpotAsyncClient(SpotClient):
     :type proxy: str, optional
     """
 
-    def __init__(
+    def __init__(  # nosec: B107
         self: SpotAsyncClient,
         key: str = "",
         secret: str = "",
@@ -673,7 +673,7 @@ class FuturesClient:
         "User-Agent": "python-kraken-sdk (https://github.com/btschwertfeger/python-kraken-sdk)",
     }
 
-    def __init__(
+    def __init__(  # nosec: B107
         self: FuturesClient,
         key: str = "",
         secret: str = "",
@@ -961,7 +961,7 @@ class FuturesAsyncClient(FuturesClient):
     :type sandbox: bool, optional
     """
 
-    def __init__(
+    def __init__(  # nosec: B107
         self: FuturesAsyncClient,
         key: str = "",
         secret: str = "",

@@ -45,7 +45,7 @@ class Trade(NFTClient):
         ...     print(trade.)
     """
 
-    def __init__(
+    def __init__(  # nosec: B107
         self: Trade,
         key: str = "",
         secret: str = "",

@@ -49,7 +49,7 @@ class SpotWSClientBase(SpotAsyncClient):
     PROD_ENV_URL: str = "ws.kraken.com"
     AUTH_PROD_ENV_URL: str = "ws-auth.kraken.com"
 
-    def __init__(
+    def __init__(  # nosec: B107
         self: SpotWSClientBase,
         key: str = "",
         secret: str = "",
