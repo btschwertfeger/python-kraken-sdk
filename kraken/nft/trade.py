@@ -520,7 +520,7 @@ class Trade(NFTClient):
             extra_params=extra_params,
         )
 
-    def get_nft_wallet(  # noqa: PLR0913,PLR0917C901 # pylint: disable=too-many-arguments
+    def get_nft_wallet(  # noqa: PLR0913,PLR0917,C901 # pylint: disable=too-many-arguments
         self: Trade,
         chain: str | None = None,
         currency: str | None = None,

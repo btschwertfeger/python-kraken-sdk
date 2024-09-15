@@ -66,7 +66,7 @@ class Trade(SpotClient):
         return self
 
     @ensure_string("oflags")
-    def create_order(  # pylint: disable=too-many-branches,too-many-arguments # noqa: PLR0912, PLR0913, PLR0917, C901
+    def create_order(  # pylint: disable=too-many-branches,too-many-arguments # noqa: PLR0912,PLR0913,PLR0917,C901
         self: Trade,
         ordertype: str,
         side: str,
