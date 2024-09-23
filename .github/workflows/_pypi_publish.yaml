@@ -38,7 +38,7 @@ jobs:
           path: dist/
 
       - name: Publish package distributions to PyPI (optional - testpypi)
-        uses: pypa/gh-action-pypi-publish@0ab0b79471669eb3a4d647e625009c62f9f3b241 # release/v1
+        uses: pypa/gh-action-pypi-publish@897895f1e160c830e369f9779632ebc134688e1b # release/v1
         with:
           password: ${{ secrets.API_TOKEN }}
           repository-url: https://upload.pypi.org/legacy/
