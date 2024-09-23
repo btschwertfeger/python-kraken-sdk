@@ -73,7 +73,6 @@ dev = [
   "types-requests",
   # linting
   "ruff",
-  "pylint",
 ]
 test = ["pytest", "pytest-cov", "pytest-mock", "pytest-asyncio", "proxy.py"]
 examples = ["matplotlib", "pandas", "numpy"]
@@ -128,6 +127,7 @@ markers = [
   "nft_market: … NFT Market endpoint.",
   "nft_trade: … NFT Trade endpoint.",
 ]
+
 [tool.coverage.run]
 source = ["kraken"]
 omit = ["*tests*"]

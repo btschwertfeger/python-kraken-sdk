@@ -309,7 +309,7 @@ if __name__ == "__main__":
 
 <a name="futuresusage"></a>
 
-# Futures Clients
+# 📍 Futures Clients
 
 The Kraken Spot API can be accessed by executing requests to the endpoints
 directly using the `request` method provided by any client. This is demonstrated
