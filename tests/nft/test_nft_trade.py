@@ -37,6 +37,7 @@ def test_nft_trade_contextmanager(nft_auth_trade: Trade) -> None:
 @pytest.mark.nft
 @pytest.mark.nft_auth
 @pytest.mark.nft_trade
+@pytest.mark.skip(reason="NFT auctions restricted in Germany")
 def test_nft_trade_create_auction(nft_auth_trade: Trade) -> None:
     """Checks the ``create_auction`` endpoint."""
 
@@ -57,6 +58,7 @@ def test_nft_trade_create_auction(nft_auth_trade: Trade) -> None:
 @pytest.mark.nft
 @pytest.mark.nft_auth
 @pytest.mark.nft_trade
+@pytest.mark.skip(reason="NFT auctions restricted in Germany")
 def test_nft_trade_modify_auction(nft_auth_trade: Trade) -> None:
     """
     Checks the ``modify_auction`` endpoint.
@@ -78,6 +80,7 @@ def test_nft_trade_modify_auction(nft_auth_trade: Trade) -> None:
 @pytest.mark.nft
 @pytest.mark.nft_auth
 @pytest.mark.nft_trade
+@pytest.mark.skip(reason="NFT auctions restricted in Germany")
 def test_nft_trade_cancel_auction(nft_auth_trade: Trade) -> None:
     """Checks the ``cancel_auction`` endpoint."""
 
