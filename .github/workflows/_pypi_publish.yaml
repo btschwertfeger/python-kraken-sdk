@@ -10,9 +10,6 @@ name: PyPI Publish
 
 on:
   workflow_call:
-    secrets:
-      API_TOKEN:
-        required: true
 
 permissions: read-all
 
@@ -40,5 +37,4 @@ jobs:
       - name: Publish package distributions to PyPI (optional - testpypi)
         uses: pypa/gh-action-pypi-publish@897895f1e160c830e369f9779632ebc134688e1b # release/v1
         with:
-          password: ${{ secrets.API_TOKEN }}
           repository-url: https://upload.pypi.org/legacy/

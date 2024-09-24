@@ -5,7 +5,7 @@
 
 repos:
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.6.4
+    rev: v0.6.7
     hooks:
       - id: ruff
         args:
@@ -32,7 +32,7 @@ repos:
           - --install-types
           - --non-interactive
   - repo: https://github.com/gitleaks/gitleaks
-    rev: v8.18.4
+    rev: v8.19.2
     hooks:
       - id: gitleaks
   - repo: https://github.com/codespell-project/codespell
@@ -88,12 +88,12 @@ repos:
         args:
           - --profile=black
   - repo: https://github.com/PyCQA/bandit
-    rev: 1.7.0
+    rev: 1.7.10
     hooks:
       - id: bandit
         exclude: "^tests/.*|examples/.*"
   - repo: https://github.com/yunojuno/pre-commit-xenon
-    rev: cc59b0431a5d072786b59430e9b342b2881064f6
+    rev: v0.1
     hooks:
       - id: xenon
         args:

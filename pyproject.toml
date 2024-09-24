@@ -31,10 +31,11 @@ dependencies = [
 ]
 keywords = ["crypto", "trading", "kraken", "exchange", "api"]
 classifiers = [
-  "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+  "License :: OSI Approved :: Apache Software License",
   "Development Status :: 5 - Production/Stable",
   "Intended Audience :: Developers",
   "Topic :: Office/Business :: Financial",
+  "Topic :: Office/Business :: Financial :: Investment",
   "Topic :: Software Development :: Libraries :: Python Modules",
   "Topic :: Internet :: WWW/HTTP",
   "Topic :: Utilities",
