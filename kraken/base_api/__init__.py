@@ -870,8 +870,7 @@ class FuturesClient:
         :return: The signed string
         :rtype: str
         """
-        if endpoint.startswith("/derivatives"):
-            endpoint = endpoint[len("/derivatives") :]
+        endpoint = endpoint.removeprefix("/derivatives")
 
         sha256_hash = hashlib.sha256()
         sha256_hash.update((data + nonce + endpoint).encode("utf8"))
