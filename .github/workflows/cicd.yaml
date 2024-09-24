@@ -235,8 +235,6 @@ jobs:
       - CodeCov
     name: Upload development version to Test PyPI
     uses: ./.github/workflows/_pypi_test_publish.yaml
-    secrets:
-      API_TOKEN: ${{ secrets.TEST_PYPI_API_TOKEN }}
 
   ## ===========================================================================
   ##    Upload the python-kraken-sdk to Production PyPI
@@ -253,5 +251,3 @@ jobs:
       - CodeCov
     name: Upload release to PyPI
     uses: ./.github/workflows/_pypi_publish.yaml
-    secrets:
-      API_TOKEN: ${{ secrets.PYPI_API_TOKEN }}
