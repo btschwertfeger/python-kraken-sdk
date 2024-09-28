@@ -1,9 +1,0 @@
-cff-version: 1.2.0
-message: "If you use this software, please cite it as below."
-authors:
-- family-names: "Schwertfeger"
-  given-names: "Benjamin Thomas"
-  orcid: "https://orcid.org/0000-0001-7664-8434"
-title: "python-kraken-sdk"
-doi: 10.5281/zenodo.7653259
-url: "https://github.com/btschwertfeger/python-kraken-sdk"
