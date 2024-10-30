@@ -45,7 +45,7 @@ jobs:
 
       - name: "Dependency Review"
         if: github.event_name == 'pull_request'
-        uses: actions/dependency-review-action@5a2ce3f5b92ee19cbb1541a4984c76d921601d7c # v4.3.4
+        uses: actions/dependency-review-action@4081bf99e2866ebe428fc0477b69eb4fcda7220a # v4.4.0
 
       # Initializes the CodeQL tools for scanning.
       - name: Initialize CodeQL
