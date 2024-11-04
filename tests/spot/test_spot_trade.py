@@ -348,8 +348,8 @@ def test_truncate_fail_volume_ordermin(spot_trade: Trade) -> None:
     NOTE: This test may break in the future since the lot_decimals,
           pair_decimals, ordermin and costmin attributes could change.
     """
-    with pytest.raises(ValueError, match=r"Volume is less than the ordermin: 0.0001!"):
-        spot_trade.truncate(amount=0.00001, amount_type="volume", pair="XBTUSD")
+    with pytest.raises(ValueError, match=r"Volume is less than the ordermin: 0.00005!"):
+        spot_trade.truncate(amount=0.0000001, amount_type="volume", pair="XBTUSD")
 
 
 @pytest.mark.spot
