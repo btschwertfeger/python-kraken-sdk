@@ -8,7 +8,7 @@ must be addressed before a PR will be accepted.
       [python-kraken-sdk](https://github.com/btschwertfeger/python-kraken-sdk).
       Most issues will be resolve through the pre-commit hooks.
 - [ ] Also take care to follow the community guidelines and the [Code of
-      Conduct](./CODE_OF_CONDUCT.md).
+      Conduct](./.github/CODE_OF_CONDUCT.md).
 - [ ] Self-review your changes to detect typos, syntax errors and any kind of
       unwanted behavior.
 - [ ] If you changed the source code you have to **ensure that all unit tests

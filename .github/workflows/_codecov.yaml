@@ -40,6 +40,7 @@ jobs:
   CodeCov:
     name: Coverage
     runs-on: ${{ inputs.os }}
+    timeout-minutes: 30
     env:
       OS: ${{ inputs.os }}
       PYTHON: ${{ inputs.python-version }}
