@@ -46,7 +46,7 @@ jobs:
           DEBIAN_FRONTEND=noninteractive sudo apt install -y pandoc
           uv venv
           source .venv/bin/activate
-          echo PATH=${GITHUB_WORKSPACE}/.venv/bin:$PATH >> $GITHUB_ENV
+          echo ${GITHUB_WORKSPACE}/.venv/bin >> $GITHUB_PATH
           uv pip install -r doc/requirements.txt
           uv pip install .
 
