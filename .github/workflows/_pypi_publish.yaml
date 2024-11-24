@@ -47,7 +47,7 @@ jobs:
           name: python-package-distributions
           path: dist/
 
-      - name: Publish package distributions to PyPI (optional - testpypi)
+      - name: Publish package distributions to PyPI
         uses: pypa/gh-action-pypi-publish@15c56dba361d8335944d31a2ecd17d700fc7bcbc # release/v1
         with:
           password: ${{ secrets.API_TOKEN }}
