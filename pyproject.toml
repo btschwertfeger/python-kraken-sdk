@@ -102,6 +102,7 @@ testpaths = ["tests"]
 # filterwarnings = [
 #   "ignore:The Kraken websocket API v1 is marked as deprecated*:DeprecationWarning",
 # ]
+asyncio_default_fixture_loop_scope = "function"
 
 cache_dir = ".cache/pytest"
 markers = [
