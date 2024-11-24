@@ -131,7 +131,7 @@ class ConnectSpotWebsocketBase:  # pylint: disable=too-many-instance-attributes
 
         async with websockets.connect(  # pylint: disable=no-member
             f"wss://{self.__ws_endpoint}",
-            extra_headers={"User-Agent": "python-kraken-sdk"},
+            additional_headers={"User-Agent": "btschwertfeger/python-kraken-sdk"},
             ping_interval=30,
         ) as socket:
             self.LOG.info("Websocket connected!")
