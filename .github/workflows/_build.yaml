@@ -88,7 +88,7 @@ jobs:
         run: |
           uv build .
           try {
-              $WHEEL = Get-ChildItem -Path . -Filter "python_kraken_sdk*.whl" -ErrorAction Stop
+              $WHEEL = Get-ChildItem -Path ./dist -Filter "python_kraken_sdk*.whl" -ErrorAction Stop
               uv tool install $WHEEL
           } catch {
               Write-Error "Error: .whl file not found in the current directory."
