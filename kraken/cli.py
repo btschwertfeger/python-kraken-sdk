@@ -32,6 +32,8 @@ from orjson import loads as orloads
 if TYPE_CHECKING:
     from cloup import Context
 
+LOG: logging.Logger = logging.getLogger(__name__)
+
 
 def print_version(ctx: Context, param: Any, value: Any) -> None:  # noqa: ANN401, ARG001
     """Prints the version of the package"""
@@ -127,7 +129,7 @@ def spot(ctx: Context, url: str, **kwargs: dict) -> None:  # noqa: ARG001
     """Access the Kraken Spot REST API"""
     from kraken.base_api import SpotClient  # noqa: PLC0415
 
-    logging.debug("Initialize the Kraken client")
+    LOG.debug("Initialize the Kraken client")
     client = SpotClient(
         key=kwargs["api_key"],  # type: ignore[arg-type]
         secret=kwargs["secret_key"],  # type: ignore[arg-type]
@@ -144,9 +146,9 @@ def spot(ctx: Context, url: str, **kwargs: dict) -> None:  # noqa: ARG001
             )
         )
     except JSONDecodeError as exc:
-        logging.error(f"Could not parse the passed data. {exc}")  # noqa: G004
+        LOG.error(f"Could not parse the passed data. {exc}")  # noqa: G004
     except Exception as exc:  # noqa: BLE001
-        logging.error(f"Exception occurred: {exc}")  # noqa: G004
+        LOG.error(f"Exception occurred: {exc}")  # noqa: G004
         sys.exit(1)
     else:
         echo(response)
@@ -203,7 +205,7 @@ def futures(ctx: Context, url: str, **kwargs: dict) -> None:  # noqa: ARG001
     """Access the Kraken Futures REST API"""
     from kraken.base_api import FuturesClient  # noqa: PLC0415
 
-    logging.debug("Initialize the Kraken client")
+    LOG.debug("Initialize the Kraken client")
     client = FuturesClient(
         key=kwargs["api_key"],  # type: ignore[arg-type]
         secret=kwargs["secret_key"],  # type: ignore[arg-type]
@@ -221,9 +223,9 @@ def futures(ctx: Context, url: str, **kwargs: dict) -> None:  # noqa: ARG001
             )
         )
     except JSONDecodeError as exc:
-        logging.error(f"Could not parse the passed data. {exc}")  # noqa: G004
+        LOG.error(f"Could not parse the passed data. {exc}")  # noqa: G004
     except Exception as exc:  # noqa: BLE001
-        logging.error(f"Exception occurred: {exc}")  # noqa: G004
+        LOG.error(f"Exception occurred: {exc}")  # noqa: G004
         sys.exit(1)
     else:
         echo(response)

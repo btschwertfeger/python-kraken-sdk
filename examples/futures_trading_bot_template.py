@@ -30,6 +30,7 @@ logging.basicConfig(
 )
 logging.getLogger("requests").setLevel(logging.WARNING)
 logging.getLogger("urllib3").setLevel(logging.WARNING)
+LOG: logging.Logger = logging.getLogger(__name__)
 
 
 class TradingBot(FuturesWSClient):
@@ -58,7 +59,7 @@ class TradingBot(FuturesWSClient):
 
     async def on_message(self: TradingBot, message: list | dict) -> None:
         """Receives all messages that came form the websocket feed(s)"""
-        logging.info(message)
+        LOG.info(message)
 
         # == apply your trading strategy here ==
         # Hint: You can execute requests using the `request` function directly:
@@ -75,7 +76,7 @@ class TradingBot(FuturesWSClient):
 
     def save_exit(self: TradingBot, reason: str = "") -> None:
         """Controlled shutdown of the strategy"""
-        logging.warning("Save exit triggered, reason: %s", reason)
+        LOG.warning("Save exit triggered, reason: %s", reason)
         # some ideas:
         #   * save the bots data
         #   * maybe close trades
@@ -151,7 +152,7 @@ class ManagedBot:
 
             except Exception as exc:
                 message: str = f"Exception in main: {exc} {traceback.format_exc()}"
-                logging.error(message)
+                LOG.error(message)
                 self.__trading_strategy.save_exit(reason=message)
 
             await asyncio.sleep(6)
@@ -163,16 +164,16 @@ class ManagedBot:
         """Checks the user credentials and the connection to Kraken"""
         try:
             User(self.__config["key"], self.__config["secret"]).get_wallets()
-            logging.info("Client credentials are valid.")
+            LOG.info("Client credentials are valid.")
             return True
         except urllib3.exceptions.MaxRetryError:
-            logging.error("MaxRetryError, cannot connect.")
+            LOG.error("MaxRetryError, cannot connect.")
             return False
         except requests.exceptions.ConnectionError:
-            logging.error("ConnectionError, Kraken not available.")
+            LOG.error("ConnectionError, Kraken not available.")
             return False
         except KrakenAuthenticationError:
-            logging.error("Invalid credentials!")
+            LOG.error("Invalid credentials!")
             return False
 
     def save_exit(self: ManagedBot, reason: str = "") -> None:

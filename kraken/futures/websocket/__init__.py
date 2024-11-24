@@ -25,6 +25,8 @@ if TYPE_CHECKING:
 
     from kraken.futures import FuturesWSClient
 
+LOG: logging.Logger = logging.getLogger(__name__)
+
 
 class ConnectFuturesWebsocket:  # pylint: disable=too-many-instance-attributes
     """
@@ -97,7 +99,7 @@ class ConnectFuturesWebsocket:  # pylint: disable=too-many-instance-attributes
             f"wss://{self.__ws_endpoint}",
             ping_interval=30,
         ) as socket:
-            logging.info("Websocket connected!")
+            LOG.info("Websocket connected!")
             self.socket = socket
 
             if not event.is_set():
@@ -108,19 +110,19 @@ class ConnectFuturesWebsocket:  # pylint: disable=too-many-instance-attributes
                 try:
                     _message = await asyncio.wait_for(self.socket.recv(), timeout=10)
                 except TimeoutError:
-                    logging.debug(  # important
+                    LOG.debug(  # important
                         "Timeout error in %s",
                         self.__ws_endpoint,
                     )
                 except asyncio.CancelledError:
-                    logging.exception("asyncio.CancelledError")
+                    LOG.exception("asyncio.CancelledError")
                     self.keep_alive = False
                     await self.__callback({"error": "asyncio.CancelledError"})
                 else:
                     try:
                         message: dict = json.loads(_message)
                     except ValueError:
-                        logging.warning(_message)
+                        LOG.warning(_message)
                     else:
                         forward: bool = True
                         if "event" in message:
@@ -147,7 +149,7 @@ class ConnectFuturesWebsocket:  # pylint: disable=too-many-instance-attributes
             )
             self.exception_occur = True
         except Exception:
-            logging.exception(traceback.format_exc())
+            LOG.exception(traceback.format_exc())
             self.exception_occur = True
 
     async def close_connection(self: ConnectFuturesWebsocket) -> None:
@@ -155,20 +157,20 @@ class ConnectFuturesWebsocket:  # pylint: disable=too-many-instance-attributes
         await self.socket.close()
 
     async def __reconnect(self: ConnectFuturesWebsocket) -> None:
-        logging.info("Websocket start connect/reconnect")
+        LOG.info("Websocket start connect/reconnect")
 
         self.__reconnect_num += 1
         if self.__reconnect_num >= self.MAX_RECONNECT_NUM:
             raise MaxReconnectError
 
         reconnect_wait: float = self.__get_reconnect_wait(attempts=self.__reconnect_num)
-        logging.debug(
+        LOG.debug(
             "asyncio sleep reconnect_wait=%f s reconnect_num=%d",
             reconnect_wait,
             self.__reconnect_num,
         )
         await asyncio.sleep(reconnect_wait)
-        logging.debug("asyncio sleep done")
+        LOG.debug("asyncio sleep done")
         event: asyncio.Event = asyncio.Event()
 
         tasks: dict = {
@@ -190,24 +192,24 @@ class ConnectFuturesWebsocket:  # pylint: disable=too-many-instance-attributes
                     self.__challenge_ready = False
                     traceback.print_stack()
                     message = f"{task} got an exception {task.exception()}\n {task.get_stack()}"
-                    logging.warning(message)
+                    LOG.warning(message)
                     for process in pending:
-                        logging.warning("pending %s", process)
+                        LOG.warning("pending %s", process)
                         try:
                             process.cancel()
                         except asyncio.CancelledError:
-                            logging.exception("CancelledError")
-                        logging.warning("cancel ok")
+                            LOG.exception("CancelledError")
+                        LOG.warning("cancel ok")
                     await self.__callback({"error": message})
             if exception_occur:
                 break
-        logging.warning("Connection closed")
+        LOG.warning("Connection closed")
 
     async def __recover_subscription_req_msg(
         self: ConnectFuturesWebsocket,
         event: asyncio.Event,
     ) -> None:
-        logging.info(
+        LOG.info(
             "Recover subscriptions %s: waiting",
             self.__subscriptions,
         )
@@ -218,9 +220,9 @@ class ConnectFuturesWebsocket:  # pylint: disable=too-many-instance-attributes
                 await self.send_message(deepcopy(sub), private=True)
             elif sub["feed"] in self.__client.get_available_public_subscription_feeds():
                 await self.send_message(deepcopy(sub), private=False)
-            logging.info("%s: OK", sub)
+            LOG.info("%s: OK", sub)
 
-        logging.info(
+        LOG.info(
             "Recover subscriptions %s: done",
             self.__subscriptions,
         )
@@ -268,7 +270,7 @@ class ConnectFuturesWebsocket:  # pylint: disable=too-many-instance-attributes
             json.dumps({"event": "challenge", "api_key": self.__client.key}),
         )
 
-        logging.debug("Awaiting challenge...")
+        LOG.debug("Awaiting challenge...")
         while not self.__challenge_ready:
             await asyncio.sleep(0.2)
 
@@ -322,7 +324,7 @@ class ConnectFuturesWebsocket:  # pylint: disable=too-many-instance-attributes
             # private subscription
             sub["feed"] = subscription["feed"]
         else:
-            logging.warning(
+            LOG.warning(
                 "Feed not implemented. Please contact the python-kraken-sdk package author.",
             )
         return sub
