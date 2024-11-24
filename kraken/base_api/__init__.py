@@ -193,9 +193,7 @@ class SpotClient:
 
     URL: str = "https://api.kraken.com"
     TIMEOUT: int = 10
-    HEADERS: Final[dict] = {
-        "User-Agent": "python-kraken-sdk (https://github.com/btschwertfeger/python-kraken-sdk)",
-    }
+    HEADERS: Final[dict] = {"User-Agent": "btschwertfeger/python-kraken-sdk"}
 
     def __init__(  # nosec: B107
         self: SpotClient,
@@ -669,9 +667,7 @@ class FuturesClient:
     URL: str = "https://futures.kraken.com"
     SANDBOX_URL: str = "https://demo-futures.kraken.com"
     TIMEOUT: int = 10
-    HEADERS: Final[dict] = {
-        "User-Agent": "python-kraken-sdk (https://github.com/btschwertfeger/python-kraken-sdk)",
-    }
+    HEADERS: Final[dict] = {"User-Agent": "btschwertfeger/python-kraken-sdk"}
 
     def __init__(  # nosec: B107
         self: FuturesClient,
@@ -698,11 +694,7 @@ class FuturesClient:
 
         self._err_handler: ErrorHandler = ErrorHandler()
         self.__session: requests.Session = requests.Session()
-        self.__session.headers.update(
-            {
-                "User-Agent": "python-kraken-sdk (https://github.com/btschwertfeger/python-kraken-sdk)",
-            },
-        )
+        self.__session.headers.update(self.HEADERS)
         if proxy is not None:
             self.__session.proxies.update(
                 {
