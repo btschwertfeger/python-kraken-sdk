@@ -76,12 +76,14 @@ jobs:
         run: |
           uv build .
           uv tool install dist/python_kraken_sdk*.whl
+          uv run kraken --version
 
       - name: Build macOS
         if: runner.os == 'macOS'
         run: |
           uv build .
           uv tool install dist/python_kraken_sdk*.whl
+          uv run kraken --version
 
       - name: Build Windows
         if: runner.os == 'Windows'
@@ -89,7 +91,8 @@ jobs:
           uv build .
           try {
               $WHEEL = Get-ChildItem -Path ./dist -Filter "python_kraken_sdk*.whl" -ErrorAction Stop
-              uv tool install $WHEEL
+              uv tool install $WHEEL#
+              uv run kraken --version
           } catch {
               Write-Error "Error: .whl file not found in the current directory."
               exit 1
