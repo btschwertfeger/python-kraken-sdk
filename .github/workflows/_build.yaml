@@ -94,7 +94,7 @@ jobs:
               uv tool install $WHEEL#
               uv run kraken --version
           } catch {
-              Write-Error "Error: .whl file not found in the current directory."
+              Write-Error "Error: .whl file not found in .\dist."
               exit 1
           }
 
