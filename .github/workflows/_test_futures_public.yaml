@@ -53,7 +53,7 @@ jobs:
         uses: astral-sh/setup-uv@v4
 
       - name: Install package
-        run: uv tool install --system ".[test]"
+        run: uv tool install ".[test]"
 
       - name: Testing Futures REST endpoints
         run: uvx pytest -vv -m "futures and not futures_auth and not futures_websocket" tests

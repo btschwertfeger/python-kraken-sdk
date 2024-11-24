@@ -53,7 +53,7 @@ jobs:
         uses: astral-sh/setup-uv@v4
 
       - name: Install package
-        run: uv tool install --system ".[test]"
+        run: uv tool install ".[test]"
 
       - name: Testing Spot REST endpoints
         run: uvx pytest -vv -m "spot and not spot_auth and not spot_websocket" tests

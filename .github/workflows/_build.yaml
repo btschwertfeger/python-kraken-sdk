@@ -74,21 +74,18 @@ jobs:
       - name: Build Linux
         if: runner.os == 'linux'
         run: |
-          source .venv/bin/activate
           uv build .
           uv pip install dist/python_kraken_sdk*.whl
 
       - name: Build macOS
         if: runner.os == 'macOS'
         run: |
-          source .venv/bin/activate
           uv build .
           uv pip install dist/python_kraken_sdk*.whl
 
       - name: Build Windows
         if: runner.os == 'Windows'
         run: |
-          source .venv\bin\activate.ps1
           uv build .
           try {
               $WHEEL = Get-ChildItem -Path . -Filter "python_kraken_sdk*.whl" -ErrorAction Stop

@@ -51,7 +51,7 @@ jobs:
         uses: astral-sh/setup-uv@v4
 
       - name: Install package
-        run: uv tool install --system ".[test]"
+        run: uv tool install ".[test]"
 
       - name: Install package
         run: python -m pip install --user ".[test]"
