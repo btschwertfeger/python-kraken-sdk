@@ -31,6 +31,8 @@ if TYPE_CHECKING:
 
     from kraken.spot.websocket import SpotWSClientBase
 
+LOG: logging.Logger = logging.getLogger(__name__)
+
 
 class ConnectSpotWebsocketBase:  # pylint: disable=too-many-instance-attributes
     """
@@ -55,7 +57,6 @@ class ConnectSpotWebsocketBase:  # pylint: disable=too-many-instance-attributes
 
     MAX_RECONNECT_NUM: int = 7
     PING_INTERVAL: int = 10  # seconds
-    LOG: logging.Logger = logging.getLogger(__name__)
 
     def __init__(
         self: ConnectSpotWebsocketBase,
@@ -124,17 +125,14 @@ class ConnectSpotWebsocketBase:  # pylint: disable=too-many-instance-attributes
         self.ws_conn_details = (
             None if not self.__is_auth else await self.__client.get_ws_token()
         )
-        self.LOG.debug(
-            "Websocket token: %s",
-            self.ws_conn_details,
-        )
+        LOG.debug("Websocket token: %s", self.ws_conn_details)
 
         async with websockets.connect(  # pylint: disable=no-member
             f"wss://{self.__ws_endpoint}",
             additional_headers={"User-Agent": "btschwertfeger/python-kraken-sdk"},
             ping_interval=30,
         ) as socket:
-            self.LOG.info("Websocket connected!")
+            LOG.info("Websocket connected!")
             self.socket = socket
 
             if not event.is_set():
@@ -150,16 +148,16 @@ class ConnectSpotWebsocketBase:  # pylint: disable=too-many-instance-attributes
                 except TimeoutError:  # important
                     await self.send_ping()
                 except asyncio.CancelledError:
-                    self.LOG.exception("asyncio.CancelledError")
+                    LOG.exception("asyncio.CancelledError")
                     self.keep_alive = False
                     await self.__callback({"error": "asyncio.CancelledError"})
                 else:
                     try:
                         message: dict = json.loads(_message)
                     except ValueError:
-                        self.LOG.warning(_message)
+                        LOG.warning(_message)
                     else:
-                        self.LOG.debug(message)
+                        LOG.debug(message)
                         self._manage_subscriptions(message=message)
                         await self.__callback(message)
 
@@ -177,7 +175,7 @@ class ConnectSpotWebsocketBase:  # pylint: disable=too-many-instance-attributes
             self.exception_occur = True
         except Exception as exc:
             traceback_: str = traceback.format_exc()
-            logging.exception(
+            LOG.exception(
                 "%s: %s",
                 exc,
                 traceback_,
@@ -197,7 +195,7 @@ class ConnectSpotWebsocketBase:  # pylint: disable=too-many-instance-attributes
         :raises KrakenException.MaxReconnectError: If there are to many
             reconnect retries
         """
-        self.LOG.info("Websocket start connect/reconnect")
+        LOG.info("Websocket start connect/reconnect")
 
         self.__reconnect_num += 1
         if self.__reconnect_num >= self.MAX_RECONNECT_NUM:
@@ -206,7 +204,7 @@ class ConnectSpotWebsocketBase:  # pylint: disable=too-many-instance-attributes
             )
 
         reconnect_wait: float = self.__get_reconnect_wait(self.__reconnect_num)
-        self.LOG.debug(
+        LOG.debug(
             "asyncio sleep reconnect_wait=%.1f s reconnect_num=%d",
             reconnect_wait,
             self.__reconnect_num,
@@ -232,17 +230,17 @@ class ConnectSpotWebsocketBase:  # pylint: disable=too-many-instance-attributes
                     message: str = (
                         f"{task} got an exception {task.exception()}\n {task.get_stack()}"
                     )
-                    self.LOG.warning(message)
+                    LOG.warning(message)
                     for process in pending:
-                        self.LOG.warning("pending %s", process)
+                        LOG.warning("pending %s", process)
                         try:
                             process.cancel()
                         except asyncio.CancelledError:
-                            self.LOG.exception("asyncio.CancelledError")
+                            LOG.exception("asyncio.CancelledError")
                     await self.__callback({"error": message})
             if exception_occur:
                 break
-        self.LOG.warning("Connection closed")
+        LOG.warning("Connection closed")
 
     def __get_reconnect_wait(
         self: ConnectSpotWebsocketBase,
@@ -355,14 +353,14 @@ class ConnectSpotWebsocket(ConnectSpotWebsocketBase):
         log_msg: str = (
             f'Recover {"authenticated" if self.is_auth else "public"} subscriptions {self._subscriptions}'
         )
-        self.LOG.info("%s: waiting", log_msg)
+        LOG.info("%s: waiting", log_msg)
         await event.wait()
 
         for subscription in self._subscriptions:
             await self.client.subscribe(params=subscription)
-            self.LOG.info("%s: OK", subscription)
+            LOG.info("%s: OK", subscription)
 
-        self.LOG.info("%s: done", log_msg)
+        LOG.info("%s: done", log_msg)
 
     def _manage_subscriptions(self: ConnectSpotWebsocket, message: dict) -> None:  # type: ignore[override]
         """
@@ -377,14 +375,14 @@ class ConnectSpotWebsocket(ConnectSpotWebsocketBase):
                 message = self.__transform_subscription(subscription=message)
                 self.__append_subscription(subscription=message["result"])
             else:
-                self.LOG.warning(message)
+                LOG.warning(message)
 
         elif message.get("method") == "unsubscribe":
             if message.get("success") and message.get("result"):
                 message = self.__transform_subscription(subscription=message)
                 self.__remove_subscription(subscription=message["result"])
             else:
-                self.LOG.warning(message)
+                LOG.warning(message)
 
     def __append_subscription(self: ConnectSpotWebsocket, subscription: dict) -> None:
         """

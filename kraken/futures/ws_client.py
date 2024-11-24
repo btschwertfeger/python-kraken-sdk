@@ -25,6 +25,8 @@ if TYPE_CHECKING:
 
 Self = TypeVar("Self")
 
+LOG: logging.Logger = logging.getLogger(__name__)
+
 
 class FuturesWSClient(FuturesAsyncClient):
     """
@@ -202,8 +204,8 @@ class FuturesWSClient(FuturesAsyncClient):
         if self.__callback is not None:
             await self.__callback(message)
         else:
-            logging.warning("Received event but no callback is defined")
-            logging.info(message)
+            LOG.warning("Received event but no callback is defined")
+            LOG.info(message)
 
     async def subscribe(
         self: FuturesWSClient,

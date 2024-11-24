@@ -25,6 +25,7 @@ logging.basicConfig(
 )
 logging.getLogger("requests").setLevel(logging.WARNING)
 logging.getLogger("urllib3").setLevel(logging.WARNING)
+LOG: logging.Logger = logging.getLogger(__name__)
 
 
 # Custom client
@@ -33,7 +34,7 @@ class Client(FuturesWSClient):
 
     async def on_message(self: Client, message: list | dict) -> None:
         """Receives the websocket messages"""
-        logging.info(message)
+        LOG.info(message)
         # … apply your trading strategy in this class
         # … you can also combine this with the Futures REST clients
 
