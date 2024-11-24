@@ -38,18 +38,18 @@ issues - you can also filter for specific `labels`.
 
 ### Make Changes
 
-1. Fork the repository
+1. Fork the repository and clone your fork locally.
 
 ```bash
-git clone https://github.com/btschwertfeger/python-kraken-sdk.git
+git clone https://github.com/<username>/python-kraken-sdk.git
 ```
 
 2. Install the provided [pre-commit](https://pre-commit.com/) hooks within the
    repository and make sure that all hooks run through, before pushing changes.
 
 ```bash
+cd python-kraken-sdk
 python-kraken-sdk~$: pre-commit install
-python-kraken-sdk~$: pre-commit run -a
 ```
 
 3. Create a new branch and start implementing your changes.

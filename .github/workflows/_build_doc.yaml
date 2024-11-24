@@ -37,13 +37,19 @@ jobs:
         with:
           python-version: ${{ inputs.python-version }}
 
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
+
       - name: Install dependencies
         run: |
           sudo apt update
           DEBIAN_FRONTEND=noninteractive sudo apt install -y pandoc
-          python -m pip install --user -r doc/requirements.txt
-          python -m pip install --user --upgrade pip
-          python -m pip install --user .
+          uv venv
+          source .venv/bin/activate
+          uv pip install -r doc/requirements.txt
+          uv pip install .
 
       - name: Build the documentation
-        run: make doc
+        run: |
+          source .venv/bin/activate
+          make doc
