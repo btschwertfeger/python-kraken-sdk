@@ -196,6 +196,14 @@ def test_create_batch_order(futures_demo_trade: Trade) -> None:
                         "limitPrice": 2.00,
                         "stopPrice": 3.00,
                     },
+                    {
+                        "order": "cancel",
+                        "order_id": "e35d61dd-8a30-4d5f-a574-b5593ef0c050",
+                    },
+                    {
+                        "order": "cancel",
+                        "cliOrdId": "my_client_id",
+                    },
                 ],
                 processBefore="3033-11-08T19:56:35.441899Z",
             ),
