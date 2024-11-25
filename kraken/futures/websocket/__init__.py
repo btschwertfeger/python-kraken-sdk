@@ -86,12 +86,7 @@ class ConnectFuturesWebsocket:  # pylint: disable=too-many-instance-attributes
         """Stops the websocket connection"""
         self.keep_alive = False
         if hasattr(self, "task") and not self.task.done():
-            await self.socket.close()
-            try:
-                self.task.cancel()
-            except asyncio.CancelledError:
-                # Task was successfully cancelled
-                pass
+            await self.task
 
     async def __run(  # noqa: C901
         self: ConnectFuturesWebsocket,
@@ -102,7 +97,6 @@ class ConnectFuturesWebsocket:  # pylint: disable=too-many-instance-attributes
 
         async with websockets.connect(  # pylint: disable=no-member # noqa: PLR1702
             f"wss://{self.__ws_endpoint}",
-            dditional_headers={"User-Agent": "btschwertfeger/python-kraken-sdk"},
             ping_interval=30,
         ) as socket:
             LOG.info("Websocket connected!")
@@ -124,6 +118,7 @@ class ConnectFuturesWebsocket:  # pylint: disable=too-many-instance-attributes
                     LOG.exception("asyncio.CancelledError")
                     self.keep_alive = False
                     await self.__callback({"error": "asyncio.CancelledError"})
+                    await self.socket.close()
                 else:
                     try:
                         message: dict = json.loads(_message)
