@@ -297,6 +297,7 @@ def test_get_trade_volume(spot_auth_user: User) -> None:
 @pytest.mark.spot
 @pytest.mark.spot_auth
 @pytest.mark.spot_user
+@pytest.mark.timeout(120)
 def test_request_save_export_report(spot_auth_user: User) -> None:
     """
     Checks the ``save_export_report`` function by requesting an
