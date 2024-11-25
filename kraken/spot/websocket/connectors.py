@@ -111,9 +111,9 @@ class ConnectSpotWebsocketBase:  # pylint: disable=too-many-instance-attributes
         """Stops the websocket connection"""
         self.keep_alive = False
         if hasattr(self, "task") and not self.task.done():
-            self.task.cancel()
-
+            await self.socket.close()
             try:
+                self.task.cancel()
                 await self.task  # Await to handle any cancellation cleanup
             except asyncio.CancelledError:
                 # Task was successfully cancelled
@@ -157,6 +157,8 @@ class ConnectSpotWebsocketBase:  # pylint: disable=too-many-instance-attributes
                     LOG.exception("asyncio.CancelledError")
                     self.keep_alive = False
                     await self.__callback({"error": "asyncio.CancelledError"})
+                except websockets.exceptions.ConnectionClosedOK:
+                    pass
                 else:
                     try:
                         message: dict = json.loads(_message)
