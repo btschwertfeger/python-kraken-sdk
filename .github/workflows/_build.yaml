@@ -33,6 +33,7 @@ jobs:
           allowed-endpoints: >
             files.pythonhosted.org:443
             github.com:443
+            objects.githubusercontent.com:443
             pypi.org:443
 
       - name: Checkout repository
@@ -45,10 +46,8 @@ jobs:
         with:
           python-version: ${{ inputs.python-version }}
 
-      - name: Install dependencies
-        run: |
-          python -m pip install --user --upgrade pip
-          python -m pip install --user build
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
 
       - name: Check git status (not Windows)
         if: runner.os != 'Windows'
@@ -74,7 +73,30 @@ jobs:
 
       - name: Build Linux
         if: runner.os == 'linux'
-        run: python -m build
+        run: |
+          uv build .
+          uv tool install dist/python_kraken_sdk*.whl
+          uv run kraken --version
+
+      - name: Build macOS
+        if: runner.os == 'macOS'
+        run: |
+          uv build .
+          uv tool install dist/python_kraken_sdk*.whl
+          uv run kraken --version
+
+      - name: Build Windows
+        if: runner.os == 'Windows'
+        run: |
+          uv build .
+          try {
+              $WHEEL = Get-ChildItem -Path ./dist -Filter "python_kraken_sdk*.whl" -ErrorAction Stop
+              uv tool install $WHEEL#
+              uv run kraken --version
+          } catch {
+              Write-Error "Error: .whl file not found in .\dist."
+              exit 1
+          }
 
       - name: Store the distribution packages
         uses: actions/upload-artifact@65462800fd760344b1a7b4382951275a0abb4808 # v4.3.3
@@ -83,27 +105,3 @@ jobs:
         with:
           name: python-package-distributions
           path: dist/
-
-      - name: Build macOS
-        if: runner.os == 'macOS'
-        run: python -m build
-
-      - name: Build Windows
-        if: runner.os == 'Windows'
-        # put it here to avoid more filtering
-        run: python -m build -o .
-
-      - name: Install the package on Linux or MacOS
-        if: runner.os != 'Windows'
-        run: python -m pip install --user dist/python_kraken_sdk*.whl
-
-      - name: Install the package on Windows
-        if: runner.os == 'Windows'
-        run: |
-          try {
-              $WHEEL = Get-ChildItem -Path . -Filter "python_kraken_sdk*.whl" -ErrorAction Stop
-              python -m pip install --user $WHEEL
-          } catch {
-              Write-Error "Error: .whl file not found in the current directory."
-              exit 1
-          }

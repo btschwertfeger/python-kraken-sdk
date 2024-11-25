@@ -38,6 +38,7 @@ jobs:
             api.kraken.com:443
             files.pythonhosted.org:443
             github.com:443
+            objects.githubusercontent.com:443
             pypi.org:443
 
       - name: Checkout repository
@@ -48,14 +49,24 @@ jobs:
         with:
           python-version: ${{ inputs.python-version }}
 
-      - name: Update Pip
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
+
+      - name: Install package (Linux or macOS)
+        if: runner.os != 'Windows'
         run: |
-          python -m pip install --user --upgrade pip
+          uv venv
+          source .venv/bin/activate
+          echo ${GITHUB_WORKSPACE}/.venv/bin >> $GITHUB_PATH
+          uv pip install ".[test]"
 
-      - name: Install package
-        run: python -m pip install --user ".[test]"
+      - name: Install package (Windows)
+        if: runner.os == 'Windows'
+        run: |
+          uv venv
+          .venv\Scripts\activate.ps1
+          echo "$env:GITHUB_WORKSPACE\.venv\Scripts" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+          uv pip install ".[test]"
 
-      ##    Unit tests of the public Spot REST clients and endpoints
-      ##
       - name: Testing Spot REST endpoints
         run: pytest -vv -m "spot and not spot_auth and not spot_websocket" tests

@@ -131,26 +131,25 @@ def test_add_book(caplog: pytest.LogCaptureFixture) -> None:
     """
 
     async def execute_add_book() -> None:
-        orderbook = SpotOrderBookClientWrapper()
-        await orderbook.start()
+        async with SpotOrderBookClientWrapper() as orderbook:
 
-        await orderbook.add_book(pairs=["BTC/USD"])
-        await async_sleep(2)
+            await orderbook.add_book(pairs=["BTC/USD"])
+            await async_sleep(2)
 
-        book: dict | None = orderbook.get(pair="BTC/USD")
-        assert isinstance(book, dict)
+            book: dict | None = orderbook.get(pair="BTC/USD")
+            assert isinstance(book, dict)
 
-        assert all(
-            key in book
-            for key in ("ask", "bid", "valid", "price_decimals", "qty_decimals")
-        ), book
+            assert all(
+                key in book
+                for key in ("ask", "bid", "valid", "price_decimals", "qty_decimals")
+            ), book
 
-        assert isinstance(book["ask"], OrderedDict)
-        assert isinstance(book["bid"], OrderedDict)
+            assert isinstance(book["ask"], OrderedDict)
+            assert isinstance(book["bid"], OrderedDict)
 
-        for ask, bid in zip(book["ask"], book["bid"], strict=True):
-            assert isinstance(ask, str)
-            assert isinstance(bid, str)
+            for ask, bid in zip(book["ask"], book["bid"], strict=True):
+                assert isinstance(ask, str)
+                assert isinstance(bid, str)
 
     asyncio.run(execute_add_book())
 

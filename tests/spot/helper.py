@@ -107,7 +107,7 @@ class SpotOrderBookClientWrapper(SpotOrderBookClient):
             pass
 
         with Path(CACHE_DIR / "spot_orderbook.log").open(
-            mode="w",
+            mode="a",
             encoding="utf-8",
         ) as logfile:
             logfile.write(f"{log}\n{json.dumps(content)}")

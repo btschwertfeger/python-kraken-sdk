@@ -23,7 +23,7 @@ requires-python = ">=3.11"
 dependencies = [
   "asyncio>=3.4",
   "requests",
-  "websockets",
+  "websockets>=14",
   "click",
   "cloup",
   "orjson",
@@ -75,7 +75,14 @@ dev = [
   # linting
   "ruff",
 ]
-test = ["pytest", "pytest-cov", "pytest-mock", "pytest-asyncio", "proxy.py"]
+test = [
+  "pytest",
+  "pytest-cov",
+  "pytest-mock",
+  "pytest-asyncio",
+  "pytest-timeout",
+  "proxy.py",
+]
 examples = ["matplotlib", "pandas", "numpy"]
 jupyter = ["ipykernel"] # python3 -m ipykernel install --user --name=kraken
 
@@ -102,7 +109,9 @@ testpaths = ["tests"]
 # filterwarnings = [
 #   "ignore:The Kraken websocket API v1 is marked as deprecated*:DeprecationWarning",
 # ]
+asyncio_mode = "auto"
 asyncio_default_fixture_loop_scope = "function"
+timeout = 60                                    # seconds
 
 cache_dir = ".cache/pytest"
 markers = [
@@ -262,12 +271,12 @@ select = [
   "T20",    # flake8-print
   "TCH",    # flake8-type-checking
   "TID",    # flake8-tidy-imports
-  # "W",      # pylint warning
-  # "D",     # pydocstyle | sphinx format not supported
-  # "ERA", # eradicate - commented-out code
-  # "FIX", # flake8-fixme
-  # "TD",  # flake8-todos
-  # "TRY", # tryceratops # specify exception messages in class; not important
+  # "W",    # pylint warning
+  # "D",    # pydocstyle | sphinx format not supported
+  # "ERA",  # eradicate - commented-out code
+  # "FIX",  # flake8-fixme
+  # "TD",   # flake8-todos
+  # "TRY",  # tryceratops # specify exception messages in class; not important
 ]
 fixable = ["ALL"]
 

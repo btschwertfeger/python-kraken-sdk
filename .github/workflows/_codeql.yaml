@@ -22,10 +22,10 @@ jobs:
       contents: read
       security-events: write
 
-    # strategy:
-    #   fail-fast: false
-    #   matrix:
-    #     language: ["python"]
+    strategy:
+      fail-fast: false
+      matrix:
+        language: ["python"]
     # CodeQL supports [ 'cpp', 'csharp', 'go', 'java', 'javascript', 'python', 'ruby' ]
     # Learn more about CodeQL language support at https://aka.ms/codeql-docs/language-support
 
@@ -33,12 +33,13 @@ jobs:
       - name: Harden Runner
         uses: step-security/harden-runner@91182cccc01eb5e619899d80e4e971d6181294a7 # v2.10.1
         with:
-          egress-policy: audit
-          # disable-sudo: true
-          # egress-policy: block
-          # allowed-endpoints: >
-          #   api.github.com:443
-          #   github.com:443
+          # egress-policy: audit
+          disable-sudo: true
+          egress-policy: block
+          allowed-endpoints: >
+            api.github.com:443
+            github.com:443
+            uploads.github.com:443
 
       - name: Checkout repository
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
@@ -57,7 +58,7 @@ jobs:
           # Prefix the list here with "+" to use these queries and those in the config file.
 
           # Details on CodeQL's query packs refer to : https://docs.github.com/en/code-security/code-scanning/automatically-scanning-your-code-for-vulnerabilities-and-errors/configuring-code-scanning#using-queries-in-ql-packs
-          # queries: security-extended,security-and-quality
+          queries: security-extended,security-and-quality
 
       # Autobuild attempts to build any compiled languages  (C/C++, C#, Go, or Java).
       # If this step fails, then you should remove it and run the build manually (see below)
