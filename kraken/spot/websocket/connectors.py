@@ -114,7 +114,6 @@ class ConnectSpotWebsocketBase:  # pylint: disable=too-many-instance-attributes
             await self.socket.close()
             try:
                 self.task.cancel()
-                await self.task  # Await to handle any cancellation cleanup
             except asyncio.CancelledError:
                 # Task was successfully cancelled
                 pass
