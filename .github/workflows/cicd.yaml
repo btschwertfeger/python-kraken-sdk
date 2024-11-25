@@ -117,7 +117,6 @@ jobs:
   ##
   ##  (private endpoints)
   Test-Spot-Private:
-    if: success() && github.actor == 'btschwertfeger'
     needs: [Pre-Commit]
     uses: ./.github/workflows/_test_spot_private.yaml
     strategy:
@@ -150,7 +149,6 @@ jobs:
   ##
   ##  (private endpoints)
   Test-NFT-Private:
-    if: success() && github.actor == 'btschwertfeger'
     needs: [Test-Spot-Private]
     uses: ./.github/workflows/_test_nft_private.yaml
     strategy:
@@ -182,7 +180,6 @@ jobs:
   ##
   ##  (private endpoints)
   Test-Futures-Private:
-    if: success() && github.actor == 'btschwertfeger'
     needs: [Pre-Commit]
     uses: ./.github/workflows/_test_futures_private.yaml
     strategy:
@@ -222,11 +219,7 @@ jobs:
   ##
   UploadTestPyPI:
     if: |
-      (
-        success()
-        && github.actor == 'btschwertfeger'
-        && github.ref == 'refs/heads/master'
-      )
+      (success() && github.ref == 'refs/heads/master')
       && (github.event_name == 'push' || github.event_name == 'release')
     needs:
       - Build
@@ -243,9 +236,9 @@ jobs:
   ##
   UploadPyPI:
     if: |
-      success() &&
-      github.actor == 'btschwertfeger' &&
-      github.event_name == 'release'
+      success()
+      && github.actor == 'btschwertfeger'
+      && github.event_name == 'release'
     needs:
       - Build
       - Build-Doc
