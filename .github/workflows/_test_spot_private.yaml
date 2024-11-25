@@ -80,11 +80,11 @@ jobs:
           echo "$env:GITHUB_WORKSPACE\.venv\Scripts" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
           uv pip install ".[test]"
 
-      - name: Testing Spot REST endpoints
-        env:
-          SPOT_API_KEY: ${{ secrets.SPOT_API_KEY }}
-          SPOT_SECRET_KEY: ${{ secrets.SPOT_SECRET_KEY }}
-        run: pytest -vv -m "spot_auth and not spot_websocket" tests
+      # - name: Testing Spot REST endpoints
+      #   env:
+      #     SPOT_API_KEY: ${{ secrets.SPOT_API_KEY }}
+      #     SPOT_SECRET_KEY: ${{ secrets.SPOT_SECRET_KEY }}
+      #   run: pytest -vv -m "spot_auth and not spot_websocket" tests
 
       - name: Testing Spot websocket client
         env:

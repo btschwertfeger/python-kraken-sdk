@@ -121,7 +121,7 @@ jobs:
     # needs: [Pre-Commit]
     uses: ./.github/workflows/_test_spot_private.yaml
     strategy:
-      max-parallel: 1 # to avoid failing tests because of API Rate limits
+      max-parallel: 4 # to avoid failing tests because of API Rate limits
       fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest]
