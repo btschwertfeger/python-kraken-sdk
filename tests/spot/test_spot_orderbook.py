@@ -121,7 +121,6 @@ def test_passing_msg_and_validate_checksum(
     asyncio.run(assign())
 
 
-@pytest.mark.wip
 @pytest.mark.spot
 @pytest.mark.spot_websocket
 @pytest.mark.spot_orderbook
@@ -134,7 +133,10 @@ def test_add_book(caplog: pytest.LogCaptureFixture) -> None:
     async def execute_add_book() -> None:
         async with SpotOrderBookClientWrapper() as orderbook:
 
-            await orderbook.add_book(pairs=["BTC/USD"])
+            # having multiple pairs to test the cancellation queue error absence
+            await orderbook.add_book(
+                pairs=["BTC/USD", "DOT/USD", "ETH/USD", "MATIC/USD", "BTC/EUR"],
+            )
             await async_sleep(4)
 
             book: dict | None = orderbook.get(pair="BTC/USD")

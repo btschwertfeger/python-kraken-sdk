@@ -22,7 +22,7 @@ from random import random
 from time import time
 from typing import TYPE_CHECKING, Any, Final
 
-import websockets
+from websockets.asyncio.client import connect
 
 from kraken.exceptions import MaxReconnectError
 
@@ -127,10 +127,11 @@ class ConnectSpotWebsocketBase:  # pylint: disable=too-many-instance-attributes
         )
         LOG.debug("Websocket token: %s", self.ws_conn_details)
 
-        async with websockets.connect(  # pylint: disable=no-member
+        async with connect(  # pylint: disable=no-member
             f"wss://{self.__ws_endpoint}",
             additional_headers={"User-Agent": "btschwertfeger/python-kraken-sdk"},
             ping_interval=30,
+            max_queue=None,  # FIXME: This is not recommended by the docs https://websockets.readthedocs.io/en/stable/reference/asyncio/server.html
         ) as socket:
             LOG.info("Websocket connected!")
             self.socket = socket
@@ -151,7 +152,6 @@ class ConnectSpotWebsocketBase:  # pylint: disable=too-many-instance-attributes
                     LOG.exception("asyncio.CancelledError")
                     self.keep_alive = False
                     await self.__callback({"error": "asyncio.CancelledError"})
-                    await self.socket.close()
                 else:
                     try:
                         message: dict = json.loads(_message)
@@ -187,6 +187,7 @@ class ConnectSpotWebsocketBase:  # pylint: disable=too-many-instance-attributes
     async def close_connection(self: ConnectSpotWebsocketBase) -> None:
         """Closes the websocket connection and thus forces a reconnect"""
         await self.socket.close()
+        await self.socket.wait_closed()
 
     async def __reconnect(self: ConnectSpotWebsocketBase) -> None:
         """
@@ -199,6 +200,7 @@ class ConnectSpotWebsocketBase:  # pylint: disable=too-many-instance-attributes
         LOG.info("Websocket start connect/reconnect")
 
         self.__reconnect_num += 1
+
         if self.__reconnect_num >= self.MAX_RECONNECT_NUM:
             raise MaxReconnectError(
                 "The Kraken Spot websocket client encountered to many reconnects!",
@@ -223,6 +225,7 @@ class ConnectSpotWebsocketBase:  # pylint: disable=too-many-instance-attributes
                 tasks,
                 return_when=asyncio.FIRST_EXCEPTION,
             )
+
             exception_occur: bool = False
             for task in finished:
                 if task.exception():
@@ -241,6 +244,7 @@ class ConnectSpotWebsocketBase:  # pylint: disable=too-many-instance-attributes
                     await self.__callback({"error": message})
             if exception_occur:
                 break
+
         LOG.warning("Connection closed")
 
     def __get_reconnect_wait(
