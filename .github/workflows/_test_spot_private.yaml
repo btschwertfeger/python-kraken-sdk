@@ -84,4 +84,4 @@ jobs:
         env:
           SPOT_API_KEY: ${{ secrets.SPOT_API_KEY }}
           SPOT_SECRET_KEY: ${{ secrets.SPOT_SECRET_KEY }}
-        run: pytest -vv -vv --log-cli-level=DEBUG -m spot_websocket tests
+        run: pytest -vv --log-cli-level=DEBUG -m spot_websocket tests
