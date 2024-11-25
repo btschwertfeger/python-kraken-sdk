@@ -121,6 +121,7 @@ def test_passing_msg_and_validate_checksum(
     asyncio.run(assign())
 
 
+@pytest.mark.wip
 @pytest.mark.spot
 @pytest.mark.spot_websocket
 @pytest.mark.spot_orderbook
