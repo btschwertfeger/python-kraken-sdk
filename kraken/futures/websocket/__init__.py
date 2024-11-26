@@ -99,7 +99,7 @@ class ConnectFuturesWebsocket:  # pylint: disable=too-many-instance-attributes
             f"wss://{self.__ws_endpoint}",
             additional_headers={"User-Agent": "btschwertfeger/python-kraken-sdk"},
             ping_interval=30,
-            max_queue=None,  # FIXME: This is not recommended by the docs https://websockets.readthedocs.io/en/stable/reference/asyncio/server.html
+            max_queue=None,  # FIXME: This is not recommended by the docs https://websockets.readthedocs.io/en/stable/reference/asyncio/client.html#module-websockets.asyncio.client
         ) as socket:
             LOG.info("Websocket connected!")
             self.socket = socket
