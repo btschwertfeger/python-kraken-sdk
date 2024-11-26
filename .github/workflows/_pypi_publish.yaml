@@ -34,6 +34,7 @@ jobs:
           allowed-endpoints: >
             ghcr.io
             pypi.org
+            upload.pypi.org
             tuf-repo-cdn.sigstore.dev
             fulcio.sigstore.dev
             rekor.sigstore.dev
