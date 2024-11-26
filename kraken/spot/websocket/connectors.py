@@ -22,7 +22,7 @@ from random import random
 from time import time
 from typing import TYPE_CHECKING, Any, Final
 
-import websockets
+from websockets.asyncio.client import connect
 
 from kraken.exceptions import MaxReconnectError
 
@@ -127,10 +127,11 @@ class ConnectSpotWebsocketBase:  # pylint: disable=too-many-instance-attributes
         )
         LOG.debug("Websocket token: %s", self.ws_conn_details)
 
-        async with websockets.connect(  # pylint: disable=no-member
+        async with connect(  # pylint: disable=no-member
             f"wss://{self.__ws_endpoint}",
             additional_headers={"User-Agent": "btschwertfeger/python-kraken-sdk"},
             ping_interval=30,
+            max_queue=None,  # FIXME: This is not recommended by the docs https://websockets.readthedocs.io/en/stable/reference/asyncio/client.html#module-websockets.asyncio.client
         ) as socket:
             LOG.info("Websocket connected!")
             self.socket = socket

@@ -133,8 +133,11 @@ def test_add_book(caplog: pytest.LogCaptureFixture) -> None:
     async def execute_add_book() -> None:
         async with SpotOrderBookClientWrapper() as orderbook:
 
-            await orderbook.add_book(pairs=["BTC/USD"])
-            await async_sleep(2)
+            # having multiple pairs to test the cancellation queue error absence
+            await orderbook.add_book(
+                pairs=["BTC/USD", "DOT/USD", "ETH/USD", "MATIC/USD", "BTC/EUR"],
+            )
+            await async_sleep(4)
 
             book: dict | None = orderbook.get(pair="BTC/USD")
             assert isinstance(book, dict)
@@ -154,8 +157,10 @@ def test_add_book(caplog: pytest.LogCaptureFixture) -> None:
     asyncio.run(execute_add_book())
 
     for expected in (
-        '{"method": "subscribe", "result": {"channel": "book", "depth": 10, "snapshot": true, "symbol": "BTC/USD"}, "success": true, "time_in": ',
-        '{"channel": "book", "type": "snapshot", "data": [{"symbol": "BTC/USD", "bids": ',
+        '{"method": "subscribe", "result": {"channel": "book", "depth": 10, '
+        '"snapshot": true, "symbol": "BTC/USD"}, "success": true, "time_in": ',
+        '{"channel": "book", "type": "snapshot", "data": '
+        '[{"symbol": "BTC/USD", "bids": ',
     ):
         assert expected in caplog.text
 

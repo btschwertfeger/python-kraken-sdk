@@ -122,6 +122,7 @@ def test_spot_async_rest_contextmanager(
 
 @pytest.mark.spot
 @pytest.mark.spot_auth
+@pytest.mark.timeout(120)
 def test_spot_rest_async_client_post_report(
     spot_api_key: str,
     spot_secret_key: str,

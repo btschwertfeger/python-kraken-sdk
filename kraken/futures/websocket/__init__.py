@@ -16,7 +16,7 @@ from copy import deepcopy
 from random import random
 from typing import TYPE_CHECKING, Any
 
-import websockets
+from websockets.asyncio.client import connect
 
 from kraken.exceptions import MaxReconnectError
 
@@ -95,9 +95,11 @@ class ConnectFuturesWebsocket:  # pylint: disable=too-many-instance-attributes
         self.__new_challenge = None
         self.__last_challenge = None
 
-        async with websockets.connect(  # pylint: disable=no-member # noqa: PLR1702
+        async with connect(  # pylint: disable=no-member # noqa: PLR1702
             f"wss://{self.__ws_endpoint}",
+            additional_headers={"User-Agent": "btschwertfeger/python-kraken-sdk"},
             ping_interval=30,
+            max_queue=None,  # FIXME: This is not recommended by the docs https://websockets.readthedocs.io/en/stable/reference/asyncio/client.html#module-websockets.asyncio.client
         ) as socket:
             LOG.info("Websocket connected!")
             self.socket = socket
