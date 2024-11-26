@@ -33,7 +33,7 @@ jobs:
           egress-policy: block
           allowed-endpoints: >
             ghcr.io
-            test.pypi.org
+            pypi.org
             tuf-repo-cdn.sigstore.dev
             fulcio.sigstore.dev
             rekor.sigstore.dev
