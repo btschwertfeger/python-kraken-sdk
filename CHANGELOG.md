@@ -1,22 +1,24 @@
 # Changelog
 
-## [Unreleased](https://github.com/btschwertfeger/python-kraken-sdk/tree/HEAD)
+## [v3.1.2](https://github.com/btschwertfeger/python-kraken-sdk/tree/v3.1.2) (2024-11-26)
 
-[Full Changelog](https://github.com/btschwertfeger/python-kraken-sdk/compare/v3.1.1...HEAD)
+[Full Changelog](https://github.com/btschwertfeger/python-kraken-sdk/compare/v3.1.1...v3.1.2)
 
 **Fixed bugs:**
 
+- Resolve "Spot websocket connection doesn't get closed properly" [\#318](https://github.com/btschwertfeger/python-kraken-sdk/pull/318) ([btschwertfeger](https://github.com/btschwertfeger))
 - Resolve "Spot websocket clients broken due to new websockets release" [\#309](https://github.com/btschwertfeger/python-kraken-sdk/pull/309) ([btschwertfeger](https://github.com/btschwertfeger))
 
 Uncategorized merged pull requests:
 
-- Resolve "Trusted publishing not working with reusable workflows" [\#312](https://github.com/btschwertfeger/python-kraken-sdk/pull/312) ([btschwertfeger](https://github.com/btschwertfeger))
-- Add timeout to CI jobs [\#306](https://github.com/btschwertfeger/python-kraken-sdk/pull/306) ([btschwertfeger](https://github.com/btschwertfeger))
+- Bump codecov/codecov-action from 5.0.2 to 5.0.7 [\#316](https://github.com/btschwertfeger/python-kraken-sdk/pull/316) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump step-security/harden-runner from 2.10.1 to 2.10.2 [\#315](https://github.com/btschwertfeger/python-kraken-sdk/pull/315) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump github/codeql-action from 3.27.4 to 3.27.5 [\#314](https://github.com/btschwertfeger/python-kraken-sdk/pull/314) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump actions/dependency-review-action from 4.4.0 to 4.5.0 [\#313](https://github.com/btschwertfeger/python-kraken-sdk/pull/313) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump codecov/codecov-action from 4.6.0 to 5.0.2 [\#305](https://github.com/btschwertfeger/python-kraken-sdk/pull/305) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump github/codeql-action from 3.27.1 to 3.27.4 [\#304](https://github.com/btschwertfeger/python-kraken-sdk/pull/304) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump github/codeql-action from 3.27.0 to 3.27.1 [\#302](https://github.com/btschwertfeger/python-kraken-sdk/pull/302) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump pypa/gh-action-pypi-publish from 1.11.0 to 1.12.2 [\#301](https://github.com/btschwertfeger/python-kraken-sdk/pull/301) ([dependabot[bot]](https://github.com/apps/dependabot))
-- Fix test [\#300](https://github.com/btschwertfeger/python-kraken-sdk/pull/300) ([btschwertfeger](https://github.com/btschwertfeger))
 - Bump pypa/gh-action-pypi-publish from 1.10.3 to 1.11.0 [\#299](https://github.com/btschwertfeger/python-kraken-sdk/pull/299) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump actions/dependency-review-action from 4.3.4 to 4.4.0 [\#298](https://github.com/btschwertfeger/python-kraken-sdk/pull/298) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump actions/setup-python from 5.2.0 to 5.3.0 [\#297](https://github.com/btschwertfeger/python-kraken-sdk/pull/297) ([dependabot[bot]](https://github.com/apps/dependabot))
@@ -29,13 +31,20 @@ Uncategorized merged pull requests:
 - Bump pypa/gh-action-pypi-publish from 1.10.2 to 1.10.3 [\#287](https://github.com/btschwertfeger/python-kraken-sdk/pull/287) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump github/codeql-action from 3.26.8 to 3.26.9 [\#286](https://github.com/btschwertfeger/python-kraken-sdk/pull/286) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump actions/checkout from 4.1.7 to 4.2.0 [\#285](https://github.com/btschwertfeger/python-kraken-sdk/pull/285) ([dependabot[bot]](https://github.com/apps/dependabot))
-- Add CITATION file [\#284](https://github.com/btschwertfeger/python-kraken-sdk/pull/284) ([btschwertfeger](https://github.com/btschwertfeger))
-- Update project settings [\#283](https://github.com/btschwertfeger/python-kraken-sdk/pull/283) ([btschwertfeger](https://github.com/btschwertfeger))
-- Skip NFT auction unit tests [\#282](https://github.com/btschwertfeger/python-kraken-sdk/pull/282) ([btschwertfeger](https://github.com/btschwertfeger))
 - Bump github/codeql-action from 3.26.7 to 3.26.8 [\#281](https://github.com/btschwertfeger/python-kraken-sdk/pull/281) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump pypa/gh-action-pypi-publish from 1.10.1 to 1.10.2 [\#280](https://github.com/btschwertfeger/python-kraken-sdk/pull/280) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump github/codeql-action from 3.26.6 to 3.26.7 [\#278](https://github.com/btschwertfeger/python-kraken-sdk/pull/278) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump step-security/harden-runner from 2.9.1 to 2.10.1 [\#277](https://github.com/btschwertfeger/python-kraken-sdk/pull/277) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Add upload.pypi.org to allowed domains in publish job [\#321](https://github.com/btschwertfeger/python-kraken-sdk/pull/321) ([btschwertfeger](https://github.com/btschwertfeger))
+- Update egress rules for PyPI publish [\#320](https://github.com/btschwertfeger/python-kraken-sdk/pull/320) ([btschwertfeger](https://github.com/btschwertfeger))
+- Do not run tests requireing API keys when author is dependabot [\#317](https://github.com/btschwertfeger/python-kraken-sdk/pull/317) ([btschwertfeger](https://github.com/btschwertfeger))
+- Resolve "Trusted publishing not working with reusable workflows" [\#312](https://github.com/btschwertfeger/python-kraken-sdk/pull/312) ([btschwertfeger](https://github.com/btschwertfeger))
+- Use uv in CI [\#310](https://github.com/btschwertfeger/python-kraken-sdk/pull/310) ([btschwertfeger](https://github.com/btschwertfeger))
+- Add timeout to CI jobs [\#306](https://github.com/btschwertfeger/python-kraken-sdk/pull/306) ([btschwertfeger](https://github.com/btschwertfeger))
+- Fix test [\#300](https://github.com/btschwertfeger/python-kraken-sdk/pull/300) ([btschwertfeger](https://github.com/btschwertfeger))
+- Add CITATION file [\#284](https://github.com/btschwertfeger/python-kraken-sdk/pull/284) ([btschwertfeger](https://github.com/btschwertfeger))
+- Update project settings [\#283](https://github.com/btschwertfeger/python-kraken-sdk/pull/283) ([btschwertfeger](https://github.com/btschwertfeger))
+- Skip NFT auction unit tests [\#282](https://github.com/btschwertfeger/python-kraken-sdk/pull/282) ([btschwertfeger](https://github.com/btschwertfeger))
 - Rename CODEOWNERS file [\#276](https://github.com/btschwertfeger/python-kraken-sdk/pull/276) ([btschwertfeger](https://github.com/btschwertfeger))
 - Upgrade QA settings [\#275](https://github.com/btschwertfeger/python-kraken-sdk/pull/275) ([btschwertfeger](https://github.com/btschwertfeger))
 

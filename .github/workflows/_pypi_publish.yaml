@@ -32,15 +32,16 @@ jobs:
           disable-sudo: true
           egress-policy: block
           allowed-endpoints: >
-            ghcr.io
-            pypi.org
-            upload.pypi.org
-            tuf-repo-cdn.sigstore.dev
+            api.github.com:443
             fulcio.sigstore.dev
-            rekor.sigstore.dev
+            ghcr.io
             github.com:443
-            uploads.github.com:443
             pkg-containers.githubusercontent.com:443
+            pypi.org
+            rekor.sigstore.dev
+            tuf-repo-cdn.sigstore.dev
+            upload.pypi.org
+            uploads.github.com:443
 
       - name: Download all the distributions
         uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
