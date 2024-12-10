@@ -26,7 +26,8 @@ If applicable, add screenshots or code snippets to help explain your problem.
 **Environment (please complete the following information):**
 
 - OS: [e.g. MacOS Ventura xxx]
-- Python [e.g. 3.7, 3.11]
+- Python [e.g. 3.10, 3.11]
+- python-kraken-sdk [e.g. v3.1.2]
 
 **Additional context**
 Add any other context about the problem here.
