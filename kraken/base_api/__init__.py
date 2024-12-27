@@ -176,9 +176,9 @@ class SessionManager:
     """
     Manages the requests-based session for the sync Spot and Futures clients.
 
-    Kraken rejects requests that are older than 60 minutes without further
+    Kraken rejects requests that are older than a certain time without further
     information. To avoid this, the session manager creates a new session
-    every 30 minutes.
+    every 5 minutes.
     """
 
     HEADERS: Final[dict] = {"User-Agent": "btschwertfeger/python-kraken-sdk"}
@@ -187,13 +187,12 @@ class SessionManager:
         self: SessionManager,
         *,
         proxy: str | None = None,
-        max_session_age: int = 1800,
+        max_session_age: int = 300,
     ) -> None:
         """
         Initialize the session manager.
 
-        :param max_session_age: Maximum session age in seconds (default: 1800s
-            or 30 minutes)
+        :param max_session_age: Maximum session age in seconds
         :type max_session_age: int
         :param proxy: Proxy URL
         :type proxy: str, optional
@@ -229,9 +228,9 @@ class AsyncSessionManager:
     """
     Manages aiohttp-based sessions for the async Spot and Futures clients.
 
-    Kraken rejects requests that are older than 60 minutes without further
+    Kraken rejects requests that are older than a certain time without further
     information. To avoid this, the session manager creates a new session
-    every 30 minutes.
+    every 5 minutes.
     """
 
     HEADERS: Final[dict] = {"User-Agent": "btschwertfeger/python-kraken-sdk"}
@@ -240,13 +239,12 @@ class AsyncSessionManager:
         self: AsyncSessionManager,
         *,
         proxy: str | None = None,
-        max_session_age: int = 1800,
+        max_session_age: int = 300,
     ) -> None:
         """
         Initialize the session manager.
 
-        :param max_session_age: Maximum session age in seconds (default: 1800s
-            or 30 minutes)
+        :param max_session_age: Maximum session age in seconds
         :type max_session_age: int
         :param proxy: Proxy URL
         :type proxy: str, optional
