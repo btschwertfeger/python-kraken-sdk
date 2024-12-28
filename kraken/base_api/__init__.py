@@ -172,108 +172,17 @@ class ErrorHandler:
         return data
 
 
-class SessionManager:
-    """
-    Manages the requests-based session for the sync Spot and Futures clients.
-
-    Kraken rejects requests that are older than a certain time without further
-    information. To avoid this, the session manager creates a new session
-    every 5 minutes.
-    """
-
-    HEADERS: Final[dict] = {"User-Agent": "btschwertfeger/python-kraken-sdk"}
-
-    def __init__(
-        self: SessionManager,
-        *,
-        proxy: str | None = None,
-        max_session_age: int = 300,
-    ) -> None:
-        """
-        Initialize the session manager.
-
-        :param max_session_age: Maximum session age in seconds
-        :type max_session_age: int
-        :param proxy: Proxy URL
-        :type proxy: str, optional
-        """
-        self.__proxy: str = proxy
-        self.__max_session_age: int = max_session_age
-        self.__session: requests.Session = self.create_new_session()
-        self.__session_start_time: float = time.time()
-
-    def create_new_session(self: SessionManager) -> requests.Session:
-        """Create a new session."""
-        session = requests.Session()
-        session.headers.update(self.HEADERS)
-        if self.__proxy is not None:
-            session.proxies.update(
-                {
-                    "http": self.__proxy,
-                    "https": self.__proxy,
-                },
-            )
-        return session
-
-    def get_session(self: SessionManager) -> requests.Session:
-        """Get a valid session, recreating if the current one is too old."""
-        if time.time() - self.__session_start_time > self.__max_session_age:
-            self.__session.close()  # Close the old session
-            self.__session = self.create_new_session()
-            self.__session_start_time = time.time()
-        return self.__session
-
-
-class AsyncSessionManager:
-    """
-    Manages aiohttp-based sessions for the async Spot and Futures clients.
-
-    Kraken rejects requests that are older than a certain time without further
-    information. To avoid this, the session manager creates a new session
-    every 5 minutes.
-    """
-
-    HEADERS: Final[dict] = {"User-Agent": "btschwertfeger/python-kraken-sdk"}
-
-    def __init__(
-        self: AsyncSessionManager,
-        *,
-        proxy: str | None = None,
-        max_session_age: int = 300,
-    ) -> None:
-        """
-        Initialize the session manager.
-
-        :param max_session_age: Maximum session age in seconds
-        :type max_session_age: int
-        :param proxy: Proxy URL
-        :type proxy: str, optional
-        """
-        self.__proxy: str = proxy
-        self.__max_session_age: int = max_session_age
-        self.__session: aiohttp.ClientSession = self.create_new_session()
-        self.__session_start_time: float = time.time()
-
-    def create_new_session(self: AsyncSessionManager) -> aiohttp.ClientSession:
-        """Create a new session."""
-        return aiohttp.ClientSession(headers=self.HEADERS, proxy=self.__proxy)
-
-    async def get_session(self: AsyncSessionManager) -> aiohttp.ClientSession:
-        """Get a valid session, recreating if the current one is too old."""
-        if time.time() - self.__session_start_time > self.__max_session_age:
-            await self.__session.close()
-            self.__session = self.create_new_session()
-            self.__session_start_time = time.time()
-        return self.__session
-
-
 class SpotClient:
     """
-    This class is the base for all Spot clients, handles un-/signed
-    requests and returns exception handled results.
+    This class is the base for all Spot clients, handles un-/signed requests and
+    returns exception handled results.
 
     If you are facing timeout errors on derived clients, you can make use of the
     ``TIMEOUT`` attribute to deviate from the default ``10`` seconds.
+
+    Kraken sometimes rejects requests that are older than a certain time without
+    further information. To avoid this, the session manager creates a new
+    session every 5 minutes.
 
     :param key: Spot API public key (default: ``""``)
     :type key: str, optional
@@ -287,6 +196,8 @@ class SpotClient:
 
     URL: str = "https://api.kraken.com"
     TIMEOUT: int = 10
+    MAX_SESSION_AGE: int = 300  # seconds
+    HEADERS: Final[dict] = {"User-Agent": "btschwertfeger/python-kraken-sdk"}
 
     def __init__(  # nosec: B107
         self: SpotClient,
@@ -304,8 +215,28 @@ class SpotClient:
         self._secret: str = secret
         self._use_custom_exceptions: bool = use_custom_exceptions
         self._err_handler: ErrorHandler = ErrorHandler()
-        self.session_manager: SessionManager = SessionManager(proxy=proxy)
-        self.__session: requests.Session = self.session_manager.create_new_session()
+        self.__proxy: str | None = proxy
+        self.__session_start_time: float
+        self.__create_new_session()
+
+    def __create_new_session(self: SpotClient) -> None:
+        """Create a new session."""
+        self.__session = requests.Session()
+        self.__session.headers.update(self.HEADERS)
+        if self.__proxy is not None:
+            self.__session.proxies.update(
+                {
+                    "http": self.__proxy,
+                    "https": self.__proxy,
+                },
+            )
+        self.__session_start_time = time.time()
+
+    def __check_renew_session(self: SpotClient) -> None:
+        """Check if the session is too old and renew if necessary."""
+        if time.time() - self.__session_start_time > self.MAX_SESSION_AGE:
+            self.__session.close()  # Close the old session
+            self.__create_new_session()
 
     def _prepare_request(
         self: SpotClient,
@@ -428,7 +359,7 @@ class SpotClient:
         )
 
         timeout: int = self.TIMEOUT if timeout != 10 else timeout  # type: ignore[no-redef]
-        self.__session = self.session_manager.get_session()
+        self.__check_renew_session()
 
         if method in {"GET", "DELETE"}:
             return self.__check_response_data(
@@ -558,6 +489,10 @@ class SpotAsyncClient(SpotClient):
     If you are facing timeout errors on derived clients, you can make use of the
     ``TIMEOUT`` attribute to deviate from the default ``10`` seconds.
 
+    Kraken sometimes rejects requests that are older than a certain time without
+    further information. To avoid this, the session manager creates a new
+    session every 5 minutes.
+
     :param key: Spot API public key (default: ``""``)
     :type key: str, optional
     :param secret: Spot API secret key (default: ``""``)
@@ -583,10 +518,21 @@ class SpotAsyncClient(SpotClient):
             url=url,
             use_custom_exceptions=use_custom_exceptions,
         )
-        self.session_manager: AsyncSessionManager = AsyncSessionManager(proxy=proxy)  # type: ignore[assignment]
-        self.__session: aiohttp.ClientSession = (
-            self.session_manager.create_new_session()
-        )
+        self.__proxy: str | None = proxy
+        self.__session_start_time: float
+        self.__session: aiohttp.ClientSession
+        self.__create_new_session()
+
+    def __create_new_session(self: SpotAsyncClient) -> None:
+        """Create a new session."""
+        self.__session = aiohttp.ClientSession(headers=self.HEADERS, proxy=self.__proxy)
+        self.__session_start_time = time.time()
+
+    async def __check_renew_session(self: SpotAsyncClient) -> None:
+        """Check if the session is too old and renew if necessary."""
+        if time.time() - self.__session_start_time > self.MAX_SESSION_AGE:
+            await self.__session.close()  # Close the old session
+            self.__create_new_session()
 
     async def request(  # type: ignore[override] # pylint: disable=invalid-overridden-method,too-many-arguments # noqa: PLR0913
         self: SpotAsyncClient,
@@ -642,7 +588,7 @@ class SpotAsyncClient(SpotClient):
             extra_params=extra_params,
         )
         timeout: int = self.TIMEOUT if timeout != 10 else timeout  # type: ignore[no-redef]
-        self.__session = await self.session_manager.get_session()
+        await self.__check_renew_session()
 
         if method in {"GET", "DELETE"}:
             return await self.__check_response_data(  # type: ignore[return-value]
@@ -731,8 +677,8 @@ class NFTClient(SpotClient):
 
 class FuturesClient:
     """
-    The base class for all Futures clients handles un-/signed requests
-    and returns exception handled results.
+    The base class for all Futures clients handles un-/signed requests and
+    returns exception handled results.
 
     If you are facing timeout errors on derived clients, you can make use of the
     ``TIMEOUT`` attribute to deviate from the default ``10`` seconds.
@@ -740,13 +686,19 @@ class FuturesClient:
     If the sandbox environment is chosen, the keys must be generated from here:
         https://demo-futures.kraken.com/settings/api
 
+    Kraken sometimes rejects requests that are older than a certain time without
+    further information. To avoid this, the session manager creates a new
+    session every 5 minutes.
+
     :param key: Futures API public key (default: ``""``)
     :type key: str, optional
     :param secret: Futures API secret key (default: ``""``)
     :type secret: str, optional
-    :param url: The URL to access the Futures Kraken API (default: https://futures.kraken.com)
+    :param url: The URL to access the Futures Kraken API (default:
+        https://futures.kraken.com)
     :type url: str, optional
-    :param sandbox: If set to ``True`` the URL will be https://demo-futures.kraken.com (default: ``False``)
+    :param sandbox: If set to ``True`` the URL will be
+        https://demo-futures.kraken.com (default: ``False``)
     :type sandbox: bool, optional
     :param proxy: proxy URL, may contain authentication information
     :type proxy: str, optional
@@ -755,6 +707,8 @@ class FuturesClient:
     URL: str = "https://futures.kraken.com"
     SANDBOX_URL: str = "https://demo-futures.kraken.com"
     TIMEOUT: int = 10
+    HEADERS: Final[dict] = {"User-Agent": "btschwertfeger/python-kraken-sdk"}
+    MAX_SESSION_AGE: int = 300  # seconds
 
     def __init__(  # nosec: B107
         self: FuturesClient,
@@ -780,8 +734,30 @@ class FuturesClient:
         self._use_custom_exceptions: bool = use_custom_exceptions
 
         self._err_handler: ErrorHandler = ErrorHandler()
-        self.session_manager: SessionManager = SessionManager(proxy=proxy)
-        self.__session: requests.Session = self.session_manager.create_new_session()
+
+        self.__proxy: str | None = proxy
+        self.__session_start_time: float
+        self.__session: aiohttp.ClientSession
+        self.__create_new_session()
+
+    def __create_new_session(self: FuturesClient) -> None:
+        """Create a new session."""
+        self.__session = requests.Session()
+        self.__session.headers.update(self.HEADERS)
+        if self.__proxy is not None:
+            self.__session.proxies.update(
+                {
+                    "http": self.__proxy,
+                    "https": self.__proxy,
+                },
+            )
+        self.__session_start_time = time.time()
+
+    def __check_renew_session(self: FuturesClient) -> None:
+        """Check if the session is too old and renew if necessary."""
+        if time.time() - self.__session_start_time > self.MAX_SESSION_AGE:
+            self.__session.close()  # Close the old session
+            self.__create_new_session()
 
     def _prepare_request(
         self: FuturesClient,
@@ -887,7 +863,7 @@ class FuturesClient:
             extra_params=extra_params,
         )
         timeout: int = self.TIMEOUT if timeout == 10 else timeout  # type: ignore[no-redef]
-        self.__session = self.session_manager.get_session()
+        self.__check_renew_session()
 
         if method in {"GET", "DELETE"}:
             return self.__check_response_data(
@@ -1050,10 +1026,21 @@ class FuturesAsyncClient(FuturesClient):
             sandbox=sandbox,
             use_custom_exceptions=use_custom_exceptions,
         )
-        self.session_manager: AsyncSessionManager = AsyncSessionManager(proxy=proxy)  # type: ignore[assignment]
-        self.__session: aiohttp.ClientSession = (
-            self.session_manager.create_new_session()
-        )
+        self.__proxy: str | None = proxy
+        self.__session_start_time: float
+        self.__session: aiohttp.ClientSession
+        self.__create_new_session()
+
+    def __create_new_session(self: FuturesAsyncClient) -> None:
+        """Create a new session."""
+        self.__session = aiohttp.ClientSession(headers=self.HEADERS, proxy=self.__proxy)
+        self.__session_start_time = time.time()
+
+    async def __check_renew_session(self: FuturesAsyncClient) -> None:
+        """Check if the session is too old and renew if necessary."""
+        if time.time() - self.__session_start_time > self.MAX_SESSION_AGE:
+            await self.__session.close()  # Close the old session
+            self.__create_new_session()
 
     async def request(  # type: ignore[override] # pylint: disable=arguments-differ,invalid-overridden-method
         self: FuturesAsyncClient,
@@ -1075,7 +1062,7 @@ class FuturesAsyncClient(FuturesClient):
         )
 
         timeout = self.TIMEOUT if timeout != 10 else timeout
-        self.__session = await self.session_manager.get_session()
+        await self.__check_renew_session()
 
         if method in {"GET", "DELETE"}:
             return await self.__check_response_data(
