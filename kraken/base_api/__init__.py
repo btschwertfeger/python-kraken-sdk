@@ -217,6 +217,7 @@ class SpotClient:
         self._err_handler: ErrorHandler = ErrorHandler()
         self.__proxy: str | None = proxy
         self.__session_start_time: float
+        self.__session: requests.Session
         self.__create_new_session()
 
     def __create_new_session(self: SpotClient) -> None:
@@ -737,7 +738,7 @@ class FuturesClient:
 
         self.__proxy: str | None = proxy
         self.__session_start_time: float
-        self.__session: aiohttp.ClientSession
+        self.__session: requests.Session
         self.__create_new_session()
 
     def __create_new_session(self: FuturesClient) -> None:
