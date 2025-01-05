@@ -11,7 +11,6 @@ import hashlib
 import hmac
 import json
 import time
-from copy import deepcopy
 from functools import wraps
 from typing import TYPE_CHECKING, Any, TypeVar
 from urllib.parse import urlencode, urljoin
@@ -175,11 +174,15 @@ class ErrorHandler:
 
 class SpotClient:
     """
-    This class is the base for all Spot clients, handles un-/signed
-    requests and returns exception handled results.
+    This class is the base for all Spot clients, handles un-/signed requests and
+    returns exception handled results.
 
     If you are facing timeout errors on derived clients, you can make use of the
     ``TIMEOUT`` attribute to deviate from the default ``10`` seconds.
+
+    Kraken sometimes rejects requests that are older than a certain time without
+    further information. To avoid this, the session manager creates a new
+    session every 5 minutes.
 
     :param key: Spot API public key (default: ``""``)
     :type key: str, optional
@@ -193,6 +196,7 @@ class SpotClient:
 
     URL: str = "https://api.kraken.com"
     TIMEOUT: int = 10
+    MAX_SESSION_AGE: int = 300  # seconds
     HEADERS: Final[dict] = {"User-Agent": "btschwertfeger/python-kraken-sdk"}
 
     def __init__(  # nosec: B107
@@ -211,15 +215,29 @@ class SpotClient:
         self._secret: str = secret
         self._use_custom_exceptions: bool = use_custom_exceptions
         self._err_handler: ErrorHandler = ErrorHandler()
-        self.__session: requests.Session = requests.Session()
-        if proxy is not None:
+        self.__proxy: str | None = proxy
+        self.__session_start_time: float
+        self.__session: requests.Session
+        self.__create_new_session()
+
+    def __create_new_session(self: SpotClient) -> None:
+        """Create a new session."""
+        self.__session = requests.Session()
+        self.__session.headers.update(self.HEADERS)
+        if self.__proxy is not None:
             self.__session.proxies.update(
                 {
-                    "http": proxy,
-                    "https": proxy,
+                    "http": self.__proxy,
+                    "https": self.__proxy,
                 },
             )
-        self.__session.headers.update(self.HEADERS)
+        self.__session_start_time = time.time()
+
+    def __check_renew_session(self: SpotClient) -> None:
+        """Check if the session is too old and renew if necessary."""
+        if time.time() - self.__session_start_time > self.MAX_SESSION_AGE:
+            self.__session.close()  # Close the old session
+            self.__create_new_session()
 
     def _prepare_request(
         self: SpotClient,
@@ -254,7 +272,7 @@ class SpotClient:
         elif query_str:
             query_params = query_str
 
-        headers: dict = deepcopy(self.HEADERS)
+        headers: dict = {}
 
         if auth:
             if not self._key or not self._secret:
@@ -340,7 +358,9 @@ class SpotClient:
             query_str=query_str,
             extra_params=extra_params,
         )
+
         timeout: int = self.TIMEOUT if timeout != 10 else timeout  # type: ignore[no-redef]
+        self.__check_renew_session()
 
         if method in {"GET", "DELETE"}:
             return self.__check_response_data(
@@ -470,6 +490,10 @@ class SpotAsyncClient(SpotClient):
     If you are facing timeout errors on derived clients, you can make use of the
     ``TIMEOUT`` attribute to deviate from the default ``10`` seconds.
 
+    Kraken sometimes rejects requests that are older than a certain time without
+    further information. To avoid this, the session manager creates a new
+    session every 5 minutes.
+
     :param key: Spot API public key (default: ``""``)
     :type key: str, optional
     :param secret: Spot API secret key (default: ``""``)
@@ -495,8 +519,21 @@ class SpotAsyncClient(SpotClient):
             url=url,
             use_custom_exceptions=use_custom_exceptions,
         )
-        self.__session = aiohttp.ClientSession(headers=self.HEADERS)
-        self.proxy = proxy
+        self.__proxy: str | None = proxy
+        self.__session_start_time: float
+        self.__session: aiohttp.ClientSession
+        self.__create_new_session()
+
+    def __create_new_session(self: SpotAsyncClient) -> None:
+        """Create a new session."""
+        self.__session = aiohttp.ClientSession(headers=self.HEADERS, proxy=self.__proxy)
+        self.__session_start_time = time.time()
+
+    async def __check_renew_session(self: SpotAsyncClient) -> None:
+        """Check if the session is too old and renew if necessary."""
+        if time.time() - self.__session_start_time > self.MAX_SESSION_AGE:
+            await self.__session.close()  # Close the old session
+            self.__create_new_session()
 
     async def request(  # type: ignore[override] # pylint: disable=invalid-overridden-method,too-many-arguments # noqa: PLR0913
         self: SpotAsyncClient,
@@ -552,40 +589,38 @@ class SpotAsyncClient(SpotClient):
             extra_params=extra_params,
         )
         timeout: int = self.TIMEOUT if timeout != 10 else timeout  # type: ignore[no-redef]
+        await self.__check_renew_session()
 
         if method in {"GET", "DELETE"}:
             return await self.__check_response_data(  # type: ignore[return-value]
-                response=await self.__session.request(  # type: ignore[misc,call-arg]
+                response=await self.__session.request(
                     method=method,
                     url=f"{url}?{query_params}" if query_params else url,
                     headers=headers,
                     timeout=timeout,
-                    proxy=self.proxy,
                 ),
                 return_raw=return_raw,
             )
 
         if do_json:
             return await self.__check_response_data(  # type: ignore[return-value]
-                response=await self.__session.request(  # type: ignore[misc,call-arg]
+                response=await self.__session.request(
                     method=method,
                     url=url,
                     headers=headers,
                     json=params,
                     timeout=timeout,
-                    proxy=self.proxy,
                 ),
                 return_raw=return_raw,
             )
 
         return await self.__check_response_data(  # type: ignore[return-value]
-            response=await self.__session.request(  # type: ignore[misc,call-arg]
+            response=await self.__session.request(
                 method=method,
                 url=url,
                 headers=headers,
                 data=params,
                 timeout=timeout,
-                proxy=self.proxy,
             ),
             return_raw=return_raw,
         )
@@ -628,7 +663,7 @@ class SpotAsyncClient(SpotClient):
 
     async def async_close(self: SpotAsyncClient) -> None:
         """Closes the aiohttp session"""
-        await self.__session.close()  # type: ignore[func-returns-value]
+        await self.__session.close()
 
     async def __aenter__(self: Self) -> Self:
         return self
@@ -643,8 +678,8 @@ class NFTClient(SpotClient):
 
 class FuturesClient:
     """
-    The base class for all Futures clients handles un-/signed requests
-    and returns exception handled results.
+    The base class for all Futures clients handles un-/signed requests and
+    returns exception handled results.
 
     If you are facing timeout errors on derived clients, you can make use of the
     ``TIMEOUT`` attribute to deviate from the default ``10`` seconds.
@@ -652,13 +687,19 @@ class FuturesClient:
     If the sandbox environment is chosen, the keys must be generated from here:
         https://demo-futures.kraken.com/settings/api
 
+    Kraken sometimes rejects requests that are older than a certain time without
+    further information. To avoid this, the session manager creates a new
+    session every 5 minutes.
+
     :param key: Futures API public key (default: ``""``)
     :type key: str, optional
     :param secret: Futures API secret key (default: ``""``)
     :type secret: str, optional
-    :param url: The URL to access the Futures Kraken API (default: https://futures.kraken.com)
+    :param url: The URL to access the Futures Kraken API (default:
+        https://futures.kraken.com)
     :type url: str, optional
-    :param sandbox: If set to ``True`` the URL will be https://demo-futures.kraken.com (default: ``False``)
+    :param sandbox: If set to ``True`` the URL will be
+        https://demo-futures.kraken.com (default: ``False``)
     :type sandbox: bool, optional
     :param proxy: proxy URL, may contain authentication information
     :type proxy: str, optional
@@ -668,6 +709,7 @@ class FuturesClient:
     SANDBOX_URL: str = "https://demo-futures.kraken.com"
     TIMEOUT: int = 10
     HEADERS: Final[dict] = {"User-Agent": "btschwertfeger/python-kraken-sdk"}
+    MAX_SESSION_AGE: int = 300  # seconds
 
     def __init__(  # nosec: B107
         self: FuturesClient,
@@ -693,15 +735,30 @@ class FuturesClient:
         self._use_custom_exceptions: bool = use_custom_exceptions
 
         self._err_handler: ErrorHandler = ErrorHandler()
-        self.__session: requests.Session = requests.Session()
+
+        self.__proxy: str | None = proxy
+        self.__session_start_time: float
+        self.__session: requests.Session
+        self.__create_new_session()
+
+    def __create_new_session(self: FuturesClient) -> None:
+        """Create a new session."""
+        self.__session = requests.Session()
         self.__session.headers.update(self.HEADERS)
-        if proxy is not None:
+        if self.__proxy is not None:
             self.__session.proxies.update(
                 {
-                    "http": proxy,
-                    "https": proxy,
+                    "http": self.__proxy,
+                    "https": self.__proxy,
                 },
             )
+        self.__session_start_time = time.time()
+
+    def __check_renew_session(self: FuturesClient) -> None:
+        """Check if the session is too old and renew if necessary."""
+        if time.time() - self.__session_start_time > self.MAX_SESSION_AGE:
+            self.__session.close()  # Close the old session
+            self.__create_new_session()
 
     def _prepare_request(
         self: FuturesClient,
@@ -734,7 +791,7 @@ class FuturesClient:
             "" if query_params is None else urlencode(query_params, doseq=True)  # type: ignore[arg-type]
         )
 
-        headers: dict = deepcopy(self.HEADERS)
+        headers: dict = {}
 
         if auth:
             if not self._key or not self._secret:
@@ -807,6 +864,7 @@ class FuturesClient:
             extra_params=extra_params,
         )
         timeout: int = self.TIMEOUT if timeout == 10 else timeout  # type: ignore[no-redef]
+        self.__check_renew_session()
 
         if method in {"GET", "DELETE"}:
             return self.__check_response_data(
@@ -969,8 +1027,21 @@ class FuturesAsyncClient(FuturesClient):
             sandbox=sandbox,
             use_custom_exceptions=use_custom_exceptions,
         )
-        self.__session = aiohttp.ClientSession(headers=self.HEADERS)
-        self.proxy = proxy
+        self.__proxy: str | None = proxy
+        self.__session_start_time: float
+        self.__session: aiohttp.ClientSession
+        self.__create_new_session()
+
+    def __create_new_session(self: FuturesAsyncClient) -> None:
+        """Create a new session."""
+        self.__session = aiohttp.ClientSession(headers=self.HEADERS, proxy=self.__proxy)
+        self.__session_start_time = time.time()
+
+    async def __check_renew_session(self: FuturesAsyncClient) -> None:
+        """Check if the session is too old and renew if necessary."""
+        if time.time() - self.__session_start_time > self.MAX_SESSION_AGE:
+            await self.__session.close()  # Close the old session
+            self.__create_new_session()
 
     async def request(  # type: ignore[override] # pylint: disable=arguments-differ,invalid-overridden-method
         self: FuturesAsyncClient,
@@ -990,42 +1061,41 @@ class FuturesAsyncClient(FuturesClient):
             query_params=query_params,
             auth=auth,
         )
-        timeout: int = self.TIMEOUT if timeout != 10 else timeout  # type: ignore[no-redef]
+
+        timeout = self.TIMEOUT if timeout != 10 else timeout
+        await self.__check_renew_session()
 
         if method in {"GET", "DELETE"}:
             return await self.__check_response_data(
-                response=await self.__session.request(  # type: ignore[misc,call-arg]
+                response=await self.__session.request(
                     method=method,
                     url=url,
                     params=query_string,
                     headers=headers,
                     timeout=timeout,
-                    proxy=self.proxy,
                 ),
                 return_raw=return_raw,
             )
 
         if method == "PUT":
             return await self.__check_response_data(
-                response=await self.__session.request(  # type: ignore[misc,call-arg]
+                response=await self.__session.request(
                     method=method,
                     url=url,
                     params=encoded_payload,
                     headers=headers,
                     timeout=timeout,
-                    proxy=self.proxy,
                 ),
                 return_raw=return_raw,
             )
 
         return await self.__check_response_data(
-            response=await self.__session.request(  # type: ignore[misc,call-arg]
+            response=await self.__session.request(
                 method=method,
                 url=url,
                 data=encoded_payload,
                 headers=headers,
                 timeout=timeout,
-                proxy=self.proxy,
             ),
             return_raw=return_raw,
         )
@@ -1074,7 +1144,7 @@ class FuturesAsyncClient(FuturesClient):
 
     async def async_close(self: FuturesAsyncClient) -> None:
         """Closes the aiohttp session"""
-        await self.__session.close()  # type: ignore[func-returns-value]
+        await self.__session.close()
 
     async def __aenter__(self: Self) -> Self:
         return self

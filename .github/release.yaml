@@ -27,9 +27,11 @@ changelog:
     - title: Other Changes
       labels:
         - "*"
-      # exclude:
-      #   labels:
-      #     - dependencies
+      exclude:
+        labels:
+          - dependencies
+          - github_actions
     - title: 👒 Dependencies
       labels:
         - dependencies
+        - github_actions

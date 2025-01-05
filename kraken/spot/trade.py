@@ -256,17 +256,31 @@ class Trade(SpotClient):
                3. When the price hits $27000 a limit order will be placed at
                   $26800 to sell 1.2 BTC. This ensures that the asset will be
                   sold for $26800 or better.
-            ''' >>> from kraken.spot import Trade >>> trade =
-            Trade(key="api-key", secret="secret-key") >>> from datetime import
-            datetime, timedelta, timezone >>> deadline = ( ...
-            datetime.now(timezone.utc) + timedelta(seconds=20) ... ).isoformat()
-            >>> trade.create_order( ...     ordertype="stop-loss-limit", ...
-            pair="XBTUSD", ...     side="buy", ...     volume=1.2, ...
-            price=24000, ...     price2=25000, ...     validate=True, # just
-            validate the input, do not place on the market ...
-            trigger="last", ...     timeinforce="GTC", ...     leverage=4, ...
-            deadline=deadline, ...     close_ordertype="take-profit-limit", ...
-            close_price=27000, ...     close_price2=26800, ... ) {
+            '''
+
+            >>> from kraken.spot import Trade
+            >>> trade = Trade(key="api-key", secret="secret-key")
+            >>> from datetime import datetime, timedelta, timezone
+            >>> deadline = (
+            ...     datetime.now(timezone.utc) + timedelta(seconds=20)
+            ... ).isoformat()
+            >>> trade.create_order(
+            ...     ordertype="stop-loss-limit",
+            ...     pair="XBTUSD",
+            ...     side="buy",
+            ...     volume=1.2,
+            ...     price=24000,
+            ...     price2=25000,
+            ...     validate=True, # just validate the input, do not place on the market
+            ...     trigger="last",
+            ...     timeinforce="GTC",
+            ...     leverage=4,
+            ...     deadline=deadline,
+            ...     close_ordertype="take-profit-limit",
+            ...     close_price=27000,
+            ...     close_price2=26800,
+            ... )
+            {
                 'descr': {
                     'order': 'buy 0.00100000 XBTUSD @ stop loss 24000.0 -> limit
                     25000.0 with 2:1 leverage', 'close': 'close position @ take
@@ -282,12 +296,22 @@ class Trade(SpotClient):
                   automatically
                 * The the percentage sign "%" can be used to define relative
                   changes.
-            ''' >>> trade.create_order( ...     ordertype="stop-loss-limit", ...
-            pair="XBTUSD", ...     side="buy", ...     volume=1.2, ...
-            price=24000, ...     price2="+1000", ...     validate=True, ...
-            trigger="last", ...     timeinforce="GTC", ...
-            close_ordertype="take-profit-limit", ...     close_price=27000, ...
-            close_price2="#2%", ... ) {
+            '''
+            >>> trade.create_order(
+            ...     ordertype="stop-loss-limit",
+            ...     pair="XBTUSD",
+            ...     side="buy",
+            ...     volume=1.2,
+            ...     price=24000,
+            ...     price2="+1000",
+            ...     validate=True,
+            ...     trigger="last",
+            ...     timeinforce="GTC",
+            ...     close_ordertype="take-profit-limit",
+            ...     close_price=27000,
+            ...     close_price2="#2%",
+            ... )
+            {
                 'descr': {
                     'order': 'buy 0.00100000 XBTUSD @ stop loss 24000.0 -> limit
                     +1000.0', 'close': 'close position @ take profit 27000.0 ->
