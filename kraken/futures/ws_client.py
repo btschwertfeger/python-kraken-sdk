@@ -157,6 +157,7 @@ class FuturesWSClient(FuturesAsyncClient):
         """Method to stop the websocket connection."""
         if self._conn:
             await self._conn.stop()
+        await super().close()
 
     @property
     def key(self: FuturesWSClient) -> str:

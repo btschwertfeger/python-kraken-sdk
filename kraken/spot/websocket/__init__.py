@@ -143,6 +143,7 @@ class SpotWSClientBase(SpotAsyncClient):
             await self._pub_conn.stop()
         if self._priv_conn:
             await self._priv_conn.stop()
+        await super().close()
 
     async def on_message(
         self: SpotWSClientBase,
