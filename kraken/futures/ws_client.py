@@ -153,8 +153,8 @@ class FuturesWSClient(FuturesAsyncClient):
         else:
             raise TimeoutError("Could not connect to the Kraken API!")
 
-    async def stop(self: FuturesWSClient) -> None:
-        """Method to stop the websocket connection."""
+    async def close(self: FuturesWSClient) -> None:
+        """Method to close the websocket connection."""
         if self._conn:
             await self._conn.stop()
         await super().close()
@@ -444,7 +444,7 @@ class FuturesWSClient(FuturesAsyncClient):
     ) -> None:
         """Exit if used as context manager"""
         await super().__aexit__()
-        await self.stop()
+        await self.close()
 
 
 __all__ = ["FuturesWSClient"]
