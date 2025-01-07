@@ -137,12 +137,13 @@ class SpotWSClientBase(SpotAsyncClient):
         else:
             raise TimeoutError("Could not connect to the Kraken API!")
 
-    async def stop(self: SpotWSClientBase) -> None:
-        """Method to stop the websocket connection."""
+    async def close(self: SpotWSClientBase) -> None:
+        """Method to close the websocket connection."""
         if self._pub_conn:
             await self._pub_conn.stop()
         if self._priv_conn:
             await self._priv_conn.stop()
+        await super().close()
 
     async def on_message(
         self: SpotWSClientBase,
@@ -184,7 +185,7 @@ class SpotWSClientBase(SpotAsyncClient):
     ) -> None:
         """Exit if used as context manager"""
         await super().__aexit__()
-        await self.stop()
+        await self.close()
 
     async def get_ws_token(self: SpotWSClientBase) -> dict:
         """

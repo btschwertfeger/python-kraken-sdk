@@ -661,7 +661,7 @@ class SpotAsyncClient(SpotClient):
 
         raise Exception(f"{response.status} - {response.text}")
 
-    async def async_close(self: SpotAsyncClient) -> None:
+    async def close(self: SpotAsyncClient) -> None:
         """Closes the aiohttp session"""
         await self.__session.close()
 
@@ -669,7 +669,7 @@ class SpotAsyncClient(SpotClient):
         return self
 
     async def __aexit__(self: SpotAsyncClient, *args: object) -> None:
-        await self.async_close()
+        await self.close()
 
 
 class NFTClient(SpotClient):
@@ -1142,7 +1142,7 @@ class FuturesAsyncClient(FuturesClient):
 
         raise Exception(f"{response.status} - {response.text}")
 
-    async def async_close(self: FuturesAsyncClient) -> None:
+    async def close(self: FuturesAsyncClient) -> None:
         """Closes the aiohttp session"""
         await self.__session.close()
 
@@ -1150,7 +1150,7 @@ class FuturesAsyncClient(FuturesClient):
         return self
 
     async def __aexit__(self: FuturesAsyncClient, *args: object) -> None:
-        return await self.async_close()
+        return await self.close()
 
 
 __all__ = [
