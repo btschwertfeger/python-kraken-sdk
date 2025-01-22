@@ -1,5 +1,34 @@
 # Changelog
 
+## [Unreleased](https://github.com/btschwertfeger/python-kraken-sdk/tree/HEAD)
+
+[Full Changelog](https://github.com/btschwertfeger/python-kraken-sdk/compare/v3.1.3...HEAD)
+
+Uncategorized merged pull requests:
+
+- Bump step-security/harden-runner from 2.10.2 to 2.10.3 [\#337](https://github.com/btschwertfeger/python-kraken-sdk/pull/337) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump github/codeql-action from 3.28.0 to 3.28.1 [\#336](https://github.com/btschwertfeger/python-kraken-sdk/pull/336) ([dependabot[bot]](https://github.com/apps/dependabot))
+
+## [v3.1.3](https://github.com/btschwertfeger/python-kraken-sdk/tree/v3.1.3) (2025-01-05)
+
+[Full Changelog](https://github.com/btschwertfeger/python-kraken-sdk/compare/v3.1.2...v3.1.3)
+
+**Fixed bugs:**
+
+- Resolve "Long lasting REST sessions get terminated" [\#334](https://github.com/btschwertfeger/python-kraken-sdk/pull/334) ([btschwertfeger](https://github.com/btschwertfeger))
+
+Uncategorized merged pull requests:
+
+- Bump codecov/codecov-action from 5.1.1 to 5.1.2 [\#332](https://github.com/btschwertfeger/python-kraken-sdk/pull/332) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump github/codeql-action from 3.27.9 to 3.28.0 [\#331](https://github.com/btschwertfeger/python-kraken-sdk/pull/331) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump astral-sh/setup-uv from 4 to 5 [\#330](https://github.com/btschwertfeger/python-kraken-sdk/pull/330) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump github/codeql-action from 3.27.7 to 3.27.9 [\#329](https://github.com/btschwertfeger/python-kraken-sdk/pull/329) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump pypa/gh-action-pypi-publish from 1.12.2 to 1.12.3 [\#328](https://github.com/btschwertfeger/python-kraken-sdk/pull/328) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump github/codeql-action from 3.27.5 to 3.27.7 [\#327](https://github.com/btschwertfeger/python-kraken-sdk/pull/327) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump codecov/codecov-action from 5.0.7 to 5.1.1 [\#323](https://github.com/btschwertfeger/python-kraken-sdk/pull/323) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Update egress policy in CI [\#326](https://github.com/btschwertfeger/python-kraken-sdk/pull/326) ([btschwertfeger](https://github.com/btschwertfeger))
+- Update egress rules in CI [\#322](https://github.com/btschwertfeger/python-kraken-sdk/pull/322) ([btschwertfeger](https://github.com/btschwertfeger))
+
 ## [v3.1.2](https://github.com/btschwertfeger/python-kraken-sdk/tree/v3.1.2) (2024-11-26)
 
 [Full Changelog](https://github.com/btschwertfeger/python-kraken-sdk/compare/v3.1.1...v3.1.2)

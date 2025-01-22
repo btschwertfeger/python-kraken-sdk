@@ -67,6 +67,11 @@ Documentation:
 - [https://python-kraken-sdk.readthedocs.io/en/stable](https://python-kraken-sdk.readthedocs.io/en/stable)
 - [https://python-kraken-sdk.readthedocs.io/en/latest](https://python-kraken-sdk.readthedocs.io/en/latest)
 
+Projects using this SDK:
+
+- https://github.com/btschwertfeger/kraken-infinity-grid
+- https://github.com/btschwertfeger/kraken-rebalance-bot
+
 ---
 
 ## ❗️ Attention
