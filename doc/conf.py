@@ -74,6 +74,6 @@ html_context = {
     "display_github": True,
     "github_user": "btschwertfeger",
     "github_repo": "python-kraken-sdk",
-    "github_version": "master/docs/",
+    "github_version": "master/doc/",
 }
 # html_theme_options = {"rightsidebar": "true", "relbarbgcolor": "black"}

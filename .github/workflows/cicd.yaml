@@ -1,5 +1,5 @@
-# -*- coding: utf-8 -*- Copyright (C)
-# 2023 Benjamin Thomas Schwertfeger
+# -*- coding: utf-8 -*-
+# Copyright (C) 2023 Benjamin Thomas Schwertfeger
 # GitHub: https://github.com/btschwertfeger
 #
 # Workflow to apply pre-commit, build, test and upload the package to the test
@@ -55,7 +55,7 @@ on:
     types: [opened, synchronize, reopened]
     branches: ["**"]
 
-# only run once due to API rate limits
+# Only run once due to API rate limits
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true

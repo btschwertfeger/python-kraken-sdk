@@ -8,8 +8,8 @@ must be addressed before a PR will be accepted.
       [python-kraken-sdk](https://github.com/btschwertfeger/python-kraken-sdk).
       Most issues will be resolve through the pre-commit hooks.
 - [ ] Also take care to follow the community guidelines and the [Code of
-      Conduct](./.github/CODE_OF_CONDUCT.md).
-- [ ] Self-review your changes to detect typos, syntax errors and any kind of
+      Conduct](./CODE_OF_CONDUCT.md).
+- [ ] Self-review your changes to detect typos, syntax errors, and any kind of
       unwanted behavior.
 - [ ] If you changed the source code you have to **ensure that all unit tests
       run through**. If you added a new function you also have to **write a
@@ -20,9 +20,8 @@ must be addressed before a PR will be accepted.
 - [ ] Take your time to prepare your code before creating a PR. A good PR will
       save a lot of time for everyone.
 - [ ] There are several workflows/actions within this repository. Relevant
-      workflows must be run successfully within your fork. In the following
-      these workflows are listed, but **please also read the respective workflow
-      files to get further information**. Actions must be enabled within the
-      fork, so that workflows can run within the context of a PR.
-  - CI/CD (`cicd.yaml`): Can be used to run all actions at once - but requires
-    having API keys for Spot, Futures and the Futures demo environment.
+      workflows must be run successfully within your fork. Actions must be
+      enabled within the fork, so that workflows can run within the context of a
+      PR. [cicd.yaml](./workflows/cicd.yaml) can be used to run all actions at
+      once - but requires having API keys for Spot, Futures and the Futures demo
+      environment.
