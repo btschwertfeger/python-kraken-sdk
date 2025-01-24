@@ -46,7 +46,7 @@ def test_create_public_client(caplog: pytest.LogCaptureFixture) -> None:
         client = SpotWebsocketClientTestWrapper()
         await client.start()
         await async_sleep(5)
-        await client.stop()
+        await client.close()
 
     asyncio_run(create_client())
 
