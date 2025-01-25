@@ -31,25 +31,23 @@ dependencies = [
 ]
 keywords = ["crypto", "trading", "kraken", "exchange", "api"]
 classifiers = [
-  "License :: OSI Approved :: Apache Software License",
   "Development Status :: 5 - Production/Stable",
-  "Intended Audience :: Developers",
-  "Topic :: Office/Business :: Financial",
-  "Topic :: Office/Business :: Financial :: Investment",
-  "Topic :: Software Development :: Libraries :: Python Modules",
-  "Topic :: Internet :: WWW/HTTP",
-  "Topic :: Utilities",
-  "Programming Language :: Python",
-  "Programming Language :: Python :: 3.11",
-  "Programming Language :: Python :: 3.12",
   "Framework :: AsyncIO",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: Apache Software License",
   "Natural Language :: English",
   "Operating System :: MacOS",
   "Operating System :: Unix",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python",
+  "Topic :: Internet :: WWW/HTTP",
+  "Topic :: Office/Business :: Financial :: Investment",
+  "Topic :: Office/Business :: Financial",
+  "Topic :: Software Development :: Libraries :: Python Modules",
+  "Topic :: Utilities",
 ]
-
-[project.scripts]
-kraken = "kraken.cli:cli"
 
 [project.urls]
 "Homepage" = "https://github.com/btschwertfeger/python-kraken-sdk"
@@ -66,7 +64,7 @@ dev = [
   "sphinx-click",
   "sphinx-rtd-theme",
   "nbsphinx",
-  "ipython",          # to visualize notebooks in doc
+  "ipython",          # To visualize Jupyter Notebooks in the documentation
   # formatting
   "black",
   # typing
@@ -76,26 +74,31 @@ dev = [
   "ruff",
 ]
 test = [
-  "pytest",
+  "proxy.py",
+  "pytest-asyncio",
   "pytest-cov",
   "pytest-mock",
-  "pytest-asyncio",
+  "pytest-retry",
   "pytest-timeout",
-  "proxy.py",
+  "pytest",
 ]
 examples = ["matplotlib", "pandas", "numpy"]
 jupyter = ["ipykernel"] # python3 -m ipykernel install --user --name=kraken
 
+[project.scripts]
+kraken = "kraken.cli:cli"
+
 [tool.setuptools]
 include-package-data = false
+package-dir = { "" = "src" }
 
 [tool.setuptools.packages.find]
+where = ["src"]
 include = ["kraken*"]
-# excluded anyway because of 'include'
-exclude = ["docs*", "tests*", "examples*", "venv", ".env"]
+exclude = ["docs*", "tests*", "examples*", ".venv", ".env", ".cache", ".github"]
 
 [tool.setuptools_scm]
-write_to = "kraken/_version.py"
+write_to = "src/kraken/_version.py"
 version_scheme = "guess-next-dev"
 local_scheme = "no-local-version"
 
@@ -106,42 +109,48 @@ junit_family = "xunit2"
 testpaths = ["tests"]
 
 [tool.pytest.ini_options]
-# filterwarnings = [
-#   "ignore:The Kraken websocket API v1 is marked as deprecated*:DeprecationWarning",
-# ]
+cache_dir = ".cache/pytest"
+
+# Retrying tests once, as we're testing against lots of API endpoints, the tests
+# are flaky by design.
+retries = 1
+retry_delay = 1                                 # seconds
+timeout = 60                                    # seconds
 asyncio_mode = "auto"
 asyncio_default_fixture_loop_scope = "function"
-timeout = 60                                    # seconds
 
-cache_dir = ".cache/pytest"
 markers = [
   "wip: Used to run a specific test by hand.",
   "flaky: Flaky tests",
-  "spot: … Spot endpoint.",
-  "spot_auth: … authenticated Spot endpoint.",
-  "spot_earn: … Spot Earn endpoint.",
-  "spot_trade: … Spot Trade endpoint.",
-  "spot_user: … Spot User endpoint.",
-  "spot_market: … Spot Market endpoint.",
-  "spot_funding: … Spot Funding endpoint.",
-  "spot_websocket: … Spot Websocket client + Spot Orderbook client.",
-  "spot_orderbook: … Spot Orderbook client.",
-  "futures: … Futures endpoint.",
-  "futures_auth: … authenticated Futures endpoint.",
-  "futures_market: … Futures Market endpoint.",
-  "futures_user: … Futures User endpoint.",
-  "futures_trade: … Futures Trade endpoint.",
-  "futures_funding: … Futures Funding endpoint.",
-  "futures_websocket: … Futures Websocket endpoint.",
-  "nft: … NFT endpoint.",
-  "nft_auth: … authenticated NFT endpoint.",
-  "nft_market: … NFT Market endpoint.",
-  "nft_trade: … NFT Trade endpoint.",
+  "spot: Spot endpoint.",
+  "spot_auth: Private Spot endpoint.",
+  "spot_earn: Spot Earn endpoint.",
+  "spot_trade: Spot Trade endpoint.",
+  "spot_user: Spot User endpoint.",
+  "spot_market: Spot Market endpoint.",
+  "spot_funding: Spot Funding endpoint.",
+  "spot_websocket: Spot Websocket client + Spot Orderbook client.",
+  "spot_orderbook: Spot Orderbook client.",
+  "futures: Futures endpoint.",
+  "futures_auth: Private Futures endpoint.",
+  "futures_market: Futures Market endpoint.",
+  "futures_user: Futures User endpoint.",
+  "futures_trade: Futures Trade endpoint.",
+  "futures_funding: Futures Funding endpoint.",
+  "futures_websocket: Futures Websocket endpoint.",
+  "nft: NFT endpoint.",
+  "nft_auth: Private NFT endpoint.",
+  "nft_market: NFT Market endpoint.",
+  "nft_trade: NFT Trade endpoint.",
 ]
 
+# filterwarnings = [
+#   "ignore:The Kraken websocket API v1 is marked as deprecated*:DeprecationWarning",
+# ]
+
 [tool.coverage.run]
-source = ["kraken"]
-omit = ["*tests*"]
+source = ["."]
+omit = ["*tests*", "_version.py"]
 
 [tool.coverage.report]
 exclude_lines = ["coverage: disable", "if TYPE_CHECKING:"]
@@ -157,7 +166,7 @@ check-filenames = true
 python_version = "3.11"
 
 # junit_xml = "mypy.xml"
-files = ["kraken/**/*.py"]
+files = ["src/kraken/**/*.py"]
 exclude = ["tests/**/*.py"]
 
 cache_dir = ".cache/mypy"

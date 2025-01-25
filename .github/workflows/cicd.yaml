@@ -83,7 +83,7 @@ jobs:
       fail-fast: true
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
-        python-version: ["3.11", "3.12"]
+        python-version: ["3.11", "3.12", "3.13"]
     with:
       os: ${{ matrix.os }}
       python-version: ${{ matrix.python-version }}
@@ -110,7 +110,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest]
-        python-version: ["3.11", "3.12"]
+        python-version: ["3.11", "3.12", "3.13"]
     with:
       os: ${{ matrix.os }}
       python-version: ${{ matrix.python-version }}
@@ -125,7 +125,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest]
-        python-version: ["3.11", "3.12"]
+        python-version: ["3.11", "3.13"] # not testing 3.12 to reduce CI time
     with:
       os: ${{ matrix.os }}
       python-version: ${{ matrix.python-version }}
@@ -143,7 +143,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest]
-        python-version: ["3.11", "3.12"]
+        python-version: ["3.11", "3.12", "3.13"]
     with:
       os: ${{ matrix.os }}
       python-version: ${{ matrix.python-version }}
@@ -158,7 +158,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest]
-        python-version: ["3.11", "3.12"]
+        python-version: ["3.11", "3.12", "3.13"]
     with:
       os: ${{ matrix.os }}
       python-version: ${{ matrix.python-version }}
@@ -175,7 +175,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest]
-        python-version: ["3.11", "3.12"]
+        python-version: ["3.11", "3.12", "3.13"]
     with:
       os: ${{ matrix.os }}
       python-version: ${{ matrix.python-version }}
@@ -190,7 +190,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest]
-        python-version: ["3.11", "3.12"]
+        python-version: ["3.11", "3.12", "3.13"]
     with:
       os: ${{ matrix.os }}
       python-version: ${{ matrix.python-version }}

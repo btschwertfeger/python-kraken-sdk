@@ -6,6 +6,10 @@
 
 Uncategorized merged pull requests:
 
+- Bump github/codeql-action from 3.28.1 to 3.28.2 [\#341](https://github.com/btschwertfeger/python-kraken-sdk/pull/341) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump codecov/codecov-action from 5.1.2 to 5.2.0 [\#340](https://github.com/btschwertfeger/python-kraken-sdk/pull/340) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Update the documentation [\#339](https://github.com/btschwertfeger/python-kraken-sdk/pull/339) ([btschwertfeger](https://github.com/btschwertfeger))
+- Bump step-security/harden-runner from 2.10.3 to 2.10.4 [\#338](https://github.com/btschwertfeger/python-kraken-sdk/pull/338) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump step-security/harden-runner from 2.10.2 to 2.10.3 [\#337](https://github.com/btschwertfeger/python-kraken-sdk/pull/337) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump github/codeql-action from 3.28.0 to 3.28.1 [\#336](https://github.com/btschwertfeger/python-kraken-sdk/pull/336) ([dependabot[bot]](https://github.com/apps/dependabot))
 
