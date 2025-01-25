@@ -89,7 +89,7 @@ jobs:
           FUTURES_SECRET_KEY: ${{ secrets.FUTURES_SECRET_KEY }}
           FUTURES_SANDBOX_KEY: ${{ secrets.FUTURES_SANDBOX_KEY }}
           FUTURES_SANDBOX_SECRET: ${{ secrets.FUTURES_SANDBOX_SECRET }}
-        run: pytest -vv -m "futures and futures_auth and not futures_websocket and not flaky" tests
+        run: pytest -vv -m "futures and futures_auth and not futures_websocket" tests
 
       - name: Testing Futures websocket client
         env:
@@ -97,4 +97,4 @@ jobs:
           FUTURES_SECRET_KEY: ${{ secrets.FUTURES_SECRET_KEY }}
           FUTURES_SANDBOX_KEY: ${{ secrets.FUTURES_SANDBOX_KEY }}
           FUTURES_SANDBOX_SECRET: ${{ secrets.FUTURES_SANDBOX_SECRET }}
-        run: pytest -vv -m "futures and futures_auth and futures_websocket and not flaky" tests
+        run: pytest -vv -m "futures and futures_auth and futures_websocket" tests

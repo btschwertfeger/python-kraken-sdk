@@ -11,18 +11,22 @@ PYTEST_OPTS := -vv --junit-xml=pytest.xml
 PYTEST_COV_OPTS := $(PYTEST_OPTS) --cov --cov-report=xml:coverage.xml --cov-report=term
 TEST_DIR := tests
 
-## ======= H E L P =======
+## ======= M A K E F I L E - T A R G E T S =====================================
+## help           Show this help message
+##
 .PHONY: help
 help:
 	@grep "^##" Makefile | sed -e "s/##//"
 
-## ======= B U I L D I N G =======
+## ======= B U I L D I N G =====================================================
 ## build		Builds the package
 ##
 .PHONY: build
 build: check-uv
 	$(UV) build .
 
+## rebuild 	Rebuild the package
+##
 .PHONY: rebuild
 rebuild: clean build
 
@@ -32,7 +36,7 @@ rebuild: clean build
 doc:
 	cd doc && make html
 
-## ======= I N S T A L L A T I O N =======
+## ======= I N S T A L L A T I O N =============================================
 ## install	Install the package
 ##
 .PHONY: install
@@ -45,7 +49,7 @@ install: check-uv
 dev: check-uv
 	$(UV) pip install -e ".[dev,test,examples,jupyter]"
 
-## ======= T E S T I N G =======
+## ======= T E S T I N G =======================================================
 ## test		Run the unit tests
 ##
 .PHONY: test
@@ -56,6 +60,8 @@ test:
 .PHONY: tests
 tests: test
 
+## retest         Run tests that failed in the last run
+##
 .PHONY: retest
 retest:
 	@rm .cache/tests/*.log || true
@@ -68,7 +74,7 @@ wip:
 	@rm .cache/tests/*.log || true
 	$(PYTEST) -m "wip" -vv $(TEST_DIR)
 
-## coverage		Run all tests and generate the coverage report
+## coverage       Run all tests and generate the coverage report
 ##
 .PHONY: coverage
 coverage:
@@ -81,14 +87,15 @@ coverage:
 doctest:
 	cd docs && make doctest
 
-## ======= M I S C E L A N I O U S =======
+## ======= M I S C E L A N I O U S =============================================
 ## pre-commit	Run the pre-commit targets
 ##
 .PHONY: pre-commit
 pre-commit:
 	@pre-commit run -a
 
-## ruff 	Run ruff without fix
+## ruff           Run ruff without fix
+##
 .PHONY: ruff
 ruff:
 	$(UVX) ruff check --preview .
@@ -141,7 +148,7 @@ clean:
 	find src -name "__pycache__" | xargs rm -rf
 	find examples -name "__pycache__" | xargs rm -rf
 
-## check-uv		Check if uv is installed
+## check-uv       Check if uv is installed
 ##
 .PHONY: check-uv
 check-uv:

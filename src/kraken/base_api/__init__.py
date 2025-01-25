@@ -24,6 +24,7 @@ from kraken.exceptions import _get_exception
 if TYPE_CHECKING:
     from collections.abc import Awaitable, Callable, Coroutine
     from typing import Final
+import warnings
 
 Self = TypeVar("Self")
 
@@ -663,6 +664,12 @@ class SpotAsyncClient(SpotClient):
 
     async def async_close(self: SpotAsyncClient) -> None:
         """Closes the aiohttp session"""
+        warnings.warn(
+            "The 'async_close' function is deprecated and will be replaced by"
+            " 'close' in a future release.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         await self.__session.close()
 
     async def __aenter__(self: Self) -> Self:
@@ -1144,6 +1151,12 @@ class FuturesAsyncClient(FuturesClient):
 
     async def async_close(self: FuturesAsyncClient) -> None:
         """Closes the aiohttp session"""
+        warnings.warn(
+            "The 'async_close' function is deprecated and will be replaced by"
+            " 'close' in a future release.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         await self.__session.close()
 
     async def __aenter__(self: Self) -> Self:

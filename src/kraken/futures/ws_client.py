@@ -22,6 +22,7 @@ from kraken.futures.websocket import ConnectFuturesWebsocket
 if TYPE_CHECKING:
     from collections.abc import Callable
     from typing import Any
+import warnings
 
 Self = TypeVar("Self")
 
@@ -155,6 +156,12 @@ class FuturesWSClient(FuturesAsyncClient):
 
     async def stop(self: FuturesWSClient) -> None:
         """Method to stop the websocket connection."""
+        warnings.warn(
+            "The 'stop' function is deprecated and will be replaced by"
+            " 'close' in a future release.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         if self._conn:
             await self._conn.stop()
 

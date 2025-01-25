@@ -114,36 +114,35 @@ cache_dir = ".cache/pytest"
 # Retrying tests once, as we're testing against lots of API endpoints, the tests
 # are flaky by design.
 retries = 1
+retry_delay = 1                                 # seconds
+timeout = 60                                    # seconds
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
 
 markers = [
   "wip: Used to run a specific test by hand.",
   "flaky: Flaky tests",
-  "spot: … Spot endpoint.",
-  "spot_auth: … authenticated Spot endpoint.",
-  "spot_earn: … Spot Earn endpoint.",
-  "spot_trade: … Spot Trade endpoint.",
-  "spot_user: … Spot User endpoint.",
-  "spot_market: … Spot Market endpoint.",
-  "spot_funding: … Spot Funding endpoint.",
-  "spot_websocket: … Spot Websocket client + Spot Orderbook client.",
-  "spot_orderbook: … Spot Orderbook client.",
-  "futures: … Futures endpoint.",
-  "futures_auth: … authenticated Futures endpoint.",
-  "futures_market: … Futures Market endpoint.",
-  "futures_user: … Futures User endpoint.",
-  "futures_trade: … Futures Trade endpoint.",
-  "futures_funding: … Futures Funding endpoint.",
-  "futures_websocket: … Futures Websocket endpoint.",
-  "nft: … NFT endpoint.",
-  "nft_auth: … authenticated NFT endpoint.",
-  "nft_market: … NFT Market endpoint.",
-  "nft_trade: … NFT Trade endpoint.",
+  "spot: Spot endpoint.",
+  "spot_auth: Private Spot endpoint.",
+  "spot_earn: Spot Earn endpoint.",
+  "spot_trade: Spot Trade endpoint.",
+  "spot_user: Spot User endpoint.",
+  "spot_market: Spot Market endpoint.",
+  "spot_funding: Spot Funding endpoint.",
+  "spot_websocket: Spot Websocket client + Spot Orderbook client.",
+  "spot_orderbook: Spot Orderbook client.",
+  "futures: Futures endpoint.",
+  "futures_auth: Private Futures endpoint.",
+  "futures_market: Futures Market endpoint.",
+  "futures_user: Futures User endpoint.",
+  "futures_trade: Futures Trade endpoint.",
+  "futures_funding: Futures Funding endpoint.",
+  "futures_websocket: Futures Websocket endpoint.",
+  "nft: NFT endpoint.",
+  "nft_auth: Private NFT endpoint.",
+  "nft_market: NFT Market endpoint.",
+  "nft_trade: NFT Trade endpoint.",
 ]
-
-asyncio_default_fixture_loop_scope = "function"
-
-asyncio_mode = "auto"
-timeout = 60          # seconds
 
 # filterwarnings = [
 #   "ignore:The Kraken websocket API v1 is marked as deprecated*:DeprecationWarning",
