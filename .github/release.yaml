@@ -24,14 +24,14 @@ changelog:
       labels:
         - Bug
         - bug
-    - title: Other Changes
+    - title: Other Changes 📝
       labels:
         - "*"
       exclude:
         labels:
           - dependencies
           - github_actions
-    - title: 👒 Dependencies
+    - title: Dependencies 👒
       labels:
         - dependencies
         - github_actions

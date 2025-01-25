@@ -17,7 +17,7 @@ help:
 	@grep "^##" Makefile | sed -e "s/##//"
 
 ## ======= B U I L D I N G =======
-## build		Builds the python-kraken-sdk
+## build		Builds the package
 ##
 .PHONY: build
 build: check-uv
@@ -43,7 +43,7 @@ install: check-uv
 ##
 .PHONY: dev
 dev: check-uv
-	$(UV) pip install -e ".[dev,test]"
+	$(UV) pip install -e ".[dev,test,examples,jupyter]"
 
 ## ======= T E S T I N G =======
 ## test		Run the unit tests
@@ -55,6 +55,11 @@ test:
 
 .PHONY: tests
 tests: test
+
+.PHONY: retest
+retest:
+	@rm .cache/tests/*.log || true
+	$(PYTEST) $(PYTEST_OPTS) --lf $(TEST_DIR)
 
 ## wip		Run tests marked as 'wip'
 ##
@@ -119,7 +124,7 @@ clean:
 		.vscode \
 		dist/ \
 		doc/_build \
-		python_kraken_sdk.egg-info \
+		src/python_kraken_sdk.egg-info \
 	    build/
 
 	rm -f .coverage \
@@ -127,14 +132,13 @@ clean:
 		*.log \
 		*.zip \
 		coverage.xml \
-		kraken/_version.py \
+		src/kraken/_version.py \
 		mypy.xml \
 		pytest.xml \
-		python_kraken_sdk-*.whl \
 		tests/*.zip
 
 	find tests -name "__pycache__" | xargs rm -rf
-	find kraken -name "__pycache__" | xargs rm -rf
+	find src -name "__pycache__" | xargs rm -rf
 	find examples -name "__pycache__" | xargs rm -rf
 
 ## check-uv		Check if uv is installed

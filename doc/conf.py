@@ -23,9 +23,8 @@ project = "python-kraken-sdk"
 copyright = "2023, Benjamin Thomas Schwertfeger"  # noqa: A001 # pylint: disable=redefined-builtin
 author = "Benjamin Thomas Schwertfeger"
 
-# to import the package
-parent_directory: Path = Path("..").resolve()
-sys.path.insert(0, str(parent_directory))
+# Add the package to sys.path:
+sys.path.insert(0, str(Path("..").resolve()))
 
 rst_epilog = ""
 # Read link all targets from file
@@ -69,11 +68,10 @@ exclude_patterns = [
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 
 html_theme = "sphinx_rtd_theme"
-html_static_path = ["_static"]
+# html_static_path = ["_static"]
 html_context = {
     "display_github": True,
     "github_user": "btschwertfeger",
     "github_repo": "python-kraken-sdk",
     "github_version": "master/doc/",
 }
-# html_theme_options = {"rightsidebar": "true", "relbarbgcolor": "black"}
