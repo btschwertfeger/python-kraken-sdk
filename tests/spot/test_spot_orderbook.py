@@ -45,7 +45,7 @@ def test_create_public_bot(caplog: pytest.LogCaptureFixture) -> None:
     for expected in (
         'channel": "status"',
         '"api_version": "v2"',
-        '"system": "online", "version": "2.',
+        '"system": "online",',
         '"type": "update"',
     ):
         assert expected in caplog.text

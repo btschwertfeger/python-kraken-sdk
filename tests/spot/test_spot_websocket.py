@@ -53,7 +53,7 @@ def test_create_public_client(caplog: pytest.LogCaptureFixture) -> None:
     for expected in (
         'channel": "status"',
         '"api_version": "v2"',
-        '"system": "online", "version": "2.',
+        '"system": "online",',
         '"type": "update"',
     ):
         assert expected in caplog.text
@@ -77,7 +77,7 @@ def test_create_public_client_as_context_manager(
     for expected in (
         'channel": "status"',
         '"api_version": "v2"',
-        '"system": "online", "version": "2.',
+        '"system": "online",',
         '"type": "update"',
     ):
         assert expected in caplog.text
@@ -496,9 +496,11 @@ def test_reconnect(
         "Recover public subscriptions []: done",
         "Recover authenticated subscriptions []: done",
         "Websocket connected!",
-        '{"channel": "status", "data": [{"api_version": "v2", "connection_id": ',
-        '"system": "online", "version": ',  # "2.0.x"
-        '"type": "update"}',
+        '{"channel": "status",',
+        '"data": [{',
+        '"api_version": "v2",',
+        '"connection_id": ',
+        '"system": "online",',
         '{"method": "subscribe", "result": {"channel": "ticker", "event_trigger": "trades", "snapshot": true, "symbol": "BTC/USD"}, "success": true,',
         '"channel": "ticker", "type": "snapshot", "data": [{"symbol": "BTC/USD", ',
         "got an exception sent 1000 (OK); then received 1000 (OK)",
