@@ -50,7 +50,7 @@ jobs:
         uses: step-security/harden-runner@cb605e52c26070c328afc4562f0b4ada7618a84e # v2.10.4
         with:
           disable-sudo: true
-          egress-policy: block
+          egress-policy: audit # FIXME: block
           allowed-endpoints: >
             api.codecov.io:443
             api.kraken.com:443
