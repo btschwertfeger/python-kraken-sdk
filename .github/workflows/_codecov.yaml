@@ -50,21 +50,7 @@ jobs:
         uses: step-security/harden-runner@cb605e52c26070c328afc4562f0b4ada7618a84e # v2.10.4
         with:
           disable-sudo: true
-          egress-policy: audit # FIXME: block
-          allowed-endpoints: >
-            api.codecov.io:443
-            api.kraken.com:443
-            api.github.com:443
-            cli.codecov.io:443
-            demo-futures.kraken.com:443
-            files.pythonhosted.org:443
-            futures.kraken.com:443
-            github.com:443
-            objects.githubusercontent.com:443
-            pypi.org:443
-            storage.googleapis.com:443
-            ws-auth.kraken.com:443
-            ws.kraken.com:443
+          egress-policy: audit
 
       - name: Checkout repository
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
