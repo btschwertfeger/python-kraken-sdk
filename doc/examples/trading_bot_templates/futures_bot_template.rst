@@ -1,8 +1,9 @@
-.. -*- coding: utf-8 -*-
+.. -*- mode: rst; coding: utf-8 -*-
+..
 .. Copyright (C) 2023 Benjamin Thomas Schwertfeger
-.. GitHub: https://github.com/btschwertfeger
-
-.. The futures trading bot template
+.. All rights reserved.
+.. https://github.com/btschwertfeger
+..
 
 Futures Trading Bot Template
 ----------------------------

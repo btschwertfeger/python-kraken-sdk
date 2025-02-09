@@ -1,3 +1,5 @@
+# -*- mode: make; coding: utf-8 -*-
+#!make
 # Minimal makefile for Sphinx documentation
 #
 

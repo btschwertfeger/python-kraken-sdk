@@ -1,6 +1,7 @@
-# -*- coding: utf-8 -*-
+# -*- mode: yaml; coding: utf-8 -*-
 # Copyright (C) 2023 Benjamin Thomas Schwertfeger
-# GitHub: https://github.com/btschwertfeger
+# All rights reserved.
+# https://github.com/btschwertfeger
 #
 # Config file to auto-generate release notes based on
 # https://docs.github.com/en/repositories/releasing-projects-on-github/automatically-generated-release-notes

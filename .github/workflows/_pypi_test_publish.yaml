@@ -1,6 +1,7 @@
-# -*- coding: utf-8 -*-
+# -*- mode: yaml; coding: utf-8 -*-
 # Copyright (C) 2024 Benjamin Thomas Schwertfeger
-# GitHub: https://github.com/btschwertfeger
+# All rights reserved.
+# https://github.com/btschwertfeger
 #
 # Template workflow to build the project and publish
 # the package to test PyPI.

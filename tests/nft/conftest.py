@@ -1,6 +1,9 @@
-#!/usr/bin/env python
+# -*- mode: python; coding: utf-8 -*-
+#
 # Copyright (C) 2024 Benjamin Thomas Schwertfeger
-# GitHub: https://github.com/btschwertfeger
+# All rights reserved.
+# https://github.com/btschwertfeger
+#
 
 """
 Module providing fixtures used for the unit tests regarding the Kraken NFT API.

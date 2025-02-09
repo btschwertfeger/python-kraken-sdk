@@ -1,6 +1,8 @@
-#!/usr/bin/env python
-# Copyright (C) 2024 Benjamin Thomas Schwertfeger
-# GitHub: https://github.com/btschwertfeger
+# -*- mode: python; coding: utf-8 -*-
+#
+# Copyright (C) 2023 Benjamin Thomas Schwertfeger
+# All rights reserved.
+# https://github.com/btschwertfeger
 #
 
 """Module that implements the unit tests for the Spot Earn client."""
