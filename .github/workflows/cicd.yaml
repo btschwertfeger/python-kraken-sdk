@@ -202,8 +202,9 @@ jobs:
   ##
   CodeCov:
     if: |
-      (success() && github.actor == 'btschwertfeger')
-      && (github.event_name == 'push' || github.event_name == 'release')
+      success()
+      && github.actor == 'btschwertfeger'
+      && github.event_name != 'schedule'
     needs:
       - Test-Spot-Public
       - Test-Spot-Private
