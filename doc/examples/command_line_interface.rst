@@ -1,6 +1,9 @@
-.. -*- coding: utf-8 -*-
+.. -*- mode: rst; coding: utf-8 -*-
+..
 .. Copyright (C) 2024 Benjamin Thomas Schwertfeger
-.. GitHub: https://github.com/btschwertfeger
+.. All rights reserved.
+.. https://github.com/btschwertfeger
+..
 
 .. _section-command-line-interface-examples:
 

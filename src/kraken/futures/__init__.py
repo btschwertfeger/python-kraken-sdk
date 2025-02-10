@@ -1,6 +1,9 @@
-#!/usr/bin/env python
+# -*- mode: python; coding: utf-8 -*-
+#
 # Copyright (C) 2023 Benjamin Thomas Schwertfeger
-# GitHub: https://github.com/btschwertfeger
+# All rights reserved.
+# https://github.com/btschwertfeger
+#
 # pylint: disable=unused-import
 
 """This module provides the Kraken Futures clients"""

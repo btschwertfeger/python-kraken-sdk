@@ -1,5 +1,8 @@
+# -*- mode: python; coding: utf-8 -*-
+#
 # Copyright (C) 2023 Benjamin Thomas Schwertfeger
-# GitHub: https://github.com/btschwertfeger
+# All rights reserved.
+# https://github.com/btschwertfeger
 #
 # Configuration file for the Sphinx documentation builder.
 #
@@ -24,7 +27,7 @@ copyright = "2023, Benjamin Thomas Schwertfeger"  # noqa: A001 # pylint: disable
 author = "Benjamin Thomas Schwertfeger"
 
 # Add the package to sys.path:
-sys.path.insert(0, str(Path("..").resolve()))
+sys.path.insert(0, str(Path("..").resolve() / "src"))
 
 rst_epilog = ""
 # Read link all targets from file

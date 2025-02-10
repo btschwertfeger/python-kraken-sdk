@@ -1,8 +1,9 @@
-.. -*- coding: utf-8 -*-
+.. -*- mode: rst; coding: utf-8 -*-
+..
 .. Copyright (C) 2023 Benjamin Thomas Schwertfeger
-.. GitHub: https://github.com/btschwertfeger
-
-.. The spot trading bot templates
+.. All rights reserved.
+.. https://github.com/btschwertfeger
+..
 
 Spot Trading Bot Templates
 --------------------------
