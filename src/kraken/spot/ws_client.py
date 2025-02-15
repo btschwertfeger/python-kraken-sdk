@@ -5,10 +5,7 @@
 # https://github.com/btschwertfeger
 #
 
-"""
-This module provides the Spot websocket client (Websocket API as
-documented in - https://docs.kraken.com/websockets-v2).
-"""
+""" This module provides the Spot websocket client. """
 
 from __future__ import annotations
 
@@ -205,7 +202,7 @@ class SpotWSClient(SpotWSClientBase):
 
         **Placing orders** using an authenticated websocket connection can be
         easily done as shown in the example below. See
-        https://docs.kraken.com/websockets-v2/#add-order to retrieve more
+        https://docs.kraken.com/api/docs/websocket-v2/add_order to retrieve more
         information about the available parameters.
 
         .. code-block:: python
@@ -228,7 +225,7 @@ class SpotWSClient(SpotWSClientBase):
 
         **Placing orders as batch** can be done by passing ``batch_add`` as
         method. Its parameters and limitations are described in
-        https://docs.kraken.com/websockets-v2/#batch-add.
+        https://docs.kraken.com/api/docs/websocket-v2/batch_add.
 
         .. code-block:: python
             :linenos:
@@ -263,7 +260,7 @@ class SpotWSClient(SpotWSClientBase):
 
         **Cancel orders as batch** is available using the ``batch_cancel``
         method as described in
-        https://docs.kraken.com/websockets-v2/#batch-cancel.
+        https://docs.kraken.com/api/docs/websocket-v2/batch_cancel.
 
         .. code-block:: python
             :linenos:
@@ -284,7 +281,7 @@ class SpotWSClient(SpotWSClientBase):
 
         **Cancel all orders** can be used as the name suggests - to cancel
         all open orders (see
-        https://docs.kraken.com/websockets-v2/#cancel-all-orders).
+        https://docs.kraken.com/api/docs/websocket-v2/cancel_all).
 
         .. code-block:: python
             :linenos:
@@ -299,7 +296,7 @@ class SpotWSClient(SpotWSClientBase):
         **Death Man's Switch** is a useful utility to reduce the risk of losses
         due to network fuck-ups since it will cancel all orders if the call
         was not received by Kraken within a certain amount of time. See
-        https://docs.kraken.com/websockets-v2/#cancel-all-orders-after for more
+        https://docs.kraken.com/api/docs/websocket-v2/cancel_after for more
         information.
 
         .. code-block:: python
@@ -314,7 +311,8 @@ class SpotWSClient(SpotWSClientBase):
             ... )
 
         **Canceling orders** is a common task during trading and can be done
-        as described in https://docs.kraken.com/websockets-v2/#cancel-order.
+        as described in
+        https://docs.kraken.com/api/docs/websocket-v2/cancel_order.
 
         .. code-block:: python
             :linenos:
@@ -330,7 +328,7 @@ class SpotWSClient(SpotWSClientBase):
             ... )
 
         **Editing orders** can be done as shown in the example below. See
-        https://docs.kraken.com/websockets-v2/#edit-order for more information.
+        https://docs.kraken.com/api/docs/websocket-v2/edit_order for more information.
 
         .. code-block:: python
             :linenos:
@@ -437,10 +435,6 @@ class SpotWSClient(SpotWSClientBase):
         authentication make sure that the ``Access WebSockets API`` API key
         permission is set in the users Kraken account.
 
-        - https://docs.kraken.com/websockets-v2/#subscribe
-
-        See https://docs.kraken.com/websockets-v2/#channels for all channels.
-
         **Please note** that this function automatically assigns the ``method``
         key and sets its value to ``subscribe``. The authentication token is
         also assigned automatically, so only the ``params`` are needed here.
@@ -486,8 +480,6 @@ class SpotWSClient(SpotWSClientBase):
         authentication make sure, that the ``Access WebSockets API`` API key
         permission is set in the users Kraken account.
 
-        - https://docs.kraken.com/websockets-v2/#unsubscribe
-
         :param params: The un-subscription message (only the params part)
         :type params: dict
 
@@ -521,11 +513,11 @@ class SpotWSClient(SpotWSClientBase):
 
         The available public channels are listed below:
 
-        - `book <https://docs.kraken.com/websockets-v2/#book>`_
-        - `instrument <https://docs.kraken.com/websockets-v2/#instrument>`_
-        - `ohlc <https://docs.kraken.com/websockets-v2/#open-high-low-and-close-ohlc>`_
-        - `ticker <https://docs.kraken.com/websockets-v2/#ticker>`_
-        - `trade <https://docs.kraken.com/websockets-v2/#trade>`_
+        - `book <https://docs.kraken.com/api/docs/websocket-v2/book>`_
+        - `instrument <https://docs.kraken.com/api/docs/websocket-v2/instrument>`_
+        - `ohlc <https://docs.kraken.com/api/docs/websocket-v2/ohlc>`_
+        - `ticker <https://docs.kraken.com/api/docs/websocket-v2/ticker>`_
+        - `trade <https://docs.kraken.com/api/docs/websocket-v2/trade>`_
 
         :return: List of available public channel names
         :rtype: list[str]
@@ -541,8 +533,7 @@ class SpotWSClient(SpotWSClientBase):
         Override this property if the exchange supports additional private
         channels.
 
-        - `executions
-          <https://docs.kraken.com/api/docs/websocket-v2/executions>`_
+        - `executions <https://docs.kraken.com/api/docs/websocket-v2/executions>`_
         - `balances <https://docs.kraken.com/api/docs/websocket-v2/balances>`_
         - `level3 <https://docs.kraken.com/api/docs/websocket-v2/level3>`_
 
@@ -560,19 +551,21 @@ class SpotWSClient(SpotWSClientBase):
         The available methods and their documentation are listed below (as of
         June 2023):
 
-        - `add_order <https://docs.kraken.com/websockets-v2/#add-order>`_
-        - `batch_order <https://docs.kraken.com/websockets-v2/#batch-add>`_
-        - `batch_cancel <https://docs.kraken.com/websockets-v2/#batch-cancel>`_
-        - `cancel_all <https://docs.kraken.com/websockets-v2/#cancel-all-orders>`_
-        - `cancel_all_orders_after <https://docs.kraken.com/websockets-v2/#cancel-all-orders-after>`_
-        - `cancel_order <https://docs.kraken.com/websockets-v2/#cancel-order>`_
-        - `edit_order <https://docs.kraken.com/websockets-v2/#edit-order>`_
+        - `add_order <https://docs.kraken.com/api/docs/websocket-v2/add_order>`_
+        - `amend_order` <https://docs.kraken.com/api/docs/websocket-v2/amend_order>`_
+        - `cancel_order <https://docs.kraken.com/api/docs/websocket-v2/cancel_order>`_
+        - `cancel_all <https://docs.kraken.com/api/docs/websocket-v2/cancel_all>`_
+        - `cancel_all_orders_after <https://docs.kraken.com/api/docs/websocket-v2/cancel_after>`_
+        - `batch_order <https://docs.kraken.com/api/docs/websocket-v2/batch_add>`_
+        - `batch_cancel <https://docs.kraken.com/api/docs/websocket-v2/batch_cancel>`_
+        - `edit_order <https://docs.kraken.com/api/docs/websocket-v2/edit_order>`_
 
         :return: List of available methods
         :rtype: list[str]
         """
         return [
             "add_order",
+            "amend_order",
             "batch_add",
             "batch_cancel",
             "cancel_all",

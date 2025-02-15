@@ -24,8 +24,6 @@ class Trade(SpotClient):
     """
     Class that implements the Kraken Trade Spot client.
 
-    - https://docs.kraken.com/rest/#tag/Spot-Trading
-
     :param key: Spot API public key (default: ``""``)
     :type key: str, optional
     :param secret: Spot API secret key (default: ``""``)
@@ -101,7 +99,7 @@ class Trade(SpotClient):
         Requires the ``Create and modify orders`` permission in the API key
         settings.
 
-        - https://docs.kraken.com/rest/#operation/addOrder
+        - https://docs.kraken.com/api/docs/rest-api/add-order
 
         :param ordertype: The kind of the order, one of: ``market``, ``limit``,
             ``take-profit``, ``stop-loss-limit``, ``take-profit-limit`` and
@@ -406,7 +404,7 @@ class Trade(SpotClient):
         Requires the ``Create and modify orders`` permission in
         the API key settings.
 
-        - https://docs.kraken.com/rest/#operation/addOrderBatch
+        - https://docs.kraken.com/api/docs/rest-api/add-order-batch
 
         :param orders: Dictionary of order objects (see the referenced Kraken documentation for more information)
         :type orders: list[dict]
@@ -495,7 +493,7 @@ class Trade(SpotClient):
         Requires the ``Create and modify orders`` permission in
         the API key settings.
 
-        - https://docs.kraken.com/rest/#operation/editOrder
+        - https://docs.kraken.com/api/docs/rest-api/edit-order
 
         :param txid: The txid of the order to edit
         :type txid: str
@@ -592,7 +590,7 @@ class Trade(SpotClient):
         Requires the ``Cancel/close orders`` permission in
         the API key settings.
 
-        - https://docs.kraken.com/rest/#operation/cancelOrder
+        - https://docs.kraken.com/api/docs/rest-api/cancel-order
 
         :param txid: Transaction id or comma delimited list of user reference ids to cancel.
         :type txid: str
@@ -626,7 +624,7 @@ class Trade(SpotClient):
         Requires the ``Cancel/close orders`` permission in
         the API key settings.
 
-        - https://docs.kraken.com/rest/#operation/cancelAllOrders
+        - https://docs.kraken.com/api/docs/rest-api/cancel-all-orders
 
         :return: Success or failure - Number of closed orders
         :rtype: dict
@@ -658,7 +656,7 @@ class Trade(SpotClient):
         Requires the ``Create and modify orders`` permission in
         the API key settings.
 
-        - https://docs.kraken.com/rest/#operation/cancelAllOrdersAfter
+        - https://docs.kraken.com/api/docs/rest-api/cancel-all-orders-after
 
         :param timeout: Optional The timeout in seconds, deactivate by passing the default: ``0``
         :type timeout: int, optional
@@ -696,7 +694,7 @@ class Trade(SpotClient):
         Requires the ``Cancel/close orders`` permission in
         the API key settings.
 
-        - https://docs.kraken.com/rest/#operation/cancelOrderBatch
+        - https://docs.kraken.com/api/docs/rest-api/cancel-order-batch
 
         :param orders: List of orders to cancel
         :type orders: list[str | int]
@@ -735,8 +733,6 @@ class Trade(SpotClient):
 
         This function converts an amount of a specific type and pair to a string that uses
         the correct number of decimal places.
-
-        - https://support.kraken.com/hc/en-us/articles/4521313131540
 
         This function uses caching. Run ``truncate.clear_cache()`` to clear.
 

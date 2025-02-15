@@ -354,7 +354,6 @@ class MaxReconnectError(Exception):
     """To many reconnect tries."""
 
 
-# https://docs.kraken.com/rest/#section/General-Usage/Requests-Responses-and-Errors
 EXCEPTION_ASSIGNMENT: dict[str, Any] = {
     #      Spot, Margin, and Futures trading Errors
     #

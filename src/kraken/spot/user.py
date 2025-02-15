@@ -26,9 +26,6 @@ class User(SpotClient):
 
     Requires the ``Query funds`` permission in the API key settings.
 
-    - https://docs.kraken.com/rest/#tag/Account-Data
-    - https://docs.kraken.com/rest/#tag/Subaccounts
-
     :param key: Spot API public key (default: ``""``)
     :type key: str, optional
     :param secret: Spot API secret key (default: ``""``)
@@ -79,7 +76,7 @@ class User(SpotClient):
 
         Requires the ``Query funds`` permission in the API key settings.
 
-        - https://docs.kraken.com/rest/#operation/getAccountBalance
+        - https://docs.kraken.com/api/docs/rest-api/get-account-balance
 
         .. code-block:: python
             :linenos:
@@ -206,7 +203,7 @@ class User(SpotClient):
         Requires the ``Query funds``, ``Query open orders & trades``, and
         ``Query closed orders & trades`` permissions in the API key settings.
 
-        - https://docs.kraken.com/rest/#operation/getTradeBalance
+        - https://docs.kraken.com/api/docs/rest-api/get-trade-balance
 
         :param asset: The base asset to determine the balances (default:
             ``ZUSD``)
@@ -254,7 +251,7 @@ class User(SpotClient):
         Requires the ``Query open orders & trades`` permission in the API key
         settings.
 
-        - https://docs.kraken.com/rest/#operation/getOpenOrders
+        - https://docs.kraken.com/api/docs/rest-api/get-open-orders
 
         :param userref: Filter the results by user reference id
         :type userref: int, optional
@@ -332,7 +329,7 @@ class User(SpotClient):
         Requires the ``Query closed orders & trades`` permission in the API key
         settings.
 
-        - https://docs.kraken.com/rest/#operation/getClosedOrders
+        - https://docs.kraken.com/api/docs/rest-api/get-closed-orders
 
         :param userref: Filter the results by user reference id
         :type userref: int, optional
@@ -426,7 +423,7 @@ class User(SpotClient):
         Requires the ``Query open orders & trades`` and ``Query closed orders &
         trades`` permissions in the API key settings.
 
-        - https://docs.kraken.com/rest/#tag/User-Data/operation/getOrdersInfo
+        - https://docs.kraken.com/api/docs/rest-api/get-orders-info
 
         :param txid: A transaction id of a specific order, a list of txids or a
             string containing a comma delimited list of txids
@@ -541,7 +538,7 @@ class User(SpotClient):
         Requires the ``Query closed orders & trades`` permission in the API key
         settings.
 
-        - https://docs.kraken.com/rest/#operation/getTradeHistory
+        - https://docs.kraken.com/api/docs/rest-api/get-trade-history
 
         :param type_: Filter by type of trade, one of: ``all``, ``any
             position``, ``closed position``, ``closing position``, and ``no
@@ -626,7 +623,7 @@ class User(SpotClient):
         Requires the ``Query open orders & trades`` and ``Query closed orders &
         trades`` permission in the API key settings.
 
-        - https://docs.kraken.com/rest/#operation/getTradesInfo
+        - https://docs.kraken.com/api/docs/rest-api/get-trades-info
 
         :param txid: txid or list of txids or comma delimited list of txids as
             string
@@ -686,7 +683,7 @@ class User(SpotClient):
         Requires the ``Query open orders & trades`` permission in the API key
         settings.
 
-        - https://docs.kraken.com/rest/#operation/getOpenPositions
+        - https://docs.kraken.com/api/docs/rest-api/get-open-positions
 
         :param txid: Filter by txid or list of txids or comma delimited list of
             txids as string
@@ -758,7 +755,7 @@ class User(SpotClient):
         Requires the ``Query funds`` and ``Query ledger entries`` permissions in
         the API key settings.
 
-        - https://docs.kraken.com/rest/#operation/getLedgers
+        - https://docs.kraken.com/api/docs/rest-api/get-ledgers
 
         :param asset: The asset(s) to filter for (default: ``all``)
         :type asset: str | list[str]
@@ -829,7 +826,7 @@ class User(SpotClient):
         Requires the ``Query funds`` and ``Query ledger entries`` permissions in
         the API key settings.
 
-        - https://docs.kraken.com/rest/#operation/getLedgersInfo
+        - https://docs.kraken.com/api/docs/rest-api/get-ledgers-info
 
         :param id_: Ledger id as string, list of strings, or comma delimited
             list of ledger ids as string
@@ -879,7 +876,7 @@ class User(SpotClient):
 
         Requires the ``Query funds`` permission in the API key settings.
 
-        - https://docs.kraken.com/rest/#operation/getTradeVolume
+        - https://docs.kraken.com/api/docs/rest-api/get-trade-volume
 
         :param pair: Asset pair, list of asset pairs or comma delimited list (as
             string) of asset pairs to filter
@@ -958,7 +955,7 @@ class User(SpotClient):
         closed orders & trades`` must be set. For exporting ledgers the ``Query
         funds`` and ``Query ledger entries`` must be set.
 
-        - https://docs.kraken.com/rest/#operation/addExport
+        - https://docs.kraken.com/api/docs/rest-api/add-export
 
         :param report: Kind of report, one of: ``trades`` and ``ledgers``
         :type report: str
@@ -1022,7 +1019,7 @@ class User(SpotClient):
         closed orders & trades`` must be set. For exporting ledgers the ``Query
         funds`` and ``Query ledger entries`` must be set.
 
-        - https://docs.kraken.com/rest/#operation/exportStatus
+        - https://docs.kraken.com/api/docs/rest-api/export-status
 
         :param report: Kind of report, one of: ``trades``, ``ledgers``
         :type report: str
@@ -1086,7 +1083,7 @@ class User(SpotClient):
         closed orders & trades`` must be set. For exporting ledgers the ``Query
         funds`` and ``Query ledger entries`` must be set.
 
-        - https://docs.kraken.com/rest/#operation/retrieveExport
+        - https://docs.kraken.com/api/docs/rest-api/retrieve-export
 
         :param id_: Id of the report that was requested
         :type id_: str
@@ -1136,7 +1133,7 @@ class User(SpotClient):
         closed orders & trades`` must be set. For exporting ledgers the ``Query
         funds`` and ``Query ledger entries`` must be set.
 
-        - https://docs.kraken.com/rest/#operation/removeExport
+        - https://docs.kraken.com/api/docs/rest-api/remove-export
 
         :param id_: The id of the report
         :type id_: str
@@ -1173,7 +1170,7 @@ class User(SpotClient):
         Create a subaccount for trading. This is currently *only available for
         institutional clients*.
 
-        - https://docs.kraken.com/rest/#tag/User-Subaccounts
+        - https://docs.kraken.com/api/docs/rest-api/create-subaccount
 
         :param username: The username for the new subaccount
         :type username: str
@@ -1212,7 +1209,7 @@ class User(SpotClient):
         available for institutional clients and must be called by the master
         account*.
 
-        - https://docs.kraken.com/rest/#tag/User-Subaccounts/operation/accountTransfer
+        - https://docs.kraken.com/api/docs/rest-api/account-transfer
 
         :param asset: The asset to transfer
         :type asset: str

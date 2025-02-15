@@ -78,7 +78,7 @@ class Funding(FuturesClient):
         Retrieve information about the historical funding rates of a specific
         ``symbol``
 
-        - https://docs.futures.kraken.com/#http-api-trading-v3-api-historical-funding-rates-historicalfundingrates
+        - https://docs.kraken.com/api/docs/futures-api/trading/historical-funding-rates
 
         :param symbol: The futures symbol to filter for
         :type symbol: str
@@ -129,7 +129,7 @@ class Funding(FuturesClient):
         Requires the ``General API - Full Access`` and ``Withdrawal API - Full
         access`` permissions in the API key settings.
 
-        - https://docs.futures.kraken.com/#http-api-trading-v3-api-transfers-initiate-wallet-transfer
+        - https://docs.kraken.com/api/docs/futures-api/trading/transfer
 
         :param amount: The volume to transfer
         :type amount: str | float
@@ -187,7 +187,7 @@ class Funding(FuturesClient):
         Requires the ``General API - Full Access`` and ``Withdrawal API - Full
         access`` permissions in the API key settings.
 
-        - https://docs.futures.kraken.com/#http-api-trading-v3-api-transfers-initiate-sub-account-transfer
+        - https://docs.kraken.com/api/docs/futures-api/trading/sub-account-transfer
 
         :param amount: The volume to transfer
         :type amount: str | float
@@ -215,6 +215,7 @@ class Funding(FuturesClient):
             ...     unit='XBT'
             ... ))
         """
+
         return self.request(  # type: ignore[return-value]
             method="POST",
             uri="/derivatives/api/v3/transfer/subaccount",
@@ -244,7 +245,7 @@ class Funding(FuturesClient):
         Requires the ``General API - Full Access`` and ``Withdrawal API - Full
         access`` permissions in the API key settings.
 
-        - https://docs.futures.kraken.com/#http-api-trading-v3-api-transfers-initiate-withdrawal-to-spot-wallet
+        - https://docs.kraken.com/api/docs/futures-api/trading/withdrawal
 
         :param amount: The volume to transfer
         :type amount: str | float
