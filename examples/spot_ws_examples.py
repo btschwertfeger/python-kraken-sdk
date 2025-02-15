@@ -17,7 +17,6 @@ import asyncio
 import logging
 import logging.config
 import os
-from contextlib import suppress
 
 from kraken.spot import SpotWSClient
 
@@ -28,6 +27,8 @@ logging.basicConfig(
 )
 logging.getLogger("requests").setLevel(logging.WARNING)
 logging.getLogger("urllib3").setLevel(logging.WARNING)
+
+clients = []
 
 
 class Client(SpotWSClient):
@@ -64,60 +65,65 @@ async def main() -> None:
     key: str = os.getenv("SPOT_API_KEY")
     secret: str = os.getenv("SPOT_SECRET_KEY")
 
-    # Public/unauthenticated websocket client
-    client: Client = Client()  # only use this one if you don't need private feeds
-    await client.start()
-    # print(client.public_channel_names)  # list public subscription names
+    try:
+        # Public/unauthenticated websocket client
+        client: Client = Client()  # only use this one if you don't need private feeds
+        clients.append(client)
+        await client.start()
+        # print(client.public_channel_names)  # list public subscription names
 
-    await client.subscribe(
-        params={"channel": "ticker", "symbol": ["BTC/USD", "DOT/USD"]},
-    )
-    await client.subscribe(
-        params={"channel": "book", "depth": 25, "symbol": ["BTC/USD"]},
-    )
-    # await client.subscribe(params={"channel": "ohlc", "symbol": ["BTC/USD"]})
-    await client.subscribe(
-        params={
-            "channel": "ohlc",
-            "interval": 15,
-            "snapshot": False,
-            "symbol": ["BTC/USD", "DOT/USD"],
-        },
-    )
-    await client.subscribe(params={"channel": "trade", "symbol": ["BTC/USD"]})
+        await client.subscribe(
+            params={"channel": "ticker", "symbol": ["BTC/USD", "DOT/USD"]},
+        )
+        await client.subscribe(
+            params={"channel": "book", "depth": 25, "symbol": ["BTC/USD"]},
+        )
+        # await client.subscribe(params={"channel": "ohlc", "symbol": ["BTC/USD"]})
+        await client.subscribe(
+            params={
+                "channel": "ohlc",
+                "interval": 15,
+                "snapshot": False,
+                "symbol": ["BTC/USD", "DOT/USD"],
+            },
+        )
+        await client.subscribe(params={"channel": "trade", "symbol": ["BTC/USD"]})
 
-    # wait because unsubscribing is faster than unsubscribing ... (just for that example)
-    await asyncio.sleep(3)
-    # print(client.active_public_subscriptions) # … to list active subscriptions
-    await client.unsubscribe(
-        params={"channel": "ticker", "symbol": ["BTC/USD", "DOT/USD"]},
-    )
-    # ...
+        # wait because unsubscribing is faster than unsubscribing ... (just for that example)
+        await asyncio.sleep(3)
+        # print(client.active_public_subscriptions) # … to list active subscriptions
+        await client.unsubscribe(
+            params={"channel": "ticker", "symbol": ["BTC/USD", "DOT/USD"]},
+        )
+        # ...
 
-    if key and secret:
-        # Per default, the authenticated client starts two websocket connections,
-        # one for authenticated and one for public messages. If there is no need
-        # for a public connection, it can be disabled using the ``no_public``
-        # parameter.
-        client_auth = Client(key=key, secret=secret, no_public=True)
-        await client_auth.start()
-        # print(client_auth.private_channel_names)  # … list private channel names
-        # when using the authenticated client, you can also subscribe to public feeds
-        await client_auth.subscribe(params={"channel": "executions"})
+        if key and secret:
+            # Per default, the authenticated client starts two websocket connections,
+            # one for authenticated and one for public messages. If there is no need
+            # for a public connection, it can be disabled using the ``no_public``
+            # parameter.
+            client_auth = Client(key=key, secret=secret, no_public=True)
+            clients.append(client_auth)
+            await client_auth.start()
+            # print(client_auth.private_channel_names)  # … list private channel names
+            # when using the authenticated client, you can also subscribe to public feeds
+            await client_auth.subscribe(params={"channel": "executions"})
 
-        await asyncio.sleep(5)
-        await client_auth.unsubscribe(params={"channel": "executions"})
+            await asyncio.sleep(5)
+            await client_auth.unsubscribe(params={"channel": "executions"})
 
-    while not client.exception_occur:  # and not client_auth.exception_occur:
-        await asyncio.sleep(6)
+        while not client.exception_occur:  # and not client_auth.exception_occur:
+            await asyncio.sleep(6)
+    except Exception:
+        pass
+    finally:
+        # Stop the sessions properly.
+        for _client in clients:
+            await _client.close()
 
 
 if __name__ == "__main__":
-    with suppress(KeyboardInterrupt):
-        asyncio.run(main())
-    # The websocket client will send {'event': 'asyncio.CancelledError'}
-    # via on_message so you can handle the behavior/next actions
-    # individually within your strategy.
+    asyncio.run(main())
 
 # ============================================================
 # Alternative - as ContextManager:

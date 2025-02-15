@@ -80,10 +80,10 @@ class TradingBot(FuturesWSClient):
     def save_exit(self: TradingBot, reason: str = "") -> None:
         """Controlled shutdown of the strategy"""
         LOG.warning("Save exit triggered, reason: %s", reason)
-        # some ideas:
-        #   * save the bots data
-        #   * maybe close trades
-        #   * enable dead man's switch
+        # Some ideas:
+        #   * Save the bots data
+        #   * Close trades
+        #   * Enable dead man's switch
         sys.exit(1)
 
 
@@ -129,39 +129,36 @@ class ManagedBot:
         `True` if the websocket connection has some fatal error. This is used to
         exit the asyncio loop - but you can also apply your own reconnect rules.
         """
-        self.__trading_strategy = TradingBot(config=self.__config)
-        await self.__trading_strategy.start()
+        try:
+            self.__trading_strategy = TradingBot(config=self.__config)
+            await self.__trading_strategy.start()
 
-        await self.__trading_strategy.subscribe(
-            feed="ticker",
-            products=self.__config["products"],
-        )
-        await self.__trading_strategy.subscribe(
-            feed="book",
-            products=self.__config["products"],
-        )
+            await self.__trading_strategy.subscribe(
+                feed="ticker",
+                products=self.__config["products"],
+            )
+            await self.__trading_strategy.subscribe(
+                feed="book",
+                products=self.__config["products"],
+            )
 
-        await self.__trading_strategy.subscribe(feed="fills")
-        await self.__trading_strategy.subscribe(feed="open_positions")
-        await self.__trading_strategy.subscribe(feed="open_orders")
-        await self.__trading_strategy.subscribe(feed="balances")
+            await self.__trading_strategy.subscribe(feed="fills")
+            await self.__trading_strategy.subscribe(feed="open_positions")
+            await self.__trading_strategy.subscribe(feed="open_orders")
+            await self.__trading_strategy.subscribe(feed="balances")
 
-        while not self.__trading_strategy.exception_occur:
-            try:
-                # check if the strategy feels good
-                # maybe send a status update every day
+            while not self.__trading_strategy.exception_occur:
+                # Check if the algorithm feels good
+                # Send a status update every day via Telegram or Mail
                 # …
-                pass
+                await asyncio.sleep(6)
 
-            except Exception as exc:
-                message: str = f"Exception in main: {exc} {traceback.format_exc()}"
-                LOG.error(message)
-                self.__trading_strategy.save_exit(reason=message)
-
-            await asyncio.sleep(6)
-        self.__trading_strategy.save_exit(
-            reason="Left main loop because of exception in strategy.",
-        )
+        except Exception as exc:
+            LOG.error(message := f"Exception in main: {exc} {traceback.format_exc()}")
+            self.__trading_strategy.save_exit(reason=message)
+        finally:
+            # Close the sessions properly.
+            await self.__trading_strategy.close()
 
     def __check_credentials(self: ManagedBot) -> bool:
         """Checks the user credentials and the connection to Kraken"""

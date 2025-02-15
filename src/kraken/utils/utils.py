@@ -17,24 +17,28 @@ if TYPE_CHECKING:
     from collections.abc import Callable
 
 
-def deprecated(func: Callable) -> Callable:
+def deprecated(message: str) -> Callable:
     """
-    Function used as decorator to mark decorated functions as deprecated.
+    Function used as decorator to mark decorated functions as deprecated with a
+    custom message.
     """
 
-    @wraps(func)
-    def wrapper(
-        *args: Any | None,
-        **kwargs: Any | None,
-    ) -> Any | None:  # noqa: ANN401
-        warnings.warn(
-            f"Call to deprecated function {func.__name__}.",
-            category=DeprecationWarning,
-            stacklevel=2,
-        )
-        return func(*args, **kwargs)
+    def decorator(func: Callable) -> Callable:
+        @wraps(func)
+        def wrapper(
+            *args: Any | None,
+            **kwargs: Any | None,
+        ) -> Any | None:  # noqa: ANN401
+            warnings.warn(
+                f"{message}",
+                category=DeprecationWarning,
+                stacklevel=2,
+            )
+            return func(*args, **kwargs)
 
-    return wrapper
+        return wrapper
+
+    return decorator
 
 
 __all__ = ["deprecated"]

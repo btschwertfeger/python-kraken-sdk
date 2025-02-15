@@ -12,12 +12,12 @@ Module that provides the base class for the Kraken Websocket clients v2.
 from __future__ import annotations
 
 import logging
-import warnings
 from asyncio import sleep as async_sleep
 from typing import TYPE_CHECKING, Any, TypeVar
 
 from kraken.spot import SpotAsyncClient
 from kraken.spot.websocket.connectors import ConnectSpotWebsocket
+from kraken.utils.utils import deprecated
 
 if TYPE_CHECKING:
     from collections.abc import Callable
@@ -140,18 +140,25 @@ class SpotWSClientBase(SpotAsyncClient):
         else:
             raise TimeoutError("Could not connect to the Kraken API!")
 
-    async def stop(self: SpotWSClientBase) -> None:
-        """Method to stop the websocket connection."""
-        warnings.warn(
-            "The 'stop' function is deprecated and will be replaced by"
-            " 'close' in a future release.",
-            DeprecationWarning,
-            stacklevel=2,
-        )
+    async def close(self: SpotWSClientBase) -> None:
+        """Method to close the websocket connection."""
         if self._pub_conn:
             await self._pub_conn.stop()
         if self._priv_conn:
             await self._priv_conn.stop()
+        await super().close()
+
+    @deprecated(
+        "The 'stop' function is deprecated and will be replaced by"
+        " 'close' in a future release.",
+    )
+    async def stop(self: SpotWSClientBase) -> None:
+        """Method to stop the websocket connection."""
+        if self._pub_conn:
+            await self._pub_conn.stop()
+        if self._priv_conn:
+            await self._priv_conn.stop()
+        await super().close()
 
     async def on_message(
         self: SpotWSClientBase,
@@ -193,7 +200,7 @@ class SpotWSClientBase(SpotAsyncClient):
     ) -> None:
         """Exit if used as context manager"""
         await super().__aexit__()
-        await self.stop()
+        await self.close()
 
     async def get_ws_token(self: SpotWSClientBase) -> dict:
         """
