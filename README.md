@@ -47,12 +47,12 @@ regarding the use of this software.
 
 General:
 
-- command-line interface
-- access both public and private, REST and websocket endpoints
-- responsive error handling and custom exceptions
-- extensive example scripts (see `/examples` and `/tests`)
-- tested using the [pytest](https://docs.pytest.org/en/7.3.x/) framework
-- releases are permanently archived at [Zenodo](https://zenodo.org/badge/latestdoi/510751854)
+- Command-line interface
+- Access both public and private, REST and websocket endpoints
+- Responsive error handling and custom exceptions
+- Extensive example scripts (see `/examples` and `/tests`)
+- Tested using the [pytest](https://docs.pytest.org/en/7.3.x/) framework
+- Releases are permanently archived at [Zenodo](https://zenodo.org/badge/latestdoi/510751854)
 
 Available Clients:
 

@@ -60,12 +60,12 @@ Features
 
 General:
 
-- command-line interface
-- access both public and private, REST and websocket endpoints
-- responsive error handling and custom exceptions
-- extensive examples
-- tested using the `pytest <https://docs.pytest.org/en/7.3.x/>`_ framework
-- releases are permanently archived at `Zenodo <https://zenodo.org/badge/latestdoi/510751854>`_
+- Command-line interface
+- Access both public and private, REST and websocket endpoints
+- Responsive error handling and custom exceptions
+- Extensive examples
+- Tested using the `pytest <https://docs.pytest.org/en/7.3.x/>`_ framework
+- Releases are permanently archived at `Zenodo <https://zenodo.org/badge/latestdoi/510751854>`_
 
 Available Clients:
 
