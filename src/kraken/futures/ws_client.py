@@ -40,7 +40,7 @@ class FuturesWSClient(FuturesAsyncClient):
     Kraken API. If this has changed and is not implemented yet, please open an
     issue at https://github.com/btschwertfeger/python-kraken-sdk/issues
 
-    - https://docs.futures.kraken.com/#websocket-api
+    - https://docs.kraken.com/api/docs/guides/futures-websockets
 
     :param key: The Kraken Futures API key to access private endpoints
     :type key: str, optional
@@ -230,7 +230,7 @@ class FuturesWSClient(FuturesAsyncClient):
         Subscribe to a Futures websocket channel/feed. For some feeds
         authentication is required.
 
-        - https://docs.futures.kraken.com/#websocket-api-websocket-api-introduction-subscriptions
+        - https://docs.kraken.com/api/docs/guides/futures-websockets
 
         :param feed: The websocket feed/channel to subscribe to
         :type feed: str
@@ -289,7 +289,7 @@ class FuturesWSClient(FuturesAsyncClient):
         Subscribe to a Futures websocket channel/feed. For some feeds
         authentication is required.
 
-        - https://docs.futures.kraken.com/#websocket-api-websocket-api-introduction-subscriptions
+        - https://docs.kraken.com/api/docs/guides/futures-websockets
 
         :param feed: The websocket feed/channel to unsubscribe from
         :type feed: str

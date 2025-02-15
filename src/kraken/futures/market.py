@@ -84,8 +84,7 @@ class Market(FuturesClient):
         Retrieve the open, high, low, and close data for a specific symbol and
         resolution. It is also possible to filter by time.
 
-        - https://docs.futures.kraken.com/#http-api-charts-ohlc-get-ohlc
-        - https://support.kraken.com/hc/en-us/articles/4403284627220-OHLC
+        - https://docs.kraken.com/api/docs/futures-api/charts/candles
 
         :param tick_type: The kind of data, based on ``mark``, ``spot``, or
             ``trade``
@@ -154,7 +153,7 @@ class Market(FuturesClient):
         Retrieve the available tick types that can be used for example to access
         the :func:`kraken.futures.Market.get_ohlc` endpoint.
 
-        - https://docs.futures.kraken.com/#http-api-charts-ohlc-get-tick-types
+        - https://docs.kraken.com/api/docs/futures-api/charts/tick-types
 
         This function uses caching. Run ``get_tick_types.cache_clear()`` to
         clear.
@@ -188,7 +187,7 @@ class Market(FuturesClient):
         """
         Retrieve a list containing the tradeable assets on the futures market.
 
-        - https://docs.futures.kraken.com/#http-api-charts-ohlc-get-tradeable-products
+        - https://docs.kraken.com/api/docs/futures-api/charts/symbols
 
         This function uses caching. Run ``get_tradeable_products.cache_clear()``
         to clear.
@@ -226,7 +225,7 @@ class Market(FuturesClient):
         """
         Retrieve the list of available resolutions for a specific asset.
 
-        - https://docs.futures.kraken.com/#http-api-charts-ohlc-get-resolutions
+        - https://docs.kraken.com/api/docs/futures-api/charts/resolutions
 
         This function uses caching. Run ``get_resolutions.cache_clear()`` to
         clear.
@@ -264,9 +263,9 @@ class Market(FuturesClient):
         """
         Retrieve information about the current fees
 
-        - https://docs.futures.kraken.com/#http-api-trading-v3-api-fee-schedules-get-fee-schedules
+        - https://docs.kraken.com/api/docs/futures-api/trading/get-fee-schedules-v-3
 
-        - https://support.kraken.com/hc/en-us/articles/360049269572-Fee-Schedules
+        - https://www.kraken.com/features/fee-schedule
 
         This function uses caching. Run ``get_fee_schedules.cache_clear()`` to
         clear.
@@ -316,7 +315,7 @@ class Market(FuturesClient):
         Requires the ``General API - Full Access`` permission in the API key
         settings.
 
-        - https://docs.futures.kraken.com/#http-api-trading-v3-api-fee-schedules-get-fee-schedule-volumes
+        - https://docs.kraken.com/api/docs/futures-api/trading/get-user-fee-schedule-volumes-v-3
 
         .. code-block:: python
             :linenos:
@@ -354,9 +353,7 @@ class Market(FuturesClient):
         recommended to use the ``symbol`` parameter until they don't fix this
         issue.
 
-        - https://docs.futures.kraken.com/#http-api-trading-v3-api-market-data-get-orderbook
-
-        - https://support.kraken.com/hc/en-us/articles/360022839551-Order-Book
+        - https://docs.kraken.com/api/docs/futures-api/trading/get-orderbook
 
         :param symbol: The asset/symbol to get the orderbook from
         :type symbol: str, optional
@@ -408,9 +405,7 @@ class Market(FuturesClient):
         """
         Retrieve information about the current tickers of all futures contracts.
 
-        - https://docs.futures.kraken.com/#http-api-trading-v3-api-market-data-get-tickers
-
-        - https://support.kraken.com/hc/en-us/articles/360022839531-Tickers
+        - https://docs.kraken.com/api/docs/futures-api/trading/get-tickers
 
         :return: The current tickers
         :rtype: dict
@@ -462,9 +457,7 @@ class Market(FuturesClient):
         Retrieve more specific information about the tradeable assets on the
         Futures market
 
-        - https://docs.futures.kraken.com/#http-api-trading-v3-api-instrument-details-get-instruments
-
-        - https://support.kraken.com/hc/en-us/articles/360022635672-Instruments
+        - https://docs.kraken.com/api/docs/futures-api/trading/get-instruments
 
         :return: Dictionary containing information for all tradeable assets
         :rtype: dict
@@ -552,9 +545,7 @@ class Market(FuturesClient):
         """
         Retrieve status information of a specific or all futures contracts.
 
-        - https://docs.futures.kraken.com/#http-api-trading-v3-api-instrument-details-get-instrument-status-list
-
-        - https://docs.futures.kraken.com/#http-api-trading-v3-api-instrument-details-get-instrument-status
+        - https://docs.kraken.com/api/docs/futures-api/trading/instrument-status
 
         :param instrument: Filter by asset
         :type instrument: str | None, optional
@@ -600,9 +591,7 @@ class Market(FuturesClient):
         Retrieve the trade history (max 100 entries), can be filtered using the
         parameters.
 
-        - https://docs.futures.kraken.com/#http-api-trading-v3-api-market-data-get-trade-history
-
-        - https://support.kraken.com/hc/en-us/articles/360022839511-History
+        - https://docs.kraken.com/api/docs/futures-api/trading/get-history
 
         :param symbol: The asset to filter for
         :type symbol: str, optional
@@ -659,7 +648,7 @@ class Market(FuturesClient):
         Retrieve information about the historical funding rates for a specific
         asset.
 
-        - https://support.kraken.com/hc/en-us/articles/360061979852-Historical-Funding-Rates
+        - https://docs.kraken.com/api/docs/futures-api/trading/historical-funding-rates
 
         :param symbol: The symbol/asset/futures contract
         :type symbol: str
@@ -708,7 +697,7 @@ class Market(FuturesClient):
         Requires at least the ``General API - Read Only`` permission in the API
         key settings.
 
-        - https://docs.futures.kraken.com/#http-api-trading-v3-api-multi-collateral-get-the-leverage-setting-for-a-market
+        - https://docs.kraken.com/api/docs/futures-api/trading/get-leverage-setting
 
         :return: The leverage preferences for all futures contracts
         :rtype: dict
@@ -747,7 +736,7 @@ class Market(FuturesClient):
         Requires the ``General API - Full Access`` permission in the API key
         settings.
 
-        - https://docs.futures.kraken.com/#http-api-trading-v3-api-multi-collateral-set-the-leverage-setting-for-a-market
+        - https://docs.kraken.com/api/docs/futures-api/trading/set-leverage-setting
 
         :param symbol: The symbol to set the preference
         :type symbol: str, optional
@@ -789,7 +778,7 @@ class Market(FuturesClient):
         Requires at least the ``General API - Read Only`` permission in the API
         key settings.
 
-        - https://docs.futures.kraken.com/#http-api-trading-v3-api-multi-collateral-get-pnl-currency-preference-for-a-market
+        - https://docs.kraken.com/api/docs/futures-api/trading/get-pnl-currency-preference
 
         :return: The current NPL preferences
         :rtype: dict
@@ -825,7 +814,7 @@ class Market(FuturesClient):
         Requires the ``General API - Full Access`` permission in the API key
         settings.
 
-        - https://docs.futures.kraken.com/#http-api-trading-v3-api-multi-collateral-set-pnl-currency-preference-for-a-market
+        - https://docs.kraken.com/api/docs/futures-api/trading/set-pnl-currency-preference
 
         :param symbol: The asset pair or futures contract
         :type symbol: str
@@ -919,9 +908,7 @@ class Market(FuturesClient):
         Retrieve information about the public execution events. The returned
         ``continuation_token`` can be used to request more data.
 
-        - https://docs.futures.kraken.com/#http-api-history-market-history-get-public-execution-events
-
-        - https://support.kraken.com/hc/en-us/articles/4401755685268-Market-History-Executions
+        - https://docs.kraken.com/api/docs/futures-api/history/get-public-execution-events
 
         :param tradeable: The contract to filter for
         :type tradeable: str
@@ -1014,9 +1001,7 @@ class Market(FuturesClient):
         opened, etc, for a specific contract.The returned ``continuation_token``
         can be used to request more data.
 
-        - https://docs.futures.kraken.com/#http-api-history-market-history-get-public-order-events
-
-        - https://support.kraken.com/hc/en-us/articles/4401755906452-Market-History-Orders
+        - https://docs.kraken.com/api/docs/futures-api/history/get-public-order-events
 
         :param tradeable: The contract to filter for
         :type tradeable: str
@@ -1089,9 +1074,7 @@ class Market(FuturesClient):
         Retrieve information about public mark price events. The returned
         ``continuation_token`` can be used to request more data.
 
-        - https://docs.futures.kraken.com/#http-api-history-market-history-get-public-mark-price-events
-
-        - https://support.kraken.com/hc/en-us/articles/4401748276116-Market-History-Mark-Price
+        - https://docs.kraken.com/api/docs/futures-api/history/get-public-price-events
 
         :param tradeable: The contract to filter for
         :type tradeable: str

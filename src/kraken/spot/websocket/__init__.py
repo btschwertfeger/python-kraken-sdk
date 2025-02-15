@@ -208,7 +208,7 @@ class SpotWSClientBase(SpotAsyncClient):
         websocket connection. This is used internally and in most cases not
         needed outside.
 
-        - https://docs.kraken.com/rest/#tag/Websockets-Authentication
+        - https://docs.kraken.com/api/docs/guides/spot-ws-auth
 
         :returns: The authentication token
         :rtype: dict

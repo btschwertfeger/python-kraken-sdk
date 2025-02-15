@@ -19,6 +19,6 @@ coverage:
 comment:
   layout: "reach, diff, flags, files"
   behavior: default
-  require_changes: false # if false: post the comment even if coverage doesn't change
+  require_changes: true # if false: post the comment even if coverage doesn't change
   require_base: no # [yes :: must have a base report to post]
   require_head: yes # [yes :: must have a head report to post]

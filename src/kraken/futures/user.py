@@ -82,7 +82,7 @@ class User(FuturesClient):
         Requires at least the ``General API - Read Only`` permission in the API
         key settings.
 
-        - https://docs.futures.kraken.com/#http-api-trading-v3-api-account-information-get-wallets
+        - https://docs.kraken.com/api/docs/futures-api/trading/get-accounts
 
         :return: Information about the current balances of the user
         :rtype: dict
@@ -176,7 +176,7 @@ class User(FuturesClient):
         Requires at least the ``General API - Read Only`` permission in the API
         key settings.
 
-        - https://docs.futures.kraken.com/#http-api-trading-v3-api-account-information-get-subaccounts
+        - https://docs.kraken.com/api/docs/futures-api/trading/list-subaccounts
 
         :return: Information about the user owned subaccounts
         :rtype: dict
@@ -214,7 +214,7 @@ class User(FuturesClient):
         Requires at least the ``General API - Read Only`` permission in the API
         key settings.
 
-        - https://docs.futures.kraken.com/#http-api-trading-v3-api-account-information-get-position-percentile-of-unwind-queue
+        - https://docs.kraken.com/api/docs/futures-api/trading/get-unwind-queue
 
         :return: Information about unwind queue
         :rtype: dict
@@ -252,7 +252,7 @@ class User(FuturesClient):
         Requires at least the ``General API - Read Only`` permission in the API
         key settings.
 
-        - https://docs.futures.kraken.com/#http-api-trading-v3-api-general-get-notifications
+        - https://docs.kraken.com/api/docs/futures-api/trading/get-notifications
 
         :return: Notifications
         :rtype: dict
@@ -300,7 +300,7 @@ class User(FuturesClient):
         Requires at least the ``General API - Read Only`` permission in the API
         key settings.
 
-        - https://docs.futures.kraken.com/#http-api-history-account-history-get-account-log
+        - https://docs.kraken.com/api/docs/futures-api/history/account-log
 
         :param before: Filter to only return results before a specific timestamp
             or date
@@ -392,7 +392,7 @@ class User(FuturesClient):
         Requires at least the ``General API - Read Only`` permission in the API
         key settings.
 
-        - https://docs.futures.kraken.com/#http-api-history-account-log-get-recent-account-log-csv
+        - https://docs.kraken.com/api/docs/futures-api/history/account-log-csv
 
         .. code-block:: python
             :linenos:
@@ -486,7 +486,7 @@ class User(FuturesClient):
         Requires at least the ``General API - Read Only`` permission in the API
         key settings.
 
-        - https://docs.futures.kraken.com/#http-api-history-account-history-get-execution-events
+        - https://docs.kraken.com/api/docs/futures-api/history/get-execution-events
 
         (If you are facing some timeout error, just set the clients attribute
         ``TIMEOUT`` temporarily to the desired amount in seconds.)
@@ -616,7 +616,7 @@ class User(FuturesClient):
         Requires at least the ``General API - Read Only`` permission in the API
         key settings.
 
-        - https://docs.futures.kraken.com/#http-api-history-market-history-get-order-events
+        - https://docs.kraken.com/api/docs/futures-api/history/get-order-events
 
         :param before: Filter by time
         :type before: int, optional
@@ -697,7 +697,7 @@ class User(FuturesClient):
         Requires at least the ``General API - Read Only`` permission in the API
         key settings.
 
-        - https://docs.futures.kraken.com/#http-api-history-market-history-get-trigger-events
+        - https://docs.kraken.com/api/docs/futures-api/history/get-trigger-events
 
         :param before: Filter by time
         :type before: int, optional
@@ -784,7 +784,7 @@ class User(FuturesClient):
         Requires at least the ``General API - Read Only`` permission in the API
         key settings.
 
-        - https://docs.futures.kraken.com/#http-api-trading-v3-api-account-information-get-open-positions
+        - https://docs.kraken.com/api/docs/futures-api/trading/get-open-positions
 
         :return: Information about the open positions
         :rtype: dict
@@ -829,7 +829,7 @@ class User(FuturesClient):
         Requires at least the ``General API - Read Only`` permission in the API
         key settings.
 
-        - https://docs.futures.kraken.com/#http-api-trading-v3-api-order-management-get-open-orders
+        - https://docs.kraken.com/api/docs/futures-api/trading/get-open-orders
 
         :return: The open futures positions/orders
         :rtype: dict
@@ -923,7 +923,7 @@ class User(FuturesClient):
         This endpoint is only available for institutional clients and is not
         tested so far and results in ``KrakenAuthenticationError``.
 
-        - https://docs.futures.kraken.com/#http-api-trading-v3-api-other-check-if-a-subaccount-has-trading-enabled-or-disabled
+        - https://docs.kraken.com/api/docs/futures-api/trading/get-subaccount-trading-capability
 
         :return: The open futures positions/orders
         :rtype: dict
@@ -964,7 +964,7 @@ class User(FuturesClient):
         This endpoint is only available for institutional clients and is not
         tested so far and always results in ``INTERNAL_SERVER_ERROR``.
 
-        - https://docs.futures.kraken.com/#http-api-trading-v3-api-other-enable-or-disable-trading-on-a-subaccount
+        - https://docs.kraken.com/api/docs/futures-api/trading/update-subaccount-trading-capability
 
         :return: The open futures positions/orders
         :rtype: dict
