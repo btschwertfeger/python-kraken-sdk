@@ -514,9 +514,6 @@ longer be extended, but maintained to a certain degree.
 - https://python-kraken-sdk.readthedocs.io/en/stable
 - https://docs.kraken.com/api/
 - https://docs.kraken.com/api/docs/guides/global-intro
-- https://docs.kraken.com/rest
-- https://docs.kraken.com/websockets-v2
-- https://docs.futures.kraken.com
 - https://support.kraken.com/hc/en-us/sections/360012894412-Futures-API
 
 ---

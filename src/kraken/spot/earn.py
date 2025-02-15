@@ -23,8 +23,6 @@ class Earn(SpotClient):
     Class that implements the Kraken Spot Earn client. Currently there are no
     earn endpoints that could be accesses without authentication.
 
-    - https://docs.kraken.com/rest/#tag/Earn
-
     :param key: Spot API public key (default: ``""``)
     :type key: str, optional
     :param secret: Spot API secret key (default: ``""``)
@@ -77,7 +75,7 @@ class Earn(SpotClient):
 
         Requires the ``Earn Funds`` API key permission
 
-        - https://docs.kraken.com/rest/#tag/Earn/operation/allocateStrategy
+        - https://docs.kraken.com/api/docs/rest-api/allocate-strategy
 
         :param amount: The amount to allocate
         :type amount: str | float
@@ -119,7 +117,7 @@ class Earn(SpotClient):
 
         Requires the ``Earn Funds`` API key permission
 
-        - https://docs.kraken.com/rest/#tag/Earn/operation/deallocateStrategy
+        - https://docs.kraken.com/api/docs/rest-api/deallocate-strategy
 
         :param amount: The amount to deallocate
         :type amount: str | float
@@ -160,7 +158,7 @@ class Earn(SpotClient):
 
         Requires the ``Earn Funds`` or ``Query Funds`` API key permission.
 
-        - https://docs.kraken.com/rest/#tag/Earn/operation/getAllocateStrategyStatus
+        - https://docs.kraken.com/api/docs/rest-api/get-allocate-strategy-status
 
         :param strategy_id: Identifier of th chosen earn strategy (see
             :func:`kraken.spot.Earn.list_earn_strategies`)
@@ -197,7 +195,7 @@ class Earn(SpotClient):
 
         Requires the ``Earn Funds`` or ``Query Funds`` API key permission.
 
-        - https://docs.kraken.com/rest/#tag/Earn/operation/getDeallocateStrategyStatus
+        - https://docs.kraken.com/api/docs/rest-api/get-deallocate-strategy-status
 
         :param strategy_id: Identifier of th chosen earn strategy (see
             :func:`kraken.spot.Earn.list_earn_strategies`)
@@ -238,7 +236,7 @@ class Earn(SpotClient):
 
         Requires an API key but no special permission set.
 
-        - https://docs.kraken.com/rest/#tag/Earn/operation/listStrategies
+        - https://docs.kraken.com/api/docs/rest-api/list-strategies
 
         (March 9, 2024): The endpoint is not fully implemented on the side of
         Kraken. Some errors may happen.
@@ -339,7 +337,7 @@ class Earn(SpotClient):
 
         Requires the ``Query Funds`` API key permission.
 
-        - https://docs.kraken.com/rest/#tag/Earn/operation/listAllocations
+        - https://docs.kraken.com/api/docs/rest-api/list-allocations
 
         (March 9, 2024): The endpoint is not fully implemented on the side of
         Kraken. Some errors may happen.

@@ -21,8 +21,6 @@ class Funding(SpotClient):
     Class that implements the Spot Funding client. Currently there are no
     funding endpoints that could be accesses without authentication.
 
-    - https://docs.kraken.com/rest/#tag/Funding
-
     :param key: Spot API public key (default: ``""``)
     :type key: str, optional
     :param secret: Spot API secret key (default: ``""``)
@@ -72,7 +70,7 @@ class Funding(SpotClient):
         """
         Get the available deposit methods for a specific asset.
 
-        - https://docs.kraken.com/rest/#operation/getDepositMethods
+        - https://docs.kraken.com/api/docs/rest-api/get-deposit-methods
 
         :param asset: Asset being deposited
         :type asset: str
@@ -119,7 +117,7 @@ class Funding(SpotClient):
 
         Requires the ``Deposit funds`` API key permission.
 
-        - https://docs.kraken.com/rest/#operation/getDepositAddresses
+        - https://docs.kraken.com/api/docs/rest-api/get-deposit-addresses
 
         :param asset: Asset being deposited
         :type asset: str
@@ -174,7 +172,7 @@ class Funding(SpotClient):
 
         Requires the ``Query funds`` and ``Deposit funds`` API key permissions.
 
-        - https://docs.kraken.com/rest/#operation/getStatusRecentDeposits
+        - https://docs.kraken.com/api/docs/rest-api/get-status-recent-deposits
 
         :param asset: Filter by asset
         :type asset: str, optional
@@ -262,12 +260,11 @@ class Funding(SpotClient):
         """
         Get information about a possible withdraw, including fee and limit
         information. The ``key`` must be the name of the key defined in the
-        account. You can add a new key for any asset listed on Kraken here:
-        https://www.kraken.com/u/funding/withdraw.
+        account.
 
         Requires the ``Query funds`` and ``Withdraw funds`` API key permissions.
 
-        - https://docs.kraken.com/rest/#operation/getWithdrawalInformation
+        - https://docs.kraken.com/api/docs/rest-api/get-withdrawal-information
 
         :param asset: Asset to withdraw
         :type asset: str
@@ -319,7 +316,7 @@ class Funding(SpotClient):
 
         Requires the ``Withdraw funds`` API key permissions.
 
-        - https://docs.kraken.com/rest/#tag/User-Funding/operation/withdrawFunds
+        - https://docs.kraken.com/api/docs/rest-api/withdraw-funds
 
         :param asset: Asset to withdraw
         :type asset: str
@@ -371,7 +368,7 @@ class Funding(SpotClient):
         Get information about the recent withdraw status, including withdraws of
         the past 90 days but at max 500 results.
 
-        - https://docs.kraken.com/rest/#operation/getStatusRecentWithdrawals
+        - https://docs.kraken.com/api/docs/rest-api/get-status-recent-withdrawals
 
         :param asset: Filter withdraws by asset (default: ``None``)
         :type asset: str, optional
@@ -440,7 +437,7 @@ class Funding(SpotClient):
 
         Requires the ``Withdraw funds`` API key permissions.
 
-        - https://docs.kraken.com/rest/#operation/cancelWithdrawal
+        - https://docs.kraken.com/api/docs/rest-api/cancel-withdrawal
 
         :param asset: Asset of the pending withdraw
         :type asset: str
@@ -479,7 +476,7 @@ class Funding(SpotClient):
 
         Requires the ``Withdraw funds`` API key permissions.
 
-        - https://docs.kraken.com/rest/#operation/walletTransfer
+        - https://docs.kraken.com/api/docs/rest-api/wallet-transfer
 
         :param asset: Asset to transfer
         :type asset: str

@@ -22,8 +22,6 @@ class Market(SpotClient):
     Class that implements the Kraken Spot Market client. Can be used to access
     the Kraken Spot market data.
 
-    - https://docs.kraken.com/rest/#tag/Spot-Market-Data
-
     :param key:  Spot API public key (default: ``""``)
     :type key: str, optional
     :param secret: Spot API secret key (default: ``""``)
@@ -78,7 +76,7 @@ class Market(SpotClient):
         Get information about one or more assets. If ``assets`` is not
         specified, all assets will be returned.
 
-        - https://docs.kraken.com/rest/#operation/getAssetInfo
+        - https://docs.kraken.com/api/docs/rest-api/get-asset-info
 
         This function uses caching. Run ``get_assets.cache_clear()`` to clear.
 
@@ -152,7 +150,7 @@ class Market(SpotClient):
         Get information about a single or multiple asset/currency pair(s). If
         ``pair`` is left blank, all currency pairs will be returned.
 
-        - https://docs.kraken.com/rest/#operation/getTradableAssetPairs
+        - https://docs.kraken.com/api/docs/rest-api/get-tradable-asset-pairs
 
         This function uses caching. Run ``get_asset_pairs.cache_clear()`` to
         clear.
@@ -233,7 +231,7 @@ class Market(SpotClient):
         Returns all tickers if pair is not specified - else just the ticker of
         the ``pair``. Multiple pairs can be specified.
 
-        https://docs.kraken.com/rest/#operation/getTickerInformation
+        - https://docs.kraken.com/api/docs/rest-api/get-ticker-information
 
         :param pair: Filter by pair(s)
         :type pair: str | list[str], optional
@@ -284,7 +282,7 @@ class Market(SpotClient):
         Get the open, high, low, and close data for a specific trading pair.
         Returns at max 720 time steps per request.
 
-        - https://docs.kraken.com/rest/#operation/getOHLCData
+        - https://docs.kraken.com/api/docs/rest-api/get-ohlc-data
 
         :param pair: The pair to get the ohlc from
         :type pair: str
@@ -337,7 +335,7 @@ class Market(SpotClient):
         """
         Get the current orderbook of a specified trading pair.
 
-        - https://docs.kraken.com/rest/#operation/getOrderBook
+        - https://docs.kraken.com/api/docs/rest-api/get-order-book
 
         :param pair: The pair to get the orderbook from
         :type pair: str
@@ -386,7 +384,7 @@ class Market(SpotClient):
         """
         Get the latest trades for a specific trading pair (up to 1000).
 
-        - https://docs.kraken.com/rest/#operation/getRecentTrades
+        - https://docs.kraken.com/api/docs/rest-api/get-recent-trades
 
         :param pair: Pair to get the recent trades
         :type pair: str
@@ -436,7 +434,7 @@ class Market(SpotClient):
         """
         Get the latest spreads for a specific trading pair.
 
-        - https://docs.kraken.com/rest/#operation/getRecentSpreads
+        - https://docs.kraken.com/api/docs/rest-api/get-recent-spreads
 
         :param pair: Pair to get the recent spreads
         :type pair: str
@@ -478,8 +476,6 @@ class Market(SpotClient):
     ) -> dict:
         """
         Returns the system status of the Kraken Spot API.
-
-        - https://docs.kraken.com/rest/#section/General-Usage/Requests-Responses-and-Errors
 
         :return: Success or failure
         :rtype: dict

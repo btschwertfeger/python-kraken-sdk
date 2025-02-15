@@ -80,7 +80,7 @@ class Trade(FuturesClient):
         Requires at least the ``General API - Read Only`` permission in the API
         key settings.
 
-        - https://docs.futures.kraken.com/#http-api-trading-v3-api-historical-data-get-your-fills
+        - https://docs.kraken.com/api/docs/futures-api/trading/get-fills
 
         :param lastFillTime: Filter by last filled timestamp
         :type lastFillTime: str, optional
@@ -133,7 +133,7 @@ class Trade(FuturesClient):
         Requires the ``General API - Full Access`` permission in the API key
         settings.
 
-        - https://docs.futures.kraken.com/#http-api-trading-v3-api-order-management-batch-order-management
+        - https://docs.kraken.com/api/docs/futures-api/trading/send-batch-order
 
         :param batchorder_list: List of order instructions (see example below -
             or the linked official Kraken documentation)
@@ -254,7 +254,7 @@ class Trade(FuturesClient):
         Requires the ``General API - Full Access`` permission in the API key
         settings.
 
-        - https://docs.futures.kraken.com/#http-api-trading-v3-api-order-management-cancel-all-orders
+        - https://docs.kraken.com/api/docs/futures-api/trading/cancel-all-orders
 
         :param symbol: Filter by symbol
         :type symbol: str, optional
@@ -312,7 +312,7 @@ class Trade(FuturesClient):
         Requires the ``General API - Full Access`` permission in the API key
         settings.
 
-        - https://docs.futures.kraken.com/#http-api-trading-v3-api-order-management-dead-man-39-s-switch
+        - https://docs.kraken.com/api/docs/futures-api/trading/cancel-all-orders-after
 
         :param timeout: The timeout in seconds
         :type timeout: int, optional
@@ -357,7 +357,7 @@ class Trade(FuturesClient):
         Requires the ``General API - Full Access`` permission in the API key
         settings.
 
-        - https://docs.futures.kraken.com/#http-api-trading-v3-api-order-management-cancel-order
+        - https://docs.kraken.com/api/docs/futures-api/trading/cancel-order
 
         :param order_id: The order_id to cancel
         :type order_id: str, optional
@@ -421,7 +421,7 @@ class Trade(FuturesClient):
         Requires the ``General API - Full Access`` permission in the API key
         settings.
 
-        - https://docs.futures.kraken.com/#http-api-trading-v3-api-order-management-send-order
+        - https://docs.kraken.com/api/docs/futures-api/trading/edit-order-spring
 
         :param orderId: The order id to cancel
         :type orderId: str, optional
@@ -496,7 +496,7 @@ class Trade(FuturesClient):
         Requires at least the ``General API - Read Only`` permission in the API
         key settings.
 
-        - https://docs.futures.kraken.com/#http-api-trading-v3-api-order-management-get-specific-orders-39-status
+        - https://docs.kraken.com/api/docs/futures-api/trading/get-order-status
 
         :param orderIds: The order ids to cancel
         :type orderIds: str | list[str], optional
@@ -555,7 +555,7 @@ class Trade(FuturesClient):
         Requires the ``General API - Full Access`` permission in the API key
         settings.
 
-        - https://docs.futures.kraken.com/#http-api-trading-v3-api-order-management-send-order
+        - https://docs.kraken.com/api/docs/futures-api/trading/send-order
 
         :param orderType: The order type, one of ``lmt``, ``post``, ``ioc``,
             ``mkt``, ``stp``, ``take_profit``, ``trailing_stop``
@@ -771,7 +771,7 @@ class Trade(FuturesClient):
         Requires at least the ``General API - Read Access`` permission in the
         API key settings.
 
-        - https://docs.futures.kraken.com/#http-api-trading-v3-api-order-management-get-maximum-order-size
+        - https://docs.kraken.com/api/docs/futures-api/trading/get-max-order-size
 
         :param orderType: ``lmt`` or ``mkt``
         :type orderType: str

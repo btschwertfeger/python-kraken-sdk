@@ -49,7 +49,7 @@ class SpotOrderBookClient(SpotWSClient):
     depth. When subscribing to books with different depths, please use separate
     instances of this class.
 
-    - https://docs.kraken.com/websockets-v2/#calculate-book-checksum
+    - https://docs.kraken.com/api/docs/guides/spot-ws-book-v1
 
     .. code-block:: python
         :linenos:
@@ -368,7 +368,7 @@ class SpotOrderBookClient(SpotWSClient):
     ) -> None:
         """
         Function that validates the checksum of the order book as described here
-        https://docs.kraken.com/websockets-v2/#calculate-book-checksum.
+        https://docs.kraken.com/api/docs/guides/spot-ws-book-v1.
 
         :param pair: The pair that's order book checksum should be validated.
         :type pair: str

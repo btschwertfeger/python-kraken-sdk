@@ -17,7 +17,7 @@ Getting Started
 
 2. Register at Kraken and generate API Keys
 
-- Spot Trading: https://www.kraken.com/u/security/api
+- Spot Trading: https://pro.kraken.com/app/settings/api
 - Futures Trading: https://futures.kraken.com/trade/settings/api
 - Futures Sandbox: https://demo-futures.kraken.com/settings/api
 

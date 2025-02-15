@@ -17,7 +17,7 @@ Futures Trading
   ``order_id`` or ``orderId``, ``cliOrdId`` seems to work in all cases.
 - Kraken's API doesn't seem to know the ``trailing_stop`` order type and raises
   an error if this type is part of an order. This order type is documented here
-  https://docs.futures.kraken.com/#http-api-trading-v3-api-order-management-send-order
+  https://docs.kraken.com/api/docs/futures-api/trading/send-order
 
   .. code-block:: python
     :linenos:
