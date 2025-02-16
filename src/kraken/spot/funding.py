@@ -341,7 +341,7 @@ class Funding(SpotClient):
             ...    key="MyPolkadotWallet"
             ...    amount=4
             ... )
-            { 'refid': 'I7KGS6-UFMTTQ-AGBSO6T'}
+            {'refid': 'I7KGS6-UFMTTQ-AGBSO6T'}
         """
         params: dict = {"asset": asset, "key": str(key), "amount": str(amount)}
         if defined(max_fee):

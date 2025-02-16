@@ -225,25 +225,23 @@ class ConnectSpotWebsocketBase:  # pylint: disable=too-many-instance-attributes
                 tasks,
                 return_when=asyncio.FIRST_EXCEPTION,
             )
-            exception_occur: bool = False
+            exception_occur = False
             for task in finished:
                 if task.exception():
                     exception_occur = True
-                    traceback.print_stack()
-                    message: str = (
-                        f"{task} got an exception {task.exception()}\n {task.get_stack()}"
-                    )
+                    message = f"{task} got an exception {task.exception()}\n {task.get_stack()}"
                     LOG.warning(message)
                     for process in pending:
                         LOG.warning("pending %s", process)
                         try:
                             process.cancel()
+                            LOG.warning("Cancelled %s", process)
                         except asyncio.CancelledError:
-                            LOG.exception("asyncio.CancelledError")
+                            LOG.error("Failed to cancel %s", process)
                     await self.__callback({"error": message})
             if exception_occur:
                 break
-        LOG.warning("Connection closed")
+        LOG.info("Connection closed!")
 
     def __get_reconnect_wait(
         self: ConnectSpotWebsocketBase,

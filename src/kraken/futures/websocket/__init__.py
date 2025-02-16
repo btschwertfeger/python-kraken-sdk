@@ -194,20 +194,19 @@ class ConnectFuturesWebsocket:  # pylint: disable=too-many-instance-attributes
                 if task.exception():
                     exception_occur = True
                     self.__challenge_ready = False
-                    traceback.print_stack()
                     message = f"{task} got an exception {task.exception()}\n {task.get_stack()}"
                     LOG.warning(message)
                     for process in pending:
-                        LOG.warning("pending %s", process)
+                        LOG.warning("Pending %s", process)
                         try:
                             process.cancel()
+                            LOG.warning("Cancelled %s", process)
                         except asyncio.CancelledError:
-                            LOG.exception("CancelledError")
-                        LOG.warning("cancel ok")
+                            LOG.error("Failed to cancel %s", process)
                     await self.__callback({"error": message})
             if exception_occur:
                 break
-        LOG.warning("Connection closed")
+        LOG.info("Connection closed!")
 
     async def __recover_subscription_req_msg(
         self: ConnectFuturesWebsocket,
