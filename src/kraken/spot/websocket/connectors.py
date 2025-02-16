@@ -27,6 +27,7 @@ from typing import TYPE_CHECKING, Any, Final
 from websockets.asyncio.client import connect
 
 from kraken.exceptions import MaxReconnectError
+from kraken.utils.utils import WSState
 
 if TYPE_CHECKING:
     from collections.abc import Callable
@@ -68,6 +69,7 @@ class ConnectSpotWebsocketBase:  # pylint: disable=too-many-instance-attributes
         *,
         is_auth: bool = False,
     ) -> None:
+        self.state: WSState = WSState.INIT
         self.__client: SpotWSClientBase = client
         self.__ws_endpoint: str = endpoint
         self.__callback: Callable = callback
@@ -104,6 +106,7 @@ class ConnectSpotWebsocketBase:  # pylint: disable=too-many-instance-attributes
             hasattr(self, "task")
             and not self.task.done()  # pylint: disable=access-member-before-definition
         ):
+            LOG.warning("Websocket connection already running!")
             return
         self.task: asyncio.Task = asyncio.create_task(
             self.__run_forever(),
@@ -111,9 +114,11 @@ class ConnectSpotWebsocketBase:  # pylint: disable=too-many-instance-attributes
 
     async def stop(self: ConnectSpotWebsocketBase) -> None:
         """Stops the websocket connection"""
+        self.state = WSState.CANCELLING
         self.keep_alive = False
         if hasattr(self, "task") and not self.task.done():
             await self.task
+        self.state = WSState.CLOSED
 
     async def __run(self: ConnectSpotWebsocketBase, event: asyncio.Event) -> None:
         """
@@ -123,6 +128,7 @@ class ConnectSpotWebsocketBase:  # pylint: disable=too-many-instance-attributes
         :param event: Event used to control the information flow
         :type event: asyncio.Event
         """
+        self.state = WSState.CONNECTING
         self._last_ping = time()
         self.ws_conn_details = (
             None if not self.__is_auth else await self.__client.get_ws_token()
@@ -135,9 +141,10 @@ class ConnectSpotWebsocketBase:  # pylint: disable=too-many-instance-attributes
             ping_interval=30,
             max_queue=None,  # FIXME: This is not recommended by the docs https://websockets.readthedocs.io/en/stable/reference/asyncio/client.html#module-websockets.asyncio.client
         ) as socket:
-            LOG.info("Websocket connected!")
-            self.socket = socket
+            self.state = WSState.CONNECTED
+            LOG.info("Websocket connection established!")
 
+            self.socket = socket
             if not event.is_set():
                 await self.send_ping()
                 event.set()
@@ -153,7 +160,6 @@ class ConnectSpotWebsocketBase:  # pylint: disable=too-many-instance-attributes
                 except asyncio.CancelledError:
                     LOG.exception("asyncio.CancelledError")
                     self.keep_alive = False
-                    await self.__callback({"error": "asyncio.CancelledError"})
                 else:
                     try:
                         message: dict = json.loads(_message)
@@ -172,22 +178,19 @@ class ConnectSpotWebsocketBase:  # pylint: disable=too-many-instance-attributes
             while self.keep_alive:
                 await self.__reconnect()
         except MaxReconnectError:
+            self.state = WSState.ERROR
             await self.__callback(
-                {"error": "kraken.exceptions.MaxReconnectError"},
+                {"python-kraken-sdk": {"error": "kraken.exceptions.MaxReconnectError"}},
             )
             self.exception_occur = True
-        except Exception as exc:
-            traceback_: str = traceback.format_exc()
-            LOG.exception(
-                "%s: %s",
-                exc,
-                traceback_,
-            )
-            await self.__callback({"error": traceback_})
+        except Exception:  # pylint: disable=broad-except
+            self.state = WSState.ERROR
+            LOG.exception(traceback.format_exc())
             self.exception_occur = True
 
     async def close_connection(self: ConnectSpotWebsocketBase) -> None:
         """Closes the websocket connection and thus forces a reconnect"""
+        self.state = WSState.CANCELLING
         await self.socket.close()
 
     async def __reconnect(self: ConnectSpotWebsocketBase) -> None:
@@ -198,6 +201,7 @@ class ConnectSpotWebsocketBase:  # pylint: disable=too-many-instance-attributes
         :raises KrakenException.MaxReconnectError: If there are to many
             reconnect retries
         """
+        self.state = WSState.RECONNECTING
         LOG.info("Websocket start connect/reconnect")
 
         self.__reconnect_num += 1
@@ -228,6 +232,7 @@ class ConnectSpotWebsocketBase:  # pylint: disable=too-many-instance-attributes
             exception_occur = False
             for task in finished:
                 if task.exception():
+                    self.state = WSState.ERRORHANDLING
                     exception_occur = True
                     message = f"{task} got an exception {task.exception()}\n {task.get_stack()}"
                     LOG.warning(message)
@@ -238,9 +243,10 @@ class ConnectSpotWebsocketBase:  # pylint: disable=too-many-instance-attributes
                             LOG.warning("Cancelled %s", process)
                         except asyncio.CancelledError:
                             LOG.error("Failed to cancel %s", process)
-                    await self.__callback({"error": message})
+                    await self.__callback({"python-kraken-sdk": {"error": message}})
             if exception_occur:
                 break
+        self.state = WSState.CLOSED
         LOG.info("Connection closed!")
 
     def __get_reconnect_wait(
@@ -351,10 +357,10 @@ class ConnectSpotWebsocket(ConnectSpotWebsocketBase):
             it is set to ``True`` - which is when the connection is ready)
         :type event: asyncio.Event
         """
-        log_msg: str = (
-            f'Recover {"authenticated" if self.is_auth else "public"} subscriptions {self._subscriptions}'
+        LOG.info(
+            "%s: waiting",
+            log_msg := f'Recover {"authenticated" if self.is_auth else "public"} subscriptions {self._subscriptions}',
         )
-        LOG.info("%s: waiting", log_msg)
         await event.wait()
 
         for subscription in self._subscriptions:
