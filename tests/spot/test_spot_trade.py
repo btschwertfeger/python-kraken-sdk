@@ -193,6 +193,25 @@ def test_edit_order(spot_auth_trade: Trade) -> None:
 @pytest.mark.spot
 @pytest.mark.spot_auth
 @pytest.mark.spot_trade
+def test_amend_order(spot_auth_trade: Trade) -> None:
+    """
+    Test the ``amend_order`` function by editing an order.
+
+    KrakenPermissionDeniedError: since CI does not have trade permissions. If
+    the request would be malformed, another exception could be observed.
+    """
+    with pytest.raises(KrakenPermissionDeniedError):
+        spot_auth_trade.amend_order(
+            extra_params={
+                "txid": "OVM3PT-56ACO-53SM2T",
+                "limit_price": "105636.9",
+            },
+        )
+
+
+@pytest.mark.spot
+@pytest.mark.spot_auth
+@pytest.mark.spot_trade
 def test_cancel_order(spot_auth_trade: Trade) -> None:
     """
     Checks the ``cancel_order`` function by canceling an order.

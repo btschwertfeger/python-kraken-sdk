@@ -201,6 +201,18 @@ def test_get_orders_info(spot_auth_user: User) -> None:
 @pytest.mark.spot
 @pytest.mark.spot_auth
 @pytest.mark.spot_user
+def test_get_order_amends(spot_auth_user: User) -> None:
+    """
+    Checks the ``get_order_amends`` function by validating that the responses do
+    not contain the error key.
+    """
+
+    assert is_not_error(spot_auth_user.get_order_amends(order_id="OVM3PT-56ACO-53SM2T"))
+
+
+@pytest.mark.spot
+@pytest.mark.spot_auth
+@pytest.mark.spot_user
 def test_get_trades_history(spot_auth_user: User) -> None:
     """
     Checks the ``get_trades_history`` function by validating that

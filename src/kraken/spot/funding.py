@@ -249,6 +249,90 @@ class Funding(SpotClient):
             extra_params=extra_params,
         )
 
+    def withdraw_methods(
+        self: Funding,
+        asset: str | None = None,
+        aclass: str | None = None,
+        network: str | None = None,
+        *,
+        extra_params: dict | None = None,
+    ) -> dict:
+        """
+        Returns the list of available withdraw methods for that user.
+
+        Requires the ``Funds permissions - Query`` and ``Funds permissions -
+        Withdraw`` API key permissions.
+
+        :param asset: Filter by asset
+        :type asset: Optional[str]
+        :param aclass: Filter by asset class (default: ``currency``)
+        :type aclass: Optional[str]
+        :param network: Filter by network
+        :type network: Optional[str]
+        :return: List of available withdraw methods
+        :rtype: list[dict]
+        """
+        params: dict = {}
+        if defined(asset):
+            params["asset"] = asset
+        if defined(aclass):
+            params["network"] = aclass
+        if defined(network):
+            params["network"] = network
+        return self.request(  # type: ignore[return-value]
+            method="POST",
+            uri="/0/private/WithdrawMethods",
+            params=params,
+            extra_params=extra_params,
+        )
+
+    def withdraw_addresses(
+        self: Funding,
+        asset: str | None = None,
+        aclass: str | None = None,
+        method: str | None = None,
+        key: str | None = None,
+        verified: bool | None = None,  # noqa: FBT001
+        *,
+        extra_params: dict | None = None,
+    ) -> dict:
+        """
+        Returns the list of available withdrawal addresses for that user.
+
+        Requires the ``Funds permissions - Query`` and ``Funds permissions -
+        Withdraw`` API key permissions.
+
+        :param asset: Filter by asset
+        :type asset: Optional[str]
+        :param aclass: Filter by asset class (default: ``currency``)
+        :type aclass: Optional[str]
+        :param method: Filter by method
+        :type method: Optional[str]
+        :param key: Filter by key
+        :type key: Optional[str]
+        :param verified: List only addresses which are confirmed via E-Mail
+        :type verified: Optional[str]
+        :return: List of available addresses for withdrawal
+        :rtype: list[dict]
+        """
+        params: dict = {}
+        if defined(asset):
+            params["asset"] = asset
+        if defined(aclass):
+            params["network"] = aclass
+        if defined(method):
+            params["method"] = method
+        if defined(key):
+            params["key"] = key
+        if defined(verified):
+            params["verified"] = verified
+        return self.request(  # type: ignore[return-value]
+            method="POST",
+            uri="/0/private/WithdrawMethods",
+            params=params,
+            extra_params=extra_params,
+        )
+
     def get_withdrawal_info(
         self: Funding,
         asset: str,
@@ -507,90 +591,6 @@ class Funding(SpotClient):
             method="POST",
             uri="/0/private/WalletTransfer",
             params={"asset": asset, "from": from_, "to": to_, "amount": str(amount)},
-            extra_params=extra_params,
-        )
-
-    def withdraw_methods(
-        self: Funding,
-        asset: str | None = None,
-        aclass: str | None = None,
-        network: str | None = None,
-        *,
-        extra_params: dict | None = None,
-    ) -> dict:
-        """
-        Returns the list of available withdraw methods for that user.
-
-        Requires the ``Funds permissions - Query`` and ``Funds permissions -
-        Withdraw`` API key permissions.
-
-        :param asset: Filter by asset
-        :type asset: Optional[str]
-        :param aclass: Filter by asset class (default: ``currency``)
-        :type aclass: Optional[str]
-        :param network: Filter by network
-        :type network: Optional[str]
-        :return: List of available withdraw methods
-        :rtype: list[dict]
-        """
-        params: dict = {}
-        if defined(asset):
-            params["asset"] = asset
-        if defined(aclass):
-            params["network"] = aclass
-        if defined(network):
-            params["network"] = network
-        return self.request(  # type: ignore[return-value]
-            method="POST",
-            uri="/0/private/WithdrawMethods",
-            params=params,
-            extra_params=extra_params,
-        )
-
-    def withdraw_addresses(
-        self: Funding,
-        asset: str | None = None,
-        aclass: str | None = None,
-        method: str | None = None,
-        key: str | None = None,
-        verified: bool | None = None,  # noqa: FBT001
-        *,
-        extra_params: dict | None = None,
-    ) -> dict:
-        """
-        Returns the list of available withdrawal addresses for that user.
-
-        Requires the ``Funds permissions - Query`` and ``Funds permissions -
-        Withdraw`` API key permissions.
-
-        :param asset: Filter by asset
-        :type asset: Optional[str]
-        :param aclass: Filter by asset class (default: ``currency``)
-        :type aclass: Optional[str]
-        :param method: Filter by method
-        :type method: Optional[str]
-        :param key: Filter by key
-        :type key: Optional[str]
-        :param verified: List only addresses which are confirmed via E-Mail
-        :type verified: Optional[str]
-        :return: List of available addresses for withdrawal
-        :rtype: list[dict]
-        """
-        params: dict = {}
-        if defined(asset):
-            params["asset"] = asset
-        if defined(aclass):
-            params["network"] = aclass
-        if defined(method):
-            params["method"] = method
-        if defined(key):
-            params["key"] = key
-        if defined(verified):
-            params["verified"] = verified
-        return self.request(  # type: ignore[return-value]
-            method="POST",
-            uri="/0/private/WithdrawMethods",
-            params=params,
             extra_params=extra_params,
         )
 

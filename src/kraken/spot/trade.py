@@ -470,6 +470,38 @@ class Trade(SpotClient):
             extra_params=extra_params,
         )
 
+    def amend_order(
+        self: Trade,
+        *,
+        extra_params: dict | None = None,
+    ) -> dict:
+        """
+        Amend/modify an open order.
+
+        Requires the ``Create and modify orders`` and ``Cancel & close orders``
+        permissions in the API key settings.
+
+        - https://docs.kraken.com/api/docs/rest-api/amend-order
+
+        .. code-block:: python
+            :linenos:
+            :caption: Spot Trade: Amend order
+
+            >>> from kraken.spot import Trade
+            >>> trade = Trade(key="api-key", secret="secret-key")
+            >>> trade.amend_order(
+            ...     extra_params={
+            ...         "txid": "OVM3PT-56ACO-53SM2T",
+            ...         "limit_price": "105636.9",
+            ...     }
+            ... )
+        """
+        return self.request(  # type: ignore[return-value]
+            "POST",
+            uri="/0/private/AmendOrder",
+            extra_params=extra_params,
+        )
+
     @ensure_string("oflags")
     def edit_order(  # pylint: disable=too-many-arguments # noqa: PLR0913, PLR0917
         self: Trade,
@@ -490,8 +522,8 @@ class Trade(SpotClient):
         """
         Edit an open order.
 
-        Requires the ``Create and modify orders`` permission in
-        the API key settings.
+        Requires the ``Create and modify orders`` permission in the API key
+        settings.
 
         - https://docs.kraken.com/api/docs/rest-api/edit-order
 
