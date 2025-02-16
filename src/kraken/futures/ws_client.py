@@ -24,7 +24,7 @@ from kraken.futures.websocket import ConnectFuturesWebsocket
 if TYPE_CHECKING:
     from collections.abc import Callable
     from typing import Any
-import warnings
+from kraken.utils.utils import deprecated
 
 Self = TypeVar("Self")
 
@@ -156,16 +156,21 @@ class FuturesWSClient(FuturesAsyncClient):
         else:
             raise TimeoutError("Could not connect to the Kraken API!")
 
-    async def stop(self: FuturesWSClient) -> None:
+    async def close(self: FuturesWSClient) -> None:
         """Method to stop the websocket connection."""
-        warnings.warn(
-            "The 'stop' function is deprecated and will be replaced by"
-            " 'close' in a future release.",
-            DeprecationWarning,
-            stacklevel=2,
-        )
         if self._conn:
             await self._conn.stop()
+        await super().close()
+
+    @deprecated(
+        "The 'stop' function is deprecated and will be replaced by"
+        " 'close' in a future release.",
+    )
+    async def stop(self: FuturesWSClient) -> None:
+        """Method to stop the websocket connection."""
+        if self._conn:
+            await self._conn.stop()
+        await super().close()
 
     @property
     def key(self: FuturesWSClient) -> str:
@@ -452,7 +457,7 @@ class FuturesWSClient(FuturesAsyncClient):
     ) -> None:
         """Exit if used as context manager"""
         await super().__aexit__()
-        await self.stop()
+        await self.close()
 
 
 __all__ = ["FuturesWSClient"]

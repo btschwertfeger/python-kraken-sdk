@@ -59,7 +59,7 @@ def user_examples() -> None:
     response = user.request_export_report(
         report="ledgers",
         description="myLedgers1",
-        format="CSV",
+        format_="CSV",
     )  # report='trades'
     print(user.get_export_report_status(report="ledgers"))
 

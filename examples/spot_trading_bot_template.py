@@ -125,14 +125,11 @@ class TradingBot(SpotWSClient):
 
     def save_exit(self: TradingBot, reason: str | None = "") -> None:
         """controlled shutdown of the strategy"""
-        LOG.warning(
-            "Save exit triggered, reason: {reason}",
-            extra={"reason": reason},
-        )
-        # some ideas:
-        #   * save the current data
-        #   * maybe close trades
-        #   * enable dead man's switch
+        LOG.warning("Save exit triggered, reason: %s", reason)
+        # Some ideas:
+        #   * Save the current data
+        #   * Close trades
+        #   * Enable dead man's switch
         sys.exit(1)
 
 
@@ -179,38 +176,35 @@ class Manager:
         connection has some fatal error. This is used to exit the asyncio loop -
         but you can also apply your own reconnect rules.
         """
-        self.__trading_strategy = TradingBot(config=self.__config)
-        await self.__trading_strategy.start()
+        try:
+            self.__trading_strategy = TradingBot(config=self.__config)
+            await self.__trading_strategy.start()
 
-        await self.__trading_strategy.subscribe(
-            params={"channel": "ticker", "symbol": self.__config["pairs"]},
-        )
-        await self.__trading_strategy.subscribe(
-            params={
-                "channel": "ohlc",
-                "interval": 15,
-                "symbol": self.__config["pairs"],
-            },
-        )
+            await self.__trading_strategy.subscribe(
+                params={"channel": "ticker", "symbol": self.__config["pairs"]},
+            )
+            await self.__trading_strategy.subscribe(
+                params={
+                    "channel": "ohlc",
+                    "interval": 15,
+                    "symbol": self.__config["pairs"],
+                },
+            )
 
-        await self.__trading_strategy.subscribe(params={"channel": "executions"})
+            await self.__trading_strategy.subscribe(params={"channel": "executions"})
 
-        while not self.__trading_strategy.exception_occur:
-            try:
-                # check if the algorithm feels good
-                # maybe send a status update every day via Telegram or Mail
+            while not self.__trading_strategy.exception_occur:
+                # Check if the algorithm feels good
+                # Send a status update every day via Telegram or Mail
                 # …
-                pass
+                await asyncio.sleep(6)
 
-            except Exception as exc:
-                message: str = f"Exception in main: {exc} {traceback.format_exc()}"
-                LOG.error(message)
-                self.__trading_strategy.save_exit(reason=message)
-
-            await asyncio.sleep(6)
-        self.__trading_strategy.save_exit(
-            reason="Left main loop because of exception in strategy.",
-        )
+        except Exception as exc:
+            LOG.error(message := f"Exception in main: {exc} {traceback.format_exc()}")
+            self.__trading_strategy.save_exit(reason=message)
+        finally:
+            # Close the sessions properly.
+            await self.__trading_strategy.close()
 
     def __check_credentials(self: Manager) -> bool:
         """Checks the user credentials and the connection to Kraken"""
@@ -219,7 +213,7 @@ class Manager:
             LOG.info("Client credentials are valid.")
             return True
         except urllib3.exceptions.MaxRetryError:
-            LOG.error("MaxRetryError, cannot connect.")
+            LOG.error("MaxRetryError, can't connect.")
             return False
         except requests.exceptions.ConnectionError:
             LOG.error("ConnectionError, Kraken not available.")

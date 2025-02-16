@@ -27,7 +27,8 @@ from kraken.exceptions import _get_exception
 if TYPE_CHECKING:
     from collections.abc import Awaitable, Callable, Coroutine
     from typing import Final
-import warnings
+
+from kraken.utils.utils import deprecated
 
 Self = TypeVar("Self")
 
@@ -665,21 +666,23 @@ class SpotAsyncClient(SpotClient):
 
         raise Exception(f"{response.status} - {response.text}")
 
+    async def close(self: SpotAsyncClient) -> None:
+        """Closes the aiohttp session"""
+        await self.__session.close()
+
+    @deprecated(
+        "The 'async_close' function is deprecated and will be replaced by"
+        " 'close' in a future release.",
+    )
     async def async_close(self: SpotAsyncClient) -> None:
         """Closes the aiohttp session"""
-        warnings.warn(
-            "The 'async_close' function is deprecated and will be replaced by"
-            " 'close' in a future release.",
-            DeprecationWarning,
-            stacklevel=2,
-        )
         await self.__session.close()
 
     async def __aenter__(self: Self) -> Self:
         return self
 
     async def __aexit__(self: SpotAsyncClient, *args: object) -> None:
-        await self.async_close()
+        await self.close()
 
 
 class NFTClient(SpotClient):
@@ -1152,21 +1155,23 @@ class FuturesAsyncClient(FuturesClient):
 
         raise Exception(f"{response.status} - {response.text}")
 
+    async def close(self: FuturesAsyncClient) -> None:
+        """Closes the aiohttp session"""
+        await self.__session.close()
+
+    @deprecated(
+        "The 'async_close' function is deprecated and will be replaced by"
+        " 'close' in a future release.",
+    )
     async def async_close(self: FuturesAsyncClient) -> None:
         """Closes the aiohttp session"""
-        warnings.warn(
-            "The 'async_close' function is deprecated and will be replaced by"
-            " 'close' in a future release.",
-            DeprecationWarning,
-            stacklevel=2,
-        )
         await self.__session.close()
 
     async def __aenter__(self: Self) -> Self:
         return self
 
     async def __aexit__(self: FuturesAsyncClient, *args: object) -> None:
-        return await self.async_close()
+        return await self.close()
 
 
 __all__ = [

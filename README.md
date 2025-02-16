@@ -47,12 +47,12 @@ regarding the use of this software.
 
 General:
 
-- command-line interface
-- access both public and private, REST and websocket endpoints
-- responsive error handling and custom exceptions
-- extensive example scripts (see `/examples` and `/tests`)
-- tested using the [pytest](https://docs.pytest.org/en/7.3.x/) framework
-- releases are permanently archived at [Zenodo](https://zenodo.org/badge/latestdoi/510751854)
+- Command-line interface
+- Access both public and private, REST and websocket endpoints
+- Responsive error handling and custom exceptions
+- Extensive example scripts (see `/examples` and `/tests`)
+- Tested using the [pytest](https://docs.pytest.org/en/7.3.x/) framework
+- Releases are permanently archived at [Zenodo](https://zenodo.org/badge/latestdoi/510751854)
 
 Available Clients:
 
@@ -199,9 +199,10 @@ async def main():
         response = await client.request("POST", "/0/private/Balance")
         print(response)
     finally:
-        await client.async_close()
+        await client.close()
 
-asyncio.run(main())
+if __name__ == "__main__":
+    asyncio.run(main())
 ```
 
 Using SpotAsyncClient as a context manager; This example demonstrates the use of the context manager, which ensures the client is automatically closed after the request is completed.
@@ -215,7 +216,8 @@ async def main():
         response = await client.request("POST", "/0/private/Balance")
         print(response)
 
-asyncio.run(main())
+if __name__ == "__main__":
+    asyncio.run(main())
 ```
 
 <a name="spotws"></a>
@@ -272,44 +274,40 @@ class Client(SpotWSClient):
         # You can also un-/subscribe here using self.subscribe/self.unsubscribe.
 
 async def main():
+    try:
+        # Public/unauthenticated websocket client
+        client = Client()  # only use this one if you don't need private feeds
+        await client.start()
+        await client.subscribe(
+            params={"channel": "ticker", "symbol": ["BTC/USD", "DOT/USD"]}
+        )
+        await client.subscribe(
+            params={"channel": "book", "depth": 25, "symbol": ["BTC/USD"]}
+        )
+        # wait because unsubscribing is faster than unsubscribing … (just for that example)
+        await asyncio.sleep(3)
+        # print(client.active_public_subscriptions) # to list active subscriptions
+        await client.unsubscribe(
+            params={"channel": "ticker", "symbol": ["BTC/USD", "DOT/USD"]}
+        )
+        # …
 
-    # Public/unauthenticated websocket client
-    client = Client()  # only use this one if you don't need private feeds
-    await client.start()
-    await client.subscribe(
-        params={"channel": "ticker", "symbol": ["BTC/USD", "DOT/USD"]}
-    )
-    await client.subscribe(
-        params={"channel": "book", "depth": 25, "symbol": ["BTC/USD"]}
-    )
-    # wait because unsubscribing is faster than unsubscribing … (just for that example)
-    await asyncio.sleep(3)
-    # print(client.active_public_subscriptions) # to list active subscriptions
-    await client.unsubscribe(
-        params={"channel": "ticker", "symbol": ["BTC/USD", "DOT/USD"]}
-    )
-    # …
+        # AS default, the authenticated client starts two websocket connections,
+        # one for authenticated and one for public messages. If there is no need
+        # for a public connection, it can be disabled using the ``no_public``
+        # parameter.
+        client_auth = Client(key="api-key", secret="secret-key", no_public=True)
+        await client_auth.start()
+        await client_auth.subscribe(params={"channel": "balances"})
 
-    # AS default, the authenticated client starts two websocket connections,
-    # one for authenticated and one for public messages. If there is no need
-    # for a public connection, it can be disabled using the ``no_public``
-    # parameter.
-    client_auth = Client(key="api-key", secret="secret-key", no_public=True)
-    await client_auth.start()
-    await client_auth.subscribe(params={"channel": "balances"})
-
-    while not client.exception_occur and not client_auth.exception_occur:
-        await asyncio.sleep(6)
-
+        while not client.exception_occur and not client_auth.exception_occur:
+            await asyncio.sleep(6)
+    finally:
+        await client.close()
+        await client_auth.close()
 
 if __name__ == "__main__":
-    try:
-        asyncio.run(main())
-    except KeyboardInterrupt:
-        pass
-        # The websocket client will send {'event': 'asyncio.CancelledError'}
-        # via on_message so you can handle the behavior/next actions
-        # individually within your strategy.
+    asyncio.run(main())
 ```
 
 <a name="futuresusage"></a>
@@ -352,9 +350,10 @@ async def main():
         response = await client.request("GET", "/derivatives/api/v3/accounts")
         print(response)
     finally:
-        await client.async_close()
+        await client.close()
 
-asyncio.run(main())
+if __name__ == "__main__":
+    asyncio.run(main())
 ```
 
 Using FuturesAsyncClient as context manager; This example demonstrates the use
@@ -370,7 +369,8 @@ async def main():
         response = await client.request("GET", "/derivatives/api/v3/accounts")
         print(response)
 
-asyncio.run(main())
+if __name__ == "__main__":
+    asyncio.run(main())
 ```
 
 <a name="futuresws"></a>
@@ -395,44 +395,44 @@ class Client(FuturesWSClient):
         print(event)
 
 async def main():
-    # Public/unauthenticated websocket connection
-    client = Client()
-    await client.start()
+    try:
+        # Public/unauthenticated websocket connection
+        client = Client()
+        await client.start()
 
-    products = ["PI_XBTUSD", "PF_ETHUSD"]
+        products = ["PI_XBTUSD", "PF_ETHUSD"]
 
-    # subscribe to a public websocket feed
-    await client.subscribe(feed="ticker", products=products)
-    # await client.subscribe(feed="book", products=products)
-    # …
+        # subscribe to a public websocket feed
+        await client.subscribe(feed="ticker", products=products)
+        # await client.subscribe(feed="book", products=products)
+        # …
 
-    # unsubscribe from a public websocket feed
-    # await client.unsubscribe(feed="ticker", products=products)
+        # unsubscribe from a public websocket feed
+        # await client.unsubscribe(feed="ticker", products=products)
 
-    # Private/authenticated websocket connection (+public)
-    client_auth = Client(key="key-key", secret="secret-key")
-    await client_auth.start()
+        # Private/authenticated websocket connection (+public)
+        client_auth = Client(key="key-key", secret="secret-key")
+        await client_auth.start()
 
-    # print(client_auth.get_available_private_subscription_feeds())
+        # print(client_auth.get_available_private_subscription_feeds())
 
-    # subscribe to a private/authenticated websocket feed
-    await client_auth.subscribe(feed="fills")
-    await client_auth.subscribe(feed="open_positions")
-    await client_auth.subscribe(feed="open_orders")
-    # …
+        # subscribe to a private/authenticated websocket feed
+        await client_auth.subscribe(feed="fills")
+        await client_auth.subscribe(feed="open_positions")
+        await client_auth.subscribe(feed="open_orders")
+        # …
 
-    # unsubscribe from a private/authenticated websocket feed
-    await client_auth.unsubscribe(feed="fills")
+        # unsubscribe from a private/authenticated websocket feed
+        await client_auth.unsubscribe(feed="fills")
 
-    while not client.exception_occur and not client_auth.exception_occur:
-        await asyncio.sleep(6)
+        while not client.exception_occur and not client_auth.exception_occur:
+            await asyncio.sleep(6)
+    finally:
+        await client.close()
+        await client_auth.close()
 
 if __name__ == "__main__":
-    try:
-        asyncio.run(main())
-    except KeyboardInterrupt:
-        # do some exception handling …
-        pass
+    asyncio.run(main())
 ```
 
 ---

@@ -2,16 +2,43 @@
 
 ## [Unreleased](https://github.com/btschwertfeger/python-kraken-sdk/tree/HEAD)
 
-[Full Changelog](https://github.com/btschwertfeger/python-kraken-sdk/compare/v3.1.3...HEAD)
+[Full Changelog](https://github.com/btschwertfeger/python-kraken-sdk/compare/v3.1.5...HEAD)
+
+Uncategorized merged pull requests:
+
+- Update copyright header [\#354](https://github.com/btschwertfeger/python-kraken-sdk/pull/354) ([btschwertfeger](https://github.com/btschwertfeger))
+- Bump github/codeql-action from 3.28.5 to 3.28.9 [\#353](https://github.com/btschwertfeger/python-kraken-sdk/pull/353) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump actions/setup-python from 5.3.0 to 5.4.0 [\#351](https://github.com/btschwertfeger/python-kraken-sdk/pull/351) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Update egress rules in CI [\#349](https://github.com/btschwertfeger/python-kraken-sdk/pull/349) ([btschwertfeger](https://github.com/btschwertfeger))
+
+## [v3.1.5](https://github.com/btschwertfeger/python-kraken-sdk/tree/v3.1.5) (2025-01-29)
+
+[Full Changelog](https://github.com/btschwertfeger/python-kraken-sdk/compare/v3.1.4...v3.1.5)
+
+**Fixed bugs:**
+
+- Resolve "Documentation is somewhat incomplete" [\#348](https://github.com/btschwertfeger/python-kraken-sdk/pull/348) ([btschwertfeger](https://github.com/btschwertfeger))
+
+Uncategorized merged pull requests:
+
+- Bump codecov/codecov-action from 5.2.0 to 5.3.1 [\#346](https://github.com/btschwertfeger/python-kraken-sdk/pull/346) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump github/codeql-action from 3.28.2 to 3.28.5 [\#345](https://github.com/btschwertfeger/python-kraken-sdk/pull/345) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump pypa/gh-action-pypi-publish from 1.12.3 to 1.12.4 [\#344](https://github.com/btschwertfeger/python-kraken-sdk/pull/344) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump dependabot/fetch-metadata from 2.2.0 to 2.3.0 [\#343](https://github.com/btschwertfeger/python-kraken-sdk/pull/343) ([dependabot[bot]](https://github.com/apps/dependabot))
+
+## [v3.1.4](https://github.com/btschwertfeger/python-kraken-sdk/tree/v3.1.4) (2025-01-25)
+
+[Full Changelog](https://github.com/btschwertfeger/python-kraken-sdk/compare/v3.1.3...v3.1.4)
 
 Uncategorized merged pull requests:
 
 - Bump github/codeql-action from 3.28.1 to 3.28.2 [\#341](https://github.com/btschwertfeger/python-kraken-sdk/pull/341) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump codecov/codecov-action from 5.1.2 to 5.2.0 [\#340](https://github.com/btschwertfeger/python-kraken-sdk/pull/340) ([dependabot[bot]](https://github.com/apps/dependabot))
-- Update the documentation [\#339](https://github.com/btschwertfeger/python-kraken-sdk/pull/339) ([btschwertfeger](https://github.com/btschwertfeger))
 - Bump step-security/harden-runner from 2.10.3 to 2.10.4 [\#338](https://github.com/btschwertfeger/python-kraken-sdk/pull/338) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump step-security/harden-runner from 2.10.2 to 2.10.3 [\#337](https://github.com/btschwertfeger/python-kraken-sdk/pull/337) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump github/codeql-action from 3.28.0 to 3.28.1 [\#336](https://github.com/btschwertfeger/python-kraken-sdk/pull/336) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Switch to src-layout [\#342](https://github.com/btschwertfeger/python-kraken-sdk/pull/342) ([btschwertfeger](https://github.com/btschwertfeger))
+- Update the documentation [\#339](https://github.com/btschwertfeger/python-kraken-sdk/pull/339) ([btschwertfeger](https://github.com/btschwertfeger))
 
 ## [v3.1.3](https://github.com/btschwertfeger/python-kraken-sdk/tree/v3.1.3) (2025-01-05)
 

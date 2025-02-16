@@ -100,7 +100,7 @@ def test_spot_rest_async_client_get() -> None:
                 ),
             )
         finally:
-            await client.async_close()
+            await client.close()
 
     run(check())
 
@@ -227,7 +227,7 @@ def test_spot_rest_async_client_post_report(
                         )
                     sleep(2)
         finally:
-            await client.async_close()
+            await client.close()
 
     run(check())
 

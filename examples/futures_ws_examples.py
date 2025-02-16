@@ -17,7 +17,6 @@ import logging
 import logging.config
 import os
 import time
-from contextlib import suppress
 
 from kraken.futures import FuturesWSClient
 
@@ -29,6 +28,8 @@ logging.basicConfig(
 logging.getLogger("requests").setLevel(logging.WARNING)
 logging.getLogger("urllib3").setLevel(logging.WARNING)
 LOG: logging.Logger = logging.getLogger(__name__)
+
+clients = []
 
 
 # Custom client
@@ -48,60 +49,66 @@ async def main() -> None:
     key = os.getenv("FUTURES_API_KEY")
     secret = os.getenv("FUTURES_SECRET_KEY")
 
-    # _____Public_Websocket_Feeds___________________
-    client = Client()
-    await client.start()
-    # print(client.get_available_public_subscription_feeds())
+    try:
+        # _____Public_Websocket_Feeds___________________
+        client = Client()
+        clients.append(client)
+        await client.start()
+        # print(client.get_available_public_subscription_feeds())
 
-    products = ["PI_XBTUSD", "PF_SOLUSD"]
-    # subscribe to a public websocket feed
-    await client.subscribe(feed="ticker", products=products)
-    await client.subscribe(feed="book", products=products)
-    # await client.subscribe(feed='trade', products=products)
-    # await client.subscribe(feed='ticker_lite', products=products)
-    # await client.subscribe(feed='heartbeat')
-    # time.sleep(2)
+        products = ["PI_XBTUSD", "PF_SOLUSD"]
+        # subscribe to a public websocket feed
+        await client.subscribe(feed="ticker", products=products)
+        await client.subscribe(feed="book", products=products)
+        # await client.subscribe(feed='trade', products=products)
+        # await client.subscribe(feed='ticker_lite', products=products)
+        # await client.subscribe(feed='heartbeat')
+        # time.sleep(2)
 
-    # unsubscribe from a websocket feed
-    time.sleep(2)  # in case subscribe is not done yet
-    # await client.unsubscribe(feed='ticker', products=['PI_XBTUSD'])
-    await client.unsubscribe(feed="ticker", products=["PF_XBTUSD"])
-    await client.unsubscribe(feed="book", products=products)
-    # ...
-
-    # _____Private_Websocket_Feeds_________________
-    if key and secret:
-        client_auth = Client(key=key, secret=secret)
-        await client_auth.start()
-        # print(client_auth.get_available_private_subscription_feeds())
-
-        # subscribe to a private/authenticated websocket feed
-        await client_auth.subscribe(feed="fills")
-        await client_auth.subscribe(feed="open_positions")
-        # await client_auth.subscribe(feed='open_orders')
-        # await client_auth.subscribe(feed='open_orders_verbose')
-        # await client_auth.subscribe(feed='deposits_withdrawals')
-        # await client_auth.subscribe(feed='account_balances_and_margins')
-        # await client_auth.subscribe(feed='balances')
-        # await client_auth.subscribe(feed='account_log')
-        # await client_auth.subscribe(feed='notifications_auth')
-
-        # authenticated clients can also subscribe to public feeds
-        # await client_auth.subscribe(feed='ticker', products=['PI_XBTUSD', 'PF_ETHUSD'])
-
-        # time.sleep(1)
-        # unsubscribe from a private/authenticated websocket feed
-        await client_auth.unsubscribe(feed="fills")
-        await client_auth.unsubscribe(feed="open_positions")
+        # unsubscribe from a websocket feed
+        time.sleep(2)  # in case subscribe is not done yet
+        # await client.unsubscribe(feed='ticker', products=['PI_XBTUSD'])
+        await client.unsubscribe(feed="ticker", products=["PF_XBTUSD"])
+        await client.unsubscribe(feed="book", products=products)
         # ...
 
-    while not client.exception_occur:  # and not client_auth.exception_occur:
-        await asyncio.sleep(6)
+        # _____Private_Websocket_Feeds_________________
+        if key and secret:
+            client_auth = Client(key=key, secret=secret)
+            clients.append(client_auth)
+            await client_auth.start()
+            # print(client_auth.get_available_private_subscription_feeds())
+
+            # subscribe to a private/authenticated websocket feed
+            await client_auth.subscribe(feed="fills")
+            await client_auth.subscribe(feed="open_positions")
+            # await client_auth.subscribe(feed='open_orders')
+            # await client_auth.subscribe(feed='open_orders_verbose')
+            # await client_auth.subscribe(feed='deposits_withdrawals')
+            # await client_auth.subscribe(feed='account_balances_and_margins')
+            # await client_auth.subscribe(feed='balances')
+            # await client_auth.subscribe(feed='account_log')
+            # await client_auth.subscribe(feed='notifications_auth')
+
+            # authenticated clients can also subscribe to public feeds
+            # await client_auth.subscribe(feed='ticker', products=['PI_XBTUSD', 'PF_ETHUSD'])
+
+            # time.sleep(1)
+            # unsubscribe from a private/authenticated websocket feed
+            await client_auth.unsubscribe(feed="fills")
+            await client_auth.unsubscribe(feed="open_positions")
+            # ...
+
+        while not client.exception_occur:  # and not client_auth.exception_occur:
+            await asyncio.sleep(6)
+    finally:
+        # Close the sessions properly.
+        for _client in clients:
+            await _client.close()
 
 
 if __name__ == "__main__":
-    with suppress(KeyboardInterrupt):
-        asyncio.run(main())
+    asyncio.run(main())
     # the websocket client will send {'event': 'asyncio.CancelledError'} via on_message
     # so you can handle the behavior/next actions individually within you strategy
 

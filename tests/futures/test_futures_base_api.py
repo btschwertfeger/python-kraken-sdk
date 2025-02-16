@@ -120,7 +120,7 @@ def test_futures_rest_async_client_post(
                 dict,
             )
         finally:
-            await client.async_close()
+            await client.close()
 
     run(check())
 
