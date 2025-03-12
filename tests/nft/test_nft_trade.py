@@ -24,6 +24,8 @@ from kraken.exceptions import (
     KrakenNFTNotAvailableError,
 )
 
+pytestmark = [pytest.mark.skip(reason="NFT Market API is not available.")]
+
 
 @pytest.mark.nft
 @pytest.mark.nft_auth

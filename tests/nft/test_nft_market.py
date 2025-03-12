@@ -16,6 +16,8 @@ import pytest
 if TYPE_CHECKING:
     from kraken.nft import Market
 
+pytestmark = [pytest.mark.skip(reason="NFT Market API is not available.")]
+
 
 @pytest.mark.nft
 @pytest.mark.nft_market
