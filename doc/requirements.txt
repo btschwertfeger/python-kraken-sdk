@@ -3,7 +3,6 @@ asyncio>=3.4
 click~=8.1
 cloup~=3.0
 ipython
-nbsphinx
 orjson
 requests~=2.32
 setuptools_scm
