@@ -12,7 +12,7 @@ Command-line Interface
 
 The python-kraken-sdk provides a command-line interface to access the Kraken API
 using basic instructions while performing authentication tasks in the
-background. The Spot, NFT and Futures API are accessible and follow the pattern
+background. The Spot and Futures APIs are accessible and follow the pattern
 ``kraken {spot,futures} [OPTIONS] URL``. All endpoints of the Kraken Spot and
 Futurs API can be accessed like that. See examples below.
 

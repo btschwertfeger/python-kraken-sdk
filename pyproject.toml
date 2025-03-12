@@ -140,10 +140,6 @@ markers = [
   "futures_trade: Futures Trade endpoint.",
   "futures_funding: Futures Funding endpoint.",
   "futures_websocket: Futures Websocket endpoint.",
-  "nft: NFT endpoint.",
-  "nft_auth: Private NFT endpoint.",
-  "nft_market: NFT Market endpoint.",
-  "nft_trade: NFT Trade endpoint.",
 ]
 
 # filterwarnings = [
