@@ -1,13 +1,13 @@
 aiohttp
 asyncio>=3.4
-click
-cloup
+click~=8.1
+cloup~=3.0
 ipython
 nbsphinx
 orjson
-requests
+requests~=2.32
 setuptools_scm
-sphinx
+sphinx<8.2.0 # doesn't work with nbsphinx
 sphinx-click
 sphinx-rtd-theme
 websockets>=14.1
