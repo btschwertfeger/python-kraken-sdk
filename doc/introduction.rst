@@ -69,7 +69,7 @@ General:
 
 Available Clients:
 
-- Spot REST Clients (sync and async; including access to NFT trading)
+- Spot REST Clients (sync and async)
 - Spot Websocket Client (Websocket API v2)
 - Spot Orderbook Client (Websocket API v2)
 - Futures REST Clients (sync and async)

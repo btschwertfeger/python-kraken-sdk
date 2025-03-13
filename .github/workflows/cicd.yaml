@@ -133,39 +133,6 @@ jobs:
     secrets: inherit
 
   ## ===========================================================================
-  ##          Run the NFT tests
-  ##
-  ##  (public endpoints)
-  ##
-  Test-NFT-Public:
-    needs: [Pre-Commit]
-    uses: ./.github/workflows/_test_nft_public.yaml
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-latest, windows-latest]
-        python-version: ["3.11", "3.12", "3.13"]
-    with:
-      os: ${{ matrix.os }}
-      python-version: ${{ matrix.python-version }}
-  ##
-  ##  (private endpoints)
-  Test-NFT-Private:
-    if: success() && github.actor != 'dependabot[bot]'
-    needs: [Test-Spot-Private]
-    uses: ./.github/workflows/_test_nft_private.yaml
-    strategy:
-      max-parallel: 1 # to avoid failing tests because of API Rate limits
-      fail-fast: false
-      matrix:
-        os: [ubuntu-latest, windows-latest]
-        python-version: ["3.11", "3.12", "3.13"]
-    with:
-      os: ${{ matrix.os }}
-      python-version: ${{ matrix.python-version }}
-    secrets: inherit
-
-  ## ===========================================================================
   ##        Run the Futures tests
   ##
   ##  (public endpoints)
@@ -210,8 +177,6 @@ jobs:
       - Test-Spot-Private
       - Test-Futures-Public
       - Test-Futures-Private
-      - Test-NFT-Public
-      - Test-NFT-Private
     uses: ./.github/workflows/_codecov.yaml
     with:
       os: "ubuntu-latest"

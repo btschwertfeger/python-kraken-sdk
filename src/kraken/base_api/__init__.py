@@ -489,8 +489,8 @@ class SpotClient:
 
 class SpotAsyncClient(SpotClient):
     """
-    This class provides the base client for accessing the Kraken Spot and NFT
-    API using asynchronous requests.
+    This class provides the base client for accessing the Kraken Spot API using
+    asynchronous requests.
 
     If you are facing timeout errors on derived clients, you can make use of the
     ``TIMEOUT`` attribute to deviate from the default ``10`` seconds.
@@ -683,10 +683,6 @@ class SpotAsyncClient(SpotClient):
 
     async def __aexit__(self: SpotAsyncClient, *args: object) -> None:
         await self.close()
-
-
-class NFTClient(SpotClient):
-    """Inherits from SpotClient"""
 
 
 class FuturesClient:
@@ -1179,7 +1175,6 @@ __all__ = [
     "ensure_string",
     "SpotClient",
     "SpotAsyncClient",
-    "NFTClient",
     "FuturesClient",
     "FuturesAsyncClient",
 ]
