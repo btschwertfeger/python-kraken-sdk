@@ -1,4 +1,4 @@
-<h1 align="center">Futures, Spot and NFT - REST and Websocket API Python SDK for the Kraken Cryptocurrency Exchange 🐙</h1>
+<h1 align="center">Futures and Spot REST and Websocket API Python SDK for the Kraken Cryptocurrency Exchange 🐙</h1>
 
 <div align="center">
 
@@ -56,7 +56,7 @@ General:
 
 Available Clients:
 
-- Spot REST Clients (sync and async; including access to NFT trading)
+- Spot REST Clients (sync and async)
 - Spot Websocket Client (using Websocket API v2)
 - Spot Orderbook Client (using Websocket API v2)
 - Futures REST Clients (sync and async)
@@ -128,7 +128,7 @@ persists please open an issue.
 
 The python-kraken-sdk provides a command-line interface to access the Kraken API
 using basic instructions while performing authentication tasks in the
-background. The Spot, NFT and Futures API are accessible and follow the pattern
+background. The Spot and Futures API are accessible and follow the pattern
 `kraken {spot,futures} [OPTIONS] URL`. See examples below.
 
 ```bash
@@ -174,7 +174,7 @@ the available endpoints and their usage.
 ### `SpotClient`
 
 The Spot client provides access to all un-and authenticated endpoints of
-Kraken's Spot and NFT API.
+Kraken's Spot API.
 
 ```python
 from kraken.spot import SpotClient
@@ -185,9 +185,11 @@ print(client.request("POST", "/0/private/Balance"))
 
 ### `SpotAsyncClient`
 
-The async Spot client allows for asynchronous access to Kraken's Spot and NFT API endpoints. Below are two examples demonstrating its usage.
+The async Spot client allows for asynchronous access to Kraken's Spot API
+endpoints. Below are two examples demonstrating its usage.
 
-Using SpotAsyncClient without a context manager; In this example, the client is manually closed after the request is made.
+Using SpotAsyncClient without a context manager; In this example, the client is
+manually closed after the request is made.
 
 ```python
 import asyncio
@@ -205,7 +207,9 @@ if __name__ == "__main__":
     asyncio.run(main())
 ```
 
-Using SpotAsyncClient as a context manager; This example demonstrates the use of the context manager, which ensures the client is automatically closed after the request is completed.
+Using SpotAsyncClient as a context manager; This example demonstrates the use of
+the context manager, which ensures the client is automatically closed after the
+request is completed.
 
 ```python
 import asyncio

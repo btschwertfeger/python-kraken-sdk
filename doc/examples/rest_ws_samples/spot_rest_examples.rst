@@ -20,7 +20,7 @@ See https://docs.kraken.com/api/docs/guides/global-intro for information about
 the available endpoints and their usage.
 
 The Spot client provides access to all un-and authenticated endpoints of
-Kraken's Spot and NFT API.
+Kraken's Spot API.
 
 .. code-block:: python
    :linenos:
@@ -31,8 +31,8 @@ Kraken's Spot and NFT API.
    client = SpotClient(key="<your-api-key>", secret="<your-secret-key>")
    print(client.request("POST", "/0/private/Balance"))
 
-The async Spot client allows for asynchronous access to Kraken's Spot and NFT
-API endpoints. Below are two examples demonstrating its usage.
+The async Spot client allows for asynchronous access to Kraken's Spot API
+endpoints. Below are two examples demonstrating its usage.
 
 Using SpotAsyncClient without a context manager; In this example, the client is
 manually closed after the request is made.
