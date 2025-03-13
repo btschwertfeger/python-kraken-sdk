@@ -320,11 +320,6 @@ class KrakenMaxFeeExceededError(Exception):
 
 
 @docstring_message
-class KrakenNFTNotAvailableError(Exception):
-    """The user doesn't own the selected NFT."""
-
-
-@docstring_message
 class KrakenInvalidArgumentsStartTimeError(Exception):
     """start_time must be < expire_time"""
 
@@ -362,7 +357,6 @@ EXCEPTION_ASSIGNMENT: dict[str, Any] = {
     "EGeneral:Permission denied": KrakenPermissionDeniedError,
     "EGeneral:Unknown method": KrakenUnknownMethodError,
     "EGeneral:Temporary lockout": KrakenTemporaryLockoutError,
-    "EGeneral:No Balance:nfts not available": KrakenNFTNotAvailableError,
     "EGeneral:Invalid User:auction owned by someone else": KrakenAuctionNotOwnedByUserError,
     "EFunding:Max fee exceeded": KrakenMaxFeeExceededError,
     "EService:Unavailable": KrakenServiceUnavailableError,
