@@ -17,7 +17,7 @@ from typing import TYPE_CHECKING, Any, TypeVar
 
 from kraken.spot import SpotAsyncClient
 from kraken.spot.websocket.connectors import ConnectSpotWebsocket
-from kraken.utils.utils import deprecated
+from kraken.utils.utils import WSState, deprecated
 
 if TYPE_CHECKING:
     from collections.abc import Callable
@@ -51,6 +51,8 @@ class SpotWSClientBase(SpotAsyncClient):
     LOG: logging.Logger = logging.getLogger(__name__)
     PROD_ENV_URL: str = "ws.kraken.com"
     AUTH_PROD_ENV_URL: str = "ws-auth.kraken.com"
+    # Changing this can cause errors, as this class is designed for v2.
+    API_V: str = "/v2"
 
     def __init__(  # nosec: B107
         self: SpotWSClientBase,
@@ -61,7 +63,7 @@ class SpotWSClientBase(SpotAsyncClient):
         no_public: bool = False,
     ) -> None:
         super().__init__(key=key, secret=secret)
-
+        self.state: WSState = WSState.INIT
         self._is_auth: bool = bool(key and secret)
         self.__callback: Callable | None = callback
         self._pub_conn: ConnectSpotWebsocket | None = None
@@ -77,16 +79,12 @@ class SpotWSClientBase(SpotAsyncClient):
 
     # --------------------------------------------------------------------------
     # Internals
-    def __prepare_connect(
-        self: SpotWSClientBase,
-        *,
-        no_public: bool,
-    ) -> None:
+    def __prepare_connect(self: SpotWSClientBase, *, no_public: bool) -> None:
         """Set up functions and attributes based on the API version."""
 
         # pylint: disable=invalid-name
-        self.PROD_ENV_URL += "/v2"
-        self.AUTH_PROD_ENV_URL += "/v2"
+        self.PROD_ENV_URL += self.API_V
+        self.AUTH_PROD_ENV_URL += self.API_V
 
         self._pub_conn = (
             ConnectSpotWebsocket(
@@ -112,6 +110,7 @@ class SpotWSClientBase(SpotAsyncClient):
 
     async def start(self: SpotWSClientBase) -> None:
         """Method to start the websocket connection."""
+        self.state = WSState.CONNECTING
         if self._pub_conn:
             await self._pub_conn.start()
         if self._priv_conn:
@@ -126,27 +125,31 @@ class SpotWSClientBase(SpotAsyncClient):
             else:
                 public_conntection_waiting = False
 
-            private_conection_waiting = True
+            private_connection_waiting = True
             if self._priv_conn:
                 if self._priv_conn.socket is not None:
-                    private_conection_waiting = False
+                    private_connection_waiting = False
             else:
-                private_conection_waiting = False
+                private_connection_waiting = False
 
-            if not public_conntection_waiting and not private_conection_waiting:
+            if not public_conntection_waiting and not private_connection_waiting:
                 break
             await async_sleep(0.2)
             timeout += 0.2
         else:
+            self.state = WSState.ERROR
             raise TimeoutError("Could not connect to the Kraken API!")
+        self.state = WSState.CONNECTED
 
     async def close(self: SpotWSClientBase) -> None:
         """Method to close the websocket connection."""
+        self.state = WSState.CANCELLING
         if self._pub_conn:
             await self._pub_conn.stop()
         if self._priv_conn:
             await self._priv_conn.stop()
         await super().close()
+        self.state = WSState.CLOSED
 
     @deprecated(
         "The 'stop' function is deprecated and will be replaced by"
@@ -154,11 +157,13 @@ class SpotWSClientBase(SpotAsyncClient):
     )
     async def stop(self: SpotWSClientBase) -> None:
         """Method to stop the websocket connection."""
+        self.state = WSState.CANCELLING
         if self._pub_conn:
             await self._pub_conn.stop()
         if self._priv_conn:
             await self._priv_conn.stop()
         await super().close()
+        self.state = WSState.CLOSED
 
     async def on_message(
         self: SpotWSClientBase,

@@ -497,7 +497,7 @@ def test_reconnect(
         "Recover authenticated subscriptions []: waiting",
         "Recover public subscriptions []: done",
         "Recover authenticated subscriptions []: done",
-        "Websocket connected!",
+        "Websocket connection established!",
         '{"channel": "status",',
         '"data": [{',
         '"api_version": "v2",',
