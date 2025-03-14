@@ -113,6 +113,8 @@ class User(SpotClient):
 
         Requires the ``Query funds`` permission in the API key settings.
 
+        - https://docs.kraken.com/api/docs/rest-api/get-extended-balance
+
         :return: Dictionary containing the ``currency`` as keys, that hold a
             dictionary containing the ``balance`` key holding the actual balance
             including the value in orders and the ``hold_trade`` key that
@@ -516,6 +518,42 @@ class User(SpotClient):
         return self.request(  # type: ignore[return-value]
             method="POST",
             uri="/0/private/QueryOrders",
+            params=params,
+            extra_params=extra_params,
+        )
+
+    def get_order_amends(
+        self: User,
+        order_id: str,
+        *,
+        extra_params: dict | None = None,
+    ) -> dict:
+        """
+        Retrieve information about historical order amends.
+
+        Requires the ``Query open orders & trades`` and ``Query closed orders &
+        trades`` permissions in the API key settings.
+
+        - https://docs.kraken.com/api/docs/rest-api/get-order-amends
+
+        :param order_id: The ``order_id`` to filter for.
+        :type txid: str
+
+        .. code-block:: python
+            :linenos:
+            :caption: Spot User: Get order amends
+
+            >>> from kraken.spot import User
+            >>> user = User(key="api-key", secret="secret-key")
+            >>> user.get_order_amends(txid="OVM3PT-56ACO-53SM2T")
+            {'amends': [], 'count': 0}
+        """
+        params = {}
+        if defined(order_id):
+            params["order_id"] = order_id
+        return self.request(  # type: ignore[return-value]
+            method="POST",
+            uri="/0/private/OrderAmends",
             params=params,
             extra_params=extra_params,
         )
