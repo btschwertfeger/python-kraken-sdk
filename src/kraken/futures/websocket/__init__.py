@@ -26,6 +26,7 @@ if TYPE_CHECKING:
     from collections.abc import Callable
 
     from kraken.futures import FuturesWSClient
+from kraken.utils.utils import WSState
 
 LOG: logging.Logger = logging.getLogger(__name__)
 
@@ -53,6 +54,7 @@ class ConnectFuturesWebsocket:  # pylint: disable=too-many-instance-attributes
         endpoint: str,
         callback: Callable,
     ) -> None:
+        self.state = WSState.INIT
         self.__client: FuturesWSClient = client
         self.__ws_endpoint: str = endpoint
         self.__callback: Any = callback
@@ -86,14 +88,17 @@ class ConnectFuturesWebsocket:  # pylint: disable=too-many-instance-attributes
 
     async def stop(self: ConnectFuturesWebsocket) -> None:
         """Stops the websocket connection"""
+        self.state = WSState.CANCELLING
         self.keep_alive = False
         if hasattr(self, "task") and not self.task.done():
             await self.task
+        self.state = WSState.CLOSED
 
     async def __run(  # noqa: C901
         self: ConnectFuturesWebsocket,
         event: asyncio.Event,
     ) -> None:
+        self.state = WSState.CONNECTING
         self.__new_challenge = None
         self.__last_challenge = None
 
@@ -103,7 +108,8 @@ class ConnectFuturesWebsocket:  # pylint: disable=too-many-instance-attributes
             ping_interval=30,
             max_queue=None,  # FIXME: This is not recommended by the docs https://websockets.readthedocs.io/en/stable/reference/asyncio/client.html#module-websockets.asyncio.client
         ) as socket:
-            LOG.info("Websocket connected!")
+            self.state = WSState.CONNECTED
+            LOG.info("Websocket connection established!")
             self.socket = socket
 
             if not event.is_set():
@@ -121,7 +127,6 @@ class ConnectFuturesWebsocket:  # pylint: disable=too-many-instance-attributes
                 except asyncio.CancelledError:
                     LOG.exception("asyncio.CancelledError")
                     self.keep_alive = False
-                    await self.__callback({"error": "asyncio.CancelledError"})
                 else:
                     try:
                         message: dict = json.loads(_message)
@@ -148,19 +153,23 @@ class ConnectFuturesWebsocket:  # pylint: disable=too-many-instance-attributes
             while self.keep_alive:
                 await self.__reconnect()
         except MaxReconnectError:
+            self.state = WSState.ERROR
             await self.__callback(
-                {"error": "kraken.exceptions.MaxReconnectError"},
+                {"python-kraken-sdk": {"error": "kraken.exceptions.MaxReconnectError"}},
             )
             self.exception_occur = True
-        except Exception:
+        except Exception:  # pylint: disable=broad-except
+            self.state = WSState.ERROR
             LOG.exception(traceback.format_exc())
             self.exception_occur = True
 
     async def close_connection(self: ConnectFuturesWebsocket) -> None:
         """Closes the connection -/ will force reconnect"""
+        self.state = WSState.CANCELLING
         await self.socket.close()
 
     async def __reconnect(self: ConnectFuturesWebsocket) -> None:
+        self.state = WSState.RECONNECTING
         LOG.info("Websocket start connect/reconnect")
 
         self.__reconnect_num += 1
@@ -174,9 +183,8 @@ class ConnectFuturesWebsocket:  # pylint: disable=too-many-instance-attributes
             self.__reconnect_num,
         )
         await asyncio.sleep(reconnect_wait)
-        LOG.debug("asyncio sleep done")
-        event: asyncio.Event = asyncio.Event()
 
+        event: asyncio.Event = asyncio.Event()
         tasks: dict = {
             asyncio.ensure_future(
                 self.__recover_subscription_req_msg(event),
@@ -192,22 +200,23 @@ class ConnectFuturesWebsocket:  # pylint: disable=too-many-instance-attributes
             exception_occur = False
             for task in finished:
                 if task.exception():
+                    self.state = WSState.ERRORHANDLING
                     exception_occur = True
                     self.__challenge_ready = False
-                    traceback.print_stack()
                     message = f"{task} got an exception {task.exception()}\n {task.get_stack()}"
                     LOG.warning(message)
                     for process in pending:
-                        LOG.warning("pending %s", process)
+                        LOG.warning("Pending %s", process)
                         try:
                             process.cancel()
+                            LOG.warning("Cancelled %s", process)
                         except asyncio.CancelledError:
-                            LOG.exception("CancelledError")
-                        LOG.warning("cancel ok")
-                    await self.__callback({"error": message})
+                            LOG.error("Failed to cancel %s", process)
+                    await self.__callback({"python-kraken-sdk": {"error": message}})
             if exception_occur:
                 break
-        LOG.warning("Connection closed")
+        self.state = WSState.CLOSED
+        LOG.info("Connection closed!")
 
     async def __recover_subscription_req_msg(
         self: ConnectFuturesWebsocket,
