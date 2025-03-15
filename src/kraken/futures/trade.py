@@ -10,6 +10,7 @@
 from __future__ import annotations
 
 from typing import TypeVar
+from urllib.parse import encode
 
 from kraken.base_api import FuturesClient, defined
 
@@ -237,7 +238,7 @@ class Trade(FuturesClient):
         return self.request(  # type: ignore[return-value]
             method="POST",
             uri="/derivatives/api/v3/batchorder",
-            post_params=params,
+            post_params=encode(params),
             auth=True,
             extra_params=extra_params,
         )
