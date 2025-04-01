@@ -20,7 +20,7 @@ maintainers = [
 ]
 description = "Command-line tool and collection of REST and websocket clients to interact with the Kraken cryptocurrency exchange."
 readme = "README.md"
-license = { file = "LICENSE" }
+license-files = ["LICENSE"]
 requires-python = ">=3.11"
 dependencies = [
   "asyncio>=3.4",
@@ -36,7 +36,6 @@ classifiers = [
   "Development Status :: 5 - Production/Stable",
   "Framework :: AsyncIO",
   "Intended Audience :: Developers",
-  "License :: OSI Approved :: Apache Software License",
   "Natural Language :: English",
   "Operating System :: MacOS",
   "Operating System :: Unix",
