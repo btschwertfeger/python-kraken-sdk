@@ -328,7 +328,7 @@ class Trade(SpotClient):
                 if not truncate
                 else self.truncate(amount=volume, amount_type="volume", pair=pair)
             ),
-            "stp_type": stptype,
+            "stptype": stptype,
             "starttm": starttm,
             "validate": validate,
             "reduce_only": reduce_only,
@@ -347,6 +347,8 @@ class Trade(SpotClient):
             params["trigger"] = trigger
         if defined(timeinforce):
             params["timeinforce"] = timeinforce
+            if timeinforce == 'IOC':
+                params.pop("starttm", None)
         if defined(expiretm):
             params["expiretm"] = str(expiretm)
         if defined(price):
