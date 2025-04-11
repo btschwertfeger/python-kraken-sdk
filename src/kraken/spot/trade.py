@@ -347,10 +347,6 @@ class Trade(SpotClient):
             params["trigger"] = trigger
         if defined(timeinforce):
             params["timeinforce"] = timeinforce
-            ## notice: At least as of 2025.04.11, 'starttm' needs to be removed for IOC orders.
-            ## However, due to historical complexity, the maintainer decided not to change it, so this note is left as a reminder
-            # if timeinforce == 'IOC':
-            #     params.pop("starttm", None)
         if defined(expiretm):
             params["expiretm"] = str(expiretm)
         if defined(price):
