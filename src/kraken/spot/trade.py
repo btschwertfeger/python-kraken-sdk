@@ -328,7 +328,7 @@ class Trade(SpotClient):
                 if not truncate
                 else self.truncate(amount=volume, amount_type="volume", pair=pair)
             ),
-            "stp_type": stptype,
+            "stptype": stptype,
             "starttm": starttm,
             "validate": validate,
             "reduce_only": reduce_only,
