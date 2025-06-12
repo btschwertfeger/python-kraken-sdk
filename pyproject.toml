@@ -52,9 +52,9 @@ classifiers = [
 ]
 
 [project.urls]
-"Homepage" = "https://github.com/btschwertfeger/python-kraken-sdk"
+Homepage = "https://github.com/btschwertfeger/python-kraken-sdk"
 "Bug Tracker" = "https://github.com/btschwertfeger/python-kraken-sdk/issues"
-"Documentation" = "https://python-kraken-sdk.readthedocs.io/en/stable/"
+Documentation = "https://python-kraken-sdk.readthedocs.io/en/stable/"
 
 [project.optional-dependencies]
 dev = [
