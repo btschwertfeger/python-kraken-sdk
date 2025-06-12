@@ -477,6 +477,8 @@ class Market(SpotClient):
         """
         Returns the system status of the Kraken Spot API.
 
+        - https://docs.kraken.com/api/docs/rest-api/get-system-status
+
         :return: Success or failure
         :rtype: dict
 

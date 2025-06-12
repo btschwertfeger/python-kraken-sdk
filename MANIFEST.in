@@ -7,7 +7,7 @@
 
 include README.md LICENSE pyproject.toml
 
-graft kraken
+graft src/kraken
 prune .cache
 prune .github
 prune doc
