@@ -2,13 +2,64 @@
 
 ## [Unreleased](https://github.com/btschwertfeger/python-kraken-sdk/tree/HEAD)
 
-[Full Changelog](https://github.com/btschwertfeger/python-kraken-sdk/compare/v3.1.5...HEAD)
+[Full Changelog](https://github.com/btschwertfeger/python-kraken-sdk/compare/v3.2.2...HEAD)
 
 Uncategorized merged pull requests:
 
-- Update copyright header [\#354](https://github.com/btschwertfeger/python-kraken-sdk/pull/354) ([btschwertfeger](https://github.com/btschwertfeger))
+- Bump the all group with 2 updates [\#380](https://github.com/btschwertfeger/python-kraken-sdk/pull/380) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Update project settings [\#379](https://github.com/btschwertfeger/python-kraken-sdk/pull/379) ([btschwertfeger](https://github.com/btschwertfeger))
+- Bump the all group with 5 updates [\#378](https://github.com/btschwertfeger/python-kraken-sdk/pull/378) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump the all group with 7 updates [\#377](https://github.com/btschwertfeger/python-kraken-sdk/pull/377) ([dependabot[bot]](https://github.com/apps/dependabot))
+
+## [v3.2.2](https://github.com/btschwertfeger/python-kraken-sdk/tree/v3.2.2) (2025-04-11)
+
+[Full Changelog](https://github.com/btschwertfeger/python-kraken-sdk/compare/v3.2.1...v3.2.2)
+
+**Fixed bugs:**
+
+- `kraken.spot.trade.create_order`: `stp_type` should be `stptype` [\#373](https://github.com/btschwertfeger/python-kraken-sdk/pull/373) ([HFFP](https://github.com/HFFP))
+
+## [v3.2.1](https://github.com/btschwertfeger/python-kraken-sdk/tree/v3.2.1) (2025-04-01)
+
+[Full Changelog](https://github.com/btschwertfeger/python-kraken-sdk/compare/v3.2.0...v3.2.1)
+
+Uncategorized merged pull requests:
+
+- Bump the all group with 3 updates [\#370](https://github.com/btschwertfeger/python-kraken-sdk/pull/370) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Resolve "Parts of the pyproject.toml are deprecated" [\#372](https://github.com/btschwertfeger/python-kraken-sdk/pull/372) ([btschwertfeger](https://github.com/btschwertfeger))
+
+## [v3.2.0](https://github.com/btschwertfeger/python-kraken-sdk/tree/v3.2.0) (2025-03-14)
+
+[Full Changelog](https://github.com/btschwertfeger/python-kraken-sdk/compare/v3.1.6...v3.2.0)
+
+**Implemented enhancements:**
+
+- Resolve "Add the `/0/private/AmendOrder` and `/0/private/OrderAmends` endpoints" [\#362](https://github.com/btschwertfeger/python-kraken-sdk/pull/362) ([btschwertfeger](https://github.com/btschwertfeger))
+
+**Fixed bugs:**
+
+- Pin dependencies to fix doc building [\#365](https://github.com/btschwertfeger/python-kraken-sdk/pull/365) ([btschwertfeger](https://github.com/btschwertfeger))
+
+Uncategorized merged pull requests:
+
+- Bump the all group with 5 updates [\#364](https://github.com/btschwertfeger/python-kraken-sdk/pull/364) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Resolve "Kraken no longer offers the NFT marketplace" [\#367](https://github.com/btschwertfeger/python-kraken-sdk/pull/367) ([btschwertfeger](https://github.com/btschwertfeger))
+- Resolve "Websocket error propagation lacks usability" [\#363](https://github.com/btschwertfeger/python-kraken-sdk/pull/363) ([btschwertfeger](https://github.com/btschwertfeger))
+
+## [v3.1.6](https://github.com/btschwertfeger/python-kraken-sdk/tree/v3.1.6) (2025-02-16)
+
+[Full Changelog](https://github.com/btschwertfeger/python-kraken-sdk/compare/v3.1.5...v3.1.6)
+
+**Fixed bugs:**
+
+- Resolve "`async_close` and `stop` marked as deprecated, but no alternative is provided" [\#359](https://github.com/btschwertfeger/python-kraken-sdk/pull/359) ([btschwertfeger](https://github.com/btschwertfeger))
+
+Uncategorized merged pull requests:
+
 - Bump github/codeql-action from 3.28.5 to 3.28.9 [\#353](https://github.com/btschwertfeger/python-kraken-sdk/pull/353) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump actions/setup-python from 5.3.0 to 5.4.0 [\#351](https://github.com/btschwertfeger/python-kraken-sdk/pull/351) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Resolve "The URLs in the documentation linking to the Kraken API documentation are out-dated" [\#360](https://github.com/btschwertfeger/python-kraken-sdk/pull/360) ([btschwertfeger](https://github.com/btschwertfeger))
+- Update copyright header [\#354](https://github.com/btschwertfeger/python-kraken-sdk/pull/354) ([btschwertfeger](https://github.com/btschwertfeger))
 - Update egress rules in CI [\#349](https://github.com/btschwertfeger/python-kraken-sdk/pull/349) ([btschwertfeger](https://github.com/btschwertfeger))
 
 ## [v3.1.5](https://github.com/btschwertfeger/python-kraken-sdk/tree/v3.1.5) (2025-01-29)
