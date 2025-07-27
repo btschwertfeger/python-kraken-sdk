@@ -1,5 +1,5 @@
-# -*- mode: python; coding: utf-8 -*-
 # !/usr/bin/env python3
+# -*- mode: python; coding: utf-8 -*-
 #
 # Copyright (C) 2023 Benjamin Thomas Schwertfeger
 # All rights reserved.
@@ -14,12 +14,11 @@ unit tests of this package as they provide a much deeper dive into the usage.
 """
 
 import logging
-import logging.config
 import os
 import time
 from pathlib import Path
 
-from kraken.spot import Earn, Funding, Market, Trade, User
+from kraken.spot import Funding, Market, Trade, User
 
 logging.basicConfig(
     format="%(asctime)s %(module)s,line: %(lineno)d %(levelname)8s | %(message)s",
@@ -187,22 +186,11 @@ def funding_examples() -> None:
         )
 
 
-def earn_examples() -> None:
-    """
-    Example usage of the Funding client; not shown, since special API key
-    permissions must be set.
-    """
-    earn = Earn(key=key, secret=secret)  # noqa: F841
-    # ...
-    # see tests/spot/test_spot_earn.py for examples.
-
-
 def main() -> None:
     user_examples()
     market_examples()
     trade_examples()
     funding_examples()
-    earn_examples()
 
 
 if __name__ == "__main__":
