@@ -1,5 +1,5 @@
-# -*- mode: python; coding: utf-8 -*-
 # !/usr/bin/env python3
+# -*- mode: python; coding: utf-8 -*-
 #
 # Copyright (C) 2023 Benjamin Thomas Schwertfeger
 # All rights reserved.
@@ -16,7 +16,6 @@ from __future__ import annotations
 
 import asyncio
 import logging
-import logging.config
 import os
 import sys
 import traceback
