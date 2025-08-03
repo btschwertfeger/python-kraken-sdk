@@ -20,7 +20,7 @@ Futures Trading Bot Template
 ----------------------------
 
 The template presented below serves as a starting point for the development of
-a trading algorithm for trading futures contracts on the cryptocurrency exchange
+a trading algorithm for trading futures contracts on the crypto asset exchange
 `Kraken`_ using the `python-kraken-sdk`_.
 
 The trading strategy can be implemented in the ``TradingBot`` class. This class

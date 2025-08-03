@@ -1,4 +1,4 @@
-<h1 align="center">Futures and Spot REST and Websocket API Python SDK for the Kraken Cryptocurrency Exchange 🐙</h1>
+<h1 align="center">Futures and Spot REST and Websocket API Python SDK for the Kraken Crypto Asset Exchange 🐙</h1>
 
 <div align="center">
 
@@ -23,7 +23,7 @@
 </div>
 
 > ⚠️ This is an unofficial collection of REST and websocket clients for Spot and
-> Futures trading on the Kraken cryptocurrency exchange using Python. Payward
+> Futures trading on the Kraken Crypto Asset Exchange using Python. Payward
 > Ltd. and Kraken are in no way associated with the authors of this package and
 > documentation.
 >
@@ -160,7 +160,7 @@ kraken futures --api-key=<api-key> --secret-key=<secret-key> https://futures.kra
 # 📍 Spot Clients
 
 The python-kraken-sdk provides lots of functions to easily access most of the
-REST and websocket endpoints of the Kraken Cryptocurrency Exchange API. Since
+REST and websocket endpoints of the Kraken Crypto Asset Exchange API. Since
 these endpoints and their parameters may change, all implemented endpoints are
 tested on a regular basis.
 
