@@ -33,22 +33,35 @@ secret = os.getenv("FUTURES_SANDBOX_SECRET")
 
 
 def market_examples() -> None:
-    """Example market client usage"""
-    # market = Market()
-    # print(market.get_tick_types())
-    # print(market.get_tradeable_products(tick_type='trade'))
-    # print(market.get_resolutions(tick_type='trade', tradeable='PI_XBTUSD'))
-    # print(market.get_ohlc(tick_type='trade', symbol='PI_XBTUSD', resolution='5m', from_='1668989233'))
-    # print(market.get_fee_schedules())
-    # # print(market.get_orderbook(symbol='fi_xbtusd_180615')) # this endpoint is broken
-    # print(market.get_tickers())
-    # print(market.get_instruments())
-    # print(market.get_instruments_status())
-    # print(market.get_instruments_status(instrument='PI_XBTUSD'))
-    # print(market.get_trade_history(symbol='PI_XBTUSD'))
-    # print(market.get_historical_funding_rates(symbol='PI_XBTUSD'))
-    # time.sleep(2)
+    """Example Futures Market client usage"""
 
+    # Usage of the Market client to access public endpoints:
+    market = Market()
+    print(market.get_tick_types())
+    print(market.get_tradeable_products(tick_type="trade"))
+    print(market.get_resolutions(tick_type="trade", tradeable="PI_XBTUSD"))
+    print(
+        market.get_ohlc(
+            tick_type="trade",
+            symbol="PI_XBTUSD",
+            resolution="5m",
+            from_="1668989233",
+        ),
+    )
+    print(market.get_fee_schedules())
+    print(
+        market.get_orderbook(symbol="fi_xbtusd_180615"),
+    )  # might need adjustment of the symbol
+    print(market.get_tickers())
+    print(market.get_instruments())
+    print(market.get_instruments_status())
+    print(market.get_instruments_status(instrument="PI_XBTUSD"))
+    print(market.get_trade_history(symbol="PI_XBTUSD"))
+    print(market.get_historical_funding_rates(symbol="PI_XBTUSD"))
+    time.sleep(2)  # Just to avoid rate limits
+
+    # Usage of the Market client to access private endpoints:
+    # (commented out to avoid accidental usage)
     priv_market = Market(key=key, secret=secret, sandbox=True)
     # print(priv_market.get_fee_schedules_vol())
     print(priv_market.get_leverage_preference())
@@ -66,20 +79,25 @@ def market_examples() -> None:
 
 
 def user_examples() -> None:
-    """Example User client usage"""
+    """Example Futures User client usage"""
+    # NOTE: This only works if you have set valid credentials for the the
+    #       Futures demo environment. Remove the `sandbox=True` argument to use
+    #       the production environment.
+    #
+    # Usage of the User client to access private endpoints:
     user = User(key=key, secret=secret, sandbox=True)
     print(user.get_wallets())
-
     print(user.get_subaccounts())
     print(user.get_unwind_queue())
     print(user.get_notifications())
-
     print(user.get_open_positions())
     print(user.get_open_orders())
 
+    # You can retrieve the account log like so:
     print(user.get_account_log(before="1604937694000"))
     print(user.get_account_log(info="futures liquidation"))
-    time.sleep(2)
+    time.sleep(2)  # Just to avoid rate limits
+
     response = user.get_account_log_csv()
     assert response.status_code in {200, "200"}
     with Path("account_log.csv").open("wb") as file:
@@ -89,10 +107,16 @@ def user_examples() -> None:
 
 
 def trade_examples() -> None:
-    """Example Trade client usage"""
-    raise ValueError(
-        "Attention: Please check if you really want to execute the trade endpoints!",
+    """Example Futures Trade client usage"""
+    print(
+        "Attention: Please check if you want to execute the trade endpoints!"
+        " Check the script manually before running this example.",
     )
+    return
+    # return
+    # NOTE: This only works if you have set valid credentials for the the
+    #       Futures demo environment. Remove the `sandbox=True` argument to use
+    #       the production environment.
     trade = Trade(key=key, secret=secret, sandbox=True)
     print(trade.get_fills())
     print(trade.get_fills(lastFillTime="2020-07-21T12:41:52.790Z"))
@@ -171,10 +195,11 @@ def funding_examples() -> None:
 
 
 def main() -> None:
-    user_examples()
-    market_examples()
-    trade_examples()
-    funding_examples()
+    """Uncomment the examples you want to run:"""
+    # user_examples()
+    # market_examples()
+    # trade_examples()
+    # funding_examples()
 
 
 if __name__ == "__main__":
