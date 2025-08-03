@@ -89,7 +89,7 @@ def print_version(ctx: Context, param: Any, value: Any) -> None:  # noqa: ANN401
 )
 @pass_context
 def cli(ctx: Context, **kwargs: dict) -> None:
-    """Command-line tool to access the Kraken Cryptocurrency Exchange API"""
+    """Command-line tool to access the Kraken Crypto Asset Exchange API"""
     ctx.obj = kwargs
 
     logging.basicConfig(

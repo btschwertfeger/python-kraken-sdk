@@ -22,7 +22,7 @@ Usage Examples
 ==============
 
 The python-kraken-sdk provides lots of functions to easily access most of the
-REST and websocket endpoints of the Kraken Cryptocurrency Exchange API. Since
+REST and websocket endpoints of the Kraken Crypto Asset Exchange API. Since
 these endpoints and their parameters may change, all implemented endpoints are
 tested on a regular basis.
 

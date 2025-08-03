@@ -18,7 +18,7 @@ authors = [
 maintainers = [
   { name = "Benjamin Thomas Schwertfeger", email = "contact@b-schwertfeger.de" },
 ]
-description = "Command-line tool and collection of REST and websocket clients to interact with the Kraken cryptocurrency exchange."
+description = "Command-line tool and collection of REST and websocket clients to interact with the Kraken Crypto Asset Exchange."
 readme = "README.md"
 license = "Apache-2.0"
 license-files = ["LICENSE"]
@@ -31,7 +31,7 @@ dependencies = [
   "orjson",
   "aiohttp",
 ]
-keywords = ["crypto", "trading", "kraken", "exchange", "api"]
+keywords = ["crypto", "trading", "kraken", "exchange", "api", "sdk", "kraken crypto asset exchange", "automation",]
 classifiers = [
   "Development Status :: 5 - Production/Stable",
   "Framework :: AsyncIO",
@@ -52,8 +52,9 @@ classifiers = [
 
 [project.urls]
 Homepage = "https://github.com/btschwertfeger/python-kraken-sdk"
-"Bug Tracker" = "https://github.com/btschwertfeger/python-kraken-sdk/issues"
 Documentation = "https://python-kraken-sdk.readthedocs.io/en/stable/"
+Changelog = "https://github.com/btschwertfeger/python-kraken-sdk/releases"
+"Bug Tracker" = "https://github.com/btschwertfeger/python-kraken-sdk/issues"
 
 [project.optional-dependencies]
 dev = [

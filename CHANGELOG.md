@@ -2,14 +2,27 @@
 
 ## [Unreleased](https://github.com/btschwertfeger/python-kraken-sdk/tree/HEAD)
 
-[Full Changelog](https://github.com/btschwertfeger/python-kraken-sdk/compare/v3.2.2...HEAD)
+[Full Changelog](https://github.com/btschwertfeger/python-kraken-sdk/compare/v3.2.3...HEAD)
+
+Uncategorized merged pull requests:
+
+- Bump the all group with 2 updates [\#386](https://github.com/btschwertfeger/python-kraken-sdk/pull/386) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Update egress rules in CI [\#383](https://github.com/btschwertfeger/python-kraken-sdk/pull/383) ([btschwertfeger](https://github.com/btschwertfeger))
+
+## [v3.2.3](https://github.com/btschwertfeger/python-kraken-sdk/tree/v3.2.3) (2025-07-07)
+
+[Full Changelog](https://github.com/btschwertfeger/python-kraken-sdk/compare/v3.2.2...v3.2.3)
+
+**Fixed bugs:**
+
+- Resolve "Futures endpoint maxordersize is no longer available" [\#382](https://github.com/btschwertfeger/python-kraken-sdk/pull/382) ([btschwertfeger](https://github.com/btschwertfeger))
 
 Uncategorized merged pull requests:
 
 - Bump the all group with 2 updates [\#380](https://github.com/btschwertfeger/python-kraken-sdk/pull/380) ([dependabot[bot]](https://github.com/apps/dependabot))
-- Update project settings [\#379](https://github.com/btschwertfeger/python-kraken-sdk/pull/379) ([btschwertfeger](https://github.com/btschwertfeger))
 - Bump the all group with 5 updates [\#378](https://github.com/btschwertfeger/python-kraken-sdk/pull/378) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump the all group with 7 updates [\#377](https://github.com/btschwertfeger/python-kraken-sdk/pull/377) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Update project settings [\#379](https://github.com/btschwertfeger/python-kraken-sdk/pull/379) ([btschwertfeger](https://github.com/btschwertfeger))
 
 ## [v3.2.2](https://github.com/btschwertfeger/python-kraken-sdk/tree/v3.2.2) (2025-04-11)
 
