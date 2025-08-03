@@ -20,11 +20,9 @@
 
 from __future__ import annotations
 
-from typing import TypeVar
+from typing import Self
 
 from kraken.base_api import FuturesClient, defined
-
-Self = TypeVar("Self")
 
 
 class Trade(FuturesClient):

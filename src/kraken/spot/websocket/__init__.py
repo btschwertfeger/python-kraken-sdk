@@ -24,7 +24,7 @@ from __future__ import annotations
 
 import logging
 from asyncio import sleep as async_sleep
-from typing import TYPE_CHECKING, Any, TypeVar
+from typing import TYPE_CHECKING, Any, Self
 
 from kraken.spot import SpotAsyncClient
 from kraken.spot.websocket.connectors import ConnectSpotWebsocket
@@ -32,8 +32,6 @@ from kraken.utils.utils import WSState, deprecated
 
 if TYPE_CHECKING:
     from collections.abc import Callable
-
-Self = TypeVar("Self")
 
 
 class SpotWSClientBase(SpotAsyncClient):
@@ -206,7 +204,7 @@ class SpotWSClientBase(SpotAsyncClient):
     async def __aenter__(self: Self) -> Self:
         """Entrypoint for use as context manager"""
         await super().__aenter__()
-        await self.start()  # type: ignore[attr-defined]
+        await self.start()
         return self
 
     async def __aexit__(

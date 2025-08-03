@@ -5,7 +5,6 @@
 # All rights reserved.
 # https://github.com/btschwertfeger
 #
-# ruff: noqa: RUF027
 
 """
 Module that provides a template to build a Spot trading algorithm using the

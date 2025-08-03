@@ -22,11 +22,9 @@
 from __future__ import annotations
 
 from functools import lru_cache
-from typing import TypeVar
+from typing import Self
 
 from kraken.base_api import FuturesClient, defined, ensure_string
-
-Self = TypeVar("Self")
 
 
 class Market(FuturesClient):

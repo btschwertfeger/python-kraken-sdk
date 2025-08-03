@@ -26,7 +26,7 @@ import hmac
 import json
 import time
 from functools import wraps
-from typing import TYPE_CHECKING, Any, TypeVar
+from typing import TYPE_CHECKING, Any, Self
 from urllib.parse import urlencode, urljoin
 from uuid import uuid1
 
@@ -40,8 +40,6 @@ if TYPE_CHECKING:
     from typing import Final
 
 from kraken.utils.utils import deprecated
-
-Self = TypeVar("Self")
 
 
 def defined(value: Any) -> bool:  # noqa: ANN401

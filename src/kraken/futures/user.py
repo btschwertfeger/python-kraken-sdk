@@ -20,14 +20,12 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, TypeVar
+from typing import TYPE_CHECKING, Self
 
 from kraken.base_api import FuturesClient, defined
 
 if TYPE_CHECKING:
     import requests
-
-Self = TypeVar("Self")
 
 
 class User(FuturesClient):

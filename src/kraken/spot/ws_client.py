@@ -16,7 +16,7 @@
 # limitations under the License.
 #
 
-""" This module provides the Spot websocket client. """
+"""This module provides the Spot websocket client."""
 
 from __future__ import annotations
 
