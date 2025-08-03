@@ -7,10 +7,8 @@
 #
 
 """
-Module that implements some example usage for the Kraken Futures REST clients.
-
-This module may not be maintained on a regular basis, so please refer to the
-unit tests of this package as they provide a much deeper dive into the usage.
+Module that implements *some* examples for the Kraken Futures REST clients
+usage.
 """
 
 import logging

@@ -7,10 +7,7 @@
 #
 
 """
-Module that implements some samples for the Kraken Spot REST clients.
-
-This module may not be maintained on a regular basis, so please refer to the
-unit tests of this package as they provide a much deeper dive into the usage.
+Module that implements *some* examples for the Kraken Spot REST clients usage.
 """
 
 import logging
@@ -29,37 +26,41 @@ logging.getLogger("requests").setLevel(logging.WARNING)
 logging.getLogger("urllib3").setLevel(logging.WARNING)
 
 
-key = os.getenv("API_KEY")
-secret = os.getenv("SECRET_KEY")
+key = os.getenv("SPOT_API_KEY")
+secret = os.getenv("SPOT_SECRET_KEY")
 
 
 def user_examples() -> None:
-    """Example usage of the User client"""
+    """Example usage of the Spot User client"""
+    # Usage of the User client to access private endpoints:
     user = User(key=key, secret=secret)
 
     print(user.get_account_balance())
-    print(user.get_trade_balance())  # asset='BTC'
+    print(user.get_trade_balance())  # asset="BTC"
     print(user.get_open_orders())
     print(user.get_closed_orders())
     print(
-        user.get_orders_info(txid="OBQFM7-JNVKS-H3ULEH"),
-    )  # or txid='id1,id2,id3' or txid=['id1','id2']
+        user.get_orders_info(
+            txid="OBQFM7-JNVKS-H3ULEH",  # or txid="id1,id2,id3" or txid=["id1","id2"]
+        ),
+    )
     print(user.get_trades_history())
-    time.sleep(3)
+    time.sleep(3)  # to avoid rate limit
     print(user.get_trades_info(txid="TCNTTR-QBEVO-E5H5UK"))
-    print(user.get_open_positions())  # txid='someid'
+    print(user.get_open_positions())  # or txid="someid"
     print(
-        user.get_ledgers_info(),
-    )  # asset='BTC' or asset='BTC,EUR' or asset=['BTC','EUR']
+        user.get_ledgers_info(),  # asset="BTC" or asset="BTC,EUR" or asset=["BTC","EUR"]
+    )
     print(user.get_ledgers(id_="LIORGR-33NXH-LBUS5Z"))
-    print(user.get_trade_volume())  # pair='BTC/EUR'
+    print(user.get_trade_volume())  # pair="BTC/EUR"
 
-    # ____export_report____
+    # Exporting a ledger and trade report can be useful for analysis or
+    # record-keeping purposes:
     response = user.request_export_report(
-        report="ledgers",
+        report="ledgers",  # or report="trades"
         description="myLedgers1",
         format_="CSV",
-    )  # report='trades'
+    )
     print(user.get_export_report_status(report="ledgers"))
 
     # save report to file
@@ -71,11 +72,11 @@ def user_examples() -> None:
 
     print(
         user.delete_export_report(id_=response["id"], type_="delete"),
-    )  # alternative: type_=cancel
+    )
 
 
 def market_examples() -> None:
-    """Example usage of the Market client"""
+    """Example usage of the Spot Market client"""
     market = Market()
 
     print(market.get_assets(assets=["XBT"]))
@@ -90,61 +91,62 @@ def market_examples() -> None:
 
 
 def trade_examples() -> None:
-    """Example usage of the Trade client"""
-    raise ValueError(
-        "Attention: Please check if you really want to execute trade functions.",
+    """Example usage of the Spot Trade client"""
+    print(
+        "Attention: Please check if you really want to execute trade functions."
+        " Running them without caution may lead to unintended orders!",
     )
+    return
     trade = Trade(key=key, secret=secret)
 
-    if False:
-        print(
-            trade.create_order(
-                ordertype="limit",
-                side="buy",
-                volume=1,
-                pair="BTC/EUR",
-                price=0.01,
-            ),
-        )
-        print(
-            trade.create_order_batch(
-                orders=[
-                    {
-                        "close": {
-                            "ordertype": "stop-loss-limit",
-                            "price": 120,
-                            "price2": 110,
-                        },
-                        "ordertype": "limit",
-                        "price": 140,
-                        "price2": 130,
-                        "timeinforce": "GTC",
-                        "type": "buy",
-                        "userref": "345dsdfddfgdsgdfgsfdsfsdf",
-                        "volume": 1000,
+    print(
+        trade.create_order(
+            ordertype="limit",
+            side="buy",
+            volume=1,
+            pair="BTC/EUR",
+            price=0.01,
+        ),
+    )
+    print(
+        trade.create_order_batch(
+            orders=[
+                {
+                    "close": {
+                        "ordertype": "stop-loss-limit",
+                        "price": 120,
+                        "price2": 110,
                     },
-                    {
-                        "ordertype": "limit",
-                        "price": 150,
-                        "timeinforce": "GTC",
-                        "type": "sell",
-                        "userref": "1dfgesggwe5t3",
-                        "volume": 123,
-                    },
-                ],
-                pair="BTC/USD",
-                validate=True,
-            ),
-        )
+                    "ordertype": "limit",
+                    "price": 140,
+                    "price2": 130,
+                    "timeinforce": "GTC",
+                    "type": "buy",
+                    "userref": "345dsdfddfgdsgdfgsfdsfsdf",
+                    "volume": 1000,
+                },
+                {
+                    "ordertype": "limit",
+                    "price": 150,
+                    "timeinforce": "GTC",
+                    "type": "sell",
+                    "userref": "1dfgesggwe5t3",
+                    "volume": 123,
+                },
+            ],
+            pair="BTC/USD",
+            validate=True,
+        ),
+    )
 
-        print(
-            trade.edit_order(txid="sometxid", pair="BTC/EUR", volume=4.2, price=17000),
-        )
-        time.sleep(2)
+    print(
+        trade.edit_order(txid="sometxid", pair="BTC/EUR", volume=4.2, price=17000),
+    )
+    time.sleep(2)
 
-        print(trade.cancel_order(txid="O2JLFP-VYFIW-35ZAAE"))
-        print(trade.cancel_all_orders())
-        print(trade.cancel_all_orders_after_x(timeout=6))
+    print(trade.cancel_order(txid="O2JLFP-VYFIW-35ZAAE"))
+    print(trade.cancel_all_orders())
+    print(trade.cancel_all_orders_after_x(timeout=6))
 
     print(
         trade.cancel_order_batch(
@@ -162,35 +164,40 @@ def funding_examples() -> None:
     """Example usage of the Funding client"""
     funding = Funding(key=key, secret=secret)
     print(funding.get_deposit_methods(asset="DOT"))
-    # print(funding.get_deposit_address(asset='DOT', method='Polkadot'))
-    # print(funding.get_recent_deposits_status(asset='DOT'))
+    # print(funding.get_deposit_address(asset="DOT", method="Polkadot"))
+    # print(funding.get_recent_deposits_status(asset="DOT"))
     print(
         funding.get_withdrawal_info(asset="DOT", key="MyPolkadotWallet", amount="200"),
     )
 
-    raise ValueError(
-        "Attention: Please check if you really want to execute funding functions.",
+    print(
+        "Attention: Please check if you really want to execute funding functions."
+        " Running them without caution may lead to unintended withdrawals!",
     )
-    if False:
-        time.sleep(2)
-        print(funding.withdraw_funds(asset="DOT", key="MyPolkadotWallet", amount=200))
-        print(funding.get_recent_withdraw_status(asset="DOT"))
-        print(funding.cancel_widthdraw(asset="DOT", refid="12345"))
-        print(
-            funding.wallet_transfer(
-                asset="ETH",
-                amount=0.100,
-                from_="Spot Wallet",
-                to_="Futures Wallet",
-            ),
-        )
+    return
+    time.sleep(2)  # to avoid rate limit
+    print(funding.withdraw_funds(asset="DOT", key="MyPolkadotWallet", amount=200))
+    print(funding.get_recent_withdraw_status(asset="DOT"))
+    print(funding.cancel_withdraw(asset="DOT", refid="12345"))
+    print(
+        funding.wallet_transfer(
+            asset="ETH",
+            amount=0.100,
+            from_="Spot Wallet",
+            to_="Futures Wallet",
+        ),
+    )
 
 
 def main() -> None:
-    user_examples()
-    market_examples()
-    trade_examples()
-    funding_examples()
+    """Uncomment the examples you want to run:"""
+    # NOTE: These are only examples that show how to use the clients, there are
+    #       many other functions available in the clients.
+
+    # user_examples()
+    # market_examples()
+    # trade_examples()
+    # funding_examples()
 
 
 if __name__ == "__main__":
