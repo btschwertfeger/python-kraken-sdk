@@ -129,7 +129,7 @@ class ConnectFuturesWebsocket:  # pylint: disable=too-many-instance-attributes
 
             while self.keep_alive:
                 try:
-                    _message = await asyncio.wait_for(self.socket.recv(), timeout=10)
+                    data: str = await asyncio.wait_for(self.socket.recv(), timeout=10)
                 except TimeoutError:
                     LOG.debug(  # important
                         "Timeout error in %s",
@@ -140,19 +140,19 @@ class ConnectFuturesWebsocket:  # pylint: disable=too-many-instance-attributes
                     self.keep_alive = False
                 else:
                     try:
-                        message: dict = json.loads(_message)
+                        message: dict = json.loads(data)
                     except ValueError:
-                        LOG.warning(_message)
+                        LOG.warning(data)
                     else:
                         forward: bool = True
                         if "event" in message:
-                            _event: str = message["event"]
-                            if _event == "challenge" and "message" in message:
+                            msg_event: str = message["event"]
+                            if msg_event == "challenge" and "message" in message:
                                 forward = False
                                 self.__handle_new_challenge(message)
-                            elif _event == "subscribed":
+                            elif msg_event == "subscribed":
                                 self.__append_subscription(message)
-                            elif _event == "unsubscribed":
+                            elif msg_event == "unsubscribed":
                                 self.__remove_subscription(message)
                         if forward:
                             await self.__callback(message)

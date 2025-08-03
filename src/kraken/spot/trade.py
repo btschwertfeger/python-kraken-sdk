@@ -23,12 +23,10 @@ from __future__ import annotations
 from decimal import Decimal
 from functools import lru_cache
 from math import floor
-from typing import TypeVar
+from typing import Self
 
 from kraken.base_api import SpotClient, defined, ensure_string
 from kraken.spot.market import Market
-
-Self = TypeVar("Self")
 
 
 class Trade(SpotClient):

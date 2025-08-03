@@ -165,7 +165,7 @@ class ConnectSpotWebsocketBase:  # pylint: disable=too-many-instance-attributes
                 if time() - self._last_ping > self.PING_INTERVAL:
                     await self.send_ping()
                 try:
-                    _message = await asyncio.wait_for(self.socket.recv(), timeout=10)
+                    data = await asyncio.wait_for(self.socket.recv(), timeout=10)
                 except TimeoutError:  # important
                     await self.send_ping()
                 except asyncio.CancelledError:
@@ -173,9 +173,9 @@ class ConnectSpotWebsocketBase:  # pylint: disable=too-many-instance-attributes
                     self.keep_alive = False
                 else:
                     try:
-                        message: dict = json.loads(_message)
+                        message: dict = json.loads(data)
                     except ValueError:
-                        LOG.warning(_message)
+                        LOG.warning(data)
                     else:
                         LOG.debug(message)
                         self._manage_subscriptions(message=message)

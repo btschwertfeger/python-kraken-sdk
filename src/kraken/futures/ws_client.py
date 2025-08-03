@@ -26,7 +26,7 @@ import hmac
 import logging
 from asyncio import sleep as async_sleep
 from copy import deepcopy
-from typing import TYPE_CHECKING, TypeVar
+from typing import TYPE_CHECKING, Self
 
 from kraken.base_api import FuturesAsyncClient
 from kraken.exceptions import KrakenAuthenticationError
@@ -36,8 +36,6 @@ if TYPE_CHECKING:
     from collections.abc import Callable
     from typing import Any
 from kraken.utils.utils import deprecated
-
-Self = TypeVar("Self")
 
 LOG: logging.Logger = logging.getLogger(__name__)
 
@@ -458,7 +456,7 @@ class FuturesWSClient(FuturesAsyncClient):
     async def __aenter__(self: Self) -> Self:
         """Entrypoint for use as context manager"""
         await super().__aenter__()
-        await self.start()  # type: ignore[attr-defined]
+        await self.start()
         return self
 
     async def __aexit__(

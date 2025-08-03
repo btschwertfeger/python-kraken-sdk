@@ -24,7 +24,6 @@ license = "Apache-2.0"
 license-files = ["LICENSE"]
 requires-python = ">=3.11"
 dependencies = [
-  "asyncio>=3.4",
   "requests",
   "websockets>=14.1",
   "click",
