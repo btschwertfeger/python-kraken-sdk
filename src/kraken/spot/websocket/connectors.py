@@ -245,8 +245,13 @@ class ConnectSpotWebsocketBase:  # pylint: disable=too-many-instance-attributes
                 if task.exception():
                     self.state = WSState.ERRORHANDLING
                     exception_occur = True
-                    message = f"{task} got an exception {task.exception()}\n {task.get_stack()}"
-                    LOG.warning(message)
+                    LOG.warning(
+                        "%s got an exception %s:\n%s\n"
+                        "The connection will be recovered in the background.",
+                        task,
+                        task.exception(),
+                        task.get_stack(),
+                    )
                     for process in pending:
                         LOG.warning("pending %s", process)
                         try:
@@ -254,7 +259,6 @@ class ConnectSpotWebsocketBase:  # pylint: disable=too-many-instance-attributes
                             LOG.warning("Cancelled %s", process)
                         except asyncio.CancelledError:
                             LOG.error("Failed to cancel %s", process)
-                    await self.__callback({"python-kraken-sdk": {"error": message}})
             if exception_occur:
                 break
         self.state = WSState.CLOSED
