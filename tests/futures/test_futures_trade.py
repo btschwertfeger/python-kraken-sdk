@@ -33,16 +33,17 @@ def _run_before_and_after_tests(futures_demo_trade: Trade) -> Generator:
     sleep(0.25)
 
 
-@pytest.mark.wip
 @pytest.mark.futures
 @pytest.mark.futures_auth
 @pytest.mark.futures_trade
 def test_get_fills(futures_demo_trade: Trade) -> None:
-    """Checks the ``get_fills`` endpoint."""
+    """
+    Checks the ``get_fills`` endpoint.
+    """
     assert is_success(futures_demo_trade.get_fills())
-    # assert is_success(
-    #     futures_demo_trade.get_fills(lastFillTime="2024-08-27T17:03:33.196Z"),
-    # )
+    assert is_success(
+        futures_demo_trade.get_fills(lastFillTime="2020-07-21T12:41:52.790Z"),
+    )
 
 
 @pytest.mark.futures
