@@ -43,7 +43,7 @@ class SpotOrderBookClient(SpotWSClient):
     **This client is using the Kraken Websocket API v2**
 
     The orderbook client can be used for instantiation and maintaining one or
-    multiple order books for Spot trading on the Kraken cryptocurrency exchange.
+    multiple order books for Spot trading on the Kraken Crypto Asset Exchange.
     It uses websockets to subscribe to book feeds and receives book updates,
     calculates the checksum and will publish the raw message to the
     :func:`on_book_update` function or to the specified callback function.

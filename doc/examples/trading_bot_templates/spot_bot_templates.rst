@@ -20,7 +20,7 @@ Spot Trading Bot Templates
 --------------------------
 
 The templates presented below serve as starting points for the development of
-a trading algorithms for Spot trading on the cryptocurrency exchange `Kraken`_
+a trading algorithms for Spot trading on the crypto asset exchange `Kraken`_
 using the `python-kraken-sdk`_.
 
 The trading strategy can be implemented using the ``TradingBot`` class. This
