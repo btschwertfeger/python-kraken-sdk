@@ -20,6 +20,7 @@
 
 from __future__ import annotations
 
+import json
 from typing import Self
 
 from kraken.base_api import FuturesClient, defined
@@ -239,7 +240,7 @@ class Trade(FuturesClient):
             }
         """
         batchorder: dict = {"batchOrder": batchorder_list}
-        params = {"json": f"{batchorder}"}
+        params = {"json": json.dumps(batchorder)}
         if processBefore:
             params["processBefore"] = processBefore
 
