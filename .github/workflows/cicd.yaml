@@ -172,7 +172,11 @@ jobs:
       success()
       && github.actor == 'btschwertfeger'
       && github.event_name != 'schedule'
-    needs: [Build]
+    needs:
+      - Build
+      # Wait for private tests to avoid nonce errors and rate limiting
+      - Test-Futures-Private
+      - Test-Spot-Private
     uses: ./.github/workflows/_codecov.yaml
     with:
       os: "ubuntu-latest"
