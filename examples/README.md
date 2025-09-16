@@ -8,7 +8,7 @@ WebSocket APIs.
 Ideal examples of successful running trading algorithms based on the
 python-kraken-sdk are listed below:
 
-- https://github.com/btschwertfeger/kraken-infinity-grid
+- https://github.com/btschwertfeger/infinity-grid
 - https://github.com/btschwertfeger/kraken-rebalance-bot
 - https://github.com/btschwertfeger/python-kraken-sdk/network/dependents
 

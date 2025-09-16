@@ -57,24 +57,6 @@ Changelog = "https://github.com/btschwertfeger/python-kraken-sdk/releases"
 "Bug Tracker" = "https://github.com/btschwertfeger/python-kraken-sdk/issues"
 
 [project.optional-dependencies]
-dev = [
-  "debugpy",
-  # building
-  "build",
-  # documentation
-  "sphinx",
-  "sphinx-click",
-  "sphinx-rtd-theme",
-  "nbsphinx",
-  "ipython",          # To visualize Jupyter Notebooks in the documentation
-  # formatting
-  "black",
-  # typing
-  "mypy",
-  "types-requests",
-  # linting
-  "ruff",
-]
 test = [
   "proxy.py",
   "pytest-asyncio",

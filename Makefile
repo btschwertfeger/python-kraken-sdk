@@ -49,7 +49,7 @@ install: check-uv
 ##
 .PHONY: dev
 dev: check-uv
-	$(UV) pip install -e ".[dev,test,examples,jupyter]"
+	$(UV) pip install -e ".[test,examples,jupyter]" -r doc/requirements.txt
 
 ## ======= T E S T I N G =======================================================
 ## test		Run the unit tests

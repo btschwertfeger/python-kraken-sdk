@@ -32,7 +32,7 @@ below.
 
 Projects that use the SDK are listed below:
 
-* https://github.com/btschwertfeger/kraken-infinity-grid
+* https://github.com/btschwertfeger/infinity-grid
 * https://github.com/btschwertfeger/kraken-rebalance-bot
 
 .. toctree::

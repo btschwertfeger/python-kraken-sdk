@@ -69,7 +69,7 @@ Documentation:
 
 Projects using this SDK:
 
-- https://github.com/btschwertfeger/kraken-infinity-grid
+- https://github.com/btschwertfeger/infinity-grid
 - https://github.com/btschwertfeger/kraken-rebalance-bot
 - https://github.com/btschwertfeger/python-kraken-sdk/network/dependents
 
