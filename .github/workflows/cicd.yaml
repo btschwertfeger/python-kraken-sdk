@@ -172,11 +172,7 @@ jobs:
       success()
       && github.actor == 'btschwertfeger'
       && github.event_name != 'schedule'
-    needs:
-      - Test-Spot-Public
-      - Test-Spot-Private
-      - Test-Futures-Public
-      - Test-Futures-Private
+    needs: [Build]
     uses: ./.github/workflows/_codecov.yaml
     with:
       os: "ubuntu-latest"
