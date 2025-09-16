@@ -49,7 +49,7 @@ on:
   push:
     branches: [master]
   schedule:
-    - cron: "20 16 */7 * *"
+    - cron: "15 20 * * FRI"
   release:
     types: [created]
   pull_request:
@@ -105,7 +105,7 @@ jobs:
   ##  (public endpoints)
   ##
   Test-Spot-Public:
-    needs: [Pre-Commit]
+    needs: [Build]
     uses: ./.github/workflows/_test_spot_public.yaml
     strategy:
       fail-fast: false
@@ -118,8 +118,8 @@ jobs:
   ##
   ##  (private endpoints)
   Test-Spot-Private:
-    if: success() && github.actor != 'dependabot[bot]'
-    needs: [Pre-Commit]
+    if: success() && github.actor == 'btschwertfeger'
+    needs: [Build]
     uses: ./.github/workflows/_test_spot_private.yaml
     strategy:
       max-parallel: 1 # to avoid failing tests because of API Rate limits
@@ -137,7 +137,7 @@ jobs:
   ##
   ##  (public endpoints)
   Test-Futures-Public:
-    needs: [Pre-Commit]
+    needs: [Build]
     uses: ./.github/workflows/_test_futures_public.yaml
     strategy:
       fail-fast: false
@@ -150,8 +150,8 @@ jobs:
   ##
   ##  (private endpoints)
   Test-Futures-Private:
-    if: success() && github.actor != 'dependabot[bot]'
-    needs: [Pre-Commit]
+    if: success() && github.actor == 'btschwertfeger'
+    needs: [Build]
     uses: ./.github/workflows/_test_futures_private.yaml
     strategy:
       max-parallel: 1 # to avoid failing tests because of API Rate limits
@@ -173,10 +173,10 @@ jobs:
       && github.actor == 'btschwertfeger'
       && github.event_name != 'schedule'
     needs:
-      - Test-Spot-Public
-      - Test-Spot-Private
-      - Test-Futures-Public
+      - Build
+      # Wait for private tests to avoid nonce errors and rate limiting
       - Test-Futures-Private
+      - Test-Spot-Private
     uses: ./.github/workflows/_codecov.yaml
     with:
       os: "ubuntu-latest"
@@ -196,6 +196,10 @@ jobs:
       - Build-Doc
       - CodeQL
       - CodeCov
+      - Test-Futures-Private
+      - Test-Futures-Public
+      - Test-Spot-Private
+      - Test-Spot-Public
     name: Upload development version to Test PyPI
     uses: ./.github/workflows/_pypi_test_publish.yaml
     secrets:
@@ -214,6 +218,10 @@ jobs:
       - Build-Doc
       - CodeQL
       - CodeCov
+      - Test-Futures-Private
+      - Test-Futures-Public
+      - Test-Spot-Private
+      - Test-Spot-Public
     name: Upload release to PyPI
     uses: ./.github/workflows/_pypi_publish.yaml
     secrets:

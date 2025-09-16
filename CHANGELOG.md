@@ -1,13 +1,27 @@
 # Changelog
 
-## [Unreleased](https://github.com/btschwertfeger/python-kraken-sdk/tree/HEAD)
+## [v3.2.5](https://github.com/btschwertfeger/python-kraken-sdk/tree/v3.2.5) (2025-09-01)
 
-[Full Changelog](https://github.com/btschwertfeger/python-kraken-sdk/compare/v3.2.3...HEAD)
+[Full Changelog](https://github.com/btschwertfeger/python-kraken-sdk/compare/v3.2.4...v3.2.5)
+
+**Fixed bugs:**
+
+- Resolve "batchOrder json does not support booleans" [\#390](https://github.com/btschwertfeger/python-kraken-sdk/pull/390) ([claudeenriquez](https://github.com/claudeenriquez))
+
+Uncategorized merged pull requests:
+
+- Bump the all group with 5 updates [\#391](https://github.com/btschwertfeger/python-kraken-sdk/pull/391) ([dependabot[bot]](https://github.com/apps/dependabot))
+
+## [v3.2.4](https://github.com/btschwertfeger/python-kraken-sdk/tree/v3.2.4) (2025-08-03)
+
+[Full Changelog](https://github.com/btschwertfeger/python-kraken-sdk/compare/v3.2.3...v3.2.4)
 
 Uncategorized merged pull requests:
 
 - Bump the all group with 2 updates [\#386](https://github.com/btschwertfeger/python-kraken-sdk/pull/386) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Update egress rules in CI [\#383](https://github.com/btschwertfeger/python-kraken-sdk/pull/383) ([btschwertfeger](https://github.com/btschwertfeger))
+- Resolve "Websocket reconnect should be mentioned in the logged warning" [\#388](https://github.com/btschwertfeger/python-kraken-sdk/pull/388) ([btschwertfeger](https://github.com/btschwertfeger))
+- Update project settings [\#385](https://github.com/btschwertfeger/python-kraken-sdk/pull/385) ([btschwertfeger](https://github.com/btschwertfeger))
 
 ## [v3.2.3](https://github.com/btschwertfeger/python-kraken-sdk/tree/v3.2.3) (2025-07-07)
 
