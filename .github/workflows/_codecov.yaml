@@ -75,7 +75,7 @@ jobs:
           uv venv
           source .venv/bin/activate
           echo ${GITHUB_WORKSPACE}/.venv/bin >> $GITHUB_PATH
-          uv pip install "$(find dist -name '*.whl' | head -1)[test]"
+          uv pip install "$(find dist -name '*.whl' | head -1)" -r requirements-dev.txt
 
       - name: Generate coverage report
         env:

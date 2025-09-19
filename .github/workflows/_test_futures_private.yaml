@@ -81,7 +81,7 @@ jobs:
           uv venv
           source .venv/bin/activate
           echo ${GITHUB_WORKSPACE}/.venv/bin >> $GITHUB_PATH
-          uv pip install "$(find dist -name '*.whl' | head -1)[test]"
+          uv pip install "$(find dist -name '*.whl' | head -1)" -r requirements-dev.txt
 
       - name: Install package (Windows)
         if: runner.os == 'Windows'
@@ -90,7 +90,7 @@ jobs:
           .venv\Scripts\activate.ps1
           echo "$env:GITHUB_WORKSPACE\.venv\Scripts" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
           $wheel = (Get-ChildItem -Path dist -Filter "*.whl" | Select-Object -First 1).FullName
-          uv pip install "$wheel[test]"
+          uv pip install $wheel -r requirements-dev.txt
 
       - name: Testing Futures REST endpoints
         env:
