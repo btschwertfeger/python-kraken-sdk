@@ -13,7 +13,6 @@ import random
 import tempfile
 from asyncio import run
 from contextlib import suppress
-from datetime import datetime
 from pathlib import Path
 from time import sleep
 from typing import TYPE_CHECKING
@@ -125,7 +124,10 @@ def test_spot_async_rest_contextmanager(
 @pytest.mark.spot
 @pytest.mark.spot_auth
 @pytest.mark.timeout(120)
+@pytest.mark.flaky(retries=0)
+@pytest.mark.parametrize("report", ["trades", "ledgers"])
 def test_spot_rest_async_client_post_report(
+    report: str,
     spot_api_key: str,
     spot_secret_key: str,
 ) -> None:
@@ -137,95 +139,65 @@ def test_spot_rest_async_client_post_report(
     async def check() -> None:
         client = SpotAsyncClient(spot_api_key, spot_secret_key)
 
-        first_of_current_month = int(datetime.now().replace(day=1).timestamp())
         try:
-            for report in ("trades", "ledgers"):
-                if report == "trades":
-                    fields = [
-                        "ordertxid",
-                        "time",
-                        "ordertype",
-                        "price",
-                        "cost",
-                        "fee",
-                        "vol",
-                        "margin",
-                        "misc",
-                        "ledgers",
-                    ]
-                else:
-                    fields = [
-                        "refid",
-                        "time",
-                        "type",
-                        "aclass",
-                        "asset",
-                        "amount",
-                        "fee",
-                        "balance",
-                    ]
+            export_descr = f"{report}-export-{random.randint(0, 10000)}"
+            response = await client.request(
+                "POST",
+                "/0/private/AddExport",
+                params={
+                    "report": report,
+                    "description": export_descr,
+                },
+                timeout=30,
+            )
+            assert is_not_error(response)
+            assert "id" in response
+            sleep(2)
 
-                export_descr = f"{report}-export-{random.randint(0, 10000)}"
-                response = await client.request(
-                    "POST",
-                    "/0/private/AddExport",
-                    params={
-                        "format": "CSV",
-                        "fields": fields,
-                        "report": report,
-                        "description": export_descr,
-                        "endtm": first_of_current_month + 100 * 100,
-                    },
-                    timeout=30,
-                )
-                assert is_not_error(response)
+            status = await client.request(
+                "POST",
+                "/0/private/ExportStatus",
+                params={"report": report},
+            )
+            assert isinstance(status, list)
+            sleep(5)
+
+            result = await client.request(
+                "POST",
+                "/0/private/RetrieveExport",
+                params={"id": response["id"]},
+                timeout=30,
+                return_raw=True,
+            )
+
+            with tempfile.TemporaryDirectory() as tmp_dir:
+                file_path = Path(tmp_dir) / f"{export_descr}.zip"
+
+                with file_path.open("wb") as file:
+                    async for chunk in result.content.iter_chunked(1024):
+                        file.write(chunk)
+
+            status = await client.request(
+                "POST",
+                "/0/private/ExportStatus",
+                params={"report": report},
+            )
+            assert isinstance(status, list)
+            for response in status:
                 assert "id" in response
+                with suppress(Exception):
+                    assert isinstance(
+                        await client.request(
+                            "POST",
+                            "/0/private/RemoveExport",
+                            params={
+                                "id": response["id"],
+                                "type": "delete",
+                            },
+                        ),
+                        dict,
+                    )
                 sleep(2)
-
-                status = await client.request(
-                    "POST",
-                    "/0/private/ExportStatus",
-                    params={"report": report},
-                )
-                assert isinstance(status, list)
-                sleep(5)
-
-                result = await client.request(
-                    "POST",
-                    "/0/private/RetrieveExport",
-                    params={"id": response["id"]},
-                    timeout=30,
-                    return_raw=True,
-                )
-
-                with tempfile.TemporaryDirectory() as tmp_dir:
-                    file_path = Path(tmp_dir) / f"{export_descr}.zip"
-
-                    with file_path.open("wb") as file:
-                        async for chunk in result.content.iter_chunked(1024):
-                            file.write(chunk)
-
-                status = await client.request(
-                    "POST",
-                    "/0/private/ExportStatus",
-                    params={"report": report},
-                )
-                assert isinstance(status, list)
-                for response in status:
-                    assert "id" in response
-                    with suppress(Exception):
-                        assert isinstance(
-                            await client.request(
-                                "POST",
-                                "/0/private/RemoveExport",
-                                params={
-                                    "id": response["id"],
-                                    "type": "delete",
-                                },
-                            ),
-                            dict,
-                        )
-                    sleep(2)
         finally:
             await client.close()
 

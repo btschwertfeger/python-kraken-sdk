@@ -312,7 +312,8 @@ def test_get_trade_volume(spot_auth_user: User) -> None:
 @pytest.mark.spot_auth
 @pytest.mark.spot_user
 @pytest.mark.timeout(120)
-def test_request_save_export_report(spot_auth_user: User) -> None:
+@pytest.mark.parametrize("report", ["trades", "ledgers"])
+def test_request_save_export_report(report: str, spot_auth_user: User) -> None:
     """
     Checks the ``save_export_report`` function by requesting an
     report and saving them.
@@ -327,73 +328,47 @@ def test_request_save_export_report(spot_auth_user: User) -> None:
         )
 
     first_of_current_month = int(datetime.now().replace(day=1).timestamp())
-    for report in ("trades", "ledgers"):
-        if report == "trades":
-            fields = [
-                "ordertxid",
-                "time",
-                "ordertype",
-                "price",
-                "cost",
-                "fee",
-                "vol",
-                "margin",
-                "misc",
-                "ledgers",
-            ]
-        else:
-            fields = [
-                "refid",
-                "time",
-                "type",
-                "aclass",
-                "asset",
-                "amount",
-                "fee",
-                "balance",
-            ]
+    export_descr = f"{report}-export-{random.randint(0, 10000)}"
+    response = spot_auth_user.request_export_report(
+        report=report,
+        description=export_descr,
+        fields="all",
+        format_="CSV",
+        starttm=first_of_current_month,
+        endtm=first_of_current_month + 100 * 100,
+        timeout=30,
+    )
+    assert is_not_error(response)
+    assert "id" in response
+    sleep(2)
 
-        export_descr = f"{report}-export-{random.randint(0, 10000)}"
-        response = spot_auth_user.request_export_report(
-            report=report,
-            description=export_descr,
-            fields=fields,
-            format_="CSV",
-            starttm=first_of_current_month,
-            endtm=first_of_current_month + 100 * 100,
-            timeout=30,
-        )
-        assert is_not_error(response)
+    status = spot_auth_user.get_export_report_status(report=report)
+    assert isinstance(status, list)
+    sleep(5)
+
+    result = spot_auth_user.retrieve_export(id_=response["id"], timeout=30)
+
+    with tempfile.TemporaryDirectory() as tmp_dir:
+        file_path: Path = Path(tmp_dir) / f"{export_descr}.zip"
+
+        with file_path.open("wb") as file:
+            for chunk in result.iter_content(chunk_size=512):
+                if chunk:
+                    file.write(chunk)
+
+    status = spot_auth_user.get_export_report_status(report=report)
+    assert isinstance(status, list)
+    for response in status:
         assert "id" in response
+        with suppress(Exception):
+            assert isinstance(
+                spot_auth_user.delete_export_report(
+                    id_=response["id"],
+                    type_="delete",
+                ),
+                dict,
+            )
         sleep(2)
-
-        status = spot_auth_user.get_export_report_status(report=report)
-        assert isinstance(status, list)
-        sleep(5)
-
-        result = spot_auth_user.retrieve_export(id_=response["id"], timeout=30)
-
-        with tempfile.TemporaryDirectory() as tmp_dir:
-            file_path: Path = Path(tmp_dir) / f"{export_descr}.zip"
-
-            with file_path.open("wb") as file:
-                for chunk in result.iter_content(chunk_size=512):
-                    if chunk:
-                        file.write(chunk)
-
-        status = spot_auth_user.get_export_report_status(report=report)
-        assert isinstance(status, list)
-        for response in status:
-            assert "id" in response
-            with suppress(Exception):
-                assert isinstance(
-                    spot_auth_user.delete_export_report(
-                        id_=response["id"],
-                        type_="delete",
-                    ),
-                    dict,
-                )
-            sleep(2)
 
 
 @pytest.mark.spot
