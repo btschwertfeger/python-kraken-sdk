@@ -56,19 +56,6 @@ Documentation = "https://python-kraken-sdk.readthedocs.io/en/stable/"
 Changelog = "https://github.com/btschwertfeger/python-kraken-sdk/releases"
 "Bug Tracker" = "https://github.com/btschwertfeger/python-kraken-sdk/issues"
 
-[project.optional-dependencies]
-test = [
-  "proxy.py",
-  "pytest-asyncio",
-  "pytest-cov",
-  "pytest-mock",
-  "pytest-retry",
-  "pytest-timeout",
-  "pytest",
-]
-examples = ["matplotlib", "pandas", "numpy"]
-jupyter = ["ipykernel"] # python3 -m ipykernel install --user --name=kraken
-
 [project.scripts]
 kraken = "kraken.cli:cli"
 
@@ -82,7 +69,7 @@ include = ["kraken*"]
 exclude = ["docs*", "tests*", "examples*", ".venv", ".env", ".cache", ".github"]
 
 [tool.setuptools_scm]
-write_to = "src/kraken/_version.py"
+version_file = "src/kraken/_version.py"
 version_scheme = "guess-next-dev"
 local_scheme = "no-local-version"
 

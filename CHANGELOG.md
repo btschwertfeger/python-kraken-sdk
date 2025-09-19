@@ -1,5 +1,14 @@
 # Changelog
 
+## [Unreleased](https://github.com/btschwertfeger/python-kraken-sdk/tree/HEAD)
+
+[Full Changelog](https://github.com/btschwertfeger/python-kraken-sdk/compare/v3.2.5...HEAD)
+
+Uncategorized merged pull requests:
+
+- Bump the github-actions group with 5 updates [\#395](https://github.com/btschwertfeger/python-kraken-sdk/pull/395) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Update project configuration [\#394](https://github.com/btschwertfeger/python-kraken-sdk/pull/394) ([btschwertfeger](https://github.com/btschwertfeger))
+
 ## [v3.2.5](https://github.com/btschwertfeger/python-kraken-sdk/tree/v3.2.5) (2025-09-01)
 
 [Full Changelog](https://github.com/btschwertfeger/python-kraken-sdk/compare/v3.2.4...v3.2.5)
