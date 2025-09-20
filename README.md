@@ -316,7 +316,7 @@ if __name__ == "__main__":
     asyncio.run(main())
 ```
 
-<a name="xstockssusage"></a>
+<a name="xstocksusage"></a>
 
 # 📍 xStocks
 
@@ -366,6 +366,8 @@ For trading or filtering for xStocks assets, the new asset class
        extra_params={"asset_class": "tokenized_asset"}, # <- important!
    )
 ```
+
+<a name="futuresusage"></a>
 
 # 📍 Futures Clients
 
