@@ -51,7 +51,7 @@ def setup(app: Any) -> None:  # noqa: ARG001,ANN401
     """Setup function to modify doc building"""
     copyfile(
         Path("..") / "examples" / "market_client_example.ipynb",
-        Path("examples") / "market_client_example.ipynb",
+        Path("03_examples") / "market_client_example.ipynb",
     )
 
 
@@ -82,11 +82,25 @@ exclude_patterns = [
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 
-html_theme = "sphinx_rtd_theme"
-# html_static_path = ["_static"]
+html_theme = "furo"  # "sphinx_book_theme"  # "sphinx_rtd_theme"
+# html_static_path = ["_static"] # for images
 html_context = {
     "display_github": True,
     "github_user": "btschwertfeger",
     "github_repo": "python-kraken-sdk",
     "github_version": "master/doc/",
+}
+html_theme_options = {
+    # "sidebar_hide_name": True,
+    "light_css_variables": {
+        "color-brand-primary": "#336790",
+        "color-brand-content": "#336790",
+    },
+    "dark_css_variables": {
+        "color-brand-primary": "#E5B62F",
+        "color-brand-content": "#E5B62F",
+    },
+    "source_repository": "https://github.com/btschwertfeger/python-kraken-sdk/",
+    "source_branch": "master",
+    "source_directory": "doc/",
 }

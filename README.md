@@ -1,4 +1,4 @@
-<h1 align="center">Futures and Spot REST and Websocket API Python SDK for the Kraken Crypto Asset Exchange 🐙</h1>
+<h1 align="center">Spot, xStocks, and Futures REST and Websocket API Python SDK for the Kraken Crypto Asset Exchange 🐙</h1>
 
 <div align="center">
 
@@ -56,10 +56,10 @@ General:
 
 Available Clients:
 
-- Spot REST Clients (sync and async)
-- Spot Websocket Client (using Websocket API v2)
-- Spot Orderbook Client (using Websocket API v2)
-- Futures REST Clients (sync and async)
+- Spot REST Clients - including xStocks capability
+- Spot Websocket Client (Websocket API v2)
+- Spot Orderbook Client (Websocket API v2)
+- Futures REST Clients
 - Futures Websocket Client
 
 Documentation:
@@ -91,6 +91,7 @@ new releases.
 - [ Installation and setup ](#installation)
 - [ Command-line interface ](#cliusage)
 - [ Spot Clients ](#spotusage)
+- [ xStocks ](#xstocksusage)
 - [ Futures Clients ](#futuresusage)
 - [ Troubleshooting ](#trouble)
 - [ Contributions ](#contribution)
@@ -315,6 +316,57 @@ if __name__ == "__main__":
     asyncio.run(main())
 ```
 
+<a name="xstocksusage"></a>
+
+# 📍 xStocks
+
+Kraken recently added support for trading of tokenized stocks (xStocks) on their
+platform. The python-kraken-sdk fully supports this new feature, allowing users
+to trade xStocks seamlessly alongside other crypto assets.
+
+For accessing xStocks, you can use the same `SpotClient` and `SpotAsyncClient`
+classes that are used for regular spot trading. The endpoints and methods for
+xStocks are integrated into these clients, making it easy to manage your xStock
+trades.
+
+It is important to note that the xStocks feature is not available globally. Please
+check Kraken's documentation to understand the availability zones and ensure
+that you can trade xStocks from your location.
+
+For trading or filtering for xStocks assets, the new asset class
+`tokenized_asset` must be used, e.g. when creating an order:
+
+```python
+   from kraken.spot import SpotClient, Trade
+
+   # Option 1: Create an order using the SpotClient directly:
+   client = SpotClient(key="api-public-key", secret="api-secret-key")
+   client.request(
+       method="POST",
+       uri="/0/private/AddOrder",
+       params={
+           "type": "buy",
+           "volume": "1",
+           "ordertype": "limit",
+           "pair": "AAPLxUSD",
+           "price": "100.0",
+           "validate": True,
+           "asset_class": "tokenized_asset", # <- important!
+       },
+   )
+   # Option 2: Create an order using the Trade client:
+   trade = Trade(key="api-public-key", secret="api-secret-key")
+   trade.create_order(
+       pair="AAPLxUSD",
+       side="buy",
+       ordertype="limit",
+       volume="1",
+       price="100.0",
+       validate=True,
+       extra_params={"asset_class": "tokenized_asset"}, # <- important!
+   )
+```
+
 <a name="futuresusage"></a>
 
 # 📍 Futures Clients
@@ -475,6 +527,8 @@ if __name__ == "__main__":
   keys will result in invalid nonce errors.
 - Always keep an eye on https://status.kraken.com/ when encountering
   connectivity problems.
+- The xStocks feature is not available globally. Please checkout Kraken's
+  documentation to get to know the availability zones.
 
 ---
 

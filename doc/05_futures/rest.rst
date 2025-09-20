@@ -21,8 +21,15 @@
 Futures REST Clients
 ====================
 
-The recommended way to execute requests against the Kraken Futures API is
-described in :ref:`section-futures-rest-examples`.
+.. autoclass:: kraken.base_api.FuturesClient
+   :members:
+   :show-inheritance:
+   :inherited-members:
+
+.. autoclass:: kraken.base_api.FuturesAsyncClient
+   :members:
+   :show-inheritance:
+   :inherited-members:
 
 .. autoclass:: kraken.futures.User
    :members:

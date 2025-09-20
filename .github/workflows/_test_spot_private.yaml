@@ -27,6 +27,10 @@ on:
         required: true
       SPOT_SECRET_KEY:
         required: true
+      XSTOCKS_API_KEY:
+        required: true
+      XSTOCKS_SECRET_KEY:
+        required: true
 
 permissions:
   contents: read
@@ -94,6 +98,8 @@ jobs:
         env:
           SPOT_API_KEY: ${{ secrets.SPOT_API_KEY }}
           SPOT_SECRET_KEY: ${{ secrets.SPOT_SECRET_KEY }}
+          XSTOCKS_API_KEY: ${{ secrets.XSTOCKS_API_KEY }}
+          XSTOCKS_SECRET_KEY: ${{ secrets.XSTOCKS_SECRET_KEY }}
         run: pytest -vv -m "spot and spot_auth and not spot_websocket" tests
 
       - name: Testing Spot websocket client

@@ -17,6 +17,9 @@
 #             for Spot:
 #               * SPOT_API_KEY
 #               * SPOT_SECRET_KEY
+#             for xStocks (Kraken UAT):
+#               * XSTOCKS_API_KEY
+#               * XSTOCKS_SECRET_KEY
 #             ... see the README for information about how to generate
 #             Spot API keys. Please also make sure to enable the
 #             following API permissions:

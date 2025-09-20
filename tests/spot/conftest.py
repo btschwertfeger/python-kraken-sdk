@@ -13,12 +13,20 @@ import os
 
 import pytest
 
-from kraken.spot import Earn, Funding, Market, Trade, User
+from kraken.spot import Earn, Funding, Market, SpotClient, Trade, User
 
 SPOT_API_KEY: str = os.getenv("SPOT_API_KEY")
 SPOT_SECRET_KEY: str = os.getenv("SPOT_SECRET_KEY")
+XSTOCKS_API_KEY: str = os.getenv("XSTOCKS_API_KEY")
+XSTOCKS_SECRET_KEY: str = os.getenv("XSTOCKS_SECRET_KEY")
+XSTOCKS_API_URL: str = os.getenv(
+    "XSTOCKS_API_URL",
+    "https://api.vip.uat.lobster.kraken.com",
+)
 
 
+# ==============================================================================
+# Spot Crypto
 @pytest.fixture(scope="session")
 def spot_api_key() -> str:
     """Returns the Kraken Spot API Key for testing."""
@@ -93,3 +101,45 @@ def spot_auth_funding() -> Funding:
     Fixture providing an authenticated Spot funding client.
     """
     return Funding(key=SPOT_API_KEY, secret=SPOT_SECRET_KEY)
+
+
+# ==============================================================================
+# Spot xStocks
+@pytest.fixture(scope="session")
+def xstocks_api_key() -> str:
+    """Returns the Kraken xStocks API Key for testing."""
+    return XSTOCKS_API_KEY
+
+
+@pytest.fixture(scope="session")
+def xstocks_secret_key() -> str:
+    """Returns the Kraken xStocks API secret for testing."""
+    return XSTOCKS_SECRET_KEY
+
+
+@pytest.fixture(scope="session")
+def xstocks_client() -> SpotClient:
+    """
+    Fixture providing an authenticated Spot client.
+    """
+    return SpotClient(
+        key=XSTOCKS_API_KEY,
+        secret=XSTOCKS_SECRET_KEY,
+        url=XSTOCKS_API_URL,
+    )
+
+
+@pytest.fixture(scope="session")
+def xstocks_market_client() -> Market:
+    """
+    Fixture providing an authenticated Spot client.
+    """
+    return Market(key=XSTOCKS_API_KEY, secret=XSTOCKS_SECRET_KEY, url=XSTOCKS_API_URL)
+
+
+@pytest.fixture(scope="session")
+def xstocks_trade_client() -> Trade:
+    """
+    Fixture providing an authenticated Spot client.
+    """
+    return Trade(key=XSTOCKS_API_KEY, secret=XSTOCKS_SECRET_KEY, url=XSTOCKS_API_URL)

@@ -10,7 +10,7 @@
 from collections.abc import Generator
 from contextlib import suppress
 from time import sleep
-from typing import Any, Self
+from typing import Any, ClassVar, Self
 
 import pytest
 
@@ -58,13 +58,10 @@ class TestFuturesTrade:
     REDUCE_ONLY = True
     PROCESS_BEFORE = "3033-11-08T19:56:35.441899Z"
     LAST_FILL_TIME = "2020-07-21T12:41:52.790Z"
-    TEST_ORDER_IDS = None
-
-    def __init__(self) -> None:
-        self.TEST_ORDER_IDS = [
-            "bcaaefce-27a3-44b4-b13a-19df21e3f087",
-            "685d5a1a-23eb-450c-bf17-1e4ab5c6fe8a",
-        ]
+    TEST_ORDER_IDS: ClassVar[list[str]] = [
+        "bcaaefce-27a3-44b4-b13a-19df21e3f087",
+        "685d5a1a-23eb-450c-bf17-1e4ab5c6fe8a",
+    ]
 
     def _assert_successful_response(self: Self, result: Any) -> None:
         """Helper method to assert a successful response."""

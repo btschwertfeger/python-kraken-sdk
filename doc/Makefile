@@ -20,4 +20,4 @@ help:
 # "make mode" option.  $(O) is meant as a shortcut for $(SPHINXOPTS).
 %: Makefile
 	@$(SPHINXBUILD) -M $@ "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
-	rm $(SOURCEDIR)/examples/market_client_example.ipynb
+	rm $(SOURCEDIR)/03_examples/market_client_example.ipynb

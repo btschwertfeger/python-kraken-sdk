@@ -30,19 +30,18 @@ Welcome to python-kraken-sdk's documentation!
    :caption: Contents:
    :maxdepth: 2
 
-   introduction.rst
-   getting_started/getting_started.rst
-   examples/command_line_interface.rst
-   examples/rest_example_usage.rst
-   examples/trading_bot_templates.rst
-   spot/rest.rst
-   spot/websockets.rst
-   futures/rest.rst
-   futures/websockets.rst
-   base_api/base_api.rst
-   exceptions/exceptions.rst
-   issues.rst
-   about/license.rst
+   01_introduction.rst
+   02_getting_started/getting_started.rst
+   03_examples/command_line_interface.rst
+   03_examples/rest_example_usage.rst
+   03_examples/trading_bot_templates.rst
+   04_spot/rest.rst
+   04_spot/websockets.rst
+   05_futures/rest.rst
+   05_futures/websockets.rst
+   06_exceptions/exceptions.rst
+   07_issues.rst
+   08_about/license.rst
 
 Indices and tables
 ==================

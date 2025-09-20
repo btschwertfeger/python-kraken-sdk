@@ -51,12 +51,12 @@ and documented.
   accessed, provided that either the base class or one of the clients has been
   initialized with valid credentials.
 - For Futures there is the websocket client
-  :class:`kraken.futures.FuturesWSClient` and for Spot
+  :class:`kraken.futures.FuturesWSClient` and for Spot and xStocks
   :class:`kraken.spot.SpotWSClient`.
 
 
-Disclaimer
-----------
+⚠️ Disclaimer
+-------------
 
 There is no guarantee that this software will work flawlessly at this or later
 times. Of course, no responsibility is taken for possible profits or losses.
@@ -66,8 +66,8 @@ investment. By using this software you release the author(s) from any liability
 regarding the use of this software.
 
 
-Features
---------
+🚀 Features
+-----------
 
 General:
 
@@ -80,14 +80,20 @@ General:
 
 Available Clients:
 
-- Spot REST Clients (sync and async)
+- Spot REST Clients - including xStocks capability
 - Spot Websocket Client (Websocket API v2)
 - Spot Orderbook Client (Websocket API v2)
-- Futures REST Clients (sync and async)
+- Futures REST Clients
 - Futures Websocket Client
 
-Important Notice
------------------
+Projects using this SDK:
+
+- https://github.com/btschwertfeger/infinity-grid
+- https://github.com/btschwertfeger/kraken-rebalance-bot
+- https://github.com/btschwertfeger/python-kraken-sdk/network/dependents
+
+📌 Important Notice
+-------------------
 
 **ONLY tagged releases are available at PyPI**. The content of the master branch
 may not match with the content of the latest release. - Please have a look at
@@ -99,8 +105,9 @@ on new releases.
 
 .. _section-troubleshooting:
 
-Troubleshooting
----------------
+💡 Troubleshooting
+------------------
+
 - Check if you downloaded and installed the **latest version** of the
   python-kraken-sdk.
 - Check the **permissions of your API keys** and the required permissions on the
@@ -114,9 +121,11 @@ Troubleshooting
 - Always keep an eye on https://status.kraken.com/ when encountering
   connectivity problems.
 - Feel free to open an issue at `python-kraken-sdk/issues`_.
+- The xStocks feature is not available globally. Please checkout Kraken's
+  documentation to get to know the availability zones.
 
-References
-----------
+📜 References
+-------------
 
 - https://python-kraken-sdk.readthedocs.io/en/stable
 - https://docs.kraken.com/api/
