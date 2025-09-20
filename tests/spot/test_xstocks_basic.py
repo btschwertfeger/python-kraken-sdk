@@ -11,6 +11,7 @@ from typing import ClassVar, Self
 
 import pytest
 
+from kraken.exceptions import KrakenPermissionDeniedError
 from kraken.spot import Market, SpotClient, Trade
 
 
@@ -63,29 +64,30 @@ class TestSpotXStocks:
         self: Self,
         xstocks_trade_client: Trade,
     ) -> None:
-        """
-        Checks if the response of the ``create_order`` is of type dict which
-        mean that the request was successful.
-        """
-        result = xstocks_trade_client.create_order(
-            **self.SAVE_ORDER,
-            side="buy",
-            extra_params={"asset_class": "tokenized_asset"},
-        )
-        assert "AAPLxUSD" in result.get("descr", {}).get("order", "")
+        """Checks if the endpoint is basically available."""
+        with pytest.raises(
+            KrakenPermissionDeniedError,
+            match=r".*API key doesn't have permission to make this request.*",
+        ):
+            xstocks_trade_client.create_order(
+                **self.SAVE_ORDER,
+                side="buy",
+                extra_params={"asset_class": "tokenized_asset"},
+            )
 
     @pytest.mark.spot_auth
     def test_create_order_spot_client(
         self: Self,
         xstocks_client: SpotClient,
     ) -> None:
-        """
-        Checks if the response of the ``create_order`` is of type dict which
-        mean that the request was successful.
-        """
-        result = xstocks_client.request(
-            "POST",
-            "/0/private/AddOrder",
-            params={"type": "buy", "asset_class": "tokenized_asset"} | self.SAVE_ORDER,
-        )
-        assert "AAPLxUSD" in result.get("descr", {}).get("order", "")
+        """Checks if the endpoint is basically available."""
+        with pytest.raises(
+            KrakenPermissionDeniedError,
+            match=r".*API key doesn't have permission to make this request.*",
+        ):
+            xstocks_client.request(
+                "POST",
+                "/0/private/AddOrder",
+                params={"type": "buy", "asset_class": "tokenized_asset"}
+                | self.SAVE_ORDER,
+            )

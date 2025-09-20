@@ -10,7 +10,7 @@ UV ?= uv
 PYTHON := python
 PYTEST := $(UV) run pytest
 PYTEST_OPTS := -vv --junit-xml=pytest.xml
-PYTEST_COV_OPTS := $(PYTEST_OPTS) --cov=kraken --cov-report=xml:coverage.xml --cov-report=term
+PYTEST_COV_OPTS := $(PYTEST_OPTS) --cov=kraken --cov-report=xml:coverage.xml --cov-report=term-missing
 TEST_DIR := tests
 
 ## ======= M A K E F I L E - T A R G E T S =====================================

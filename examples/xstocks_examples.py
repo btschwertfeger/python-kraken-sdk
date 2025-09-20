@@ -40,7 +40,7 @@ def list_all_xstocks() -> None:
         CLIENT.request(
             "GET",
             "/0/public/AssetPairs",
-            params={"aclass_base": "tokenized_asset"},
+            params={"aclass_base": "tokenized_asset"},  # <- important!
             auth=False,
         ),
     )
@@ -59,7 +59,7 @@ def create_xstock_order() -> None:
                 "pair": "AAPLxUSD",
                 "price": "100.0",
                 "validate": True,
-                "asset_class": "tokenized_asset",
+                "asset_class": "tokenized_asset",  # <- important
             },
         ),
     )
