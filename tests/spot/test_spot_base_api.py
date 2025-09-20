@@ -26,191 +26,196 @@ from kraken.spot import SpotAsyncClient, SpotClient
 
 if TYPE_CHECKING:
     from kraken.spot import Funding, Market, Trade, User
+from typing import Self
+
 from .helper import is_not_error
 
 
 @pytest.mark.spot
-def test_KrakenSpotBaseAPI_without_exception() -> None:
-    """
-    Checks first if the expected error will be raised and than creates a new
-    KrakenSpotBaseAPI instance that do not raise the custom Kraken exceptions.
-    This new instance than executes the same request and the returned response
-    gets evaluated.
-    """
-    with pytest.raises(KrakenInvalidAPIKeyError):
-        SpotClient(
+class TestSpotBaseAPI:
+    """Test class for Spot Base API functionality."""
+
+    TEST_PAIR_XBTUSD = "XBTUSD"
+    TEST_TXID = "OB6JJR-7NZ5P-N5SKCB"
+
+    def test_KrakenSpotBaseAPI_without_exception(self: Self) -> None:
+        """
+        Checks first if the expected error will be raised and then creates a new
+        KrakenSpotBaseAPI instance that does not raise the custom Kraken exceptions.
+        This new instance then executes the same request and the returned response
+        gets evaluated.
+        """
+        with pytest.raises(KrakenInvalidAPIKeyError):
+            SpotClient(
+                key="fake",
+                secret="fake",
+            ).request(method="POST", uri="/0/private/AddOrder", auth=True)
+
+        assert SpotClient(
             key="fake",
             secret="fake",
-        ).request(method="POST", uri="/0/private/AddOrder", auth=True)
+            use_custom_exceptions=False,
+        ).request(method="POST", uri="/0/private/AddOrder", auth=True).json() == {
+            "error": ["EAPI:Invalid key"],
+        }
 
-    assert SpotClient(
-        key="fake",
-        secret="fake",
-        use_custom_exceptions=False,
-    ).request(method="POST", uri="/0/private/AddOrder", auth=True).json() == {
-        "error": ["EAPI:Invalid key"],
-    }
-
-
-@pytest.mark.spot
-@pytest.mark.spot_auth
-def test_spot_rest_contextmanager(
-    spot_market: Market,
-    spot_auth_funding: Funding,
-    spot_auth_trade: Trade,
-    spot_auth_user: User,
-) -> None:
-    """
-    Checks if the clients can be used as context manager.
-    """
-    with spot_market as market:
-        result = market.get_assets()
-        assert is_not_error(result), result
-
-    with spot_auth_funding as funding:
-        assert isinstance(funding.get_deposit_methods(asset="XBT"), list)
-
-    with spot_auth_user as user:
-        assert is_not_error(user.get_account_balance())
-
-    with spot_auth_trade as trade, pytest.raises(KrakenPermissionDeniedError):
-        trade.cancel_order(txid="OB6JJR-7NZ5P-N5SKCB")
-
-
-# ==============================================================================
-# Spot async client
-
-
-@pytest.mark.spot
-def test_spot_rest_async_client_get() -> None:
-    """
-    Check the instantiation as well as a simple request using the async client.
-    """
-
-    async def check() -> None:
-        client = SpotAsyncClient()
-        try:
-            assert is_not_error(
-                await client.request(
-                    "GET",
-                    "/0/public/OHLC",
-                    params={"pair": "XBTUSD"},
-                    auth=False,
-                ),
-            )
-        finally:
-            await client.close()
-
-    run(check())
-
-
-@pytest.mark.spot
-def test_spot_async_rest_contextmanager(
-    spot_api_key: str,
-    spot_secret_key: str,
-) -> None:
-    """
-    Checks if the clients can be used as context manager.
-    """
-
-    async def check() -> None:
-        async with SpotAsyncClient(spot_api_key, spot_secret_key) as client:
-            result = await client.request("GET", "/0/public/Time", auth=False)
+    @pytest.mark.spot_auth
+    def test_spot_rest_contextmanager(
+        self: Self,
+        spot_market: Market,
+        spot_auth_funding: Funding,
+        spot_auth_trade: Trade,
+        spot_auth_user: User,
+    ) -> None:
+        """
+        Checks if the clients can be used as context manager.
+        """
+        with spot_market as market:
+            result = market.get_assets()
             assert is_not_error(result), result
 
-    run(check())
+        with spot_auth_funding as funding:
+            assert isinstance(funding.get_deposit_methods(asset="XBT"), list)
 
+        with spot_auth_user as user:
+            assert is_not_error(user.get_account_balance())
 
-@pytest.mark.spot
-@pytest.mark.spot_auth
-@pytest.mark.parametrize("report", ["trades", "ledgers"])
-def test_spot_rest_async_client_post_report(
-    report: str,
-    spot_api_key: str,
-    spot_secret_key: str,
-) -> None:
-    """
-    Check the authenticated async client using multiple request to retrieve a
-    the user-specific order report.
-    """
+        with spot_auth_trade as trade, pytest.raises(KrakenPermissionDeniedError):
+            trade.cancel_order(txid=self.TEST_TXID)
 
-    async def check() -> None:
-        client = SpotAsyncClient(spot_api_key, spot_secret_key)
+    # ==============================================================================
+    # Spot async client
 
-        try:
-            export_descr = f"{report}-export-{random.randint(0, 10000)}"
-            response = await client.request(
-                "POST",
-                "/0/private/AddExport",
-                params={
-                    "report": report,
-                    "description": export_descr,
-                },
-            )
-            assert is_not_error(response)
-            assert "id" in response
-            sleep(2)
+    @pytest.mark.spot
+    def test_spot_rest_async_client_get(self: Self) -> None:
+        """
+        Check the instantiation as well as a simple request using the async client.
+        """
 
-            status = await client.request(
-                "POST",
-                "/0/private/ExportStatus",
-                params={"report": report},
-            )
-            assert isinstance(status, list)
-            sleep(5)
+        async def check() -> None:
+            client = SpotAsyncClient()
+            try:
+                assert is_not_error(
+                    await client.request(
+                        "GET",
+                        "/0/public/OHLC",
+                        params={"pair": "XBTUSD"},
+                        auth=False,
+                    ),
+                )
+            finally:
+                await client.close()
 
-            result = await client.request(
-                "POST",
-                "/0/private/RetrieveExport",
-                params={"id": response["id"]},
-                timeout=30,
-                return_raw=True,
-            )
+        run(check())
 
-            with tempfile.TemporaryDirectory() as tmp_dir:
-                file_path = Path(tmp_dir) / f"{export_descr}.zip"
+    @pytest.mark.spot
+    def test_spot_async_rest_contextmanager(
+        self: Self,
+        spot_api_key: str,
+        spot_secret_key: str,
+    ) -> None:
+        """
+        Checks if the clients can be used as context manager.
+        """
 
-                with file_path.open("wb") as file:
-                    async for chunk in result.content.iter_chunked(1024):
-                        file.write(chunk)
+        async def check() -> None:
+            async with SpotAsyncClient(spot_api_key, spot_secret_key) as client:
+                result = await client.request("GET", "/0/public/Time", auth=False)
+                assert is_not_error(result), result
 
-            status = await client.request(
-                "POST",
-                "/0/private/ExportStatus",
-                params={"report": report},
-            )
-            assert isinstance(status, list)
-            for response in status:
-                if response.get("delete"):
-                    # ignore already deleted reports
-                    continue
+        run(check())
+
+    @pytest.mark.spot
+    @pytest.mark.spot_auth
+    @pytest.mark.parametrize("report", ["trades", "ledgers"])
+    def test_spot_rest_async_client_post_report(
+        self: Self,
+        report: str,
+        spot_api_key: str,
+        spot_secret_key: str,
+    ) -> None:
+        """
+        Check the authenticated async client using multiple request to retrieve a
+        the user-specific order report.
+        """
+
+        async def check() -> None:
+            client = SpotAsyncClient(spot_api_key, spot_secret_key)
+
+            try:
+                export_descr = f"{report}-export-{random.randint(0, 10000)}"
+                response = await client.request(
+                    "POST",
+                    "/0/private/AddExport",
+                    params={
+                        "report": report,
+                        "description": export_descr,
+                    },
+                )
+                assert is_not_error(response)
                 assert "id" in response
-                with suppress(Exception):
-                    assert isinstance(
-                        await client.request(
-                            "POST",
-                            "/0/private/RemoveExport",
-                            params={
-                                "id": response["id"],
-                                "type": "delete",
-                            },
-                        ),
-                        dict,
-                    )
                 sleep(2)
-        finally:
-            await client.close()
 
-    run(check())
+                status = await client.request(
+                    "POST",
+                    "/0/private/ExportStatus",
+                    params={"report": report},
+                )
+                assert isinstance(status, list)
+                sleep(5)
+
+                result = await client.request(
+                    "POST",
+                    "/0/private/RetrieveExport",
+                    params={"id": response["id"]},
+                    timeout=30,
+                    return_raw=True,
+                )
+
+                with tempfile.TemporaryDirectory() as tmp_dir:
+                    file_path = Path(tmp_dir) / f"{export_descr}.zip"
+
+                    with file_path.open("wb") as file:
+                        async for chunk in result.content.iter_chunked(1024):
+                            file.write(chunk)
+
+                status = await client.request(
+                    "POST",
+                    "/0/private/ExportStatus",
+                    params={"report": report},
+                )
+                assert isinstance(status, list)
+                for response in status:
+                    if response.get("delete"):
+                        # ignore already deleted reports
+                        continue
+                    assert "id" in response
+                    with suppress(Exception):
+                        assert isinstance(
+                            await client.request(
+                                "POST",
+                                "/0/private/RemoveExport",
+                                params={
+                                    "id": response["id"],
+                                    "type": "delete",
+                                },
+                            ),
+                            dict,
+                        )
+                    sleep(2)
+            finally:
+                await client.close()
+
+        run(check())
 
 
 class TestProxyPyEmbedded(TestCase, IsolatedAsyncioTestCase):
-    def get_proxy_str(self) -> str:
+    def get_proxy_str(self: Self) -> str:
         return f"http://127.0.0.1:{self.PROXY.flags.port}"
 
     @pytest.mark.spot
     @pytest.mark.spot_market
-    def test_spot_rest_proxies(self) -> None:
+    def test_spot_rest_proxies(self: Self) -> None:
         """
         Checks if the clients can be used with a proxy.
         """
@@ -227,7 +232,7 @@ class TestProxyPyEmbedded(TestCase, IsolatedAsyncioTestCase):
     @pytest.mark.spot
     @pytest.mark.spot_market
     @pytest.mark.asyncio
-    async def test_spot_rest_proxies_async(self) -> None:
+    async def test_spot_rest_proxies_async(self: Self) -> None:
         """
         Checks if the async clients can be used with a proxy.
         """

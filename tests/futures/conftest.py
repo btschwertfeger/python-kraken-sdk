@@ -18,19 +18,19 @@ FUTURES_SANDBOX_SECRET_KEY: str = os.getenv("FUTURES_SANDBOX_SECRET")
 FUTURES_EXTENDED_TIMEOUT: int = 30
 
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def futures_api_key() -> str:
     """Returns the Futures API key"""
     return FUTURES_API_KEY
 
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def futures_secret_key() -> str:
     """Returns the Futures API secret key"""
     return FUTURES_SECRET_KEY
 
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def futures_market() -> Market:
     """
     Fixture providing an unauthenticated Futures Market client
@@ -40,7 +40,7 @@ def futures_market() -> Market:
     return market
 
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def futures_auth_market() -> Market:
     """
     Fixture providing an authenticated Futures Market client.
@@ -50,7 +50,7 @@ def futures_auth_market() -> Market:
     return market
 
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def futures_demo_market() -> Market:
     """
     Fixture providing an authenticated Futures Market client that
@@ -65,7 +65,7 @@ def futures_demo_market() -> Market:
     return market
 
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def futures_user() -> User:
     """
     Fixture providing an unauthenticated Futures User client.
@@ -75,7 +75,7 @@ def futures_user() -> User:
     return user
 
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def futures_auth_user() -> User:
     """
     Fixture providing an authenticated Futures User client.
@@ -85,7 +85,7 @@ def futures_auth_user() -> User:
     return user
 
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def futures_demo_user() -> User:
     """
     Fixture providing an authenticated Futures User client that
@@ -100,7 +100,7 @@ def futures_demo_user() -> User:
     return user
 
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def futures_trade() -> Trade:
     """
     Fixture providing an unauthenticated Futures Trade client.
@@ -110,7 +110,7 @@ def futures_trade() -> Trade:
     return trade
 
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def futures_auth_trade() -> Trade:
     """
     Fixture providing an authenticated Futures Trade client.
@@ -120,7 +120,7 @@ def futures_auth_trade() -> Trade:
     return trade
 
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def futures_demo_trade() -> Trade:
     """
     Fixture providing an authenticated Futures Trade client that
@@ -135,7 +135,7 @@ def futures_demo_trade() -> Trade:
     return trade
 
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def futures_funding() -> Funding:
     """
     Fixture providing an unauthenticated Futures Funding client.
@@ -145,7 +145,7 @@ def futures_funding() -> Funding:
     return funding
 
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def futures_auth_funding() -> Funding:
     """
     Fixture providing an authenticated Futures Funding client.
@@ -155,7 +155,7 @@ def futures_auth_funding() -> Funding:
     return funding
 
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def futures_demo_funding() -> Funding:
     """
     Fixture providing an authenticated Futures Funding client that

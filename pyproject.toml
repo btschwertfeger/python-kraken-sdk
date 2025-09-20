@@ -291,6 +291,8 @@ task-tags = ["todo", "TODO", "fixme", "FIXME"]
   "S311",     # pseudo-random-generator
   "SLF001",   # private member access
   "TID252",   # ban relative imports
+  "PLR0904",  # too many public methods
+  "ANN401",   # Use of typing.Any
 ]
 
 [tool.ruff.lint.flake8-copyright]
