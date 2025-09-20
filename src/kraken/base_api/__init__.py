@@ -191,6 +191,9 @@ class SpotClient:
     This class is the base for all Spot clients, handles un-/signed requests and
     returns exception handled results.
 
+    With this class you can easily interact with the Kraken Spot API, including
+    trading Spot crypto assets, xStocks, and margin trading.
+
     If you are facing timeout errors on derived clients, you can make use of the
     ``TIMEOUT`` attribute to deviate from the default ``10`` seconds.
 

@@ -94,6 +94,7 @@ markers = [
   "wip: Used to run a specific test by hand.",
   "flaky: Flaky tests",
   "spot: Spot endpoint.",
+  "xstocks: Spot xStocks endpoint.",
   "spot_auth: Private Spot endpoint.",
   "spot_earn: Spot Earn endpoint.",
   "spot_trade: Spot Trade endpoint.",
