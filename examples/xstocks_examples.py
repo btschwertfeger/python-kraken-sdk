@@ -1,7 +1,7 @@
 # !/usr/bin/env python3
 # -*- mode: python; coding: utf-8 -*-
 #
-# Copyright (C) 2023 Benjamin Thomas Schwertfeger
+# Copyright (C) 2025 Benjamin Thomas Schwertfeger
 # All rights reserved.
 # https://github.com/btschwertfeger
 #

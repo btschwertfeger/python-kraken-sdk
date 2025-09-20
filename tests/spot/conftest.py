@@ -130,7 +130,7 @@ def xstocks_client() -> SpotClient:
 
 
 @pytest.fixture(scope="session")
-def xstocks_market_client() -> SpotClient:
+def xstocks_market_client() -> Market:
     """
     Fixture providing an authenticated Spot client.
     """
@@ -138,7 +138,7 @@ def xstocks_market_client() -> SpotClient:
 
 
 @pytest.fixture(scope="session")
-def xstocks_trade_client() -> SpotClient:
+def xstocks_trade_client() -> Trade:
     """
     Fixture providing an authenticated Spot client.
     """
