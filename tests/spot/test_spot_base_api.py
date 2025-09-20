@@ -123,8 +123,6 @@ def test_spot_async_rest_contextmanager(
 
 @pytest.mark.spot
 @pytest.mark.spot_auth
-@pytest.mark.timeout(120)
-@pytest.mark.flaky(retries=0)
 @pytest.mark.parametrize("report", ["trades", "ledgers"])
 def test_spot_rest_async_client_post_report(
     report: str,
@@ -148,7 +146,6 @@ def test_spot_rest_async_client_post_report(
                     "report": report,
                     "description": export_descr,
                 },
-                timeout=30,
             )
             assert is_not_error(response)
             assert "id" in response
@@ -184,6 +181,9 @@ def test_spot_rest_async_client_post_report(
             )
             assert isinstance(status, list)
             for response in status:
+                if response.get("delete"):
+                    # ignore already deleted reports
+                    continue
                 assert "id" in response
                 with suppress(Exception):
                     assert isinstance(

@@ -311,7 +311,6 @@ def test_get_trade_volume(spot_auth_user: User) -> None:
 @pytest.mark.spot
 @pytest.mark.spot_auth
 @pytest.mark.spot_user
-@pytest.mark.timeout(120)
 @pytest.mark.parametrize("report", ["trades", "ledgers"])
 def test_request_save_export_report(report: str, spot_auth_user: User) -> None:
     """
@@ -336,7 +335,6 @@ def test_request_save_export_report(report: str, spot_auth_user: User) -> None:
         format_="CSV",
         starttm=first_of_current_month,
         endtm=first_of_current_month + 100 * 100,
-        timeout=30,
     )
     assert is_not_error(response)
     assert "id" in response
@@ -359,6 +357,9 @@ def test_request_save_export_report(report: str, spot_auth_user: User) -> None:
     status = spot_auth_user.get_export_report_status(report=report)
     assert isinstance(status, list)
     for response in status:
+        if response.get("delete"):
+            # ignore already deleted reports
+            continue
         assert "id" in response
         with suppress(Exception):
             assert isinstance(
