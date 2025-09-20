@@ -21,8 +21,15 @@
 Spot REST Clients
 ==================
 
-The recommended way to execute requests against the Kraken Futures API is
-described in :ref:`section-spot-rest-examples`.
+.. autoclass:: kraken.base_api.SpotClient
+   :members:
+   :show-inheritance:
+   :inherited-members:
+
+.. autoclass:: kraken.base_api.SpotAsyncClient
+   :members:
+   :show-inheritance:
+   :inherited-members:
 
 .. autoclass:: kraken.spot.User
    :members:

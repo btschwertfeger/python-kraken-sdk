@@ -51,7 +51,7 @@ and documented.
   accessed, provided that either the base class or one of the clients has been
   initialized with valid credentials.
 - For Futures there is the websocket client
-  :class:`kraken.futures.FuturesWSClient` and for Spot
+  :class:`kraken.futures.FuturesWSClient` and for Spot and xStocks
   :class:`kraken.spot.SpotWSClient`.
 
 
@@ -80,11 +80,17 @@ General:
 
 Available Clients:
 
-- Spot REST Clients (sync and async)
+- Spot REST Clients - including xStocks capability
 - Spot Websocket Client (Websocket API v2)
 - Spot Orderbook Client (Websocket API v2)
-- Futures REST Clients (sync and async)
+- Futures REST Clients
 - Futures Websocket Client
+
+Projects using this SDK:
+
+- https://github.com/btschwertfeger/infinity-grid
+- https://github.com/btschwertfeger/kraken-rebalance-bot
+- https://github.com/btschwertfeger/python-kraken-sdk/network/dependents
 
 Important Notice
 -----------------
@@ -114,6 +120,8 @@ Troubleshooting
 - Always keep an eye on https://status.kraken.com/ when encountering
   connectivity problems.
 - Feel free to open an issue at `python-kraken-sdk/issues`_.
+- The xStocks feature is not available globally. Please checkout Kraken's
+  documentation to get to know the availability zones.
 
 References
 ----------

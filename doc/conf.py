@@ -51,7 +51,7 @@ def setup(app: Any) -> None:  # noqa: ARG001,ANN401
     """Setup function to modify doc building"""
     copyfile(
         Path("..") / "examples" / "market_client_example.ipynb",
-        Path("examples") / "market_client_example.ipynb",
+        Path("03_examples") / "market_client_example.ipynb",
     )
 
 
