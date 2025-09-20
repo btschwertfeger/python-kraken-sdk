@@ -32,7 +32,7 @@ class TestSpotMarket:
     TEST_SINCE = "1616663618"
     TEST_COUNT = 2
 
-    def _assert_not_error(self: Self, result: Any) -> None:  # noqa: ANN401
+    def _assert_not_error(self: Self, result: Any) -> None:
         """Helper method to assert responses without errors."""
         assert is_not_error(result)
 

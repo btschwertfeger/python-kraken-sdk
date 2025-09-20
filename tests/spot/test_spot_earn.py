@@ -27,11 +27,11 @@ class TestSpotEarn:
     TEST_STRATEGY_ID = "ESRFUO3-Q62XD-WIOIL7"
     TEST_ASSET = "DOT"
 
-    def _assert_successful_operation(self: Self, result: Any) -> None:  # noqa: ANN401
+    def _assert_successful_operation(self: Self, result: Any) -> None:
         """Helper method to assert successful operations for allocation/deallocation."""
         assert isinstance(result, bool)
 
-    def _assert_successful_query(self: Self, result: Any) -> None:  # noqa: ANN401
+    def _assert_successful_query(self: Self, result: Any) -> None:
         """Helper method to assert successful query operations."""
         assert is_not_error(result)
 

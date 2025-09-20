@@ -38,19 +38,19 @@ class TestSpotFunding:
 
     def _assert_successful_list_response(
         self: Self,
-        result: Any,  # noqa: ANN401
+        result: Any,
     ) -> None:
         """Helper method to assert successful list responses."""
         assert isinstance(result, list)
 
     def _assert_successful_dict_response(
         self: Self,
-        result: Any,  # noqa: ANN401
+        result: Any,
     ) -> None:
         """Helper method to assert successful dict responses."""
         assert isinstance(result, dict)
 
-    def _assert_not_error(self: Self, result: Any) -> None:  # noqa: ANN401
+    def _assert_not_error(self: Self, result: Any) -> None:
         """Helper method to assert responses without errors."""
         assert is_not_error(result)
 
