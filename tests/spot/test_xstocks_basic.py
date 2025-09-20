@@ -17,6 +17,7 @@ from kraken.spot import Market, SpotClient, Trade
 
 @pytest.mark.spot
 @pytest.mark.xstocks
+@pytest.mark.skip(reason="xStocks is only available in certain regions!")
 class TestSpotXStocks:
     """Test class for Spot xStocks client functionality."""
 
