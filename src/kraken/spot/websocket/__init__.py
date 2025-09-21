@@ -58,8 +58,8 @@ class SpotWSClientBase(SpotAsyncClient):
     """
 
     LOG: logging.Logger = logging.getLogger(__name__)
-    PROD_ENV_URL: str = "ws.kraken.com"
-    AUTH_PROD_ENV_URL: str = "ws-auth.kraken.com"
+    WS_URL: str = "wss://ws.kraken.com"
+    AUTH_WS_URL: str = "wss://ws-auth.kraken.com"
     # Changing this can cause errors, as this class is designed for v2.
     API_V: str = "/v2"
 
@@ -70,8 +70,14 @@ class SpotWSClientBase(SpotAsyncClient):
         callback: Callable | None = None,
         *,
         no_public: bool = False,
+        rest_url: str | None = None,
+        ws_url: str | None = None,
+        auth_ws_url: str | None = None,
     ) -> None:
-        super().__init__(key=key, secret=secret)
+        super().__init__(key=key, secret=secret, url=rest_url)
+        self.WS_URL = ws_url or self.WS_URL
+        self.AUTH_WS_URL = auth_ws_url or self.AUTH_WS_URL
+
         self.state: WSState = WSState.INIT
         self._is_auth: bool = bool(key and secret)
         self.__callback: Callable | None = callback
@@ -92,13 +98,13 @@ class SpotWSClientBase(SpotAsyncClient):
         """Set up functions and attributes based on the API version."""
 
         # pylint: disable=invalid-name
-        self.PROD_ENV_URL += self.API_V
-        self.AUTH_PROD_ENV_URL += self.API_V
+        self.WS_URL += self.API_V
+        self.AUTH_WS_URL += self.API_V
 
         self._pub_conn = (
             ConnectSpotWebsocket(
                 client=self,
-                endpoint=self.PROD_ENV_URL,
+                endpoint=self.WS_URL,
                 is_auth=False,
                 callback=self.on_message,
             )
@@ -109,7 +115,7 @@ class SpotWSClientBase(SpotAsyncClient):
         self._priv_conn = (
             ConnectSpotWebsocket(
                 client=self,
-                endpoint=self.AUTH_PROD_ENV_URL,
+                endpoint=self.AUTH_WS_URL,
                 is_auth=True,
                 callback=self.on_message,
             )

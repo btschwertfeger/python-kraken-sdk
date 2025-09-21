@@ -147,7 +147,7 @@ class ConnectSpotWebsocketBase:  # pylint: disable=too-many-instance-attributes
         LOG.debug("Websocket token: %s", self.ws_conn_details)
 
         async with connect(  # pylint: disable=no-member
-            f"wss://{self.__ws_endpoint}",
+            self.__ws_endpoint,
             additional_headers={"User-Agent": "btschwertfeger/python-kraken-sdk"},
             ping_interval=30,
             max_queue=None,  # FIXME: This is not recommended by the docs https://websockets.readthedocs.io/en/stable/reference/asyncio/client.html#module-websockets.asyncio.client
