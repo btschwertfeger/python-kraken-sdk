@@ -108,6 +108,9 @@ class Trade(SpotClient):
         Requires the ``Create and modify orders`` permission in the API key
         settings.
 
+        If the traded asset is a tokenized asset, `extra_params` must contain
+        the key `"aclass_base"` with value `"tokenized_asset"`.
+
         - https://docs.kraken.com/api/docs/rest-api/add-order
 
         :param ordertype: The kind of the order, one of: ``market``, ``limit``,
@@ -335,7 +338,14 @@ class Trade(SpotClient):
             "volume": (
                 volume
                 if not truncate
-                else self.truncate(amount=volume, amount_type="volume", pair=pair)
+                else self.truncate(
+                    amount=volume,
+                    amount_type="volume",
+                    pair=pair,
+                    aclass_base=(
+                        extra_params.get("aclass_base") if extra_params else "currency"
+                    ),
+                )
             ),
             "stptype": stptype,
             "starttm": starttm,
@@ -767,26 +777,33 @@ class Trade(SpotClient):
         amount: Decimal | float | str,
         amount_type: str,
         pair: str,
+        aclass_base: str = "currency",
     ) -> str:
         """
-        Kraken only allows volume and price amounts to be specified with a specific number of
-        decimal places, and these vary depending on the currency pair used.
+        Kraken only allows volume and price amounts to be specified with a
+        specific number of decimal places, and these vary depending on the
+        currency pair used.
 
-        This function converts an amount of a specific type and pair to a string that uses
-        the correct number of decimal places.
+        This function converts an amount of a specific type and pair to a string
+        that uses the correct number of decimal places.
 
         This function uses caching. Run ``truncate.clear_cache()`` to clear.
 
         :param amount: The floating point number to represent
         :type amount: Decimal | float | str
-        :param amount_type: What the amount represents. Either ``"price"`` or ``"volume"``
+        :param amount_type: What the amount represents. Either ``"price"`` or
+            ``"volume"``
         :type amount_type: str
         :param pair: The currency pair the amount is in reference to.
         :type pair: str
-        :raises ValueError: If the ``amount_type`` is ``price`` and the price is less
-            than the costmin.
-        :raises ValueError: If the ``amount_type`` is ``volume`` and the volume is
-            less than the ordermin.
+        :param aclass_base: The asset class of the base currency. Default is
+            ``"currency"``. If the traded asset is a tokenized asset, set this
+            to ``"tokenized_asset"``.
+        :type aclass_base: str, optional
+        :raises ValueError: If the ``amount_type`` is ``price`` and the price is
+            less than the costmin.
+        :raises ValueError: If the ``amount_type`` is ``volume`` and the volume
+            is less than the ordermin.
         :raises ValueError: If no valid ``amount_type`` was passed.
         :return: A string representation of the amount.
         :rtype: str
@@ -826,7 +843,10 @@ class Trade(SpotClient):
         if amount_type not in {"price", "volume"}:
             raise ValueError("Amount type must be 'volume' or 'price'!")
 
-        pair_data: dict = self.__market.get_asset_pairs(pair=pair)
+        pair_data: dict = self.__market.get_asset_pairs(
+            pair=pair,
+            aclass_base=aclass_base,
+        )
         data: dict = pair_data[next(iter(pair_data))]
 
         pair_decimals: int = int(data["pair_decimals"])
