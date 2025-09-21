@@ -121,7 +121,9 @@ jobs:
   ##
   ##  (private endpoints)
   Test-Spot-Private:
-    if: success() && github.actor == 'btschwertfeger'
+    if: |
+      success()
+      && github.actor == 'btschwertfeger'
     needs: [Build]
     uses: ./.github/workflows/_test_spot_private.yaml
     strategy:
@@ -153,7 +155,9 @@ jobs:
   ##
   ##  (private endpoints)
   Test-Futures-Private:
-    if: success() && github.actor == 'btschwertfeger'
+    if: |
+      success()
+      && github.actor == 'btschwertfeger'
     needs: [Build]
     uses: ./.github/workflows/_test_futures_private.yaml
     strategy:
@@ -173,8 +177,8 @@ jobs:
   CodeCov:
     if: |
       success()
-      && github.actor == 'btschwertfeger'
       && github.event_name != 'schedule'
+      && github.actor == 'btschwertfeger'
     needs:
       - Build
       # Wait for private tests to avoid nonce errors and rate limiting
@@ -192,7 +196,9 @@ jobs:
   ##
   UploadTestPyPI:
     if: |
-      (success() && github.ref == 'refs/heads/master')
+      success()
+      && github.ref == 'refs/heads/master'
+      && github.actor == 'btschwertfeger'
       && (github.event_name == 'push' || github.event_name == 'release')
     needs:
       - Build
