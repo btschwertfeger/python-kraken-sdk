@@ -152,6 +152,7 @@ class Market(SpotClient):
         self: Market,
         pair: str | list[str] | None = None,
         info: str | None = None,
+        aclass_base: str | None = None,
         *,
         extra_params: dict | None = None,
     ) -> dict:
@@ -221,6 +222,8 @@ class Market(SpotClient):
             params["pair"] = pair
         if defined(info):
             params["info"] = info
+        if defined(aclass_base):
+            params["aclass_base"] = aclass_base
         return self.request(  # type: ignore[return-value]
             method="GET",
             uri="/0/public/AssetPairs",
