@@ -58,7 +58,7 @@ class SpotWSClientBase(SpotAsyncClient):
     """
 
     LOG: logging.Logger = logging.getLogger(__name__)
-    WS_URL: str = "wss://wss.kraken.com"
+    WS_URL: str = "wss://ws.kraken.com"
     AUTH_WS_URL: str = "wss://ws-auth.kraken.com"
     # Changing this can cause errors, as this class is designed for v2.
     API_V: str = "/v2"
