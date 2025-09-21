@@ -61,9 +61,14 @@ class SpotWSClient(SpotWSClientBase):
         set or set to ``False``, the client will create a public and a private
         connection per default. If only a private connection is required, this
         parameter should be set to ``True``.
-    :param beta: Use the beta websocket channels (maybe not supported anymore,
-        default: ``False``)
-    :type beta: bool
+    :param rest_url: Set a specific REST URL to access the Kraken Spot API
+        (default: ``None``).
+    :type rest_url: str, optional
+    :param ws_url: Set a specific Websocket URL to access the Kraken Spot API
+        (default: ``None``).
+    :type ws_url: str, optional
+    :param auth_ws_url: Set a specific Authenticated Websocket URL to access
+        the Kraken Spot API (default: ``None``).
 
     .. code-block:: python
         :linenos:
@@ -163,6 +168,18 @@ class SpotWSClient(SpotWSClientBase):
                 asyncio.run(main())
             except KeyboardInterrupt:
                 pass
+
+    .. code-block:: python
+        :linenos:
+        :caption: HowTo: How to connect to other Kraken instances
+
+        client_auth = SpotWSClient(
+            key="api-key",
+            secret="secret-key",
+            rest_url="https://api.vip.uat.lobster.kraken.com",
+            ws_url="wss://ws.vip.uat.lobster.kraken.com",
+            auth_ws_url="wss://ws-auth.vip.uat.lobster.kraken.com",
+        )
     """
 
     def __init__(  # nosec: B107
@@ -172,12 +189,18 @@ class SpotWSClient(SpotWSClientBase):
         callback: Callable | None = None,
         *,
         no_public: bool = False,
+        rest_url: str | None = None,
+        ws_url: str | None = None,
+        auth_ws_url: str | None = None,
     ) -> None:
         super().__init__(
             key=key,
             secret=secret,
             callback=callback,
             no_public=no_public,
+            rest_url=rest_url,
+            ws_url=ws_url,
+            auth_ws_url=auth_ws_url,
         )
 
     async def send_message(  # noqa: C901 # pylint: disable=arguments-differ
