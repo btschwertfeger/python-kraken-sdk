@@ -342,8 +342,8 @@ class Trade(SpotClient):
                     amount=volume,
                     amount_type="volume",
                     pair=pair,
-                    aclass_base=(
-                        extra_params.get("aclass_base") if extra_params else "currency"
+                    asset_class=(
+                        extra_params.get("asset_class") if extra_params else "currency"
                     ),
                 )
             ),
@@ -777,7 +777,7 @@ class Trade(SpotClient):
         amount: Decimal | float | str,
         amount_type: str,
         pair: str,
-        aclass_base: str = "currency",
+        asset_class: str = "currency",
     ) -> str:
         """
         Kraken only allows volume and price amounts to be specified with a
@@ -796,10 +796,10 @@ class Trade(SpotClient):
         :type amount_type: str
         :param pair: The currency pair the amount is in reference to.
         :type pair: str
-        :param aclass_base: The asset class of the base currency. Default is
+        :param asset_class: The asset class of the base currency. Default is
             ``"currency"``. If the traded asset is a tokenized asset, set this
             to ``"tokenized_asset"``.
-        :type aclass_base: str, optional
+        :type asset_class: str, optional
         :raises ValueError: If the ``amount_type`` is ``price`` and the price is
             less than the costmin.
         :raises ValueError: If the ``amount_type`` is ``volume`` and the volume
@@ -845,7 +845,7 @@ class Trade(SpotClient):
 
         pair_data: dict = self.__market.get_asset_pairs(
             pair=pair,
-            aclass_base=aclass_base,
+            aclass_base=asset_class,
         )
         data: dict = pair_data[next(iter(pair_data))]
 

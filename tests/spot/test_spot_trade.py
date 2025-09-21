@@ -392,7 +392,7 @@ class TestSpotTrade:
                     amount=volume,
                     amount_type="volume",
                     pair="AAPLxUSD",
-                    aclass_base="tokenized_asset",
+                    asset_class="tokenized_asset",
                 )
                 == expected
             )
