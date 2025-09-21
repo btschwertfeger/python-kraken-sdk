@@ -109,7 +109,7 @@ class Trade(SpotClient):
         settings.
 
         If the traded asset is a tokenized asset, `extra_params` must contain
-        the key `"aclass_base"` with value `"tokenized_asset"`.
+        the key `"asset_class"` with value `"tokenized_asset"`.
 
         - https://docs.kraken.com/api/docs/rest-api/add-order
 
@@ -343,7 +343,9 @@ class Trade(SpotClient):
                     amount_type="volume",
                     pair=pair,
                     asset_class=(
-                        extra_params.get("asset_class") if extra_params else "currency"
+                        extra_params.get("asset_class", "currency")
+                        if extra_params
+                        else "currency"
                     ),
                 )
             ),
