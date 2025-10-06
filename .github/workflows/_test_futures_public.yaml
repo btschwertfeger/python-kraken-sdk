@@ -79,7 +79,7 @@ jobs:
           uv pip install $wheel -r requirements-dev.txt
 
       - name: Testing Futures REST endpoints
-        run: pytest -vv -m "futures and not futures_auth and not futures_websocket" tests
+        run: pytest -vv -x -m "futures and not futures_auth and not futures_websocket" tests
 
       - name: Testing Futures websocket endpoints
-        run: pytest -vv -m "futures and not futures_auth and futures_websocket" tests
+        run: pytest -vv -x -m "futures and not futures_auth and futures_websocket" tests

@@ -26,6 +26,7 @@ from __future__ import annotations
 import logging
 import sys
 from typing import TYPE_CHECKING, Any
+from urllib.parse import urlparse
 
 from click import echo
 from cloup import (
@@ -52,7 +53,7 @@ def _print_version(
     param: Any,  # noqa: ANN401, ARG001
     value: Any,  # noqa: ANN401
 ) -> None:
-    """Prints the version of the package"""
+    """Prints the version of the package."""
     if not value or ctx.resilient_parsing:
         return
     from importlib.metadata import version  # noqa: PLC0415
@@ -62,8 +63,7 @@ def _print_version(
 
 
 def _get_base_url(url: str) -> str:
-    """Extracts the base URL from a full URL"""
-    from urllib.parse import urlparse  # noqa: PLC0415
+    """Extracts the base URL from a full URL."""
 
     parsed_url = urlparse(url)
     if parsed_url.scheme and parsed_url.netloc:
@@ -72,16 +72,16 @@ def _get_base_url(url: str) -> str:
 
 
 def _get_uri_path(url: str) -> str:
-    """Extracts the URI path from a full URL or returns the URL if it's already a path"""
-    from urllib.parse import urlparse  # noqa: PLC0415
+    """
+    Extracts the URI path from a full URL or returns the URL if it's already a
+    path.
+    """
 
     parsed_url = urlparse(url)
     if parsed_url.scheme and parsed_url.netloc:
         path = parsed_url.path
         if parsed_url.query:
             path += f"?{parsed_url.query}"
-        if parsed_url.fragment:
-            path += f"#{parsed_url.fragment}"
         return path
     return url
 
@@ -188,9 +188,9 @@ def spot(ctx: Context, url: str, **kwargs: dict) -> None:  # noqa: ARG001
             )
         )
     except JSONDecodeError as exc:
-        LOG.error(f"Could not parse the passed data. {exc}")  # noqa: G004
+        LOG.error("Could not parse the passed data. %s", exc)
     except Exception as exc:  # noqa: BLE001
-        LOG.error(f"Exception occurred: {exc}")  # noqa: G004
+        LOG.error("Exception occurred: %s", exc)
         sys.exit(1)
     else:
         echo(response)
@@ -266,9 +266,9 @@ def futures(ctx: Context, url: str, **kwargs: dict) -> None:  # noqa: ARG001
             )
         )
     except JSONDecodeError as exc:
-        LOG.error(f"Could not parse the passed data. {exc}")  # noqa: G004
+        LOG.error("Could not parse the passed data. %s", exc)
     except Exception as exc:  # noqa: BLE001
-        LOG.error(f"Exception occurred: {exc}")  # noqa: G004
+        LOG.error("Exception occurred: %s", exc)
         sys.exit(1)
     else:
         echo(response)

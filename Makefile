@@ -10,7 +10,7 @@ UV ?= uv
 PYTHON := python
 PYTEST := $(UV) run pytest
 PYTEST_OPTS := -vv --junit-xml=pytest.xml
-PYTEST_COV_OPTS := $(PYTEST_OPTS) --cov=kraken --cov-report=xml:coverage.xml --cov-report=term-missing
+PYTEST_COV_OPTS := $(PYTEST_OPTS) --cov=kraken --cov-report=xml:coverage.xml --cov-report=term-missing --cov-report=html
 TEST_DIR := tests
 
 ## ======= M A K E F I L E - T A R G E T S =====================================
@@ -92,11 +92,11 @@ doctest:
 	cd docs && make doctest
 
 ## ======= M I S C E L A N I O U S =============================================
-## pre-commit	Run the pre-commit targets
+## prek	Run the pre-commit targets
 ##
-.PHONY: pre-commit
-pre-commit:
-	@pre-commit run -a
+.PHONY: prek
+prek:
+	@prek run -a
 
 ## ruff           Run ruff without fix
 ##

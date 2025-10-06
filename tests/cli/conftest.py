@@ -10,6 +10,7 @@
 from __future__ import annotations
 
 import os
+from typing import Generator
 
 import pytest
 from click.testing import CliRunner
@@ -22,12 +23,23 @@ def cli_runner() -> CliRunner:
 
 
 @pytest.fixture
-def _with_cli_env_vars() -> None:
+def with_cli_env_vars() -> Generator:
     """Setup some environment variables for th CLI tests"""
-    os.environ["KRAKEN_SPOT_API_KEY"] = os.getenv("SPOT_API_KEY", "")
-    os.environ["KRAKEN_SPOT_SECRET_KEY"] = os.getenv("SPOT_SECRET_KEY", "")
-    os.environ["KRAKEN_FUTURES_API_KEY"] = os.getenv("FUTURES_API_KEY", "")
-    os.environ["KRAKEN_FUTURES_SECRET_KEY"] = os.getenv("FUTURES_SECRET_KEY", "")
+
+    if not all(
+        (
+            spot_api_key := os.getenv("SPOT_API_KEY"),
+            spot_secret_key := os.getenv("SPOT_SECRET_KEY"),
+            futures_api_key := os.getenv("FUTURES_API_KEY"),
+            futures_secret_key := os.getenv("FUTURES_SECRET_KEY"),
+        ),
+    ):
+        pytest.fail("No API keys provided for CLI tests!")
+
+    os.environ["KRAKEN_SPOT_API_KEY"] = spot_api_key
+    os.environ["KRAKEN_SPOT_SECRET_KEY"] = spot_secret_key
+    os.environ["KRAKEN_FUTURES_API_KEY"] = futures_api_key
+    os.environ["KRAKEN_FUTURES_SECRET_KEY"] = futures_secret_key
 
     yield
 

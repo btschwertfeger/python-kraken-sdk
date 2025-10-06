@@ -80,7 +80,7 @@ jobs:
           uv pip install $wheel -r requirements-dev.txt
 
       - name: Testing Spot REST endpoints
-        run: pytest -vv -m "spot and not spot_auth and not spot_websocket" tests
+        run: pytest -vv -x -m "spot and not spot_auth and not spot_websocket" tests
 
       - name: Testing Spot websocket endpoints
-        run: pytest -vv -m "spot and not spot_auth and spot_websocket" tests
+        run: pytest -vv -x -m "spot and not spot_auth and spot_websocket" tests
