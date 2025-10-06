@@ -15,7 +15,6 @@ from __future__ import annotations
 
 import asyncio
 import logging
-import logging.config
 import os
 import sys
 import traceback
