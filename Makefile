@@ -57,6 +57,7 @@ dev: check-uv
 .PHONY: test
 test:
 	@rm .cache/tests/*.log || true
+	./tests/cli/basic.sh
 	$(PYTEST) $(PYTEST_OPTS) $(TEST_DIR)
 
 .PHONY: tests
@@ -81,6 +82,7 @@ wip:
 .PHONY: coverage
 coverage:
 	@rm .cache/tests/*.log || true
+	./tests/cli/basic.sh
 	$(PYTEST) $(PYTEST_COV_OPTS) $(TEST_DIR)
 
 ## doctest	Run the documentation related tests
