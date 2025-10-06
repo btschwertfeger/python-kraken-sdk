@@ -67,7 +67,7 @@ def test_cli_spot_public(cli_runner: CliRunner, args: list[str]) -> None:
     assert result.exit_code == 0
 
 
-@pytest.mark.usefixtures("with_cli_env_vars")
+@pytest.mark.usefixtures("with_spot_secrets")
 @pytest.mark.spot
 @pytest.mark.spot_auth
 @pytest.mark.parametrize(
@@ -122,7 +122,7 @@ def test_cli_futures_public(cli_runner: CliRunner, args: list[str]) -> None:
     assert result.exit_code == 0
 
 
-@pytest.mark.usefixtures("with_cli_env_vars")
+@pytest.mark.usefixtures("with_futures_secrets")
 @pytest.mark.futures
 @pytest.mark.futures_auth
 @pytest.mark.parametrize(
