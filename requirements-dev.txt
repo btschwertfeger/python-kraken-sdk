@@ -5,3 +5,4 @@ pytest-cov
 pytest-mock
 pytest-retry
 pytest-timeout
+pytest-xdist

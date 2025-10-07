@@ -25,8 +25,8 @@ from __future__ import annotations
 
 import logging
 import sys
-from re import sub as re_sub
 from typing import TYPE_CHECKING, Any
+from urllib.parse import urlparse
 
 from click import echo
 from cloup import (
@@ -48,14 +48,42 @@ if TYPE_CHECKING:
 LOG: logging.Logger = logging.getLogger(__name__)
 
 
-def print_version(ctx: Context, param: Any, value: Any) -> None:  # noqa: ANN401, ARG001
-    """Prints the version of the package"""
+def _print_version(
+    ctx: Context,
+    param: Any,  # noqa: ANN401, ARG001
+    value: Any,  # noqa: ANN401
+) -> None:
+    """Prints the version of the package."""
     if not value or ctx.resilient_parsing:
         return
     from importlib.metadata import version  # noqa: PLC0415
 
     echo(version("python-kraken-sdk"))
     ctx.exit()
+
+
+def _get_base_url(url: str) -> str:
+    """Extracts the base URL from a full URL."""
+
+    parsed_url = urlparse(url)
+    if parsed_url.scheme and parsed_url.netloc:
+        return f"{parsed_url.scheme}://{parsed_url.netloc}"
+    return ""
+
+
+def _get_uri_path(url: str) -> str:
+    """
+    Extracts the URI path from a full URL or returns the URL if it's already a
+    path.
+    """
+
+    parsed_url = urlparse(url)
+    if parsed_url.scheme and parsed_url.netloc:
+        path = parsed_url.path
+        if parsed_url.query:
+            path += f"?{parsed_url.query}"
+        return path
+    return url
 
 
 @group(
@@ -76,7 +104,7 @@ def print_version(ctx: Context, param: Any, value: Any) -> None:  # noqa: ANN401
 @option(
     "--version",
     is_flag=True,
-    callback=print_version,
+    callback=_print_version,
     expose_value=False,
     is_eager=True,
 )
@@ -142,26 +170,27 @@ def spot(ctx: Context, url: str, **kwargs: dict) -> None:  # noqa: ARG001
     """Access the Kraken Spot REST API"""
     from kraken.base_api import SpotClient  # noqa: PLC0415
 
-    LOG.debug("Initialize the Kraken client")
     client = SpotClient(
         key=kwargs["api_key"],  # type: ignore[arg-type]
         secret=kwargs["secret_key"],  # type: ignore[arg-type]
+        url=_get_base_url(url),
     )
 
+    uri = _get_uri_path(url)
     try:
         response = (
             client.request(  # pylint: disable=protected-access,no-value-for-parameter
                 method=kwargs["x"],  # type: ignore[arg-type]
-                uri=(uri := re_sub(r"https://.*.com", "", url)),
+                uri=uri,
                 params=orloads(kwargs.get("data") or "{}"),
                 timeout=kwargs["timeout"],  # type: ignore[arg-type]
                 auth="private" in uri.lower(),
             )
         )
     except JSONDecodeError as exc:
-        LOG.error(f"Could not parse the passed data. {exc}")  # noqa: G004
+        LOG.error("Could not parse the passed data. %s", exc)
     except Exception as exc:  # noqa: BLE001
-        LOG.error(f"Exception occurred: {exc}")  # noqa: G004
+        LOG.error("Exception occurred: %s", exc)
         sys.exit(1)
     else:
         echo(response)
@@ -218,17 +247,18 @@ def futures(ctx: Context, url: str, **kwargs: dict) -> None:  # noqa: ARG001
     """Access the Kraken Futures REST API"""
     from kraken.base_api import FuturesClient  # noqa: PLC0415
 
-    LOG.debug("Initialize the Kraken client")
     client = FuturesClient(
         key=kwargs["api_key"],  # type: ignore[arg-type]
         secret=kwargs["secret_key"],  # type: ignore[arg-type]
+        url=_get_base_url(url),
     )
 
+    uri = _get_uri_path(url)
     try:
         response = (
             client.request(  # pylint: disable=protected-access,no-value-for-parameter
                 method=kwargs["x"],  # type: ignore[arg-type]
-                uri=(uri := re_sub(r"https://.*.com", "", url)),
+                uri=uri,
                 post_params=orloads(kwargs.get("data") or "{}"),
                 query_params=orloads(kwargs.get("query") or "{}"),
                 timeout=kwargs["timeout"],  # type: ignore[arg-type]
@@ -236,9 +266,9 @@ def futures(ctx: Context, url: str, **kwargs: dict) -> None:  # noqa: ARG001
             )
         )
     except JSONDecodeError as exc:
-        LOG.error(f"Could not parse the passed data. {exc}")  # noqa: G004
+        LOG.error("Could not parse the passed data. %s", exc)
     except Exception as exc:  # noqa: BLE001
-        LOG.error(f"Exception occurred: {exc}")  # noqa: G004
+        LOG.error("Exception occurred: %s", exc)
         sys.exit(1)
     else:
         echo(response)

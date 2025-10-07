@@ -100,10 +100,10 @@ jobs:
           SPOT_SECRET_KEY: ${{ secrets.SPOT_SECRET_KEY }}
           XSTOCKS_API_KEY: ${{ secrets.XSTOCKS_API_KEY }}
           XSTOCKS_SECRET_KEY: ${{ secrets.XSTOCKS_SECRET_KEY }}
-        run: pytest -vv -m "spot and spot_auth and not spot_websocket" tests
+        run: pytest -vv -x -m "spot and spot_auth and not spot_websocket" tests
 
       - name: Testing Spot websocket client
         env:
           SPOT_API_KEY: ${{ secrets.SPOT_API_KEY }}
           SPOT_SECRET_KEY: ${{ secrets.SPOT_SECRET_KEY }}
-        run: pytest -vv -m "spot and spot_auth and spot_websocket" tests
+        run: pytest -vv -x -m "spot and spot_auth and spot_websocket" tests
