@@ -50,7 +50,7 @@ jobs:
           python-version: ${{ inputs.python-version }}
 
       - name: Install uv
-        uses: astral-sh/setup-uv@v6
+        uses: astral-sh/setup-uv@v7
 
       - name: Check git status (not Windows)
         if: runner.os != 'Windows'
@@ -102,7 +102,7 @@ jobs:
           }
 
       - name: Store the distribution packages
-        uses: actions/upload-artifact@65462800fd760344b1a7b4382951275a0abb4808 # v4.3.3
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
         # upload artifacts with the oldest supported version
         if: runner.os == 'linux' && inputs.python-version == '3.11'
         with:
