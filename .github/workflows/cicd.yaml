@@ -45,6 +45,8 @@
 #             live account to not risk any funds during testing! The
 #             demo/sandbox account requires full permissions.
 #
+# NOTE: Some jobs are run only against the oldest and latest supported Python to
+#       reduce CI time as trade-offs have to be made.
 
 name: CI/CD
 
@@ -87,7 +89,7 @@ jobs:
       fail-fast: true
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
-        python-version: ["3.11", "3.12", "3.13"]
+        python-version: ["3.11", "3.14"]
     with:
       os: ${{ matrix.os }}
       python-version: ${{ matrix.python-version }}
@@ -114,7 +116,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest]
-        python-version: ["3.11", "3.12", "3.13"]
+        python-version: ["3.11", "3.14"]
     with:
       os: ${{ matrix.os }}
       python-version: ${{ matrix.python-version }}
@@ -131,7 +133,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest]
-        python-version: ["3.11", "3.13"] # not testing 3.12 to reduce CI time
+        python-version: ["3.11", "3.14"]
     with:
       os: ${{ matrix.os }}
       python-version: ${{ matrix.python-version }}
@@ -148,7 +150,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest]
-        python-version: ["3.11", "3.12", "3.13"]
+        python-version: ["3.11", "3.14"]
     with:
       os: ${{ matrix.os }}
       python-version: ${{ matrix.python-version }}
@@ -165,7 +167,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest]
-        python-version: ["3.11", "3.12", "3.13"]
+        python-version: ["3.11", "3.14"]
     with:
       os: ${{ matrix.os }}
       python-version: ${{ matrix.python-version }}
