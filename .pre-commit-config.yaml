@@ -7,7 +7,7 @@
 
 repos:
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.13.3
+    rev: v0.14.6
     hooks:
       - id: ruff-check
         args:
@@ -31,7 +31,7 @@ repos:
           - --install-types
           - --non-interactive
   - repo: https://github.com/gitleaks/gitleaks
-    rev: v8.28.0
+    rev: v8.29.1
     hooks:
       - id: gitleaks
   - repo: https://github.com/codespell-project/codespell
@@ -72,7 +72,7 @@ repos:
       - id: rst-inline-touching-normal
       - id: text-unicode-replacement-char
   - repo: https://github.com/psf/black
-    rev: 25.9.0
+    rev: 25.11.0
     hooks:
       - id: black
   - repo: https://github.com/rbubley/mirrors-prettier
@@ -80,13 +80,13 @@ repos:
     hooks:
       - id: prettier
   - repo: https://github.com/PyCQA/isort # TODO: remove as soon as ruff is stable
-    rev: 6.1.0
+    rev: 7.0.0
     hooks:
       - id: isort
         args:
           - --profile=black
   - repo: https://github.com/PyCQA/bandit
-    rev: 1.8.6
+    rev: 1.9.1
     hooks:
       - id: bandit
         exclude: "^tests/.*|examples/.*"

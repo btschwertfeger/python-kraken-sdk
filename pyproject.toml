@@ -79,8 +79,6 @@ local_scheme = "no-local-version"
 [tool.pytest]
 junit_family = "xunit2"
 testpaths = ["tests"]
-
-[tool.pytest.ini_options]
 cache_dir = ".cache/pytest"
 
 # Retrying tests once, as we're testing against lots of API endpoints, the tests
