@@ -96,6 +96,7 @@ class Trade(SpotClient):
         close_price2: str | float | None = None,
         deadline: str | None = None,
         userref: int | None = None,
+        cl_ord_id: str | None = None,
         *,
         truncate: bool = False,
         reduce_only: bool | None = False,
@@ -190,6 +191,8 @@ class Trade(SpotClient):
         :type validate: bool, optional
         :param userref: User reference id for example to group orders
         :type userref: int, optional
+        :param cl_ord_id: Client order id (optional)
+        :type cl_ord_id: str, optional
         :raises ValueError: If input is not correct
         :return: The transaction id
         :rtype: dict
@@ -400,6 +403,8 @@ class Trade(SpotClient):
             params["deadline"] = deadline
         if defined(userref):
             params["userref"] = userref
+        if defined(cl_ord_id):
+            params["cl_ord_id"] = cl_ord_id
         if defined(displayvol):
             params["displayvol"] = str(displayvol)
 
@@ -456,6 +461,7 @@ class Trade(SpotClient):
             ...             "timeinforce": "GTC",
             ...             "type": "buy",
             ...             "userref": 16861348843,
+            ...             "cl_ord_id": "my-client-order-id-1",
             ...             "volume": 1,
             ...         },
             ...         {
@@ -464,6 +470,7 @@ class Trade(SpotClient):
             ...             "timeinforce": "GTC",
             ...             "type": "sell",
             ...             "userref": 16861348843,
+            ...             "cl_ord_id": "my-client-order-id-2",
             ...             "volume": 2,
             ...         },
             ...     ],
@@ -491,8 +498,17 @@ class Trade(SpotClient):
             extra_params=extra_params,
         )
 
-    def amend_order(
+    def amend_order(  # pylint: disable=too-many-arguments # noqa: PLR0913, PLR0917
         self: Trade,
+        txid: str | None = None,
+        cl_ord_id: str | None = None,
+        order_qty: str | float | None = None,
+        display_qty: str | float | None = None,
+        limit_price: str | float | None = None,
+        trigger_price: str | float | None = None,
+        post_only: bool | None = None,
+        userref: int | None = None,
+        validate: bool = False,
         *,
         extra_params: dict | None = None,
     ) -> dict:
@@ -504,6 +520,28 @@ class Trade(SpotClient):
 
         - https://docs.kraken.com/api/docs/rest-api/amend-order
 
+        :param txid: The txid of the order to edit
+        :type txid: str, optional
+        :param cl_ord_id: Client order id (optional)
+        :type cl_ord_id: str, optional
+        :param order_qty: Set a new order quantity
+        :type order_qty: str | float, optional
+        :param display_qty: Set a new display quantity
+        :type display_qty: str | float, optional
+        :param limit_price: Set a new limit price
+        :type limit_price: str | float, optional
+        :param trigger_price: Set a new trigger price
+        :type trigger_price: str | float, optional
+        :param post_only: Set post-only flag
+        :type post_only: bool, optional
+        :param userref: User reference id for example to group orders
+        :type userref: int, optional
+        :param validate: Validate the order without placing on the market (default: ``False``)
+        :type validate: bool, optional
+        :raises ValueError: If both ``txid`` and ``cl_ord_id`` are not set
+        :return: Success or failure
+        :rtype: dict
+
         .. code-block:: python
             :linenos:
             :caption: Spot Trade: Amend order
@@ -511,15 +549,35 @@ class Trade(SpotClient):
             >>> from kraken.spot import Trade
             >>> trade = Trade(key="api-key", secret="secret-key")
             >>> trade.amend_order(
-            ...     extra_params={
-            ...         "txid": "OVM3PT-56ACO-53SM2T",
-            ...         "limit_price": "105636.9",
-            ...     }
+            ...     txid="OVM3PT-56ACO-53SM2T",
+            ...     limit_price="105636.9"
             ... )
         """
+        params: dict = {"validate": validate}
+        if defined(txid):
+            params["txid"] = txid
+        if defined(cl_ord_id):
+            params["cl_ord_id"] = cl_ord_id
+        if not defined(txid) and not defined(cl_ord_id):
+            raise ValueError("Either txid or cl_ord_id must be set!")
+
+        if defined(order_qty):
+            params["order_qty"] = str(order_qty)
+        if defined(display_qty):
+            params["display_qty"] = str(display_qty)
+        if defined(limit_price):
+            params["limit_price"] = str(limit_price)
+        if defined(trigger_price):
+            params["trigger_price"] = str(trigger_price)
+        if defined(post_only):
+            params["post_only"] = post_only
+        if defined(userref):
+            params["userref"] = userref
+
         return self.request(  # type: ignore[return-value]
             "POST",
             uri="/0/private/AmendOrder",
+            params=params,
             extra_params=extra_params,
         )
 
@@ -535,6 +593,7 @@ class Trade(SpotClient):
         deadline: str | None = None,
         cancel_response: bool | None = None,  # noqa: FBT001
         userref: int | None = None,
+        cl_ord_id: str | None = None,
         *,
         truncate: bool = False,
         validate: bool = False,
@@ -573,6 +632,8 @@ class Trade(SpotClient):
         :type validate: bool, optional
         :param userref: User reference id for example to group orders
         :type userref: int
+        :param cl_ord_id: Client order id (optional)
+        :type cl_ord_id: str, optional
         :return: Success or failure
         :rtype: dict
 
@@ -602,6 +663,8 @@ class Trade(SpotClient):
         params: dict = {"txid": txid, "pair": pair, "validate": validate}
         if defined(userref):
             params["userref"] = userref
+        if defined(cl_ord_id):
+            params["cl_ord_id"] = cl_ord_id
         if defined(volume):
             params["volume"] = (
                 str(volume)
@@ -632,21 +695,24 @@ class Trade(SpotClient):
     @ensure_string("txid")
     def cancel_order(
         self: Trade,
-        txid: str,
+        txid: str | None = None,
+        cl_ord_id: str | None = None,
         *,
         extra_params: dict | None = None,
     ) -> dict:
         """
         Cancel a specific order by ``txid``. Instead of a transaction id
-        a user reference id can be passed.
+        a user reference id or client order id can be passed.
 
         Requires the ``Cancel/close orders`` permission in
         the API key settings.
 
         - https://docs.kraken.com/api/docs/rest-api/cancel-order
 
-        :param txid: Transaction id or comma delimited list of user reference ids to cancel.
-        :type txid: str
+        :param txid: Transaction id, client order id, or comma delimited list of user reference ids to cancel.
+        :type txid: str, optional
+        :param cl_ord_id: Client order id (optional)
+        :type cl_ord_id: str, optional
         :return: Success or failure - Number of closed orders
         :rtype: dict
 
@@ -659,10 +725,18 @@ class Trade(SpotClient):
             >>> trade.cancel_order(txid="OAUHYR-YCVK6-P22G6P")
             { 'count': 1 }
         """
+        params: dict = {}
+        if defined(txid):
+            params["txid"] = txid
+        elif defined(cl_ord_id):
+            params["txid"] = cl_ord_id
+        else:
+            raise ValueError("Either txid or cl_ord_id must be set!")
+
         return self.request(  # type: ignore[return-value]
             method="POST",
             uri="/0/private/CancelOrder",
-            params={"txid": txid},
+            params=params,
             extra_params=extra_params,
         )
 
@@ -742,7 +816,7 @@ class Trade(SpotClient):
         extra_params: dict | None = None,
     ) -> dict:
         """
-        Cancel a a list of orders by ``txid`` or ``userref``
+        Cancel a list of orders by ``txid``, ``userref`` or ``cl_ord_id``.
 
         Requires the ``Cancel/close orders`` permission in
         the API key settings.
