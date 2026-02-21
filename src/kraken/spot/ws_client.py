@@ -253,6 +253,7 @@ class SpotWSClient(SpotWSClientBase):
             ...             "order_qty": 1.0,
             ...             "side": "buy",
             ...             "symbol": "BTC/USD",
+            ...             "cl_ord_id": "my-client-order-id"
             ...         },
             ...     }
             ... )
@@ -275,6 +276,7 @@ class SpotWSClient(SpotWSClientBase):
             ...                     "order_qty": 1,
             ...                     "order_type": "limit",
             ...                     "order_userref": 123456789,
+            ...                     "cl_ord_id": "my-client-order-id-1",
             ...                     "side": "buy",
             ...                 },
             ...                 {
@@ -282,6 +284,7 @@ class SpotWSClient(SpotWSClientBase):
             ...                     "order_qty": 2.12345,
             ...                     "order_type": "limit",
             ...                     "order_userref": 212345679,
+            ...                     "cl_ord_id": "my-client-order-id-2",
             ...                     "side": "sell",
             ...                     "stp_type": "cancel_both",
             ...                 },
@@ -307,7 +310,8 @@ class SpotWSClient(SpotWSClientBase):
             ...             "orders": [
             ...                 "123456789",
             ...                 "212345679",
-            ...                 "ORDER-ID123-4567890"
+            ...                 "ORDER-ID123-4567890",
+            ...                 "my-client-order-id"
             ...             ],
             ...         },
             ...     }
@@ -356,25 +360,26 @@ class SpotWSClient(SpotWSClientBase):
             ...     message={
             ...         "method": "cancel_order",
             ...         "params": {
-            ...             "order_id": ["ORDER-ID123-456789", "ORDER-ID123-987654"],
+            ...             "order_id": ["ORDER-ID123-456789", "my-client-order-id"],
             ...         },
             ...     }
             ... )
 
-        **Editing orders** can be done as shown in the example below. See
-        https://docs.kraken.com/api/docs/websocket-v2/edit_order for more information.
+        **Amending orders** can be done as shown in the example below. See
+        https://docs.kraken.com/api/docs/websocket-v2/amend_order for more information.
 
         .. code-block:: python
             :linenos:
-            :caption: Spot Websocket: Cancel order(s)
+            :caption: Spot Websocket: Amend order
 
             >>> await client_auth.send_message(
             ...     message={
-            ...         "method": "edit_order",
+            ...         "method": "amend_order",
             ...         "params": {
             ...             "order_id": "ORDER-ID123-456789",
             ...             "order_qty": 2.5,
             ...             "symbol": "BTC/USD",
+            ...             "cl_ord_id": "my-client-order-id"
             ...         },
             ...     }
             ... )
@@ -586,7 +591,7 @@ class SpotWSClient(SpotWSClientBase):
         June 2023):
 
         - `add_order <https://docs.kraken.com/api/docs/websocket-v2/add_order>`_
-        - `amend_order` <https://docs.kraken.com/api/docs/websocket-v2/amend_order>`_
+        - `amend_order <https://docs.kraken.com/api/docs/websocket-v2/amend_order>`_
         - `cancel_order <https://docs.kraken.com/api/docs/websocket-v2/cancel_order>`_
         - `cancel_all <https://docs.kraken.com/api/docs/websocket-v2/cancel_all>`_
         - `cancel_all_orders_after <https://docs.kraken.com/api/docs/websocket-v2/cancel_after>`_
