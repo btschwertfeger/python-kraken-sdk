@@ -1,4 +1,7 @@
-# sphinx-rtd-theme
+# Note: This file is only used by the documentation build process, and is not
+# intended to be used as a general requirements file for the project. It may
+# contain dependencies that are only needed for building the documentation, and
+# may not be suitable for use in a production environment.
 aiohttp
 asyncio>=3.4
 click~=8.1

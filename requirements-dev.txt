@@ -1,3 +1,5 @@
+-e .
+-r docrequirements.txt
 proxy.py
 pytest
 pytest-asyncio
