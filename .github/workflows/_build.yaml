@@ -27,7 +27,7 @@ jobs:
     runs-on: ${{ inputs.os }}
     steps:
       - name: Harden Runner
-        uses: step-security/harden-runner@e3f713f2d8f53843e71c69a996d56f51aa9adfb9 # v2.14.1
+        uses: step-security/harden-runner@a90bcbc6539c36a85cdfeb73f7e2f433735f215b # v2.15.0
         with:
           disable-sudo: true
           egress-policy: block
@@ -102,7 +102,7 @@ jobs:
           }
 
       - name: Store the distribution packages
-        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
         # upload artifacts with the oldest supported version
         if: runner.os == 'linux' && inputs.python-version == '3.11'
         with:
