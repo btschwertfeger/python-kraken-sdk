@@ -7,11 +7,11 @@
 #
 
 UV ?= uv
-PYTHON := python
-PYTEST := $(UV) run pytest
-PYTEST_OPTS := -vv --junit-xml=pytest.xml
-PYTEST_COV_OPTS := $(PYTEST_OPTS) --cov=kraken --cov-report=xml:coverage.xml --cov-report=term-missing --cov-report=html
-TEST_DIR := tests
+PYTHON ?= python
+PYTEST ?= $(UV) run pytest
+PYTEST_OPTS ?= -vv --junit-xml=pytest.xml
+PYTEST_COV_OPTS ?= $(PYTEST_OPTS) --cov=kraken --cov-report=xml:coverage.xml --cov-report=term-missing --cov-report=html
+TEST_DIR ?= tests
 
 ## ======= M A K E F I L E - T A R G E T S =====================================
 ## help           Show this help message
@@ -136,7 +136,8 @@ clean:
 		dist/ \
 		doc/_build \
 		src/python_kraken_sdk.egg-info \
-	    build/
+	    build/ \
+		htmlcov/
 
 	rm -f .coverage \
 		*.csv \
@@ -146,7 +147,8 @@ clean:
 		src/kraken/_version.py \
 		mypy.xml \
 		pytest.xml \
-		tests/*.zip
+		tests/*.zip \
+		uv.lock
 
 	find tests -name "__pycache__" | xargs rm -rf
 	find src -name "__pycache__" | xargs rm -rf

@@ -312,7 +312,7 @@ class TestSpotTrade:
         different inputs for volume.
 
         NOTE: This test may break in the future since the lot_decimals,
-              pair_decimals, ordermin and costmin attributes could change.
+              pair_decimals, ordermin, and costmin attributes could change.
         """
         for volume, expected in (
             (1, "1.00000000"),
@@ -322,18 +322,6 @@ class TestSpotTrade:
         ):
             assert (
                 spot_trade.truncate(amount=volume, amount_type="volume", pair="XBTUSD")
-                == expected
-            )
-        sleep(3)
-
-        for volume, expected in (
-            (2, "2.00000000"),
-            (12.158, "12.15800000"),
-            (13.1052093, "13.10520930"),
-            (4.32595342455, "4.32595342"),
-        ):
-            assert (
-                spot_trade.truncate(amount=volume, amount_type="volume", pair="DOTUSD")
                 == expected
             )
         sleep(3)

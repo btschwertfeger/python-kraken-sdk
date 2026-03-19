@@ -12,6 +12,7 @@ client.
 
 from __future__ import annotations
 
+import contextlib
 import json
 import logging
 from pathlib import Path
@@ -99,14 +100,8 @@ class SpotOrderBookClientWrapper(SpotOrderBookClient):
         cls.LOG.info(json.dumps(content))
 
         log: str = ""
-        try:
-            with Path(CACHE_DIR / "spot_orderbook-2.log").open(
-                mode="r",
-                encoding="utf-8",
-            ) as logfile:
-                log = logfile.read()
-        except FileNotFoundError:
-            pass
+        with contextlib.suppress(FileNotFoundError):
+            log = Path(CACHE_DIR / "spot_orderbook-2.log").read_text(encoding="utf-8")
 
         with Path(CACHE_DIR / "spot_orderbook.log").open(
             mode="a",

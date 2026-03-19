@@ -66,7 +66,7 @@ class TestSpotOrderBook:
         Checks the ``get_first`` method.
         """
         assert (
-            float(10)
+            float(10)  # noqa: RUF069
             == SpotOrderBookClientWrapper.get_first(("10", "5"))
             == SpotOrderBookClientWrapper.get_first((10, 5))
         )
@@ -161,9 +161,9 @@ class TestSpotOrderBook:
         asyncio.run(execute_add_book())
 
         for expected in (
-            '{"method": "subscribe", "result": {"channel": "book", "depth": 10, '
+            '{"method": "subscribe", "result": {"channel": "book", "depth": 10, '  # noqa: ISC004
             '"snapshot": true, "symbol": "BTC/USD"}, "success": true, "time_in": ',
-            '{"channel": "book", "type": "snapshot", "data": '
+            '{"channel": "book", "type": "snapshot", "data": '  # noqa: ISC004
             '[{"symbol": "BTC/USD", "bids": ',
         ):
             assert expected in caplog.text

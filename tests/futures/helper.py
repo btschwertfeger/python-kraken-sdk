@@ -7,6 +7,7 @@
 
 from __future__ import annotations
 
+import contextlib
 import logging
 from pathlib import Path
 
@@ -61,17 +62,12 @@ class FuturesWebsocketClientTestWrapper(FuturesWSClient):
         self.LOG.info(message)  # the log is read within the tests
 
         log: str = ""
-        try:
-            with Path(CACHE_DIR / "futures_ws.log").open(
-                mode="r",
+        with contextlib.suppress(FileNotFoundError):
+            log = Path(CACHE_DIR / "futures_ws.log").read_text(  # noqa: ASYNC240
                 encoding="utf-8",
-            ) as logfile:
-                log = logfile.read()
-        except FileNotFoundError:
-            pass
+            )
 
-        with Path(CACHE_DIR / "futures_ws.log").open(
-            mode="w",
+        Path(CACHE_DIR / "futures_ws.log").write_text(  # noqa: ASYNC240
+            f"{log}\n{message}",
             encoding="utf-8",
-        ) as logfile:
-            logfile.write(f"{log}\n{message}")
+        )
