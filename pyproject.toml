@@ -263,6 +263,7 @@ ignore = [
   "E203",     # Whitespace before ':' # false positive on list slices
   "PLR6301",  # Method `…` could be a function or static method # false positive for no-self-use
   "RUF022",   # `__all__` is not sorted
+  "RUF067", # __init__ doing more than docs and re-exports
 ]
 
 task-tags = ["todo", "TODO", "fixme", "FIXME"]

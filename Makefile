@@ -136,7 +136,8 @@ clean:
 		dist/ \
 		doc/_build \
 		src/python_kraken_sdk.egg-info \
-	    build/
+	    build/ \
+		htmlcov/
 
 	rm -f .coverage \
 		*.csv \
@@ -146,7 +147,8 @@ clean:
 		src/kraken/_version.py \
 		mypy.xml \
 		pytest.xml \
-		tests/*.zip
+		tests/*.zip \
+		uv.lock
 
 	find tests -name "__pycache__" | xargs rm -rf
 	find src -name "__pycache__" | xargs rm -rf

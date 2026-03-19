@@ -102,8 +102,8 @@ async def main() -> None:
             await asyncio.sleep(6)
     finally:
         # Close the sessions properly.
-        for _client in clients:
-            await _client.close()
+        for open_client in clients:
+            await open_client.close()
 
 
 if __name__ == "__main__":
