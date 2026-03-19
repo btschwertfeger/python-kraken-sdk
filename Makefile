@@ -7,11 +7,11 @@
 #
 
 UV ?= uv
-PYTHON := python
-PYTEST := $(UV) run pytest
-PYTEST_OPTS := -vv --junit-xml=pytest.xml
-PYTEST_COV_OPTS := $(PYTEST_OPTS) --cov=kraken --cov-report=xml:coverage.xml --cov-report=term-missing --cov-report=html
-TEST_DIR := tests
+PYTHON ?= python
+PYTEST ?= $(UV) run pytest
+PYTEST_OPTS ?= -vv --junit-xml=pytest.xml
+PYTEST_COV_OPTS ?= $(PYTEST_OPTS) --cov=kraken --cov-report=xml:coverage.xml --cov-report=term-missing --cov-report=html
+TEST_DIR ?= tests
 
 ## ======= M A K E F I L E - T A R G E T S =====================================
 ## help           Show this help message
