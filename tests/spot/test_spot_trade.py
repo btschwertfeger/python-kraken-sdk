@@ -27,6 +27,7 @@ class TestSpotTrade:
     TEST_PAIR_DOTUSD = "DOTUSD"
     TEST_TXID = "OHYO67-6LP66-HMQ437"
     TEST_USERREF = "12345678"
+    TEST_CL_ORD_ID = "12345678"
 
     @pytest.mark.spot_auth
     def test_create_order(self: Self, spot_auth_trade: Trade) -> None:
@@ -45,6 +46,7 @@ class TestSpotTrade:
                 pair=self.TEST_PAIR_BTCEUR,
                 price=1.001,  # this also checks the truncate option
                 timeinforce="GTC",
+                userref=self.TEST_USERREF,
                 truncate=True,
                 validate=True,  # important to just test this endpoint without risking money
             )
@@ -62,6 +64,7 @@ class TestSpotTrade:
                 price=100,
                 expiretm="0",
                 displayvol=1000,
+                cl_ord_id=self.TEST_CL_ORD_ID,
                 validate=True,  # important to just test this endpoint without risking money
             )
 
@@ -151,6 +154,7 @@ class TestSpotTrade:
                         "timeinforce": "GTC",
                         "type": "buy",
                         "userref": 1680953421,
+                        "cl_ord_id": self.TEST_CL_ORD_ID,
                         "volume": 1000,
                     },
                     {
@@ -191,6 +195,7 @@ class TestSpotTrade:
                 validate=True,  # important
             )
 
+
     @pytest.mark.spot_auth
     def test_amend_order(self: Self, spot_auth_trade: Trade) -> None:
         """
@@ -204,10 +209,17 @@ class TestSpotTrade:
             match=r"API key doesn't have permission to make this request.",
         ):
             spot_auth_trade.amend_order(
-                extra_params={
-                    "txid": "OVM3PT-56ACO-53SM2T",
-                    "limit_price": "105636.9",
-                },
+                txid="OVM3PT-56ACO-53SM2T",
+                limit_price="105636.9",
+            )
+
+        with pytest.raises(
+            KrakenPermissionDeniedError,
+            match=r"API key doesn't have permission to make this request.",
+        ):
+            spot_auth_trade.amend_order(
+                cl_ord_id=self.TEST_CL_ORD_ID,
+                limit_price="105636.9",
             )
 
     @pytest.mark.spot_auth
@@ -223,6 +235,15 @@ class TestSpotTrade:
             match=r"API key doesn't have permission to make this request.",
         ):
             spot_auth_trade.cancel_order(txid="OB6JJR-7NZ5P-N5SKCB")
+
+        with pytest.raises(
+            KrakenPermissionDeniedError,
+            match=r"API key doesn't have permission to make this request.",
+        ):
+            spot_auth_trade.cancel_order(cl_ord_id="my-client-order-id")
+
+        with pytest.raises(ValueError, match=r"Either txid or cl_ord_id must be set!"):
+            spot_auth_trade.cancel_order()
 
     @pytest.mark.spot_auth
     @pytest.mark.skip(reason="Test do not have trade/cancel permission")

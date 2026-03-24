@@ -93,7 +93,11 @@ class TestSpotUser:
         """
         assert is_not_error(spot_auth_user.get_open_orders(trades=True))
         assert is_not_error(
-            spot_auth_user.get_open_orders(trades=False, userref="1234567"),
+            spot_auth_user.get_open_orders(
+                trades=False,
+                userref="1234567",
+                cl_ord_id="1234567",
+            ),
         )
 
     def test_get_closed_orders(self: Self, spot_auth_user: User) -> None:
@@ -103,7 +107,11 @@ class TestSpotUser:
         """
         assert is_not_error(spot_auth_user.get_closed_orders())
         assert is_not_error(
-            spot_auth_user.get_closed_orders(trades=True, userref="1234"),
+            spot_auth_user.get_closed_orders(
+                trades=True,
+                userref="1234",
+                cl_ord_id="1234",
+            ),
         )
         assert is_not_error(
             spot_auth_user.get_closed_orders(trades=True, start="1668431675.4778206"),
@@ -162,6 +170,7 @@ class TestSpotUser:
             (
                 {"txid": "OXBBSK-EUGDR-TDNIEQ"},
                 {"txid": "OXBBSK-EUGDR-TDNIEQ", "trades": True},
+                {"txid": "OQQYNL-FXCFA-FBFVD7", "cl_ord_id": "1234567"},
                 {"txid": "OQQYNL-FXCFA-FBFVD7", "consolidate_taker": True},
                 {"txid": ["OE3B4A-NSIEQ-5L6HW3", "O23GOI-WZDVD-XWGC3R"]},
             ),
