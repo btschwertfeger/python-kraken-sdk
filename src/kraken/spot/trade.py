@@ -545,8 +545,6 @@ class Trade(SpotClient):
         :param deadline: RFC3339 timestamp after which the matching engine
             rejects the request
         :type deadline: str, optional
-        :raises kraken.exceptions.KrakenInvalidArgumentsError: If neither
-            ``txid`` nor ``cl_ord_id`` is set
         :return: Success or failure
         :rtype: dict
 
@@ -697,7 +695,6 @@ class Trade(SpotClient):
             extra_params=extra_params,
         )
 
-    @ensure_string("cl_ord_id")
     def cancel_order(
         self: Trade,
         txid: str | int | None = None,
@@ -718,8 +715,6 @@ class Trade(SpotClient):
         :type txid: str | int, optional
         :param cl_ord_id: Client order id to cancel
         :type cl_ord_id: str, optional
-        :raises kraken.exceptions.KrakenInvalidArgumentsError: If neither
-            ``txid`` nor ``cl_ord_id`` is set
         :return: Success or failure - Number of closed orders
         :rtype: dict
 
