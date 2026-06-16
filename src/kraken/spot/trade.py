@@ -153,7 +153,8 @@ class Trade(SpotClient):
             information)
         :type oflags: str | list[str], optional
         :param timeinforce: how long the order remains in the orderbook, one of:
-            ``GTC``, ``IOC``, ``GTD`` (see the referenced Kraken documentation
+            ``GTC``, ``IOC``, ``GTD``, ``FOK`` (see the referenced Kraken
+            documentation
             for more information)
         :type timeinforce: str, optional
         :param displayvol: Define how much of the volume is visible in the
