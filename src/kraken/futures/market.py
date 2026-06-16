@@ -84,7 +84,7 @@ class Market(FuturesClient):
         self: Market,
         tick_type: str,
         symbol: str,
-        resolution: int,
+        resolution: str,
         from_: int | None = None,
         to: int | None = None,
         *,
@@ -136,7 +136,7 @@ class Market(FuturesClient):
         resolutions: tuple = ("1m", "5m", "15m", "30m", "1h", "4h", "12h", "1d", "1w")
         if tick_type not in tick_types:
             raise ValueError(f"tick_type must be in {tick_types}")
-        if resolution is not None and resolution not in resolutions:
+        if resolution not in resolutions:
             raise ValueError(f"resolution must be in {resolutions}")
 
         params: dict = {}
