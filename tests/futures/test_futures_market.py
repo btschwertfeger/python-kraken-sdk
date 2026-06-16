@@ -106,18 +106,24 @@ class TestFuturesMarket:
 
     def test_get_fee_schedules(self: Self, futures_market: Market) -> None:
         """
-        Checks the ``get_fee_schedules`` endpoint.
+        Checks the ``get_fee_schedules`` endpoint and that it raises a
+        deprecation warning.
         """
-        self._assert_successful_response(futures_market.get_fee_schedules())
+        with pytest.warns(DeprecationWarning, match="deprecated"):
+            self._assert_successful_response(futures_market.get_fee_schedules())
 
     @pytest.mark.futures
     @pytest.mark.futures_auth
     @pytest.mark.futures_market
     def test_get_fee_schedules_vol(self: Self, futures_auth_market: Market) -> None:
         """
-        Checks the ``get_fee_schedules_vol`` endpoint.
+        Checks the ``get_fee_schedules_vol`` endpoint and that it raises a
+        deprecation warning.
         """
-        self._assert_successful_response(futures_auth_market.get_fee_schedules_vol())
+        with pytest.warns(DeprecationWarning, match="deprecated"):
+            self._assert_successful_response(
+                futures_auth_market.get_fee_schedules_vol(),
+            )
 
     def test_get_orderbook(self: Self, futures_market: Market) -> None:
         """
