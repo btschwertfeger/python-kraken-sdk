@@ -31,7 +31,7 @@ dependencies = [
   "orjson",
   "aiohttp",
 ]
-keywords = ["crypto", "trading", "kraken", "exchange", "api", "sdk", "kraken crypto asset exchange", "automation",]
+keywords = ["crypto", "trading", "kraken", "exchange", "api", "sdk", "automation"]
 classifiers = [
   "Development Status :: 5 - Production/Stable",
   "Framework :: AsyncIO",
