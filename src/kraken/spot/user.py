@@ -252,6 +252,7 @@ class User(SpotClient):
     def get_open_orders(
         self: User,
         userref: int | None = None,
+        cl_ord_id: str | None = None,
         *,
         trades: bool | None = False,
         extra_params: dict | None = None,
@@ -266,6 +267,8 @@ class User(SpotClient):
 
         :param userref: Filter the results by user reference id
         :type userref: int, optional
+        :param cl_ord_id: Filter the results by client order id
+        :type cl_ord_id: str, optional
         :param trades: Include trades related to position or not into the
             response (default: ``False``)
         :type trades: bool
@@ -316,6 +319,8 @@ class User(SpotClient):
         params: dict = {"trades": trades}
         if defined(userref):
             params["userref"] = userref
+        if defined(cl_ord_id):
+            params["cl_ord_id"] = cl_ord_id
         return self.request(  # type: ignore[return-value]
             method="POST",
             uri="/0/private/OpenOrders",
@@ -330,6 +335,7 @@ class User(SpotClient):
         end: int | None = None,
         ofs: int | None = None,
         closetime: str | None = "both",
+        cl_ord_id: str | None = None,
         *,
         trades: bool | None = False,
         extra_params: dict | None = None,
@@ -344,6 +350,8 @@ class User(SpotClient):
 
         :param userref: Filter the results by user reference id
         :type userref: int, optional
+        :param cl_ord_id: Filter the results by client order id
+        :type cl_ord_id: str, optional
         :param start: Unix timestamp to start the search from
         :type start: int, optional
         :param end: Unix timestamp to define the last result to include
@@ -404,6 +412,8 @@ class User(SpotClient):
         params: dict = {"trades": trades, "closetime": closetime}
         if defined(userref):
             params["userref"] = userref
+        if defined(cl_ord_id):
+            params["cl_ord_id"] = cl_ord_id
         if defined(start):
             params["start"] = start
         if defined(end):

@@ -95,6 +95,12 @@ class TestSpotUser:
         assert is_not_error(
             spot_auth_user.get_open_orders(trades=False, userref="1234567"),
         )
+        assert is_not_error(
+            spot_auth_user.get_open_orders(
+                trades=False,
+                cl_ord_id="my-client-order-id",
+            ),
+        )
 
     def test_get_closed_orders(self: Self, spot_auth_user: User) -> None:
         """
@@ -104,6 +110,12 @@ class TestSpotUser:
         assert is_not_error(spot_auth_user.get_closed_orders())
         assert is_not_error(
             spot_auth_user.get_closed_orders(trades=True, userref="1234"),
+        )
+        assert is_not_error(
+            spot_auth_user.get_closed_orders(
+                trades=True,
+                cl_ord_id="my-client-order-id",
+            ),
         )
         assert is_not_error(
             spot_auth_user.get_closed_orders(trades=True, start="1668431675.4778206"),

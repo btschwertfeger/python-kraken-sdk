@@ -102,6 +102,7 @@ class TestSpotTrade:
                 timeinforce="GTC",
                 leverage=4,
                 deadline=deadline,
+                cl_ord_id="my-client-order-id",
             )
 
     @pytest.mark.spot_auth
@@ -204,10 +205,17 @@ class TestSpotTrade:
             match=r"API key doesn't have permission to make this request.",
         ):
             spot_auth_trade.amend_order(
-                extra_params={
-                    "txid": "OVM3PT-56ACO-53SM2T",
-                    "limit_price": "105636.9",
-                },
+                txid="OVM3PT-56ACO-53SM2T",
+                limit_price="105636.9",
+            )
+
+        with pytest.raises(
+            KrakenPermissionDeniedError,
+            match=r"API key doesn't have permission to make this request.",
+        ):
+            spot_auth_trade.amend_order(
+                cl_ord_id="my-client-order-id",
+                limit_price="105636.9",
             )
 
     @pytest.mark.spot_auth
@@ -223,6 +231,12 @@ class TestSpotTrade:
             match=r"API key doesn't have permission to make this request.",
         ):
             spot_auth_trade.cancel_order(txid="OB6JJR-7NZ5P-N5SKCB")
+
+        with pytest.raises(
+            KrakenPermissionDeniedError,
+            match=r"API key doesn't have permission to make this request.",
+        ):
+            spot_auth_trade.cancel_order(cl_ord_id="my-client-order-id")
 
     @pytest.mark.spot_auth
     @pytest.mark.skip(reason="Test do not have trade/cancel permission")

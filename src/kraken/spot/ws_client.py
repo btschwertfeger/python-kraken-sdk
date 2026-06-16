@@ -281,7 +281,7 @@ class SpotWSClient(SpotWSClientBase):
             ...                     "limit_price": 500.21,
             ...                     "order_qty": 2.12345,
             ...                     "order_type": "limit",
-            ...                     "order_userref": 212345679,
+            ...                     "cl_ord_id": "my-client-order-id",
             ...                     "side": "sell",
             ...                     "stp_type": "cancel_both",
             ...                 },
@@ -361,16 +361,16 @@ class SpotWSClient(SpotWSClientBase):
             ...     }
             ... )
 
-        **Editing orders** can be done as shown in the example below. See
-        https://docs.kraken.com/api/docs/websocket-v2/edit_order for more information.
+        **Amending orders** can be done as shown in the example below. See
+        https://docs.kraken.com/api/docs/websocket-v2/amend_order for more information.
 
         .. code-block:: python
             :linenos:
-            :caption: Spot Websocket: Cancel order(s)
+            :caption: Spot Websocket: Amend order
 
             >>> await client_auth.send_message(
             ...     message={
-            ...         "method": "edit_order",
+            ...         "method": "amend_order",
             ...         "params": {
             ...             "order_id": "ORDER-ID123-456789",
             ...             "order_qty": 2.5,
