@@ -5,7 +5,7 @@
 # https://github.com/btschwertfeger
 #
 
-"""Module that implements the unit tests for the Futures websocket client"""
+"""Module that implements the unit and integration tests for the Futures websocket client"""
 
 from __future__ import annotations
 
@@ -23,6 +23,7 @@ import pytest
 from .helper import FuturesWebsocketClientTestWrapper
 
 
+@pytest.mark.integration
 @pytest.mark.futures
 @pytest.mark.futures_websocket
 def test_create_public_client(caplog: pytest.LogCaptureFixture) -> None:
@@ -44,6 +45,7 @@ def test_create_public_client(caplog: pytest.LogCaptureFixture) -> None:
     assert "{'event': 'info', 'version': 1}" in caplog.text
 
 
+@pytest.mark.integration
 @pytest.mark.futures
 @pytest.mark.futures_auth
 @pytest.mark.futures_websocket
@@ -70,6 +72,7 @@ def test_create_private_client(
     assert "{'event': 'info', 'version': 1}" in caplog.text
 
 
+@pytest.mark.unit
 @pytest.mark.futures
 @pytest.mark.futures_websocket
 def test_get_available_public_subscriptions() -> None:
@@ -90,6 +93,7 @@ def test_get_available_public_subscriptions() -> None:
     )
 
 
+@pytest.mark.unit
 @pytest.mark.futures
 @pytest.mark.futures_websocket
 def test_get_available_private_subscriptions() -> None:
@@ -114,6 +118,7 @@ def test_get_available_private_subscriptions() -> None:
     )
 
 
+@pytest.mark.integration
 @pytest.mark.futures
 @pytest.mark.futures_websocket
 def test_subscribe_public(caplog: pytest.LogCaptureFixture) -> None:
@@ -151,6 +156,7 @@ def test_subscribe_public(caplog: pytest.LogCaptureFixture) -> None:
         assert expected in caplog.text
 
 
+@pytest.mark.integration
 @pytest.mark.futures
 @pytest.mark.futures_auth
 @pytest.mark.futures_websocket
@@ -193,6 +199,7 @@ def test_subscribe_private(
         assert expected in caplog.text
 
 
+@pytest.mark.integration
 @pytest.mark.futures
 @pytest.mark.futures_websocket
 def test_unsubscribe_public(caplog: pytest.LogCaptureFixture) -> None:
@@ -229,6 +236,7 @@ def test_unsubscribe_public(caplog: pytest.LogCaptureFixture) -> None:
         assert expected in caplog.text
 
 
+@pytest.mark.integration
 @pytest.mark.futures
 @pytest.mark.futures_auth
 @pytest.mark.futures_websocket
@@ -269,6 +277,7 @@ def test_unsubscribe_private(
         assert expected in caplog.text
 
 
+@pytest.mark.integration
 @pytest.mark.futures
 @pytest.mark.futures_websocket
 def test_get_active_subscriptions(caplog: pytest.LogCaptureFixture) -> None:
@@ -297,6 +306,7 @@ def test_get_active_subscriptions(caplog: pytest.LogCaptureFixture) -> None:
         assert expected in caplog.text
 
 
+@pytest.mark.integration
 @pytest.mark.futures
 @pytest.mark.futures_auth
 @pytest.mark.futures_websocket

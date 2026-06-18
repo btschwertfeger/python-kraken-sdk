@@ -31,6 +31,7 @@ from typing import Self
 from .helper import is_not_error
 
 
+@pytest.mark.integration
 @pytest.mark.spot
 class TestSpotBaseAPI:
     """Test class for Spot Base API functionality."""
@@ -213,6 +214,7 @@ class TestProxyPyEmbedded(TestCase, IsolatedAsyncioTestCase):
     def get_proxy_str(self: Self) -> str:
         return f"http://127.0.0.1:{self.PROXY.flags.port}"
 
+    @pytest.mark.integration
     @pytest.mark.spot
     @pytest.mark.spot_market
     def test_spot_rest_proxies(self: Self) -> None:
@@ -229,6 +231,7 @@ class TestProxyPyEmbedded(TestCase, IsolatedAsyncioTestCase):
             ),
         )
 
+    @pytest.mark.integration
     @pytest.mark.spot
     @pytest.mark.spot_market
     @pytest.mark.asyncio

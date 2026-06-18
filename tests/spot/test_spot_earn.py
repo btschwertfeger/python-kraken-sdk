@@ -5,7 +5,7 @@
 # https://github.com/btschwertfeger
 #
 
-"""Module that implements the unit tests for the Spot Earn client."""
+"""Module that implements the integration tests for the Spot Earn client."""
 
 from typing import Any, Self
 
@@ -16,6 +16,7 @@ from kraken.spot import Earn
 from .helper import is_not_error
 
 
+@pytest.mark.integration
 @pytest.mark.spot
 @pytest.mark.spot_auth
 @pytest.mark.spot_earn

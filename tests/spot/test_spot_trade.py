@@ -5,7 +5,7 @@
 # https://github.com/btschwertfeger
 #
 
-"""Module that implements the unit tests for the Spot trade client."""
+"""Module that implements the integration tests for the Spot trade client."""
 
 from datetime import UTC, datetime, timedelta
 from time import sleep
@@ -17,6 +17,7 @@ from kraken.exceptions import KrakenPermissionDeniedError
 from kraken.spot import Trade
 
 
+@pytest.mark.integration
 @pytest.mark.spot
 @pytest.mark.spot_trade
 class TestSpotTrade:

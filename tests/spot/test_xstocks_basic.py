@@ -5,7 +5,7 @@
 # https://github.com/btschwertfeger
 #
 
-"""Module that implements the unit tests for the Spot xStocks features."""
+"""Module that implements the integration tests for the Spot xStocks features."""
 
 from typing import ClassVar, Self
 
@@ -15,6 +15,7 @@ from kraken.exceptions import KrakenPermissionDeniedError
 from kraken.spot import Market, SpotClient, Trade
 
 
+@pytest.mark.integration
 @pytest.mark.spot
 @pytest.mark.xstocks
 @pytest.mark.skip(reason="xStocks is only available in certain regions!")

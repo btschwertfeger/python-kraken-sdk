@@ -46,6 +46,7 @@ class TestSpotWebSocket:
     TEST_SYMBOL_BTCUSD = "BTC/USD"
     TEST_REQ_ID = 123456789
 
+    @pytest.mark.integration
     def test_create_public_client(self, caplog: pytest.LogCaptureFixture) -> None:
         """
         Checks if the websocket client can be instantiated.
@@ -67,6 +68,7 @@ class TestSpotWebSocket:
         ):
             assert expected in caplog.text
 
+    @pytest.mark.integration
     def test_create_public_client_as_context_manager(
         self,
         caplog: pytest.LogCaptureFixture,
@@ -89,6 +91,7 @@ class TestSpotWebSocket:
         ):
             assert expected in caplog.text
 
+    @pytest.mark.integration
     def test_access_public_client_attributes(self) -> None:
         """
         Checks the ``access_public_client_attributes`` function
@@ -114,6 +117,7 @@ class TestSpotWebSocket:
 
         asyncio_run(check_access())
 
+    @pytest.mark.unit
     def test_access_public_subscriptions_no_conn_failing(self) -> None:
         """
         Checks if ``active_public_subscriptions`` fails, because there is no
@@ -131,6 +135,7 @@ class TestSpotWebSocket:
 
         asyncio_run(check_access())
 
+    @pytest.mark.integration
     @pytest.mark.spot_auth
     def test_access_private_client_attributes(
         self,
@@ -154,6 +159,7 @@ class TestSpotWebSocket:
 
         asyncio_run(check_access())
 
+    @pytest.mark.integration
     def test_send_message_missing_method_failing(self) -> None:
         """
         Checks if the send_message function fails when specific keys or values
@@ -184,6 +190,7 @@ class TestSpotWebSocket:
 
         asyncio_run(create_client())
 
+    @pytest.mark.integration
     def test_send_message_raw(self, caplog: pytest.LogCaptureFixture) -> None:
         """
         Checks if the send_message function fails when the socket is not available.
@@ -202,6 +209,7 @@ class TestSpotWebSocket:
         assert '{"method": "pong", "req_id": 123456789' in caplog.text
         assert '"success": false' not in caplog.text
 
+    @pytest.mark.integration
     def test_public_subscribe(self, caplog: pytest.LogCaptureFixture) -> None:
         """
         Function that checks if the websocket client is able to subscribe to public
@@ -225,6 +233,7 @@ class TestSpotWebSocket:
         )
         assert '"success": false' not in caplog.text
 
+    @pytest.mark.integration
     @pytest.mark.spot_auth
     def test_private_subscribe_failing_on_public_connection(self) -> None:
         """
@@ -244,6 +253,7 @@ class TestSpotWebSocket:
 
         asyncio_run(test_subscription())
 
+    @pytest.mark.integration
     @pytest.mark.spot_auth
     def test_private_subscribe(
         self,
@@ -276,6 +286,7 @@ class TestSpotWebSocket:
         )
         assert '"success": false' not in caplog.text
 
+    @pytest.mark.integration
     def test_public_unsubscribe(self, caplog: pytest.LogCaptureFixture) -> None:
         """
         Checks if the websocket client can unsubscribe from public feeds.
@@ -300,6 +311,7 @@ class TestSpotWebSocket:
             assert expected in caplog.text
         assert '"success": false' not in caplog.text
 
+    @pytest.mark.integration
     def test_public_unsubscribe_failure(self, caplog: pytest.LogCaptureFixture) -> None:
         """
         Checks if the websocket client responses with failures
@@ -324,6 +336,7 @@ class TestSpotWebSocket:
             in caplog.text
         )
 
+    @pytest.mark.integration
     @pytest.mark.spot_auth
     def test_private_unsubscribe(
         self,
@@ -363,6 +376,7 @@ class TestSpotWebSocket:
             assert expected in caplog.text
         assert '"success": false' not in caplog.text
 
+    @pytest.mark.unit
     def test___transform_subscription(self) -> None:
         """
         Checks if the subscription transformation works properly by checking
@@ -398,6 +412,7 @@ class TestSpotWebSocket:
                 == target_subscription
             )
 
+    @pytest.mark.unit
     def test___transform_subscription_no_change(self) -> None:
         """
         Similar to the test above -- but verifying that messages that don't need an
@@ -430,6 +445,7 @@ class TestSpotWebSocket:
                 == incoming_subscription
             )
 
+    @pytest.mark.integration
     @pytest.mark.spot_auth
     def test_reconnect(
         self,

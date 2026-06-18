@@ -5,7 +5,7 @@
 # https://github.com/btschwertfeger
 #
 
-"""Module that implements the unit tests for the Futures trade client"""
+"""Module that implements the integration tests for the Futures trade client"""
 
 from collections.abc import Generator
 from contextlib import suppress
@@ -34,6 +34,7 @@ def _run_before_and_after_tests(futures_demo_trade: Trade) -> Generator:
     sleep(0.25)
 
 
+@pytest.mark.integration
 @pytest.mark.futures
 @pytest.mark.futures_auth
 @pytest.mark.futures_trade

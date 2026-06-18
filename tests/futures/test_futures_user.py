@@ -5,7 +5,7 @@
 # https://github.com/btschwertfeger
 #
 
-"""Module that implements the unit tests for the Futures user client."""
+"""Module that implements the integration tests for the Futures user client."""
 
 import random
 import tempfile
@@ -22,6 +22,7 @@ if TYPE_CHECKING:
     import requests
 
 
+@pytest.mark.integration
 @pytest.mark.futures
 @pytest.mark.futures_auth
 @pytest.mark.futures_user

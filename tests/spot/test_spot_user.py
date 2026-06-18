@@ -5,7 +5,7 @@
 # https://github.com/btschwertfeger
 #
 
-"""Module that implements the unit tests for the Spot user client."""
+"""Module that implements the unit and integration tests for the Spot user client."""
 
 import random
 import tempfile
@@ -24,6 +24,37 @@ from kraken.spot import User
 from .helper import is_not_error
 
 
+@pytest.mark.unit
+@pytest.mark.spot
+@pytest.mark.spot_user
+class TestSpotUserUnit:
+    """Offline unit tests for the Spot User client."""
+
+    def test_get_balance(self: Self) -> None:
+        """
+        Checks the ``get_balance`` function by mocking the internal API call
+        (``get_balances``, covered by the integration test) and checking the
+        return value.
+        """
+        with mock.patch.object(
+            User,
+            "get_balances",
+            return_value={
+                "XXLM": {"balance": "0.00000000", "hold_trade": "0.00000000"},
+                "ZEUR": {"balance": "500.0000", "hold_trade": "0.0000"},
+                "XXBT": {"balance": "2.1031709100", "hold_trade": "0.1401000000"},
+                "KFEE": {"balance": "7407.73", "hold_trade": "0.00"},
+            },
+        ):
+            result: dict = User().get_balance(currency="XBT")
+            assert result == {
+                "currency": "XXBT",
+                "balance": 2.1031709100,
+                "available_balance": 1.96307091,
+            }
+
+
+@pytest.mark.integration
 @pytest.mark.spot
 @pytest.mark.spot_auth
 @pytest.mark.spot_user
@@ -51,29 +82,6 @@ class TestSpotUser:
         result: dict = spot_auth_user.get_balances()
         assert isinstance(result, dict)
         assert is_not_error(result)
-
-    def test_get_balance(self: Self, spot_auth_user: User) -> None:
-        """
-        Checks the ``get_balances`` function by mocking the internal API call
-        (which is already covered by :func:`test_get_balances`) and checking the
-        return value.
-        """
-        with mock.patch.object(
-            User,
-            "get_balances",
-            return_value={
-                "XXLM": {"balance": "0.00000000", "hold_trade": "0.00000000"},
-                "ZEUR": {"balance": "500.0000", "hold_trade": "0.0000"},
-                "XXBT": {"balance": "2.1031709100", "hold_trade": "0.1401000000"},
-                "KFEE": {"balance": "7407.73", "hold_trade": "0.00"},
-            },
-        ):
-            result: dict = spot_auth_user.get_balance(currency="XBT")
-            assert result == {
-                "currency": "XXBT",
-                "balance": 2.1031709100,
-                "available_balance": 1.96307091,
-            }
 
     def test_get_trade_balance(self: Self, spot_auth_user: User) -> None:
         """
