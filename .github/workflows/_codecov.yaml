@@ -91,7 +91,7 @@ jobs:
           FUTURES_SECRET_KEY: ${{ secrets.FUTURES_SECRET_KEY }}
           FUTURES_SANDBOX_KEY: ${{ secrets.FUTURES_SANDBOX_KEY }}
           FUTURES_SANDBOX_SECRET: ${{ secrets.FUTURES_SANDBOX_SECRET }}
-        run: pytest -vv -x --cov=kraken --cov-report=xml:coverage.xml --cov-report=term tests
+        run: pytest -vv -x --cov=kraken --cov-report=xml:coverage.xml --cov-report=term --junitxml=junit.xml -o junit_family=legacy tests
 
       - name: Export coverage report
         uses: actions/upload-artifact@v7.0.1

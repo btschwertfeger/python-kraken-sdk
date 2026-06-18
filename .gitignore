@@ -39,6 +39,7 @@ MANIFEST
 .ruff_cache
 coverage.xml
 pytest.xml
+junit.xml
 *.cover
 *.py,cover
 .pytest_cache/
