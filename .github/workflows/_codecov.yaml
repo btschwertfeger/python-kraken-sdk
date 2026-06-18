@@ -103,9 +103,20 @@ jobs:
         uses: codecov/codecov-action@e79a6962e0d4c0c17b229090214935d2e33f8354 # v6.0.1
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          files: coverage.xml
+          files: coverage.xml,junit.xml
           env_vars: OS,PYTHON
           fail_ci_if_error: false
-          flags: unittests
+          report_type: coverage
+          name: codecov-umbrella
+          verbose: true
+
+      - name: Upload test metrics to Codecov
+        uses: codecov/codecov-action@e79a6962e0d4c0c17b229090214935d2e33f8354 # v6.0.1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: junit.xml
+          env_vars: OS,PYTHON
+          fail_ci_if_error: false
+          report_type: test_results
           name: codecov-umbrella
           verbose: true

@@ -147,6 +147,7 @@ clean:
 		src/kraken/_version.py \
 		mypy.xml \
 		pytest.xml \
+		junit.xml \
 		tests/*.zip \
 		uv.lock
 
