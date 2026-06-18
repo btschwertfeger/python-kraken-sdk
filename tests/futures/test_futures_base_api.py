@@ -21,6 +21,7 @@ from kraken.futures import Funding, Market, Trade, User
 from .helper import is_success
 
 
+@pytest.mark.integration
 @pytest.mark.futures
 class TestFuturesBaseAPI:
     """Test class for Futures Base API functionality."""
@@ -75,6 +76,7 @@ class TestFuturesBaseAPI:
 # Futures async client
 
 
+@pytest.mark.integration
 @pytest.mark.futures
 class TestFuturesBaseAPIAsync:
     """Test class for Futures Base API async functionality."""
@@ -130,8 +132,8 @@ class TestFuturesBaseAPIAsync:
         run(check())
 
 
+@pytest.mark.integration
 @pytest.mark.futures
-@pytest.mark.futures_market
 @pytest.mark.futures_market
 class TestProxyPyEmbedded(TestCase, IsolatedAsyncioTestCase):
     def get_proxy_str(self: Self) -> str:

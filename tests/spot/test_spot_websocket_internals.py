@@ -18,6 +18,7 @@ import pytest
 from kraken.spot.websocket import SpotWSClientBase
 
 
+@pytest.mark.unit
 @pytest.mark.spot
 @pytest.mark.spot_websocket
 class TestSpotWebSocketInternals:

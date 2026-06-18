@@ -5,7 +5,7 @@
 # https://github.com/btschwertfeger
 #
 
-"""Module that implements the unit tests for the Futures market client."""
+"""Module that implements the integration tests for the Futures market client."""
 
 from typing import Any, Self
 
@@ -16,6 +16,7 @@ from kraken.futures import Market
 from .helper import is_not_error, is_success
 
 
+@pytest.mark.integration
 @pytest.mark.futures
 @pytest.mark.futures_market
 class TestFuturesMarket:

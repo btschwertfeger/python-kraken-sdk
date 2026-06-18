@@ -92,6 +92,10 @@ asyncio_default_fixture_loop_scope = "function"
 markers = [
   "wip: Used to run a specific test by hand.",
   "flaky: Flaky tests",
+  # Test-type axis (orthogonal to the domain markers below).
+  "unit: Offline test — no network, no API keys, deterministic.",
+  "integration: Live test hitting the Kraken REST/Websocket API.",
+  "e2e: End-to-end test driving the CLI binary / full auth flows.",
   "spot: Spot endpoint.",
   "xstocks: Spot xStocks endpoint.",
   "spot_auth: Private Spot endpoint.",

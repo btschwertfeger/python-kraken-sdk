@@ -6,7 +6,7 @@
 #
 
 """
-Module providing fixtures used for the unit tests regarding the Kraken Spot API.
+Module providing fixtures used for the tests regarding the Kraken Spot API.
 """
 
 import os

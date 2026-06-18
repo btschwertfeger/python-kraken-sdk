@@ -5,7 +5,7 @@
 # https://github.com/btschwertfeger
 #
 
-"""Module that implements the unit tests for the Spot funding client."""
+"""Module that implements the integration tests for the Spot funding client."""
 
 from typing import Any, Self
 
@@ -17,6 +17,7 @@ from kraken.spot import Funding
 from .helper import is_not_error
 
 
+@pytest.mark.integration
 @pytest.mark.spot
 @pytest.mark.spot_auth
 @pytest.mark.spot_funding

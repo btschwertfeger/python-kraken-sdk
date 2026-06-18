@@ -5,7 +5,7 @@
 # https://github.com/btschwertfeger
 #
 
-"""Module implementing unit tests for the command-line interface"""
+"""Module implementing end-to-end tests for the command-line interface"""
 
 from __future__ import annotations
 
@@ -18,12 +18,14 @@ if TYPE_CHECKING:
 import pytest
 
 
+@pytest.mark.e2e
 @pytest.mark.spot
 def test_cli_version(cli_runner: CliRunner) -> None:
     result = cli_runner.invoke(cli, ["--version"], catch_exceptions=False)
     assert result.exit_code == 0
 
 
+@pytest.mark.e2e
 @pytest.mark.spot
 @pytest.mark.parametrize(
     "args",
@@ -67,6 +69,7 @@ def test_cli_spot_public(cli_runner: CliRunner, args: list[str]) -> None:
     assert result.exit_code == 0
 
 
+@pytest.mark.e2e
 @pytest.mark.usefixtures("with_spot_secrets")
 @pytest.mark.spot
 @pytest.mark.spot_auth
@@ -103,6 +106,7 @@ def test_cli_spot_private(cli_runner: CliRunner, args: list[str]) -> None:
     assert result.exit_code == 0
 
 
+@pytest.mark.e2e
 @pytest.mark.futures
 @pytest.mark.parametrize(
     "args",
@@ -122,6 +126,7 @@ def test_cli_futures_public(cli_runner: CliRunner, args: list[str]) -> None:
     assert result.exit_code == 0
 
 
+@pytest.mark.e2e
 @pytest.mark.usefixtures("with_futures_secrets")
 @pytest.mark.futures
 @pytest.mark.futures_auth
@@ -143,6 +148,7 @@ def test_cli_futures_private(cli_runner: CliRunner, args: list[str]) -> None:
     assert result.exit_code == 0
 
 
+@pytest.mark.unit
 @pytest.mark.spot
 @pytest.mark.parametrize(
     ("url", "expected"),
@@ -206,6 +212,7 @@ def test_get_base_url(url: str, expected: str) -> None:
     assert _get_base_url(url) == expected
 
 
+@pytest.mark.unit
 @pytest.mark.spot
 @pytest.mark.parametrize(
     ("url", "expected"),

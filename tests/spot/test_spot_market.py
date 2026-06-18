@@ -5,7 +5,7 @@
 # https://github.com/btschwertfeger
 #
 
-"""Module that implements the unit tests for the Spot market client."""
+"""Module that implements the integration tests for the Spot market client."""
 
 from time import sleep
 from typing import Any, Self
@@ -17,6 +17,7 @@ from kraken.spot import Market
 from .helper import is_not_error
 
 
+@pytest.mark.integration
 @pytest.mark.spot
 @pytest.mark.spot_market
 class TestSpotMarket:

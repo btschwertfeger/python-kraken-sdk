@@ -6,8 +6,8 @@
 #
 
 """
-Module that implements the unit tests for the Kraken Spot Websocket API v2
-client.
+Module that implements helpers for the Kraken Spot Websocket API v2
+client tests.
 """
 
 from __future__ import annotations
@@ -95,7 +95,7 @@ class SpotOrderBookClientWrapper(SpotOrderBookClient):
         """
         Ensures that the messages are logged.
         Into a file for debugging and general to the log
-        to read the logs within the unit tests.
+        to read the logs within the tests.
         """
         cls.LOG.info(json.dumps(content))
 

@@ -5,7 +5,7 @@
 # https://github.com/btschwertfeger
 #
 
-"""Module that implements the unit tests for the Futures funding client."""
+"""Module that implements the integration tests for the Futures funding client."""
 
 from typing import Self
 
@@ -16,6 +16,7 @@ from kraken.futures import Funding
 from .helper import is_success
 
 
+@pytest.mark.integration
 @pytest.mark.futures
 @pytest.mark.futures_auth
 @pytest.mark.futures_funding

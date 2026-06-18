@@ -6,7 +6,8 @@
 #
 
 """
-Module that implements the unit tests regarding the Spot Orderbook client.
+Module that implements the unit and integration tests regarding the Spot
+Orderbook client.
 """
 
 from __future__ import annotations
@@ -41,6 +42,7 @@ class TestSpotOrderBook:
     TEST_PAIR_BTCEUR = "BTC/EUR"
     TEST_DEPTH = 10
 
+    @pytest.mark.integration
     def test_create_public_bot(self: Self, caplog: pytest.LogCaptureFixture) -> None:
         """
         Checks if the websocket client can be instantiated.
@@ -61,6 +63,7 @@ class TestSpotOrderBook:
         ):
             assert expected in caplog.text
 
+    @pytest.mark.unit
     def test_get_first(self) -> None:
         """
         Checks the ``get_first`` method.
@@ -71,6 +74,7 @@ class TestSpotOrderBook:
             == SpotOrderBookClientWrapper.get_first((10, 5))
         )
 
+    @pytest.mark.unit
     @mock.patch("kraken.spot.orderbook.SpotWSClient", return_value=None)
     @mock.patch(
         "kraken.spot.orderbook.SpotOrderBookClient.remove_book",
@@ -124,6 +128,7 @@ class TestSpotOrderBook:
 
         asyncio.run(assign())
 
+    @pytest.mark.integration
     def test_add_book(self: Self, caplog: pytest.LogCaptureFixture) -> None:
         """
         Checks if the orderbook client is able to add a book by subscribing.
@@ -168,6 +173,7 @@ class TestSpotOrderBook:
         ):
             assert expected in caplog.text
 
+    @pytest.mark.integration
     def test_remove_book(self: Self, caplog: pytest.LogCaptureFixture) -> None:
         """
         Checks if the orderbook client is able to add a book by subscribing to a book
