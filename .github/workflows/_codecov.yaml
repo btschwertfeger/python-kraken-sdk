@@ -91,7 +91,7 @@ jobs:
           FUTURES_SECRET_KEY: ${{ secrets.FUTURES_SECRET_KEY }}
           FUTURES_SANDBOX_KEY: ${{ secrets.FUTURES_SANDBOX_KEY }}
           FUTURES_SANDBOX_SECRET: ${{ secrets.FUTURES_SANDBOX_SECRET }}
-        run: pytest -vv -x --cov=kraken --cov-report=xml:coverage.xml --cov-report=term tests
+        run: pytest -vv -x --cov=kraken --cov-report=xml:coverage.xml --cov-report=term --junitxml=junit.xml -o junit_family=legacy tests
 
       - name: Export coverage report
         uses: actions/upload-artifact@v7.0.1
@@ -106,6 +106,16 @@ jobs:
           files: coverage.xml
           env_vars: OS,PYTHON
           fail_ci_if_error: false
-          flags: unittests
+          report_type: coverage
           name: codecov-umbrella
-          verbose: true
+          # verbose: true
+
+      - name: Upload test metrics to Codecov
+        uses: codecov/codecov-action@e79a6962e0d4c0c17b229090214935d2e33f8354 # v6.0.1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: junit.xml
+          env_vars: OS,PYTHON
+          fail_ci_if_error: false
+          report_type: test_results
+          name: codecov-umbrella
