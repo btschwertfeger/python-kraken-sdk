@@ -20,6 +20,9 @@ on:
       python-version:
         type: string
         required: true
+    secrets:
+      CODECOV_TOKEN:
+        required: false
 
 permissions:
   contents: read
@@ -29,6 +32,9 @@ jobs:
     name: Test ${{ inputs.os }} ${{ inputs.python-version }}
     runs-on: ${{ inputs.os }}
     timeout-minutes: 5
+    env:
+      OS: ${{ inputs.os }}
+      PYTHON: ${{ inputs.python-version }}
     steps:
       - name: Harden Runner
         uses: step-security/harden-runner@9af89fc71515a100421586dfdb3dc9c984fbf411 # v2.19.4
@@ -36,14 +42,18 @@ jobs:
           disable-sudo: true
           egress-policy: block
           allowed-endpoints: >
+            api.codecov.io:443
             api.github.com:443
+            cli.codecov.io:443
             files.pythonhosted.org:443
             futures.kraken.com:443
             github.com:443
+            ingest.codecov.io:443
             objects.githubusercontent.com:443
             raw.githubusercontent.com:443
             release-assets.githubusercontent.com:443
             pypi.org:443
+            storage.googleapis.com:443
 
       - name: Checkout repository
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
@@ -80,7 +90,37 @@ jobs:
           uv pip install $wheel -r requirements-dev.txt
 
       - name: Testing Futures REST endpoints
-        run: pytest -vv -x -n auto -m "futures and not futures_auth and not futures_websocket" tests
+        run: >
+          pytest -vv -x -n auto -m "futures and not futures_auth and not futures_websocket"
+          --cov=kraken --cov-append --cov-report=
+          --junitxml=junit-futures-public-rest.xml -o junit_family=legacy tests
 
       - name: Testing Futures websocket endpoints
-        run: pytest -vv -x -n auto -m "futures and not futures_auth and futures_websocket" tests
+        run: >
+          pytest -vv -x -n auto -m "futures and not futures_auth and futures_websocket"
+          --cov=kraken --cov-append --cov-report=xml:coverage.xml
+          --junitxml=junit-futures-public-ws.xml -o junit_family=legacy tests
+
+      - name: Upload coverage to Codecov
+        if: runner.os != 'Windows' && github.actor == 'btschwertfeger'
+        uses: codecov/codecov-action@e79a6962e0d4c0c17b229090214935d2e33f8354 # v6.0.1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: coverage.xml
+          flags: futures-public
+          env_vars: OS,PYTHON
+          fail_ci_if_error: false
+          report_type: coverage
+          name: codecov-umbrella
+
+      - name: Upload test results to Codecov
+        if: runner.os != 'Windows' && github.actor == 'btschwertfeger'
+        uses: codecov/codecov-action@e79a6962e0d4c0c17b229090214935d2e33f8354 # v6.0.1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: junit-futures-public-rest.xml,junit-futures-public-ws.xml
+          flags: futures-public
+          env_vars: OS,PYTHON
+          fail_ci_if_error: false
+          report_type: test_results
+          name: codecov-umbrella

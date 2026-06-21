@@ -1,0 +1,14 @@
+# -*- mode: yaml; coding: utf-8 -*-
+# Copyright (C) 2026 Benjamin Thomas Schwertfeger
+# All rights reserved.
+# https://github.com/btschwertfeger
+#
+# Coverage is uploaded from several test jobs, each tagged with its own flag
+# (spot-public, spot-private, futures-public, futures-private). Carryforward
+# lets Codecov reuse a flag's last-known coverage on commits where that flag is
+# absent, so the reported total does not drop when a partition is skipped
+# (e.g. a flaky failure or a fork PR that cannot run the private jobs).
+
+flag_management:
+  default_rules:
+    carryforward: true
