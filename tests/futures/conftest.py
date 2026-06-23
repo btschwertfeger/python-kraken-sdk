@@ -81,7 +81,7 @@ def futures_auth_user() -> User:
     Fixture providing an authenticated Futures User client.
     """
     user: User = User(key=FUTURES_API_KEY, secret=FUTURES_SECRET_KEY)
-    User.TIMEOUT = FUTURES_EXTENDED_TIMEOUT
+    user.TIMEOUT = FUTURES_EXTENDED_TIMEOUT
     return user
 
 
@@ -96,7 +96,7 @@ def futures_demo_user() -> User:
         secret=FUTURES_SANDBOX_SECRET_KEY,
         sandbox=True,
     )
-    User.TIMEOUT = FUTURES_EXTENDED_TIMEOUT
+    user.TIMEOUT = FUTURES_EXTENDED_TIMEOUT
     return user
 
 
