@@ -300,6 +300,7 @@ task-tags = ["todo", "TODO", "fixme", "FIXME"]
   "PLR0904",  # too many public methods
   "ANN401",   # Use of typing.Any
   "RUF076",   # pytest-fixture-autouse
+  "FBT001",   # boolean-type-hint-positional-argument
 ]
 
 [tool.ruff.lint.flake8-copyright]

@@ -21,17 +21,24 @@ from .helper import is_success
 
 
 @pytest.fixture(autouse=True)
-def _run_before_and_after_tests(futures_demo_trade: Trade) -> Generator:
+def _run_before_and_after_tests(
+    request: pytest.FixtureRequest,
+    futures_demo_available: bool,
+) -> Generator:
     """
-    Fixture that ensures all orders are cancelled after test.
+    Fixture that skips tests depending on the Kraken Futures demo environment
+    when it is unavailable and ensures all orders are cancelled after each test.
     """
-    # Setup: fill with any logic you want
+    # Setup: skip tests that need the demo environment when it is down.
+    if "futures_demo_trade" in request.fixturenames and not futures_demo_available:
+        pytest.skip("Kraken Futures demo environment is unavailable")
 
     yield  # this is where the testing happens
 
-    # Teardown: fill with any logic you want
-    futures_demo_trade.cancel_all_orders()
-    sleep(0.25)
+    # Teardown: only reachable when the demo environment is available.
+    if futures_demo_available:
+        request.getfixturevalue("futures_demo_trade").cancel_all_orders()
+        sleep(0.25)
 
 
 @pytest.mark.integration
@@ -68,13 +75,13 @@ class TestFuturesTrade:
         """Helper method to assert a successful response."""
         assert is_success(result)
 
-    def test_get_fills(self: Self, futures_demo_trade: Trade) -> None:
+    def test_get_fills(self: Self, futures_auth_trade: Trade) -> None:
         """
         Checks the ``get_fills`` endpoint.
         """
-        self._assert_successful_response(futures_demo_trade.get_fills())
+        self._assert_successful_response(futures_auth_trade.get_fills())
         self._assert_successful_response(
-            futures_demo_trade.get_fills(lastFillTime=self.LAST_FILL_TIME),
+            futures_auth_trade.get_fills(lastFillTime=self.LAST_FILL_TIME),
         )
 
     def test_dead_mans_switch(self: Self, futures_demo_trade: Trade) -> None:
@@ -88,18 +95,18 @@ class TestFuturesTrade:
             futures_demo_trade.dead_mans_switch(timeout=0),
         )  # reset dead mans switch
 
-    def test_get_orders_status(self: Self, futures_demo_trade: Trade) -> None:
+    def test_get_orders_status(self: Self, futures_auth_trade: Trade) -> None:
         """
         Checks the ``get_orders_status`` endpoint.
         """
         self._assert_successful_response(
-            futures_demo_trade.get_orders_status(
+            futures_auth_trade.get_orders_status(
                 orderIds=self.TEST_ORDER_IDS,
             ),
         )
 
         self._assert_successful_response(
-            futures_demo_trade.get_orders_status(
+            futures_auth_trade.get_orders_status(
                 cliOrdIds=self.TEST_ORDER_IDS,
             ),
         )
