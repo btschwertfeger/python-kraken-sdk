@@ -8,6 +8,7 @@
 import os
 
 import pytest
+import requests
 
 from kraken.futures import Funding, Market, Trade, User
 
@@ -16,6 +17,27 @@ FUTURES_SECRET_KEY: str = os.getenv("FUTURES_SECRET_KEY")
 FUTURES_SANDBOX_KEY: str = os.getenv("FUTURES_SANDBOX_KEY")
 FUTURES_SANDBOX_SECRET_KEY: str = os.getenv("FUTURES_SANDBOX_SECRET")
 FUTURES_EXTENDED_TIMEOUT: int = 30
+
+
+@pytest.fixture(scope="session")
+def futures_demo_available() -> bool:
+    """
+    Returns ``True`` if the Kraken Futures demo/sandbox environment is
+    reachable.
+
+    The integration tests run against the live demo environment
+    (``https://demo-futures.kraken.com``) which is occasionally down. Tests
+    depending on it can use this fixture to skip themselves instead of failing
+    with a ``503 - Service Unavailable`` error.
+    """
+    try:
+        response: requests.Response = requests.get(
+            f"{Trade.SANDBOX_URL}/derivatives/api/v3/instruments/status",
+            timeout=FUTURES_EXTENDED_TIMEOUT,
+        )
+    except requests.RequestException:
+        return False
+    return response.status_code < 500
 
 
 @pytest.fixture(scope="session")
@@ -81,7 +103,7 @@ def futures_auth_user() -> User:
     Fixture providing an authenticated Futures User client.
     """
     user: User = User(key=FUTURES_API_KEY, secret=FUTURES_SECRET_KEY)
-    User.TIMEOUT = FUTURES_EXTENDED_TIMEOUT
+    user.TIMEOUT = FUTURES_EXTENDED_TIMEOUT
     return user
 
 
@@ -96,7 +118,7 @@ def futures_demo_user() -> User:
         secret=FUTURES_SANDBOX_SECRET_KEY,
         sandbox=True,
     )
-    User.TIMEOUT = FUTURES_EXTENDED_TIMEOUT
+    user.TIMEOUT = FUTURES_EXTENDED_TIMEOUT
     return user
 
 

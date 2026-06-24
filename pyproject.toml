@@ -280,6 +280,7 @@ task-tags = ["todo", "TODO", "fixme", "FIXME"]
   "S101",     # assert use
   "S110",     # try-catch-pass without logging
   "T201",     # print
+  "PLW0717",  # too-many-statements-in-try-clause
 ]
 "examples/*.ipynb" = [
   "CPY001", # copyright
@@ -298,6 +299,8 @@ task-tags = ["todo", "TODO", "fixme", "FIXME"]
   "TID252",   # ban relative imports
   "PLR0904",  # too many public methods
   "ANN401",   # Use of typing.Any
+  "RUF076",   # pytest-fixture-autouse
+  "FBT001",   # boolean-type-hint-positional-argument
 ]
 
 [tool.ruff.lint.flake8-copyright]

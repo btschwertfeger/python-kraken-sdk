@@ -23,24 +23,25 @@ from .helper import is_success
 class TestFuturesFunding:
     def test_get_historical_funding_rates(
         self: Self,
-        futures_demo_funding: Funding,
+        futures_auth_funding: Funding,
     ) -> None:
         """
         Checks the ``get_historical_funding_rates`` function.
         """
         assert is_success(
-            futures_demo_funding.get_historical_funding_rates(symbol="PF_XBTUSD"),
+            futures_auth_funding.get_historical_funding_rates(symbol="PF_XBTUSD"),
         )
 
     @pytest.mark.skip(reason="Tests do not have withdraw permission")
     def test_initiate_wallet_transfer(
         self: Self,
-        futures_demo_funding: Funding,
+        futures_auth_funding: Funding,
     ) -> None:
         """
         Checks the ``initiate_wallet_transfer`` function - skipped since
         a transfer in testing is not desired.
         """
+        raise NotImplementedError
         # accounts must exist..
         # print(futures_demo_funding.initiate_wallet_transfer(
         #     amount=200, fromAccount='Futures Wallet', toAccount='Spot Wallet', unit='XBT'
@@ -49,11 +50,12 @@ class TestFuturesFunding:
     @pytest.mark.skip(reason="Tests do not have withdraw permission")
     def test_initiate_subccount_transfer(
         self: Self,
-        futures_demo_funding: Funding,
+        futures_auth_funding: Funding,
     ) -> None:
         """
         Checks the ``initiate_subaccount_transfer`` function.
         """
+        raise NotImplementedError
         # print(futures_demo_funding.initiate_subaccount_transfer(
         #     amount=200,
         #     fromAccount='The wallet (cash or margin account) from which funds should be debited',
@@ -66,11 +68,12 @@ class TestFuturesFunding:
     @pytest.mark.skip(reason="Tests do not have withdraw permission")
     def test_initiate_withdrawal_to_spot_wallet(
         self: Self,
-        futures_demo_funding: Funding,
+        futures_auth_funding: Funding,
     ) -> None:
         """
         Checks the ``initiate_withdrawal_to_spot_wallet`` function.
         """
+        raise NotImplementedError
         # print(futures_demo_funding.initiate_withdrawal_to_spot_wallet(
         #     amount=200,
         #     currency='XBT',

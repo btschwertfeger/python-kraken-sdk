@@ -53,7 +53,7 @@ class TestFuturesBaseAPI:
         self,
         futures_market: Market,
         futures_auth_funding: Funding,
-        futures_demo_trade: Trade,
+        futures_auth_trade: Trade,
         futures_auth_user: User,
     ) -> None:
         """
@@ -68,8 +68,8 @@ class TestFuturesBaseAPI:
         with futures_auth_user as user:
             assert is_success(user.get_wallets())
 
-        with futures_demo_trade as trade:
-            assert is_success(trade.get_fills())
+        with futures_auth_trade as trade:
+            assert is_success(trade.get_orders_status())
 
 
 # ==============================================================================
