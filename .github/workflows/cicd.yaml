@@ -66,6 +66,10 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+# Restrict the default token to read-only; jobs opt into more as needed.
+permissions:
+  contents: read
+
 jobs:
   ## ===========================================================================
   ##    Checks the code logic, style and more
@@ -77,6 +81,10 @@ jobs:
   ##  Discover vulnerabilities
   ##
   CodeQL:
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
     uses: ./.github/workflows/_codeql.yaml
 
   ## ===========================================================================
