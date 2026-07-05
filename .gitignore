@@ -57,11 +57,15 @@ doc/_build/
 # Environments
 .env
 .venv
+.venv-sbom/
 env/
 venv/
 ENV/
 env.bak/
 venv.bak/
+
+# Generated SBOM (built in CI, not committed)
+sbom.cdx.json
 
 # mkdocs documentation
 /site
