@@ -228,6 +228,7 @@ jobs:
             pkg-containers.githubusercontent.com:443
             rekor.sigstore.dev
             test.pypi.org
+            timestamp.sigstore.dev
             tuf-repo-cdn.sigstore.dev
             uploads.github.com:443
 
@@ -283,6 +284,7 @@ jobs:
             pkg-containers.githubusercontent.com:443
             pypi.org
             rekor.sigstore.dev
+            timestamp.sigstore.dev
             tuf-repo-cdn.sigstore.dev
             upload.pypi.org
             uploads.github.com:443

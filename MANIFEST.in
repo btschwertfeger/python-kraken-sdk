@@ -15,3 +15,14 @@ prune examples
 prune tests
 prune venv
 prune .venv
+
+exclude .gitignore
+exclude .pre-commit-config.yaml
+exclude .readthedocs.yaml
+exclude CHANGELOG.md
+exclude CITATION.cff
+exclude MANIFEST.in
+exclude Makefile
+exclude requirements-dev.txt
+exclude setup.cfg
+exclude setup.py
