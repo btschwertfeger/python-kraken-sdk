@@ -109,3 +109,32 @@ jobs:
         with:
           name: python-package-distributions
           path: dist/
+
+      # Generate a CycloneDX SBOM from an environment that has the freshly built
+      # wheel installed, so the manifest captures the full transitive dependency
+      # tree. Kept out of dist/ so the publish job never uploads it to PyPI. The
+      # release job attests it and attaches it to the GitHub Release.
+      - name: Generate CycloneDX SBOM
+        if: runner.os == 'linux' && inputs.python-version == '3.11'
+        run: |
+          uv venv .venv-sbom
+          uv pip install --python .venv-sbom/bin/python dist/python_kraken_sdk*.whl
+          uvx --from cyclonedx-bom cyclonedx-py environment .venv-sbom/bin/python \
+            --pyproject pyproject.toml \
+            --output-format JSON \
+            --output-file sbom.cdx.json
+          # setuptools_scm makes the version dynamic, so --pyproject reads no version
+          # from pyproject.toml. Inject the built version (from the wheel filename) into
+          # the SBOM's root component so the manifest carries the released version.
+          VERSION="$(ls dist/python_kraken_sdk-*.whl | sed -E 's|.*python_kraken_sdk-(.+)-py3-none-any\.whl|\1|')"
+          jq --arg v "$VERSION" \
+            '.metadata.component.version = $v
+             | .metadata.component.purl = ("pkg:pypi/python-kraken-sdk@" + $v)' \
+            sbom.cdx.json > sbom.cdx.tmp && mv sbom.cdx.tmp sbom.cdx.json
+
+      - name: Store the SBOM
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        if: runner.os == 'linux' && inputs.python-version == '3.11'
+        with:
+          name: sbom
+          path: sbom.cdx.json

@@ -265,8 +265,9 @@ jobs:
     # https://github.com/pypi/warehouse/issues/11096
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write # attach the SBOM as a release asset
       id-token: write # mandatory for OIDC Trusted Publishing
+      attestations: write # write build-provenance and SBOM attestations
     environment:
       name: pypi
       url: https://pypi.org/p/python-kraken-sdk
@@ -295,7 +296,33 @@ jobs:
           name: python-package-distributions
           path: dist/
 
+      - name: Download the SBOM
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: sbom
+          path: .
+
+      # SLSA build provenance for the wheel and sdist, written to GitHub's
+      # attestation store and verifiable with `gh attestation verify`.
+      - name: Attest build provenance
+        uses: actions/attest-build-provenance@0f67c3f4856b2e3261c31976d6725780e5e4c373 # v4.1.1
+        with:
+          subject-path: "dist/*"
+
+      # Bind the CycloneDX SBOM to the same distributions, verifiable with
+      # `gh attestation verify --predicate-type https://cyclonedx.org/bom`.
+      - name: Attest SBOM
+        uses: actions/attest-sbom@c604332985a26aa8cf1bdc465b92731239ec6b9e # v4.1.0
+        with:
+          subject-path: "dist/*"
+          sbom-path: sbom.cdx.json
+
       - name: Publish package distributions to PyPI
         uses: pypa/gh-action-pypi-publish@cef221092ed1bacb1cc03d23a2d87d1d172e277b # release/v1
         with:
           repository-url: https://upload.pypi.org/legacy/
+
+      - name: Attach the SBOM to the GitHub Release
+        run: gh release upload "${{ github.event.release.tag_name }}" sbom.cdx.json --clobber
+        env:
+          GH_TOKEN: ${{ github.token }}
