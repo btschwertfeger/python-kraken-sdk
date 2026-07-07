@@ -265,7 +265,7 @@ jobs:
     # https://github.com/pypi/warehouse/issues/11096
     runs-on: ubuntu-latest
     permissions:
-      contents: write # attach the SBOM as a release asset
+      contents: read
       id-token: write # mandatory for OIDC Trusted Publishing
       attestations: write # write build-provenance and SBOM attestations
     environment:
@@ -288,7 +288,6 @@ jobs:
             timestamp.sigstore.dev
             tuf-repo-cdn.sigstore.dev
             upload.pypi.org
-            uploads.github.com:443
 
       - name: Download all the distributions
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
@@ -321,8 +320,3 @@ jobs:
         uses: pypa/gh-action-pypi-publish@cef221092ed1bacb1cc03d23a2d87d1d172e277b # release/v1
         with:
           repository-url: https://upload.pypi.org/legacy/
-
-      - name: Attach the SBOM to the GitHub Release
-        run: gh release upload "${{ github.event.release.tag_name }}" sbom.cdx.json --clobber
-        env:
-          GH_TOKEN: ${{ github.token }}
