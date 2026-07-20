@@ -35,8 +35,8 @@ def _run_before_and_after_tests(
 
     yield  # this is where the testing happens
 
-    # Teardown: only reachable when the demo environment is available.
-    if futures_demo_available:
+    # Teardown: only clean up when the test actually used the demo client.
+    if futures_demo_available and "futures_demo_trade" in request.fixturenames:
         request.getfixturevalue("futures_demo_trade").cancel_all_orders()
         sleep(0.25)
 
