@@ -7,9 +7,7 @@
 
 """Module that implements the integration tests for the Futures trade client"""
 
-from collections.abc import Generator
 from contextlib import suppress
-from time import sleep
 from typing import Any, ClassVar, Self
 
 import pytest
@@ -19,28 +17,20 @@ from kraken.futures import Trade
 
 from .helper import is_success
 
-
-@pytest.fixture(autouse=True)
-def _run_before_and_after_tests(
-    request: pytest.FixtureRequest,
-    futures_demo_available: bool,
-) -> Generator:
-    """
-    Fixture that skips tests depending on the Kraken Futures demo environment
-    when it is unavailable and ensures all orders are cancelled after each test.
-    """
-    # Setup: skip tests that need the demo environment when it is down.
-    if "futures_demo_trade" in request.fixturenames and not futures_demo_available:
-        pytest.skip("Kraken Futures demo environment is unavailable")
-
-    yield  # this is where the testing happens
-
-    # Teardown: only clean up when the test actually used the demo client.
-    if futures_demo_available and "futures_demo_trade" in request.fixturenames:
-        request.getfixturevalue("futures_demo_trade").cancel_all_orders()
-        sleep(0.25)
+# The Kraken Futures demo/sandbox environment has been retired: it now answers
+# every ``/derivatives/api/v3/*`` path with a redirect to the marketing page.
+# Without a sandbox the trade tests would have to run against the production
+# account, which is too dangerous, so the whole suite is skipped. The
+# ``test_demo_api_available`` probe in ``test_futures_market.py`` tracks whether
+# the demo API returns.
+SKIP_TOUCHES_REAL_ACCOUNT = pytest.mark.skip(
+    reason="Kraken Futures demo/sandbox API is retired; running these against "
+    "the production account would place, edit, or cancel real orders. "
+    "Run manually against a dedicated Futures account.",
+)
 
 
+@SKIP_TOUCHES_REAL_ACCOUNT
 @pytest.mark.integration
 @pytest.mark.futures
 @pytest.mark.futures_auth
@@ -84,15 +74,15 @@ class TestFuturesTrade:
             futures_auth_trade.get_fills(lastFillTime=self.LAST_FILL_TIME),
         )
 
-    def test_dead_mans_switch(self: Self, futures_demo_trade: Trade) -> None:
+    def test_dead_mans_switch(self: Self, futures_auth_trade: Trade) -> None:
         """
         Checks the ``dead_mans_switch`` endpoint.
         """
         self._assert_successful_response(
-            futures_demo_trade.dead_mans_switch(timeout=60),
+            futures_auth_trade.dead_mans_switch(timeout=60),
         )
         self._assert_successful_response(
-            futures_demo_trade.dead_mans_switch(timeout=0),
+            futures_auth_trade.dead_mans_switch(timeout=0),
         )  # reset dead mans switch
 
     def test_get_orders_status(self: Self, futures_auth_trade: Trade) -> None:
@@ -111,12 +101,12 @@ class TestFuturesTrade:
             ),
         )
 
-    def test_create_order(self: Self, futures_demo_trade: Trade) -> None:
+    def test_create_order(self: Self, futures_auth_trade: Trade) -> None:
         """
         Checks the ``create_order`` endpoint.
         """
         with suppress(KrakenInsufficientAvailableFundsError):
-            futures_demo_trade.create_order(
+            futures_auth_trade.create_order(
                 orderType=self.ORDER_TYPE_LIMIT,
                 size=self.SIZE,
                 symbol=self.SYMBOL,
@@ -156,7 +146,7 @@ class TestFuturesTrade:
             # except KrakenException.KrakenException.KrakenInsufficientAvailableFundsError:
             #     pass
 
-    def test_create_order_failing(self: Self, futures_demo_trade: Trade) -> None:
+    def test_create_order_failing(self: Self, futures_auth_trade: Trade) -> None:
         """
         Checks ``create_order`` endpoint to fail when using invalid parameters.
         """
@@ -164,7 +154,7 @@ class TestFuturesTrade:
             ValueError,
             match=r"Invalid side. One of \[\('buy', 'sell'\)\] is required!",
         ):
-            futures_demo_trade.create_order(
+            futures_auth_trade.create_order(
                 orderType=self.ORDER_TYPE_MARKET,
                 size=self.SIZE,
                 symbol=self.SYMBOL,
@@ -175,7 +165,7 @@ class TestFuturesTrade:
             ValueError,
             match=r"Trigger signal must be in \[\('mark', 'spot', 'last'\)\]!",
         ):
-            futures_demo_trade.create_order(
+            futures_auth_trade.create_order(
                 orderType=self.ORDER_TYPE_TAKE_PROFIT,
                 size=self.SIZE,
                 side=self.SIDE_BUY,
@@ -185,13 +175,13 @@ class TestFuturesTrade:
                 stopPrice=self.STOP_PRICE_HIGH,
             )
 
-    def test_create_batch_order(self: Self, futures_demo_trade: Trade) -> None:
+    def test_create_batch_order(self: Self, futures_auth_trade: Trade) -> None:
         """
         Checks the ``create_order_batch`` endpoint.
         """
         with suppress(KrakenInsufficientAvailableFundsError):
             self._assert_successful_response(
-                futures_demo_trade.create_batch_order(
+                futures_auth_trade.create_batch_order(
                     batchorder_list=[
                         {
                             "order": "send",
@@ -228,19 +218,19 @@ class TestFuturesTrade:
                 ),
             )
 
-    def test_edit_order(self: Self, futures_demo_trade: Trade) -> None:
+    def test_edit_order(self: Self, futures_auth_trade: Trade) -> None:
         """
         Checks the ``edit_order`` endpoint.
         """
         self._assert_successful_response(
-            futures_demo_trade.edit_order(
+            futures_auth_trade.edit_order(
                 orderId=self.TEST_ORDER_IDS[1],
                 limitPrice=3,
             ),
         )
 
         self._assert_successful_response(
-            futures_demo_trade.edit_order(
+            futures_auth_trade.edit_order(
                 cliOrdId=self.TEST_ORDER_IDS[1],
                 size=111.0,
                 stopPrice=1000,
@@ -252,25 +242,25 @@ class TestFuturesTrade:
             ValueError,
             match=r"Either orderId or cliOrdId must be set!",
         ):
-            futures_demo_trade.edit_order()
+            futures_auth_trade.edit_order()
 
-    def test_cancel_order(self: Self, futures_demo_trade: Trade) -> None:
+    def test_cancel_order(self: Self, futures_auth_trade: Trade) -> None:
         """
         Checks the ``cancel_order`` endpoint.
         """
         self._assert_successful_response(
-            futures_demo_trade.cancel_order(
+            futures_auth_trade.cancel_order(
                 cliOrdId="my_another_client_id",
                 processBefore=self.PROCESS_BEFORE,
             ),
         )
         self._assert_successful_response(
-            futures_demo_trade.cancel_order(
+            futures_auth_trade.cancel_order(
                 order_id=self.TEST_ORDER_IDS[1],
             ),
         )
 
-    def test_cancel_order_failing(self: Self, futures_demo_trade: Trade) -> None:
+    def test_cancel_order_failing(self: Self, futures_auth_trade: Trade) -> None:
         """
         Checks if the ``cancel_order`` endpoint is failing when
         passing invalid arguments.
@@ -279,13 +269,13 @@ class TestFuturesTrade:
             ValueError,
             match=r"Either order_id or cliOrdId must be set!",
         ):
-            futures_demo_trade.cancel_order()
+            futures_auth_trade.cancel_order()
 
-    def test_cancel_all_orders(self: Self, futures_demo_trade: Trade) -> None:
+    def test_cancel_all_orders(self: Self, futures_auth_trade: Trade) -> None:
         """
         Checks the ``cancel_all_orders`` endpoint.
         """
         self._assert_successful_response(
-            futures_demo_trade.cancel_all_orders(symbol=self.SYMBOL.lower()),
+            futures_auth_trade.cancel_all_orders(symbol=self.SYMBOL.lower()),
         )
-        self._assert_successful_response(futures_demo_trade.cancel_all_orders())
+        self._assert_successful_response(futures_auth_trade.cancel_all_orders())

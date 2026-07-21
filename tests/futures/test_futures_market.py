@@ -18,6 +18,24 @@ from .helper import is_not_error, is_success
 
 @pytest.mark.integration
 @pytest.mark.futures
+@pytest.mark.xfail(
+    reason="Kraken Futures demo/sandbox API is retired and redirects to the "
+    "marketing page; re-enable the skipped Futures trade tests once this "
+    "starts passing.",
+)
+def test_demo_api_available(futures_demo_market: Market) -> None:
+    """
+    Tripwire for the retired Kraken Futures demo/sandbox API.
+
+    The demo host currently redirects every request to the marketing page, so
+    this public call raises and the test xfails. Once the demo API returns, this
+    passes and the skipped Futures trade tests should be re-enabled.
+    """
+    assert is_success(futures_demo_market.get_instruments())
+
+
+@pytest.mark.integration
+@pytest.mark.futures
 @pytest.mark.futures_market
 class TestFuturesMarket:
     """Test class for Futures Market client functionality."""
