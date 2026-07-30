@@ -113,7 +113,7 @@ jobs:
       # Generate a CycloneDX SBOM from an environment that has the freshly built
       # wheel installed, so the manifest captures the full transitive dependency
       # tree. Kept out of dist/ so the publish job never uploads it to PyPI. The
-      # release job attests it and attaches it to the GitHub Release.
+      # release job binds it to the distributions as an attestation.
       - name: Generate CycloneDX SBOM
         if: runner.os == 'linux' && inputs.python-version == '3.11'
         run: |
