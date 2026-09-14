@@ -165,6 +165,14 @@ class Market(SpotClient):
         This function uses caching. Run ``get_asset_pairs.cache_clear()`` to
         clear.
 
+        .. note::
+            As of the Kraken changelog entry dated 8 September 2026, the
+            ``fees``/``fees_maker`` fields of the response are deprecated and
+            now always return an empty list; they are kept only for backwards
+            compatibility. Determine applicable fee rates via the Spot
+            :func:`kraken.spot.User.get_trade_volume` (``GetTradeVolume``)
+            endpoint's ``fee_schedule`` parameter instead.
+
         :param pair: Filter by asset pair(s)
         :type pair: str | list[str], optional
         :param info: Filter by info, can be one of: ``info`` (all info),
@@ -195,16 +203,8 @@ class Market(SpotClient):
                     'lot_multiplier': 1,
                     'leverage_buy': [2, 3, 4, 5],
                     'leverage_sell': [2, 3, 4, 5],
-                    'fees': [
-                        [0, 0.26], [50000, 0.24], [100000, 0.22],
-                        [250000, 0.2], [500000, 0.18], [1000000, 0.16],
-                        [2500000, 0.14], [5000000, 0.12], [10000000, 0.1]
-                    ],
-                    'fees_maker': [
-                        [0, 0.16], [50000, 0.14], [100000, 0.12],
-                        [250000, 0.1], [500000, 0.08], [1000000, 0.06],
-                        [2500000, 0.04], [5000000, 0.02], [10000000, 0.0]
-                    ],
+                    'fees': [],  # always empty, see note above
+                    'fees_maker': [],  # always empty, see note above
                     'fee_volume_currency': 'ZUSD',
                     'margin_call': 80,
                     'margin_stop': 40,
