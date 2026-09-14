@@ -926,6 +926,7 @@ class User(SpotClient):
         pair: str | list[str] | None = None,
         *,
         fee_info: bool = True,
+        fee_schedule: bool | None = None,
         extra_params: dict | None = None,
     ) -> dict:
         """
@@ -940,6 +941,12 @@ class User(SpotClient):
         :type pair: str | list[str], optional
         :param fee_info: Include fee information or not (default: ``True``)
         :type fee_info: bool, optional
+        :param fee_schedule: Include the full fee schedule per trading pair in
+            the response's ``schedules`` field (default: ``None``, i.e. not
+            requested). This is the replacement for the deprecated
+            ``fees``/``fees_maker`` fields on
+            :func:`kraken.spot.Market.get_asset_pairs`.
+        :type fee_schedule: bool, optional
 
         .. code-block:: python
             :linenos:
@@ -979,11 +986,40 @@ class User(SpotClient):
                     }
                 }
             }
+            >>> u.get_trade_volume(pair="DOTUSD", fee_schedule=True)
+            {
+                'currency': 'ZUSD',
+                'volume': '212243.1210',
+                'fees': {...},
+                'fees_maker': {...},
+                'schedules': [
+                    {
+                        'pair': 'DOTUSD',
+                        'class': 'forex',
+                        'tiers': [
+                            {'maker_fee': '0.4000', 'taker_fee': '0.8000', 'active': True},
+                            {
+                                'maker_fee': '0.3000',
+                                'taker_fee': '0.6000',
+                                'min_futures_volume': '5000000.0000',
+                                'min_spot_volume': '2500.0000'
+                            },
+                            ...
+                        ]
+                    }
+                ]
+            }
 
         """
         params: dict = {"fee-info": fee_info}
         if defined(pair):
             params["pair"] = pair
+        if defined(fee_schedule):
+            # Kraken validates this parameter strictly against the JSON
+            # boolean literals "true"/"false" and rejects the default
+            # str(bool) capitalization ("True"/"False") with
+            # EGeneral:Invalid arguments.
+            params["fee_schedule"] = "true" if fee_schedule else "false"
         return self.request(  # type: ignore[return-value]
             method="POST",
             uri="/0/private/TradeVolume",
