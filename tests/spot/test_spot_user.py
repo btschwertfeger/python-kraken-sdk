@@ -53,6 +53,24 @@ class TestSpotUserUnit:
                 "available_balance": 1.96307091,
             }
 
+    @pytest.mark.parametrize(
+        ("fee_schedule", "expected"),
+        [(True, "true"), (False, "false")],
+    )
+    def test_get_trade_volume_fee_schedule_serialization(
+        self: Self,
+        fee_schedule: bool,
+        expected: str,
+    ) -> None:
+        """
+        Checks that ``fee_schedule`` is sent as the lowercase JSON boolean
+        literal Kraken expects, not Python's ``str(bool)`` capitalization
+        (which Kraken rejects with ``EGeneral:Invalid arguments``).
+        """
+        with mock.patch.object(User, "request", return_value={}) as request:
+            User().get_trade_volume(fee_schedule=fee_schedule)
+            assert request.call_args.kwargs["params"]["fee_schedule"] == expected
+
 
 @pytest.mark.integration
 @pytest.mark.spot
@@ -289,6 +307,17 @@ class TestSpotUser:
         assert is_not_error(
             spot_auth_user.get_trade_volume(pair="DOT/EUR", fee_info=False),
         )
+
+    def test_get_trade_volume_fee_schedule(self: Self, spot_auth_user: User) -> None:
+        """
+        Checks that ``fee_schedule=True`` includes the ``schedules`` field
+        in the response, replacing the deprecated ``fees``/``fees_maker``
+        fields on ``Market.get_asset_pairs``.
+        """
+        response = spot_auth_user.get_trade_volume(pair="XBTUSD", fee_schedule=True)
+        assert is_not_error(response)
+        assert "schedules" in response
+        assert response["schedules"][0]["tiers"][0]["maker_fee"]
 
     @pytest.mark.parametrize("report", ["trades", "ledgers"])
     def test_request_save_export_report(
