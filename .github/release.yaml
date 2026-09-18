@@ -3,6 +3,8 @@
 # All rights reserved.
 # https://github.com/btschwertfeger
 #
+# SPDX-License-Identifier: Apache-2.0
+#
 # Config file to auto-generate release notes based on
 # https://docs.github.com/en/repositories/releasing-projects-on-github/automatically-generated-release-notes
 

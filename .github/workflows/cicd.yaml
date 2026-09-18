@@ -3,6 +3,8 @@
 # All rights reserved.
 # https://github.com/btschwertfeger
 #
+# SPDX-License-Identifier: Apache-2.0
+#
 # Workflow to apply pre-commit, build, test and upload the package to the test
 # index of PyPI.
 #

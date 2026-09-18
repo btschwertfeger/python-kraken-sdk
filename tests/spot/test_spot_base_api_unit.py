@@ -4,6 +4,8 @@
 # All rights reserved.
 # https://github.com/btschwertfeger
 #
+# SPDX-License-Identifier: Apache-2.0
+#
 
 """
 Offline unit tests for the shared Spot base client logic: request signing, the

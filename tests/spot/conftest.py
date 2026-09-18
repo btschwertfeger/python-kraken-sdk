@@ -4,6 +4,8 @@
 # All rights reserved.
 # https://github.com/btschwertfeger
 #
+# SPDX-License-Identifier: Apache-2.0
+#
 
 """
 Module providing fixtures used for the tests regarding the Kraken Spot API.

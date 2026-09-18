@@ -4,6 +4,8 @@
 # All rights reserved.
 # https://github.com/btschwertfeger
 #
+# SPDX-License-Identifier: Apache-2.0
+#
 
 """Module implementing end-to-end tests for the command-line interface"""
 

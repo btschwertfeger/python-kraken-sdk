@@ -3,6 +3,8 @@
 # All rights reserved.
 # https://github.com/btschwertfeger
 #
+# SPDX-License-Identifier: Apache-2.0
+#
 # Workflow that approves and merges all pull requests from the dependabot[bot]
 # author.
 #
