@@ -4,6 +4,8 @@
 # All rights reserved.
 # https://github.com/btschwertfeger
 #
+# SPDX-License-Identifier: Apache-2.0
+#
 
 """Module that implements the integration tests for the Spot Earn client."""
 

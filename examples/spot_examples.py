@@ -5,6 +5,8 @@
 # All rights reserved.
 # https://github.com/btschwertfeger
 #
+# SPDX-License-Identifier: Apache-2.0
+#
 
 """
 Module that implements *some* examples for the Kraken Spot REST clients usage.

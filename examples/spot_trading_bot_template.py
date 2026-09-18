@@ -5,6 +5,8 @@
 # All rights reserved.
 # https://github.com/btschwertfeger
 #
+# SPDX-License-Identifier: Apache-2.0
+#
 
 """
 Module that provides a template to build a Spot trading algorithm using the
