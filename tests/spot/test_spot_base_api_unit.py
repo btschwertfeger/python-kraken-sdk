@@ -18,6 +18,7 @@ from typing import Self
 
 import pytest
 
+from kraken import base_api
 from kraken.base_api import ErrorHandler, SpotClient, defined, ensure_string
 from kraken.exceptions import KrakenInsufficientFundsError
 
@@ -37,6 +38,14 @@ class TestSpotBaseAPIUnit:
         assert defined("") is True
         assert defined([]) is True
         assert defined(None) is False
+
+    def test_resolve_timeout_falls_back_to_class_timeout(self: Self) -> None:
+        """Leaving ``timeout`` at the ``request`` default uses ``class_timeout``."""
+        assert base_api._resolve_timeout(timeout=10, default=10, class_timeout=42) == 42
+
+    def test_resolve_timeout_uses_explicit_value(self: Self) -> None:
+        """A ``timeout`` deviating from the default is used as-is."""
+        assert base_api._resolve_timeout(timeout=5, default=10, class_timeout=42) == 5
 
     def test_ensure_string_joins_list(self: Self) -> None:
         """A list argument is collapsed into a comma-joined string."""
