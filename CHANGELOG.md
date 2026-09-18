@@ -2,11 +2,106 @@
 
 ## [Unreleased](https://github.com/btschwertfeger/python-kraken-sdk/tree/HEAD)
 
-[Full Changelog](https://github.com/btschwertfeger/python-kraken-sdk/compare/v3.2.5...HEAD)
+[Full Changelog](https://github.com/btschwertfeger/python-kraken-sdk/compare/v3.4.0...HEAD)
+
+**Fixed bugs:**
+
+- Resolve "Timeout for clients can't be modified unless self.TIMEOUT is set" [\#457](https://github.com/btschwertfeger/python-kraken-sdk/pull/457) ([btschwertfeger](https://github.com/btschwertfeger))
+
+## [v3.4.0](https://github.com/btschwertfeger/python-kraken-sdk/tree/v3.4.0) (2026-09-14)
+
+[Full Changelog](https://github.com/btschwertfeger/python-kraken-sdk/compare/v3.3.0...v3.4.0)
+
+**Implemented enhancements:**
+
+- Resolve "Add fee_schedule/schedules support to Spot User.get_trade_volume" [\#454](https://github.com/btschwertfeger/python-kraken-sdk/pull/454) ([btschwertfeger](https://github.com/btschwertfeger))
+
+Uncategorized merged pull requests:
+
+- Resolve "Note fees/fees_maker deprecation in Market.get_asset_pairs docstring" [\#455](https://github.com/btschwertfeger/python-kraken-sdk/pull/455) ([btschwertfeger](https://github.com/btschwertfeger))
+- Bump the github-actions group with 7 updates [\#451](https://github.com/btschwertfeger/python-kraken-sdk/pull/451) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump the github-actions group with 10 updates [\#450](https://github.com/btschwertfeger/python-kraken-sdk/pull/450) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Correct stale SBOM comment in build workflow [\#449](https://github.com/btschwertfeger/python-kraken-sdk/pull/449) ([btschwertfeger](https://github.com/btschwertfeger))
+- Skip Futures trade tests after demo API retirement [\#448](https://github.com/btschwertfeger/python-kraken-sdk/pull/448) ([btschwertfeger](https://github.com/btschwertfeger))
+
+## [v3.3.0](https://github.com/btschwertfeger/python-kraken-sdk/tree/v3.3.0) (2026-07-07)
+
+[Full Changelog](https://github.com/btschwertfeger/python-kraken-sdk/compare/v3.2.8...v3.3.0)
+
+**Implemented enhancements:**
+
+- Resolve "Attest build provenance" [\#446](https://github.com/btschwertfeger/python-kraken-sdk/pull/446) ([btschwertfeger](https://github.com/btschwertfeger))
+- Resolve "Add cl_ord_id to spot clients" [\#435](https://github.com/btschwertfeger/python-kraken-sdk/pull/435) ([btschwertfeger](https://github.com/btschwertfeger))
+
+**Fixed bugs:**
+
+- Resolve "Incorrect Type in futures/market.py" [\#434](https://github.com/btschwertfeger/python-kraken-sdk/pull/434) ([btschwertfeger](https://github.com/btschwertfeger))
+
+Uncategorized merged pull requests:
+
+- Drop SBOM release-asset upload under immutable releases [\#447](https://github.com/btschwertfeger/python-kraken-sdk/pull/447) ([btschwertfeger](https://github.com/btschwertfeger))
+- Fix sdist contents and consolidate CI config [\#445](https://github.com/btschwertfeger/python-kraken-sdk/pull/445) ([btschwertfeger](https://github.com/btschwertfeger))
+- Inline PyPI publish jobs for Trusted Publishing compatibility [\#444](https://github.com/btschwertfeger/python-kraken-sdk/pull/444) ([btschwertfeger](https://github.com/btschwertfeger))
+- Publish via OIDC Trusted Publishing and set a read-only default token [\#443](https://github.com/btschwertfeger/python-kraken-sdk/pull/443) ([btschwertfeger](https://github.com/btschwertfeger))
+- Bump the github-actions group with 8 updates [\#442](https://github.com/btschwertfeger/python-kraken-sdk/pull/442) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Pin astral-sh/setup-uv to a full commit SHA [\#440](https://github.com/btschwertfeger/python-kraken-sdk/pull/440) ([btschwertfeger](https://github.com/btschwertfeger))
+- Fix broken test and project maintenance [\#439](https://github.com/btschwertfeger/python-kraken-sdk/pull/439) ([btschwertfeger](https://github.com/btschwertfeger))
+- Upload coverage during test jobs and remove dedicated upload job [\#438](https://github.com/btschwertfeger/python-kraken-sdk/pull/438) ([btschwertfeger](https://github.com/btschwertfeger))
+- Add offline unit tests for base API signing and error handling [\#437](https://github.com/btschwertfeger/python-kraken-sdk/pull/437) ([btschwertfeger](https://github.com/btschwertfeger))
+- Add unit/integration/e2e test-type markers [\#436](https://github.com/btschwertfeger/python-kraken-sdk/pull/436) ([btschwertfeger](https://github.com/btschwertfeger))
+- Resolve "Document FOK as a valid timeinforce value in Trade.create_order" [\#433](https://github.com/btschwertfeger/python-kraken-sdk/pull/433) ([btschwertfeger](https://github.com/btschwertfeger))
+- Resolve "Mark Futures Fee Schedules endpoints as deprecated" [\#432](https://github.com/btschwertfeger/python-kraken-sdk/pull/432) ([btschwertfeger](https://github.com/btschwertfeger))
+- Bump the github-actions group with 4 updates [\#428](https://github.com/btschwertfeger/python-kraken-sdk/pull/428) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump the github-actions group with 5 updates [\#427](https://github.com/btschwertfeger/python-kraken-sdk/pull/427) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Rename CITATION file suffix [\#425](https://github.com/btschwertfeger/python-kraken-sdk/pull/425) ([btschwertfeger](https://github.com/btschwertfeger))
+
+## [v3.2.8](https://github.com/btschwertfeger/python-kraken-sdk/tree/v3.2.8) (2026-04-18)
+
+[Full Changelog](https://github.com/btschwertfeger/python-kraken-sdk/compare/v3.2.7...v3.2.8)
+
+Uncategorized merged pull requests:
+
+- Bump the github-actions group with 6 updates [\#423](https://github.com/btschwertfeger/python-kraken-sdk/pull/423) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Delete dummy file [\#422](https://github.com/btschwertfeger/python-kraken-sdk/pull/422) ([btschwertfeger](https://github.com/btschwertfeger))
+- Bump the github-actions group with 5 updates [\#419](https://github.com/btschwertfeger/python-kraken-sdk/pull/419) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump the github-actions group with 5 updates [\#414](https://github.com/btschwertfeger/python-kraken-sdk/pull/414) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump the github-actions group across 1 directory with 8 updates [\#412](https://github.com/btschwertfeger/python-kraken-sdk/pull/412) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump the github-actions group with 5 updates [\#408](https://github.com/btschwertfeger/python-kraken-sdk/pull/408) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Expose type annotations [\#424](https://github.com/btschwertfeger/python-kraken-sdk/pull/424) ([Dreamsorcerer](https://github.com/Dreamsorcerer))
+- Fix CI build and update pre-commit hooks [\#421](https://github.com/btschwertfeger/python-kraken-sdk/pull/421) ([btschwertfeger](https://github.com/btschwertfeger))
+- Update requirements-dev.txt [\#417](https://github.com/btschwertfeger/python-kraken-sdk/pull/417) ([btschwertfeger](https://github.com/btschwertfeger))
+- Update pyproject.toml [\#410](https://github.com/btschwertfeger/python-kraken-sdk/pull/410) ([btschwertfeger](https://github.com/btschwertfeger))
+- Test against Python 3.14 [\#409](https://github.com/btschwertfeger/python-kraken-sdk/pull/409) ([btschwertfeger](https://github.com/btschwertfeger))
+
+## [v3.2.7](https://github.com/btschwertfeger/python-kraken-sdk/tree/v3.2.7) (2025-10-07)
+
+[Full Changelog](https://github.com/btschwertfeger/python-kraken-sdk/compare/v3.2.6...v3.2.7)
+
+**Fixed bugs:**
+
+- Resolve "Allow usage of other Kraken instances via CLI" [\#407](https://github.com/btschwertfeger/python-kraken-sdk/pull/407) ([btschwertfeger](https://github.com/btschwertfeger))
+
+Uncategorized merged pull requests:
+
+- Bump the github-actions group with 3 updates [\#405](https://github.com/btschwertfeger/python-kraken-sdk/pull/405) ([dependabot[bot]](https://github.com/apps/dependabot))
+
+## [v3.2.6](https://github.com/btschwertfeger/python-kraken-sdk/tree/v3.2.6) (2025-09-21)
+
+[Full Changelog](https://github.com/btschwertfeger/python-kraken-sdk/compare/v3.2.5...v3.2.6)
+
+**Fixed bugs:**
+
+- Resolve "`spot.Trade.truncate` not working for xStocks" [\#404](https://github.com/btschwertfeger/python-kraken-sdk/pull/404) ([btschwertfeger](https://github.com/btschwertfeger))
+- Resolve "Alternative Kraken instances not working with websockets \(Spot\)" [\#402](https://github.com/btschwertfeger/python-kraken-sdk/pull/402) ([btschwertfeger](https://github.com/btschwertfeger))
 
 Uncategorized merged pull requests:
 
 - Bump the github-actions group with 5 updates [\#395](https://github.com/btschwertfeger/python-kraken-sdk/pull/395) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Resolve "Running GitHub Actions on contributions is cumbersome" [\#400](https://github.com/btschwertfeger/python-kraken-sdk/pull/400) ([btschwertfeger](https://github.com/btschwertfeger))
+- Resolve "Stock trade compatibility" [\#399](https://github.com/btschwertfeger/python-kraken-sdk/pull/399) ([btschwertfeger](https://github.com/btschwertfeger))
+- Improve test suite [\#398](https://github.com/btschwertfeger/python-kraken-sdk/pull/398) ([btschwertfeger](https://github.com/btschwertfeger))
+- Update tests [\#397](https://github.com/btschwertfeger/python-kraken-sdk/pull/397) ([btschwertfeger](https://github.com/btschwertfeger))
+- Extract dev-dependencies [\#396](https://github.com/btschwertfeger/python-kraken-sdk/pull/396) ([btschwertfeger](https://github.com/btschwertfeger))
 - Update project configuration [\#394](https://github.com/btschwertfeger/python-kraken-sdk/pull/394) ([btschwertfeger](https://github.com/btschwertfeger))
 
 ## [v3.2.5](https://github.com/btschwertfeger/python-kraken-sdk/tree/v3.2.5) (2025-09-01)

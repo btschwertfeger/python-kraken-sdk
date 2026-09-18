@@ -51,6 +51,9 @@ classifiers = [
   "Topic :: Utilities",
 ]
 
+[project.optional-dependencies]
+mcp = ["mcp>=2.2.0"]
+
 [project.urls]
 Homepage = "https://github.com/btschwertfeger/python-kraken-sdk"
 Documentation = "https://python-kraken-sdk.readthedocs.io/en/stable/"
@@ -59,6 +62,7 @@ Changelog = "https://github.com/btschwertfeger/python-kraken-sdk/releases"
 
 [project.scripts]
 kraken = "kraken.cli:cli"
+kraken-mcp = "kraken.mcp:main"
 
 [tool.setuptools]
 include-package-data = false
@@ -92,6 +96,7 @@ asyncio_default_fixture_loop_scope = "function"
 markers = [
   "wip: Used to run a specific test by hand.",
   "flaky: Flaky tests",
+  "mcp: MCP server tool wiring.",
   # Test-type axis (orthogonal to the domain markers below).
   "unit: Offline test — no network, no API keys, deterministic.",
   "integration: Live test hitting the Kraken REST/Websocket API.",

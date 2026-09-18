@@ -90,6 +90,7 @@ new releases.
 
 - [ Installation and setup ](#installation)
 - [ Command-line interface ](#cliusage)
+- [ MCP Server ](#mcpusage)
 - [ Spot Clients ](#spotusage)
 - [ xStocks ](#xstocksusage)
 - [ Futures Clients ](#futuresusage)
@@ -156,6 +157,44 @@ kraken futures --api-key=<api-key> --secret-key=<secret-key> https://futures.kra
 ```
 
 ... All endpoints of the Kraken Spot and Futurs API can be accessed like that.
+
+<a name="mcpusage"></a>
+
+# 📍 MCP Server
+
+The python-kraken-sdk also ships an MCP server exposing the Spot (incl.
+xStocks — pass `"asset_class": "tokenized_asset"` inside `params` where the
+Kraken API docs require it) and Futures `request` methods as two tools,
+`spot_request` and `futures_request`.
+
+```bash
+uv tool install "python-kraken-sdk[mcp]"
+
+# e.g. Claude setup:
+claude mcp add kraken --scope user -- kraken-mcp
+```
+
+Credentials are never tool arguments. Configure them as environment
+variables instead: `KRAKEN_SPOT_API_KEY` / `KRAKEN_SPOT_SECRET_KEY`,
+`KRAKEN_FUTURES_API_KEY` / `KRAKEN_FUTURES_SECRET_KEY`, and optionally
+`KRAKEN_FUTURES_SANDBOX=1` to target the Futures demo environment. Example
+client for Claude Code configuration:
+
+```json
+// ~/.claude.json
+{
+  "mcpServers": {
+    "kraken": {
+      "command": "kraken-mcp",
+      "env": {
+        // Only public endpoints are available without credentials
+        "KRAKEN_SPOT_API_KEY": "<your-api-key>",
+        "KRAKEN_SPOT_SECRET_KEY": "<your-secret-key>"
+      }
+    }
+  }
+}
+```
 
 <a name="spotusage"></a>
 
