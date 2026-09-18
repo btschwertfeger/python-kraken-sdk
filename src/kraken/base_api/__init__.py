@@ -47,6 +47,15 @@ def defined(value: Any) -> bool:  # noqa: ANN401
     return value is not None
 
 
+def _resolve_timeout(timeout: int, default: int, class_timeout: int) -> int:
+    """
+    Resolves the timeout to use for a request: the explicitly passed
+    ``timeout`` if it deviates from the ``request`` method's ``default``,
+    otherwise the client's ``TIMEOUT`` class attribute.
+    """
+    return class_timeout if timeout == default else timeout
+
+
 def ensure_string(parameter_name: str) -> Callable:
     """
     This function is intended to be used as decorator
@@ -376,7 +385,7 @@ class SpotClient:
             extra_params=extra_params,
         )
 
-        timeout: int = self.TIMEOUT if timeout != 10 else timeout  # type: ignore[no-redef]
+        timeout = _resolve_timeout(timeout, 10, self.TIMEOUT)
         self.__check_renew_session()
 
         if method in {"GET", "DELETE"}:
@@ -605,7 +614,7 @@ class SpotAsyncClient(SpotClient):
             query_str=query_str,
             extra_params=extra_params,
         )
-        timeout: int = self.TIMEOUT if timeout != 10 else timeout  # type: ignore[no-redef]
+        timeout = _resolve_timeout(timeout, 10, self.TIMEOUT)
         await self.__check_renew_session()
 
         if method in {"GET", "DELETE"}:
@@ -884,7 +893,7 @@ class FuturesClient:
             auth=auth,
             extra_params=extra_params,
         )
-        timeout: int = self.TIMEOUT if timeout == 10 else timeout  # type: ignore[no-redef]
+        timeout = _resolve_timeout(timeout, 10, self.TIMEOUT)
         self.__check_renew_session()
 
         if method in {"GET", "DELETE"}:
@@ -1083,7 +1092,7 @@ class FuturesAsyncClient(FuturesClient):
             auth=auth,
         )
 
-        timeout = self.TIMEOUT if timeout != 10 else timeout
+        timeout = _resolve_timeout(timeout, 10, self.TIMEOUT)
         await self.__check_renew_session()
 
         if method in {"GET", "DELETE"}:
