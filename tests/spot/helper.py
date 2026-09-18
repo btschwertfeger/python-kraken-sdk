@@ -4,6 +4,8 @@
 # All rights reserved.
 # https://github.com/btschwertfeger
 #
+# SPDX-License-Identifier: Apache-2.0
+#
 
 """
 Module that implements helpers for the Kraken Spot Websocket API v2

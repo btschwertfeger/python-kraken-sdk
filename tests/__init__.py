@@ -4,4 +4,6 @@
 # All rights reserved.
 # https://github.com/btschwertfeger
 #
+# SPDX-License-Identifier: Apache-2.0
+#
 # This file is required for the CI/CD codecov workflow.

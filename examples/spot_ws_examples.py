@@ -5,6 +5,8 @@
 # All rights reserved.
 # https://github.com/btschwertfeger
 #
+# SPDX-License-Identifier: Apache-2.0
+#
 
 """
 Module that provides an example usage for the KrakenSpotWebsocketClient.
