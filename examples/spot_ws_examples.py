@@ -113,6 +113,26 @@ async def main() -> None:
             await asyncio.sleep(5)
             await client_auth.unsubscribe(params={"channel": "executions"})
 
+            # The ``level3`` channel is served on a different endpoint than
+            # ``executions``/``balances``, so it needs its own client instance
+            # pointed at that endpoint via ``auth_ws_url``.
+            client_level3 = Client(
+                key=key,
+                secret=secret,
+                no_public=True,
+                auth_ws_url="wss://ws-l3.kraken.com",
+            )
+            clients.append(client_level3)
+            await client_level3.start()
+            await client_level3.subscribe(
+                params={"channel": "level3", "symbol": ["BTC/USD"]},
+            )
+
+            await asyncio.sleep(5)
+            await client_level3.unsubscribe(
+                params={"channel": "level3", "symbol": ["BTC/USD"]},
+            )
+
         while not client.exception_occur:  # and not client_auth.exception_occur:
             await asyncio.sleep(6)
     finally:
