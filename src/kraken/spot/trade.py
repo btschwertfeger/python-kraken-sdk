@@ -105,8 +105,9 @@ class Trade(SpotClient):
         - https://docs.kraken.com/api/docs/rest-api/add-order
 
         :param ordertype: The kind of the order, one of: ``market``, ``limit``,
-            ``take-profit``, ``stop-loss-limit``, ``take-profit-limit`` and
-            ``settle-position`` (see:
+            ``iceberg``, ``stop-loss``, ``take-profit``, ``stop-loss-limit``,
+            ``take-profit-limit``, ``trailing-stop``, ``trailing-stop-limit``
+            and ``settle-position`` (see:
             https://support.kraken.com/hc/en-us/sections/200577136-Order-types)
         :type ordertype: str
         :param side: ``buy`` or ``sell``
@@ -115,13 +116,15 @@ class Trade(SpotClient):
         :type pair: str
         :param volume: The volume of the position to create
         :type volume: str | float
-        :param price: The limit price for ``limit`` orders and the trigger price
-            for orders with ``ordertype`` one of ``stop-loss``,
-            ``stop-loss-limit``, ``take-profit``, and ``take-profit-limit``
+        :param price: The limit price for ``limit`` and ``iceberg`` orders and
+            the trigger price for orders with ``ordertype`` one of
+            ``stop-loss``, ``stop-loss-limit``, ``take-profit``,
+            ``take-profit-limit``, ``trailing-stop``, and
+            ``trailing-stop-limit``
         :type price: str | float, optional
-        :param price2: The limit price for ``stop-loss-limit`` and
-            ``take-profit-limit`` orders The price2 can also be set to absolute
-            or relative changes.
+        :param price2: The limit price for ``stop-loss-limit``,
+            ``take-profit-limit``, and ``trailing-stop-limit`` orders. The
+            price2 can also be set to absolute or relative changes.
                 * Prefixed using ``+`` or ``-`` defines the change in the quote
                   asset
                 * Prefixed by ``#`` is the same as ``+`` or ``-`` but the sign
@@ -130,9 +133,10 @@ class Trade(SpotClient):
                   changes.
         :type price2: str | float, optional
         :param trigger: What triggers the position of ``stop-loss``,
-            ``stop-loss-limit``, ``take-profit``, and ``take-profit-limit``
-            orders. Will also be used for associated conditional close orders.
-            Kraken will use ``last`` if nothing is specified.
+            ``stop-loss-limit``, ``take-profit``, ``take-profit-limit``,
+            ``trailing-stop``, and ``trailing-stop-limit`` orders. Will also be
+            used for associated conditional close orders. Kraken will use
+            ``last`` if nothing is specified.
         :type trigger: str, optional
         :param leverage: The leverage
         :type leverage: str | float, optional
@@ -158,9 +162,9 @@ class Trade(SpotClient):
             expiration of the order, (default: ``"0"`` - i.e., no expiration)
         :type expiretm: str, optional
         :param close_ordertype: Conditional close order type, one of: ``limit``,
-            ``stop-loss``, ``take-profit``, ``stop-loss-limit``,
-            ``take-profit-limit`` (see the referenced Kraken documentation for
-            more information)
+            ``iceberg``, ``stop-loss``, ``take-profit``, ``stop-loss-limit``,
+            ``take-profit-limit``, ``trailing-stop``, ``trailing-stop-limit``
+            (see the referenced Kraken documentation for more information)
         :type close_ordertype: str, optional
         :param close_price: Conditional close price
         :type close_price: str | float, optional
@@ -352,8 +356,10 @@ class Trade(SpotClient):
         trigger_ordertypes: tuple = (
             "stop-loss",
             "stop-loss-limit",
+            "take-profit",
             "take-profit-limit",
-            "take-profit-limit",
+            "trailing-stop",
+            "trailing-stop-limit",
         )
 
         if defined(trigger):
@@ -366,7 +372,7 @@ class Trade(SpotClient):
                 if not truncate
                 else self.truncate(amount=price, amount_type="price", pair=pair)
             )
-        if ordertype in {"stop-loss-limit", "take-profit-limit"}:
+        if ordertype in {"stop-loss-limit", "take-profit-limit", "trailing-stop-limit"}:
             if not defined(price2):
                 raise ValueError(
                     f"Ordertype {ordertype} requires a secondary price (price2)!",
