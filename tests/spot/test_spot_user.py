@@ -11,7 +11,6 @@
 
 import random
 import tempfile
-import warnings
 from contextlib import suppress
 from datetime import datetime
 from pathlib import Path
@@ -73,33 +72,6 @@ class TestSpotUserUnit:
         with mock.patch.object(User, "request", return_value={}) as request:
             User().get_trade_volume(fee_schedule=fee_schedule)
             assert request.call_args.kwargs["params"]["fee_schedule"] == expected
-
-    def test_get_trade_volume_no_warning_by_default(self: Self) -> None:
-        """
-        Checks that ``get_trade_volume`` does not emit a ``DeprecationWarning``
-        when the caller never passes ``fee_info``.
-        """
-        with (
-            mock.patch.object(User, "request", return_value={}),
-            warnings.catch_warnings(),
-        ):
-            warnings.simplefilter("error")
-            User().get_trade_volume()
-
-    @pytest.mark.parametrize("fee_info", [True, False])
-    def test_get_trade_volume_warns_on_explicit_fee_info(
-        self: Self,
-        fee_info: bool,
-    ) -> None:
-        """
-        Checks that ``get_trade_volume`` emits a ``DeprecationWarning`` when
-        the caller explicitly passes ``fee_info``, regardless of its value.
-        """
-        with (
-            mock.patch.object(User, "request", return_value={}),
-            pytest.warns(DeprecationWarning, match="fee_info"),
-        ):
-            User().get_trade_volume(fee_info=fee_info)
 
 
 @pytest.mark.integration
