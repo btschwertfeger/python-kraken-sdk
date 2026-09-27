@@ -13,10 +13,31 @@ from __future__ import annotations
 from typing import Self
 
 from kraken.base_api import SpotClient, defined
+from kraken.utils.utils import deprecated
+
+_FUNDING_LEGACY_NOTE = (
+    "will remain active but will no longer receive updates. Kraken is"
+    " introducing a new Funding (Beta) API with stable"
+    " method/network/address IDs, fee pinning, and cursor pagination."
+    " Review the Funding guide"
+    " (https://docs.kraken.com/exchange/guides/rest/funding). This method"
+    " keeps wrapping the legacy endpoint, so reach the new endpoints"
+    " through this client's request() method."
+)
 
 
 class Funding(SpotClient):
     """
+    .. deprecated::
+        Every endpoint wrapped by this class belongs to Kraken's Funding
+        (Legacy) API, which will remain active but will no longer receive
+        updates. Kraken is introducing a new Funding (Beta) API with stable
+        method/network/address IDs, fee pinning, and cursor pagination.
+        Review the `Funding guide
+        <https://docs.kraken.com/exchange/guides/rest/funding>`_. These
+        methods keep wrapping the legacy endpoints, so reach the new
+        endpoints through this client's ``request`` method.
+
     Class that implements the Spot Funding client. Currently there are no
     funding endpoints that could be accesses without authentication.
 
@@ -60,6 +81,10 @@ class Funding(SpotClient):
         super().__enter__()
         return self
 
+    @deprecated(
+        f"The 'get_deposit_methods' function uses a deprecated Kraken endpoint,"
+        f" which {_FUNDING_LEGACY_NOTE}",
+    )
     def get_deposit_methods(
         self: Funding,
         asset: str,
@@ -67,6 +92,16 @@ class Funding(SpotClient):
         extra_params: dict | None = None,
     ) -> list[dict]:
         """
+        .. deprecated::
+            This endpoint belongs to Kraken's Funding (Legacy) API, which
+            will remain active but will no longer receive updates. Kraken is
+            introducing a new Funding (Beta) API with stable
+            method/network/address IDs, fee pinning, and cursor pagination.
+            Review the `Funding guide
+            <https://docs.kraken.com/exchange/guides/rest/funding>`_. This
+            method keeps wrapping the legacy endpoint, so reach the new
+            endpoints through this client's ``request`` method.
+
         Get the available deposit methods for a specific asset.
 
         - https://docs.kraken.com/api/docs/rest-api/get-deposit-methods
@@ -102,6 +137,10 @@ class Funding(SpotClient):
             extra_params=extra_params,
         )
 
+    @deprecated(
+        f"The 'get_deposit_address' function uses a deprecated Kraken endpoint,"
+        f" which {_FUNDING_LEGACY_NOTE}",
+    )
     def get_deposit_address(
         self: Funding,
         asset: str,
@@ -111,12 +150,22 @@ class Funding(SpotClient):
         extra_params: dict | None = None,
     ) -> list[dict]:
         """
+        .. deprecated::
+            This endpoint belongs to Kraken's Funding (Legacy) API, which
+            will remain active but will no longer receive updates. Kraken is
+            introducing a new Funding (Beta) API with stable
+            method/network/address IDs, fee pinning, and cursor pagination.
+            Review the `Funding guide
+            <https://docs.kraken.com/exchange/guides/rest/funding>`_. This
+            method keeps wrapping the legacy endpoint, so reach the new
+            endpoints through this client's ``request`` method.
+
         Get the deposit addresses for a specific asset. New deposit addresses
         can be generated.
 
         Requires the ``Deposit funds`` API key permission.
 
-        - https://docs.kraken.com/api/docs/rest-api/get-deposit-addresses
+        - https://docs.kraken.com/api-reference/funding/get-deposit-addresses
 
         :param asset: Asset being deposited
         :type asset: str
@@ -155,6 +204,10 @@ class Funding(SpotClient):
             extra_params=extra_params,
         )
 
+    @deprecated(
+        f"The 'get_recent_deposits_status' function uses a deprecated Kraken"
+        f" endpoint, which {_FUNDING_LEGACY_NOTE}",
+    )
     def get_recent_deposits_status(
         self: Funding,
         asset: str | None = None,
@@ -166,6 +219,16 @@ class Funding(SpotClient):
         extra_params: dict | None = None,
     ) -> list[dict] | dict:
         """
+        .. deprecated::
+            This endpoint belongs to Kraken's Funding (Legacy) API, which
+            will remain active but will no longer receive updates. Kraken is
+            introducing a new Funding (Beta) API with stable
+            method/network/address IDs, fee pinning, and cursor pagination.
+            Review the `Funding guide
+            <https://docs.kraken.com/exchange/guides/rest/funding>`_. This
+            method keeps wrapping the legacy endpoint, so reach the new
+            endpoints through this client's ``request`` method.
+
         Get information about the recent deposit status. The look back period is
         90 days and only the last 25 deposits will be returned.
 
@@ -248,6 +311,10 @@ class Funding(SpotClient):
             extra_params=extra_params,
         )
 
+    @deprecated(
+        f"The 'withdraw_methods' function uses a deprecated Kraken endpoint,"
+        f" which {_FUNDING_LEGACY_NOTE}",
+    )
     def withdraw_methods(
         self: Funding,
         asset: str | None = None,
@@ -257,6 +324,16 @@ class Funding(SpotClient):
         extra_params: dict | None = None,
     ) -> dict:
         """
+        .. deprecated::
+            This endpoint belongs to Kraken's Funding (Legacy) API, which
+            will remain active but will no longer receive updates. Kraken is
+            introducing a new Funding (Beta) API with stable
+            method/network/address IDs, fee pinning, and cursor pagination.
+            Review the `Funding guide
+            <https://docs.kraken.com/exchange/guides/rest/funding>`_. This
+            method keeps wrapping the legacy endpoint, so reach the new
+            endpoints through this client's ``request`` method.
+
         Returns the list of available withdraw methods for that user.
 
         Requires the ``Funds permissions - Query`` and ``Funds permissions -
@@ -275,7 +352,7 @@ class Funding(SpotClient):
         if defined(asset):
             params["asset"] = asset
         if defined(aclass):
-            params["network"] = aclass
+            params["aclass"] = aclass
         if defined(network):
             params["network"] = network
         return self.request(  # type: ignore[return-value]
@@ -285,6 +362,10 @@ class Funding(SpotClient):
             extra_params=extra_params,
         )
 
+    @deprecated(
+        f"The 'withdraw_addresses' function uses a deprecated Kraken endpoint,"
+        f" which {_FUNDING_LEGACY_NOTE}",
+    )
     def withdraw_addresses(
         self: Funding,
         asset: str | None = None,
@@ -296,6 +377,16 @@ class Funding(SpotClient):
         extra_params: dict | None = None,
     ) -> dict:
         """
+        .. deprecated::
+            This endpoint belongs to Kraken's Funding (Legacy) API, which
+            will remain active but will no longer receive updates. Kraken is
+            introducing a new Funding (Beta) API with stable
+            method/network/address IDs, fee pinning, and cursor pagination.
+            Review the `Funding guide
+            <https://docs.kraken.com/exchange/guides/rest/funding>`_. This
+            method keeps wrapping the legacy endpoint, so reach the new
+            endpoints through this client's ``request`` method.
+
         Returns the list of available withdrawal addresses for that user.
 
         Requires the ``Funds permissions - Query`` and ``Funds permissions -
@@ -318,7 +409,7 @@ class Funding(SpotClient):
         if defined(asset):
             params["asset"] = asset
         if defined(aclass):
-            params["network"] = aclass
+            params["aclass"] = aclass
         if defined(method):
             params["method"] = method
         if defined(key):
@@ -327,11 +418,15 @@ class Funding(SpotClient):
             params["verified"] = verified
         return self.request(  # type: ignore[return-value]
             method="POST",
-            uri="/0/private/WithdrawMethods",
+            uri="/0/private/WithdrawAddresses",
             params=params,
             extra_params=extra_params,
         )
 
+    @deprecated(
+        f"The 'get_withdrawal_info' function uses a deprecated Kraken endpoint,"
+        f" which {_FUNDING_LEGACY_NOTE}",
+    )
     def get_withdrawal_info(
         self: Funding,
         asset: str,
@@ -341,6 +436,16 @@ class Funding(SpotClient):
         extra_params: dict | None = None,
     ) -> dict:
         """
+        .. deprecated::
+            This endpoint belongs to Kraken's Funding (Legacy) API, which
+            will remain active but will no longer receive updates. Kraken is
+            introducing a new Funding (Beta) API with stable
+            method/network/address IDs, fee pinning, and cursor pagination.
+            Review the `Funding guide
+            <https://docs.kraken.com/exchange/guides/rest/funding>`_. This
+            method keeps wrapping the legacy endpoint, so reach the new
+            endpoints through this client's ``request`` method.
+
         Get information about a possible withdraw, including fee and limit
         information. The ``key`` must be the name of the key defined in the
         account.
@@ -384,6 +489,10 @@ class Funding(SpotClient):
             extra_params=extra_params,
         )
 
+    @deprecated(
+        f"The 'withdraw_funds' function uses a deprecated Kraken endpoint,"
+        f" which {_FUNDING_LEGACY_NOTE}",
+    )
     def withdraw_funds(
         self: Funding,
         asset: str,
@@ -394,6 +503,16 @@ class Funding(SpotClient):
         extra_params: dict | None = None,
     ) -> dict:
         """
+        .. deprecated::
+            This endpoint belongs to Kraken's Funding (Legacy) API, which
+            will remain active but will no longer receive updates. Kraken is
+            introducing a new Funding (Beta) API with stable
+            method/network/address IDs, fee pinning, and cursor pagination.
+            Review the `Funding guide
+            <https://docs.kraken.com/exchange/guides/rest/funding>`_. This
+            method keeps wrapping the legacy endpoint, so reach the new
+            endpoints through this client's ``request`` method.
+
         Create a new withdraw. The key must be the name of the withdraw key
         defined in the withdraw section of the Kraken WebUI.
 
@@ -437,6 +556,10 @@ class Funding(SpotClient):
             extra_params=extra_params,
         )
 
+    @deprecated(
+        f"The 'get_recent_withdraw_status' function uses a deprecated Kraken"
+        f" endpoint, which {_FUNDING_LEGACY_NOTE}",
+    )
     def get_recent_withdraw_status(
         self: Funding,
         asset: str | None = None,
@@ -448,6 +571,16 @@ class Funding(SpotClient):
         extra_params: dict | None = None,
     ) -> list[dict]:
         """
+        .. deprecated::
+            This endpoint belongs to Kraken's Funding (Legacy) API, which
+            will remain active but will no longer receive updates. Kraken is
+            introducing a new Funding (Beta) API with stable
+            method/network/address IDs, fee pinning, and cursor pagination.
+            Review the `Funding guide
+            <https://docs.kraken.com/exchange/guides/rest/funding>`_. This
+            method keeps wrapping the legacy endpoint, so reach the new
+            endpoints through this client's ``request`` method.
+
         Get information about the recent withdraw status, including withdraws of
         the past 90 days but at max 500 results.
 
@@ -507,6 +640,10 @@ class Funding(SpotClient):
             extra_params=extra_params,
         )
 
+    @deprecated(
+        f"The 'cancel_withdraw' function uses a deprecated Kraken endpoint,"
+        f" which {_FUNDING_LEGACY_NOTE}",
+    )
     def cancel_withdraw(
         self: Funding,
         asset: str,
@@ -515,6 +652,16 @@ class Funding(SpotClient):
         extra_params: dict | None = None,
     ) -> dict:
         """
+        .. deprecated::
+            This endpoint belongs to Kraken's Funding (Legacy) API, which
+            will remain active but will no longer receive updates. Kraken is
+            introducing a new Funding (Beta) API with stable
+            method/network/address IDs, fee pinning, and cursor pagination.
+            Review the `Funding guide
+            <https://docs.kraken.com/exchange/guides/rest/funding>`_. This
+            method keeps wrapping the legacy endpoint, so reach the new
+            endpoints through this client's ``request`` method.
+
         Cancel a requested withdraw. This will only be successful if the
         withdraw is not being processed so far.
 
@@ -545,6 +692,10 @@ class Funding(SpotClient):
             extra_params=extra_params,
         )
 
+    @deprecated(
+        f"The 'wallet_transfer' function uses a deprecated Kraken endpoint,"
+        f" which {_FUNDING_LEGACY_NOTE}",
+    )
     def wallet_transfer(
         self: Funding,
         asset: str,
@@ -555,6 +706,16 @@ class Funding(SpotClient):
         extra_params: dict | None = None,
     ) -> dict:
         """
+        .. deprecated::
+            This endpoint belongs to Kraken's Funding (Legacy) API, which
+            will remain active but will no longer receive updates. Kraken is
+            introducing a new Funding (Beta) API with stable
+            method/network/address IDs, fee pinning, and cursor pagination.
+            Review the `Funding guide
+            <https://docs.kraken.com/exchange/guides/rest/funding>`_. This
+            method keeps wrapping the legacy endpoint, so reach the new
+            endpoints through this client's ``request`` method.
+
         Transfer assets between the Spot and Futures wallet.
 
         Requires the ``Withdraw funds`` API key permissions.
