@@ -916,7 +916,7 @@ class User(SpotClient):
         self: User,
         pair: str | list[str] | None = None,
         *,
-        fee_info: bool = True,
+        fee_info: bool | None = None,
         fee_schedule: bool | None = None,
         extra_params: dict | None = None,
     ) -> dict:
@@ -930,9 +930,9 @@ class User(SpotClient):
         :param pair: Asset pair, list of asset pairs or comma delimited list (as
             string) of asset pairs to filter
         :type pair: str | list[str], optional
-        :param fee_info: Deprecated and without effect (default: ``True``).
+        :param fee_info: Deprecated and without effect (default: ``None``).
             Kraken now derives fee inclusion from ``pair`` alone and treats
-            this as a legacy no-op parameter. Calling this method emits a
+            this as a legacy no-op parameter. Passing it emits a
             ``DeprecationWarning``; the parameter will be removed in a future
             release.
         :type fee_info: bool, optional
@@ -1004,14 +1004,15 @@ class User(SpotClient):
             }
 
         """
-        warnings.warn(
-            f"`fee_info={fee_info}` has no effect: Kraken now derives fee"
-            " inclusion from `pair` alone, treating `fee_info` as a legacy"
-            " no-op parameter. It will be removed in a future release. See"
-            " https://docs.kraken.com/api/docs/rest-api/get-trade-volume",
-            category=DeprecationWarning,
-            stacklevel=3,
-        )
+        if defined(fee_info):
+            warnings.warn(
+                f"`fee_info={fee_info}` has no effect: Kraken now derives fee"
+                " inclusion from `pair` alone, treating `fee_info` as a legacy"
+                " no-op parameter. It will be removed in a future release. See"
+                " https://docs.kraken.com/api/docs/rest-api/get-trade-volume",
+                category=DeprecationWarning,
+                stacklevel=3,
+            )
         params: dict = {}
         if defined(pair):
             params["pair"] = pair
