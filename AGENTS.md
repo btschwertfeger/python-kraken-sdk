@@ -49,8 +49,11 @@ error handling:
 The primary public interface is each client's generic `request(...)` method —
 callers pass the raw `method` + `uri` (+ params) and get parsed, exception-
 checked responses. The README "Considerations" section is the design intent:
-**concentrate on `request`**; the higher-level domain clients are maintained but
-no longer extended.
+**concentrate on `request`**; the higher-level domain clients receive bug fixes
+only, no new wrapper methods or parameters, because `request` already reaches
+every endpoint and parameter in Kraken's API docs. Websocket clients are
+exempt: they may still gain new channels or features, because those aren't
+reachable through a plain `request` call.
 
 Key shared behaviors:
 
@@ -97,8 +100,9 @@ auth in the background. It is not a wrapper around the domain clients.
 - Type hints on all signatures; ruff + mypy run in `strict` mode (config in
   `pyproject.toml`). `line-length = 130`.
 - Public interfaces get sphinx-style docstrings; skip them on internal helpers.
-- When adding/adjusting an endpoint, add or update the matching test under
-  `tests/` (mirroring `src/` layout) with the correct marker.
+- When fixing a domain-client wrapper or adding a websocket feature, add or
+  update the matching test under `tests/` (mirroring `src/` layout) with the
+  correct marker.
 - Versioning is SemVer; version is derived from git tags via setuptools_scm
   (`src/kraken/_version.py` is generated — do not edit).
 
