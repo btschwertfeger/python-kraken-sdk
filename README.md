@@ -603,7 +603,12 @@ basis. Instead, it was decided to concentrate on the `request` functions of
 the `SpotClient`, `SpotAsyncClient`, `FuturesClient` and the
 `FuturesAsyncClient` (as well as their websocket client implementations). All
 those clients named "User", "Trade", "Market", "Funding" and so on will no
-longer be extended, but maintained to a certain degree.
+longer be extended, but maintained to a certain degree. The client's `request`
+method takes the raw method, URI, and parameters directly, so every endpoint
+and parameter documented by Kraken's API is already reachable without a named
+wrapper method. Existing wrapper methods still receive bug fixes. Websocket
+clients keep gaining new channels and features, since those cannot be reached
+through a plain `request` call.
 
 <a name="references"></a>
 

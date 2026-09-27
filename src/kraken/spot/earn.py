@@ -45,7 +45,7 @@ class Earn(SpotClient):
 
         >>> from kraken.spot import Earn
         >>> with Earn(key="api-key", secret="secret-key") as earn:
-        ...     print(earn.stake_asset(asset="XLM", amount=200, method="Lumen Staked"))
+        ...     print(earn.allocate_earn_funds(amount=200, strategy_id="ESRFUO3-Q62XD-WIOIL7"))
     """
 
     def __init__(  # nosec: B107
