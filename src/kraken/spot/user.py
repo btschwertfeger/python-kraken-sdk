@@ -15,7 +15,7 @@ from __future__ import annotations
 
 import warnings
 from decimal import Decimal
-from typing import Self
+from typing import Self, cast
 
 from kraken.base_api import SpotClient, defined, ensure_string
 
@@ -911,10 +911,9 @@ class User(SpotClient):
             extra_params=extra_params,
         )
 
-    @ensure_string("pair")
     def get_trade_volume(
         self: User,
-        pair: str | list[str] | None = None,
+        pair: str | list[str] | list[dict[str, str]] | None = None,
         *,
         fee_info: bool | None = None,
         fee_schedule: bool | None = None,
@@ -927,9 +926,11 @@ class User(SpotClient):
 
         - https://docs.kraken.com/api/docs/rest-api/get-trade-volume
 
-        :param pair: Asset pair, list of asset pairs or comma delimited list (as
-            string) of asset pairs to filter
-        :type pair: str | list[str], optional
+        :param pair: Asset pair, list of asset pairs, or comma delimited list
+            (as string) of asset pairs to filter. For non-forex asset classes
+            (e.g., ``derivatives``, ``equity_pair``), pass a list of
+            ``{"asset": ..., "aclass": ...}`` objects instead.
+        :type pair: str | list[str] | list[dict[str, str]], optional
         :param fee_info: Deprecated and without effect (default: ``None``).
             Kraken now derives fee inclusion from ``pair`` alone and treats
             this as a legacy no-op parameter. Passing it emits a
@@ -1002,6 +1003,24 @@ class User(SpotClient):
                     }
                 ]
             }
+            >>> u.get_trade_volume(
+            ...     pair=[{"asset": "PF_XBTUSD", "aclass": "derivatives"}],
+            ... )
+            {
+                'currency': 'ZUSD',
+                'volume': '212243.1210',
+                'fees': {
+                    'PF_XBTUSD': {
+                        'fee': '0.2200',
+                        'minfee': '0.1000',
+                        'maxfee': '0.2200',
+                        'nextfee': '0.2000',
+                        'tiervolume': '0.0000',
+                        'nextvolume': '250000.0000'
+                    }
+                },
+                'fees_maker': {...}
+            }
 
         """
         if defined(fee_info):
@@ -1014,8 +1033,19 @@ class User(SpotClient):
                 stacklevel=3,
             )
         params: dict = {}
+        # A list of {"asset": ..., "aclass": ...} objects is required to
+        # request fees for non-forex classes (e.g., derivatives, equity_pair)
+        # and must be sent as a JSON body rather than joined into a string.
+        pair_is_objects = (
+            isinstance(pair, list) and bool(pair) and isinstance(pair[0], dict)
+        )
         if defined(pair):
-            params["pair"] = pair
+            if pair_is_objects:
+                params["pair"] = pair
+            elif isinstance(pair, list):
+                params["pair"] = ",".join(cast("list[str]", pair))
+            else:
+                params["pair"] = pair
         if defined(fee_schedule):
             # Kraken validates this parameter strictly against the JSON
             # boolean literals "true"/"false" and rejects the default
@@ -1026,6 +1056,7 @@ class User(SpotClient):
             method="POST",
             uri="/0/private/TradeVolume",
             params=params,
+            do_json=pair_is_objects,
             extra_params=extra_params,
         )
 
