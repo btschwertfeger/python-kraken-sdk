@@ -306,9 +306,7 @@ class TestSpotUser:
         the responses do not contain the error key.
         """
         assert is_not_error(spot_auth_user.get_trade_volume())
-        assert is_not_error(
-            spot_auth_user.get_trade_volume(pair="DOT/EUR", fee_info=False),
-        )
+        assert is_not_error(spot_auth_user.get_trade_volume(pair="DOT/EUR"))
 
     def test_get_trade_volume_fee_schedule(self: Self, spot_auth_user: User) -> None:
         """
