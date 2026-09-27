@@ -170,6 +170,32 @@ class SpotWSClient(SpotWSClientBase):
             ws_url="wss://ws.vip.uat.lobster.kraken.com",
             auth_ws_url="wss://ws-auth.vip.uat.lobster.kraken.com",
         )
+
+    **Subscribing to the** ``level3`` **channel** requires a client pointed at
+    ``wss://ws-l3.kraken.com`` instead of the default
+    ``wss://ws-auth.kraken.com``, since Kraken serves ``level3`` on a dedicated
+    endpoint. This means a client used for ``level3`` cannot also be used for
+    ``executions`` or ``balances`` and vice versa - use a second client instance
+    for that.
+
+    .. code-block:: python
+        :linenos:
+        :caption: HowTo: Subscribe to the level3 channel
+
+        client = SpotWSClient(key="api-key", secret="secret-key")
+        client_level3 = SpotWSClient(
+            key="api-key",
+            secret="secret-key",
+            auth_ws_url="wss://ws-l3.kraken.com",
+        )
+
+        await client.start()
+        await client_level3.start()
+
+        await client.subscribe(params={"channel": "executions"})
+        await client_level3.subscribe(
+            params={"channel": "level3", "symbol": ["BTC/USD"]}
+        )
     """
 
     def __init__(  # nosec: B107
@@ -560,6 +586,13 @@ class SpotWSClient(SpotWSClientBase):
         - `executions <https://docs.kraken.com/api/docs/websocket-v2/executions>`_
         - `balances <https://docs.kraken.com/api/docs/websocket-v2/balances>`_
         - `level3 <https://docs.kraken.com/api/docs/websocket-v2/level3>`_
+
+        **Note:** ``level3`` is served on a different endpoint
+        (``wss://ws-l3.kraken.com``) than ``executions`` and ``balances``
+        (``wss://ws-auth.kraken.com``). A client instance connects to only one
+        authenticated endpoint, so subscribing to ``level3`` requires a
+        separate client instantiated with ``auth_ws_url="wss://ws-l3.kraken.com"``.
+        See :class:`kraken.spot.SpotWSClient` for an example.
 
         :return: List of available private channel names
         :rtype: list[str]
