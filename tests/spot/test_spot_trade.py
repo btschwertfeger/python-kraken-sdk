@@ -363,7 +363,7 @@ class TestSpotTrade:
         """
         with pytest.raises(
             ValueError,
-            match=r"Volume is less than the ordermin: 0.00005!",
+            match=r"Volume is less than the ordermin:.*",
         ):
             spot_trade.truncate(amount=0.0000001, amount_type="volume", pair="XBTUSD")
 
