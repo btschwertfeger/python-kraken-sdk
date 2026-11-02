@@ -2,11 +2,46 @@
 
 ## [Unreleased](https://github.com/btschwertfeger/python-kraken-sdk/tree/HEAD)
 
-[Full Changelog](https://github.com/btschwertfeger/python-kraken-sdk/compare/v3.4.0...HEAD)
+[Full Changelog](https://github.com/btschwertfeger/python-kraken-sdk/compare/v3.5.1...HEAD)
+
+Uncategorized merged pull requests:
+
+- Fix test [\#470](https://github.com/btschwertfeger/python-kraken-sdk/pull/470) ([btschwertfeger](https://github.com/btschwertfeger))
+- Bump the github-actions group with 7 updates [\#469](https://github.com/btschwertfeger/python-kraken-sdk/pull/469) ([dependabot[bot]](https://github.com/apps/dependabot))
+
+## [v3.5.1](https://github.com/btschwertfeger/python-kraken-sdk/tree/v3.5.1) (2026-09-27)
+
+[Full Changelog](https://github.com/btschwertfeger/python-kraken-sdk/compare/v3.5.0...v3.5.1)
+
+**Fixed bugs:**
+
+- Only warn on explicit get_trade_volume fee_info use [\#463](https://github.com/btschwertfeger/python-kraken-sdk/pull/463) ([btschwertfeger](https://github.com/btschwertfeger))
+- Fix get_trade_volume crash on list-of-object pair values [\#466](https://github.com/btschwertfeger/python-kraken-sdk/pull/466) ([btschwertfeger](https://github.com/btschwertfeger))
+- Fix `trigger_ordertypes` allowlist in `spot.Trade.create_order` [\#465](https://github.com/btschwertfeger/python-kraken-sdk/pull/465) ([btschwertfeger](https://github.com/btschwertfeger))
+- Fix parameter forwarding in Spot Funding client and mark it as deprecated [\#464](https://github.com/btschwertfeger/python-kraken-sdk/pull/464) ([btschwertfeger](https://github.com/btschwertfeger))
+- Fix get_trade_volume fee_info handling [\#462](https://github.com/btschwertfeger/python-kraken-sdk/pull/462) ([btschwertfeger](https://github.com/btschwertfeger))
+
+Uncategorized merged pull requests:
+
+- Document separate level3 websocket endpoint requirement [\#468](https://github.com/btschwertfeger/python-kraken-sdk/pull/468) ([btschwertfeger](https://github.com/btschwertfeger))
+- Fix stale Earn docstring example and document wrapper policy [\#467](https://github.com/btschwertfeger/python-kraken-sdk/pull/467) ([btschwertfeger](https://github.com/btschwertfeger))
+
+## [v3.5.0](https://github.com/btschwertfeger/python-kraken-sdk/tree/v3.5.0) (2026-09-18)
+
+[Full Changelog](https://github.com/btschwertfeger/python-kraken-sdk/compare/v3.4.0...v3.5.0)
+
+**Implemented enhancements:**
+
+- Add MCP server [\#458](https://github.com/btschwertfeger/python-kraken-sdk/pull/458) ([btschwertfeger](https://github.com/btschwertfeger))
 
 **Fixed bugs:**
 
 - Resolve "Timeout for clients can't be modified unless self.TIMEOUT is set" [\#457](https://github.com/btschwertfeger/python-kraken-sdk/pull/457) ([btschwertfeger](https://github.com/btschwertfeger))
+
+Uncategorized merged pull requests:
+
+- Drop MCP server specification draft [\#461](https://github.com/btschwertfeger/python-kraken-sdk/pull/461) ([btschwertfeger](https://github.com/btschwertfeger))
+- Resolve "Use SPDX License Expression in file headers" [\#460](https://github.com/btschwertfeger/python-kraken-sdk/pull/460) ([btschwertfeger](https://github.com/btschwertfeger))
 
 ## [v3.4.0](https://github.com/btschwertfeger/python-kraken-sdk/tree/v3.4.0) (2026-09-14)
 
