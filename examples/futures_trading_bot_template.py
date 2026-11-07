@@ -51,7 +51,7 @@ class TradingBot(FuturesWSClient):
         configuration like: {
             'key' 'kraken-futures-key',
             'secret': 'kraken-secret-key',
-            'products': ['PI_XBTUSD']
+            'products': ['PF_XBTUSD']
         }
     """
 
@@ -68,7 +68,7 @@ class TradingBot(FuturesWSClient):
         # == apply your trading strategy here ==
         # Hint: You can execute requests using the `request` function directly:
         # print(await self.request(
-        #     "GET", "/api/charts/v1/spot/PI_XBTUSD/1d",
+        #     "GET", "/api/charts/v1/spot/PF_XBTUSD/1d",
         # ))
 
         # You can also un-/subscribe here using `self.subscribe(...)` or
@@ -100,7 +100,7 @@ class ManagedBot:
         bot configuration like: {
             'key' 'kraken-futures-key',
             'secret': 'kraken-secret-key',
-            'products': ['PI_XBTUSD']
+            'products': ['PF_XBTUSD']
         }
     """
 
@@ -193,7 +193,7 @@ def main() -> None:
         config={
             "key": os.getenv("FUTURES_API_KEY"),
             "secret": os.getenv("FUTURES_SECRET_KEY"),
-            "products": ["PI_XBTUSD", "PF_SOLUSD"],
+            "products": ["PF_XBTUSD", "PF_SOLUSD"],
         },
     )
 

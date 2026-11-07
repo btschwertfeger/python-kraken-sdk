@@ -42,7 +42,7 @@ def test_demo_api_available(futures_demo_market: Market) -> None:
 class TestFuturesMarket:
     """Test class for Futures Market client functionality."""
 
-    SYMBOL = "PI_XBTUSD"
+    SYMBOL = "PF_XBTUSD"
     TRADEABLE = "PF_SOLUSD"
     SINCE = "1668989233"
     BEFORE = "1668999999"
