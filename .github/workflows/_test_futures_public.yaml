@@ -56,6 +56,8 @@ jobs:
             release-assets.githubusercontent.com:443
             pypi.org:443
             storage.googleapis.com:443
+            releases.astral.sh:443
+            demo-futures.kraken.com:443
 
       - name: Checkout repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
