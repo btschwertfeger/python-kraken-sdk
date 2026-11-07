@@ -132,19 +132,19 @@ def test_subscribe_public(caplog: pytest.LogCaptureFixture) -> None:
         async with FuturesWebsocketClientTestWrapper() as client:
             with pytest.raises(
                 TypeError,
-                match=r"Parameter products must be type of list\[str\] \(e.g. products=\[\"PI_XBTUSD\"\]\)",
+                match=r"Parameter products must be type of list\[str\] \(e.g. products=\[\"PF_XBTUSD\"\]\)",
             ):
-                await client.subscribe(feed="ticker", products="PI_XBTUSD")  # type: ignore[arg-type]
+                await client.subscribe(feed="ticker", products="PF_XBTUSD")  # type: ignore[arg-type]
 
         async with FuturesWebsocketClientTestWrapper() as client:
-            await client.subscribe(feed="ticker", products=["PI_XBTUSD", "PF_SOLUSD"])
+            await client.subscribe(feed="ticker", products=["PF_XBTUSD", "PF_SOLUSD"])
             await async_sleep(2)
 
             subs: list[dict] = client.get_active_subscriptions()
             assert isinstance(subs, list)
 
             expected_subscriptions: list[dict] = [
-                {"event": "subscribe", "feed": "ticker", "product_ids": ["PI_XBTUSD"]},
+                {"event": "subscribe", "feed": "ticker", "product_ids": ["PF_XBTUSD"]},
                 {"event": "subscribe", "feed": "ticker", "product_ids": ["PF_SOLUSD"]},
             ]
             assert all(sub in subs for sub in expected_subscriptions)
@@ -152,7 +152,7 @@ def test_subscribe_public(caplog: pytest.LogCaptureFixture) -> None:
     asyncio.run(check_subscription())
 
     for expected in (
-        "{'event': 'subscribed', 'feed': 'ticker', 'product_ids': ['PI_XBTUSD']}",
+        "{'event': 'subscribed', 'feed': 'ticker', 'product_ids': ['PF_XBTUSD']}",
         "{'event': 'subscribed', 'feed': 'ticker', 'product_ids': ['PF_SOLUSD']}",
     ):
         assert expected in caplog.text
@@ -181,7 +181,7 @@ def test_subscribe_private(
                 ValueError,
                 match=r"There is no private feed that accepts products!",
             ):
-                await client.subscribe(feed="fills", products=["PI_XBTUSD"])
+                await client.subscribe(feed="fills", products=["PF_XBTUSD"])
 
         async with FuturesWebsocketClientTestWrapper(
             key=futures_api_key,
@@ -211,7 +211,7 @@ def test_unsubscribe_public(caplog: pytest.LogCaptureFixture) -> None:
     """
 
     async def execute_unsubscribe() -> None:
-        products: list[str] = ["PI_XBTUSD", "PF_SOLUSD"]
+        products: list[str] = ["PF_XBTUSD", "PF_SOLUSD"]
         async with FuturesWebsocketClientTestWrapper() as client:
             await client.subscribe(feed="ticker", products=products)
             await async_sleep(2)
@@ -223,16 +223,16 @@ def test_unsubscribe_public(caplog: pytest.LogCaptureFixture) -> None:
                 TypeError,
                 match=r"Parameter products must be type of list\[str\]",
             ):
-                await client.unsubscribe(feed="ticker", products="PI_XBTUSD")  # type: ignore[arg-type]
+                await client.unsubscribe(feed="ticker", products="PF_XBTUSD")  # type: ignore[arg-type]
 
         await async_sleep(4)
 
     asyncio.run(execute_unsubscribe())
 
     for expected in (
-        "{'event': 'subscribed', 'feed': 'ticker', 'product_ids': ['PI_XBTUSD']}",
+        "{'event': 'subscribed', 'feed': 'ticker', 'product_ids': ['PF_XBTUSD']}",
         "{'event': 'subscribed', 'feed': 'ticker', 'product_ids': ['PF_SOLUSD']}",
-        "{'event': 'unsubscribed', 'feed': 'ticker', 'product_ids': ['PI_XBTUSD']}",
+        "{'event': 'unsubscribed', 'feed': 'ticker', 'product_ids': ['PF_XBTUSD']}",
         "{'event': 'unsubscribed', 'feed': 'ticker', 'product_ids': ['PF_SOLUSD']}",
     ):
         assert expected in caplog.text
@@ -266,7 +266,7 @@ def test_unsubscribe_private(
                 ValueError,
                 match=r"There is no private feed that accepts products!",
             ):
-                await client.unsubscribe(feed="open_orders", products=["PI_XBTUSD"])
+                await client.unsubscribe(feed="open_orders", products=["PF_XBTUSD"])
 
             await async_sleep(2)
 
@@ -291,19 +291,19 @@ def test_get_active_subscriptions(caplog: pytest.LogCaptureFixture) -> None:
         async with FuturesWebsocketClientTestWrapper() as client:
             assert client.get_active_subscriptions() == []
 
-            await client.subscribe(feed="ticker", products=["PI_XBTUSD"])
+            await client.subscribe(feed="ticker", products=["PF_XBTUSD"])
             await async_sleep(1)
             assert len(client.get_active_subscriptions()) == 1
 
-            await client.unsubscribe(feed="ticker", products=["PI_XBTUSD"])
+            await client.unsubscribe(feed="ticker", products=["PF_XBTUSD"])
             await async_sleep(1)
             assert client.get_active_subscriptions() == []
 
     asyncio.run(check_subscriptions())
 
     for expected in (
-        "{'event': 'subscribed', 'feed': 'ticker', 'product_ids': ['PI_XBTUSD']}",
-        "{'event': 'unsubscribed', 'feed': 'ticker', 'product_ids': ['PI_XBTUSD']}",
+        "{'event': 'subscribed', 'feed': 'ticker', 'product_ids': ['PF_XBTUSD']}",
+        "{'event': 'unsubscribed', 'feed': 'ticker', 'product_ids': ['PF_XBTUSD']}",
     ):
         assert expected in caplog.text
 

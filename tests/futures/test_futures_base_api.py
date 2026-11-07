@@ -93,7 +93,7 @@ class TestFuturesBaseAPIAsync:
                 assert isinstance(
                     await client.request(
                         "GET",
-                        "/api/charts/v1/spot/PI_XBTUSD/1h",
+                        "/api/charts/v1/spot/PF_XBTUSD/1h",
                         auth=False,
                         post_params={"from": "1668989233", "to": "1668999233"},
                     ),
@@ -149,7 +149,7 @@ class TestProxyPyEmbedded(TestCase, IsolatedAsyncioTestCase):
         assert isinstance(
             client.request(
                 "GET",
-                "/api/charts/v1/spot/PI_XBTUSD/1h",
+                "/api/charts/v1/spot/PF_XBTUSD/1h",
                 auth=False,
                 post_params={"from": "1668989233", "to": "1668999233"},
             ),
@@ -164,7 +164,7 @@ class TestProxyPyEmbedded(TestCase, IsolatedAsyncioTestCase):
         client = FuturesAsyncClient(proxy=self.get_proxy_str())
         res = await client.request(
             "GET",
-            "/api/charts/v1/spot/PI_XBTUSD/1h",
+            "/api/charts/v1/spot/PF_XBTUSD/1h",
             auth=False,
             post_params={"from": "1668989233", "to": "1668999233"},
         )

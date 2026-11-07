@@ -148,7 +148,7 @@ kraken spot --api-key=<api-key> --secret-key=<secret-key> -X POST https://api.kr
 {'eb': '2.8987347115', 'tb': '1.1694303513', 'm': '0.0000000000', 'uv': '0', 'n': '0.0000000000', 'c': '0.0000000000', 'v': '0.0000000000', 'e': '1.1694303513', 'mf': '1.1694303513'}
 
 # get 1D candles for a futures instrument
-kraken futures https://futures.kraken.com/api/charts/v1/spot/PI_XBTUSD/1d
+kraken futures https://futures.kraken.com/api/charts/v1/spot/PF_XBTUSD/1d
 {'candles': [{'time': 1625616000000, 'open': '34557.84000000000', 'high': '34803.20000000000', 'low': '33816.32000000000', 'close': '33880.22000000000', 'volume': '0' ...
 
 # get user's open futures positions
@@ -496,7 +496,7 @@ async def main():
         client = Client()
         await client.start()
 
-        products = ["PI_XBTUSD", "PF_ETHUSD"]
+        products = ["PF_XBTUSD", "PF_ETHUSD"]
 
         # subscribe to a public websocket feed
         await client.subscribe(feed="ticker", products=products)

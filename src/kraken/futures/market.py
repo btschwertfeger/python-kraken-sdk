@@ -107,7 +107,7 @@ class Market(FuturesClient):
             :caption: Futures Market: Get the OHLC data
 
             >>> from kraken.futures import Market
-            >>> Market().get_ohlc(tick_type="trade", symbol="PI_XBTUSD", resolution="1h")
+            >>> Market().get_ohlc(tick_type="trade", symbol="PF_XBTUSD", resolution="1h")
             {
                 'candles': [
                     {
@@ -204,7 +204,7 @@ class Market(FuturesClient):
 
             >>> from kraken.futures import Market
             >>> Market().get_tradeable_products(tick_type="trade")
-            ["PI_XBTUSD", "PF_XBTUSD", "PF_SOLUSD", ...]
+            ["PF_XBTUSD", "PF_SOLUSD", ...]
         """
         return self.request(  # type: ignore[return-value]
             method="GET",
@@ -243,7 +243,7 @@ class Market(FuturesClient):
             :caption: Futures Market: Get the available resolutions
 
             >>> from kraken.futures import Market
-            >>> Market().get_resolutions(tick_type="mark", tradeable="PI_XBTUSD")
+            >>> Market().get_resolutions(tick_type="mark", tradeable="PF_XBTUSD")
             ['1h', '12h', '1w', '15m', '1d', '5m', '30m', '4h', '1m']
         """
         return self.request(  # type: ignore[return-value]
@@ -393,7 +393,7 @@ class Market(FuturesClient):
             :caption: Futures Market: Get the assets orderbook
 
             >>> from kraken.futures import Market
-            >>> Market().get_orderbook(symbol="PI_XBTUSD")
+            >>> Market().get_orderbook(symbol="PF_XBTUSD")
             {
                 'result': 'success', 'orderBook': {
                     'bids': [
@@ -585,9 +585,9 @@ class Market(FuturesClient):
             :caption: Futures Market: Retrieve information about a specific asset/contract/instrument
 
             >>> from kraken.futures import Market
-            >>> Market().get_instruments_status(instrument="PI_XBTUSD")
+            >>> Market().get_instruments_status(instrument="PF_XBTUSD")
             {
-                'tradeable': 'PI_XBTUSD',
+                'tradeable': 'PF_XBTUSD',
                 'experiencingDislocation': False,
                 'priceDislocationDirection': None,
                 'experiencingExtremeVolatility': False,
@@ -633,7 +633,7 @@ class Market(FuturesClient):
             :caption: Futures Market: Get the public trade history
 
             >>> from kraken.futures import Market
-            >>> Market().get_trade_history(symbol="PI_XBTUSD")
+            >>> Market().get_trade_history(symbol="PF_XBTUSD")
             {
                 'history': [{
                         'time': '2023-04-04T05:28:27.926Z',
@@ -688,7 +688,7 @@ class Market(FuturesClient):
             :caption: Futures Market: Get the historical funding rates
 
             >>> from kraken.futures import Market
-            >>> Market().get_historical_funding_rates(symbol="PI_XBTUSD")
+            >>> Market().get_historical_funding_rates(symbol="PF_XBTUSD")
             {
                 'rates': [{
                         'timestamp': '2018-08-31T16:00:00.000Z',
@@ -957,7 +957,7 @@ class Market(FuturesClient):
             :caption: Futures Market: Get the public execution events
 
             >>> from kraken.futures import Market
-            >>> Market().get_public_execution_events(tradeable="PI_XBTUSD")
+            >>> Market().get_public_execution_events(tradeable="PF_XBTUSD")
             {
                 'elements': [
                     {
@@ -969,7 +969,7 @@ class Market(FuturesClient):
                                     'uid': '3df5cb59-d410-48f7-9c6f-ee9b849b9c91',
                                     'makerOrder': {
                                         'uid': 'a0d28216-54f8-4af0-9adc-0d0d4738936d',
-                                        'tradeable': 'PI_XBTUSD',
+                                        'tradeable': 'PF_XBTUSD',
                                         'direction': 'Buy',
                                         'quantity': '626',
                                         'timestamp': 1680874894675,
@@ -980,7 +980,7 @@ class Market(FuturesClient):
                                     },
                                     'takerOrder': {
                                         'uid': '09246639-9130-42fb-8d90-4ed39913456f',
-                                        'tradeable': 'PI_XBTUSD',
+                                        'tradeable': 'PF_XBTUSD',
                                         'direction': 'Sell',
                                         'quantity': '626',
                                         'timestamp': 1680874894684,
@@ -1050,7 +1050,7 @@ class Market(FuturesClient):
             :caption: Futures Market: Get the public order events
 
             >>> from kraken.futures import Market
-            >>> Market().get_public_order_events(tradeable="PI_XBTUSD")
+            >>> Market().get_public_order_events(tradeable="PF_XBTUSD")
             {
                 'elements': [
                     {
@@ -1060,7 +1060,7 @@ class Market(FuturesClient):
                             'OrderPlaced': {
                                 'order': {
                                     'uid': 'f9aaf471-95ba-4fde-ab68-251f12f96e47',
-                                    'tradeable': 'PI_XBTUSD',
+                                    'tradeable': 'PF_XBTUSD',
                                     'direction': 'Sell',
                                     'quantity': '652',
                                     'timestamp': 1680875125649,
@@ -1123,7 +1123,7 @@ class Market(FuturesClient):
             :caption: Futures Market: Get the public mark price events
 
             >>> from kraken.futures import Market
-            >>> Market().get_public_mark_price_events(tradeable="PI_XBTUSD")
+            >>> Market().get_public_mark_price_events(tradeable="PF_XBTUSD")
             {
                 'elements': [
                     {

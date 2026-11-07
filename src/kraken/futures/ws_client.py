@@ -260,7 +260,7 @@ class FuturesWSClient(FuturesAsyncClient):
             if not isinstance(products, list):
                 raise TypeError(
                     "Parameter products must be type of list[str] "
-                    '(e.g. products=["PI_XBTUSD"])',
+                    '(e.g. products=["PF_XBTUSD"])',
                 )
             message["product_ids"] = products
 
@@ -319,7 +319,7 @@ class FuturesWSClient(FuturesAsyncClient):
             if not isinstance(products, list):
                 raise TypeError(
                     'Parameter products must be type of list[str]\
-                    (e.g. products=["PI_XBTUSD"])',
+                    (e.g. products=["PF_XBTUSD"])',
                 )
             message["product_ids"] = products
 
@@ -434,7 +434,7 @@ class FuturesWSClient(FuturesAsyncClient):
                 {
                     "event": "subscribe",
                     "feed": "ticker,
-                    "product_ids": ["PI_XBTUSD"]
+                    "product_ids": ["PF_XBTUSD"]
                 }, {
                     "event": "subscribe",
                     "feed": "open_orders,

@@ -30,7 +30,7 @@ Futures Trading
         orderType="trailing_stop",
         size=10,
         side="buy",
-        symbol="PI_XBTUSD",
+        symbol="PF_XBTUSD",
         limitPrice=12000,
         triggerSignal="mark",
         trailingStopDeviationUnit="PERCENT",
