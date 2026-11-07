@@ -114,11 +114,11 @@ def test_cli_spot_private(cli_runner: CliRunner, args: list[str]) -> None:
     "args",
     [
         pytest.param(
-            ["futures", "https://futures.kraken.com/api/charts/v1/spot/PI_XBTUSD/1d"],
+            ["futures", "https://futures.kraken.com/api/charts/v1/spot/PF_XBTUSD/1d"],
             id="futures_public_charts_full_url",
         ),
         pytest.param(
-            ["futures", "/api/charts/v1/spot/PI_XBTUSD/1d"],
+            ["futures", "/api/charts/v1/spot/PF_XBTUSD/1d"],
             id="futures_public_charts_path_only",
         ),
     ],
@@ -275,8 +275,8 @@ def test_get_base_url(url: str, expected: str) -> None:
             id="url_with_multiple_query_params",
         ),
         pytest.param(
-            "https://futures.kraken.com/api/charts/v1/spot/PI_XBTUSD/1d",
-            "/api/charts/v1/spot/PI_XBTUSD/1d",
+            "https://futures.kraken.com/api/charts/v1/spot/PF_XBTUSD/1d",
+            "/api/charts/v1/spot/PF_XBTUSD/1d",
             id="futures_charts_url",
         ),
         pytest.param(

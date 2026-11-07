@@ -40,7 +40,7 @@ SKIP_TOUCHES_REAL_ACCOUNT = pytest.mark.skip(
 class TestFuturesTrade:
     """Test class for Futures Trade client functionality."""
 
-    SYMBOL = "PI_XBTUSD"
+    SYMBOL = "PF_XBTUSD"
     ORDER_TYPE_LIMIT = "lmt"
     ORDER_TYPE_MARKET = "mkt"
     ORDER_TYPE_TAKE_PROFIT = "take_profit"
@@ -125,7 +125,7 @@ class TestFuturesTrade:
             #         orderType="take_profit",
             #         size=10,
             #         side="buy",
-            #         symbol="PI_XBTUSD",
+            #         symbol="PF_XBTUSD",
             #         limitPrice=12000,
             #         triggerSignal="last",
             #         stopPrice=13000,
@@ -139,7 +139,7 @@ class TestFuturesTrade:
             #         orderType="trailing_stop",
             #         size=10,
             #         side="buy",
-            #         symbol="PI_XBTUSD",
+            #         symbol="PF_XBTUSD",
             #         limitPrice=12000,
             #         triggerSignal="mark",
             #         trailingStopDeviationUnit="PERCENT",

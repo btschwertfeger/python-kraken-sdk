@@ -31,8 +31,8 @@ run_test "spot_private_balance_path_only" kraken spot -X POST /0/private/Balance
 run_test "spot_private_trade_balance_with_data_full_url" kraken spot -X POST https://api.kraken.com/0/private/TradeBalance -d '{"asset": "DOT"}'
 run_test "spot_private_trade_balance_with_data_path_only" kraken spot -X POST /0/private/TradeBalance -d '{"asset": "DOT"}'
 
-run_test "futures_public_charts_full_url" kraken futures https://futures.kraken.com/api/charts/v1/spot/PI_XBTUSD/1d
-run_test "futures_public_charts_path_only" kraken futures /api/charts/v1/spot/PI_XBTUSD/1d
+run_test "futures_public_charts_full_url" kraken futures https://futures.kraken.com/api/charts/v1/spot/PF_XBTUSD/1d
+run_test "futures_public_charts_path_only" kraken futures /api/charts/v1/spot/PF_XBTUSD/1d
 
 run_test "futures_private_openpositions" kraken futures https://futures.kraken.com/derivatives/api/v3/openpositions
 # run_test "futures_private_editorder" kraken futures -X POST https://futures.kraken.com/derivatives/api/v3/editorder -d '{"cliOrdID": "12345", "limitPrice": 10}'

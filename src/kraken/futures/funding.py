@@ -49,7 +49,7 @@ class Funding(FuturesClient):
 
         >>> from kraken.futures import Funding
         >>> with Funding(key="api-key", secret="secret-key") as funding:
-        ...     print(funding.get_historical_funding_rates(symbol="PI_XBTUSD"))
+        ...     print(funding.get_historical_funding_rates(symbol="PF_XBTUSD"))
     """
 
     def __init__(  # nosec: B107
@@ -89,7 +89,7 @@ class Funding(FuturesClient):
             :caption: Futures Funding: Get the historical funding rates
 
             >>> from kraken.futures import Funding
-            >>> Funding().get_historical_funding_rates(symbol="PI_XBTUSD")
+            >>> Funding().get_historical_funding_rates(symbol="PF_XBTUSD")
             {
                 'rates': [
                     {

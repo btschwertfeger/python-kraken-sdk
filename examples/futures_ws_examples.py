@@ -57,7 +57,7 @@ async def main() -> None:
         await client.start()
         # print(client.get_available_public_subscription_feeds())
 
-        products = ["PI_XBTUSD", "PF_SOLUSD"]
+        products = ["PF_XBTUSD", "PF_SOLUSD"]
         # subscribe to a public websocket feed
         await client.subscribe(feed="ticker", products=products)
         await client.subscribe(feed="book", products=products)
@@ -68,7 +68,7 @@ async def main() -> None:
 
         # unsubscribe from a websocket feed
         time.sleep(2)  # in case subscribe is not done yet
-        # await client.unsubscribe(feed='ticker', products=['PI_XBTUSD'])
+        # await client.unsubscribe(feed='ticker', products=['PF_XBTUSD'])
         await client.unsubscribe(feed="ticker", products=["PF_XBTUSD"])
         await client.unsubscribe(feed="book", products=products)
         # ...
@@ -92,7 +92,7 @@ async def main() -> None:
             # await client_auth.subscribe(feed='notifications_auth')
 
             # authenticated clients can also subscribe to public feeds
-            # await client_auth.subscribe(feed='ticker', products=['PI_XBTUSD', 'PF_ETHUSD'])
+            # await client_auth.subscribe(feed='ticker', products=['PF_XBTUSD', 'PF_ETHUSD'])
 
             # time.sleep(1)
             # unsubscribe from a private/authenticated websocket feed

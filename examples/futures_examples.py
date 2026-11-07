@@ -39,11 +39,11 @@ def market_examples() -> None:
     market = Market()
     print(market.get_tick_types())
     print(market.get_tradeable_products(tick_type="trade"))
-    print(market.get_resolutions(tick_type="trade", tradeable="PI_XBTUSD"))
+    print(market.get_resolutions(tick_type="trade", tradeable="PF_XBTUSD"))
     print(
         market.get_ohlc(
             tick_type="trade",
-            symbol="PI_XBTUSD",
+            symbol="PF_XBTUSD",
             resolution="5m",
             from_="1668989233",
         ),
@@ -55,9 +55,9 @@ def market_examples() -> None:
     print(market.get_tickers())
     print(market.get_instruments())
     print(market.get_instruments_status())
-    print(market.get_instruments_status(instrument="PI_XBTUSD"))
-    print(market.get_trade_history(symbol="PI_XBTUSD"))
-    print(market.get_historical_funding_rates(symbol="PI_XBTUSD"))
+    print(market.get_instruments_status(instrument="PF_XBTUSD"))
+    print(market.get_trade_history(symbol="PF_XBTUSD"))
+    print(market.get_historical_funding_rates(symbol="PF_XBTUSD"))
     time.sleep(2)  # Just to avoid rate limits
 
     # Usage of the Market client to access private endpoints:
@@ -71,9 +71,9 @@ def market_examples() -> None:
 
     # time.sleep(2)
     # print(priv_market.get_execution_events())
-    # print(market.get_public_execution_events(tradeable='PI_XBTUSD'))
-    # print(market.get_public_order_events(tradeable='PI_XBTUSD'))
-    # print(market.get_public_mark_price_events(tradeable='PI_XBTUSD'))
+    # print(market.get_public_execution_events(tradeable='PF_XBTUSD'))
+    # print(market.get_public_order_events(tradeable='PF_XBTUSD'))
+    # print(market.get_public_mark_price_events(tradeable='PF_XBTUSD'))
     # print(priv_market.get_order_events())
     # print(priv_market.get_trigger_events())
 
@@ -127,7 +127,7 @@ def trade_examples() -> None:
                     "order": "send",
                     "order_tag": "1",
                     "orderType": "lmt",
-                    "symbol": "PI_XBTUSD",
+                    "symbol": "PF_XBTUSD",
                     "side": "buy",
                     "size": 1,
                     "limitPrice": 1.00,
@@ -136,7 +136,7 @@ def trade_examples() -> None:
                     "order": "send",
                     "order_tag": "2",
                     "orderType": "stp",
-                    "symbol": "PI_XBTUSD",
+                    "symbol": "PF_XBTUSD",
                     "side": "buy",
                     "size": 1,
                     "limitPrice": 2.00,
@@ -154,7 +154,7 @@ def trade_examples() -> None:
         ),
     )
     print(trade.cancel_all_orders())
-    print(trade.cancel_all_orders(symbol="pi_xbtusd"))
+    print(trade.cancel_all_orders(symbol="pf_xbtusd"))
     print(trade.dead_mans_switch(timeout=60))
     print(trade.dead_mans_switch(timeout=0))  # to deactivate
     print(trade.cancel_order(order_id="some order id"))
